@@ -60,11 +60,13 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
     public TreeElement[] getChildren() {
         if (element instanceof ReasonMLFile) {
             ReasonMLModuleStatement[] modules = PsiTreeUtil.getChildrenOfType(element, ReasonMLModuleStatement.class);
-            List<TreeElement> treeElements = new ArrayList<>(modules.length);
-            for (ReasonMLModuleStatement module : modules) {
-                treeElements.add(new ReasonMLStructureViewElement(module));
+            if (modules != null) {
+                List<TreeElement> treeElements = new ArrayList<>(modules.length);
+                for (ReasonMLModuleStatement module : modules) {
+                    treeElements.add(new ReasonMLStructureViewElement(module));
+                }
+                return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
-            return treeElements.toArray(new TreeElement[treeElements.size()]);
         }
 
         return EMPTY_ARRAY;
