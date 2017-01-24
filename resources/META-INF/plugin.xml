@@ -27,7 +27,8 @@
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.ReasonMLParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.ReasonMLSyntaxHighlighterFactory"/>
-        <colorSettingsPage implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
+        <colorSettingsPage  implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
+        <lang.psiStructureViewFactory language="ReasonML" implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
     </extensions>
 
     <actions>

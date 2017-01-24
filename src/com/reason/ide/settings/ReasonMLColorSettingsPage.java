@@ -16,8 +16,6 @@ import java.util.Map;
 public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("UIdentifier", ReasonMLSyntaxHighlighter.UIDENTIFIER),
-//            new AttributesDescriptor("Separator", SimpleSyntaxHighlighter.SEPARATOR),
-//            new AttributesDescriptor("Value", SimpleSyntaxHighlighter.VALUE),
     };
 
     @Nullable
