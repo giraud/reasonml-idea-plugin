@@ -1,0 +1,54 @@
+{
+  parserClass="com.reason.parser.ReasonMLParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="ReasonML"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.reason.psi"
+  psiImplPackage="com.reason.psi.impl"
+
+  elementTypeHolderClass="com.reason.psi.ReasonMLTypes"
+  elementTypeClass="com.reason.psi.ReasonMLElementType"
+  tokenTypeClass="com.reason.psi.ReasonMLTokenType"
+
+  tokens = [
+      MODULE = "module"
+      INCLUDE = "include"
+      TYPE = "type"
+
+      EQUAL = "="
+      DOT = "."
+      SEMI = ";"
+
+      LBRACE = "{"
+      RBRACE = "}"
+
+      space = 'regexp:\s+'
+    ]
+}
+
+reasonFile ::= (COMMENT|structure_item)*
+
+structure_item ::=
+    module_statement
+
+module_statement ::=
+    MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI
+
+module_ident ::=
+    UIDENT
+
+module_body ::=
+    (  module_statement
+    | include_statement
+    | type_statement )*
+
+include_statement ::=
+    INCLUDE fqn SEMI
+
+type_statement ::=
+    TYPE SEMI
+
+fqn ::=
+    UIDENT (DOT UIDENT)*

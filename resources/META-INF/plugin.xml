@@ -1,0 +1,35 @@
+<idea-plugin version="2">
+  <id>com.giraud.plugin.reasonml</id>
+  <name>ReasonML language plugin</name>
+  <version>1.0</version>
+  <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonMLPlugin">hgiraud</vendor>
+
+  <description><![CDATA[
+      ReasonML language plugin.
+    ]]></description>
+
+  <change-notes><![CDATA[
+      WIP
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="141.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileTypeFactory implementation="com.reason.ReasonMLFileTypeFactory"/>
+    <lang.parserDefinition language="ReasonML" implementationClass="com.reason.ReasonMLParserDefinition"/>
+    <lang.syntaxHighlighterFactory key="ReasonML" implementationClass="com.reason.ReasonMLSyntaxHighlighterFactory"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
