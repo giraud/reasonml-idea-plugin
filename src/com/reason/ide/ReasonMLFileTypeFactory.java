@@ -1,6 +1,7 @@
-package com.reason;
+package com.reason.ide;
 
 import com.intellij.openapi.fileTypes.*;
+import com.reason.ide.ReasonMLFileType;
 import org.jetbrains.annotations.NotNull;
 
 public class ReasonMLFileTypeFactory extends FileTypeFactory {

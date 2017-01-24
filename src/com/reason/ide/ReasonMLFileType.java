@@ -1,6 +1,7 @@
-package com.reason;
+package com.reason.ide;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.reason.ReasonMLLanguage;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

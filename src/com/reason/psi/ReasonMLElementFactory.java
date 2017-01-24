@@ -1,9 +1,5 @@
 package com.reason.psi;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.reason.ReasonMLFileType;
-
 public class ReasonMLElementFactory {
 //    public static ReasonMLProperty createProperty(Project project, String name, String value) {
 //        final ReasonMLFile file = createFile(project, name + " = " + value);

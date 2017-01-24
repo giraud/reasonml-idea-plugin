@@ -1,4 +1,4 @@
-package com.reason;
+package com.reason.ide;
 
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.Project;

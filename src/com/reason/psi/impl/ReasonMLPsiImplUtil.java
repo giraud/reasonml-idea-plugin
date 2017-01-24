@@ -1,14 +1,5 @@
 package com.reason.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.*;
-import com.reason.ReasonMLIcons;
-import com.reason.psi.*;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-
 public class ReasonMLPsiImplUtil {
 //    public static String getKey(ReasonMLProperty element) {
 //        ASTNode keyNode = element.getNode().findChildByType(ReasonMLTypes.KEY);

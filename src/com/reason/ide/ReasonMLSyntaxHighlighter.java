@@ -1,10 +1,11 @@
-package com.reason;
+package com.reason.ide;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
+import com.reason.ReasonMLLexerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL);
 
     private static final TextAttributesKey BRACE = createTextAttributesKey("REASONML_BRACE", DefaultLanguageHighlighterColors.BRACES);
-    private static final TextAttributesKey UIDENTIFIER = createTextAttributesKey("REASONML_UIDENT", DefaultLanguageHighlighterColors.CLASS_NAME);
+    public static final TextAttributesKey UIDENTIFIER = createTextAttributesKey("REASONML_UIDENT", DefaultLanguageHighlighterColors.CLASS_NAME);
     private static final TextAttributesKey KEYWORD = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     private static final TextAttributesKey SEMICOLON = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
     private static final TextAttributesKey OPERATION_SIGN = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
