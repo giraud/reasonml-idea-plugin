@@ -1,7 +1,9 @@
 # reasonml-idea-plugin
 ReasonML language plugin for idea
 
-(!) This is a work in progress. Don't use it !!
+## Status
+
+:exclamation: This is a **work in progress**, the language has very basic - and partially implemented - functionalities.
 
 ## Features
 
@@ -9,8 +11,7 @@ ReasonML language plugin for idea
 - Syntax highlighting
 - Line commenting with ctrl-alt-l
 
-
-###### Note
+## Development
 
 This project is heavily inspired by :
 - [custom language tutorial](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support_tutorial.html) from intellij
