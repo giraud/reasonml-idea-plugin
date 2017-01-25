@@ -28,10 +28,8 @@
     ]
 }
 
-reasonFile ::= (COMMENT|structure_item)*
-
-structure_item ::=
-    module_statement
+reasonFile ::=
+    ( COMMENT | module_statement | let_binding | fun_call )*
 
 module_statement ::=
     MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI
@@ -42,13 +40,51 @@ module_ident ::=
 module_body ::=
     (  module_statement
     | include_statement
-    | type_statement )*
+    | type_statement
+    | let_binding )*
 
 include_statement ::=
     INCLUDE fqn SEMI
 
 type_statement ::=
     TYPE SEMI
+
+fun_call ::=
+    fun_name (unit|seq_expr) SEMI
+
+fun_name ::=
+    LIDENT
+
+unit ::=
+    LPAREN RPAREN
+
+let_binding ::=
+    LET LIDENT let_binding_body SEMI
+
+let_binding_body ::=
+    EQUAL fun_binding
+  | EQUAL seq_expr
+
+fun_binding ::=
+    FUN LPAREN RPAREN ARROW seq_expr
+
+seq_expr ::=
+      LIDENT
+    | tuple_expr
+    | STRING
+
+tuple_expr ::=
+    LPAREN tuple_arg (COMMA tuple_arg)* RPAREN
+
+tuple_arg ::=
+    tuple_value (COLON core_type)?
+
+tuple_value ::=
+      INT
+    | LIDENT
+
+core_type ::=
+  LIDENT
 
 fqn ::=
     UIDENT (DOT UIDENT)*
