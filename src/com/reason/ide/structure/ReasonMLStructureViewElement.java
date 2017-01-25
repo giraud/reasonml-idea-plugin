@@ -9,8 +9,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.psi.ReasonMLFile;
+import com.reason.psi.ReasonMLLetBinding;
 import com.reason.psi.ReasonMLModuleStatement;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +60,23 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
     public TreeElement[] getChildren() {
         if (element instanceof ReasonMLFile) {
             ReasonMLModuleStatement[] modules = PsiTreeUtil.getChildrenOfType(element, ReasonMLModuleStatement.class);
-            if (modules != null) {
-                List<TreeElement> treeElements = new ArrayList<>(modules.length);
-                for (ReasonMLModuleStatement module : modules) {
-                    treeElements.add(new ReasonMLStructureViewElement(module));
+            ReasonMLLetBinding[] lets = PsiTreeUtil.getChildrenOfType(element, ReasonMLLetBinding.class);
+
+            List<TreeElement> treeElements;
+            if (modules != null || lets != null) {
+                treeElements = new ArrayList<>((modules == null ? 0 : modules.length) + (lets == null ? 0 : lets.length));
+
+                if (modules != null) {
+                    for (ReasonMLModuleStatement module : modules) {
+                        treeElements.add(new ReasonMLStructureViewElement(module));
+                    }
                 }
+                if (lets != null) {
+                    for (ReasonMLLetBinding let : lets) {
+                        treeElements.add(new ReasonMLStructureViewElement(let));
+                    }
+                }
+
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
         }

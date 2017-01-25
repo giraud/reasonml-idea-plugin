@@ -12,27 +12,14 @@
   elementTypeClass="com.reason.psi.ReasonMLElementType"
   tokenTypeClass="com.reason.psi.ReasonMLTokenType"
 
-  tokens = [
-      MODULE = "module"
-      INCLUDE = "include"
-      TYPE = "type"
-
-      EQUAL = "="
-      DOT = "."
-      SEMI = ";"
-
-      LBRACE = "{"
-      RBRACE = "}"
-
-      space = 'regexp:\s+'
-    ]
+  psiImplUtilClass="com.reason.psi.impl.ReasonMLPsiImplUtil"
 }
 
 reasonFile ::=
     ( COMMENT | module_statement | let_binding | fun_call )*
 
 module_statement ::=
-    MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI
+    MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
 
 module_ident ::=
     UIDENT
@@ -59,7 +46,10 @@ unit ::=
     LPAREN RPAREN
 
 let_binding ::=
-    LET LIDENT let_binding_body SEMI
+    LET let_label let_binding_body SEMI  { methods=[getPresentation] }
+
+let_label ::=
+    LIDENT
 
 let_binding_body ::=
     EQUAL fun_binding
