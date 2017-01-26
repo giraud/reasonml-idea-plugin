@@ -27,10 +27,12 @@
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.ReasonMLParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.ReasonMLSyntaxHighlighterFactory"/>
-        <colorSettingsPage  implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
-        <lang.psiStructureViewFactory language="ReasonML" implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
+        <colorSettingsPage implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
+        <lang.psiStructureViewFactory language="ReasonML"
+                                      implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.ReasonMLCommenter"/>
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.ReasonMLFoldingBuilder"/>
+        <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
     </extensions>
 
     <actions>

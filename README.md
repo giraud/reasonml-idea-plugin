@@ -11,6 +11,7 @@ ReasonML language plugin for idea
 - Syntax highlighting
 - Line commenting with ctrl-alt-l
 - code folding
+- pair braces matcher
 
 ## Development
 
