@@ -116,4 +116,4 @@ ARROW=[=>]
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return COMMENT; }
 }
 
-[^] { System.out.println("Bad char:" + yytext()); return BAD_CHARACTER; } // Copied this need to know how it works
+[^] { return BAD_CHARACTER; }

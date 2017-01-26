@@ -30,6 +30,7 @@
         <colorSettingsPage  implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
         <lang.psiStructureViewFactory language="ReasonML" implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.ReasonMLCommenter"/>
+        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.ReasonMLFoldingBuilder"/>
     </extensions>
 
     <actions>

@@ -10,6 +10,7 @@ ReasonML language plugin for idea
 - Structured view
 - Syntax highlighting
 - Line commenting with ctrl-alt-l
+- code folding
 
 ## Development
 
