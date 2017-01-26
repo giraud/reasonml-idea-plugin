@@ -16,7 +16,7 @@
 }
 
 reasonFile ::=
-    ( COMMENT | module_statement | let_binding | fun_call )*
+    ( COMMENT | module_statement | let_binding | fun_call | type_statement )*
 
 module_statement ::=
     MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
@@ -34,7 +34,10 @@ include_statement ::=
     INCLUDE fqn SEMI
 
 type_statement ::=
-    TYPE SEMI
+    TYPE LIDENT (EQUAL type_definition)? SEMI
+
+type_definition ::=
+    LBRACE RBRACE
 
 fun_call ::=
     fun_name (unit|seq_expr) SEMI
