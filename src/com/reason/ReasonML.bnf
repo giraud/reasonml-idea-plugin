@@ -49,10 +49,12 @@ unit ::=
     LPAREN RPAREN
 
 let_binding ::=
-    LET let_label let_binding_body SEMI  { methods=[getPresentation] }
+    LET LIDENT let_binding_body SEMI {
+        pin=1 recoverWhile=recover_statement
+        methods=[getPresentation]
+    }
 
-let_label ::=
-    LIDENT
+private recover_statement ::= !(LET)
 
 let_binding_body ::=
     EQUAL fun_binding
