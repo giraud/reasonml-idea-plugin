@@ -53,9 +53,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     else if (t == MODULE_EXPR) {
       r = module_expr(b, 0);
     }
-    else if (t == MODULE_IDENT) {
-      r = module_ident(b, 0);
-    }
     else if (t == MODULE_NAME) {
       r = module_name(b, 0);
     }
@@ -452,18 +449,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // UIDENT
-  public static boolean module_ident(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "module_ident")) return false;
-    if (!nextTokenIs(b, UIDENT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, UIDENT);
-    exit_section_(b, m, MODULE_IDENT, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // UIDENT
   public static boolean module_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "module_name")) return false;
     if (!nextTokenIs(b, UIDENT)) return false;
@@ -511,14 +496,14 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI
+  // MODULE module_name EQUAL LBRACE module_body RBRACE SEMI
   public static boolean module_statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "module_statement")) return false;
     if (!nextTokenIs(b, MODULE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, MODULE);
-    r = r && module_ident(b, l + 1);
+    r = r && module_name(b, l + 1);
     r = r && consumeTokens(b, 0, EQUAL, LBRACE);
     r = r && module_body(b, l + 1);
     r = r && consumeTokens(b, 0, RBRACE, SEMI);

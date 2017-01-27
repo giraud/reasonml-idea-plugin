@@ -18,12 +18,14 @@
 reasonFile ::=
     ( COMMENT | module_statement | include_statement | let_binding | fun_call | type_statement )*
 
+// ----------
 // MODULE
+// ----------
 
 module_statement ::=
-    MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
+    MODULE module_name EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
 
-module_ident ::=
+module_name ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-name
     UIDENT
 
 module_body ::=
@@ -31,9 +33,6 @@ module_body ::=
     | include_statement
     | type_statement
     | let_binding )*
-
-module_name ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-name
-    UIDENT
 
 module_path ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-path
     module_name (DOT module_name)*

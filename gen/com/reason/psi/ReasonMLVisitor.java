@@ -47,10 +47,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitModuleIdent(@NotNull ReasonMLModuleIdent o) {
-    visitPsiElement(o);
-  }
-
   public void visitModuleName(@NotNull ReasonMLModuleName o) {
     visitPsiElement(o);
   }

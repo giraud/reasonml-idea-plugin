@@ -18,7 +18,6 @@ public interface ReasonMLTypes {
   IElementType LONG_ID = new ReasonMLElementType("LONG_ID");
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
   IElementType MODULE_EXPR = new ReasonMLElementType("MODULE_EXPR");
-  IElementType MODULE_IDENT = new ReasonMLElementType("MODULE_IDENT");
   IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
   IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
   IElementType MODULE_STATEMENT = new ReasonMLElementType("MODULE_STATEMENT");
@@ -87,9 +86,6 @@ public interface ReasonMLTypes {
       }
       else if (type == MODULE_EXPR) {
         return new ReasonMLModuleExprImpl(node);
-      }
-      else if (type == MODULE_IDENT) {
-        return new ReasonMLModuleIdentImpl(node);
       }
       else if (type == MODULE_NAME) {
         return new ReasonMLModuleNameImpl(node);

@@ -12,7 +12,7 @@ public interface ReasonMLModuleStatement extends PsiElement {
   ReasonMLModuleBody getModuleBody();
 
   @NotNull
-  ReasonMLModuleIdent getModuleIdent();
+  ReasonMLModuleName getModuleName();
 
   ItemPresentation getPresentation();
 

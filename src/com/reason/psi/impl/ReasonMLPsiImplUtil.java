@@ -15,7 +15,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public String getPresentableText() {
-                return module.getModuleIdent().getText();
+                return module.getModuleName().getText();
             }
 
             @Nullable
