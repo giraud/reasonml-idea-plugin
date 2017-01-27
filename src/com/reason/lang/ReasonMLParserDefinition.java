@@ -1,4 +1,4 @@
-package com.reason;
+package com.reason.lang;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;

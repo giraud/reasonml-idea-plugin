@@ -1,6 +1,7 @@
-package com.reason;
+package com.reason.lang;
 
 import com.intellij.lexer.FlexAdapter;
+import com.reason.ReasonMLLexer;
 
 import java.io.Reader;
 

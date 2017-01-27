@@ -5,7 +5,7 @@ import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import com.reason.ReasonMLLexerAdapter;
+import com.reason.lang.ReasonMLLexerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
