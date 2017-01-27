@@ -38,7 +38,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public String getPresentableText() {
-                return let.getNextSibling().getText();
+                return let.getShortId().getText();
             }
 
             @Nullable

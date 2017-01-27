@@ -31,7 +31,7 @@ module_body ::=
     | let_binding )*
 
 include_statement ::=
-    INCLUDE fqn SEMI
+    INCLUDE long_id SEMI
 
 type_statement ::=
     TYPE LIDENT (EQUAL type_definition)? SEMI
@@ -49,7 +49,7 @@ unit ::=
     LPAREN RPAREN
 
 let_binding ::=
-    LET LIDENT let_binding_body SEMI {
+    LET short_id let_binding_body SEMI {
         pin=1 recoverWhile=recover_statement
         methods=[getPresentation]
     }
@@ -67,6 +67,8 @@ seq_expr ::=
       LIDENT
     | tuple_expr
     | STRING
+    | INT
+    | FLOAT
 
 tuple_expr ::=
     LPAREN tuple_arg (COMMA tuple_arg)* RPAREN
@@ -81,5 +83,8 @@ tuple_value ::=
 core_type ::=
   LIDENT
 
-fqn ::=
+short_id ::=
+    LIDENT
+
+long_id ::=
     UIDENT (DOT UIDENT)*

@@ -75,6 +75,7 @@ ARROW=[=>]
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
     {INT_LITERAL}{LITERAL_MODIFIER}? { return INT; }
+    ({FLOAT_LITERAL} | {HEX_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return FLOAT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
