@@ -19,6 +19,7 @@ public interface ReasonMLTypes {
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
   IElementType MODULE_IDENT = new ReasonMLElementType("MODULE_IDENT");
   IElementType MODULE_STATEMENT = new ReasonMLElementType("MODULE_STATEMENT");
+  IElementType RECORD_FIELD = new ReasonMLElementType("RECORD_FIELD");
   IElementType SEQ_EXPR = new ReasonMLElementType("SEQ_EXPR");
   IElementType SHORT_ID = new ReasonMLElementType("SHORT_ID");
   IElementType TUPLE_ARG = new ReasonMLElementType("TUPLE_ARG");
@@ -85,6 +86,9 @@ public interface ReasonMLTypes {
       }
       else if (type == MODULE_STATEMENT) {
         return new ReasonMLModuleStatementImpl(node);
+      }
+      else if (type == RECORD_FIELD) {
+        return new ReasonMLRecordFieldImpl(node);
       }
       else if (type == SEQ_EXPR) {
         return new ReasonMLSeqExprImpl(node);

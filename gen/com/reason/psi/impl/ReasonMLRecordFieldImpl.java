@@ -10,16 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
-public class ReasonMLTypeStatementImpl extends ASTWrapperPsiElement implements ReasonMLTypeStatement {
+public class ReasonMLRecordFieldImpl extends ASTWrapperPsiElement implements ReasonMLRecordField {
 
-  public ReasonMLTypeStatementImpl(ASTNode node) {
+  public ReasonMLRecordFieldImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitTypeStatement(this);
+    visitor.visitRecordField(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -29,18 +28,8 @@ public class ReasonMLTypeStatementImpl extends ASTWrapperPsiElement implements R
 
   @Override
   @NotNull
-  public ReasonMLShortId getShortId() {
-    return findNotNullChildByClass(ReasonMLShortId.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTypeDefinition getTypeDefinition() {
-    return findChildByClass(ReasonMLTypeDefinition.class);
-  }
-
-  public ItemPresentation getPresentation() {
-    return ReasonMLPsiImplUtil.getPresentation(this);
+  public List<ReasonMLShortId> getShortIdList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLShortId.class);
   }
 
 }

@@ -26,4 +26,10 @@ public class ReasonMLTypeDefinitionImpl extends ASTWrapperPsiElement implements 
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<ReasonMLRecordField> getRecordFieldList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLRecordField.class);
+  }
+
 }

@@ -28,15 +28,15 @@ public class ReasonMLLetBindingImpl extends ASTWrapperPsiElement implements Reas
   }
 
   @Override
-  @Nullable
+  @NotNull
   public ReasonMLLetBindingBody getLetBindingBody() {
-    return findChildByClass(ReasonMLLetBindingBody.class);
+    return findNotNullChildByClass(ReasonMLLetBindingBody.class);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public ReasonMLShortId getShortId() {
-    return findChildByClass(ReasonMLShortId.class);
+    return findNotNullChildByClass(ReasonMLShortId.class);
   }
 
   public ItemPresentation getPresentation() {

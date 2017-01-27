@@ -34,10 +34,16 @@ include_statement ::=
     INCLUDE long_id SEMI
 
 type_statement ::=
-    TYPE LIDENT (EQUAL type_definition)? SEMI
+      TYPE short_id type_definition? SEMI {
+//        pin=1 recoverWhile=recover_statement
+        methods=[getPresentation]
+    }
 
 type_definition ::=
-    LBRACE RBRACE
+    EQUAL LBRACE record_field (COMMA record_field)* RBRACE
+
+record_field ::=
+    short_id (COLON short_id)?
 
 fun_call ::=
     fun_name (unit|seq_expr) SEMI
@@ -50,11 +56,11 @@ unit ::=
 
 let_binding ::=
     LET short_id let_binding_body SEMI {
-        pin=1 recoverWhile=recover_statement
+//        pin=1 recoverWhile=recover_statement
         methods=[getPresentation]
     }
 
-private recover_statement ::= !(LET)
+//private recover_statement ::= !(SEMI)
 
 let_binding_body ::=
     EQUAL fun_binding

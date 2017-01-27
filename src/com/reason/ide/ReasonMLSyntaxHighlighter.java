@@ -16,7 +16,7 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.reason.psi.ReasonMLTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
-    private static final Set<IElementType> KEYWORD_TYPES = of(MODULE, FUN, LET, TYPE);
+    private static final Set<IElementType> KEYWORD_TYPES = of(MODULE, FUN, LET, TYPE, INCLUDE);
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW);
 
     private static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);

@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLTypeDefinition extends PsiElement {
+public interface ReasonMLRecordFields extends PsiElement {
 
   @NotNull
   List<ReasonMLRecordField> getRecordFieldList();

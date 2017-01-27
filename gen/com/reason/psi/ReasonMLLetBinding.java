@@ -8,10 +8,10 @@ import com.intellij.navigation.ItemPresentation;
 
 public interface ReasonMLLetBinding extends PsiElement {
 
-  @Nullable
+  @NotNull
   ReasonMLLetBindingBody getLetBindingBody();
 
-  @Nullable
+  @NotNull
   ReasonMLShortId getShortId();
 
   ItemPresentation getPresentation();

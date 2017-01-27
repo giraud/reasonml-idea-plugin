@@ -51,6 +51,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitRecordField(@NotNull ReasonMLRecordField o) {
+    visitPsiElement(o);
+  }
+
   public void visitSeqExpr(@NotNull ReasonMLSeqExpr o) {
     visitPsiElement(o);
   }

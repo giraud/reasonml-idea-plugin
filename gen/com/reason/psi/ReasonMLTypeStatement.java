@@ -4,10 +4,16 @@ package com.reason.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.navigation.ItemPresentation;
 
 public interface ReasonMLTypeStatement extends PsiElement {
 
+  @NotNull
+  ReasonMLShortId getShortId();
+
   @Nullable
   ReasonMLTypeDefinition getTypeDefinition();
+
+  ItemPresentation getPresentation();
 
 }

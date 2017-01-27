@@ -11,4 +11,5 @@ public class ReasonMLIcons {
     // From jetbrains ide
     public static final Icon MODULE = getIcon("/nodes/method.png");
     public static final Icon LET = getIcon("/nodes/field.png");
+    public static final Icon TYPE = getIcon("/nodes/annotationtype.png");
 }
