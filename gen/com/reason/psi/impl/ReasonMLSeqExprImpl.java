@@ -28,6 +28,12 @@ public class ReasonMLSeqExprImpl extends ASTWrapperPsiElement implements ReasonM
 
   @Override
   @Nullable
+  public ReasonMLFunCall getFunCall() {
+    return findChildByClass(ReasonMLFunCall.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLTupleExpr getTupleExpr() {
     return findChildByClass(ReasonMLTupleExpr.class);
   }

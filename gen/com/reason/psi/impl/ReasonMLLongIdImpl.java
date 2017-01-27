@@ -26,4 +26,10 @@ public class ReasonMLLongIdImpl extends ASTWrapperPsiElement implements ReasonML
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<ReasonMLShortId> getShortIdList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLShortId.class);
+  }
+
 }

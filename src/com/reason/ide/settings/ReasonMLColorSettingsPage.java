@@ -33,8 +33,10 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return "module ModuleName = {\n" +
-                "};\n";
+        return "type t = { key: int };\n" +
+               "let add x y => x + y;\n" +
+               "module ModuleName = {\n" +
+               "};\n";
     }
 
     @Nullable

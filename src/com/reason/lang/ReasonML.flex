@@ -72,6 +72,8 @@ ARROW=[=>]
     "let"     { return LET; }
     "fun"     { return FUN; }
 
+    "None"    { return NONE; }
+
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
     {INT_LITERAL}{LITERAL_MODIFIER}? { return INT; }

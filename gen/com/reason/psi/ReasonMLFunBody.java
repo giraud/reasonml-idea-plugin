@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLSeqExpr extends PsiElement {
+public interface ReasonMLFunBody extends PsiElement {
 
-  @Nullable
-  ReasonMLFunCall getFunCall();
-
-  @Nullable
-  ReasonMLTupleExpr getTupleExpr();
+  @NotNull
+  List<ReasonMLSeqExpr> getSeqExprList();
 
 }

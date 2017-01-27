@@ -27,9 +27,15 @@ public class ReasonMLLetBindingBodyImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
+  @NotNull
+  public List<ReasonMLFunArg> getFunArgList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLFunArg.class);
+  }
+
+  @Override
   @Nullable
-  public ReasonMLFunBinding getFunBinding() {
-    return findChildByClass(ReasonMLFunBinding.class);
+  public ReasonMLFunBody getFunBody() {
+    return findChildByClass(ReasonMLFunBody.class);
   }
 
   @Override

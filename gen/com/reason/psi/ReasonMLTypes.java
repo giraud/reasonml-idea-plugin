@@ -9,15 +9,18 @@ import com.reason.psi.impl.*;
 public interface ReasonMLTypes {
 
   IElementType CORE_TYPE = new ReasonMLElementType("CORE_TYPE");
-  IElementType FUN_BINDING = new ReasonMLElementType("FUN_BINDING");
+  IElementType FUN_ARG = new ReasonMLElementType("FUN_ARG");
+  IElementType FUN_BODY = new ReasonMLElementType("FUN_BODY");
   IElementType FUN_CALL = new ReasonMLElementType("FUN_CALL");
-  IElementType FUN_NAME = new ReasonMLElementType("FUN_NAME");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
   IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
   IElementType LET_BINDING_BODY = new ReasonMLElementType("LET_BINDING_BODY");
   IElementType LONG_ID = new ReasonMLElementType("LONG_ID");
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
+  IElementType MODULE_EXPR = new ReasonMLElementType("MODULE_EXPR");
   IElementType MODULE_IDENT = new ReasonMLElementType("MODULE_IDENT");
+  IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
+  IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
   IElementType MODULE_STATEMENT = new ReasonMLElementType("MODULE_STATEMENT");
   IElementType RECORD_FIELD = new ReasonMLElementType("RECORD_FIELD");
   IElementType SEQ_EXPR = new ReasonMLElementType("SEQ_EXPR");
@@ -44,6 +47,7 @@ public interface ReasonMLTypes {
   IElementType LIDENT = new ReasonMLTokenType("LIDENT");
   IElementType LPAREN = new ReasonMLTokenType("LPAREN");
   IElementType MODULE = new ReasonMLTokenType("MODULE");
+  IElementType NONE = new ReasonMLTokenType("NONE");
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
   IElementType SEMI = new ReasonMLTokenType("SEMI");
@@ -57,14 +61,14 @@ public interface ReasonMLTypes {
        if (type == CORE_TYPE) {
         return new ReasonMLCoreTypeImpl(node);
       }
-      else if (type == FUN_BINDING) {
-        return new ReasonMLFunBindingImpl(node);
+      else if (type == FUN_ARG) {
+        return new ReasonMLFunArgImpl(node);
+      }
+      else if (type == FUN_BODY) {
+        return new ReasonMLFunBodyImpl(node);
       }
       else if (type == FUN_CALL) {
         return new ReasonMLFunCallImpl(node);
-      }
-      else if (type == FUN_NAME) {
-        return new ReasonMLFunNameImpl(node);
       }
       else if (type == INCLUDE_STATEMENT) {
         return new ReasonMLIncludeStatementImpl(node);
@@ -81,8 +85,17 @@ public interface ReasonMLTypes {
       else if (type == MODULE_BODY) {
         return new ReasonMLModuleBodyImpl(node);
       }
+      else if (type == MODULE_EXPR) {
+        return new ReasonMLModuleExprImpl(node);
+      }
       else if (type == MODULE_IDENT) {
         return new ReasonMLModuleIdentImpl(node);
+      }
+      else if (type == MODULE_NAME) {
+        return new ReasonMLModuleNameImpl(node);
+      }
+      else if (type == MODULE_PATH) {
+        return new ReasonMLModulePathImpl(node);
       }
       else if (type == MODULE_STATEMENT) {
         return new ReasonMLModuleStatementImpl(node);

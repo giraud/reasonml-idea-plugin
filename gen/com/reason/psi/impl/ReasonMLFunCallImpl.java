@@ -28,14 +28,8 @@ public class ReasonMLFunCallImpl extends ASTWrapperPsiElement implements ReasonM
 
   @Override
   @NotNull
-  public ReasonMLFunName getFunName() {
-    return findNotNullChildByClass(ReasonMLFunName.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLSeqExpr getSeqExpr() {
-    return findChildByClass(ReasonMLSeqExpr.class);
+  public ReasonMLLongId getLongId() {
+    return findNotNullChildByClass(ReasonMLLongId.class);
   }
 
   @Override

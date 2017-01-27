@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLFunName extends PsiElement {
+public interface ReasonMLModuleExpr extends PsiElement {
+
+  @NotNull
+  ReasonMLModulePath getModulePath();
 
 }

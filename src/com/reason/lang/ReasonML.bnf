@@ -16,7 +16,9 @@
 }
 
 reasonFile ::=
-    ( COMMENT | module_statement | let_binding | fun_call | type_statement )*
+    ( COMMENT | module_statement | include_statement | let_binding | fun_call | type_statement )*
+
+// MODULE
 
 module_statement ::=
     MODULE module_ident EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
@@ -30,8 +32,19 @@ module_body ::=
     | type_statement
     | let_binding )*
 
+module_name ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-name
+    UIDENT
+
+module_path ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-path
+    module_name (DOT module_name)*
+
+module_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/modules.html#module-expr
+      module_path
+
 include_statement ::=
-    INCLUDE long_id SEMI
+    INCLUDE module_expr (module_expr)* SEMI
+
+// TYPE
 
 type_statement ::=
       TYPE short_id type_definition? SEMI {
@@ -46,10 +59,7 @@ record_field ::=
     short_id (COLON short_id)?
 
 fun_call ::=
-    fun_name (unit|seq_expr) SEMI
-
-fun_name ::=
-    LIDENT
+    long_id (unit | STRING) SEMI
 
 unit ::=
     LPAREN RPAREN
@@ -63,18 +73,24 @@ let_binding ::=
 //private recover_statement ::= !(SEMI)
 
 let_binding_body ::=
-    EQUAL fun_binding
-  | EQUAL seq_expr
+      EQUAL FUN (fun_arg)* ARROW fun_body
+    | EQUAL seq_expr
+    | (fun_arg)* ARROW LBRACE? fun_body RBRACE?
 
-fun_binding ::=
-    FUN LPAREN RPAREN ARROW seq_expr
+fun_arg ::=
+      short_id
+    | LBRACE short_id RBRACE
+
+fun_body ::=
+    (seq_expr)* NONE?
 
 seq_expr ::=
       LIDENT
-    | tuple_expr
     | STRING
     | INT
     | FLOAT
+    | tuple_expr
+    | fun_call
 
 tuple_expr ::=
     LPAREN tuple_arg (COMMA tuple_arg)* RPAREN
@@ -90,7 +106,7 @@ core_type ::=
   LIDENT
 
 short_id ::=
-    LIDENT
+    UIDENT | LIDENT
 
 long_id ::=
-    UIDENT (DOT UIDENT)*
+    short_id (DOT short_id)*

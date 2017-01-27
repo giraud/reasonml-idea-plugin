@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLLongId extends PsiElement {
 
+  @NotNull
+  List<ReasonMLShortId> getShortIdList();
+
 }

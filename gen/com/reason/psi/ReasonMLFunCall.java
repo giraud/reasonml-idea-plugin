@@ -8,10 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLFunCall extends PsiElement {
 
   @NotNull
-  ReasonMLFunName getFunName();
-
-  @Nullable
-  ReasonMLSeqExpr getSeqExpr();
+  ReasonMLLongId getLongId();
 
   @Nullable
   ReasonMLUnit getUnit();

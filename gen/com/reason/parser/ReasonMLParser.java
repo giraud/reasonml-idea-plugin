@@ -26,14 +26,14 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     if (t == CORE_TYPE) {
       r = core_type(b, 0);
     }
-    else if (t == FUN_BINDING) {
-      r = fun_binding(b, 0);
+    else if (t == FUN_ARG) {
+      r = fun_arg(b, 0);
+    }
+    else if (t == FUN_BODY) {
+      r = fun_body(b, 0);
     }
     else if (t == FUN_CALL) {
       r = fun_call(b, 0);
-    }
-    else if (t == FUN_NAME) {
-      r = fun_name(b, 0);
     }
     else if (t == INCLUDE_STATEMENT) {
       r = include_statement(b, 0);
@@ -50,8 +50,17 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     else if (t == MODULE_BODY) {
       r = module_body(b, 0);
     }
+    else if (t == MODULE_EXPR) {
+      r = module_expr(b, 0);
+    }
     else if (t == MODULE_IDENT) {
       r = module_ident(b, 0);
+    }
+    else if (t == MODULE_NAME) {
+      r = module_name(b, 0);
+    }
+    else if (t == MODULE_PATH) {
+      r = module_path(b, 0);
     }
     else if (t == MODULE_STATEMENT) {
       r = module_statement(b, 0);
@@ -106,66 +115,130 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FUN LPAREN RPAREN ARROW seq_expr
-  public static boolean fun_binding(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fun_binding")) return false;
-    if (!nextTokenIs(b, FUN)) return false;
+  // short_id
+  //     | LBRACE short_id RBRACE
+  public static boolean fun_arg(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_arg")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, FUN, LPAREN, RPAREN, ARROW);
-    r = r && seq_expr(b, l + 1);
-    exit_section_(b, m, FUN_BINDING, r);
+    Marker m = enter_section_(b, l, _NONE_, FUN_ARG, "<fun arg>");
+    r = short_id(b, l + 1);
+    if (!r) r = fun_arg_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  /* ********************************************************** */
-  // fun_name (unit|seq_expr) SEMI
-  public static boolean fun_call(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fun_call")) return false;
-    if (!nextTokenIs(b, LIDENT)) return false;
+  // LBRACE short_id RBRACE
+  private static boolean fun_arg_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_arg_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = fun_name(b, l + 1);
-    r = r && fun_call_1(b, l + 1);
-    r = r && consumeToken(b, SEMI);
-    exit_section_(b, m, FUN_CALL, r);
-    return r;
-  }
-
-  // unit|seq_expr
-  private static boolean fun_call_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fun_call_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = unit(b, l + 1);
-    if (!r) r = seq_expr(b, l + 1);
+    r = consumeToken(b, LBRACE);
+    r = r && short_id(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // LIDENT
-  public static boolean fun_name(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "fun_name")) return false;
-    if (!nextTokenIs(b, LIDENT)) return false;
+  // (seq_expr)* NONE?
+  public static boolean fun_body(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_body")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, FUN_BODY, "<fun body>");
+    r = fun_body_0(b, l + 1);
+    r = r && fun_body_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (seq_expr)*
+  private static boolean fun_body_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_body_0")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!fun_body_0_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "fun_body_0", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // (seq_expr)
+  private static boolean fun_body_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_body_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, LIDENT);
-    exit_section_(b, m, FUN_NAME, r);
+    r = seq_expr(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NONE?
+  private static boolean fun_body_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_body_1")) return false;
+    consumeToken(b, NONE);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // long_id (unit | STRING) SEMI
+  public static boolean fun_call(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_call")) return false;
+    if (!nextTokenIs(b, "<fun call>", LIDENT, UIDENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, FUN_CALL, "<fun call>");
+    r = long_id(b, l + 1);
+    r = r && fun_call_1(b, l + 1);
+    r = r && consumeToken(b, SEMI);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // unit | STRING
+  private static boolean fun_call_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fun_call_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = unit(b, l + 1);
+    if (!r) r = consumeToken(b, STRING);
+    exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // INCLUDE long_id SEMI
+  // INCLUDE module_expr (module_expr)* SEMI
   public static boolean include_statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "include_statement")) return false;
     if (!nextTokenIs(b, INCLUDE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, INCLUDE);
-    r = r && long_id(b, l + 1);
+    r = r && module_expr(b, l + 1);
+    r = r && include_statement_2(b, l + 1);
     r = r && consumeToken(b, SEMI);
     exit_section_(b, m, INCLUDE_STATEMENT, r);
+    return r;
+  }
+
+  // (module_expr)*
+  private static boolean include_statement_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "include_statement_2")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!include_statement_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "include_statement_2", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // (module_expr)
+  private static boolean include_statement_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "include_statement_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = module_expr(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -185,26 +258,51 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // EQUAL fun_binding
-  //   | EQUAL seq_expr
+  // EQUAL FUN (fun_arg)* ARROW fun_body
+  //     | EQUAL seq_expr
+  //     | (fun_arg)* ARROW LBRACE? fun_body RBRACE?
   public static boolean let_binding_body(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "let_binding_body")) return false;
-    if (!nextTokenIs(b, EQUAL)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, LET_BINDING_BODY, "<let binding body>");
     r = let_binding_body_0(b, l + 1);
     if (!r) r = let_binding_body_1(b, l + 1);
-    exit_section_(b, m, LET_BINDING_BODY, r);
+    if (!r) r = let_binding_body_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // EQUAL fun_binding
+  // EQUAL FUN (fun_arg)* ARROW fun_body
   private static boolean let_binding_body_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "let_binding_body_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, EQUAL);
-    r = r && fun_binding(b, l + 1);
+    r = consumeTokens(b, 0, EQUAL, FUN);
+    r = r && let_binding_body_0_2(b, l + 1);
+    r = r && consumeToken(b, ARROW);
+    r = r && fun_body(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (fun_arg)*
+  private static boolean let_binding_body_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_0_2")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!let_binding_body_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "let_binding_body_0_2", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // (fun_arg)
+  private static boolean let_binding_body_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_0_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = fun_arg(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -220,20 +318,70 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  /* ********************************************************** */
-  // UIDENT (DOT UIDENT)*
-  public static boolean long_id(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "long_id")) return false;
-    if (!nextTokenIs(b, UIDENT)) return false;
+  // (fun_arg)* ARROW LBRACE? fun_body RBRACE?
+  private static boolean let_binding_body_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, UIDENT);
-    r = r && long_id_1(b, l + 1);
-    exit_section_(b, m, LONG_ID, r);
+    r = let_binding_body_2_0(b, l + 1);
+    r = r && consumeToken(b, ARROW);
+    r = r && let_binding_body_2_2(b, l + 1);
+    r = r && fun_body(b, l + 1);
+    r = r && let_binding_body_2_4(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
-  // (DOT UIDENT)*
+  // (fun_arg)*
+  private static boolean let_binding_body_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_2_0")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!let_binding_body_2_0_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "let_binding_body_2_0", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // (fun_arg)
+  private static boolean let_binding_body_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_2_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = fun_arg(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // LBRACE?
+  private static boolean let_binding_body_2_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_2_2")) return false;
+    consumeToken(b, LBRACE);
+    return true;
+  }
+
+  // RBRACE?
+  private static boolean let_binding_body_2_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_body_2_4")) return false;
+    consumeToken(b, RBRACE);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // short_id (DOT short_id)*
+  public static boolean long_id(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "long_id")) return false;
+    if (!nextTokenIs(b, "<long id>", LIDENT, UIDENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, LONG_ID, "<long id>");
+    r = short_id(b, l + 1);
+    r = r && long_id_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (DOT short_id)*
   private static boolean long_id_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "long_id_1")) return false;
     int c = current_position_(b);
@@ -245,12 +393,13 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // DOT UIDENT
+  // DOT short_id
   private static boolean long_id_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "long_id_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, DOT, UIDENT);
+    r = consumeToken(b, DOT);
+    r = r && short_id(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -290,6 +439,18 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // module_path
+  public static boolean module_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "module_expr")) return false;
+    if (!nextTokenIs(b, UIDENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = module_path(b, l + 1);
+    exit_section_(b, m, MODULE_EXPR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // UIDENT
   public static boolean module_ident(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "module_ident")) return false;
@@ -298,6 +459,54 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, UIDENT);
     exit_section_(b, m, MODULE_IDENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // UIDENT
+  public static boolean module_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "module_name")) return false;
+    if (!nextTokenIs(b, UIDENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, UIDENT);
+    exit_section_(b, m, MODULE_NAME, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // module_name (DOT module_name)*
+  public static boolean module_path(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "module_path")) return false;
+    if (!nextTokenIs(b, UIDENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = module_name(b, l + 1);
+    r = r && module_path_1(b, l + 1);
+    exit_section_(b, m, MODULE_PATH, r);
+    return r;
+  }
+
+  // (DOT module_name)*
+  private static boolean module_path_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "module_path_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!module_path_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "module_path_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // DOT module_name
+  private static boolean module_path_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "module_path_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && module_name(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -318,7 +527,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ( COMMENT | module_statement | let_binding | fun_call | type_statement )*
+  // ( COMMENT | module_statement | include_statement | let_binding | fun_call | type_statement )*
   static boolean reasonFile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "reasonFile")) return false;
     int c = current_position_(b);
@@ -330,13 +539,14 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMENT | module_statement | let_binding | fun_call | type_statement
+  // COMMENT | module_statement | include_statement | let_binding | fun_call | type_statement
   private static boolean reasonFile_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "reasonFile_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMENT);
     if (!r) r = module_statement(b, l + 1);
+    if (!r) r = include_statement(b, l + 1);
     if (!r) r = let_binding(b, l + 1);
     if (!r) r = fun_call(b, l + 1);
     if (!r) r = type_statement(b, l + 1);
@@ -348,12 +558,12 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   // short_id (COLON short_id)?
   public static boolean record_field(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "record_field")) return false;
-    if (!nextTokenIs(b, LIDENT)) return false;
+    if (!nextTokenIs(b, "<record field>", LIDENT, UIDENT)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, RECORD_FIELD, "<record field>");
     r = short_id(b, l + 1);
     r = r && record_field_1(b, l + 1);
-    exit_section_(b, m, RECORD_FIELD, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -377,32 +587,35 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // LIDENT
-  //     | tuple_expr
   //     | STRING
   //     | INT
   //     | FLOAT
+  //     | tuple_expr
+  //     | fun_call
   public static boolean seq_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "seq_expr")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, SEQ_EXPR, "<seq expr>");
     r = consumeToken(b, LIDENT);
-    if (!r) r = tuple_expr(b, l + 1);
     if (!r) r = consumeToken(b, STRING);
     if (!r) r = consumeToken(b, INT);
     if (!r) r = consumeToken(b, FLOAT);
+    if (!r) r = tuple_expr(b, l + 1);
+    if (!r) r = fun_call(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // LIDENT
+  // UIDENT | LIDENT
   public static boolean short_id(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "short_id")) return false;
-    if (!nextTokenIs(b, LIDENT)) return false;
+    if (!nextTokenIs(b, "<short id>", LIDENT, UIDENT)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LIDENT);
-    exit_section_(b, m, SHORT_ID, r);
+    Marker m = enter_section_(b, l, _NONE_, SHORT_ID, "<short id>");
+    r = consumeToken(b, UIDENT);
+    if (!r) r = consumeToken(b, LIDENT);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

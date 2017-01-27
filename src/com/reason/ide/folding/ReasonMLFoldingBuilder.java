@@ -30,7 +30,9 @@ public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
                 PsiElement lBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(element, ReasonMLTypes.LBRACE);
                 PsiElement rBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(lBrace, ReasonMLTypes.RBRACE);
                 if (lBrace != null && rBrace != null) {
-                    descriptors.add(foldBetween(element, lBrace, rBrace));
+                    FoldingDescriptor fold = foldBetween(element, lBrace, rBrace, 5);
+                    if (fold != null)
+                        descriptors.add(fold);
                 }
             }
             return true;
@@ -53,7 +55,11 @@ public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
         return false;
     }
 
-    private FoldingDescriptor foldBetween(PsiElement element, PsiElement left, PsiElement right) {
+    @Nullable
+    private FoldingDescriptor foldBetween(PsiElement element, PsiElement left, PsiElement right, int minWidth) {
+        if (right.getTextOffset() - left.getTextOffset() < minWidth) {
+            return null;
+        }
         TextRange range = new TextRange(left.getTextOffset() + 1, right.getTextOffset());
         return new FoldingDescriptor(element, range);
     }

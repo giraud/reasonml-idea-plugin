@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLFunBindingImpl extends ASTWrapperPsiElement implements ReasonMLFunBinding {
+public class ReasonMLFunBodyImpl extends ASTWrapperPsiElement implements ReasonMLFunBody {
 
-  public ReasonMLFunBindingImpl(ASTNode node) {
+  public ReasonMLFunBodyImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitFunBinding(this);
+    visitor.visitFunBody(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,8 @@ public class ReasonMLFunBindingImpl extends ASTWrapperPsiElement implements Reas
 
   @Override
   @NotNull
-  public ReasonMLSeqExpr getSeqExpr() {
-    return findNotNullChildByClass(ReasonMLSeqExpr.class);
+  public List<ReasonMLSeqExpr> getSeqExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLSeqExpr.class);
   }
 
 }

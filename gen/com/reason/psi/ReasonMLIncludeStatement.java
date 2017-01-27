@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLIncludeStatement extends PsiElement {
 
   @NotNull
-  ReasonMLLongId getLongId();
+  List<ReasonMLModuleExpr> getModuleExprList();
 
 }
