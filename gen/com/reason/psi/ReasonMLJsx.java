@@ -8,12 +8,15 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLJsx extends PsiElement {
 
   @Nullable
-  ReasonMLETag getETag();
-
-  @NotNull
-  ReasonMLSTag getSTag();
+  ReasonMLEndTag getEndTag();
 
   @NotNull
   List<ReasonMLJsxContent> getJsxContentList();
+
+  @NotNull
+  ReasonMLStartTag getStartTag();
+
+  @NotNull
+  List<ReasonMLTagProperty> getTagPropertyList();
 
 }

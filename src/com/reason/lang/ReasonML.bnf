@@ -70,13 +70,13 @@ argument ::=
 // ----------
 
 jsx ::=
-    STag ( SLASH GT | GT jsxContent* ETag )
+    start_tag tag_property* ( AUTO_CLOSE_TAG | GT jsxContent* end_tag )
 
-STag ::=
-    LT tag_name tag_property*
+start_tag ::=
+    LT tag_name
 
-ETag ::=
-    SLASH LT tag_name GT
+end_tag ::=
+    CLOSE_TAG tag_name GT
 
 tag_property ::=
     value_name EQUAL STRING

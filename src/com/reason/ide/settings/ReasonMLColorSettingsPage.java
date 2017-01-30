@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
+            new AttributesDescriptor("Comment", ReasonMLSyntaxHighlighter.COMMENT_),
+            new AttributesDescriptor("Tag", ReasonMLSyntaxHighlighter.TAG),
             new AttributesDescriptor("UIdentifier", ReasonMLSyntaxHighlighter.UIDENTIFIER),
     };
 
@@ -33,10 +35,12 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return "type t = { key: int };\n" +
+        return "/* This is a comment */\n\n" +
+               "type t = { key: int };\n" +
                "let add x y => x + y;\n" +
                "module ModuleName = {\n" +
-               "};\n";
+               "};\n\n" +
+                "React.createElement <div prop=value/> <Button>ok</Button>\n";
     }
 
     @Nullable

@@ -10,9 +10,9 @@ public interface ReasonMLTypes {
 
   IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
   IElementType CORE_TYPE = new ReasonMLElementType("CORE_TYPE");
+  IElementType END_TAG = new ReasonMLElementType("END_TAG");
   IElementType EXPR = new ReasonMLElementType("EXPR");
   IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
-  IElementType E_TAG = new ReasonMLElementType("E_TAG");
   IElementType FUN_ARG = new ReasonMLElementType("FUN_ARG");
   IElementType FUN_BODY = new ReasonMLElementType("FUN_BODY");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
@@ -28,7 +28,7 @@ public interface ReasonMLTypes {
   IElementType RECORD_FIELD = new ReasonMLElementType("RECORD_FIELD");
   IElementType SEQ_EXPR = new ReasonMLElementType("SEQ_EXPR");
   IElementType SHORT_ID = new ReasonMLElementType("SHORT_ID");
-  IElementType S_TAG = new ReasonMLElementType("S_TAG");
+  IElementType START_TAG = new ReasonMLElementType("START_TAG");
   IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
   IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
   IElementType TUPLE_ARG = new ReasonMLElementType("TUPLE_ARG");
@@ -40,6 +40,8 @@ public interface ReasonMLTypes {
   IElementType VALUE_PATH = new ReasonMLElementType("VALUE_PATH");
 
   IElementType ARROW = new ReasonMLTokenType("ARROW");
+  IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
+  IElementType CLOSE_TAG = new ReasonMLTokenType("CLOSE_TAG");
   IElementType COLON = new ReasonMLTokenType("COLON");
   IElementType COMMA = new ReasonMLTokenType("COMMA");
   IElementType COMMENT = new ReasonMLTokenType("COMMENT");
@@ -60,7 +62,6 @@ public interface ReasonMLTypes {
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
   IElementType SEMI = new ReasonMLTokenType("SEMI");
-  IElementType SLASH = new ReasonMLTokenType("SLASH");
   IElementType STRING = new ReasonMLTokenType("STRING");
   IElementType TYPE = new ReasonMLTokenType("TYPE");
   IElementType UIDENT = new ReasonMLTokenType("UIDENT");
@@ -74,14 +75,14 @@ public interface ReasonMLTypes {
       else if (type == CORE_TYPE) {
         return new ReasonMLCoreTypeImpl(node);
       }
+      else if (type == END_TAG) {
+        return new ReasonMLEndTagImpl(node);
+      }
       else if (type == EXPR) {
         return new ReasonMLExprImpl(node);
       }
       else if (type == EXPR_STATEMENT) {
         return new ReasonMLExprStatementImpl(node);
-      }
-      else if (type == E_TAG) {
-        return new ReasonMLETagImpl(node);
       }
       else if (type == FUN_ARG) {
         return new ReasonMLFunArgImpl(node);
@@ -128,8 +129,8 @@ public interface ReasonMLTypes {
       else if (type == SHORT_ID) {
         return new ReasonMLShortIdImpl(node);
       }
-      else if (type == S_TAG) {
-        return new ReasonMLSTagImpl(node);
+      else if (type == START_TAG) {
+        return new ReasonMLStartTagImpl(node);
       }
       else if (type == TAG_NAME) {
         return new ReasonMLTagNameImpl(node);

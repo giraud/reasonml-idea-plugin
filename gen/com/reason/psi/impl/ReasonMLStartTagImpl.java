@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLETagImpl extends ASTWrapperPsiElement implements ReasonMLETag {
+public class ReasonMLStartTagImpl extends ASTWrapperPsiElement implements ReasonMLStartTag {
 
-  public ReasonMLETagImpl(ASTNode node) {
+  public ReasonMLStartTagImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitETag(this);
+    visitor.visitStartTag(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

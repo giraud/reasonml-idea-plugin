@@ -7,19 +7,15 @@ import com.intellij.psi.PsiElement;
 
 public class ReasonMLVisitor extends PsiElementVisitor {
 
-  public void visitETag(@NotNull ReasonMLETag o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSTag(@NotNull ReasonMLSTag o) {
-    visitPsiElement(o);
-  }
-
   public void visitArgument(@NotNull ReasonMLArgument o) {
     visitPsiElement(o);
   }
 
   public void visitCoreType(@NotNull ReasonMLCoreType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitEndTag(@NotNull ReasonMLEndTag o) {
     visitPsiElement(o);
   }
 
@@ -88,6 +84,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitShortId(@NotNull ReasonMLShortId o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStartTag(@NotNull ReasonMLStartTag o) {
     visitPsiElement(o);
   }
 

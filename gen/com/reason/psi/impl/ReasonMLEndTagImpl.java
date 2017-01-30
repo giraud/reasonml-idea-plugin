@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLSTagImpl extends ASTWrapperPsiElement implements ReasonMLSTag {
+public class ReasonMLEndTagImpl extends ASTWrapperPsiElement implements ReasonMLEndTag {
 
-  public ReasonMLSTagImpl(ASTNode node) {
+  public ReasonMLEndTagImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitSTag(this);
+    visitor.visitEndTag(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -30,12 +30,6 @@ public class ReasonMLSTagImpl extends ASTWrapperPsiElement implements ReasonMLST
   @NotNull
   public ReasonMLTagName getTagName() {
     return findNotNullChildByClass(ReasonMLTagName.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ReasonMLTagProperty> getTagPropertyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLTagProperty.class);
   }
 
 }

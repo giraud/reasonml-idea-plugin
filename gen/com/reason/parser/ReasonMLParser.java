@@ -23,17 +23,14 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, null);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == E_TAG) {
-      r = ETag(b, 0);
-    }
-    else if (t == S_TAG) {
-      r = STag(b, 0);
-    }
-    else if (t == ARGUMENT) {
+    if (t == ARGUMENT) {
       r = argument(b, 0);
     }
     else if (t == CORE_TYPE) {
       r = core_type(b, 0);
+    }
+    else if (t == END_TAG) {
+      r = end_tag(b, 0);
     }
     else if (t == EXPR) {
       r = expr(b, 0);
@@ -86,6 +83,9 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     else if (t == SHORT_ID) {
       r = short_id(b, 0);
     }
+    else if (t == START_TAG) {
+      r = start_tag(b, 0);
+    }
     else if (t == TAG_NAME) {
       r = tag_name(b, 0);
     }
@@ -124,46 +124,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SLASH LT tag_name GT
-  public static boolean ETag(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ETag")) return false;
-    if (!nextTokenIs(b, SLASH)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, SLASH, LT);
-    r = r && tag_name(b, l + 1);
-    r = r && consumeToken(b, GT);
-    exit_section_(b, m, E_TAG, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // LT tag_name tag_property*
-  public static boolean STag(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "STag")) return false;
-    if (!nextTokenIs(b, LT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LT);
-    r = r && tag_name(b, l + 1);
-    r = r && STag_2(b, l + 1);
-    exit_section_(b, m, S_TAG, r);
-    return r;
-  }
-
-  // tag_property*
-  private static boolean STag_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "STag_2")) return false;
-    int c = current_position_(b);
-    while (true) {
-      if (!tag_property(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "STag_2", c)) break;
-      c = current_position_(b);
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
   // STRING
   //     | jsx
   public static boolean argument(PsiBuilder b, int l) {
@@ -186,6 +146,20 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, LIDENT);
     exit_section_(b, m, CORE_TYPE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // CLOSE_TAG tag_name GT
+  public static boolean end_tag(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "end_tag")) return false;
+    if (!nextTokenIs(b, CLOSE_TAG)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CLOSE_TAG);
+    r = r && tag_name(b, l + 1);
+    r = r && consumeToken(b, GT);
+    exit_section_(b, m, END_TAG, r);
     return r;
   }
 
@@ -357,48 +331,61 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // STag ( SLASH GT | GT jsxContent* ETag )
+  // start_tag tag_property* ( AUTO_CLOSE_TAG | GT jsxContent* end_tag )
   public static boolean jsx(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "jsx")) return false;
     if (!nextTokenIs(b, LT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = STag(b, l + 1);
+    r = start_tag(b, l + 1);
     r = r && jsx_1(b, l + 1);
+    r = r && jsx_2(b, l + 1);
     exit_section_(b, m, JSX, r);
     return r;
   }
 
-  // SLASH GT | GT jsxContent* ETag
+  // tag_property*
   private static boolean jsx_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "jsx_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!tag_property(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "jsx_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // AUTO_CLOSE_TAG | GT jsxContent* end_tag
+  private static boolean jsx_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsx_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseTokens(b, 0, SLASH, GT);
-    if (!r) r = jsx_1_1(b, l + 1);
+    r = consumeToken(b, AUTO_CLOSE_TAG);
+    if (!r) r = jsx_2_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // GT jsxContent* ETag
-  private static boolean jsx_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "jsx_1_1")) return false;
+  // GT jsxContent* end_tag
+  private static boolean jsx_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsx_2_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, GT);
-    r = r && jsx_1_1_1(b, l + 1);
-    r = r && ETag(b, l + 1);
+    r = r && jsx_2_1_1(b, l + 1);
+    r = r && end_tag(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // jsxContent*
-  private static boolean jsx_1_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "jsx_1_1_1")) return false;
+  private static boolean jsx_2_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsx_2_1_1")) return false;
     int c = current_position_(b);
     while (true) {
       if (!jsxContent(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "jsx_1_1_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "jsx_2_1_1", c)) break;
       c = current_position_(b);
     }
     return true;
@@ -740,6 +727,19 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, UIDENT);
     if (!r) r = consumeToken(b, LIDENT);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LT tag_name
+  public static boolean start_tag(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "start_tag")) return false;
+    if (!nextTokenIs(b, LT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LT);
+    r = r && tag_name(b, l + 1);
+    exit_section_(b, m, START_TAG, r);
     return r;
   }
 

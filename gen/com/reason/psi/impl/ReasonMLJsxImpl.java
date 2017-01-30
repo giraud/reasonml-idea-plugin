@@ -28,20 +28,26 @@ public class ReasonMLJsxImpl extends ASTWrapperPsiElement implements ReasonMLJsx
 
   @Override
   @Nullable
-  public ReasonMLETag getETag() {
-    return findChildByClass(ReasonMLETag.class);
-  }
-
-  @Override
-  @NotNull
-  public ReasonMLSTag getSTag() {
-    return findNotNullChildByClass(ReasonMLSTag.class);
+  public ReasonMLEndTag getEndTag() {
+    return findChildByClass(ReasonMLEndTag.class);
   }
 
   @Override
   @NotNull
   public List<ReasonMLJsxContent> getJsxContentList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLJsxContent.class);
+  }
+
+  @Override
+  @NotNull
+  public ReasonMLStartTag getStartTag() {
+    return findNotNullChildByClass(ReasonMLStartTag.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLTagProperty> getTagPropertyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLTagProperty.class);
   }
 
 }

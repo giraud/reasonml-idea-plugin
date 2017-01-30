@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLETag extends PsiElement {
+public interface ReasonMLStartTag extends PsiElement {
 
   @NotNull
   ReasonMLTagName getTagName();

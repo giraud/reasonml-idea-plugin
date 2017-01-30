@@ -19,9 +19,10 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(MODULE, FUN, LET, TYPE, INCLUDE);
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW);
 
-    private static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     private static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
     private static final TextAttributesKey BRACE = createTextAttributesKey("REASONML_BRACE", DefaultLanguageHighlighterColors.BRACES);
+    public static final TextAttributesKey TAG = createTextAttributesKey("REASONML_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
     public static final TextAttributesKey UIDENTIFIER = createTextAttributesKey("REASONML_UIDENT", DefaultLanguageHighlighterColors.CLASS_NAME);
     private static final TextAttributesKey KEYWORD = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     private static final TextAttributesKey SEMICOLON = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
@@ -31,6 +32,7 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACE};
+    private static final TextAttributesKey[] TAG_KEYS = new TextAttributesKey[]{TAG};
     private static final TextAttributesKey[] UIDENTIFIER_KEYS = new TextAttributesKey[]{UIDENTIFIER};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON};
@@ -51,6 +53,8 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMENT_KEYS;
         } else if (tokenType.equals(LBRACE) || tokenType.equals(RBRACE) || tokenType.equals(LPAREN) || tokenType.equals(RPAREN) || tokenType.equals(COLON) ) {
             return BRACE_KEYS;
+        } else if (tokenType.equals(AUTO_CLOSE_TAG) || tokenType.equals(CLOSE_TAG) || tokenType.equals(GT) || tokenType.equals(LT) ) {
+            return TAG_KEYS;
         } else if (tokenType.equals(SEMI)) {
             return SEMICOLON_KEYS;
         } else if (tokenType.equals(STRING)) {

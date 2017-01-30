@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
+import com.intellij.navigation.ItemPresentation;
 
 public class ReasonMLModuleStatementImpl extends ASTWrapperPsiElement implements ReasonMLModuleStatement {
 
@@ -36,6 +37,10 @@ public class ReasonMLModuleStatementImpl extends ASTWrapperPsiElement implements
   @NotNull
   public ReasonMLModuleName getModuleName() {
     return findNotNullChildByClass(ReasonMLModuleName.class);
+  }
+
+  public ItemPresentation getPresentation() {
+    return ReasonMLPsiImplUtil.getPresentation(this);
   }
 
 }
