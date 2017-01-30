@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
 public class ReasonMLTypeStatementImpl extends ASTWrapperPsiElement implements ReasonMLTypeStatement {
 
@@ -37,10 +36,6 @@ public class ReasonMLTypeStatementImpl extends ASTWrapperPsiElement implements R
   @Nullable
   public ReasonMLTypeDefinition getTypeDefinition() {
     return findChildByClass(ReasonMLTypeDefinition.class);
-  }
-
-  public ItemPresentation getPresentation() {
-    return ReasonMLPsiImplUtil.getPresentation(this);
   }
 
 }

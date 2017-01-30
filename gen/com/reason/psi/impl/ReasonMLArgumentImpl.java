@@ -11,19 +11,25 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLUnitImpl extends ASTWrapperPsiElement implements ReasonMLUnit {
+public class ReasonMLArgumentImpl extends ASTWrapperPsiElement implements ReasonMLArgument {
 
-  public ReasonMLUnitImpl(ASTNode node) {
+  public ReasonMLArgumentImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitUnit(this);
+    visitor.visitArgument(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ReasonMLVisitor) accept((ReasonMLVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLJsx getJsx() {
+    return findChildByClass(ReasonMLJsx.class);
   }
 
 }

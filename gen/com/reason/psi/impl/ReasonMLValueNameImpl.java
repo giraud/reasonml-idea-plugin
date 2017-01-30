@@ -11,25 +11,19 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLLongIdImpl extends ASTWrapperPsiElement implements ReasonMLLongId {
+public class ReasonMLValueNameImpl extends ASTWrapperPsiElement implements ReasonMLValueName {
 
-  public ReasonMLLongIdImpl(ASTNode node) {
+  public ReasonMLValueNameImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitLongId(this);
+    visitor.visitValueName(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ReasonMLVisitor) accept((ReasonMLVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<ReasonMLShortId> getShortIdList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLShortId.class);
   }
 
 }

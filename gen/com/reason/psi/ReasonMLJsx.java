@@ -5,9 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLLongId extends PsiElement {
+public interface ReasonMLJsx extends PsiElement {
+
+  @Nullable
+  ReasonMLETag getETag();
 
   @NotNull
-  List<ReasonMLShortId> getShortIdList();
+  ReasonMLSTag getSTag();
+
+  @NotNull
+  List<ReasonMLJsxContent> getJsxContentList();
 
 }

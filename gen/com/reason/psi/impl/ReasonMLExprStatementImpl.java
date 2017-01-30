@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLFunCallImpl extends ASTWrapperPsiElement implements ReasonMLFunCall {
+public class ReasonMLExprStatementImpl extends ASTWrapperPsiElement implements ReasonMLExprStatement {
 
-  public ReasonMLFunCallImpl(ASTNode node) {
+  public ReasonMLExprStatementImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitFunCall(this);
+    visitor.visitExprStatement(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,14 +28,8 @@ public class ReasonMLFunCallImpl extends ASTWrapperPsiElement implements ReasonM
 
   @Override
   @NotNull
-  public ReasonMLLongId getLongId() {
-    return findNotNullChildByClass(ReasonMLLongId.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLUnit getUnit() {
-    return findChildByClass(ReasonMLUnit.class);
+  public List<ReasonMLExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLExpr.class);
   }
 
 }

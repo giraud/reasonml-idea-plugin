@@ -16,7 +16,7 @@
 }
 
 reasonFile ::=
-    ( COMMENT | module_statement | include_statement | let_binding | fun_call | type_statement )*
+    ( COMMENT | module_statement | include_statement | let_binding | expr_statement | type_statement )*
 
 // ----------
 // MODULE
@@ -25,17 +25,11 @@ reasonFile ::=
 module_statement ::=
     MODULE module_name EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
 
-module_name ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-name
-    UIDENT
-
 module_body ::=
     (  module_statement
     | include_statement
     | type_statement
     | let_binding )*
-
-module_path ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#module-path
-    module_name (DOT module_name)*
 
 module_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/modules.html#module-expr
       module_path
@@ -43,7 +37,9 @@ module_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/modules.html#mod
 include_statement ::=
     INCLUDE module_expr (module_expr)* SEMI
 
+// ----------
 // TYPE
+// ----------
 
 type_statement ::=
       TYPE short_id type_definition? SEMI {
@@ -54,14 +50,44 @@ type_statement ::=
 type_definition ::=
     EQUAL LBRACE record_field (COMMA record_field)* RBRACE
 
+// ----------
+// expr
+// ----------
+
+expr_statement ::=
+    expr+ SEMI
+
+expr ::=
+      value_path argument
+       | LPAREN expr RPAREN
+
+argument ::=
+      STRING
+    | jsx
+
+// ----------
+// JSX
+// ----------
+
+jsx ::=
+    STag ( SLASH GT | GT jsxContent* ETag )
+
+STag ::=
+    LT tag_name tag_property*
+
+ETag ::=
+    SLASH LT tag_name GT
+
+tag_property ::=
+    value_name EQUAL STRING
+
+jsxContent ::=
+    value_name
+
+// ----------
+
 record_field ::=
     short_id (COLON short_id)?
-
-fun_call ::=
-    long_id (unit | STRING) SEMI
-
-unit ::=
-    LPAREN RPAREN
 
 let_binding ::=
     LET short_id let_binding_body SEMI {
@@ -89,7 +115,6 @@ seq_expr ::=
     | INT
     | FLOAT
     | tuple_expr
-    | fun_call
 
 tuple_expr ::=
     LPAREN tuple_arg (COMMA tuple_arg)* RPAREN
@@ -107,5 +132,38 @@ core_type ::=
 short_id ::=
     UIDENT | LIDENT
 
-long_id ::=
-    short_id (DOT short_id)*
+// ----------
+// REFERRING NAMED OBJECTS
+//   https://caml.inria.fr/pub/docs/manual-ocaml/names.html#sec90
+// ----------
+
+value_path ::=
+    value_name
+    | module_path DOT value_name
+
+module_path ::=
+    module_name (DOT module_name)*
+
+// ----------
+// NAMES
+//
+// ----------
+
+value_name ::=
+    LIDENT
+
+tag_name ::=
+    LIDENT | UIDENT
+//
+//operator_name ::=
+//      prefix_symbol
+//    | infix_op
+//
+//prefix_symbol ::=
+//
+//infix_op ::=
+//      infix_symbol
+//    | STAR | PLUS
+
+module_name ::=
+    UIDENT

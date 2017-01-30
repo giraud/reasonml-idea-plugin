@@ -8,14 +8,18 @@ import com.reason.psi.impl.*;
 
 public interface ReasonMLTypes {
 
+  IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
   IElementType CORE_TYPE = new ReasonMLElementType("CORE_TYPE");
+  IElementType EXPR = new ReasonMLElementType("EXPR");
+  IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
+  IElementType E_TAG = new ReasonMLElementType("E_TAG");
   IElementType FUN_ARG = new ReasonMLElementType("FUN_ARG");
   IElementType FUN_BODY = new ReasonMLElementType("FUN_BODY");
-  IElementType FUN_CALL = new ReasonMLElementType("FUN_CALL");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
+  IElementType JSX = new ReasonMLElementType("JSX");
+  IElementType JSX_CONTENT = new ReasonMLElementType("JSX_CONTENT");
   IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
   IElementType LET_BINDING_BODY = new ReasonMLElementType("LET_BINDING_BODY");
-  IElementType LONG_ID = new ReasonMLElementType("LONG_ID");
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
   IElementType MODULE_EXPR = new ReasonMLElementType("MODULE_EXPR");
   IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
@@ -24,12 +28,16 @@ public interface ReasonMLTypes {
   IElementType RECORD_FIELD = new ReasonMLElementType("RECORD_FIELD");
   IElementType SEQ_EXPR = new ReasonMLElementType("SEQ_EXPR");
   IElementType SHORT_ID = new ReasonMLElementType("SHORT_ID");
+  IElementType S_TAG = new ReasonMLElementType("S_TAG");
+  IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
+  IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
   IElementType TUPLE_ARG = new ReasonMLElementType("TUPLE_ARG");
   IElementType TUPLE_EXPR = new ReasonMLElementType("TUPLE_EXPR");
   IElementType TUPLE_VALUE = new ReasonMLElementType("TUPLE_VALUE");
   IElementType TYPE_DEFINITION = new ReasonMLElementType("TYPE_DEFINITION");
   IElementType TYPE_STATEMENT = new ReasonMLElementType("TYPE_STATEMENT");
-  IElementType UNIT = new ReasonMLElementType("UNIT");
+  IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
+  IElementType VALUE_PATH = new ReasonMLElementType("VALUE_PATH");
 
   IElementType ARROW = new ReasonMLTokenType("ARROW");
   IElementType COLON = new ReasonMLTokenType("COLON");
@@ -39,17 +47,20 @@ public interface ReasonMLTypes {
   IElementType EQUAL = new ReasonMLTokenType("EQUAL");
   IElementType FLOAT = new ReasonMLTokenType("FLOAT");
   IElementType FUN = new ReasonMLTokenType("FUN");
+  IElementType GT = new ReasonMLTokenType("GT");
   IElementType INCLUDE = new ReasonMLTokenType("INCLUDE");
   IElementType INT = new ReasonMLTokenType("INT");
   IElementType LBRACE = new ReasonMLTokenType("LBRACE");
   IElementType LET = new ReasonMLTokenType("LET");
   IElementType LIDENT = new ReasonMLTokenType("LIDENT");
   IElementType LPAREN = new ReasonMLTokenType("LPAREN");
+  IElementType LT = new ReasonMLTokenType("LT");
   IElementType MODULE = new ReasonMLTokenType("MODULE");
   IElementType NONE = new ReasonMLTokenType("NONE");
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
   IElementType SEMI = new ReasonMLTokenType("SEMI");
+  IElementType SLASH = new ReasonMLTokenType("SLASH");
   IElementType STRING = new ReasonMLTokenType("STRING");
   IElementType TYPE = new ReasonMLTokenType("TYPE");
   IElementType UIDENT = new ReasonMLTokenType("UIDENT");
@@ -57,8 +68,20 @@ public interface ReasonMLTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == CORE_TYPE) {
+       if (type == ARGUMENT) {
+        return new ReasonMLArgumentImpl(node);
+      }
+      else if (type == CORE_TYPE) {
         return new ReasonMLCoreTypeImpl(node);
+      }
+      else if (type == EXPR) {
+        return new ReasonMLExprImpl(node);
+      }
+      else if (type == EXPR_STATEMENT) {
+        return new ReasonMLExprStatementImpl(node);
+      }
+      else if (type == E_TAG) {
+        return new ReasonMLETagImpl(node);
       }
       else if (type == FUN_ARG) {
         return new ReasonMLFunArgImpl(node);
@@ -66,20 +89,20 @@ public interface ReasonMLTypes {
       else if (type == FUN_BODY) {
         return new ReasonMLFunBodyImpl(node);
       }
-      else if (type == FUN_CALL) {
-        return new ReasonMLFunCallImpl(node);
-      }
       else if (type == INCLUDE_STATEMENT) {
         return new ReasonMLIncludeStatementImpl(node);
+      }
+      else if (type == JSX) {
+        return new ReasonMLJsxImpl(node);
+      }
+      else if (type == JSX_CONTENT) {
+        return new ReasonMLJsxContentImpl(node);
       }
       else if (type == LET_BINDING) {
         return new ReasonMLLetBindingImpl(node);
       }
       else if (type == LET_BINDING_BODY) {
         return new ReasonMLLetBindingBodyImpl(node);
-      }
-      else if (type == LONG_ID) {
-        return new ReasonMLLongIdImpl(node);
       }
       else if (type == MODULE_BODY) {
         return new ReasonMLModuleBodyImpl(node);
@@ -105,6 +128,15 @@ public interface ReasonMLTypes {
       else if (type == SHORT_ID) {
         return new ReasonMLShortIdImpl(node);
       }
+      else if (type == S_TAG) {
+        return new ReasonMLSTagImpl(node);
+      }
+      else if (type == TAG_NAME) {
+        return new ReasonMLTagNameImpl(node);
+      }
+      else if (type == TAG_PROPERTY) {
+        return new ReasonMLTagPropertyImpl(node);
+      }
       else if (type == TUPLE_ARG) {
         return new ReasonMLTupleArgImpl(node);
       }
@@ -120,8 +152,11 @@ public interface ReasonMLTypes {
       else if (type == TYPE_STATEMENT) {
         return new ReasonMLTypeStatementImpl(node);
       }
-      else if (type == UNIT) {
-        return new ReasonMLUnitImpl(node);
+      else if (type == VALUE_NAME) {
+        return new ReasonMLValueNameImpl(node);
+      }
+      else if (type == VALUE_PATH) {
+        return new ReasonMLValuePathImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

@@ -11,25 +11,19 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLSeqExprImpl extends ASTWrapperPsiElement implements ReasonMLSeqExpr {
+public class ReasonMLTagNameImpl extends ASTWrapperPsiElement implements ReasonMLTagName {
 
-  public ReasonMLSeqExprImpl(ASTNode node) {
+  public ReasonMLTagNameImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitSeqExpr(this);
+    visitor.visitTagName(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ReasonMLVisitor) accept((ReasonMLVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTupleExpr getTupleExpr() {
-    return findChildByClass(ReasonMLTupleExpr.class);
   }
 
 }

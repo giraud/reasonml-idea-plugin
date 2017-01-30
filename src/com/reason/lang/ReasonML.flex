@@ -92,6 +92,10 @@ ARROW=[=>]
     ")"  { return RPAREN; }
     "{"  { return LBRACE; }
     "}"  { return RBRACE; }
+    "/"  { return SLASH; }
+
+    "<" { return LT; }
+    ">" { return GT; }
 
 //    "+"  { return PLUS; }
 //    "+." { return PLUSDOT; }

@@ -7,7 +7,27 @@ import com.intellij.psi.PsiElement;
 
 public class ReasonMLVisitor extends PsiElementVisitor {
 
+  public void visitETag(@NotNull ReasonMLETag o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSTag(@NotNull ReasonMLSTag o) {
+    visitPsiElement(o);
+  }
+
+  public void visitArgument(@NotNull ReasonMLArgument o) {
+    visitPsiElement(o);
+  }
+
   public void visitCoreType(@NotNull ReasonMLCoreType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExpr(@NotNull ReasonMLExpr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExprStatement(@NotNull ReasonMLExprStatement o) {
     visitPsiElement(o);
   }
 
@@ -19,11 +39,15 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFunCall(@NotNull ReasonMLFunCall o) {
+  public void visitIncludeStatement(@NotNull ReasonMLIncludeStatement o) {
     visitPsiElement(o);
   }
 
-  public void visitIncludeStatement(@NotNull ReasonMLIncludeStatement o) {
+  public void visitJsx(@NotNull ReasonMLJsx o) {
+    visitPsiElement(o);
+  }
+
+  public void visitJsxContent(@NotNull ReasonMLJsxContent o) {
     visitPsiElement(o);
   }
 
@@ -32,10 +56,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitLetBindingBody(@NotNull ReasonMLLetBindingBody o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLongId(@NotNull ReasonMLLongId o) {
     visitPsiElement(o);
   }
 
@@ -71,6 +91,14 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitTagName(@NotNull ReasonMLTagName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTagProperty(@NotNull ReasonMLTagProperty o) {
+    visitPsiElement(o);
+  }
+
   public void visitTupleArg(@NotNull ReasonMLTupleArg o) {
     visitPsiElement(o);
   }
@@ -91,7 +119,11 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUnit(@NotNull ReasonMLUnit o) {
+  public void visitValueName(@NotNull ReasonMLValueName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitValuePath(@NotNull ReasonMLValuePath o) {
     visitPsiElement(o);
   }
 
