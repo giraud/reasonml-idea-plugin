@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLTagProperty extends PsiElement {
-
-  @Nullable
-  ReasonMLConstant getConstant();
-
-  @Nullable
-  ReasonMLExpr getExpr();
+public interface ReasonMLTypeConstr extends PsiElement {
 
   @NotNull
-  ReasonMLValueName getValueName();
+  ReasonMLTypeConstrName getTypeConstrName();
 
 }

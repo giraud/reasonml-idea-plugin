@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLTupleArg extends PsiElement {
-
-  @Nullable
-  ReasonMLCoreType getCoreType();
+public interface ReasonMLTypeExpr extends PsiElement {
 
   @NotNull
-  ReasonMLTupleValue getTupleValue();
+  ReasonMLTypeConstr getTypeConstr();
 
 }

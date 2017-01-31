@@ -11,7 +11,16 @@ public interface ReasonMLExpr extends PsiElement {
   ReasonMLArgument getArgument();
 
   @Nullable
+  ReasonMLConstant getConstant();
+
+  @Nullable
   ReasonMLExpr getExpr();
+
+  @Nullable
+  ReasonMLField getField();
+
+  @Nullable
+  ReasonMLJsx getJsx();
 
   @Nullable
   ReasonMLValuePath getValuePath();

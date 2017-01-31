@@ -5,9 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLTupleExpr extends PsiElement {
+public interface ReasonMLParameter extends PsiElement {
 
   @NotNull
-  List<ReasonMLTupleArg> getTupleArgList();
+  List<ReasonMLField> getFieldList();
+
+  @Nullable
+  ReasonMLPatternExpr getPatternExpr();
+
+  @Nullable
+  ReasonMLTypeExpr getTypeExpr();
 
 }

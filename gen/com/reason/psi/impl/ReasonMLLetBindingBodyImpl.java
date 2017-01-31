@@ -28,20 +28,14 @@ public class ReasonMLLetBindingBodyImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public List<ReasonMLFunArg> getFunArgList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLFunArg.class);
+  public List<ReasonMLExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLExpr.class);
   }
 
   @Override
-  @Nullable
-  public ReasonMLFunBody getFunBody() {
-    return findChildByClass(ReasonMLFunBody.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLSeqExpr getSeqExpr() {
-    return findChildByClass(ReasonMLSeqExpr.class);
+  @NotNull
+  public List<ReasonMLParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
   }
 
 }

@@ -12,7 +12,7 @@ public interface ReasonMLLetBinding extends PsiElement {
   ReasonMLLetBindingBody getLetBindingBody();
 
   @NotNull
-  ReasonMLShortId getShortId();
+  ReasonMLValueName getValueName();
 
   ItemPresentation getPresentation();
 

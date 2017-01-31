@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLFunArg extends PsiElement {
+public interface ReasonMLPatternExpr extends PsiElement {
 
-  @NotNull
-  ReasonMLShortId getShortId();
+  @Nullable
+  ReasonMLConstant getConstant();
+
+  @Nullable
+  ReasonMLValueName getValueName();
 
 }

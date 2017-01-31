@@ -28,8 +28,20 @@ public class ReasonMLArgumentImpl extends ASTWrapperPsiElement implements Reason
 
   @Override
   @Nullable
+  public ReasonMLConstant getConstant() {
+    return findChildByClass(ReasonMLConstant.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLJsx getJsx() {
     return findChildByClass(ReasonMLJsx.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLValueName getValueName() {
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }

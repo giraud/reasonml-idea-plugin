@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLJsxContent extends PsiElement {
 
   @NotNull
-  ReasonMLValueName getValueName();
+  ReasonMLExpr getExpr();
 
 }

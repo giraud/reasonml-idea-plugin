@@ -11,31 +11,19 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLTupleArgImpl extends ASTWrapperPsiElement implements ReasonMLTupleArg {
+public class ReasonMLFieldNameImpl extends ASTWrapperPsiElement implements ReasonMLFieldName {
 
-  public ReasonMLTupleArgImpl(ASTNode node) {
+  public ReasonMLFieldNameImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitTupleArg(this);
+    visitor.visitFieldName(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ReasonMLVisitor) accept((ReasonMLVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLCoreType getCoreType() {
-    return findChildByClass(ReasonMLCoreType.class);
-  }
-
-  @Override
-  @NotNull
-  public ReasonMLTupleValue getTupleValue() {
-    return findNotNullChildByClass(ReasonMLTupleValue.class);
   }
 
 }

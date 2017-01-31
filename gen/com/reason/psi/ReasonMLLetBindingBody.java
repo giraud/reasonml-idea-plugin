@@ -8,12 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLLetBindingBody extends PsiElement {
 
   @NotNull
-  List<ReasonMLFunArg> getFunArgList();
+  List<ReasonMLExpr> getExprList();
 
-  @Nullable
-  ReasonMLFunBody getFunBody();
-
-  @Nullable
-  ReasonMLSeqExpr getSeqExpr();
+  @NotNull
+  List<ReasonMLParameter> getParameterList();
 
 }

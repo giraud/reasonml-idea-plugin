@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLFunArgImpl extends ASTWrapperPsiElement implements ReasonMLFunArg {
+public class ReasonMLPatternExprImpl extends ASTWrapperPsiElement implements ReasonMLPatternExpr {
 
-  public ReasonMLFunArgImpl(ASTNode node) {
+  public ReasonMLPatternExprImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitFunArg(this);
+    visitor.visitPatternExpr(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,9 +27,15 @@ public class ReasonMLFunArgImpl extends ASTWrapperPsiElement implements ReasonML
   }
 
   @Override
-  @NotNull
-  public ReasonMLShortId getShortId() {
-    return findNotNullChildByClass(ReasonMLShortId.class);
+  @Nullable
+  public ReasonMLConstant getConstant() {
+    return findChildByClass(ReasonMLConstant.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLValueName getValueName() {
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }

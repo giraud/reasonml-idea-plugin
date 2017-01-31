@@ -92,6 +92,8 @@ ARROW=[=>]
     ")"  { return RPAREN; }
     "{"  { return LBRACE; }
     "}"  { return RBRACE; }
+    "["  { return LBRACKET; }
+    "]"  { return RBRACKET; }
 
     "/>" { return AUTO_CLOSE_TAG; }
     "</" { return CLOSE_TAG; }

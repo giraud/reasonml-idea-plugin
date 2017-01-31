@@ -8,6 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLArgument extends PsiElement {
 
   @Nullable
+  ReasonMLConstant getConstant();
+
+  @Nullable
   ReasonMLJsx getJsx();
+
+  @Nullable
+  ReasonMLValueName getValueName();
 
 }

@@ -28,8 +28,8 @@ public class ReasonMLJsxContentImpl extends ASTWrapperPsiElement implements Reas
 
   @Override
   @NotNull
-  public ReasonMLValueName getValueName() {
-    return findNotNullChildByClass(ReasonMLValueName.class);
+  public ReasonMLExpr getExpr() {
+    return findNotNullChildByClass(ReasonMLExpr.class);
   }
 
 }

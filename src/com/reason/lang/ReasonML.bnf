@@ -52,17 +52,21 @@ type_definition ::=
 
 // ----------
 // expr
+//   https://caml.inria.fr/pub/docs/manual-ocaml/expr.html
 // ----------
 
 expr_statement ::=
     expr+ SEMI
 
 expr ::=
-      value_path argument
-       | LPAREN expr RPAREN
+      constant
+    | value_path (argument | DOT field)
+    | jsx
+    | LPAREN expr RPAREN
 
 argument ::=
-      STRING
+      constant
+    | value_name
     | jsx
 
 // ----------
@@ -79,10 +83,44 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQUAL STRING
+    value_name EQUAL (LPAREN expr RPAREN | constant)
 
 jsxContent ::=
-    value_name
+    LPAREN expr RPAREN
+
+// ----------
+// LET
+// ----------
+
+let_binding_body ::=
+      EQUAL (expr | FUN)
+    | (parameter)* ARROW (LBRACE (expr SEMI)* NONE? RBRACE | expr)
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
+parameter ::=
+      pattern_expr
+    | LPAREN pattern_expr (DOT type_expr)? RPAREN
+    | LBRACE field (COMMA field)* RBRACE
+
+pattern_expr ::=
+      constant
+    | value_name
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#field
+field ::=
+    (module_path DOT)? field_name
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
+type_expr ::=
+    type_constr
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
+type_constr ::=
+    type_constr_name
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr-name
+type_constr_name ::=
+    LIDENT
 
 // ----------
 
@@ -90,47 +128,29 @@ record_field ::=
     short_id (COLON short_id)?
 
 let_binding ::=
-    LET short_id let_binding_body SEMI {
+    LET value_name let_binding_body SEMI {
 //        pin=1 recoverWhile=recover_statement
         methods=[getPresentation]
     }
 
 //private recover_statement ::= !(SEMI)
 
-let_binding_body ::=
-      EQUAL FUN (fun_arg)* ARROW fun_body
-    | EQUAL seq_expr
-    | (fun_arg)* ARROW LBRACE? fun_body RBRACE?
-
-fun_arg ::=
-      short_id
-    | LBRACE short_id RBRACE
-
-fun_body ::=
-    (seq_expr)* NONE?
-
-seq_expr ::=
-      LIDENT
-    | STRING
-    | INT
-    | FLOAT
-    | tuple_expr
-
-tuple_expr ::=
-    LPAREN tuple_arg (COMMA tuple_arg)* RPAREN
-
-tuple_arg ::=
-    tuple_value (COLON core_type)?
-
-tuple_value ::=
-      INT
-    | LIDENT
-
-core_type ::=
-  LIDENT
-
 short_id ::=
     UIDENT | LIDENT
+
+// ----------
+// CONSTANTS
+//   https://caml.inria.fr/pub/docs/manual-ocaml/const.html#constant
+// ----------
+
+constant ::=
+      INT
+    | FLOAT
+    | STRING
+    | FALSE
+    | TRUE
+    | UNIT
+    | LBRACKET RBRACKET
 
 // ----------
 // REFERRING NAMED OBJECTS
@@ -138,7 +158,7 @@ short_id ::=
 // ----------
 
 value_path ::=
-    value_name
+      value_name
     | module_path DOT value_name
 
 module_path ::=
@@ -146,7 +166,7 @@ module_path ::=
 
 // ----------
 // NAMES
-//
+// https://caml.inria.fr/pub/docs/manual-ocaml/names.html
 // ----------
 
 value_name ::=
@@ -154,16 +174,9 @@ value_name ::=
 
 tag_name ::=
     LIDENT | UIDENT
-//
-//operator_name ::=
-//      prefix_symbol
-//    | infix_op
-//
-//prefix_symbol ::=
-//
-//infix_op ::=
-//      infix_symbol
-//    | STAR | PLUS
+
+field_name ::=
+    LIDENT
 
 module_name ::=
     UIDENT

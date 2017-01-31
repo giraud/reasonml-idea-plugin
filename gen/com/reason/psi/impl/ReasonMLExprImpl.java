@@ -34,8 +34,26 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
 
   @Override
   @Nullable
+  public ReasonMLConstant getConstant() {
+    return findChildByClass(ReasonMLConstant.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLExpr getExpr() {
     return findChildByClass(ReasonMLExpr.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLField getField() {
+    return findChildByClass(ReasonMLField.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLJsx getJsx() {
+    return findChildByClass(ReasonMLJsx.class);
   }
 
   @Override
