@@ -1,13 +1,17 @@
 package com.reason.psi.impl;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.tree.IElementType;
 import com.reason.ide.ReasonMLIcons;
 import com.reason.psi.ReasonMLLetBinding;
+import com.reason.psi.ReasonMLLetBindingBody;
 import com.reason.psi.ReasonMLModuleStatement;
 import com.reason.psi.ReasonMLTypeStatement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+
+import static com.reason.psi.ReasonMLTypes.EQUAL;
 
 public class ReasonMLPsiImplUtil {
     public static ItemPresentation getPresentation(final ReasonMLModuleStatement module) {
@@ -51,7 +55,9 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return ReasonMLIcons.LET;
+                ReasonMLLetBindingBody body = let.getLetBindingBody();
+                IElementType elementType = body.getFirstChild().getNode().getElementType();
+                return EQUAL.equals(elementType) ? ReasonMLIcons.LET : ReasonMLIcons.FUNCTION;
             }
         };
     }

@@ -95,6 +95,14 @@ jsxContent ::=
 // LET
 // ----------
 
+let_binding ::=
+    LET value_name let_binding_body SEMI {
+//        pin=1 recoverWhile=recover_statement
+        methods=[getPresentation]
+    }
+
+//private recover_statement ::= !(SEMI)
+
 let_binding_body ::=
       EQUAL (expr | FUN)
     | (parameter)* ARROW (LBRACE (expr SEMI)* NONE? RBRACE | expr)
@@ -130,14 +138,6 @@ type_constr_name ::=
 
 record_field ::=
     short_id (COLON short_id)?
-
-let_binding ::=
-    LET value_name let_binding_body SEMI {
-//        pin=1 recoverWhile=recover_statement
-        methods=[getPresentation]
-    }
-
-//private recover_statement ::= !(SEMI)
 
 short_id ::=
     UIDENT | LIDENT

@@ -12,4 +12,5 @@ public class ReasonMLIcons {
     public static final Icon MODULE = getIcon("/nodes/method.png");
     public static final Icon LET = getIcon("/nodes/field.png");
     public static final Icon TYPE = getIcon("/nodes/annotationtype.png");
+    public static final Icon FUNCTION = getIcon("/nodes/function.png");
 }
