@@ -27,9 +27,9 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
   }
 
   @Override
-  @Nullable
-  public ReasonMLArgument getArgument() {
-    return findChildByClass(ReasonMLArgument.class);
+  @NotNull
+  public List<ReasonMLArgument> getArgumentList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLArgument.class);
   }
 
   @Override
@@ -42,12 +42,6 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
   @Nullable
   public ReasonMLExpr getExpr() {
     return findChildByClass(ReasonMLExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLField getField() {
-    return findChildByClass(ReasonMLField.class);
   }
 
   @Override

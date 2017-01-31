@@ -44,4 +44,10 @@ public class ReasonMLParameterImpl extends ASTWrapperPsiElement implements Reaso
     return findChildByClass(ReasonMLTypeExpr.class);
   }
 
+  @Override
+  @Nullable
+  public ReasonMLValueName getValueName() {
+    return findChildByClass(ReasonMLValueName.class);
+  }
+
 }

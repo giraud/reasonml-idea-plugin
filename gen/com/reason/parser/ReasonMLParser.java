@@ -128,16 +128,72 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // constant
-  //     | value_name
+  //     | value_name (DOT field)?
   //     | jsx
+  //     | LBRACE record_field RBRACE
+  //     | SHORTCUT value_name
   public static boolean argument(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argument")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ARGUMENT, "<argument>");
     r = constant(b, l + 1);
-    if (!r) r = value_name(b, l + 1);
+    if (!r) r = argument_1(b, l + 1);
     if (!r) r = jsx(b, l + 1);
+    if (!r) r = argument_3(b, l + 1);
+    if (!r) r = argument_4(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // value_name (DOT field)?
+  private static boolean argument_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argument_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_name(b, l + 1);
+    r = r && argument_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (DOT field)?
+  private static boolean argument_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argument_1_1")) return false;
+    argument_1_1_0(b, l + 1);
+    return true;
+  }
+
+  // DOT field
+  private static boolean argument_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argument_1_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && field(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // LBRACE record_field RBRACE
+  private static boolean argument_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argument_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LBRACE);
+    r = r && record_field(b, l + 1);
+    r = r && consumeToken(b, RBRACE);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // SHORTCUT value_name
+  private static boolean argument_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argument_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SHORTCUT);
+    r = r && value_name(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -180,7 +236,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // constant
-  //     | value_path (argument | DOT field)
+  //     | value_path argument+
   //     | jsx
   //     | LPAREN expr RPAREN
   public static boolean expr(PsiBuilder b, int l) {
@@ -195,7 +251,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // value_path (argument | DOT field)
+  // value_path argument+
   private static boolean expr_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_1")) return false;
     boolean r;
@@ -206,24 +262,18 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // argument | DOT field
+  // argument+
   private static boolean expr_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_1_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = argument(b, l + 1);
-    if (!r) r = expr_1_1_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // DOT field
-  private static boolean expr_1_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "expr_1_1_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, DOT);
-    r = r && field(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!argument(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "expr_1_1", c)) break;
+      c = current_position_(b);
+    }
     exit_section_(b, m, null, r);
     return r;
   }
@@ -673,6 +723,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // pattern_expr
+  //     | SHORTCUT value_name
   //     | LPAREN pattern_expr (DOT type_expr)? RPAREN
   //     | LBRACE field (COMMA field)* RBRACE
   public static boolean parameter(PsiBuilder b, int l) {
@@ -682,33 +733,45 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = pattern_expr(b, l + 1);
     if (!r) r = parameter_1(b, l + 1);
     if (!r) r = parameter_2(b, l + 1);
+    if (!r) r = parameter_3(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // LPAREN pattern_expr (DOT type_expr)? RPAREN
+  // SHORTCUT value_name
   private static boolean parameter_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
+    r = consumeToken(b, SHORTCUT);
+    r = r && value_name(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // LPAREN pattern_expr (DOT type_expr)? RPAREN
+  private static boolean parameter_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
     r = consumeToken(b, LPAREN);
     r = r && pattern_expr(b, l + 1);
-    r = r && parameter_1_2(b, l + 1);
+    r = r && parameter_2_2(b, l + 1);
     r = r && consumeToken(b, RPAREN);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (DOT type_expr)?
-  private static boolean parameter_1_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_1_2")) return false;
-    parameter_1_2_0(b, l + 1);
+  private static boolean parameter_2_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_2_2")) return false;
+    parameter_2_2_0(b, l + 1);
     return true;
   }
 
   // DOT type_expr
-  private static boolean parameter_1_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_1_2_0")) return false;
+  private static boolean parameter_2_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_2_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, DOT);
@@ -718,33 +781,33 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   // LBRACE field (COMMA field)* RBRACE
-  private static boolean parameter_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_2")) return false;
+  private static boolean parameter_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LBRACE);
     r = r && field(b, l + 1);
-    r = r && parameter_2_2(b, l + 1);
+    r = r && parameter_3_2(b, l + 1);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA field)*
-  private static boolean parameter_2_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_2_2")) return false;
+  private static boolean parameter_3_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_3_2")) return false;
     int c = current_position_(b);
     while (true) {
-      if (!parameter_2_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "parameter_2_2", c)) break;
+      if (!parameter_3_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "parameter_3_2", c)) break;
       c = current_position_(b);
     }
     return true;
   }
 
   // COMMA field
-  private static boolean parameter_2_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_2_2_0")) return false;
+  private static boolean parameter_3_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_3_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);

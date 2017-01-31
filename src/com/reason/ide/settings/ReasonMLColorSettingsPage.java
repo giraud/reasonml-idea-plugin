@@ -17,7 +17,13 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment", ReasonMLSyntaxHighlighter.COMMENT_),
             new AttributesDescriptor("Tag", ReasonMLSyntaxHighlighter.TAG),
-            new AttributesDescriptor("UIdentifier", ReasonMLSyntaxHighlighter.UIDENTIFIER),
+            new AttributesDescriptor("Keyword", ReasonMLSyntaxHighlighter.KEYWORD),
+            new AttributesDescriptor("Operation", ReasonMLSyntaxHighlighter.OPERATION_SIGN),
+            new AttributesDescriptor("String", ReasonMLSyntaxHighlighter.STRING_),
+            new AttributesDescriptor("Semicolon", ReasonMLSyntaxHighlighter.SEMICOLON),
+            new AttributesDescriptor("Braces", ReasonMLSyntaxHighlighter.BRACES),
+            new AttributesDescriptor("Brackets", ReasonMLSyntaxHighlighter.BRACKETS),
+            new AttributesDescriptor("Parenthesis", ReasonMLSyntaxHighlighter.PARENS),
     };
 
     @Nullable
@@ -38,9 +44,10 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
         return "/* This is a comment */\n\n" +
                "type t = { key: int };\n" +
                "let add x y => x + y;\n" +
+               "let constant = \"My constant\";\n" +
                "module ModuleName = {\n" +
                "};\n\n" +
-                "React.createElement <div prop=value/> <Button>ok</Button>\n";
+                "React.createElement <div prop=value/> <Button></Button>\n";
     }
 
     @Nullable

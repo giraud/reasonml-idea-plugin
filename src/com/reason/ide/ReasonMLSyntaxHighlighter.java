@@ -17,21 +17,25 @@ import static com.reason.psi.ReasonMLTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(MODULE, FUN, LET, TYPE, INCLUDE);
-    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW);
+    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW, SHORTCUT, COLON);
 
     public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
-    private static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
-    private static final TextAttributesKey BRACE = createTextAttributesKey("REASONML_BRACE", DefaultLanguageHighlighterColors.BRACES);
+    public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
+    public static final TextAttributesKey BRACE = createTextAttributesKey("REASONML_BRACE", DefaultLanguageHighlighterColors.BRACES);
     public static final TextAttributesKey TAG = createTextAttributesKey("REASONML_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
     public static final TextAttributesKey UIDENTIFIER = createTextAttributesKey("REASONML_UIDENT", DefaultLanguageHighlighterColors.CLASS_NAME);
-    private static final TextAttributesKey KEYWORD = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
-    private static final TextAttributesKey SEMICOLON = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
-    private static final TextAttributesKey OPERATION_SIGN = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-    private static final TextAttributesKey BAD_CHAR = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
+    public static final TextAttributesKey KEYWORD = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey SEMICOLON = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
+    public static final TextAttributesKey BRACKETS = createTextAttributesKey("REASONML_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
+    public static final TextAttributesKey BRACES = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
+    public static final TextAttributesKey PARENS = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
+    public static final TextAttributesKey OPERATION_SIGN = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+    public static final TextAttributesKey BAD_CHAR = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACE};
+    private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS};
     private static final TextAttributesKey[] TAG_KEYS = new TextAttributesKey[]{TAG};
     private static final TextAttributesKey[] UIDENTIFIER_KEYS = new TextAttributesKey[]{UIDENTIFIER};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
@@ -51,8 +55,10 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         if (tokenType.equals(COMMENT)) {
             return COMMENT_KEYS;
-        } else if (tokenType.equals(LBRACE) || tokenType.equals(RBRACE) || tokenType.equals(LPAREN) || tokenType.equals(RPAREN) || tokenType.equals(COLON) ) {
+        } else if (tokenType.equals(LBRACE) || tokenType.equals(RBRACE)) {
             return BRACE_KEYS;
+        } else if (tokenType.equals(LPAREN) || tokenType.equals(RPAREN)) {
+            return PAREN_KEYS;
         } else if (tokenType.equals(AUTO_CLOSE_TAG) || tokenType.equals(CLOSE_TAG) || tokenType.equals(GT) || tokenType.equals(LT) ) {
             return TAG_KEYS;
         } else if (tokenType.equals(SEMI)) {

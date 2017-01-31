@@ -82,6 +82,7 @@ ARROW=[=>]
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
 
+    "::" { return SHORTCUT; }
     "=>" { return ARROW; }
     "="  { return EQUAL; }
     ","  { return COMMA; }

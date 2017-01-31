@@ -16,4 +16,7 @@ public interface ReasonMLParameter extends PsiElement {
   @Nullable
   ReasonMLTypeExpr getTypeExpr();
 
+  @Nullable
+  ReasonMLValueName getValueName();
+
 }

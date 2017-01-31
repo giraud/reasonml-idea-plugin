@@ -66,6 +66,7 @@ public interface ReasonMLTypes {
   IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
   IElementType SEMI = new ReasonMLTokenType("SEMI");
+  IElementType SHORTCUT = new ReasonMLTokenType("SHORTCUT");
   IElementType STRING = new ReasonMLTokenType("STRING");
   IElementType TRUE = new ReasonMLTokenType("TRUE");
   IElementType TYPE = new ReasonMLTokenType("TYPE");

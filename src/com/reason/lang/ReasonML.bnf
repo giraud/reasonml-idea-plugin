@@ -60,14 +60,17 @@ expr_statement ::=
 
 expr ::=
       constant
-    | value_path (argument | DOT field)
+    | value_path argument+
     | jsx
     | LPAREN expr RPAREN
 
+
 argument ::=
       constant
-    | value_name
+    | value_name (DOT field)?
     | jsx
+    | LBRACE record_field RBRACE
+    | SHORTCUT value_name
 
 // ----------
 // JSX
@@ -99,6 +102,7 @@ let_binding_body ::=
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
       pattern_expr
+    | SHORTCUT value_name
     | LPAREN pattern_expr (DOT type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE
 
