@@ -1,15 +1,15 @@
 <idea-plugin version="2">
-    <id>com.giraud.plugin.reasonml</id>
+    <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>1.0</version>
-    <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonMLPlugin">hgiraud</vendor>
+    <version>0.1</version>
+    <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
       ReasonML language plugin.
     ]]></description>
 
     <change-notes><![CDATA[
-      WIP!
+      Work in progress. This is a plugin preview, use for tests only.
     ]]>
     </change-notes>
 
