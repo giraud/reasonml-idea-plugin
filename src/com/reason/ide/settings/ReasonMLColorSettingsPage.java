@@ -17,6 +17,7 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment", ReasonMLSyntaxHighlighter.COMMENT_),
             new AttributesDescriptor("Module name", ReasonMLSyntaxHighlighter.MODULE_NAME_),
+            new AttributesDescriptor("Option", ReasonMLSyntaxHighlighter.OPTION),
             new AttributesDescriptor("Tag", ReasonMLSyntaxHighlighter.TAG),
             new AttributesDescriptor("Keyword", ReasonMLSyntaxHighlighter.KEYWORD),
             new AttributesDescriptor("Operation", ReasonMLSyntaxHighlighter.OPERATION_SIGN),

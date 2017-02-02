@@ -73,6 +73,7 @@ ARROW=[=>]
     "fun"     { return FUN; }
 
     "None"    { return NONE; }
+//    "Some"    { return SOME; }
 
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }

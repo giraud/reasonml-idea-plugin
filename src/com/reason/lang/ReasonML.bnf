@@ -60,6 +60,7 @@ expr_statement ::=
 
 expr ::=
       constant
+    | NONE
     | value_path argument+
     | jsx
     | LPAREN expr RPAREN
@@ -105,7 +106,7 @@ let_binding ::=
 
 let_binding_body ::=
       EQUAL (expr | FUN)
-    | (parameter)* ARROW (LBRACE (expr SEMI)* NONE? RBRACE | expr)
+    | (parameter)* ARROW (LBRACE expr (SEMI expr)* RBRACE | expr)
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
