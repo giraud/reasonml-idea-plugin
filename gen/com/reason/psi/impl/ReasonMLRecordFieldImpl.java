@@ -27,9 +27,15 @@ public class ReasonMLRecordFieldImpl extends ASTWrapperPsiElement implements Rea
   }
 
   @Override
+  @Nullable
+  public ReasonMLFieldExpr getFieldExpr() {
+    return findChildByClass(ReasonMLFieldExpr.class);
+  }
+
+  @Override
   @NotNull
-  public List<ReasonMLShortId> getShortIdList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLShortId.class);
+  public ReasonMLFieldName getFieldName() {
+    return findNotNullChildByClass(ReasonMLFieldName.class);
   }
 
 }

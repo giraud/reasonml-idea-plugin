@@ -28,8 +28,8 @@ public class ReasonMLTypeDefinitionImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public List<ReasonMLRecordField> getRecordFieldList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLRecordField.class);
+  public ReasonMLRecordBody getRecordBody() {
+    return findNotNullChildByClass(ReasonMLRecordBody.class);
   }
 
 }

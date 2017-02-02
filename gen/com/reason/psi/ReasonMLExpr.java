@@ -20,6 +20,9 @@ public interface ReasonMLExpr extends PsiElement {
   ReasonMLJsx getJsx();
 
   @Nullable
+  ReasonMLRecordBody getRecordBody();
+
+  @Nullable
   ReasonMLValuePath getValuePath();
 
 }

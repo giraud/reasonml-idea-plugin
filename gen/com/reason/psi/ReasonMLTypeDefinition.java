@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLTypeDefinition extends PsiElement {
 
   @NotNull
-  List<ReasonMLRecordField> getRecordFieldList();
+  ReasonMLRecordBody getRecordBody();
 
 }

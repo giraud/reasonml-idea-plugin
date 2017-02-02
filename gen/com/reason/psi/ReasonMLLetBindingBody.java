@@ -13,4 +13,7 @@ public interface ReasonMLLetBindingBody extends PsiElement {
   @NotNull
   List<ReasonMLParameter> getParameterList();
 
+  @Nullable
+  ReasonMLRecordBody getRecordBody();
+
 }

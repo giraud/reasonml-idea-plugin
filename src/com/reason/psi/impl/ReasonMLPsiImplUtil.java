@@ -67,7 +67,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public String getPresentableText() {
-                return type.getShortId().getText();
+                return type.getTypeExpr().getText();
             }
 
             @Nullable

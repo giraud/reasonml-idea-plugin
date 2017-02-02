@@ -38,4 +38,10 @@ public class ReasonMLLetBindingBodyImpl extends ASTWrapperPsiElement implements 
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
   }
 
+  @Override
+  @Nullable
+  public ReasonMLRecordBody getRecordBody() {
+    return findChildByClass(ReasonMLRecordBody.class);
+  }
+
 }

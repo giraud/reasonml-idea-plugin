@@ -31,6 +31,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFieldExpr(@NotNull ReasonMLFieldExpr o) {
+    visitPsiElement(o);
+  }
+
   public void visitFieldName(@NotNull ReasonMLFieldName o) {
     visitPsiElement(o);
   }
@@ -83,11 +87,11 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitRecordField(@NotNull ReasonMLRecordField o) {
+  public void visitRecordBody(@NotNull ReasonMLRecordBody o) {
     visitPsiElement(o);
   }
 
-  public void visitShortId(@NotNull ReasonMLShortId o) {
+  public void visitRecordField(@NotNull ReasonMLRecordField o) {
     visitPsiElement(o);
   }
 

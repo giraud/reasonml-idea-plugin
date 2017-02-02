@@ -52,6 +52,12 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
 
   @Override
   @Nullable
+  public ReasonMLRecordBody getRecordBody() {
+    return findChildByClass(ReasonMLRecordBody.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLValuePath getValuePath() {
     return findChildByClass(ReasonMLValuePath.class);
   }

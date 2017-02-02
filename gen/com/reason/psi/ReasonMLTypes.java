@@ -14,6 +14,7 @@ public interface ReasonMLTypes {
   IElementType EXPR = new ReasonMLElementType("EXPR");
   IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
   IElementType FIELD = new ReasonMLElementType("FIELD");
+  IElementType FIELD_EXPR = new ReasonMLElementType("FIELD_EXPR");
   IElementType FIELD_NAME = new ReasonMLElementType("FIELD_NAME");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
   IElementType JSX = new ReasonMLElementType("JSX");
@@ -27,8 +28,8 @@ public interface ReasonMLTypes {
   IElementType MODULE_STATEMENT = new ReasonMLElementType("MODULE_STATEMENT");
   IElementType PARAMETER = new ReasonMLElementType("PARAMETER");
   IElementType PATTERN_EXPR = new ReasonMLElementType("PATTERN_EXPR");
+  IElementType RECORD_BODY = new ReasonMLElementType("RECORD_BODY");
   IElementType RECORD_FIELD = new ReasonMLElementType("RECORD_FIELD");
-  IElementType SHORT_ID = new ReasonMLElementType("SHORT_ID");
   IElementType START_TAG = new ReasonMLElementType("START_TAG");
   IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
   IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
@@ -62,11 +63,13 @@ public interface ReasonMLTypes {
   IElementType LT = new ReasonMLTokenType("LT");
   IElementType MODULE = new ReasonMLTokenType("MODULE");
   IElementType NONE = new ReasonMLTokenType("NONE");
+  IElementType PLUS = new ReasonMLTokenType("PLUS");
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
   IElementType SEMI = new ReasonMLTokenType("SEMI");
   IElementType SHORTCUT = new ReasonMLTokenType("SHORTCUT");
+  IElementType SOME = new ReasonMLTokenType("SOME");
   IElementType STRING = new ReasonMLTokenType("STRING");
   IElementType TRUE = new ReasonMLTokenType("TRUE");
   IElementType TYPE = new ReasonMLTokenType("TYPE");
@@ -93,6 +96,9 @@ public interface ReasonMLTypes {
       }
       else if (type == FIELD) {
         return new ReasonMLFieldImpl(node);
+      }
+      else if (type == FIELD_EXPR) {
+        return new ReasonMLFieldExprImpl(node);
       }
       else if (type == FIELD_NAME) {
         return new ReasonMLFieldNameImpl(node);
@@ -133,11 +139,11 @@ public interface ReasonMLTypes {
       else if (type == PATTERN_EXPR) {
         return new ReasonMLPatternExprImpl(node);
       }
+      else if (type == RECORD_BODY) {
+        return new ReasonMLRecordBodyImpl(node);
+      }
       else if (type == RECORD_FIELD) {
         return new ReasonMLRecordFieldImpl(node);
-      }
-      else if (type == SHORT_ID) {
-        return new ReasonMLShortIdImpl(node);
       }
       else if (type == START_TAG) {
         return new ReasonMLStartTagImpl(node);

@@ -42,13 +42,13 @@ include_statement ::=
 // ----------
 
 type_statement ::=
-      TYPE short_id type_definition? SEMI {
+      TYPE type_expr type_definition? SEMI {
 //        pin=1 recoverWhile=recover_statement
         methods=[getPresentation]
     }
 
 type_definition ::=
-    EQUAL LBRACE record_field (COMMA record_field)* RBRACE
+    EQUAL LBRACE record_body RBRACE
 
 // ----------
 // expr
@@ -61,10 +61,12 @@ expr_statement ::=
 expr ::=
       constant
     | NONE
+    | SOME expr
     | value_path argument+
     | jsx
+    | LBRACE record_body RBRACE
     | LPAREN expr RPAREN
-
+    | expr PLUS expr
 
 argument ::=
       constant
@@ -106,7 +108,7 @@ let_binding ::=
 
 let_binding_body ::=
       EQUAL (expr | FUN)
-    | (parameter)* ARROW (LBRACE expr (SEMI expr)* RBRACE | expr)
+    | (parameter)* ARROW (LBRACE (expr (SEMI expr)* | record_body) RBRACE | expr)
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
@@ -137,11 +139,16 @@ type_constr_name ::=
 
 // ----------
 
-record_field ::=
-    short_id (COLON short_id)?
+record_body ::=
+    record_field (COMMA record_field)*
 
-short_id ::=
-    UIDENT | LIDENT
+record_field ::=
+    field_name (COLON field_expr)?
+
+field_expr ::=
+      constant
+    | value_path (DOT value_name)?
+    | field_expr PLUS field_expr
 
 // ----------
 // CONSTANTS

@@ -50,8 +50,6 @@ FLOAT_LITERAL=[0-9] [0-9_]* ("." [0-9_]* )? ([eE] [+-]? [0-9] [0-9_]* )?
 HEX_FLOAT_LITERAL="0" [xX] [0-9A-Fa-f] [0-9A-Fa-f_]* ("." [0-9A-Fa-f_]* )? ([pP] [+-]? [0-9] [0-9_]* )?
 LITERAL_MODIFIER=[G-Zg-z]
 
-ARROW=[=>]
-
 %state WAITING_VALUE
 %state INITIAL
 %state IN_STRING
@@ -73,7 +71,7 @@ ARROW=[=>]
     "fun"     { return FUN; }
 
     "None"    { return NONE; }
-//    "Some"    { return SOME; }
+    "Some"    { return SOME; }
 
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
@@ -103,7 +101,7 @@ ARROW=[=>]
     ">"  { return GT; }
 
 
-//    "+"  { return PLUS; }
+    "+"  { return PLUS; }
 //    "+." { return PLUSDOT; }
 //    "-"  { return MINUS; }
 //    "-." { return MINUSDOT; }

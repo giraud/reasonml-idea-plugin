@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLRecordField extends PsiElement {
 
+  @Nullable
+  ReasonMLFieldExpr getFieldExpr();
+
   @NotNull
-  List<ReasonMLShortId> getShortIdList();
+  ReasonMLFieldName getFieldName();
 
 }
