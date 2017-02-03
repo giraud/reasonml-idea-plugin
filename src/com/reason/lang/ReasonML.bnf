@@ -16,7 +16,7 @@
 }
 
 reasonFile ::=
-    ( COMMENT | module_statement | include_statement | let_binding | expr_statement | type_statement )*
+    ( COMMENT | module_statement | include_statement | let_binding | expr_statement | type_statement | external_statement )*
 
 // ----------
 // MODULE
@@ -47,8 +47,30 @@ type_statement ::=
         methods=[getPresentation]
     }
 
+// https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
+type_expr ::=
+    type_constr (ARROW type_constr)*
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
+type_constr ::=
+    (module_path DOT)? type_constr_name
+
+// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr-name
+type_constr_name ::=
+    LIDENT
+
 type_definition ::=
     EQUAL LBRACE record_body RBRACE
+
+// ----------
+// external
+// ----------
+
+external_statement ::=
+    EXTERNAL value_name COLON type_expr EQUAL external_alias? bs_directive* SEMI { methods=[getPresentation] }
+
+external_alias ::=
+    STRING
 
 // ----------
 // expr
@@ -125,18 +147,6 @@ pattern_expr ::=
 field ::=
     (module_path DOT)? field_name
 
-// https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
-type_expr ::=
-    type_constr
-
-// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
-type_constr ::=
-    type_constr_name
-
-// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr-name
-type_constr_name ::=
-    LIDENT
-
 // ----------
 
 record_body ::=
@@ -192,3 +202,10 @@ field_name ::=
 
 module_name ::=
     UIDENT
+
+// ----------
+// BUCKLESCRIPT
+// ----------
+
+bs_directive ::=
+    LBRACKET BBS DOT (value_name|MODULE) constant? RBRACKET

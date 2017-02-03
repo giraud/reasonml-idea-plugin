@@ -27,6 +27,12 @@ public class ReasonMLTypeConstrImpl extends ASTWrapperPsiElement implements Reas
   }
 
   @Override
+  @Nullable
+  public ReasonMLModulePath getModulePath() {
+    return findChildByClass(ReasonMLModulePath.class);
+  }
+
+  @Override
   @NotNull
   public ReasonMLTypeConstrName getTypeConstrName() {
     return findNotNullChildByClass(ReasonMLTypeConstrName.class);

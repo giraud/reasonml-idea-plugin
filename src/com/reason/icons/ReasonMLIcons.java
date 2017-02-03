@@ -1,4 +1,4 @@
-package com.reason.ide;
+package com.reason.icons;
 
 import com.intellij.openapi.util.IconLoader;
 
@@ -13,4 +13,5 @@ public class ReasonMLIcons {
     public static final Icon LET = getIcon("/nodes/field.png");
     public static final Icon TYPE = getIcon("/nodes/annotationtype.png");
     public static final Icon FUNCTION = getIcon("/nodes/function.png");
+    public static final Icon EXTERNAL = getIcon("/nodes/enum.png");
 }

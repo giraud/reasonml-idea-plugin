@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLTypeConstr extends PsiElement {
+public interface ReasonMLBsDirective extends PsiElement {
 
   @Nullable
-  ReasonMLModulePath getModulePath();
+  ReasonMLConstant getConstant();
 
-  @NotNull
-  ReasonMLTypeConstrName getTypeConstrName();
+  @Nullable
+  ReasonMLValueName getValueName();
 
 }

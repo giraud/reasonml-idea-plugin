@@ -9,10 +9,13 @@ import com.reason.psi.impl.*;
 public interface ReasonMLTypes {
 
   IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
+  IElementType BS_DIRECTIVE = new ReasonMLElementType("BS_DIRECTIVE");
   IElementType CONSTANT = new ReasonMLElementType("CONSTANT");
   IElementType END_TAG = new ReasonMLElementType("END_TAG");
   IElementType EXPR = new ReasonMLElementType("EXPR");
   IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
+  IElementType EXTERNAL_ALIAS = new ReasonMLElementType("EXTERNAL_ALIAS");
+  IElementType EXTERNAL_STATEMENT = new ReasonMLElementType("EXTERNAL_STATEMENT");
   IElementType FIELD = new ReasonMLElementType("FIELD");
   IElementType FIELD_EXPR = new ReasonMLElementType("FIELD_EXPR");
   IElementType FIELD_NAME = new ReasonMLElementType("FIELD_NAME");
@@ -43,12 +46,14 @@ public interface ReasonMLTypes {
 
   IElementType ARROW = new ReasonMLTokenType("ARROW");
   IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
+  IElementType BBS = new ReasonMLTokenType("BBS");
   IElementType CLOSE_TAG = new ReasonMLTokenType("CLOSE_TAG");
   IElementType COLON = new ReasonMLTokenType("COLON");
   IElementType COMMA = new ReasonMLTokenType("COMMA");
   IElementType COMMENT = new ReasonMLTokenType("COMMENT");
   IElementType DOT = new ReasonMLTokenType("DOT");
   IElementType EQUAL = new ReasonMLTokenType("EQUAL");
+  IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
   IElementType FALSE = new ReasonMLTokenType("FALSE");
   IElementType FLOAT = new ReasonMLTokenType("FLOAT");
   IElementType FUN = new ReasonMLTokenType("FUN");
@@ -82,6 +87,9 @@ public interface ReasonMLTypes {
        if (type == ARGUMENT) {
         return new ReasonMLArgumentImpl(node);
       }
+      else if (type == BS_DIRECTIVE) {
+        return new ReasonMLBsDirectiveImpl(node);
+      }
       else if (type == CONSTANT) {
         return new ReasonMLConstantImpl(node);
       }
@@ -93,6 +101,12 @@ public interface ReasonMLTypes {
       }
       else if (type == EXPR_STATEMENT) {
         return new ReasonMLExprStatementImpl(node);
+      }
+      else if (type == EXTERNAL_ALIAS) {
+        return new ReasonMLExternalAliasImpl(node);
+      }
+      else if (type == EXTERNAL_STATEMENT) {
+        return new ReasonMLExternalStatementImpl(node);
       }
       else if (type == FIELD) {
         return new ReasonMLFieldImpl(node);

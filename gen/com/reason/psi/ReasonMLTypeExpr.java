@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLTypeExpr extends PsiElement {
 
   @NotNull
-  ReasonMLTypeConstr getTypeConstr();
+  List<ReasonMLTypeConstr> getTypeConstrList();
 
 }

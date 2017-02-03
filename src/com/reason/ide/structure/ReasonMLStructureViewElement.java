@@ -60,10 +60,11 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
             ReasonMLModuleStatement[] modules = PsiTreeUtil.getChildrenOfType(element, ReasonMLModuleStatement.class);
             ReasonMLLetBinding[] lets = PsiTreeUtil.getChildrenOfType(element, ReasonMLLetBinding.class);
             ReasonMLTypeStatement[] types = PsiTreeUtil.getChildrenOfType(element, ReasonMLTypeStatement.class);
+            ReasonMLExternalStatement[] externals = PsiTreeUtil.getChildrenOfType(element, ReasonMLExternalStatement.class);
 
             List<TreeElement> treeElements;
-            if (modules != null || lets != null || types != null) {
-                treeElements = new ArrayList<>((modules == null ? 0 : modules.length) + (lets == null ? 0 : lets.length) + (types != null ? types.length : 0));
+            if (modules != null || lets != null || types != null || externals != null) {
+                treeElements = new ArrayList<>((modules == null ? 0 : modules.length) + (lets == null ? 0 : lets.length) + (types == null ? 0 : types.length) + (externals == null ? 0 : externals.length));
 
                 if (modules != null) {
                     for (ReasonMLModuleStatement module : modules) {
@@ -78,6 +79,11 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
                 if (lets != null) {
                     for (ReasonMLLetBinding let : lets) {
                         treeElements.add(new ReasonMLStructureViewElement(let));
+                    }
+                }
+                if (externals != null) {
+                    for (ReasonMLExternalStatement external : externals) {
+                        treeElements.add(new ReasonMLStructureViewElement(external));
                     }
                 }
 

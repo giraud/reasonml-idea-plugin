@@ -11,6 +11,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBsDirective(@NotNull ReasonMLBsDirective o) {
+    visitPsiElement(o);
+  }
+
   public void visitConstant(@NotNull ReasonMLConstant o) {
     visitPsiElement(o);
   }
@@ -24,6 +28,14 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitExprStatement(@NotNull ReasonMLExprStatement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExternalAlias(@NotNull ReasonMLExternalAlias o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExternalStatement(@NotNull ReasonMLExternalStatement o) {
     visitPsiElement(o);
   }
 

@@ -2,11 +2,8 @@ package com.reason.psi.impl;
 
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.tree.IElementType;
-import com.reason.ide.ReasonMLIcons;
-import com.reason.psi.ReasonMLLetBinding;
-import com.reason.psi.ReasonMLLetBindingBody;
-import com.reason.psi.ReasonMLModuleStatement;
-import com.reason.psi.ReasonMLTypeStatement;
+import com.reason.icons.ReasonMLIcons;
+import com.reason.psi.*;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -83,4 +80,35 @@ public class ReasonMLPsiImplUtil {
             }
         };
     }
+
+    public static ItemPresentation getPresentation(final ReasonMLExternalStatement external) {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
+                String externalName = external.getValueName().getText();
+                if (externalAlias == null) {
+                    return externalName;
+                }
+
+                String externalAliasText = externalAlias.getText();
+                String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
+                return externalAliasName.equals(externalName) ? externalName : externalAliasName + ": " + externalName;
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return ReasonMLIcons.EXTERNAL;
+            }
+        };
+    }
+
 }

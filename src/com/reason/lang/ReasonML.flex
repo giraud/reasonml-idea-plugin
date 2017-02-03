@@ -64,14 +64,15 @@ LITERAL_MODIFIER=[G-Zg-z]
 <INITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
 
-    "module"  { return MODULE;}
-    "include" { return INCLUDE; }
-    "type"    { return TYPE; }
-    "let"     { return LET; }
-    "fun"     { return FUN; }
+    "module"    { return MODULE;}
+    "include"   { return INCLUDE; }
+    "type"      { return TYPE; }
+    "let"       { return LET; }
+    "fun"       { return FUN; }
+    "external"  { return EXTERNAL; }
 
-    "None"    { return NONE; }
-    "Some"    { return SOME; }
+    "None"      { return NONE; }
+    "Some"      { return SOME; }
 
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
@@ -81,8 +82,10 @@ LITERAL_MODIFIER=[G-Zg-z]
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
 
-    "::" { return SHORTCUT; }
-    "=>" { return ARROW; }
+    "::"   { return SHORTCUT; }
+    "=>"   { return ARROW; }
+    "@@bs" { return BBS; }
+
     "="  { return EQUAL; }
     ","  { return COMMA; }
     ":"  { return COLON; }

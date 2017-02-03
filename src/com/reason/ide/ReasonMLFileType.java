@@ -1,6 +1,7 @@
 package com.reason.ide;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.reason.icons.ReasonMLIcons;
 import com.reason.lang.ReasonMLLanguage;
 import org.jetbrains.annotations.*;
 
