@@ -58,7 +58,7 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
     public TreeElement[] getChildren() {
         if (element instanceof ReasonMLFile) {
             ReasonMLModuleStatement[] modules = PsiTreeUtil.getChildrenOfType(element, ReasonMLModuleStatement.class);
-            ReasonMLLetBinding[] lets = PsiTreeUtil.getChildrenOfType(element, ReasonMLLetBinding.class);
+            ReasonMLLetStatement[] lets = PsiTreeUtil.getChildrenOfType(element, ReasonMLLetStatement.class);
             ReasonMLTypeStatement[] types = PsiTreeUtil.getChildrenOfType(element, ReasonMLTypeStatement.class);
             ReasonMLExternalStatement[] externals = PsiTreeUtil.getChildrenOfType(element, ReasonMLExternalStatement.class);
 
@@ -77,7 +77,7 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
                     }
                 }
                 if (lets != null) {
-                    for (ReasonMLLetBinding let : lets) {
+                    for (ReasonMLLetStatement let : lets) {
                         treeElements.add(new ReasonMLStructureViewElement(let));
                     }
                 }
@@ -91,7 +91,7 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
             }
         } else if (element instanceof ReasonMLModuleStatement) {
             ReasonMLModuleBody moduleBody = ((ReasonMLModuleStatement) element).getModuleBody();
-            ReasonMLLetBinding[] lets = PsiTreeUtil.getChildrenOfType(moduleBody, ReasonMLLetBinding.class);
+            ReasonMLLetStatement[] lets = PsiTreeUtil.getChildrenOfType(moduleBody, ReasonMLLetStatement.class);
             ReasonMLTypeStatement[] types = PsiTreeUtil.getChildrenOfType(moduleBody, ReasonMLTypeStatement.class);
 
             List<TreeElement> treeElements;
@@ -104,7 +104,7 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
                     }
                 }
                 if (lets != null) {
-                    for (ReasonMLLetBinding let : lets) {
+                    for (ReasonMLLetStatement let : lets) {
                         treeElements.add(new ReasonMLStructureViewElement(let));
                     }
                 }

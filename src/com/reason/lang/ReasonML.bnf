@@ -16,11 +16,14 @@
 }
 
 reasonFile ::=
-    ( COMMENT | module_statement | include_statement | let_binding | expr_statement | type_statement | external_statement )*
+    ( COMMENT | open_statement | module_statement | include_statement | let_statement | expr_statement | type_statement | external_statement )*
 
 // ----------
 // MODULE
 // ----------
+
+open_statement ::=
+    OPEN module_path SEMI
 
 module_statement ::=
     MODULE module_name EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
@@ -29,7 +32,7 @@ module_body ::=
     (  module_statement
     | include_statement
     | type_statement
-    | let_binding )*
+    | let_statement )*
 
 module_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/modules.html#module-expr
       module_path
@@ -39,28 +42,29 @@ include_statement ::=
 
 // ----------
 // TYPE
+//   https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 // ----------
 
 type_statement ::=
-      TYPE type_expr type_definition? SEMI {
-//        pin=1 recoverWhile=recover_statement
+     TYPE type_constr_name (EQUAL type_information)? SEMI {
         methods=[getPresentation]
     }
 
+type_information ::=
+    type_constr? (tuple_type_decl | record_type_decl)
+
 // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 type_expr ::=
-    type_constr (ARROW type_constr)*
+      LIDENT
+    | type_constr (type_expr | (ARROW type_constr)*)
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
 type_constr ::=
     (module_path DOT)? type_constr_name
 
-// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr-name
-type_constr_name ::=
-    LIDENT
-
-type_definition ::=
-    EQUAL LBRACE record_body RBRACE
+poly_type_expr ::= /*?*/
+      type_expr
+    | OPTION type_constr
 
 // ----------
 // external
@@ -81,21 +85,25 @@ expr_statement ::=
     expr+ SEMI
 
 expr ::=
-      constant
-    | NONE
-    | SOME expr
-    | value_path argument+
-    | jsx
-    | LBRACE record_body RBRACE
+      NONE
+    | SOME (LBRACE expr RBRACE | expr)
+    | FUN fun_decl
     | LPAREN expr RPAREN
-    | expr PLUS expr
+    | let_binding
+    | constant
+    | jsx
+    | field_decl (COMMA field_decl)*
+    | value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr)?
+
+value_expr ::=
+    value_path (DOT value_path)* (SHARP SHARP value_name | argument*)
 
 argument ::=
       constant
-    | value_name (DOT field)?
+    | value_name (SHARP SHARP value_name | DOT field)?
     | jsx
-    | LBRACE record_field RBRACE
-    | SHORTCUT value_name
+    | record_decl
+    | SHORTCUT value_name (EQUAL QUESTION_MARK)?
 
 // ----------
 // JSX
@@ -114,28 +122,37 @@ tag_property ::=
     value_name EQUAL (LPAREN expr RPAREN | constant)
 
 jsxContent ::=
-    LPAREN expr RPAREN
+      COMMENT
+    | LPAREN expr RPAREN
+    | jsx
 
 // ----------
 // LET
 // ----------
 
-let_binding ::=
-    LET value_name let_binding_body SEMI {
-//        pin=1 recoverWhile=recover_statement
+let_statement ::=
+    let_binding SEMI {
+        //pin=1 recoverWhile=recover_statement
         methods=[getPresentation]
     }
 
-//private recover_statement ::= !(SEMI)
+let_binding ::=
+    LET value_name let_binding_body
 
 let_binding_body ::=
-      EQUAL (expr | FUN)
-    | (parameter)* ARROW (LBRACE (expr (SEMI expr)* | record_body) RBRACE | expr)
+      EQUAL ( expr | LBRACE expr (SEMI expr)* RBRACE )
+    | fun_decl
+
+fun_decl ::=
+    (parameter)* ARROW (
+          LBRACE expr (SEMI expr)* RBRACE
+        | expr
+    )
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
       pattern_expr
-    | SHORTCUT value_name
+    | SHORTCUT value_name (EQUAL QUESTION_MARK)?
     | LPAREN pattern_expr (DOT type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE
 
@@ -148,17 +165,26 @@ field ::=
     (module_path DOT)? field_name
 
 // ----------
+// RECORD / tuple
+// ----------
 
-record_body ::=
-    record_field (COMMA record_field)*
+record_type_decl ::=
+    LBRACE (DOT|DOT DOT)? field_type_decl (COMMA field_type_decl)* RBRACE
 
-record_field ::=
-    field_name (COLON field_expr)?
+field_type_decl ::=
+    field_name COLON poly_type_expr
 
-field_expr ::=
-      constant
-    | value_path (DOT value_name)?
-    | field_expr PLUS field_expr
+tuple_type_decl ::=
+    LPAREN tuple_type_field_decl (COMMA tuple_type_field_decl)* RPAREN
+
+tuple_type_field_decl ::=
+    poly_type_expr
+
+record_decl ::=
+    LBRACE field_decl (COMMA field_decl)* RBRACE
+
+field_decl ::=
+    field_name COLON expr
 
 // ----------
 // CONSTANTS
@@ -173,6 +199,7 @@ constant ::=
     | TRUE
     | UNIT
     | LBRACKET RBRACKET
+    | LPAREN RPAREN
 
 // ----------
 // REFERRING NAMED OBJECTS
@@ -203,9 +230,12 @@ field_name ::=
 module_name ::=
     UIDENT
 
+type_constr_name ::=
+    LIDENT
+
 // ----------
 // BUCKLESCRIPT
 // ----------
 
 bs_directive ::=
-    LBRACKET BBS DOT (value_name|MODULE) constant? RBRACKET
+    LBRACKET (BBS|BS) DOT (value_name|MODULE) constant? RBRACKET

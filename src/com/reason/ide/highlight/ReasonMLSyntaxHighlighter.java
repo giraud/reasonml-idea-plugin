@@ -9,6 +9,7 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.ReasonMLLexerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,33 +18,33 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.reason.psi.ReasonMLTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
-    private static final Set<IElementType> KEYWORD_TYPES = of(MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, BBS);
-    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW, SHORTCUT, COLON, PLUS);
-    private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME);
+    private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, BBS);
+    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK);
+    private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 
     public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
-    public static final TextAttributesKey TAG = createTextAttributesKey("REASONML_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
+    public static final TextAttributesKey TAG_ = createTextAttributesKey("REASONML_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
     public static final TextAttributesKey MODULE_NAME_ = createTextAttributesKey("REASONML_UIDENT", DefaultLanguageHighlighterColors.CLASS_NAME);
-    public static final TextAttributesKey OPTION = createTextAttributesKey("REASONML_OPTION");
-    public static final TextAttributesKey KEYWORD = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey SEMICOLON = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
-    public static final TextAttributesKey BRACKETS = createTextAttributesKey("REASONML_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
-    public static final TextAttributesKey BRACES = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
-    public static final TextAttributesKey PARENS = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
-    public static final TextAttributesKey OPERATION_SIGN = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-    public static final TextAttributesKey BAD_CHAR = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
+    public static final TextAttributesKey OPTION_ = createTextAttributesKey("REASONML_OPTION");
+    public static final TextAttributesKey KEYWORD_ = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey SEMICOLON_ = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
+    public static final TextAttributesKey BRACKETS_ = createTextAttributesKey("REASONML_BRACKETS", DefaultLanguageHighlighterColors.BRACKETS);
+    public static final TextAttributesKey BRACES_ = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
+    public static final TextAttributesKey PARENS_ = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
+    public static final TextAttributesKey OPERATION_SIGN_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+    private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
-    private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES};
-    private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS};
-    public static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION};
-    private static final TextAttributesKey[] TAG_KEYS = new TextAttributesKey[]{TAG};
-    private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
-    private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON};
-    private static final TextAttributesKey[] OPERATION_SIGN_KEYS = new TextAttributesKey[]{OPERATION_SIGN};
-    private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR};
+    private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
+    private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
+    private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
+    private static final TextAttributesKey[] TAG_KEYS = new TextAttributesKey[]{TAG_};
+    private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
+    private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
+    private static final TextAttributesKey[] OPERATION_SIGN_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
+    private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
     @NotNull
@@ -82,9 +83,7 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
 
     private static Set<IElementType> of(IElementType... types) {
         Set<IElementType> result = new HashSet<>();
-        for (IElementType type : types) {
-            result.add(type);
-        }
+        Collections.addAll(result, types);
         return result;
     }
 }

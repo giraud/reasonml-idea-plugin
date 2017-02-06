@@ -10,10 +10,7 @@ public interface ReasonMLLetBindingBody extends PsiElement {
   @NotNull
   List<ReasonMLExpr> getExprList();
 
-  @NotNull
-  List<ReasonMLParameter> getParameterList();
-
   @Nullable
-  ReasonMLRecordBody getRecordBody();
+  ReasonMLFunDecl getFunDecl();
 
 }

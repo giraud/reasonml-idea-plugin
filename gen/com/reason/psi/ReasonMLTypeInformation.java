@@ -5,18 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLFieldExpr extends PsiElement {
+public interface ReasonMLTypeInformation extends PsiElement {
 
   @Nullable
-  ReasonMLConstant getConstant();
-
-  @NotNull
-  List<ReasonMLFieldExpr> getFieldExprList();
+  ReasonMLRecordTypeDecl getRecordTypeDecl();
 
   @Nullable
-  ReasonMLValueName getValueName();
+  ReasonMLTupleTypeDecl getTupleTypeDecl();
 
   @Nullable
-  ReasonMLValuePath getValuePath();
+  ReasonMLTypeConstr getTypeConstr();
 
 }

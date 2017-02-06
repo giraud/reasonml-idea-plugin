@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLLetBinding extends PsiElement {
+public interface ReasonMLPolyTypeExpr extends PsiElement {
 
-  @NotNull
-  ReasonMLLetBindingBody getLetBindingBody();
+  @Nullable
+  ReasonMLTypeConstr getTypeConstr();
 
-  @NotNull
-  ReasonMLValueName getValueName();
+  @Nullable
+  ReasonMLTypeExpr getTypeExpr();
 
 }

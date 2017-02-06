@@ -35,12 +35,21 @@ public class ReasonMLPsiImplUtil {
         };
     }
 
-    public static ItemPresentation getPresentation(final ReasonMLLetBinding let) {
+    public static ItemPresentation getPresentation(final ReasonMLLetStatement let) {
+        ReasonMLLetBindingBody body = let.getLetBinding().getLetBindingBody();
+        IElementType elementType = body.getFirstChild().getNode().getElementType();
+        boolean isField = EQUAL.equals(elementType);
+
         return new ItemPresentation() {
             @Nullable
             @Override
             public String getPresentableText() {
-                return let.getValueName().getText();
+                String letName = let.getLetBinding().getValueName().getText();
+                if (isField) {
+                    return letName;
+                }
+
+                return letName + "(..)";
             }
 
             @Nullable
@@ -52,9 +61,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                ReasonMLLetBindingBody body = let.getLetBindingBody();
-                IElementType elementType = body.getFirstChild().getNode().getElementType();
-                return EQUAL.equals(elementType) ? ReasonMLIcons.LET : ReasonMLIcons.FUNCTION;
+                return isField ? ReasonMLIcons.LET : ReasonMLIcons.FUNCTION;
             }
         };
     }
@@ -64,7 +71,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public String getPresentableText() {
-                return type.getTypeExpr().getText();
+                return type.getTypeConstrName().getText();
             }
 
             @Nullable
@@ -94,7 +101,7 @@ public class ReasonMLPsiImplUtil {
 
                 String externalAliasText = externalAlias.getText();
                 String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
-                return externalAliasName.equals(externalName) ? externalName : externalAliasName + ": " + externalName;
+                return externalAliasName.equals(externalName) ? externalName : externalAliasName + " -> " + externalName;
             }
 
             @Nullable

@@ -17,36 +17,45 @@ public interface ReasonMLTypes {
   IElementType EXTERNAL_ALIAS = new ReasonMLElementType("EXTERNAL_ALIAS");
   IElementType EXTERNAL_STATEMENT = new ReasonMLElementType("EXTERNAL_STATEMENT");
   IElementType FIELD = new ReasonMLElementType("FIELD");
-  IElementType FIELD_EXPR = new ReasonMLElementType("FIELD_EXPR");
+  IElementType FIELD_DECL = new ReasonMLElementType("FIELD_DECL");
   IElementType FIELD_NAME = new ReasonMLElementType("FIELD_NAME");
+  IElementType FIELD_TYPE_DECL = new ReasonMLElementType("FIELD_TYPE_DECL");
+  IElementType FUN_DECL = new ReasonMLElementType("FUN_DECL");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
   IElementType JSX = new ReasonMLElementType("JSX");
   IElementType JSX_CONTENT = new ReasonMLElementType("JSX_CONTENT");
   IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
   IElementType LET_BINDING_BODY = new ReasonMLElementType("LET_BINDING_BODY");
+  IElementType LET_STATEMENT = new ReasonMLElementType("LET_STATEMENT");
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
   IElementType MODULE_EXPR = new ReasonMLElementType("MODULE_EXPR");
   IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
   IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
   IElementType MODULE_STATEMENT = new ReasonMLElementType("MODULE_STATEMENT");
+  IElementType OPEN_STATEMENT = new ReasonMLElementType("OPEN_STATEMENT");
   IElementType PARAMETER = new ReasonMLElementType("PARAMETER");
   IElementType PATTERN_EXPR = new ReasonMLElementType("PATTERN_EXPR");
-  IElementType RECORD_BODY = new ReasonMLElementType("RECORD_BODY");
-  IElementType RECORD_FIELD = new ReasonMLElementType("RECORD_FIELD");
+  IElementType POLY_TYPE_EXPR = new ReasonMLElementType("POLY_TYPE_EXPR");
+  IElementType RECORD_DECL = new ReasonMLElementType("RECORD_DECL");
+  IElementType RECORD_TYPE_DECL = new ReasonMLElementType("RECORD_TYPE_DECL");
   IElementType START_TAG = new ReasonMLElementType("START_TAG");
   IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
   IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
+  IElementType TUPLE_TYPE_DECL = new ReasonMLElementType("TUPLE_TYPE_DECL");
+  IElementType TUPLE_TYPE_FIELD_DECL = new ReasonMLElementType("TUPLE_TYPE_FIELD_DECL");
   IElementType TYPE_CONSTR = new ReasonMLElementType("TYPE_CONSTR");
   IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
-  IElementType TYPE_DEFINITION = new ReasonMLElementType("TYPE_DEFINITION");
   IElementType TYPE_EXPR = new ReasonMLElementType("TYPE_EXPR");
+  IElementType TYPE_INFORMATION = new ReasonMLElementType("TYPE_INFORMATION");
   IElementType TYPE_STATEMENT = new ReasonMLElementType("TYPE_STATEMENT");
+  IElementType VALUE_EXPR = new ReasonMLElementType("VALUE_EXPR");
   IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
   IElementType VALUE_PATH = new ReasonMLElementType("VALUE_PATH");
 
   IElementType ARROW = new ReasonMLTokenType("ARROW");
   IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
   IElementType BBS = new ReasonMLTokenType("BBS");
+  IElementType BS = new ReasonMLTokenType("BS");
   IElementType CLOSE_TAG = new ReasonMLTokenType("CLOSE_TAG");
   IElementType COLON = new ReasonMLTokenType("COLON");
   IElementType COMMA = new ReasonMLTokenType("COMMA");
@@ -68,11 +77,15 @@ public interface ReasonMLTypes {
   IElementType LT = new ReasonMLTokenType("LT");
   IElementType MODULE = new ReasonMLTokenType("MODULE");
   IElementType NONE = new ReasonMLTokenType("NONE");
+  IElementType OPEN = new ReasonMLTokenType("OPEN");
+  IElementType OPTION = new ReasonMLTokenType("OPTION");
   IElementType PLUS = new ReasonMLTokenType("PLUS");
+  IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
   IElementType SEMI = new ReasonMLTokenType("SEMI");
+  IElementType SHARP = new ReasonMLTokenType("SHARP");
   IElementType SHORTCUT = new ReasonMLTokenType("SHORTCUT");
   IElementType SOME = new ReasonMLTokenType("SOME");
   IElementType STRING = new ReasonMLTokenType("STRING");
@@ -111,11 +124,17 @@ public interface ReasonMLTypes {
       else if (type == FIELD) {
         return new ReasonMLFieldImpl(node);
       }
-      else if (type == FIELD_EXPR) {
-        return new ReasonMLFieldExprImpl(node);
+      else if (type == FIELD_DECL) {
+        return new ReasonMLFieldDeclImpl(node);
       }
       else if (type == FIELD_NAME) {
         return new ReasonMLFieldNameImpl(node);
+      }
+      else if (type == FIELD_TYPE_DECL) {
+        return new ReasonMLFieldTypeDeclImpl(node);
+      }
+      else if (type == FUN_DECL) {
+        return new ReasonMLFunDeclImpl(node);
       }
       else if (type == INCLUDE_STATEMENT) {
         return new ReasonMLIncludeStatementImpl(node);
@@ -132,6 +151,9 @@ public interface ReasonMLTypes {
       else if (type == LET_BINDING_BODY) {
         return new ReasonMLLetBindingBodyImpl(node);
       }
+      else if (type == LET_STATEMENT) {
+        return new ReasonMLLetStatementImpl(node);
+      }
       else if (type == MODULE_BODY) {
         return new ReasonMLModuleBodyImpl(node);
       }
@@ -147,17 +169,23 @@ public interface ReasonMLTypes {
       else if (type == MODULE_STATEMENT) {
         return new ReasonMLModuleStatementImpl(node);
       }
+      else if (type == OPEN_STATEMENT) {
+        return new ReasonMLOpenStatementImpl(node);
+      }
       else if (type == PARAMETER) {
         return new ReasonMLParameterImpl(node);
       }
       else if (type == PATTERN_EXPR) {
         return new ReasonMLPatternExprImpl(node);
       }
-      else if (type == RECORD_BODY) {
-        return new ReasonMLRecordBodyImpl(node);
+      else if (type == POLY_TYPE_EXPR) {
+        return new ReasonMLPolyTypeExprImpl(node);
       }
-      else if (type == RECORD_FIELD) {
-        return new ReasonMLRecordFieldImpl(node);
+      else if (type == RECORD_DECL) {
+        return new ReasonMLRecordDeclImpl(node);
+      }
+      else if (type == RECORD_TYPE_DECL) {
+        return new ReasonMLRecordTypeDeclImpl(node);
       }
       else if (type == START_TAG) {
         return new ReasonMLStartTagImpl(node);
@@ -168,20 +196,29 @@ public interface ReasonMLTypes {
       else if (type == TAG_PROPERTY) {
         return new ReasonMLTagPropertyImpl(node);
       }
+      else if (type == TUPLE_TYPE_DECL) {
+        return new ReasonMLTupleTypeDeclImpl(node);
+      }
+      else if (type == TUPLE_TYPE_FIELD_DECL) {
+        return new ReasonMLTupleTypeFieldDeclImpl(node);
+      }
       else if (type == TYPE_CONSTR) {
         return new ReasonMLTypeConstrImpl(node);
       }
       else if (type == TYPE_CONSTR_NAME) {
         return new ReasonMLTypeConstrNameImpl(node);
       }
-      else if (type == TYPE_DEFINITION) {
-        return new ReasonMLTypeDefinitionImpl(node);
-      }
       else if (type == TYPE_EXPR) {
         return new ReasonMLTypeExprImpl(node);
       }
+      else if (type == TYPE_INFORMATION) {
+        return new ReasonMLTypeInformationImpl(node);
+      }
       else if (type == TYPE_STATEMENT) {
         return new ReasonMLTypeStatementImpl(node);
+      }
+      else if (type == VALUE_EXPR) {
+        return new ReasonMLValueExprImpl(node);
       }
       else if (type == VALUE_NAME) {
         return new ReasonMLValueNameImpl(node);

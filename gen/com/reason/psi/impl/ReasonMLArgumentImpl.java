@@ -46,14 +46,14 @@ public class ReasonMLArgumentImpl extends ASTWrapperPsiElement implements Reason
 
   @Override
   @Nullable
-  public ReasonMLRecordField getRecordField() {
-    return findChildByClass(ReasonMLRecordField.class);
+  public ReasonMLRecordDecl getRecordDecl() {
+    return findChildByClass(ReasonMLRecordDecl.class);
   }
 
   @Override
-  @Nullable
-  public ReasonMLValueName getValueName() {
-    return findChildByClass(ReasonMLValueName.class);
+  @NotNull
+  public List<ReasonMLValueName> getValueNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
   }
 
 }

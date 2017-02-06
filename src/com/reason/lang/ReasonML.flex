@@ -65,12 +65,14 @@ LITERAL_MODIFIER=[G-Zg-z]
     {WHITE_SPACE} { return WHITE_SPACE; }
 
     "module"    { return MODULE;}
+    "open"      { return OPEN; }
     "include"   { return INCLUDE; }
     "type"      { return TYPE; }
     "let"       { return LET; }
     "fun"       { return FUN; }
     "external"  { return EXTERNAL; }
 
+    "option"    { return OPTION; }
     "None"      { return NONE; }
     "Some"      { return SOME; }
 
@@ -85,6 +87,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "::"   { return SHORTCUT; }
     "=>"   { return ARROW; }
     "@@bs" { return BBS; }
+    "@bs"  { return BS; }
 
     "="  { return EQUAL; }
     ","  { return COMMA; }
@@ -97,6 +100,8 @@ LITERAL_MODIFIER=[G-Zg-z]
     "}"  { return RBRACE; }
     "["  { return LBRACKET; }
     "]"  { return RBRACKET; }
+    "#"  { return SHARP; }
+    "?"  { return QUESTION_MARK; }
 
     "/>" { return AUTO_CLOSE_TAG; }
     "</" { return CLOSE_TAG; }

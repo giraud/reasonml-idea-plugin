@@ -17,9 +17,9 @@ public interface ReasonMLArgument extends PsiElement {
   ReasonMLJsx getJsx();
 
   @Nullable
-  ReasonMLRecordField getRecordField();
+  ReasonMLRecordDecl getRecordDecl();
 
-  @Nullable
-  ReasonMLValueName getValueName();
+  @NotNull
+  List<ReasonMLValueName> getValueNameList();
 
 }

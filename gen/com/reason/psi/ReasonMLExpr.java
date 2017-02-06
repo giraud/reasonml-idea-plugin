@@ -7,22 +7,25 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLExpr extends PsiElement {
 
-  @NotNull
-  List<ReasonMLArgument> getArgumentList();
-
   @Nullable
   ReasonMLConstant getConstant();
 
   @Nullable
   ReasonMLExpr getExpr();
 
+  @NotNull
+  List<ReasonMLFieldDecl> getFieldDeclList();
+
+  @Nullable
+  ReasonMLFunDecl getFunDecl();
+
   @Nullable
   ReasonMLJsx getJsx();
 
   @Nullable
-  ReasonMLRecordBody getRecordBody();
+  ReasonMLLetBinding getLetBinding();
 
-  @Nullable
-  ReasonMLValuePath getValuePath();
+  @NotNull
+  List<ReasonMLValueExpr> getValueExprList();
 
 }

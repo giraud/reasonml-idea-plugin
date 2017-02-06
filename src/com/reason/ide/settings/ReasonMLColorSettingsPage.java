@@ -17,15 +17,15 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment", ReasonMLSyntaxHighlighter.COMMENT_),
             new AttributesDescriptor("Module name", ReasonMLSyntaxHighlighter.MODULE_NAME_),
-            new AttributesDescriptor("Option", ReasonMLSyntaxHighlighter.OPTION),
-            new AttributesDescriptor("Tag", ReasonMLSyntaxHighlighter.TAG),
-            new AttributesDescriptor("Keyword", ReasonMLSyntaxHighlighter.KEYWORD),
-            new AttributesDescriptor("Operation", ReasonMLSyntaxHighlighter.OPERATION_SIGN),
+            new AttributesDescriptor("Option", ReasonMLSyntaxHighlighter.OPTION_),
+            new AttributesDescriptor("Tag", ReasonMLSyntaxHighlighter.TAG_),
+            new AttributesDescriptor("Keyword", ReasonMLSyntaxHighlighter.KEYWORD_),
+            new AttributesDescriptor("Operation", ReasonMLSyntaxHighlighter.OPERATION_SIGN_),
             new AttributesDescriptor("String", ReasonMLSyntaxHighlighter.STRING_),
-            new AttributesDescriptor("Semicolon", ReasonMLSyntaxHighlighter.SEMICOLON),
-            new AttributesDescriptor("Braces", ReasonMLSyntaxHighlighter.BRACES),
-            new AttributesDescriptor("Brackets", ReasonMLSyntaxHighlighter.BRACKETS),
-            new AttributesDescriptor("Parenthesis", ReasonMLSyntaxHighlighter.PARENS),
+            new AttributesDescriptor("Semicolon", ReasonMLSyntaxHighlighter.SEMICOLON_),
+            new AttributesDescriptor("Braces", ReasonMLSyntaxHighlighter.BRACES_),
+            new AttributesDescriptor("Brackets", ReasonMLSyntaxHighlighter.BRACKETS_),
+            new AttributesDescriptor("Parenthesis", ReasonMLSyntaxHighlighter.PARENS_),
     };
 
     @Nullable

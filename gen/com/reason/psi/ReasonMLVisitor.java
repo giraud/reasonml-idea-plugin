@@ -43,11 +43,19 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFieldExpr(@NotNull ReasonMLFieldExpr o) {
+  public void visitFieldDecl(@NotNull ReasonMLFieldDecl o) {
     visitPsiElement(o);
   }
 
   public void visitFieldName(@NotNull ReasonMLFieldName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFieldTypeDecl(@NotNull ReasonMLFieldTypeDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFunDecl(@NotNull ReasonMLFunDecl o) {
     visitPsiElement(o);
   }
 
@@ -71,6 +79,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitLetStatement(@NotNull ReasonMLLetStatement o) {
+    visitPsiElement(o);
+  }
+
   public void visitModuleBody(@NotNull ReasonMLModuleBody o) {
     visitPsiElement(o);
   }
@@ -91,6 +103,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitOpenStatement(@NotNull ReasonMLOpenStatement o) {
+    visitPsiElement(o);
+  }
+
   public void visitParameter(@NotNull ReasonMLParameter o) {
     visitPsiElement(o);
   }
@@ -99,11 +115,15 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitRecordBody(@NotNull ReasonMLRecordBody o) {
+  public void visitPolyTypeExpr(@NotNull ReasonMLPolyTypeExpr o) {
     visitPsiElement(o);
   }
 
-  public void visitRecordField(@NotNull ReasonMLRecordField o) {
+  public void visitRecordDecl(@NotNull ReasonMLRecordDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitRecordTypeDecl(@NotNull ReasonMLRecordTypeDecl o) {
     visitPsiElement(o);
   }
 
@@ -119,6 +139,14 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitTupleTypeDecl(@NotNull ReasonMLTupleTypeDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTupleTypeFieldDecl(@NotNull ReasonMLTupleTypeFieldDecl o) {
+    visitPsiElement(o);
+  }
+
   public void visitTypeConstr(@NotNull ReasonMLTypeConstr o) {
     visitPsiElement(o);
   }
@@ -127,15 +155,19 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitTypeDefinition(@NotNull ReasonMLTypeDefinition o) {
-    visitPsiElement(o);
-  }
-
   public void visitTypeExpr(@NotNull ReasonMLTypeExpr o) {
     visitPsiElement(o);
   }
 
+  public void visitTypeInformation(@NotNull ReasonMLTypeInformation o) {
+    visitPsiElement(o);
+  }
+
   public void visitTypeStatement(@NotNull ReasonMLTypeStatement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitValueExpr(@NotNull ReasonMLValueExpr o) {
     visitPsiElement(o);
   }
 

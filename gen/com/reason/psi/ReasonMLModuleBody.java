@@ -11,7 +11,7 @@ public interface ReasonMLModuleBody extends PsiElement {
   List<ReasonMLIncludeStatement> getIncludeStatementList();
 
   @NotNull
-  List<ReasonMLLetBinding> getLetBindingList();
+  List<ReasonMLLetStatement> getLetStatementList();
 
   @NotNull
   List<ReasonMLModuleStatement> getModuleStatementList();

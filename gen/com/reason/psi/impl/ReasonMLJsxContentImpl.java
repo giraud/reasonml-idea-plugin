@@ -27,9 +27,15 @@ public class ReasonMLJsxContentImpl extends ASTWrapperPsiElement implements Reas
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ReasonMLExpr getExpr() {
-    return findNotNullChildByClass(ReasonMLExpr.class);
+    return findChildByClass(ReasonMLExpr.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLJsx getJsx() {
+    return findChildByClass(ReasonMLJsx.class);
   }
 
 }

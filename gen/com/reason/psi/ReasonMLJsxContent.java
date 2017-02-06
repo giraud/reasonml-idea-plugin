@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLJsxContent extends PsiElement {
 
-  @NotNull
+  @Nullable
   ReasonMLExpr getExpr();
+
+  @Nullable
+  ReasonMLJsx getJsx();
 
 }

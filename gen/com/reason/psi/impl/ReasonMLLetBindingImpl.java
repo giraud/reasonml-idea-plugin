@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
 public class ReasonMLLetBindingImpl extends ASTWrapperPsiElement implements ReasonMLLetBinding {
 
@@ -37,10 +36,6 @@ public class ReasonMLLetBindingImpl extends ASTWrapperPsiElement implements Reas
   @NotNull
   public ReasonMLValueName getValueName() {
     return findNotNullChildByClass(ReasonMLValueName.class);
-  }
-
-  public ItemPresentation getPresentation() {
-    return ReasonMLPsiImplUtil.getPresentation(this);
   }
 
 }
