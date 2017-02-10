@@ -56,6 +56,7 @@ public interface ReasonMLTypes {
   IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
   IElementType BBS = new ReasonMLTokenType("BBS");
   IElementType BS = new ReasonMLTokenType("BS");
+  IElementType CARRET = new ReasonMLTokenType("CARRET");
   IElementType CLOSE_TAG = new ReasonMLTokenType("CLOSE_TAG");
   IElementType COLON = new ReasonMLTokenType("COLON");
   IElementType COMMA = new ReasonMLTokenType("COMMA");

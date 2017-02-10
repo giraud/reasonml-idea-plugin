@@ -93,7 +93,7 @@ expr ::=
     | constant
     | jsx
     | field_decl (COMMA field_decl)*
-    | value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr)?
+    | value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr | CARRET value_expr)?
 
 value_expr ::=
     value_path (DOT value_path)* (SHARP SHARP value_name | argument*)

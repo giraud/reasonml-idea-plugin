@@ -355,7 +355,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   //     | constant
   //     | jsx
   //     | field_decl (COMMA field_decl)*
-  //     | value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr)?
+  //     | value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr | CARRET value_expr)?
   public static boolean expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr")) return false;
     boolean r;
@@ -464,7 +464,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr)?
+  // value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr | CARRET value_expr)?
   private static boolean expr_8(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_8")) return false;
     boolean r;
@@ -475,20 +475,21 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (QUESTION_MARK expr COLON expr | PLUS value_expr)?
+  // (QUESTION_MARK expr COLON expr | PLUS value_expr | CARRET value_expr)?
   private static boolean expr_8_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_8_1")) return false;
     expr_8_1_0(b, l + 1);
     return true;
   }
 
-  // QUESTION_MARK expr COLON expr | PLUS value_expr
+  // QUESTION_MARK expr COLON expr | PLUS value_expr | CARRET value_expr
   private static boolean expr_8_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_8_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = expr_8_1_0_0(b, l + 1);
     if (!r) r = expr_8_1_0_1(b, l + 1);
+    if (!r) r = expr_8_1_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -512,6 +513,17 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, PLUS);
+    r = r && value_expr(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CARRET value_expr
+  private static boolean expr_8_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "expr_8_1_0_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CARRET);
     r = r && value_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;

@@ -108,7 +108,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "<"  { return LT; }
     ">"  { return GT; }
 
-
+    "\^"  { return CARRET; }
     "+"  { return PLUS; }
 //    "+." { return PLUSDOT; }
 //    "-"  { return MINUS; }
