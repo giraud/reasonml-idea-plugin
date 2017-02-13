@@ -76,11 +76,14 @@ public interface ReasonMLTypes {
   IElementType LIDENT = new ReasonMLTokenType("LIDENT");
   IElementType LPAREN = new ReasonMLTokenType("LPAREN");
   IElementType LT = new ReasonMLTokenType("LT");
+  IElementType MINUS = new ReasonMLTokenType("MINUS");
+  IElementType MINUSDOT = new ReasonMLTokenType("MINUSDOT");
   IElementType MODULE = new ReasonMLTokenType("MODULE");
   IElementType NONE = new ReasonMLTokenType("NONE");
   IElementType OPEN = new ReasonMLTokenType("OPEN");
   IElementType OPTION = new ReasonMLTokenType("OPTION");
   IElementType PLUS = new ReasonMLTokenType("PLUS");
+  IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
   IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
@@ -88,7 +91,11 @@ public interface ReasonMLTypes {
   IElementType SEMI = new ReasonMLTokenType("SEMI");
   IElementType SHARP = new ReasonMLTokenType("SHARP");
   IElementType SHORTCUT = new ReasonMLTokenType("SHORTCUT");
+  IElementType SLASH = new ReasonMLTokenType("SLASH");
+  IElementType SLASHDOT = new ReasonMLTokenType("SLASHDOT");
   IElementType SOME = new ReasonMLTokenType("SOME");
+  IElementType STAR = new ReasonMLTokenType("STAR");
+  IElementType STARDOT = new ReasonMLTokenType("STARDOT");
   IElementType STRING = new ReasonMLTokenType("STRING");
   IElementType TRUE = new ReasonMLTokenType("TRUE");
   IElementType TYPE = new ReasonMLTokenType("TYPE");

@@ -28,20 +28,8 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
 
   @Override
   @Nullable
-  public ReasonMLConstant getConstant() {
-    return findChildByClass(ReasonMLConstant.class);
-  }
-
-  @Override
-  @Nullable
   public ReasonMLExpr getExpr() {
     return findChildByClass(ReasonMLExpr.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ReasonMLFieldDecl> getFieldDeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLFieldDecl.class);
   }
 
   @Override
@@ -63,9 +51,15 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
   }
 
   @Override
-  @NotNull
-  public List<ReasonMLValueExpr> getValueExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueExpr.class);
+  @Nullable
+  public ReasonMLValueExpr getValueExpr() {
+    return findChildByClass(ReasonMLValueExpr.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLValueName getValueName() {
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }

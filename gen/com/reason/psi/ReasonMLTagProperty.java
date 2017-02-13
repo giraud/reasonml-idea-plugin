@@ -13,7 +13,10 @@ public interface ReasonMLTagProperty extends PsiElement {
   @Nullable
   ReasonMLExpr getExpr();
 
+  @Nullable
+  ReasonMLRecordDecl getRecordDecl();
+
   @NotNull
-  ReasonMLValueName getValueName();
+  List<ReasonMLValueName> getValueNameList();
 
 }

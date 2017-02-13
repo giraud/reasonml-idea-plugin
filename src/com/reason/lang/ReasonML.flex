@@ -109,10 +109,14 @@ LITERAL_MODIFIER=[G-Zg-z]
     ">"  { return GT; }
 
     "\^"  { return CARRET; }
-    "+"  { return PLUS; }
-//    "+." { return PLUSDOT; }
-//    "-"  { return MINUS; }
-//    "-." { return MINUSDOT; }
+    "+."  { return PLUSDOT; }
+    "-."  { return MINUSDOT; }
+    "/."  { return SLASHDOT; }
+    "*."  { return STARDOT; }
+    "+"   { return PLUS; }
+    "-"   { return MINUS; }
+    "/"   { return SLASH; }
+    "*"   { return STAR; }
 }
 
 <IN_STRING> {

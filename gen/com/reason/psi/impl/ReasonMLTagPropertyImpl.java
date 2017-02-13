@@ -39,9 +39,15 @@ public class ReasonMLTagPropertyImpl extends ASTWrapperPsiElement implements Rea
   }
 
   @Override
+  @Nullable
+  public ReasonMLRecordDecl getRecordDecl() {
+    return findChildByClass(ReasonMLRecordDecl.class);
+  }
+
+  @Override
   @NotNull
-  public ReasonMLValueName getValueName() {
-    return findNotNullChildByClass(ReasonMLValueName.class);
+  public List<ReasonMLValueName> getValueNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
   }
 
 }

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLFieldDecl extends PsiElement {
 
-  @NotNull
+  @Nullable
   ReasonMLExpr getExpr();
 
   @NotNull

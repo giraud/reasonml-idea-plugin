@@ -86,17 +86,32 @@ expr_statement ::=
 
 expr ::=
       NONE
-    | SOME (LBRACE expr RBRACE | expr)
+    | SOME expr
     | FUN fun_decl
     | LPAREN expr RPAREN
-    | let_binding
-    | constant
+    | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
     | jsx
-    | field_decl (COMMA field_decl)*
-    | value_expr (QUESTION_MARK expr COLON expr | PLUS value_expr | CARRET value_expr)?
+    | let_binding
+    | value_expr (
+              LPAREN expr RPAREN
+            | QUESTION_MARK expr /*COLON expr*/
+            | PLUS expr
+            | PLUSDOT expr
+            | MINUS expr
+            | MINUSDOT expr
+            | SLASH expr
+            | SLASHDOT expr
+            | STAR expr
+            | STARDOT expr
+            | LT expr
+            | GT expr
+            | CARRET expr
+            | COLON expr (COMMA expr)*
+            | expr )*
 
 value_expr ::=
-    value_path (DOT value_path)* (SHARP SHARP value_name | argument*)
+      constant
+    | value_path (DOT value_path)* (SHARP SHARP value_name | argument*)
 
 argument ::=
       constant
@@ -119,7 +134,7 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQUAL (LPAREN expr RPAREN | constant)
+    value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name)
 
 jsxContent ::=
       COMMENT
@@ -184,7 +199,8 @@ record_decl ::=
     LBRACE field_decl (COMMA field_decl)* RBRACE
 
 field_decl ::=
-    field_name COLON expr
+      DOT DOT DOT field_name
+    | field_name COLON expr
 
 // ----------
 // CONSTANTS
@@ -225,7 +241,7 @@ tag_name ::=
     LIDENT | UIDENT
 
 field_name ::=
-    LIDENT
+    STRING | LIDENT
 
 module_name ::=
     UIDENT
