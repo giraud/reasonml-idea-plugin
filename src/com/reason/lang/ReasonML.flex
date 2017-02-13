@@ -76,6 +76,9 @@ LITERAL_MODIFIER=[G-Zg-z]
     "None"      { return NONE; }
     "Some"      { return SOME; }
 
+    "false" { return FALSE; }
+    "true"  { return TRUE; }
+
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
     {INT_LITERAL}{LITERAL_MODIFIER}? { return INT; }

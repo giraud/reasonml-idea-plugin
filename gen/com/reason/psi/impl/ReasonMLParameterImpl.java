@@ -27,6 +27,12 @@ public class ReasonMLParameterImpl extends ASTWrapperPsiElement implements Reaso
   }
 
   @Override
+  @Nullable
+  public ReasonMLConstant getConstant() {
+    return findChildByClass(ReasonMLConstant.class);
+  }
+
+  @Override
   @NotNull
   public List<ReasonMLField> getFieldList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLField.class);

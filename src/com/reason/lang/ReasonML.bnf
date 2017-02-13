@@ -94,7 +94,7 @@ expr ::=
     | let_binding
     | value_expr (
               LPAREN expr RPAREN
-            | QUESTION_MARK expr /*COLON expr*/
+            | QUESTION_MARK expr
             | PLUS expr
             | PLUSDOT expr
             | MINUS expr
@@ -106,7 +106,8 @@ expr ::=
             | LT expr
             | GT expr
             | CARRET expr
-            | COLON expr (COMMA expr)*
+            | COMMA expr
+            | COLON expr
             | expr )*
 
 value_expr ::=
@@ -118,7 +119,6 @@ argument ::=
     | value_name (SHARP SHARP value_name | DOT field)?
     | jsx
     | record_decl
-    | SHORTCUT value_name (EQUAL QUESTION_MARK)?
 
 // ----------
 // JSX
@@ -167,7 +167,7 @@ fun_decl ::=
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
       pattern_expr
-    | SHORTCUT value_name (EQUAL QUESTION_MARK)?
+    | SHORTCUT value_name (EQUAL (constant | QUESTION_MARK))?
     | LPAREN pattern_expr (DOT type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE
 

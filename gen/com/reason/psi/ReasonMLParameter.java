@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLParameter extends PsiElement {
 
+  @Nullable
+  ReasonMLConstant getConstant();
+
   @NotNull
   List<ReasonMLField> getFieldList();
 
