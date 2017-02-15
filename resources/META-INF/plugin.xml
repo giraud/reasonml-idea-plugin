@@ -20,6 +20,12 @@
          on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
 
+    <project-components>
+        <component>
+            <implementation-class>com.reason.ide.ReasonMLProjectTracker</implementation-class>
+        </component>
+    </project-components>
+
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.reason.ide.ReasonMLFileTypeFactory"/>
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.ReasonMLParserDefinition"/>
@@ -32,6 +38,10 @@
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.ReasonMLCommenter"/>
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.ReasonMLFoldingBuilder"/>
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
+
+        <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.merlin.SignatureProvider"/>
+
+        <projectService serviceInterface="com.reason.ide.merlin.MerlinService" serviceImplementation="com.reason.ide.merlin.MerlinServiceComponent"/>
     </extensions>
 
     <actions>
