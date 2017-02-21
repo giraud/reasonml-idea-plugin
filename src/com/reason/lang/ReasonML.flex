@@ -96,6 +96,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     ","  { return COMMA; }
     ":"  { return COLON; }
     ";"  { return SEMI; }
+    "'"  { return QUOTE; }
     "."  { return DOT; }
     "("  { return LPAREN; }
     ")"  { return RPAREN; }

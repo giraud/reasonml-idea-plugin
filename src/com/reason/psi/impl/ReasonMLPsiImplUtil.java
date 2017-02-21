@@ -93,15 +93,15 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public String getPresentableText() {
-                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
+//                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
                 String externalName = external.getValueName().getText();
-                if (externalAlias == null) {
+//                if (externalAlias == null) {
                     return externalName;
-                }
+//                }
 
-                String externalAliasText = externalAlias.getText();
-                String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
-                return externalAliasName.equals(externalName) ? externalName : externalAliasName + " -> " + externalName;
+//                String externalAliasText = externalAlias.getText();
+//                String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
+//                return externalAliasName.equals(externalName) ? externalName : externalAliasName + " -> " + externalName;
             }
 
             @Nullable

@@ -15,6 +15,7 @@ public interface ReasonMLTypes {
   IElementType EXPR = new ReasonMLElementType("EXPR");
   IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
   IElementType EXTERNAL_ALIAS = new ReasonMLElementType("EXTERNAL_ALIAS");
+  IElementType EXTERNAL_DECLARATION = new ReasonMLElementType("EXTERNAL_DECLARATION");
   IElementType EXTERNAL_STATEMENT = new ReasonMLElementType("EXTERNAL_STATEMENT");
   IElementType FIELD = new ReasonMLElementType("FIELD");
   IElementType FIELD_DECL = new ReasonMLElementType("FIELD_DECL");
@@ -85,6 +86,7 @@ public interface ReasonMLTypes {
   IElementType PLUS = new ReasonMLTokenType("PLUS");
   IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
   IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
+  IElementType QUOTE = new ReasonMLTokenType("QUOTE");
   IElementType RBRACE = new ReasonMLTokenType("RBRACE");
   IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
   IElementType RPAREN = new ReasonMLTokenType("RPAREN");
@@ -125,6 +127,9 @@ public interface ReasonMLTypes {
       }
       else if (type == EXTERNAL_ALIAS) {
         return new ReasonMLExternalAliasImpl(node);
+      }
+      else if (type == EXTERNAL_DECLARATION) {
+        return new ReasonMLExternalDeclarationImpl(node);
       }
       else if (type == EXTERNAL_STATEMENT) {
         return new ReasonMLExternalStatementImpl(node);

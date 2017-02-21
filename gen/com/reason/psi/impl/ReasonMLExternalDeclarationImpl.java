@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLTypeConstrImpl extends ASTWrapperPsiElement implements ReasonMLTypeConstr {
+public class ReasonMLExternalDeclarationImpl extends ASTWrapperPsiElement implements ReasonMLExternalDeclaration {
 
-  public ReasonMLTypeConstrImpl(ASTNode node) {
+  public ReasonMLExternalDeclarationImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitTypeConstr(this);
+    visitor.visitExternalDeclaration(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,21 +27,21 @@ public class ReasonMLTypeConstrImpl extends ASTWrapperPsiElement implements Reas
   }
 
   @Override
-  @Nullable
-  public ReasonMLBsDirective getBsDirective() {
-    return findChildByClass(ReasonMLBsDirective.class);
+  @NotNull
+  public List<ReasonMLBsDirective> getBsDirectiveList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBsDirective.class);
+  }
+
+  @Override
+  @NotNull
+  public ReasonMLExternalAlias getExternalAlias() {
+    return findNotNullChildByClass(ReasonMLExternalAlias.class);
   }
 
   @Override
   @Nullable
-  public ReasonMLModulePath getModulePath() {
-    return findChildByClass(ReasonMLModulePath.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTypeConstrName getTypeConstrName() {
-    return findChildByClass(ReasonMLTypeConstrName.class);
+  public ReasonMLValueName getValueName() {
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }

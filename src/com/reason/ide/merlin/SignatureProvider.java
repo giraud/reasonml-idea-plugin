@@ -3,6 +3,7 @@ package com.reason.ide.merlin;
 import com.intellij.codeInsight.hints.InlayInfo;
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
 import com.intellij.codeInsight.hints.MethodInfo;
+import com.intellij.codeInsight.hints.Option;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -60,5 +61,11 @@ public class SignatureProvider implements InlayParameterHintsProvider {
     @Override
     public Language getBlackListDependencyLanguage() {
         return null;
+    }
+
+    @NotNull
+    @Override
+    public List<Option> getSupportedOptions() {
+        return emptyList();
     }
 }

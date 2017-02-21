@@ -8,9 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLTypeConstr extends PsiElement {
 
   @Nullable
+  ReasonMLBsDirective getBsDirective();
+
+  @Nullable
   ReasonMLModulePath getModulePath();
 
-  @NotNull
+  @Nullable
   ReasonMLTypeConstrName getTypeConstrName();
 
 }
