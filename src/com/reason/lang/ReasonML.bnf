@@ -97,6 +97,7 @@ expr ::=
     | FUN fun_decl
     | LPAREN expr RPAREN
     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
+    | pattern_matching
     | jsx
     | let_binding
     | value_expr (
@@ -126,6 +127,19 @@ argument ::=
     | value_name (SHARP SHARP value_name | DOT field)?
     | jsx
     | record_decl
+
+// ----------
+// PATTERN
+//    https://caml.inria.fr/pub/docs/manual-ocaml/expr.html#pattern-matching
+// ----------
+
+pattern_matching ::=
+    PIPE pattern ARROW expr (PIPE pattern ARROW expr)*
+
+pattern ::=
+      NONE
+    | SOME value_name
+    | value_name
 
 // ----------
 // JSX
@@ -173,12 +187,12 @@ fun_decl ::=
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
-      pattern_expr
+      parameter_expr
     | SHORTCUT value_name (EQUAL (constant | QUESTION_MARK))?
-    | LPAREN pattern_expr (DOT type_expr)? RPAREN
+    | LPAREN parameter_expr (DOT type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE
 
-pattern_expr ::=
+parameter_expr ::=
       constant
     | value_name
 

@@ -20,6 +20,9 @@ public interface ReasonMLExpr extends PsiElement {
   ReasonMLLetBinding getLetBinding();
 
   @Nullable
+  ReasonMLPatternMatching getPatternMatching();
+
+  @Nullable
   ReasonMLValueExpr getValueExpr();
 
   @Nullable

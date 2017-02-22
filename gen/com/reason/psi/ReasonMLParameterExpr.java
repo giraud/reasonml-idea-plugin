@@ -5,19 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLParameter extends PsiElement {
+public interface ReasonMLParameterExpr extends PsiElement {
 
   @Nullable
   ReasonMLConstant getConstant();
-
-  @NotNull
-  List<ReasonMLField> getFieldList();
-
-  @Nullable
-  ReasonMLParameterExpr getParameterExpr();
-
-  @Nullable
-  ReasonMLTypeExpr getTypeExpr();
 
   @Nullable
   ReasonMLValueName getValueName();

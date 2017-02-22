@@ -35,7 +35,9 @@ public interface ReasonMLTypes {
   IElementType MODULE_STATEMENT = new ReasonMLElementType("MODULE_STATEMENT");
   IElementType OPEN_STATEMENT = new ReasonMLElementType("OPEN_STATEMENT");
   IElementType PARAMETER = new ReasonMLElementType("PARAMETER");
-  IElementType PATTERN_EXPR = new ReasonMLElementType("PATTERN_EXPR");
+  IElementType PARAMETER_EXPR = new ReasonMLElementType("PARAMETER_EXPR");
+  IElementType PATTERN = new ReasonMLElementType("PATTERN");
+  IElementType PATTERN_MATCHING = new ReasonMLElementType("PATTERN_MATCHING");
   IElementType POLY_TYPE_EXPR = new ReasonMLElementType("POLY_TYPE_EXPR");
   IElementType RECORD_DECL = new ReasonMLElementType("RECORD_DECL");
   IElementType RECORD_TYPE_DECL = new ReasonMLElementType("RECORD_TYPE_DECL");
@@ -83,6 +85,7 @@ public interface ReasonMLTypes {
   IElementType NONE = new ReasonMLTokenType("NONE");
   IElementType OPEN = new ReasonMLTokenType("OPEN");
   IElementType OPTION = new ReasonMLTokenType("OPTION");
+  IElementType PIPE = new ReasonMLTokenType("PIPE");
   IElementType PLUS = new ReasonMLTokenType("PLUS");
   IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
   IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
@@ -188,8 +191,14 @@ public interface ReasonMLTypes {
       else if (type == PARAMETER) {
         return new ReasonMLParameterImpl(node);
       }
-      else if (type == PATTERN_EXPR) {
-        return new ReasonMLPatternExprImpl(node);
+      else if (type == PARAMETER_EXPR) {
+        return new ReasonMLParameterExprImpl(node);
+      }
+      else if (type == PATTERN) {
+        return new ReasonMLPatternImpl(node);
+      }
+      else if (type == PATTERN_MATCHING) {
+        return new ReasonMLPatternMatchingImpl(node);
       }
       else if (type == POLY_TYPE_EXPR) {
         return new ReasonMLPolyTypeExprImpl(node);

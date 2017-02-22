@@ -5,10 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLPatternExpr extends PsiElement {
-
-  @Nullable
-  ReasonMLConstant getConstant();
+public interface ReasonMLPattern extends PsiElement {
 
   @Nullable
   ReasonMLValueName getValueName();

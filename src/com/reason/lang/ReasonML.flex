@@ -98,6 +98,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     ";"  { return SEMI; }
     "'"  { return QUOTE; }
     "."  { return DOT; }
+    "|"  { return PIPE; }
     "("  { return LPAREN; }
     ")"  { return RPAREN; }
     "{"  { return LBRACE; }

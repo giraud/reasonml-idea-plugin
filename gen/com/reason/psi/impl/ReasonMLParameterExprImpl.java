@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLPatternExprImpl extends ASTWrapperPsiElement implements ReasonMLPatternExpr {
+public class ReasonMLParameterExprImpl extends ASTWrapperPsiElement implements ReasonMLParameterExpr {
 
-  public ReasonMLPatternExprImpl(ASTNode node) {
+  public ReasonMLParameterExprImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitPatternExpr(this);
+    visitor.visitParameterExpr(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {

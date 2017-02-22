@@ -115,7 +115,15 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitPatternExpr(@NotNull ReasonMLPatternExpr o) {
+  public void visitParameterExpr(@NotNull ReasonMLParameterExpr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPattern(@NotNull ReasonMLPattern o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPatternMatching(@NotNull ReasonMLPatternMatching o) {
     visitPsiElement(o);
   }
 
