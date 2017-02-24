@@ -91,10 +91,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitModuleExpr(@NotNull ReasonMLModuleExpr o) {
-    visitPsiElement(o);
-  }
-
   public void visitModuleName(@NotNull ReasonMLModuleName o) {
     visitPsiElement(o);
   }
@@ -168,10 +164,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitTypeExpr(@NotNull ReasonMLTypeExpr o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTypeInformation(@NotNull ReasonMLTypeInformation o) {
     visitPsiElement(o);
   }
 

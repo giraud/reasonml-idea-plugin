@@ -28,8 +28,8 @@ public class ReasonMLIncludeStatementImpl extends ASTWrapperPsiElement implement
 
   @Override
   @NotNull
-  public List<ReasonMLModuleExpr> getModuleExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLModuleExpr.class);
+  public List<ReasonMLModulePath> getModulePathList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLModulePath.class);
   }
 
 }

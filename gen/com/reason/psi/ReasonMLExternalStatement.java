@@ -11,8 +11,14 @@ public interface ReasonMLExternalStatement extends PsiElement {
   @NotNull
   ReasonMLExternalDeclaration getExternalDeclaration();
 
-  @NotNull
-  ReasonMLTypeInformation getTypeInformation();
+  @Nullable
+  ReasonMLRecordTypeDecl getRecordTypeDecl();
+
+  @Nullable
+  ReasonMLTupleTypeDecl getTupleTypeDecl();
+
+  @Nullable
+  ReasonMLTypeConstr getTypeConstr();
 
   @NotNull
   ReasonMLValueName getValueName();

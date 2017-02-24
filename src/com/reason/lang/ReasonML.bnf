@@ -34,7 +34,7 @@ module_body ::=
     | type_statement
     | let_statement )*
 
-module_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/modules.html#module-expr
+private module_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/modules.html#module-expr
       module_path
 
 include_statement ::=
@@ -50,12 +50,14 @@ type_statement ::=
         methods=[getPresentation]
     }
 
-type_information ::=
-    type_constr? (tuple_type_decl | record_type_decl)
+private type_information ::=
+      UNIT
+    | type_constr? (tuple_type_decl | record_type_decl)
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 type_expr ::=
-      LPAREN type_expr (COMMA type_expr)* RPAREN type_constr
+      UNIT
+    | LPAREN type_expr (COMMA type_expr)* RPAREN type_constr
     | type_constr (type_expr | (ARROW type_expr)*)
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr

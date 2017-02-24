@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLTypeExpr extends PsiElement {
 
-  @NotNull
+  @Nullable
   ReasonMLTypeConstr getTypeConstr();
 
   @NotNull

@@ -71,6 +71,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "let"       { return LET; }
     "fun"       { return FUN; }
     "external"  { return EXTERNAL; }
+    "unit"      { return UNIT; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }

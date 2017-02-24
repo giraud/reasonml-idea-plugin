@@ -27,9 +27,9 @@ public class ReasonMLTypeExprImpl extends ASTWrapperPsiElement implements Reason
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ReasonMLTypeConstr getTypeConstr() {
-    return findNotNullChildByClass(ReasonMLTypeConstr.class);
+    return findChildByClass(ReasonMLTypeConstr.class);
   }
 
   @Override
