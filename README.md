@@ -1,6 +1,8 @@
 # reasonml-idea-plugin
 ReasonML language plugin for idea
 
+![webstorm.png]
+
 ## Status
 
 :exclamation: This is a **work in progress**, the language has very basic - and partially implemented - functionalities.
