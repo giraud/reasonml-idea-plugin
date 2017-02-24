@@ -72,6 +72,8 @@ LITERAL_MODIFIER=[G-Zg-z]
     "fun"       { return FUN; }
     "external"  { return EXTERNAL; }
     "unit"      { return UNIT; }
+    "if"        { return IF; }
+    "else"      { return ELSE; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }
@@ -93,21 +95,23 @@ LITERAL_MODIFIER=[G-Zg-z]
     "@@bs" { return BBS; }
     "@bs"  { return BS; }
 
-    "="  { return EQUAL; }
-    ","  { return COMMA; }
-    ":"  { return COLON; }
-    ";"  { return SEMI; }
-    "'"  { return QUOTE; }
-    "."  { return DOT; }
-    "|"  { return PIPE; }
-    "("  { return LPAREN; }
-    ")"  { return RPAREN; }
-    "{"  { return LBRACE; }
-    "}"  { return RBRACE; }
-    "["  { return LBRACKET; }
-    "]"  { return RBRACKET; }
-    "#"  { return SHARP; }
-    "?"  { return QUESTION_MARK; }
+    "===" { return EQEQEQUAL; }
+//    "=="  { return EQEQUAL; }
+    "="   { return EQUAL; }
+    ","   { return COMMA; }
+    ":"   { return COLON; }
+    ";"   { return SEMI; }
+    "'"   { return QUOTE; }
+    "."   { return DOT; }
+    "|"   { return PIPE; }
+    "("   { return LPAREN; }
+    ")"   { return RPAREN; }
+    "{"   { return LBRACE; }
+    "}"   { return RBRACE; }
+    "["   { return LBRACKET; }
+    "]"   { return RBRACKET; }
+    "#"   { return SHARP; }
+    "?"   { return QUESTION_MARK; }
 
     "/>" { return AUTO_CLOSE_TAG; }
     "</" { return CLOSE_TAG; }

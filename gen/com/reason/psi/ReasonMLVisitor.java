@@ -11,6 +11,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBooleanExpr(@NotNull ReasonMLBooleanExpr o) {
+    visitPsiElement(o);
+  }
+
   public void visitBsDirective(@NotNull ReasonMLBsDirective o) {
     visitPsiElement(o);
   }

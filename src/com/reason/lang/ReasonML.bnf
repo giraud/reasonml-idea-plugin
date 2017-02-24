@@ -91,14 +91,18 @@ external_alias ::=
 // ----------
 
 expr_statement ::=
-    expr+ SEMI
+    sequenced_expr SEMI
+
+private sequenced_expr ::=
+    expr (SEMI expr)*
 
 expr ::=
       NONE
     | SOME expr
     | FUN fun_decl
-    | LPAREN expr RPAREN
+    | LPAREN sequenced_expr? RPAREN
     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
+    | IF LPAREN boolean_expr RPAREN LBRACE sequenced_expr RBRACE (ELSE LBRACE sequenced_expr RBRACE)*
     | pattern_matching
     | jsx
     | let_binding
@@ -119,6 +123,9 @@ expr ::=
             | COMMA expr
             | COLON expr
             | expr )*
+
+boolean_expr ::=
+    expr EQEQEQUAL expr
 
 value_expr ::=
       constant
@@ -142,6 +149,7 @@ pattern ::=
       NONE
     | SOME value_name
     | value_name
+    | constant
 
 // ----------
 // JSX

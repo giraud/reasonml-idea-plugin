@@ -9,6 +9,7 @@ import com.reason.psi.impl.*;
 public interface ReasonMLTypes {
 
   IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
+  IElementType BOOLEAN_EXPR = new ReasonMLElementType("BOOLEAN_EXPR");
   IElementType BS_DIRECTIVE = new ReasonMLElementType("BS_DIRECTIVE");
   IElementType CONSTANT = new ReasonMLElementType("CONSTANT");
   IElementType END_TAG = new ReasonMLElementType("END_TAG");
@@ -63,12 +64,15 @@ public interface ReasonMLTypes {
   IElementType COMMA = new ReasonMLTokenType("COMMA");
   IElementType COMMENT = new ReasonMLTokenType("COMMENT");
   IElementType DOT = new ReasonMLTokenType("DOT");
+  IElementType ELSE = new ReasonMLTokenType("ELSE");
+  IElementType EQEQEQUAL = new ReasonMLTokenType("EQEQEQUAL");
   IElementType EQUAL = new ReasonMLTokenType("EQUAL");
   IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
   IElementType FALSE = new ReasonMLTokenType("FALSE");
   IElementType FLOAT = new ReasonMLTokenType("FLOAT");
   IElementType FUN = new ReasonMLTokenType("FUN");
   IElementType GT = new ReasonMLTokenType("GT");
+  IElementType IF = new ReasonMLTokenType("IF");
   IElementType INCLUDE = new ReasonMLTokenType("INCLUDE");
   IElementType INT = new ReasonMLTokenType("INT");
   IElementType LBRACE = new ReasonMLTokenType("LBRACE");
@@ -110,6 +114,9 @@ public interface ReasonMLTypes {
       IElementType type = node.getElementType();
        if (type == ARGUMENT) {
         return new ReasonMLArgumentImpl(node);
+      }
+      else if (type == BOOLEAN_EXPR) {
+        return new ReasonMLBooleanExprImpl(node);
       }
       else if (type == BS_DIRECTIVE) {
         return new ReasonMLBsDirectiveImpl(node);

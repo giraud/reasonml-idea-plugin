@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLExpr extends PsiElement {
 
   @Nullable
+  ReasonMLBooleanExpr getBooleanExpr();
+
+  @Nullable
   ReasonMLExpr getExpr();
 
   @Nullable

@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLPattern extends PsiElement {
+public interface ReasonMLBooleanExpr extends PsiElement {
 
-  @Nullable
-  ReasonMLConstant getConstant();
-
-  @Nullable
-  ReasonMLValueName getValueName();
+  @NotNull
+  List<ReasonMLExpr> getExprList();
 
 }
