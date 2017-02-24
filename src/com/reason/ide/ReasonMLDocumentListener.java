@@ -30,6 +30,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
     ReasonMLDocumentListener(Project project) {
         this.documentEventStream = PublishSubject.create();
 
+       /*
         subscriber = this.documentEventStream.
                 debounce(300, TimeUnit.MILLISECONDS).
                 subscribe(event -> EventQueue.invokeLater(() -> {
@@ -48,6 +49,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
                         }
                     }
                 }));
+                */
     }
 
     @Override
