@@ -1,8 +1,8 @@
 package com.reason.ide.hints;
 
+import com.intellij.codeInsight.hints.HintInfo;
 import com.intellij.codeInsight.hints.InlayInfo;
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
-import com.intellij.codeInsight.hints.MethodInfo;
 import com.intellij.codeInsight.hints.Option;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 
@@ -42,6 +41,13 @@ public class SignatureProvider implements InlayParameterHintsProvider {
 
     @Nullable
     @Override
+    public HintInfo getHintInfo(PsiElement psiElement) {
+        return null;
+    }
+
+/*
+    @Nullable
+    @Override
     public MethodInfo getMethodInfo(PsiElement element) {
         System.out.println("getMethodInfo " + element);
         if (element instanceof ReasonMLLetStatement) {
@@ -50,6 +56,7 @@ public class SignatureProvider implements InlayParameterHintsProvider {
         }
         return null;
     }
+*/
 
     @NotNull
     @Override
@@ -67,5 +74,15 @@ public class SignatureProvider implements InlayParameterHintsProvider {
     @Override
     public List<Option> getSupportedOptions() {
         return emptyList();
+    }
+
+    @Override
+    public boolean isBlackListSupported() {
+        return false;
+    }
+
+    @Override
+    public String getInlayPresentation(@NotNull String inlayText) {
+        return null;
     }
 }
