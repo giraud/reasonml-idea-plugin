@@ -37,8 +37,11 @@ public class ReasonMLPsiImplUtil {
 
     public static ItemPresentation getPresentation(final ReasonMLLetStatement let) {
         ReasonMLLetBindingBody body = let.getLetBinding().getLetBindingBody();
-        IElementType elementType = body.getFirstChild().getNode().getElementType();
-        boolean isField = EQUAL.equals(elementType);
+        IElementType elementType = null;
+        if (body != null) {
+            elementType = body.getFirstChild().getNode().getElementType();
+        }
+        boolean isField = elementType == null || EQUAL.equals(elementType);
 
         return new ItemPresentation() {
             @Nullable

@@ -180,12 +180,12 @@ jsxContent ::=
 
 let_statement ::=
     let_binding SEMI {
-        //pin=1 recoverWhile=recover_statement
         methods=[getPresentation]
     }
 
 let_binding ::=
-    LET value_name let_binding_body
+    LET value_name let_binding_body {
+    }
 
 let_binding_body ::=
       EQUAL ( expr | LBRACE expr (SEMI expr)* RBRACE )

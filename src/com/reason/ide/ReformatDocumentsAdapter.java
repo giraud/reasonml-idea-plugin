@@ -37,7 +37,7 @@ public class ReformatDocumentsAdapter extends AbstractProjectComponent {
                         //NOK
                     }
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } finally {
                     if (refmt != null && refmt.isAlive()) {
                         refmt.destroyForcibly();

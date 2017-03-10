@@ -1191,7 +1191,8 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LET value_name let_binding_body
+  // LET value_name let_binding_body {
+  //     }
   public static boolean let_binding(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "let_binding")) return false;
     if (!nextTokenIs(b, LET)) return false;
@@ -1200,8 +1201,15 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, LET);
     r = r && value_name(b, l + 1);
     r = r && let_binding_body(b, l + 1);
+    r = r && let_binding_3(b, l + 1);
     exit_section_(b, m, LET_BINDING, r);
     return r;
+  }
+
+  // {
+  //     }
+  private static boolean let_binding_3(PsiBuilder b, int l) {
+    return true;
   }
 
   /* ********************************************************** */
