@@ -1,4 +1,4 @@
-package com.reason.ide.merlin;
+package com.reason.ide.hints;
 
 import com.intellij.codeInsight.hints.InlayInfo;
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider;

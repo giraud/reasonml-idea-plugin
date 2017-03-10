@@ -11,7 +11,7 @@ public interface ReasonMLValueExpr extends PsiElement {
   List<ReasonMLArgument> getArgumentList();
 
   @Nullable
-  ReasonMLConstant getConstant();
+  ReasonMLSignedConstant getSignedConstant();
 
   @Nullable
   ReasonMLValueName getValueName();

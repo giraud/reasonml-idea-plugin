@@ -1,4 +1,4 @@
-package com.reason.ide.merlin;
+package com.reason.merlin;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;

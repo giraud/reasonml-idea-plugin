@@ -20,9 +20,16 @@
          on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
 
+    <application-components>
+
+    </application-components>
+
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.ReasonMLProjectTracker</implementation-class>
+            <implementation-class>com.reason.ide.hints.ReasonMLProjectTracker</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.reason.ide.ReformatDocumentsAdapter</implementation-class>
         </component>
     </project-components>
 
@@ -32,16 +39,17 @@
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.highlight.ReasonMLSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
-        <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.ReasonMLAnnotator" />
+        <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.ReasonMLAnnotator"/>
         <lang.psiStructureViewFactory language="ReasonML"
                                       implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.ReasonMLCommenter"/>
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.ReasonMLFoldingBuilder"/>
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
 
-        <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.merlin.SignatureProvider"/>
+        <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
 
-        <projectService serviceInterface="com.reason.ide.merlin.MerlinService" serviceImplementation="com.reason.ide.merlin.MerlinServiceComponent"/>
+        <projectService serviceInterface="com.reason.merlin.MerlinService"
+                        serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
     </extensions>
 
     <actions>

@@ -1,4 +1,4 @@
-package com.reason.ide;
+package com.reason.ide.hints;
 
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.EditorFactory;

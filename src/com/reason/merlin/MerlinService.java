@@ -1,4 +1,4 @@
-package com.reason.ide.merlin;
+package com.reason.merlin;
 
 public interface MerlinService {
 }

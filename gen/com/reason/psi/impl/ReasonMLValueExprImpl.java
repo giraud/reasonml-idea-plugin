@@ -34,8 +34,8 @@ public class ReasonMLValueExprImpl extends ASTWrapperPsiElement implements Reaso
 
   @Override
   @Nullable
-  public ReasonMLConstant getConstant() {
-    return findChildByClass(ReasonMLConstant.class);
+  public ReasonMLSignedConstant getSignedConstant() {
+    return findChildByClass(ReasonMLSignedConstant.class);
   }
 
   @Override

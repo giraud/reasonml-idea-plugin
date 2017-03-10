@@ -113,6 +113,8 @@ expr ::=
             | PLUSDOT expr
             | MINUS expr
             | MINUSDOT expr
+            | MUL expr
+            | MULDOT expr
             | SLASH expr
             | SLASHDOT expr
             | STAR expr
@@ -128,7 +130,7 @@ boolean_expr ::=
     expr EQEQEQUAL expr
 
 value_expr ::=
-      constant
+      signed_constant
     | value_path (DOT value_path)* (SHARP SHARP value_name | argument*)
 
 argument ::=
@@ -248,6 +250,13 @@ constant ::=
     | UNIT
     | LBRACKET RBRACKET
     | LPAREN RPAREN
+
+signed_constant ::=
+    constant
+  | MINUS INT
+  | MINUS FLOAT
+  | PLUS INT
+  | PLUS FLOAT
 
 // ----------
 // REFERRING NAMED OBJECTS

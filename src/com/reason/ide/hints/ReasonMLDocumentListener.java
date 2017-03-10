@@ -1,25 +1,13 @@
-package com.reason.ide;
+package com.reason.ide.hints;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.merlin.MerlinService;
-import com.reason.psi.ReasonMLLetStatement;
+import com.reason.merlin.MerlinService;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
-
-import java.awt.*;
-import java.util.concurrent.TimeUnit;
 
 
 public class ReasonMLDocumentListener implements DocumentListener {
@@ -27,7 +15,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
     private final Subject<DocumentEvent> documentEventStream;
     private Disposable subscriber;
 
-    ReasonMLDocumentListener(Project project) {
+    public ReasonMLDocumentListener(Project project) {
         this.documentEventStream = PublishSubject.create();
 
        /*

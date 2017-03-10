@@ -139,6 +139,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSignedConstant(@NotNull ReasonMLSignedConstant o) {
+    visitPsiElement(o);
+  }
+
   public void visitStartTag(@NotNull ReasonMLStartTag o) {
     visitPsiElement(o);
   }

@@ -41,6 +41,7 @@ public interface ReasonMLTypes {
   IElementType POLY_TYPE_EXPR = new ReasonMLElementType("POLY_TYPE_EXPR");
   IElementType RECORD_DECL = new ReasonMLElementType("RECORD_DECL");
   IElementType RECORD_TYPE_DECL = new ReasonMLElementType("RECORD_TYPE_DECL");
+  IElementType SIGNED_CONSTANT = new ReasonMLElementType("SIGNED_CONSTANT");
   IElementType START_TAG = new ReasonMLElementType("START_TAG");
   IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
   IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
@@ -84,6 +85,8 @@ public interface ReasonMLTypes {
   IElementType MINUS = new ReasonMLTokenType("MINUS");
   IElementType MINUSDOT = new ReasonMLTokenType("MINUSDOT");
   IElementType MODULE = new ReasonMLTokenType("MODULE");
+  IElementType MUL = new ReasonMLTokenType("MUL");
+  IElementType MULDOT = new ReasonMLTokenType("MULDOT");
   IElementType NONE = new ReasonMLTokenType("NONE");
   IElementType OPEN = new ReasonMLTokenType("OPEN");
   IElementType OPTION = new ReasonMLTokenType("OPTION");
@@ -210,6 +213,9 @@ public interface ReasonMLTypes {
       }
       else if (type == RECORD_TYPE_DECL) {
         return new ReasonMLRecordTypeDeclImpl(node);
+      }
+      else if (type == SIGNED_CONSTANT) {
+        return new ReasonMLSignedConstantImpl(node);
       }
       else if (type == START_TAG) {
         return new ReasonMLStartTagImpl(node);
