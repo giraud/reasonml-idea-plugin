@@ -21,15 +21,14 @@
     <depends>com.intellij.modules.lang</depends>
 
     <application-components>
-
+        <component>
+            <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
+        </component>
     </application-components>
 
     <project-components>
         <component>
             <implementation-class>com.reason.ide.hints.ReasonMLProjectTracker</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.ide.ReformatDocumentsAdapter</implementation-class>
         </component>
     </project-components>
 
