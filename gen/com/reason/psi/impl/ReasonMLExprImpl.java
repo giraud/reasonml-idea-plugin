@@ -40,12 +40,6 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
 
   @Override
   @Nullable
-  public ReasonMLFunDecl getFunDecl() {
-    return findChildByClass(ReasonMLFunDecl.class);
-  }
-
-  @Override
-  @Nullable
   public ReasonMLJsx getJsx() {
     return findChildByClass(ReasonMLJsx.class);
   }
@@ -54,6 +48,12 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
   @Nullable
   public ReasonMLLetBinding getLetBinding() {
     return findChildByClass(ReasonMLLetBinding.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
   }
 
   @Override

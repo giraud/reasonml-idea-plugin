@@ -13,6 +13,9 @@ import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 public class ReformatDocumentsAdapter extends AbstractProjectComponent {
+    // Not working on win64
+    private boolean useRefmt = false;
+
     public ReformatDocumentsAdapter(Project project) {
         super(project);
     }
@@ -30,6 +33,10 @@ public class ReformatDocumentsAdapter extends AbstractProjectComponent {
              */
             @Override
             public void beforeDocumentSaving(@NotNull Document document) {
+                if (!useRefmt) {
+                    return;
+                }
+
                 ProcessBuilder processBuilder = new ProcessBuilder(getRefmtBinary());
                 Process refmt = null;
                 try {
@@ -49,7 +56,7 @@ public class ReformatDocumentsAdapter extends AbstractProjectComponent {
                         document.setText(sb.toString());
                     }
                     // else {
-                        // TODO something went wrong
+                    // TODO something went wrong
                     // }
                 } catch (IOException | InterruptedException | RuntimeException e) {
                     e.printStackTrace();

@@ -63,10 +63,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFunDecl(@NotNull ReasonMLFunDecl o) {
-    visitPsiElement(o);
-  }
-
   public void visitIncludeStatement(@NotNull ReasonMLIncludeStatement o) {
     visitPsiElement(o);
   }
@@ -80,10 +76,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitLetBinding(@NotNull ReasonMLLetBinding o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLetBindingBody(@NotNull ReasonMLLetBindingBody o) {
     visitPsiElement(o);
   }
 

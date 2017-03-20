@@ -1,14 +1,14 @@
 package com.reason.psi.impl;
 
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.tree.IElementType;
 import com.reason.icons.ReasonMLIcons;
-import com.reason.psi.*;
+import com.reason.psi.ReasonMLExternalStatement;
+import com.reason.psi.ReasonMLLetStatement;
+import com.reason.psi.ReasonMLModuleStatement;
+import com.reason.psi.ReasonMLTypeStatement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-
-import static com.reason.psi.ReasonMLTypes.EQUAL;
 
 public class ReasonMLPsiImplUtil {
     public static ItemPresentation getPresentation(final ReasonMLModuleStatement module) {
@@ -36,12 +36,13 @@ public class ReasonMLPsiImplUtil {
     }
 
     public static ItemPresentation getPresentation(final ReasonMLLetStatement let) {
-        ReasonMLLetBindingBody body = let.getLetBinding().getLetBindingBody();
-        IElementType elementType = null;
-        if (body != null) {
-            elementType = body.getFirstChild().getNode().getElementType();
-        }
-        boolean isField = elementType == null || EQUAL.equals(elementType);
+//        ReasonMLLetBindingBody body = let.getLetBinding().getLetBindingBody();
+//        IElementType elementType = null;
+//        if (body != null) {
+//            elementType = body.getFirstChild().getNode().getElementType();
+//        }
+//        boolean isField = elementType == null || EQUAL.equals(elementType);
+        boolean isField = true;
 
         return new ItemPresentation() {
             @Nullable
@@ -99,7 +100,7 @@ public class ReasonMLPsiImplUtil {
 //                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
                 String externalName = external.getValueName().getText();
 //                if (externalAlias == null) {
-                    return externalName;
+                return externalName;
 //                }
 
 //                String externalAliasText = externalAlias.getText();

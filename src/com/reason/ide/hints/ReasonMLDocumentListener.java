@@ -9,6 +9,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
+import java.awt.*;
+import java.util.concurrent.TimeUnit;
+
 
 public class ReasonMLDocumentListener implements DocumentListener {
 
@@ -18,26 +21,24 @@ public class ReasonMLDocumentListener implements DocumentListener {
     public ReasonMLDocumentListener(Project project) {
         this.documentEventStream = PublishSubject.create();
 
-       /*
         subscriber = this.documentEventStream.
                 debounce(300, TimeUnit.MILLISECONDS).
                 subscribe(event -> EventQueue.invokeLater(() -> {
-                    Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                    if (selectedTextEditor != null) {
-                        Document document1 = selectedTextEditor.getDocument();
-                        PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document1);
-                        if (psiFile != null) {
-                            PsiElement element = psiFile.findElementAt(event.getOffset());
-                            if (element != null) {
-                                ReasonMLLetStatement parentOfType = PsiTreeUtil.getParentOfType(element, ReasonMLLetStatement.class);
-                                if (parentOfType != null) {
-                                    ApplicationManager.getApplication().executeOnPooledThread(new QueryMerlinTask()); // Let statement has been modified
-                                }
-                            }
-                        }
-                    }
+//                    Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+//                    if (selectedTextEditor != null) {
+//                        Document document1 = selectedTextEditor.getDocument();
+//                        PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document1);
+//                        if (psiFile != null) {
+//                            PsiElement element = psiFile.findElementAt(event.getOffset());
+//                            if (element != null) {
+//                                ReasonMLLetStatement parentOfType = PsiTreeUtil.getParentOfType(element, ReasonMLLetStatement.class);
+//                                if (parentOfType != null) {
+//                                    ApplicationManager.getApplication().executeOnPooledThread(new QueryMerlinTask()); // Let statement has been modified
+//                                }
+//                            }
+//                        }
+//                    }
                 }));
-                */
     }
 
     @Override
@@ -49,7 +50,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
         this.documentEventStream.onNext(event);
     }
 
-    public void projectClosed() {
+    void projectClosed() {
         this.subscriber.dispose();
     }
 

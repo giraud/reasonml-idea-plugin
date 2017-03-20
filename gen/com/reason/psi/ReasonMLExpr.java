@@ -14,13 +14,13 @@ public interface ReasonMLExpr extends PsiElement {
   ReasonMLExpr getExpr();
 
   @Nullable
-  ReasonMLFunDecl getFunDecl();
-
-  @Nullable
   ReasonMLJsx getJsx();
 
   @Nullable
   ReasonMLLetBinding getLetBinding();
+
+  @NotNull
+  List<ReasonMLParameter> getParameterList();
 
   @Nullable
   ReasonMLPatternMatching getPatternMatching();

@@ -22,12 +22,10 @@ public interface ReasonMLTypes {
   IElementType FIELD_DECL = new ReasonMLElementType("FIELD_DECL");
   IElementType FIELD_NAME = new ReasonMLElementType("FIELD_NAME");
   IElementType FIELD_TYPE_DECL = new ReasonMLElementType("FIELD_TYPE_DECL");
-  IElementType FUN_DECL = new ReasonMLElementType("FUN_DECL");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
   IElementType JSX = new ReasonMLElementType("JSX");
   IElementType JSX_CONTENT = new ReasonMLElementType("JSX_CONTENT");
   IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
-  IElementType LET_BINDING_BODY = new ReasonMLElementType("LET_BINDING_BODY");
   IElementType LET_STATEMENT = new ReasonMLElementType("LET_STATEMENT");
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
   IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
@@ -157,9 +155,6 @@ public interface ReasonMLTypes {
       else if (type == FIELD_TYPE_DECL) {
         return new ReasonMLFieldTypeDeclImpl(node);
       }
-      else if (type == FUN_DECL) {
-        return new ReasonMLFunDeclImpl(node);
-      }
       else if (type == INCLUDE_STATEMENT) {
         return new ReasonMLIncludeStatementImpl(node);
       }
@@ -171,9 +166,6 @@ public interface ReasonMLTypes {
       }
       else if (type == LET_BINDING) {
         return new ReasonMLLetBindingImpl(node);
-      }
-      else if (type == LET_BINDING_BODY) {
-        return new ReasonMLLetBindingBodyImpl(node);
       }
       else if (type == LET_STATEMENT) {
         return new ReasonMLLetStatementImpl(node);

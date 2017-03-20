@@ -99,7 +99,7 @@ private sequenced_expr ::=
 expr ::=
       NONE
     | SOME expr
-    | FUN fun_decl
+    | FUN parameter* ARROW let_binding_body
     | LPAREN sequenced_expr? RPAREN
     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
     | IF LPAREN boolean_expr RPAREN LBRACE sequenced_expr RBRACE (ELSE LBRACE sequenced_expr RBRACE)*
@@ -184,18 +184,14 @@ let_statement ::=
     }
 
 let_binding ::=
-    LET value_name let_binding_body {
-    }
-
-let_binding_body ::=
-      EQUAL ( expr | LBRACE expr (SEMI expr)* RBRACE )
-    | fun_decl
-
-fun_decl ::=
-    (parameter)* ARROW (
-          LBRACE expr (SEMI expr)* RBRACE
-        | expr
+    LET value_name parameter* (
+          EQUAL let_binding_body
+        | ARROW let_binding_body/*scoped_expr*/
     )
+
+private let_binding_body ::=
+      LBRACE expr (SEMI expr)* RBRACE
+    | expr
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
