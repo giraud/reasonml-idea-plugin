@@ -6,6 +6,8 @@ import com.intellij.openapi.components.ApplicationComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class ReasonDocumentManager implements ApplicationComponent /*extends AbstractProjectComponent*/ {
+    private final boolean useWin = false;
+
     @NotNull
     @Override
     public String getComponentName() {
@@ -14,7 +16,8 @@ public class ReasonDocumentManager implements ApplicationComponent /*extends Abs
 
     @Override
     public void initComponent() {
-        ApplicationManager.getApplication().getMessageBus().connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(getRefmtBinary()));
+        ReformatOnSave handler = new ReformatOnSave(getRefmtBinary(), this.useWin);
+        ApplicationManager.getApplication().getMessageBus().connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, handler);
     }
 
     @Override
@@ -23,9 +26,9 @@ public class ReasonDocumentManager implements ApplicationComponent /*extends Abs
 
     @NotNull
     private String getRefmtBinary() {
-        String home = System.getProperty("user.home");
-        String path = home + "/.nvm/versions/node/v6.10.0/bin"; // temporary
-        return path + "/refmt";
+        // Temporary hack for win, need env var set correctly
+        String home = this.useWin ? "/home/hgiraud" : System.getProperty("user.home");
+        return home + "/.nvm/versions/node/v6.10.0/bin/refmt";
         // String basePath = myProject.getBasePath();
         // String refmtPath = basePath + "/node_modules/bs-platform/bin";
         // return refmtPath + "/refmt.exe";

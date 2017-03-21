@@ -7,10 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 
 class ReformatOnSave extends FileDocumentManagerAdapter {
-    String reformatBinary;
+    private final String reformatBinary;
+    private final boolean useBash;
 
-    public ReformatOnSave(String reformatBinary) {
+    ReformatOnSave(String reformatBinary, boolean useBash) {
         this.reformatBinary = reformatBinary;
+        this.useBash = useBash;
     }
 
     /**
@@ -23,7 +25,14 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        ProcessBuilder processBuilder = new ProcessBuilder(this.reformatBinary).redirectErrorStream(true);
+        ProcessBuilder processBuilder;
+        if (this.useBash) {
+            processBuilder = new ProcessBuilder("bash", "-c", this.reformatBinary);
+        } else {
+            processBuilder = new ProcessBuilder(this.reformatBinary);
+        }
+
+        processBuilder.redirectErrorStream(true);
 
         Process refmt = null;
         try {
@@ -43,9 +52,9 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
             if (0 < errorBuffer.length()) {
                 throw new RuntimeException(errorBuffer.toString());
             } else {
-                StringBuffer sb = new StringBuffer(text.length());
-                reader.lines().forEach(line -> sb.append(line).append(System.lineSeparator()));
-                document.setText(sb.toString());
+                StringBuilder refmtBuffer = new StringBuilder(text.length());
+                reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
+                document.setText(refmtBuffer);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
