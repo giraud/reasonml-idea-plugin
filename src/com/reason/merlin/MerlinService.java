@@ -3,7 +3,15 @@ package com.reason.merlin;
 import java.util.List;
 
 public interface MerlinService {
-    List errors();
+    List<MerlinError> errors();
 
     String version();
+
+    Object dump(DumpFlag flag);
+
+    List<MerlinToken> dumpTokens();
+
+    List<String> paths(Path path);
+
+    List<String> extensions();
 }

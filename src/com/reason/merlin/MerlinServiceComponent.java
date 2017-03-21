@@ -10,10 +10,11 @@ import java.util.List;
 
 public class MerlinServiceComponent implements MerlinService, com.intellij.openapi.components.ApplicationComponent {
 
-    public static final TypeReference<List<MerlinError>> ERRORS_TYPE_REFERENCE = new TypeReference<List<MerlinError>>() {
+    private static final TypeReference<List<MerlinError>> ERRORS_TYPE_REFERENCE = new TypeReference<List<MerlinError>>() {
     };
-    public static final TypeReference<String> STRING_TYPE_REFERENCE = new TypeReference<String>() {
+    private static final TypeReference<String> STRING_TYPE_REFERENCE = new TypeReference<String>() {
     };
+
     private ObjectMapper objectMapper;
     private Process merlin;
     private BufferedWriter writer;
@@ -25,7 +26,6 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     public String getComponentName() {
         return "ReasonMerlin";
     }
-
 
     @Override
     public void initComponent() {
@@ -61,7 +61,6 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         }
     }
 
-
     @Override
     public List<MerlinError> errors() {
         return makeRequest(ERRORS_TYPE_REFERENCE, "filename", "[\"errors\"]");
@@ -72,8 +71,28 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         return makeRequest(STRING_TYPE_REFERENCE, "filename", "[\"version\"]");
     }
 
+    @Override
+    public Object dump(DumpFlag flag) {
+        return makeRequest(new TypeReference<Object>() {}, "filename", "[\"dump\", \"" + flag.name() + "\"]");
+    }
+
+    @Override
+    public List<MerlinToken> dumpTokens() {
+        return makeRequest(new TypeReference<List<MerlinToken>>() {}, "filename", "[\"dump\", \"" + DumpFlag.tokens.name() + "\"]");
+    }
+
+    @Override
+    public List<String> paths(Path path) {
+        return makeRequest(new TypeReference<List<String>>() {}, "filename", "[\"path\", \"list\", \"" + path.name() + "\"]");
+    }
+
+    @Override
+    public List<String> extensions() {
+        return makeRequest(new TypeReference<List<String>>() {}, "filename", "[\"extension\", \"list\"]");
+    }
+
     private <R> R makeRequest(TypeReference<R> type, String filename, String request) {
-        System.out.println("make request " + request);
+//        System.out.println("make request " + request);
 
         try {
             writer.write(request);
@@ -87,7 +106,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
                 JsonNode jsonNode = objectMapper.readTree(reader.readLine());
                 JsonNode responseNode = extractResponse(jsonNode);
 
-                System.out.println("Result found: " + responseNode.toString());
+//                System.out.println("Result found: >> " + responseNode.toString() + " <<");
                 return objectMapper.convertValue(responseNode, type);
             }
         } catch (IOException e) {
