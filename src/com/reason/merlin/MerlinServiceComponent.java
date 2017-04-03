@@ -74,6 +74,11 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     }
 
     @Override
+    public boolean isRunning() {
+        return this.merlin != null;
+    }
+
+    @Override
     public List<MerlinError> errors(String filename) {
         return this.merlin.makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]");
     }

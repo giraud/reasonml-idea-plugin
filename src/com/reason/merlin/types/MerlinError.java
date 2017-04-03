@@ -5,7 +5,7 @@ import java.util.List;
 public class MerlinError {
     public MerlinPosition start;
     public MerlinPosition end;
-    public String type;
+    public MerlinErrorType type;
     public List sub;
     public boolean valid;
     public String message;

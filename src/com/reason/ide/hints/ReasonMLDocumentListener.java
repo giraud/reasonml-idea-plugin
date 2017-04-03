@@ -96,7 +96,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
         @Override
         public void run() {
             MerlinService service = ServiceManager.getService(MerlinService.class);
-            if (service == null) {
+            if (!service.isRunning()) {
                 System.err.println("Can't find merlin service, abort");
             } else {
                 String filename = psiFile.getVirtualFile().getCanonicalPath();
@@ -106,11 +106,6 @@ public class ReasonMLDocumentListener implements DocumentListener {
                 }
 
                 service.sync(filename, this.buffer);
-                List<MerlinError> errors = service.errors(filename);
-                if (0 < errors.size()) {
-                    // Errors found, create annotator
-                    System.out.println("          Errors: [\r\n" + Joiner.on("\r\n").join(errors) + "\r\n]");
-                }
 
                 List<MerlinType> types = service.findType(filename, new MerlinPosition(this.position));
                 if (!types.isEmpty()) {

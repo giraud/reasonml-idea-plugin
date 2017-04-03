@@ -5,6 +5,8 @@ import com.reason.merlin.types.*;
 import java.util.List;
 
 public interface MerlinService {
+    boolean isRunning();
+
     List<MerlinError> errors(String filename);
 
     MerlinVersion version();
