@@ -3,15 +3,25 @@ package com.reason.merlin;
 import java.util.List;
 
 public interface MerlinService {
-    List<MerlinError> errors();
+    List<MerlinError> errors(String filename);
 
-    String version();
+    MerlinVersion version();
 
-    Object dump(DumpFlag flag);
+    MerlinVersion selectVersion(int version);
 
-    List<MerlinToken> dumpTokens();
+    void sync(String filename, String buffer);
 
-    List<String> paths(Path path);
+    Object dump(String filename, DumpFlag flag);
 
-    List<String> listExtensions();
+    List<MerlinToken> dumpTokens(String filename);
+
+    List<String> paths(String filename, Path path);
+
+    List<String> listExtensions(String filename);
+
+    void enableExtensions(String filename, List<String> extensions);
+
+    Object projectGet();
+
+    List<MerlinType> findType(String filename, MerlinPosition position);
 }

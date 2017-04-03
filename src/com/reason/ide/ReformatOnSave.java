@@ -46,6 +46,15 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
             } else {
                 StringBuilder refmtBuffer = new StringBuilder(text.length());
                 reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
+
+                // hack
+                String reformattedText = refmtBuffer.toString();
+                if (reformattedText.startsWith("File") && 0 < refmtBuffer.toString().indexOf("Error")) {
+                    // it seems that refmt returned an error !?
+                    System.err.println("REFMT ERROR\n" + reformattedText);
+                    throw new RuntimeException(reformattedText);
+                }
+
                 document.setText(refmtBuffer);
             }
         } catch (IOException e) {

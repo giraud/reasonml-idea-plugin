@@ -44,4 +44,8 @@ public class ReasonMLLetBindingImpl extends ASTWrapperPsiElement implements Reas
     return findNotNullChildByClass(ReasonMLValueName.class);
   }
 
+  public boolean isFunction() {
+    return ReasonMLPsiImplUtil.isFunction(this);
+  }
+
 }

@@ -16,4 +16,6 @@ public interface ReasonMLLetBinding extends PsiElement {
   @NotNull
   ReasonMLValueName getValueName();
 
+  boolean isFunction();
+
 }

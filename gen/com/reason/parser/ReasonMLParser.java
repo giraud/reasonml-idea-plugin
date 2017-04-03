@@ -334,7 +334,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // NONE
   //     | SOME expr
-  //     | FUN parameter* ARROW let_binding_body 
+  //     | FUN parameter* ARROW let_binding_body
   //     | LPAREN sequenced_expr? RPAREN
   //     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
   //     | IF LPAREN boolean_expr RPAREN LBRACE sequenced_expr RBRACE (ELSE LBRACE sequenced_expr RBRACE)*

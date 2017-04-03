@@ -80,7 +80,7 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitLetStatement(@NotNull ReasonMLLetStatement o) {
-    visitPsiElement(o);
+    visitInferredType(o);
   }
 
   public void visitModuleBody(@NotNull ReasonMLModuleBody o) {
@@ -180,6 +180,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitValuePath(@NotNull ReasonMLValuePath o) {
+    visitPsiElement(o);
+  }
+
+  public void visitInferredType(@NotNull ReasonMLInferredType o) {
     visitPsiElement(o);
   }
 

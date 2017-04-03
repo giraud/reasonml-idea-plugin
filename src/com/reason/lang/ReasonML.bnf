@@ -13,6 +13,7 @@
   tokenTypeClass="com.reason.psi.ReasonMLTokenType"
 
   psiImplUtilClass="com.reason.psi.impl.ReasonMLPsiImplUtil"
+  implements("let_statement")="com.reason.psi.ReasonMLInferredType"
 }
 
 reasonFile ::=
@@ -181,6 +182,7 @@ jsxContent ::=
 let_statement ::=
     let_binding SEMI {
         methods=[getPresentation]
+        mixin="com.reason.psi.impl.ReasonMLInferredTypeMixin"
     }
 
 let_binding ::=
@@ -188,6 +190,7 @@ let_binding ::=
           EQUAL let_binding_body
         | ARROW let_binding_body/*scoped_expr*/
     )
+    { methods=[isFunction] }
 
 private let_binding_body ::=
       LBRACE expr (SEMI expr)* RBRACE

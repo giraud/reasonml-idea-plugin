@@ -6,7 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.navigation.ItemPresentation;
 
-public interface ReasonMLLetStatement extends PsiElement {
+public interface ReasonMLLetStatement extends ReasonMLInferredType {
 
   @NotNull
   ReasonMLLetBinding getLetBinding();

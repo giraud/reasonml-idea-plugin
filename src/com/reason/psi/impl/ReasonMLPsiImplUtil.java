@@ -2,10 +2,7 @@ package com.reason.psi.impl;
 
 import com.intellij.navigation.ItemPresentation;
 import com.reason.icons.ReasonMLIcons;
-import com.reason.psi.ReasonMLExternalStatement;
-import com.reason.psi.ReasonMLLetStatement;
-import com.reason.psi.ReasonMLModuleStatement;
-import com.reason.psi.ReasonMLTypeStatement;
+import com.reason.psi.*;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -50,7 +47,7 @@ public class ReasonMLPsiImplUtil {
             public String getPresentableText() {
                 String letName = let.getLetBinding().getValueName().getText();
                 if (isField) {
-                    return letName;
+                    return letName + (let.hasInferredType() ? ": " + let.getInferredType() : "" );
                 }
 
                 return letName + "(..)";
@@ -122,4 +119,7 @@ public class ReasonMLPsiImplUtil {
         };
     }
 
+    public static boolean isFunction(final ReasonMLLetBinding letBinding) {
+        return letBinding.getValueName().getNextSibling().getNode().getText() == "="; // space !
+    }
 }
