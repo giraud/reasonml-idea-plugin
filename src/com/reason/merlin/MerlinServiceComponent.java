@@ -6,6 +6,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
+import com.reason.Platform;
 import com.reason.ide.ReasonMLNotification;
 import com.reason.merlin.types.*;
 import org.jetbrains.annotations.NotNull;
@@ -49,10 +50,7 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
 
     @Override
     public void projectOpened() {
-        String merlinBin = System.getenv("MERLIN_BIN"); // ocamlmerlin
-        if (merlinBin == null) {
-            merlinBin = "ocamlmerlin";
-        }
+        String merlinBin = Platform.getBinary("REASON_MERLIN_BIN", "reasonMerlin", "ocamlmerlin");
 
         try {
             this.merlin = new MerlinProcess(merlinBin, this.myProject.getBasePath());

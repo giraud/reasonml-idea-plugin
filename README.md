@@ -14,6 +14,9 @@ ReasonML language plugin for idea
 - Line commenting with ctrl-alt-l
 - code folding
 - pair braces matcher
+- reformat on save (*)
+
+_(*) You need to define an environment variable REASON_REFMT_BIN that contains the absolute path to the refmt binary_
 
 ## Development
 

@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reason.Platform;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class MerlinProcess implements Closeable {
 
@@ -19,15 +23,25 @@ public class MerlinProcess implements Closeable {
     private BufferedReader errorReader;
 
     MerlinProcess(String merlinBin, String basePath) throws IOException {
-        objectMapper = new ObjectMapper();
-        ProcessBuilder processBuilder = new ProcessBuilder(merlinBin)
+        List<String> commands;
+
+        if (Platform.isWindows()) {
+            commands = asList(merlinBin);
+        } else {
+            String absolutePath = new File(merlinBin).getAbsoluteFile().getParent();
+            commands = asList("bash", "-c", "export PATH=" + absolutePath + ":$PATH && ocamlmerlin");
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(commands)
                 .directory(new File(basePath))
                 .redirectErrorStream(true);
 
-        merlin = processBuilder.start();
-        writer = new BufferedWriter(new OutputStreamWriter(merlin.getOutputStream()));
-        reader = new BufferedReader(new InputStreamReader(merlin.getInputStream()));
-        errorReader = new BufferedReader(new InputStreamReader(merlin.getErrorStream()));
+        this.merlin = processBuilder.start();
+        this.writer = new BufferedWriter(new OutputStreamWriter(merlin.getOutputStream()));
+        this.reader = new BufferedReader(new InputStreamReader(merlin.getInputStream()));
+        this.errorReader = new BufferedReader(new InputStreamReader(merlin.getErrorStream()));
+
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -46,7 +60,7 @@ public class MerlinProcess implements Closeable {
     }
 
     <R> R makeRequest(TypeReference<R> type, @Nullable String filename, String query) {
-        if (writer == null) {
+        if (this.writer == null) {
             return null;
         }
 
@@ -60,16 +74,16 @@ public class MerlinProcess implements Closeable {
                 //System.out.println("make request " + request);
             }
 
-            writer.write(request);
-            writer.flush();
+            this.writer.write(request);
+            this.writer.flush();
 
             StringBuilder errorBuffer = new StringBuilder();
-            errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
+            this.errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
             if (0 < errorBuffer.length()) {
                 throw new RuntimeException(errorBuffer.toString());
             } else {
 //                System.out.println(reader.lines().count());
-                String content = reader.readLine();
+                String content = this.reader.readLine();
 //                System.out.println("  »» " + content);
                 JsonNode jsonNode = this.objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);

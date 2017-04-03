@@ -2,6 +2,7 @@ package com.reason.ide;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
+import com.reason.Platform;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -11,7 +12,7 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
     String refmtBin;
 
     public ReformatOnSave() {
-        refmtBin = getRefmtBin();
+        refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "refmt");
     }
 
     /**
@@ -64,13 +65,5 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
                 refmt.destroyForcibly();
             }
         }
-    }
-
-    private String getRefmtBin() {
-        String refmtBin = System.getenv("REFMT_BIN");
-        if (refmtBin == null) {
-            return "refmt";
-        }
-        return refmtBin;
     }
 }
