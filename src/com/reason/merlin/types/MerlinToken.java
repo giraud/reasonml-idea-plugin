@@ -1,4 +1,6 @@
-package com.reason.merlin;
+package com.reason.merlin.types;
+
+import com.reason.merlin.types.MerlinPosition;
 
 public class MerlinToken {
     public MerlinPosition start;

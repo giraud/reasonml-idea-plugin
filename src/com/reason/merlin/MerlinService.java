@@ -1,5 +1,7 @@
 package com.reason.merlin;
 
+import com.reason.merlin.types.*;
+
 import java.util.List;
 
 public interface MerlinService {

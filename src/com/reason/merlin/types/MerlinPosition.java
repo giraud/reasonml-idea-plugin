@@ -1,4 +1,4 @@
-package com.reason.merlin;
+package com.reason.merlin.types;
 
 import com.intellij.openapi.editor.LogicalPosition;
 

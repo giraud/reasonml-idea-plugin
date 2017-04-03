@@ -1,19 +1,18 @@
 package com.reason.merlin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.ide.ReasonMLNotification;
+import com.reason.merlin.types.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.reason.merlin.MerlinProcess.NO_CONTEXT;
+import static java.util.stream.Collectors.toList;
 
 public class MerlinServiceComponent implements MerlinService, com.intellij.openapi.components.ApplicationComponent {
 
@@ -23,17 +22,18 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     };
     private static final TypeReference<List<MerlinType>> TYPE_TYPE_REFERENCE = new TypeReference<List<MerlinType>>() {
     };
-    public static final TypeReference<Boolean> BOOLEAN_TYPE_REFERENCE = new TypeReference<Boolean>() {
+    private static final TypeReference<Boolean> BOOLEAN_TYPE_REFERENCE = new TypeReference<Boolean>() {
     };
-    private static final String NO_CONTEXT = null;
-    public static final TypeReference<MerlinVersion> VERSION_TYPE_REFERENCE = new TypeReference<MerlinVersion>() {
+    private static final TypeReference<MerlinVersion> VERSION_TYPE_REFERENCE = new TypeReference<MerlinVersion>() {
+    };
+    private static final TypeReference<List<String>> LIST_STRING_TYPE_REFERENCE = new TypeReference<List<String>>() {
+    };
+    private static final TypeReference<List<MerlinToken>> LIST_TOKEN_TYPE_REFERENCE = new TypeReference<List<MerlinToken>>() {
+    };
+    private static final TypeReference<Object> OBJECT_TYPE_REFERENCE = new TypeReference<Object>() {
     };
 
-    private ObjectMapper objectMapper;
-    private Process merlin;
-    private BufferedWriter writer;
-    private BufferedReader reader;
-    private BufferedReader errorReader;
+    private MerlinProcess merlin;
 
     @NotNull
     @Override
@@ -43,171 +43,89 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public void initComponent() {
-        System.out.println("Init merlin component");
         String merlinBin = System.getenv("MERLIN_BIN"); // ocamlmerlin
         if (merlinBin == null) {
             merlinBin = "ocamlmerlin";
         }
 
-        objectMapper = new ObjectMapper();
-        ProcessBuilder processBuilder = new ProcessBuilder(merlinBin)
-                .directory(new File("V:\\sources\\reason\\ReasonProject"))
-                .redirectErrorStream(true);
-
         try {
-            merlin = processBuilder.start();
-            writer = new BufferedWriter(new OutputStreamWriter(merlin.getOutputStream()));
-            reader = new BufferedReader(new InputStreamReader(merlin.getInputStream()));
-            errorReader = new BufferedReader(new InputStreamReader(merlin.getErrorStream()));
+            this.merlin = new MerlinProcess(merlinBin);
         } catch (IOException e) {
             Notifications.Bus.notify(new ReasonMLNotification("Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
             return;
         }
 
+        // Automatically select latest version
         MerlinVersion merlinVersion = selectVersion(3);
         Notifications.Bus.notify(new ReasonMLNotification("version", merlinVersion.toString(), NotificationType.INFORMATION));
     }
 
     @Override
     public void disposeComponent() {
-        System.out.println("Dispose merlin component");
-        if (merlin != null && merlin.isAlive()) {
+        if (merlin != null) {
             try {
-                writer.close();
-                reader.close();
-                errorReader.close();
+                merlin.close();
             } catch (IOException e) {
                 // nothing to do
+            } finally {
+                merlin = null;
             }
-            merlin.destroyForcibly();
-            merlin = null;
         }
     }
 
     @Override
     public List<MerlinError> errors(String filename) {
-        return makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]");
+        return this.merlin.makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]");
     }
 
     @Override
     public MerlinVersion version() {
-        return makeRequest(VERSION_TYPE_REFERENCE, NO_CONTEXT, "[\"protocol\", \"version\"]");
+        return this.merlin.makeRequest(VERSION_TYPE_REFERENCE, NO_CONTEXT, "[\"protocol\", \"version\"]");
     }
 
     @Override
     public MerlinVersion selectVersion(int version) {
-        return makeRequest(VERSION_TYPE_REFERENCE, NO_CONTEXT, "[\"protocol\", \"version\", " + version + "]");
+        return this.merlin.makeRequest(VERSION_TYPE_REFERENCE, NO_CONTEXT, "[\"protocol\", \"version\", " + version + "]");
     }
 
     @Override
     public void sync(String filename, String buffer) {
-        try {
-            makeRequest(BOOLEAN_TYPE_REFERENCE, filename, "[\"tell\", \"start\", \"end\", " + this.objectMapper.writeValueAsString(buffer) + "]");
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        this.merlin.makeRequest(BOOLEAN_TYPE_REFERENCE, filename, "[\"tell\", \"start\", \"end\", " + this.merlin.writeValueAsString(buffer) + "]");
     }
 
     @Override
     public Object dump(String filename, DumpFlag flag) {
-        return makeRequest(new TypeReference<Object>() {
-        }, filename, "[\"dump\", \"" + flag.name() + "\"]");
+        return this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"dump\", \"" + flag.name() + "\"]");
     }
 
     @Override
     public List<MerlinToken> dumpTokens(String filename) {
-        return makeRequest(new TypeReference<List<MerlinToken>>() {
-        }, filename, "[\"dump\", \"" + DumpFlag.tokens.name() + "\"]");
+        return this.merlin.makeRequest(LIST_TOKEN_TYPE_REFERENCE, filename, "[\"dump\", \"" + DumpFlag.tokens.name() + "\"]");
     }
 
     @Override
     public List<String> paths(String filename, Path path) {
-        return makeRequest(new TypeReference<List<String>>() {
-        }, filename, "[\"path\", \"list\", \"" + path.name() + "\"]");
+        return this.merlin.makeRequest(LIST_STRING_TYPE_REFERENCE, filename, "[\"path\", \"list\", \"" + path.name() + "\"]");
     }
 
     @Override
     public List<String> listExtensions(String filename) {
-        return makeRequest(new TypeReference<List<String>>() {
-        }, filename, "[\"extension\", \"list\"]");
+        return this.merlin.makeRequest(LIST_STRING_TYPE_REFERENCE, filename, "[\"extension\", \"list\"]");
     }
 
     @Override
     public void enableExtensions(String filename, List<String> extensions) {
-        List<String> collect = extensions.stream().map(s -> {
-            try {
-                return this.objectMapper.writeValueAsString(s);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
-
-        makeRequest(new TypeReference<Object>() {
-        }, filename, "[\"extension\", \"enable\", [" + Joiner.on("'").join(collect) + "]]");
-
+        List<String> collect = extensions.stream().map(s -> this.merlin.writeValueAsString(s)).collect(toList());
+        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"extension\", \"enable\", [" + Joiner.on(", ").join(collect) + "]]");
     }
 
     @Override
     public Object projectGet() {
-        return makeRequest(new TypeReference<Object>() {
-        }, "filename", "[\"project\", \"get\"]");
+        return this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, "filename", "[\"project\", \"get\"]");
     }
 
     @Override
     public List<MerlinType> findType(String filename, MerlinPosition position) {
-        return makeRequest(TYPE_TYPE_REFERENCE, filename, "[\"type\", \"enclosing\", \"at\", " + position + "]");
-    }
-
-    private <R> R makeRequest(TypeReference<R> type, @Nullable String filename, String query) {
-        if (writer == null) {
-            return null;
-        }
-
-        try {
-            String request;
-            if (filename == NO_CONTEXT) {
-                request = query;
-            } else {
-                request = "{\"context\": [\"auto\", " + this.objectMapper.writeValueAsString(filename) + "], " +
-                        "\"query\": " + query + "}";
-                //System.out.println("make request " + request);
-            }
-
-            writer.write(request);
-            writer.flush();
-
-            StringBuilder errorBuffer = new StringBuilder();
-            errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
-            if (0 < errorBuffer.length()) {
-                throw new RuntimeException(errorBuffer.toString());
-            } else {
-//                System.out.println(reader.lines().count());
-                String content = reader.readLine();
-//                System.out.println("  »» " + content);
-                JsonNode jsonNode = this.objectMapper.readTree(content);
-                JsonNode responseNode = extractResponse(jsonNode);
-
-//                System.out.println("Result found: >> " + responseNode.toString() + " <<");
-                return this.objectMapper.convertValue(responseNode, type);
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        } catch (RuntimeException e) {
-            System.err.println("ERROR");
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    private JsonNode extractResponse(JsonNode merlinResult) {
-        JsonNode classField = merlinResult.get("class");
-        String responseType = classField.textValue();
-        if ("return".equals(responseType)) {
-            return merlinResult.get("value");
-        }
-
-        System.err.println("Request failed: " + classField.asText() + " > " + merlinResult.get(1).toString());
-        throw new RuntimeException(merlinResult.get(1).toString());
+        return this.merlin.makeRequest(TYPE_TYPE_REFERENCE, filename, "[\"type\", \"enclosing\", \"at\", " + position + "]");
     }
 }
