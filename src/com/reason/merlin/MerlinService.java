@@ -13,5 +13,5 @@ public interface MerlinService {
 
     List<String> paths(Path path);
 
-    List<String> extensions();
+    List<String> listExtensions();
 }

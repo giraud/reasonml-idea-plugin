@@ -7,12 +7,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 
 class ReformatOnSave extends FileDocumentManagerAdapter {
-    private final String reformatBinary;
-    private final boolean useBash;
 
-    ReformatOnSave(String reformatBinary, boolean useBash) {
-        this.reformatBinary = reformatBinary;
-        this.useBash = useBash;
+    String refmtBin;
+
+    public ReformatOnSave() {
+        refmtBin = getRefmtBin();
     }
 
     /**
@@ -25,14 +24,7 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        ProcessBuilder processBuilder;
-        if (this.useBash) {
-            processBuilder = new ProcessBuilder("bash", "-c", this.reformatBinary);
-        } else {
-            processBuilder = new ProcessBuilder(this.reformatBinary);
-        }
-
-        processBuilder.redirectErrorStream(true);
+        ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin).redirectErrorStream(true);
 
         Process refmt = null;
         try {
@@ -63,5 +55,13 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
                 refmt.destroyForcibly();
             }
         }
+    }
+
+    private String getRefmtBin() {
+        String refmtBin = System.getenv("REFMT_BIN");
+        if (refmtBin == null) {
+            return "refmt";
+        }
+        return refmtBin;
     }
 }

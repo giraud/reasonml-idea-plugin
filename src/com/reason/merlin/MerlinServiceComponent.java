@@ -3,6 +3,9 @@ package com.reason.merlin;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -30,10 +33,13 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     @Override
     public void initComponent() {
         System.out.println("Init merlin component");
-        objectMapper = new ObjectMapper();
+        String merlinBin = System.getenv("MERLIN_BIN"); // ocamlmerlin
+        if (merlinBin == null) {
+            merlinBin = "ocamlmerlin";
+        }
 
-        ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", "/home/hgiraud/.nvm/versions/node/v6.10.0/bin/ocamlmerlin");
-        processBuilder.redirectErrorStream(true);
+        objectMapper = new ObjectMapper();
+        ProcessBuilder processBuilder = new ProcessBuilder(merlinBin).redirectErrorStream(true);
 
         try {
             merlin = processBuilder.start();
@@ -41,7 +47,8 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
             reader = new BufferedReader(new InputStreamReader(merlin.getInputStream()));
             errorReader = new BufferedReader(new InputStreamReader(merlin.getErrorStream()));
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            Notifications.Bus.notify(new Notification("reasonML", "Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
+            e.printStackTrace();
         }
     }
 
@@ -73,26 +80,33 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public Object dump(DumpFlag flag) {
-        return makeRequest(new TypeReference<Object>() {}, "filename", "[\"dump\", \"" + flag.name() + "\"]");
+        return makeRequest(new TypeReference<Object>() {
+        }, "filename", "[\"dump\", \"" + flag.name() + "\"]");
     }
 
     @Override
     public List<MerlinToken> dumpTokens() {
-        return makeRequest(new TypeReference<List<MerlinToken>>() {}, "filename", "[\"dump\", \"" + DumpFlag.tokens.name() + "\"]");
+        return makeRequest(new TypeReference<List<MerlinToken>>() {
+        }, "filename", "[\"dump\", \"" + DumpFlag.tokens.name() + "\"]");
     }
 
     @Override
     public List<String> paths(Path path) {
-        return makeRequest(new TypeReference<List<String>>() {}, "filename", "[\"path\", \"list\", \"" + path.name() + "\"]");
+        return makeRequest(new TypeReference<List<String>>() {
+        }, "filename", "[\"path\", \"list\", \"" + path.name() + "\"]");
     }
 
     @Override
-    public List<String> extensions() {
-        return makeRequest(new TypeReference<List<String>>() {}, "filename", "[\"extension\", \"list\"]");
+    public List<String> listExtensions() {
+        return makeRequest(new TypeReference<List<String>>() {
+        }, "filename", "[\"extension\", \"list\"]");
     }
 
     private <R> R makeRequest(TypeReference<R> type, String filename, String request) {
 //        System.out.println("make request " + request);
+        if (writer == null) {
+            return null;
+        }
 
         try {
             writer.write(request);

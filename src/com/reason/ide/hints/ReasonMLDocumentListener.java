@@ -85,7 +85,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
                 System.out.println("     dump tokens: [" + Joiner.on("'").join(service.dumpTokens()) + "]");
                 System.out.println("          source: [" + Joiner.on("'").join(service.paths(Path.source)) + "]");
                 System.out.println("           build: [" + Joiner.on("'").join(service.paths(Path.build)) + "]");
-                System.out.println("      extensions: [" + Joiner.on("'").join(service.extensions()) + "]");
+                System.out.println("      extensions: [" + Joiner.on("'").join(service.listExtensions()) + "]");
                 System.out.println("  Merlin version: " + version);
                 System.out.println("          Errors: [" + Joiner.on("'").join(errors) + "]");
             }
