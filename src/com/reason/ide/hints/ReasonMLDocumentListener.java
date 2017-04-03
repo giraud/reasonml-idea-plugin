@@ -1,8 +1,6 @@
 package com.reason.ide.hints;
 
-import com.google.common.base.Joiner;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -10,14 +8,14 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
-import com.reason.merlin.types.MerlinError;
-import com.reason.merlin.types.MerlinPosition;
 import com.reason.merlin.MerlinService;
+import com.reason.merlin.types.MerlinPosition;
 import com.reason.merlin.types.MerlinType;
 import com.reason.psi.ReasonMLLetStatement;
 import com.reason.psi.ReasonMLValueName;
@@ -95,8 +93,11 @@ public class ReasonMLDocumentListener implements DocumentListener {
 
         @Override
         public void run() {
-            MerlinService service = ServiceManager.getService(MerlinService.class);
-            if (!service.isRunning()) {
+//            MerlinService service = ServiceManager.getService(MerlinService.class);
+            Project defaultProject = ProjectManager.getInstance().getOpenProjects()[0]/*??*/;
+            MerlinService service = defaultProject.getComponent(MerlinService.class);
+
+            if (service == null || !service.isRunning()) {
                 System.err.println("Can't find merlin service, abort");
             } else {
                 String filename = psiFile.getVirtualFile().getCanonicalPath();

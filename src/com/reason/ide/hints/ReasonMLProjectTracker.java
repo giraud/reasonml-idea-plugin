@@ -3,7 +3,6 @@ package com.reason.ide.hints;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
 
 public class ReasonMLProjectTracker extends AbstractProjectComponent {
 
@@ -23,11 +22,5 @@ public class ReasonMLProjectTracker extends AbstractProjectComponent {
     public void projectClosed() {
         this.documentListener.projectClosed();
         EditorFactory.getInstance().getEventMulticaster().removeDocumentListener(this.documentListener);
-    }
-
-    @NotNull
-    @Override
-    public String getComponentName() {
-        return "reasonML.documentTracker";
     }
 }

@@ -18,10 +18,10 @@ public class MerlinProcess implements Closeable {
     private BufferedReader reader;
     private BufferedReader errorReader;
 
-    MerlinProcess(String merlinBin) throws IOException {
+    MerlinProcess(String merlinBin, String basePath) throws IOException {
         objectMapper = new ObjectMapper();
         ProcessBuilder processBuilder = new ProcessBuilder(merlinBin)
-                .directory(new File("V:\\sources\\reason\\ReasonProject"))
+                .directory(new File(basePath))
                 .redirectErrorStream(true);
 
         merlin = processBuilder.start();

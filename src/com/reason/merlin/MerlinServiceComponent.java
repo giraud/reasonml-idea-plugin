@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.project.Project;
 import com.reason.ide.ReasonMLNotification;
 import com.reason.merlin.types.*;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +16,7 @@ import java.util.List;
 import static com.reason.merlin.MerlinProcess.NO_CONTEXT;
 import static java.util.stream.Collectors.toList;
 
-public class MerlinServiceComponent implements MerlinService, com.intellij.openapi.components.ApplicationComponent {
+public class MerlinServiceComponent extends AbstractProjectComponent implements MerlinService {
 
     private static final TypeReference<List<MerlinError>> ERRORS_TYPE_REFERENCE = new TypeReference<List<MerlinError>>() {
     };
@@ -35,6 +37,10 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     private MerlinProcess merlin;
 
+    protected MerlinServiceComponent(Project project) {
+        super(project);
+    }
+
     @NotNull
     @Override
     public String getComponentName() {
@@ -42,14 +48,14 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     }
 
     @Override
-    public void initComponent() {
+    public void projectOpened() {
         String merlinBin = System.getenv("MERLIN_BIN"); // ocamlmerlin
         if (merlinBin == null) {
             merlinBin = "ocamlmerlin";
         }
 
         try {
-            this.merlin = new MerlinProcess(merlinBin);
+            this.merlin = new MerlinProcess(merlinBin, this.myProject.getBasePath());
         } catch (IOException e) {
             Notifications.Bus.notify(new ReasonMLNotification("Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
             return;
@@ -61,7 +67,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     }
 
     @Override
-    public void disposeComponent() {
+    public void projectClosed() {
         if (merlin != null) {
             try {
                 merlin.close();

@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
 import com.reason.merlin.MerlinService;
@@ -33,7 +33,7 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
     @Nullable
     @Override
     public MerlinInfo collectInformation(@NotNull PsiFile file) {
-        MerlinService merlinService = ApplicationManager.getApplication().getComponent(MerlinService.class);
+        MerlinService merlinService = ProjectManager.getInstance().getOpenProjects()[0/*??*/].getComponent(MerlinService.class);
         return new MerlinInfo(file, file.getText(), merlinService);
     }
 
