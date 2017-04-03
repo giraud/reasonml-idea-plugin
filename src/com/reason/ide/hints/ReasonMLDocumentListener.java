@@ -89,7 +89,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
         public QueryMerlinTask(PsiFile psiFile, ReasonMLLetStatement letStatement, LogicalPosition position) {
             this.psiFile = psiFile;
             this.letStatement = letStatement;
-            this.buffer = psiFile.getText(); // no
+            this.buffer = psiFile.getText(); // ?
             this.position = position;
         }
 
@@ -109,13 +109,13 @@ public class ReasonMLDocumentListener implements DocumentListener {
                 List<MerlinError> errors = service.errors(filename);
                 if (0 < errors.size()) {
                     // Errors found, create annotator
+                    System.out.println("          Errors: [\r\n" + Joiner.on("\r\n").join(errors) + "\r\n]");
                 }
 
                 List<MerlinType> types = service.findType(filename, new MerlinPosition(this.position));
-
-                this.letStatement.setInferredType(types.get(0).type);
-
-                System.out.println("          Errors: [\r\n" + Joiner.on("\r\n").join(errors) + "\r\n]");
+                if (!types.isEmpty()) {
+                    this.letStatement.setInferredType(types.get(0).type);
+                }
 
                 boolean debug = false;
                 if (debug) {
