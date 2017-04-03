@@ -7,11 +7,13 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.reason.Platform;
+import com.reason.icons.ReasonMLIcons;
 import com.reason.ide.ReasonMLNotification;
 import com.reason.merlin.types.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 
 import static com.reason.merlin.MerlinProcess.NO_CONTEXT;
@@ -60,8 +62,13 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
         }
 
         // Automatically select latest version
-        MerlinVersion merlinVersion = selectVersion(3);
-        Notifications.Bus.notify(new ReasonMLNotification("version", merlinVersion.toString(), NotificationType.INFORMATION));
+        try {
+            MerlinVersion merlinVersion = selectVersion(3);
+            Notifications.Bus.notify(new ReasonMLNotification("version", merlinVersion.toString(), NotificationType.INFORMATION));
+        } catch (UncheckedIOException e) {
+            Notifications.Bus.notify(new ReasonMLNotification(ReasonMLIcons.FILE, "Merlin not found", "", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR, null));
+            projectClosed();
+        }
     }
 
     @Override

@@ -60,7 +60,7 @@ public class MerlinProcess implements Closeable {
     }
 
     <R> R makeRequest(TypeReference<R> type, @Nullable String filename, String query) {
-        if (this.writer == null) {
+        if (this.merlin == null) {
             return null;
         }
 
