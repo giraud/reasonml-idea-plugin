@@ -90,23 +90,23 @@ public class ReasonMLDocumentListener implements DocumentListener {
 
         @Override
         public void run() {
-            MerlinService service = this.project.getComponent(MerlinService.class);
-            if (service == null || !service.isRunning()) {
+            MerlinService merlin = this.project.getComponent(MerlinService.class);
+            if (merlin == null || !merlin.isRunning()) {
                 return;
             }
 
             String filename = psiFile.getVirtualFile().getCanonicalPath();
             // BIG HACK
             if (Platform.isWindows()) {
-                filename = "file:///mnt/v/sources/reason/ReasonProject/src/" + psiFile.getVirtualFile().getName();
+                filename = Platform.toLinuxSubSystemPath(filename);
             }
 
             // Update merlin buffer
-            service.sync(filename, this.psiFile.getText());
+            merlin.sync(filename, this.psiFile.getText());
 
             int i = 0;
             for (ReasonMLLetStatement letStatement : this.letStatements) {
-                List<MerlinType> types = service.findType(filename, new MerlinPosition(this.positions.get(i)));
+                List<MerlinType> types = merlin.findType(filename, new MerlinPosition(this.positions.get(i)));
                 if (!types.isEmpty()) {
                     letStatement.setInferredType(types.get(0).type);
                 }

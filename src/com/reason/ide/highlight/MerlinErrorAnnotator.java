@@ -44,9 +44,9 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
         MerlinService merlin = ProjectManager.getInstance().getOpenProjects()[0/*??*/].getComponent(MerlinService.class);
         if (merlin != null && merlin.isRunning()) {
             String filename = collectedInfo.getFile().getVirtualFile().getCanonicalPath();
-            // !!! BIG HACK !!!
+            // !!! BIG WINDOWS HACK when using Linux Sub System !!!
             if (Platform.isWindows()) {
-                filename = "file:///mnt/v/sources/reason/ReasonProject/src/" + collectedInfo.getFile().getVirtualFile().getName();
+                filename = Platform.toLinuxSubSystemPath(collectedInfo.getFile().getVirtualFile().getCanonicalPath());
             }
 
             return merlin.errors(filename);

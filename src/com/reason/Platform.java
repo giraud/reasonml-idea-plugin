@@ -1,11 +1,7 @@
 package com.reason;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.diagnostic.LoggerRt;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Locale;
 
 public class Platform {
@@ -39,4 +35,8 @@ public class Platform {
         return defaultBinary;
     }
 
+    // C:/sources/ReasonProject -> /mnt/sources/ReasonProject
+    public static String toLinuxSubSystemPath(String filename) {
+        return "/mnt/" + filename.substring(0, 1).toLowerCase() + filename.substring(2);
+    }
 }

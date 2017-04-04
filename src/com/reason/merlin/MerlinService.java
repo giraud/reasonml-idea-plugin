@@ -28,4 +28,6 @@ public interface MerlinService {
     Object projectGet();
 
     List<MerlinType> findType(String filename, MerlinPosition position);
+
+    void outline(String filename);
 }

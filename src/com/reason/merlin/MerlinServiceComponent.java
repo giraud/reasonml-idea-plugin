@@ -67,7 +67,32 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
         } catch (UncheckedIOException e) {
             Notifications.Bus.notify(new ReasonMLNotification("Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR));
             projectClosed();
+//            return;
         }
+
+        // Update merlin path with content from .merlin (?)
+/*
+        VirtualFile baseDir = this.myProject.getBaseDir();
+        VirtualFile merlinDot = baseDir.findChild(".merlin");
+        if (merlinDot.exists()) {
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new InputStreamReader(merlinDot.getInputStream()));
+                List<String> sources = reader.lines().filter(line -> line.startsWith("S ")).map(line -> baseDir.findFileByRelativePath(line.substring(2).trim()).getCanonicalPath()).collect(Collectors.toList());
+
+                // BIG WINDOWS HACK (using Linux Sub System)
+                if (Platform.isWindows()) {
+                    // file://C:/ReasonProject -> file:///mnt/c/ReasonProject
+                    sources = sources.stream().map(source -> "/mnt/" + source.substring(0, 1).toLowerCase() + source.substring(2)).collect(Collectors.toList());
+                }
+
+                addPath(Path.source, sources);
+                Notifications.Bus.notify(new ReasonMLNotification("Paths", "Added the following paths (source) to merlin process: " + Joiner.on(", ").join(sources), NotificationType.INFORMATION));
+            } catch (IOException e) {
+                Notifications.Bus.notify(new ReasonMLNotification("Merlin dot file", "Can't read .merlin file instructions, merlin might not work correctly", NotificationType.ERROR));
+            }
+        }
+*/
     }
 
     @Override
@@ -123,6 +148,11 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
         return this.merlin.makeRequest(LIST_STRING_TYPE_REFERENCE, filename, "[\"path\", \"list\", \"" + path.name() + "\"]");
     }
 
+    void addPath(Path path, List<String> paths) {
+        List<String> jsonPaths = paths.stream().map(s -> this.merlin.writeValueAsString(s)).collect(toList());
+        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, NO_CONTEXT, "[\"path\", \"add\", \"" + path + "\", [" + Joiner.on(", ").join(jsonPaths) + "]]");
+    }
+
     @Override
     public List<String> listExtensions(String filename) {
         return this.merlin.makeRequest(LIST_STRING_TYPE_REFERENCE, filename, "[\"extension\", \"list\"]");
@@ -142,5 +172,10 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
     @Override
     public List<MerlinType> findType(String filename, MerlinPosition position) {
         return this.merlin.makeRequest(TYPE_TYPE_REFERENCE, filename, "[\"type\", \"enclosing\", \"at\", " + position + "]");
+    }
+
+    @Override
+    public void outline(String filename) {
+        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"outline\"]");
     }
 }
