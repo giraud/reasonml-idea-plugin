@@ -27,12 +27,12 @@ public class ReasonMLCompletionContributor extends CompletionContributor {
                 LineNumbering lineNumbering = new LineNumbering(text);
 
                 String suitablePrefix = findSuitablePrefix(parameters, text);
-//                System.out.println("Completion prefix: " + suitablePrefix);
+                System.out.println("Completion prefix: " + suitablePrefix);
 
                 MerlinCompletion completion = merlin.completions(originalFile.getName(),
                         suitablePrefix, lineNumbering.offsetToPosition(parameters.getOffset()));
                 for (MerlinCompletionEntry entry : completion.entries) {
-//                    System.out.println("  >> " + entry);
+                    System.out.println("  >> " + entry);
                     Icon entryIcon = null;
                     if ("type".equals(entry.kind)) {
                         entryIcon = ReasonMLIcons.TYPE;

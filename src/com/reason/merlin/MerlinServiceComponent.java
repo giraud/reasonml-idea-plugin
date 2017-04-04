@@ -60,9 +60,9 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         // Automatically select latest version
         try {
             MerlinVersion merlinVersion = selectVersion(3);
-            Notifications.Bus.notify(new ReasonMLNotification("version", merlinVersion.toString(), NotificationType.INFORMATION));
+            Notifications.Bus.notify(new ReasonMLNotification("Merlin", "version", merlinVersion.toString(), NotificationType.INFORMATION, null));
         } catch (UncheckedIOException e) {
-            Notifications.Bus.notify(new ReasonMLNotification("Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR));
+            Notifications.Bus.notify(new ReasonMLNotification("Merlin", "Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR, null));
             disposeComponent();
         }
     }

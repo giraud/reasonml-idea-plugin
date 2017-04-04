@@ -3,7 +3,9 @@ package com.reason.ide;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,9 +13,9 @@ import java.io.*;
 
 class ReformatOnSave extends FileDocumentManagerAdapter {
 
-    String refmtBin;
+    private String refmtBin;
 
-    public ReformatOnSave() {
+    ReformatOnSave() {
         refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "refmt");
     }
 
@@ -27,46 +29,53 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin).redirectErrorStream(true);
+        if (isReasonFile(document)) {
+            ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin).redirectErrorStream(true);
 
-        Process refmt = null;
-        try {
-            refmt = processBuilder.start();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(refmt.getOutputStream()));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(refmt.getInputStream()));
-            BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream()));
+            Process refmt = null;
+            try {
+                refmt = processBuilder.start();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(refmt.getOutputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(refmt.getInputStream()));
+                BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream()));
 
-            String text = document.getText();
+                String text = document.getText();
 
-            writer.write(text);
-            writer.flush();
-            writer.close();
+                writer.write(text);
+                writer.close();
 
-            StringBuilder errorBuffer = new StringBuilder();
-            errReader.lines().forEach(errorBuffer::append);
-            if (0 < errorBuffer.length()) {
-                throw new RuntimeException(errorBuffer.toString());
-            } else {
-                StringBuilder refmtBuffer = new StringBuilder(text.length());
-                reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
+                StringBuilder errorBuffer = new StringBuilder();
+                errReader.lines().forEach(errorBuffer::append);
+                if (0 < errorBuffer.length()) {
+                    throw new RuntimeException(errorBuffer.toString());
+                } else {
+                    StringBuilder refmtBuffer = new StringBuilder(text.length());
+                    reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
 
-                // hack
-                String reformattedText = refmtBuffer.toString();
-                if (reformattedText.startsWith("File") && 0 < refmtBuffer.toString().indexOf("Error")) {
-                    // it seems that refmt returned an error !?
-                    System.err.println("REFMT ERROR\n" + reformattedText);
-                    Notifications.Bus.notify(new ReasonMLNotification("Reformat", reformattedText, NotificationType.ERROR));
-                    return;
+                    // hack
+                    String reformattedText = refmtBuffer.toString();
+                    if (reformattedText.startsWith("File") && 0 < refmtBuffer.toString().indexOf("Error")) {
+                        // it seems that refmt returned an error !?
+                        System.err.println("REFMT ERROR\n" + reformattedText);
+                        Notifications.Bus.notify(new ReasonMLNotification("Reformat", reformattedText, NotificationType.ERROR));
+                        return;
+                    }
+
+                    document.setText(refmtBuffer);
                 }
-
-                document.setText(refmtBuffer);
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        } finally {
-            if (refmt != null && refmt.isAlive()) {
-                refmt.destroyForcibly();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            } finally {
+                if (refmt != null && refmt.isAlive()) {
+                    refmt.destroyForcibly();
+                }
             }
         }
+    }
+
+    private boolean isReasonFile(Document document) {
+        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
+        String extension = file == null ? null : file.getExtension();
+        return "re".equals(extension) || "rei".equals(extension);
     }
 }

@@ -82,21 +82,19 @@ public class MerlinProcess implements Closeable {
             if (0 < errorBuffer.length()) {
                 throw new RuntimeException(errorBuffer.toString());
             } else {
-//                System.out.println(reader.lines().count());
                 String content = this.reader.readLine();
-//                System.out.println("  »» " + content);
                 JsonNode jsonNode = this.objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);
 
-//                System.out.println("Result found: >> " + responseNode.toString() + " <<");
-                return this.objectMapper.convertValue(responseNode, type);
+                try {
+                    return this.objectMapper.convertValue(responseNode, type);
+                } catch (RuntimeException e) {
+                    System.err.println("Conversion error of request " + content + "\n  " + e.getMessage());
+                    throw e;
+                }
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        } catch (RuntimeException e) {
-            System.err.println("ERROR");
-            e.printStackTrace();
-            throw e;
         }
     }
 
