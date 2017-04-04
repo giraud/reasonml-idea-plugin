@@ -11,10 +11,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Platform;
-import com.reason.merlin.MerlinService;
-import com.reason.merlin.types.MerlinPosition;
-import com.reason.merlin.types.MerlinType;
 import com.reason.psi.ReasonMLLetStatement;
 import com.reason.psi.ReasonMLValueName;
 import io.reactivex.disposables.Disposable;
@@ -53,7 +49,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
                             }).collect(Collectors.toList());
 
                             if (!positions.isEmpty()) {
-                                QueryMerlinTask merlinTask = new QueryMerlinTask(psiFile, letStatements, positions);
+                                MerlinQueryTypesTask merlinTask = new MerlinQueryTypesTask(psiFile, letStatements, positions);
                                 ApplicationManager.getApplication().executeOnPooledThread(merlinTask); // Let statement has been modified
                             }
                         }
@@ -74,42 +70,4 @@ public class ReasonMLDocumentListener implements DocumentListener {
         this.subscriber.dispose();
     }
 
-    private static class QueryMerlinTask implements Runnable {
-
-        private final Collection<ReasonMLLetStatement> letStatements;
-        private final List<LogicalPosition> positions;
-        private final PsiFile psiFile;
-
-        QueryMerlinTask(PsiFile psiFile, Collection<ReasonMLLetStatement> letStatements, List<LogicalPosition> positions) {
-            this.psiFile = psiFile;
-            this.letStatements = letStatements;
-            this.positions = positions;
-        }
-
-        @Override
-        public void run() {
-            MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
-            if (merlin == null || !merlin.isRunning()) {
-                return;
-            }
-
-            String filename = psiFile.getVirtualFile().getCanonicalPath();
-            // BIG HACK
-            if (Platform.isWindows()) {
-                filename = Platform.toLinuxSubSystemPath(filename);
-            }
-
-            // Update merlin buffer
-            merlin.sync(filename, this.psiFile.getText());
-
-            int i = 0;
-            for (ReasonMLLetStatement letStatement : this.letStatements) {
-                List<MerlinType> types = merlin.findType(filename, new MerlinPosition(this.positions.get(i)));
-                if (!types.isEmpty()) {
-                    letStatement.setInferredType(types.get(0).type);
-                }
-                i++;
-            }
-        }
-    }
 }

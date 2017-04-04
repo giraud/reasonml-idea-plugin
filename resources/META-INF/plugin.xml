@@ -55,6 +55,7 @@
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
 
         <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
+        <editor.linePainter implementation="com.reason.ide.hints.ReasonMLEditorLinePainter"/>
 
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>

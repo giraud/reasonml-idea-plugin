@@ -6,14 +6,14 @@ import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
 import com.intellij.codeInsight.hints.Option;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
-import com.reason.psi.ReasonMLLetStatement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
 // just an experiment
 public class SignatureProvider implements InlayParameterHintsProvider {
@@ -21,14 +21,14 @@ public class SignatureProvider implements InlayParameterHintsProvider {
     @NotNull
     @Override
     public List<InlayInfo> getParameterHints(PsiElement element) {
-        if (element instanceof ReasonMLLetStatement) {
-            ReasonMLLetStatement letStatement = (ReasonMLLetStatement) element;
-            if (!letStatement.getLetBinding().isFunction()) {
-                if (letStatement.hasInferredType()) {
-                    return singletonList(new InlayInfo(letStatement.getInferredType(), letStatement.getLetBinding().getValueName().getTextOffset()));
-                }
-            }
-        }
+//        if (element instanceof ReasonMLLetStatement) {
+//            ReasonMLLetStatement letStatement = (ReasonMLLetStatement) element;
+//            if (!letStatement.getLetBinding().isFunction()) {
+//                if (letStatement.hasInferredType()) {
+//                    return singletonList(new InlayInfo(letStatement.getInferredType(), 14/*letStatement.getLetBinding().getValueName().getTextOffset()*/));
+//                }
+//            }
+//        }
 
         return emptyList();
     }
