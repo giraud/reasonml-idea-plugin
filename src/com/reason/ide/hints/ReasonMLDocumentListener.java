@@ -53,7 +53,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
                             }).collect(Collectors.toList());
 
                             if (!positions.isEmpty()) {
-                                QueryMerlinTask merlinTask = new QueryMerlinTask(project, psiFile, letStatements, positions);
+                                QueryMerlinTask merlinTask = new QueryMerlinTask(psiFile, letStatements, positions);
                                 ApplicationManager.getApplication().executeOnPooledThread(merlinTask); // Let statement has been modified
                             }
                         }
@@ -78,11 +78,9 @@ public class ReasonMLDocumentListener implements DocumentListener {
 
         private final Collection<ReasonMLLetStatement> letStatements;
         private final List<LogicalPosition> positions;
-        private final Project project;
         private final PsiFile psiFile;
 
-        QueryMerlinTask(Project project, PsiFile psiFile, Collection<ReasonMLLetStatement> letStatements, List<LogicalPosition> positions) {
-            this.project = project;
+        QueryMerlinTask(PsiFile psiFile, Collection<ReasonMLLetStatement> letStatements, List<LogicalPosition> positions) {
             this.psiFile = psiFile;
             this.letStatements = letStatements;
             this.positions = positions;
@@ -90,7 +88,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
 
         @Override
         public void run() {
-            MerlinService merlin = this.project.getComponent(MerlinService.class);
+            MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
             if (merlin == null || !merlin.isRunning()) {
                 return;
             }

@@ -30,4 +30,6 @@ public interface MerlinService {
     List<MerlinType> findType(String filename, MerlinPosition position);
 
     void outline(String filename);
+
+    MerlinCompletion completions(String filename, String prefix, MerlinPosition position);
 }

@@ -3,10 +3,11 @@ package com.reason.ide.highlight;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
+import com.reason.ide.LineNumbering;
 import com.reason.merlin.MerlinService;
 import com.reason.merlin.types.MerlinError;
 import com.reason.merlin.types.MerlinErrorType;
@@ -41,7 +42,7 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
     @Nullable
     @Override
     public List<MerlinError> doAnnotate(MerlinInfo collectedInfo) {
-        MerlinService merlin = ProjectManager.getInstance().getOpenProjects()[0/*??*/].getComponent(MerlinService.class);
+        MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
         if (merlin != null && merlin.isRunning()) {
             String filename = collectedInfo.getFile().getVirtualFile().getCanonicalPath();
             // !!! BIG WINDOWS HACK when using Linux Sub System !!!

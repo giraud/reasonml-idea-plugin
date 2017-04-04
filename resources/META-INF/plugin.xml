@@ -22,15 +22,15 @@
 
     <application-components>
         <component>
+            <interface-class>com.reason.merlin.MerlinService</interface-class>
+            <implementation-class>com.reason.merlin.MerlinServiceComponent</implementation-class>
+        </component>
+        <component>
             <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
         </component>
     </application-components>
 
     <project-components>
-        <component>
-            <interface-class>com.reason.merlin.MerlinService</interface-class>
-            <implementation-class>com.reason.merlin.MerlinServiceComponent</implementation-class>
-        </component>
         <component>
             <implementation-class>com.reason.ide.hints.ReasonMLProjectTracker</implementation-class>
         </component>
@@ -45,6 +45,8 @@
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.ReasonMLAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator" />
+
+        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.ReasonMLCompletionContributor"/>
 
         <lang.psiStructureViewFactory language="ReasonML"
                                       implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>

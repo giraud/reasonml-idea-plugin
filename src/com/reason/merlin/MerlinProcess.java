@@ -23,7 +23,7 @@ public class MerlinProcess implements Closeable {
     private BufferedReader reader;
     private BufferedReader errorReader;
 
-    MerlinProcess(String merlinBin, String basePath) throws IOException {
+    MerlinProcess(String merlinBin) throws IOException {
         List<String> commands;
 
         if (Platform.isWindows()) {
@@ -34,7 +34,6 @@ public class MerlinProcess implements Closeable {
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder(commands)
-                .directory(new File(basePath))
                 .redirectErrorStream(true);
 
         this.merlin = processBuilder.start();

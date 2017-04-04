@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.AbstractProjectComponent;
-import com.intellij.openapi.project.Project;
 import com.reason.Platform;
 import com.reason.ide.ReasonMLNotification;
 import com.reason.merlin.types.*;
@@ -18,7 +16,7 @@ import java.util.List;
 import static com.reason.merlin.MerlinProcess.NO_CONTEXT;
 import static java.util.stream.Collectors.toList;
 
-public class MerlinServiceComponent extends AbstractProjectComponent implements MerlinService {
+public class MerlinServiceComponent implements MerlinService, com.intellij.openapi.components.ApplicationComponent {
 
     private static final TypeReference<List<MerlinError>> ERRORS_TYPE_REFERENCE = new TypeReference<List<MerlinError>>() {
     };
@@ -34,14 +32,12 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
     };
     private static final TypeReference<List<MerlinToken>> LIST_TOKEN_TYPE_REFERENCE = new TypeReference<List<MerlinToken>>() {
     };
+    private static final TypeReference<MerlinCompletion> COMPLETION_TYPE_REFERENCE = new TypeReference<MerlinCompletion>() {
+    };
     private static final TypeReference<Object> OBJECT_TYPE_REFERENCE = new TypeReference<Object>() {
     };
 
     private MerlinProcess merlin;
-
-    protected MerlinServiceComponent(Project project) {
-        super(project);
-    }
 
     @NotNull
     @Override
@@ -49,12 +45,13 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
         return "ReasonMerlin";
     }
 
+
     @Override
-    public void projectOpened() {
+    public void initComponent() {
         String merlinBin = Platform.getBinary("REASON_MERLIN_BIN", "reasonMerlin", "ocamlmerlin");
 
         try {
-            this.merlin = new MerlinProcess(merlinBin, this.myProject.getBasePath());
+            this.merlin = new MerlinProcess(merlinBin);
         } catch (IOException e) {
             Notifications.Bus.notify(new ReasonMLNotification("Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
             return;
@@ -66,37 +63,12 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
             Notifications.Bus.notify(new ReasonMLNotification("version", merlinVersion.toString(), NotificationType.INFORMATION));
         } catch (UncheckedIOException e) {
             Notifications.Bus.notify(new ReasonMLNotification("Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR));
-            projectClosed();
-//            return;
+            disposeComponent();
         }
-
-        // Update merlin path with content from .merlin (?)
-/*
-        VirtualFile baseDir = this.myProject.getBaseDir();
-        VirtualFile merlinDot = baseDir.findChild(".merlin");
-        if (merlinDot.exists()) {
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new InputStreamReader(merlinDot.getInputStream()));
-                List<String> sources = reader.lines().filter(line -> line.startsWith("S ")).map(line -> baseDir.findFileByRelativePath(line.substring(2).trim()).getCanonicalPath()).collect(Collectors.toList());
-
-                // BIG WINDOWS HACK (using Linux Sub System)
-                if (Platform.isWindows()) {
-                    // file://C:/ReasonProject -> file:///mnt/c/ReasonProject
-                    sources = sources.stream().map(source -> "/mnt/" + source.substring(0, 1).toLowerCase() + source.substring(2)).collect(Collectors.toList());
-                }
-
-                addPath(Path.source, sources);
-                Notifications.Bus.notify(new ReasonMLNotification("Paths", "Added the following paths (source) to merlin process: " + Joiner.on(", ").join(sources), NotificationType.INFORMATION));
-            } catch (IOException e) {
-                Notifications.Bus.notify(new ReasonMLNotification("Merlin dot file", "Can't read .merlin file instructions, merlin might not work correctly", NotificationType.ERROR));
-            }
-        }
-*/
     }
 
     @Override
-    public void projectClosed() {
+    public void disposeComponent() {
         if (merlin != null) {
             try {
                 merlin.close();
@@ -177,5 +149,11 @@ public class MerlinServiceComponent extends AbstractProjectComponent implements 
     @Override
     public void outline(String filename) {
         this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"outline\"]");
+    }
+
+    @Override
+    public MerlinCompletion completions(String filename, String prefix, MerlinPosition position) {
+        String query = "[\"expand\", \"prefix\", " + this.merlin.writeValueAsString(prefix) + ", \"at\", " + this.merlin.writeValueAsString(position) + "]";
+        return this.merlin.makeRequest(COMPLETION_TYPE_REFERENCE, filename, query);
     }
 }
