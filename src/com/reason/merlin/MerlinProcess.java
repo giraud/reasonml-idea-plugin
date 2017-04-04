@@ -102,13 +102,14 @@ public class MerlinProcess implements Closeable {
 
     private JsonNode extractResponse(JsonNode merlinResult) {
         JsonNode classField = merlinResult.get("class");
+        JsonNode value = merlinResult.get("value");
+
         String responseType = classField.textValue();
         if ("return".equals(responseType)) {
-            return merlinResult.get("value");
+            return value;
         }
 
-        System.err.println("Request failed: " + classField.asText() + " > " + merlinResult.get(1).toString());
-        throw new RuntimeException(merlinResult.get(1).toString());
+        throw new RuntimeException(value.toString());
     }
 
     String writeValueAsString(Object value) {
