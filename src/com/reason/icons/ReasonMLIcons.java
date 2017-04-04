@@ -14,4 +14,7 @@ public class ReasonMLIcons {
     public static final Icon TYPE = getIcon("/nodes/annotationtype.png");
     public static final Icon FUNCTION = getIcon("/nodes/function.png");
     public static final Icon EXTERNAL = getIcon("/nodes/enum.png");
+
+    public static final Icon VALUE = getIcon("/nodes/variable.png");
+    public static final Icon SIGNATURE = getIcon("/nodes/static.png");
 }

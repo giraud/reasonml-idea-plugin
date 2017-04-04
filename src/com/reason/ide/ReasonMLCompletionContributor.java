@@ -10,7 +10,9 @@ import com.reason.icons.ReasonMLIcons;
 import com.reason.merlin.MerlinService;
 import com.reason.merlin.types.MerlinCompletion;
 import com.reason.merlin.types.MerlinCompletionEntry;
+import com.reason.merlin.types.MerlinPosition;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -27,21 +29,17 @@ public class ReasonMLCompletionContributor extends CompletionContributor {
                 LineNumbering lineNumbering = new LineNumbering(text);
 
                 String suitablePrefix = findSuitablePrefix(parameters, text);
-                System.out.println("Completion prefix: " + suitablePrefix);
 
-                MerlinCompletion completion = merlin.completions(originalFile.getName(),
-                        suitablePrefix, lineNumbering.offsetToPosition(parameters.getOffset()));
+                MerlinPosition position = lineNumbering.offsetToPosition(parameters.getOffset());
+                MerlinCompletion completion = merlin.completions(originalFile.getName(), suitablePrefix, position);
+
+                System.out.println("Completion prefix: " + suitablePrefix);
                 for (MerlinCompletionEntry entry : completion.entries) {
                     System.out.println("  >> " + entry);
-                    Icon entryIcon = null;
-                    if ("type".equals(entry.kind)) {
-                        entryIcon = ReasonMLIcons.TYPE;
-                    }
-                    else if ("Value".equals(entry.kind)) {
-                        entryIcon = ReasonMLIcons.LET;
-                    }
-
-                    resultSet.addElement(LookupElementBuilder.create(entry.name).withIcon(entryIcon).withTypeText(entry.desc));
+                    resultSet.addElement(LookupElementBuilder.
+                            create(entry.name.substring(suitablePrefix.length())).
+                            withIcon(getIcon(entry)).
+                            withTypeText(entry.desc));
                 }
             }
         };
@@ -49,6 +47,21 @@ public class ReasonMLCompletionContributor extends CompletionContributor {
         extend(CompletionType.BASIC, PlatformPatterns.psiElement(), completionProvider);
         extend(CompletionType.SMART, PlatformPatterns.psiElement(), completionProvider);
         extend(CompletionType.CLASS_NAME, PlatformPatterns.psiElement(), completionProvider);
+    }
+
+    @Nullable
+    private Icon getIcon(MerlinCompletionEntry entry) {
+        Icon entryIcon = null;
+        if ("Type".equals(entry.kind)) {
+            entryIcon = ReasonMLIcons.TYPE;
+        } else if ("Value".equals(entry.kind)) {
+            entryIcon = ReasonMLIcons.VALUE;
+        } else if ("Module".equals(entry.kind)) {
+            entryIcon = ReasonMLIcons.MODULE;
+        } else if ("Signature".equals(entry.kind)) {
+            entryIcon = ReasonMLIcons.SIGNATURE;
+        }
+        return entryIcon;
     }
 
     // find all text on the left of the cursor
@@ -59,7 +72,7 @@ public class ReasonMLCompletionContributor extends CompletionContributor {
         // find space or return
         while (startPos > 0) {
             char previousChar = text.charAt(startPos - 1);
-            if (previousChar == ' ' || previousChar == '\n') {
+            if (previousChar == ' ' || previousChar == '\n' || previousChar == '(') {
                 break;
             }
             startPos--;
