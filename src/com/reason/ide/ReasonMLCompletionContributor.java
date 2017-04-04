@@ -37,7 +37,7 @@ public class ReasonMLCompletionContributor extends CompletionContributor {
                 for (MerlinCompletionEntry entry : completion.entries) {
                     System.out.println("  >> " + entry);
                     resultSet.addElement(LookupElementBuilder.
-                            create(entry.name.substring(suitablePrefix.length())).
+                            create(entry.name).
                             withIcon(getIcon(entry)).
                             withTypeText(entry.desc));
                 }

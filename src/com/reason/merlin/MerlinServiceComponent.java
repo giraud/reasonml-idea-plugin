@@ -153,7 +153,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public MerlinCompletion completions(String filename, String prefix, MerlinPosition position) {
-        String query = "[\"expand\", \"prefix\", " + this.merlin.writeValueAsString(prefix) + ", \"at\", " + this.merlin.writeValueAsString(position) + "]";
+        String query = "[\"complete\", \"prefix\", " + this.merlin.writeValueAsString(prefix) + ", \"at\", " + this.merlin.writeValueAsString(position) + ", \"with\", \"doc\"]";
         return this.merlin.makeRequest(COMPLETION_TYPE_REFERENCE, filename, query);
     }
 }
