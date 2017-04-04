@@ -8,9 +8,7 @@ import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
@@ -24,8 +22,10 @@ import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 public class ReasonMLDocumentListener implements DocumentListener {
@@ -33,31 +33,28 @@ public class ReasonMLDocumentListener implements DocumentListener {
     private final Subject<DocumentEvent> documentEventStream;
     private Disposable subscriber;
 
-    public ReasonMLDocumentListener(Project project) {
+    ReasonMLDocumentListener(Project project) {
         this.documentEventStream = PublishSubject.create();
 
         subscriber = this.documentEventStream.
-                debounce(200, TimeUnit.MILLISECONDS).
+                debounce(150, TimeUnit.MILLISECONDS).
                 subscribe(event -> EventQueue.invokeLater(() -> {
                     Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
                     if (selectedTextEditor != null) {
                         Document document = selectedTextEditor.getDocument();
                         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                         if (psiFile != null) {
-                            PsiElement element = psiFile.findElementAt(event.getOffset());
-                            if (element != null) {
-                                // every time for all statements ??
+                            Collection<ReasonMLLetStatement> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLetStatement.class);
+                            List<LogicalPosition> positions = letStatements.stream().map(letStatement -> {
+                                // Found a let statement, try to get its type
+                                ReasonMLValueName valueName = letStatement.getLetBinding().getValueName();
+                                int nameOffset = valueName.getTextOffset();
+                                return selectedTextEditor.offsetToLogicalPosition(nameOffset);
+                            }).collect(Collectors.toList());
 
-                                ReasonMLLetStatement letStatement = PsiTreeUtil.getParentOfType(element, ReasonMLLetStatement.class);
-                                if (letStatement != null) {
-                                    // Found a let statement, try to get its type
-                                    ReasonMLValueName valueName = letStatement.getLetBinding().getValueName();
-                                    int nameOffset = valueName.getTextOffset();
-                                    LogicalPosition namePosition = selectedTextEditor.offsetToLogicalPosition(nameOffset);
-
-                                    QueryMerlinTask merlinTask = new QueryMerlinTask(psiFile, letStatement, namePosition);
-                                    ApplicationManager.getApplication().executeOnPooledThread(merlinTask); // Let statement has been modified
-                                }
+                            if (!positions.isEmpty()) {
+                                QueryMerlinTask merlinTask = new QueryMerlinTask(project, psiFile, letStatements, positions);
+                                ApplicationManager.getApplication().executeOnPooledThread(merlinTask); // Let statement has been modified
                             }
                         }
                     }
@@ -79,56 +76,41 @@ public class ReasonMLDocumentListener implements DocumentListener {
 
     private static class QueryMerlinTask implements Runnable {
 
-        private final ReasonMLLetStatement letStatement;
-        private final String buffer;
-        private final LogicalPosition position;
+        private final Collection<ReasonMLLetStatement> letStatements;
+        private final List<LogicalPosition> positions;
+        private final Project project;
         private final PsiFile psiFile;
 
-        public QueryMerlinTask(PsiFile psiFile, ReasonMLLetStatement letStatement, LogicalPosition position) {
+        QueryMerlinTask(Project project, PsiFile psiFile, Collection<ReasonMLLetStatement> letStatements, List<LogicalPosition> positions) {
+            this.project = project;
             this.psiFile = psiFile;
-            this.letStatement = letStatement;
-            this.buffer = psiFile.getText(); // ?
-            this.position = position;
+            this.letStatements = letStatements;
+            this.positions = positions;
         }
 
         @Override
         public void run() {
-//            MerlinService service = ServiceManager.getService(MerlinService.class);
-            Project defaultProject = ProjectManager.getInstance().getOpenProjects()[0]/*??*/;
-            MerlinService service = defaultProject.getComponent(MerlinService.class);
-
+            MerlinService service = this.project.getComponent(MerlinService.class);
             if (service == null || !service.isRunning()) {
-                System.err.println("Can't find merlin service, abort");
-            } else {
-                String filename = psiFile.getVirtualFile().getCanonicalPath();
-                // BIG HACK
-                if (Platform.isWindows()) {
-                    filename = "file:///mnt/v/sources/reason/ReasonProject/src/" + psiFile.getVirtualFile().getName();
-                }
+                return;
+            }
 
-                service.sync(filename, this.buffer);
+            String filename = psiFile.getVirtualFile().getCanonicalPath();
+            // BIG HACK
+            if (Platform.isWindows()) {
+                filename = "file:///mnt/v/sources/reason/ReasonProject/src/" + psiFile.getVirtualFile().getName();
+            }
 
-                List<MerlinType> types = service.findType(filename, new MerlinPosition(this.position));
+            // Update merlin buffer
+            service.sync(filename, this.psiFile.getText());
+
+            int i = 0;
+            for (ReasonMLLetStatement letStatement : this.letStatements) {
+                List<MerlinType> types = service.findType(filename, new MerlinPosition(this.positions.get(i)));
                 if (!types.isEmpty()) {
-                    this.letStatement.setInferredType(types.get(0).type);
+                    letStatement.setInferredType(types.get(0).type);
                 }
-
-                boolean debug = false;
-                if (debug) {
-                    System.out.println("-------------- Running a merlin task");
-//                    System.out.println("            type: " + types.get(0));
-//                    System.out.println("          ------- ");
-//                    System.out.println("        dump env: " + service.dump(DumpFlag.env).toString());
-//                    System.out.println("      dump flags: " + service.dump(DumpFlag.flags).toString());
-//                System.out.println("            dump: " + service.dump(DumpFlag.parser).toString());
-//                System.out.println("            dump: " + service.dump(DumpFlag.recover).toString());
-//                    System.out.println("     dump tokens: [" + Joiner.on("'").join(service.dumpTokens()) + "]");
-//                    System.out.println("          source: [" + Joiner.on("'").join(service.paths(filename, Path.source)) + "]");
-//                    System.out.println("           build: [" + Joiner.on("'").join(service.paths(filename, Path.build)) + "]");
-//                    System.out.println("      extensions: [" + Joiner.on("'").join(service.listExtensions(filename)) + "]");
-//                    System.out.println("  Merlin version: " + service.version());
-//                    System.out.println("         Project: [" + service.projectGet() + "]");
-                }
+                i++;
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.reason.ide;
 
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 import com.reason.Platform;
@@ -53,13 +55,14 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
                 if (reformattedText.startsWith("File") && 0 < refmtBuffer.toString().indexOf("Error")) {
                     // it seems that refmt returned an error !?
                     System.err.println("REFMT ERROR\n" + reformattedText);
-                    throw new RuntimeException(reformattedText);
+                    Notifications.Bus.notify(new ReasonMLNotification("Reformat", reformattedText, NotificationType.ERROR));
+                    return;
                 }
 
                 document.setText(refmtBuffer);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         } finally {
             if (refmt != null && refmt.isAlive()) {
                 refmt.destroyForcibly();

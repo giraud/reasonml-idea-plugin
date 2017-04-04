@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class MerlinProcess implements Closeable {
 
@@ -26,7 +27,7 @@ public class MerlinProcess implements Closeable {
         List<String> commands;
 
         if (Platform.isWindows()) {
-            commands = asList(merlinBin);
+            commands = singletonList(merlinBin);
         } else {
             String absolutePath = new File(merlinBin).getAbsoluteFile().getParent();
             commands = asList("bash", "-c", "export PATH=" + absolutePath + ":$PATH && ocamlmerlin");
@@ -66,7 +67,7 @@ public class MerlinProcess implements Closeable {
 
         try {
             String request;
-            if (filename == NO_CONTEXT) {
+            if (NO_CONTEXT == filename) {
                 request = query;
             } else {
                 request = "{\"context\": [\"auto\", " + this.objectMapper.writeValueAsString(filename) + "], " +
