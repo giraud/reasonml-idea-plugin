@@ -25,7 +25,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
 
     @Override
     public void projectOpened() {
-        if (System.getProperty("reasonBsb") != "true") {
+        if (!"true".equals(System.getProperty("reasonBsb"))) {
             return;
         }
 
@@ -50,7 +50,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
             this.bsb = processBuilder.start();
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bsb.getInputStream()));
             this.reader = bufferedReader;
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Found", "Found bsb at '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
+            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Found", "Using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
 
             this.streamListener = new Thread(() -> {
                 String line = null;
