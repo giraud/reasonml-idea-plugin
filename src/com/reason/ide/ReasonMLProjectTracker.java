@@ -1,8 +1,9 @@
-package com.reason.ide.hints;
+package com.reason.ide;
 
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
+import com.reason.ide.hints.ReasonMLDocumentListener;
 
 public class ReasonMLProjectTracker extends AbstractProjectComponent {
 

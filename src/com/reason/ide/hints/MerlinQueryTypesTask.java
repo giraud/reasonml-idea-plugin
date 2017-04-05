@@ -44,6 +44,7 @@ class MerlinQueryTypesTask implements Runnable {
         for (ReasonMLLetStatement letStatement : this.letStatements) {
             List<MerlinType> types = merlin.findType(filename, new MerlinPosition(this.positions.get(i)));
             if (!types.isEmpty()) {
+                //System.out.println(letStatement.getLetBinding().getValueName().getText() + ": " + types.stream().map(merlinType -> merlinType.type).reduce("", (s, s2) -> s + ", " + s2));
                 letStatement.setInferredType(types.get(0).type);
             }
             i++;

@@ -29,7 +29,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
     private final Subject<DocumentEvent> documentEventStream;
     private Disposable subscriber;
 
-    ReasonMLDocumentListener(Project project) {
+    public ReasonMLDocumentListener(Project project) {
         this.documentEventStream = PublishSubject.create();
 
         subscriber = this.documentEventStream.
@@ -66,7 +66,7 @@ public class ReasonMLDocumentListener implements DocumentListener {
         this.documentEventStream.onNext(event);
     }
 
-    void projectClosed() {
+    public void projectClosed() {
         this.subscriber.dispose();
     }
 

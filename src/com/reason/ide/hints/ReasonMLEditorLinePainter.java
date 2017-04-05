@@ -33,6 +33,10 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
         }
 
         Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        if (selectedTextEditor == null) {
+            return null;
+        }
+
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
         Collection<ReasonMLLetStatement> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLetStatement.class);
 

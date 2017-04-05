@@ -30,7 +30,7 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
         if (isReasonFile(document)) {
-            ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin).redirectErrorStream(true);
+            ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin);
 
             Process refmt = null;
             try {
@@ -47,24 +47,18 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
                 StringBuilder errorBuffer = new StringBuilder();
                 errReader.lines().forEach(errorBuffer::append);
                 if (0 < errorBuffer.length()) {
-                    throw new RuntimeException(errorBuffer.toString());
+                    String errorText = errorBuffer.toString();
+                    // todo: transform into an annotation
+                    Notifications.Bus.notify(new ReasonMLNotification("Reformat", errorText, NotificationType.ERROR));
                 } else {
                     StringBuilder refmtBuffer = new StringBuilder(text.length());
                     reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
 
-                    // hack
-                    String reformattedText = refmtBuffer.toString();
-                    if (reformattedText.startsWith("File") && 0 < refmtBuffer.toString().indexOf("Error")) {
-                        // it seems that refmt returned an error !?
-                        System.err.println("REFMT ERROR\n" + reformattedText);
-                        Notifications.Bus.notify(new ReasonMLNotification("Reformat", reformattedText, NotificationType.ERROR));
-                        return;
-                    }
-
                     document.setText(refmtBuffer);
                 }
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+//                throw new UncheckedIOException(e);
+                System.err.println(e.getMessage());
             } finally {
                 if (refmt != null && refmt.isAlive()) {
                     refmt.destroyForcibly();

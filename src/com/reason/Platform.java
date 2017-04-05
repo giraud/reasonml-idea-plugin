@@ -18,16 +18,16 @@ public class Platform {
         Logger log = Logger.getInstance("ReasonML");
         log.info("Identifying '" + defaultBinary + "' binary");
 
-        String binary = System.getenv(envVar);
+        String binary = System.getProperty(propVar);
         if (binary != null) {
-            log.info("Found '" + binary + "' in the environment variable '" + envVar + "'");
+            log.info("Found '" + binary + "' in the property '" + propVar + "'");
             return binary;
         }
 
-        log.info("Environment variable '" + envVar + "' not found, testing property '" + propVar + "'");
-        binary = System.getProperty(propVar);
+        log.info("Property '" + envVar + "' not found, testing environment variable '" + propVar + "'");
+        binary = System.getenv(envVar);
         if (binary != null) {
-            log.info("Found '" + binary + "' in the property '" + propVar + "'");
+            log.info("Found '" + binary + "' in the environment variable '" + envVar + "'");
             return binary;
         }
 

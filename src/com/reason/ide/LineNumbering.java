@@ -26,6 +26,10 @@ public class LineNumbering {
         return this.lineIndex.get(position.line - 1) + position.col;
     }
 
+    public Integer positionToOffset(int line, int col) {
+        return this.lineIndex.get(line) + col;
+    }
+
     public MerlinPosition offsetToPosition(int offset) {
         return this.bisect(offset, 0, this.lineIndex.size() - 1);
     }

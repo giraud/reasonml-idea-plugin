@@ -36,6 +36,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     };
     private static final TypeReference<Object> OBJECT_TYPE_REFERENCE = new TypeReference<Object>() {
     };
+    private static final MerlinCompletion NO_COMPLETION = new MerlinCompletion();
 
     private MerlinProcess merlin;
 
@@ -60,7 +61,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         // Automatically select latest version
         try {
             MerlinVersion merlinVersion = selectVersion(3);
-            Notifications.Bus.notify(new ReasonMLNotification("Merlin", "version", merlinVersion.toString(), NotificationType.INFORMATION, null));
+            Notifications.Bus.notify(new ReasonMLNotification("Merlin", "Found", merlinVersion.toString(), NotificationType.INFORMATION, null));
         } catch (UncheckedIOException e) {
             Notifications.Bus.notify(new ReasonMLNotification("Merlin", "Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR, null));
             disposeComponent();
@@ -153,6 +154,9 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public MerlinCompletion completions(String filename, String prefix, MerlinPosition position) {
+        if (this.merlin == null) {
+            return NO_COMPLETION;
+        }
         String query = "[\"complete\", \"prefix\", " + this.merlin.writeValueAsString(prefix) + ", \"at\", " + this.merlin.writeValueAsString(position) + ", \"with\", \"doc\"]";
         return this.merlin.makeRequest(COMPLETION_TYPE_REFERENCE, filename, query);
     }

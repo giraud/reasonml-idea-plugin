@@ -32,7 +32,14 @@
 
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.hints.ReasonMLProjectTracker</implementation-class>
+            <implementation-class>com.reason.ide.ReasonMLProjectTracker</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.reason.bs.BucklescriptCompiler</implementation-class>
+        </component>
+        <component>
+            <interface-class>com.reason.bs.BucklescriptErrorsManager</interface-class>
+            <implementation-class>com.reason.bs.BucklescriptErrorsManagerImpl</implementation-class>
         </component>
     </project-components>
 
@@ -45,6 +52,7 @@
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.ReasonMLAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator" />
+        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BucklescriptErrorAnnotator" />
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.ReasonMLCompletionContributor"/>
 
