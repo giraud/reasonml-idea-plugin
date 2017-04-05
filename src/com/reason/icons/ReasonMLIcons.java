@@ -8,6 +8,9 @@ import static com.intellij.openapi.util.IconLoader.getIcon;
 
 public class ReasonMLIcons {
     public static final Icon FILE = IconLoader.getIcon("/com/reason/icons/reason-file.png");
+    public static final Icon BLUE_FILE = IconLoader.getIcon("/com/reason/icons/reason-file-blue.png");
+    public static final Icon YELLOW_FILE = IconLoader.getIcon("/com/reason/icons/reason-file-yellow.png");
+
     // From jetbrains ide
     public static final Icon MODULE = getIcon("/nodes/method.png");
     public static final Icon LET = getIcon("/nodes/field.png");

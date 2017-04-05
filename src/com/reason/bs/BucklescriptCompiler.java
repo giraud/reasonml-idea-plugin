@@ -16,7 +16,6 @@ import java.util.Arrays;
 public class BucklescriptCompiler extends AbstractProjectComponent {
 
     private Process bsb;
-    private BufferedReader reader;
     private Thread streamListener;
 
     protected BucklescriptCompiler(Project project) {
@@ -26,6 +25,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     @Override
     public void projectOpened() {
         if (!"true".equals(System.getProperty("reasonBsb"))) {
+            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Bsb is disabled, you need to manually launch an external process", NotificationType.WARNING));
             return;
         }
 
@@ -49,8 +49,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         try {
             this.bsb = processBuilder.start();
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bsb.getInputStream()));
-            this.reader = bufferedReader;
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Found", "Using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
+            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Enabled", "Background compilation is using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
 
             this.streamListener = new Thread(() -> {
                 String line = null;
@@ -59,7 +58,6 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
                 while (true) {
                     try {
                         line = bufferedReader.readLine();
-
 
                         if (errorMode != null) {
                             if (line != null && !line.isEmpty()) {
@@ -77,12 +75,10 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
                             }
                         } else if (line.startsWith("FAILED")) {
                             errorMode = new BsbError();
-                        }
-                        else if (line.startsWith(">>>> Start compiling")) {
+                        } else if (line.startsWith(">>>> Start compiling")) {
                             // starts
                             System.out.println("START");
-                        }
-                        else if (line.startsWith(">>>> Finish compiling")) {
+                        } else if (line.startsWith(">>>> Finish compiling")) {
                             System.out.println("STOP");
                         }
                     } catch (IOException e) {
@@ -107,12 +103,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     @Override
     public void projectClosed() {
         if (this.bsb != null && this.bsb.isAlive()) {
-            try {
-                this.streamListener.interrupt();
-                reader.close();
-            } catch (IOException e) {
-                // nothing to do
-            }
+            this.streamListener.interrupt();
             this.bsb.destroyForcibly();
             this.bsb = null;
         }
