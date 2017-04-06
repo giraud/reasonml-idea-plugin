@@ -1782,6 +1782,48 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // UNIT
+  //     | type_constr (LBRACE DOT DOT RBRACE | QUOTE LIDENT)?
+  static boolean single_type_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, UNIT);
+    if (!r) r = single_type_expr_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // type_constr (LBRACE DOT DOT RBRACE | QUOTE LIDENT)?
+  private static boolean single_type_expr_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = type_constr(b, l + 1);
+    r = r && single_type_expr_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (LBRACE DOT DOT RBRACE | QUOTE LIDENT)?
+  private static boolean single_type_expr_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr_1_1")) return false;
+    single_type_expr_1_1_0(b, l + 1);
+    return true;
+  }
+
+  // LBRACE DOT DOT RBRACE | QUOTE LIDENT
+  private static boolean single_type_expr_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr_1_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parseTokens(b, 0, LBRACE, DOT, DOT, RBRACE);
+    if (!r) r = parseTokens(b, 0, QUOTE, LIDENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // LT tag_name
   public static boolean start_tag(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "start_tag")) return false;
@@ -1950,107 +1992,36 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // UNIT
-  //     | LBRACE DOT DOT RBRACE
-  //     | LPAREN type_expr (COMMA type_expr)* RPAREN type_constr
-  //     | type_constr (type_expr (ARROW type_expr)*)?
+  // single_type_expr (ARROW single_type_expr)*
   public static boolean type_expr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_expr")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, TYPE_EXPR, "<type expr>");
-    r = consumeToken(b, UNIT);
-    if (!r) r = parseTokens(b, 0, LBRACE, DOT, DOT, RBRACE);
-    if (!r) r = type_expr_2(b, l + 1);
-    if (!r) r = type_expr_3(b, l + 1);
+    r = single_type_expr(b, l + 1);
+    r = r && type_expr_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // LPAREN type_expr (COMMA type_expr)* RPAREN type_constr
-  private static boolean type_expr_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LPAREN);
-    r = r && type_expr(b, l + 1);
-    r = r && type_expr_2_2(b, l + 1);
-    r = r && consumeToken(b, RPAREN);
-    r = r && type_constr(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (COMMA type_expr)*
-  private static boolean type_expr_2_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_2_2")) return false;
+  // (ARROW single_type_expr)*
+  private static boolean type_expr_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_expr_1")) return false;
     int c = current_position_(b);
     while (true) {
-      if (!type_expr_2_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "type_expr_2_2", c)) break;
+      if (!type_expr_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "type_expr_1", c)) break;
       c = current_position_(b);
     }
     return true;
   }
 
-  // COMMA type_expr
-  private static boolean type_expr_2_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_2_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && type_expr(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // type_constr (type_expr (ARROW type_expr)*)?
-  private static boolean type_expr_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_3")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = type_constr(b, l + 1);
-    r = r && type_expr_3_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (type_expr (ARROW type_expr)*)?
-  private static boolean type_expr_3_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_3_1")) return false;
-    type_expr_3_1_0(b, l + 1);
-    return true;
-  }
-
-  // type_expr (ARROW type_expr)*
-  private static boolean type_expr_3_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_3_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = type_expr(b, l + 1);
-    r = r && type_expr_3_1_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (ARROW type_expr)*
-  private static boolean type_expr_3_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_3_1_0_1")) return false;
-    int c = current_position_(b);
-    while (true) {
-      if (!type_expr_3_1_0_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "type_expr_3_1_0_1", c)) break;
-      c = current_position_(b);
-    }
-    return true;
-  }
-
-  // ARROW type_expr
-  private static boolean type_expr_3_1_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "type_expr_3_1_0_1_0")) return false;
+  // ARROW single_type_expr
+  private static boolean type_expr_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_expr_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, ARROW);
-    r = r && type_expr(b, l + 1);
+    r = r && single_type_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
