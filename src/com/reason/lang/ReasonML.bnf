@@ -175,7 +175,7 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name)
+    value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*)
 
 jsxContent ::=
       COMMENT

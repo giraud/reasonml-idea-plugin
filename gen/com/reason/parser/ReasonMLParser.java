@@ -1901,7 +1901,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name)
+  // value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*)
   public static boolean tag_property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_property")) return false;
     if (!nextTokenIs(b, LIDENT)) return false;
@@ -1914,7 +1914,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LPAREN expr RPAREN | record_decl | constant | value_name
+  // LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*
   private static boolean tag_property_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_property_2")) return false;
     boolean r;
@@ -1922,7 +1922,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = tag_property_2_0(b, l + 1);
     if (!r) r = record_decl(b, l + 1);
     if (!r) r = constant(b, l + 1);
-    if (!r) r = value_name(b, l + 1);
+    if (!r) r = tag_property_2_3(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1935,6 +1935,40 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, LPAREN);
     r = r && expr(b, l + 1);
     r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // value_name (DOT value_name)*
+  private static boolean tag_property_2_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_property_2_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_name(b, l + 1);
+    r = r && tag_property_2_3_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (DOT value_name)*
+  private static boolean tag_property_2_3_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_property_2_3_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!tag_property_2_3_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "tag_property_2_3_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // DOT value_name
+  private static boolean tag_property_2_3_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_property_2_3_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && value_name(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
