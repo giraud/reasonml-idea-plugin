@@ -60,14 +60,18 @@ private single_type_expr ::=
       UNIT
     | OPTION type_constr
     | LIST type_constr
+    | tuple_type_decl
     | record_type_decl
     | type_constr (record_type_decl | QUOTE LIDENT | value_path)?
+
+private tuple_type_decl ::=
+    LPAREN type_expr (COMMA type_expr)* RPAREN
 
 private record_type_decl ::=
     LBRACE (DOT DOT?)? (field_type_decl (COMMA field_type_decl)*)? RBRACE
 
 field_type_decl ::=
-    field_name COLON single_type_expr
+    field_name COLON type_expr
 
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
@@ -171,7 +175,7 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQUAL expr /*(LPAREN expr RPAREN | record_decl | constant | value_name)*/
+    value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name)
 
 jsxContent ::=
       COMMENT

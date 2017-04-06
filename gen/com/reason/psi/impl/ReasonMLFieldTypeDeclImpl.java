@@ -34,20 +34,8 @@ public class ReasonMLFieldTypeDeclImpl extends ASTWrapperPsiElement implements R
 
   @Override
   @NotNull
-  public List<ReasonMLFieldTypeDecl> getFieldTypeDeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLFieldTypeDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTypeConstr getTypeConstr() {
-    return findChildByClass(ReasonMLTypeConstr.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLValuePath getValuePath() {
-    return findChildByClass(ReasonMLValuePath.class);
+  public ReasonMLTypeExpr getTypeExpr() {
+    return findNotNullChildByClass(ReasonMLTypeExpr.class);
   }
 
 }
