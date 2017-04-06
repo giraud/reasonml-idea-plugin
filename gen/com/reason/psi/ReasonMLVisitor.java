@@ -75,6 +75,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitLetName(@NotNull ReasonMLLetName o) {
+    visitPsiElement(o);
+  }
+
   public void visitLetStatement(@NotNull ReasonMLLetStatement o) {
     visitInferredType(o);
   }

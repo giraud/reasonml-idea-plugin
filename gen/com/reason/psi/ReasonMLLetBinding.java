@@ -11,9 +11,15 @@ public interface ReasonMLLetBinding extends PsiElement {
   List<ReasonMLExpr> getExprList();
 
   @NotNull
-  List<ReasonMLParameter> getParameterList();
+  ReasonMLLetName getLetName();
 
   @NotNull
+  List<ReasonMLParameter> getParameterList();
+
+  @Nullable
+  ReasonMLTypeExpr getTypeExpr();
+
+  @Nullable
   ReasonMLValueName getValueName();
 
   boolean isFunction();

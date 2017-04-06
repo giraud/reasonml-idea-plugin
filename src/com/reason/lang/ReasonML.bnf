@@ -185,11 +185,14 @@ let_statement ::=
     }
 
 let_binding ::=
-    LET value_name parameter* (
-          EQUAL let_binding_body
-        | ARROW let_binding_body/*scoped_expr*/
+    LET let_name (
+          (COLON type_expr)? EQUAL (FUN value_name parameter* ARROW)? let_binding_body
+        | parameter* ARROW let_binding_body/*scoped_expr*/
     )
     { methods=[isFunction] }
+
+let_name ::=
+    value_name
 
 private let_binding_body ::=
       LBRACE expr (SEMI expr)* RBRACE

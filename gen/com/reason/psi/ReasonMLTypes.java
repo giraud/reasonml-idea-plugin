@@ -25,6 +25,7 @@ public interface ReasonMLTypes {
   IElementType JSX = new ReasonMLElementType("JSX");
   IElementType JSX_CONTENT = new ReasonMLElementType("JSX_CONTENT");
   IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
+  IElementType LET_NAME = new ReasonMLElementType("LET_NAME");
   IElementType LET_STATEMENT = new ReasonMLElementType("LET_STATEMENT");
   IElementType MODULE_BODY = new ReasonMLElementType("MODULE_BODY");
   IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
@@ -162,6 +163,9 @@ public interface ReasonMLTypes {
       }
       else if (type == LET_BINDING) {
         return new ReasonMLLetBindingImpl(node);
+      }
+      else if (type == LET_NAME) {
+        return new ReasonMLLetNameImpl(node);
       }
       else if (type == LET_STATEMENT) {
         return new ReasonMLLetStatementImpl(node);

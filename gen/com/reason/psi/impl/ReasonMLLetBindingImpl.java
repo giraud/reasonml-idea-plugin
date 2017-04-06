@@ -34,14 +34,26 @@ public class ReasonMLLetBindingImpl extends ASTWrapperPsiElement implements Reas
 
   @Override
   @NotNull
+  public ReasonMLLetName getLetName() {
+    return findNotNullChildByClass(ReasonMLLetName.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLParameter> getParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public ReasonMLTypeExpr getTypeExpr() {
+    return findChildByClass(ReasonMLTypeExpr.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLValueName getValueName() {
-    return findNotNullChildByClass(ReasonMLValueName.class);
+    return findChildByClass(ReasonMLValueName.class);
   }
 
   public boolean isFunction() {

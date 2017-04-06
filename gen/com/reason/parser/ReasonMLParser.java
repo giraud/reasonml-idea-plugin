@@ -74,6 +74,9 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     else if (t == LET_BINDING) {
       r = let_binding(b, 0);
     }
+    else if (t == LET_NAME) {
+      r = let_name(b, 0);
+    }
     else if (t == LET_STATEMENT) {
       r = let_statement(b, 0);
     }
@@ -1073,9 +1076,9 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LET value_name parameter* (
-  //           EQUAL let_binding_body
-  //         | ARROW let_binding_body/*scoped_expr*/
+  // LET let_name (
+  //           (COLON type_expr)? EQUAL (FUN value_name parameter* ARROW)? let_binding_body
+  //         | parameter* ARROW let_binding_body/*scoped_expr*/
   //     )
   public static boolean let_binding(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "let_binding")) return false;
@@ -1083,57 +1086,109 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LET);
-    r = r && value_name(b, l + 1);
+    r = r && let_name(b, l + 1);
     r = r && let_binding_2(b, l + 1);
-    r = r && let_binding_3(b, l + 1);
     exit_section_(b, m, LET_BINDING, r);
     return r;
   }
 
-  // parameter*
+  // (COLON type_expr)? EQUAL (FUN value_name parameter* ARROW)? let_binding_body
+  //         | parameter* ARROW let_binding_body
   private static boolean let_binding_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "let_binding_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = let_binding_2_0(b, l + 1);
+    if (!r) r = let_binding_2_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (COLON type_expr)? EQUAL (FUN value_name parameter* ARROW)? let_binding_body
+  private static boolean let_binding_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = let_binding_2_0_0(b, l + 1);
+    r = r && consumeToken(b, EQUAL);
+    r = r && let_binding_2_0_2(b, l + 1);
+    r = r && let_binding_body(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (COLON type_expr)?
+  private static boolean let_binding_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_0_0")) return false;
+    let_binding_2_0_0_0(b, l + 1);
+    return true;
+  }
+
+  // COLON type_expr
+  private static boolean let_binding_2_0_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_0_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
+    r = r && type_expr(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (FUN value_name parameter* ARROW)?
+  private static boolean let_binding_2_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_0_2")) return false;
+    let_binding_2_0_2_0(b, l + 1);
+    return true;
+  }
+
+  // FUN value_name parameter* ARROW
+  private static boolean let_binding_2_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_0_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FUN);
+    r = r && value_name(b, l + 1);
+    r = r && let_binding_2_0_2_0_2(b, l + 1);
+    r = r && consumeToken(b, ARROW);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // parameter*
+  private static boolean let_binding_2_0_2_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_0_2_0_2")) return false;
     int c = current_position_(b);
     while (true) {
       if (!parameter(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "let_binding_2", c)) break;
+      if (!empty_element_parsed_guard_(b, "let_binding_2_0_2_0_2", c)) break;
       c = current_position_(b);
     }
     return true;
   }
 
-  // EQUAL let_binding_body
-  //         | ARROW let_binding_body
-  private static boolean let_binding_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "let_binding_3")) return false;
+  // parameter* ARROW let_binding_body
+  private static boolean let_binding_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = let_binding_3_0(b, l + 1);
-    if (!r) r = let_binding_3_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // EQUAL let_binding_body
-  private static boolean let_binding_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "let_binding_3_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, EQUAL);
+    r = let_binding_2_1_0(b, l + 1);
+    r = r && consumeToken(b, ARROW);
     r = r && let_binding_body(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // ARROW let_binding_body
-  private static boolean let_binding_3_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "let_binding_3_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ARROW);
-    r = r && let_binding_body(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+  // parameter*
+  private static boolean let_binding_2_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_binding_2_1_0")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!parameter(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "let_binding_2_1_0", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1182,6 +1237,18 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, SEMI);
     r = r && expr(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // value_name
+  public static boolean let_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "let_name")) return false;
+    if (!nextTokenIs(b, LIDENT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = value_name(b, l + 1);
+    exit_section_(b, m, LET_NAME, r);
     return r;
   }
 

@@ -1,6 +1,8 @@
 package com.reason.psi.impl;
 
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiRecursiveElementWalkingVisitor;
 import com.reason.icons.ReasonMLIcons;
 import com.reason.psi.*;
 import org.jetbrains.annotations.Nullable;
@@ -33,20 +35,13 @@ public class ReasonMLPsiImplUtil {
     }
 
     public static ItemPresentation getPresentation(final ReasonMLLetStatement let) {
-//        ReasonMLLetBindingBody body = let.getLetBinding().getLetBindingBody();
-//        IElementType elementType = null;
-//        if (body != null) {
-//            elementType = body.getFirstChild().getNode().getElementType();
-//        }
-//        boolean isField = elementType == null || EQUAL.equals(elementType);
-        boolean isField = true;
-
         return new ItemPresentation() {
             @Nullable
             @Override
             public String getPresentableText() {
-                String letName = let.getLetBinding().getValueName().getText();
-                if (isField) {
+                ReasonMLLetBinding letBinding = let.getLetBinding();
+                String letName = letBinding.getLetName().getText();
+                if (isFunction(letBinding)) {
                     return letName + (let.hasInferredType() ? ": " + let.getInferredType() : "");
                 }
 
@@ -62,7 +57,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return isField ? ReasonMLIcons.LET : ReasonMLIcons.FUNCTION;
+                return !isFunction(let.getLetBinding()) ? ReasonMLIcons.FUNCTION : ReasonMLIcons.LET;
             }
         };
     }
@@ -120,6 +115,24 @@ public class ReasonMLPsiImplUtil {
     }
 
     public static boolean isFunction(final ReasonMLLetBinding letBinding) {
-        return letBinding.getValueName().getNextSibling().getNode().getText() == "="; // space !
+        boolean[] result = new boolean[]{true};
+
+        letBinding.accept(new PsiRecursiveElementWalkingVisitor() {
+            @Override
+            public void visitElement(PsiElement element) {
+                //noinspection unchecked
+                if (element.getNode().getElementType() == ReasonMLTypes.EQUAL) {
+                    result[0] = false;
+                    stopWalking();
+                } else if (element.getNode().getElementType() == ReasonMLTypes.ARROW) {
+                    result[0] = true;
+                    stopWalking();
+                } else {
+                    super.visitElement(element);
+                }
+            }
+        });
+
+        return result[0];
     }
 }
