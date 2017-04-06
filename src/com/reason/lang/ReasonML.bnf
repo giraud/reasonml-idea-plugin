@@ -31,6 +31,7 @@ module_statement ::=
 
 module_body ::=
     (  module_statement
+    | external_statement
     | include_statement
     | type_statement
     | let_statement )*
@@ -77,11 +78,11 @@ poly_type_expr ::= /*?*/
 // ----------
 
 external_statement ::=
-    EXTERNAL value_name COLON type_information external_declaration SEMI { methods=[getPresentation] }
+    EXTERNAL value_name COLON type_information external_declaration  bs_directive* SEMI { methods=[getPresentation] }
 
 external_declaration ::=
       EQUAL external_alias
-    | ARROW value_name EQUAL external_alias bs_directive*
+    | ARROW value_name EQUAL external_alias
 
 external_alias ::=
     STRING

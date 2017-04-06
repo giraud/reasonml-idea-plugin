@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLModuleBody extends PsiElement {
 
   @NotNull
+  List<ReasonMLExternalStatement> getExternalStatementList();
+
+  @NotNull
   List<ReasonMLIncludeStatement> getIncludeStatementList();
 
   @NotNull

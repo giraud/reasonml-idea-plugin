@@ -28,6 +28,12 @@ public class ReasonMLModuleBodyImpl extends ASTWrapperPsiElement implements Reas
 
   @Override
   @NotNull
+  public List<ReasonMLExternalStatement> getExternalStatementList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLExternalStatement.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLIncludeStatement> getIncludeStatementList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLIncludeStatement.class);
   }

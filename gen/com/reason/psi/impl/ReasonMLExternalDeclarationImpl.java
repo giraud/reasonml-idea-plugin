@@ -28,12 +28,6 @@ public class ReasonMLExternalDeclarationImpl extends ASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public List<ReasonMLBsDirective> getBsDirectiveList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBsDirective.class);
-  }
-
-  @Override
-  @NotNull
   public ReasonMLExternalAlias getExternalAlias() {
     return findNotNullChildByClass(ReasonMLExternalAlias.class);
   }

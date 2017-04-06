@@ -9,6 +9,9 @@ import com.intellij.navigation.ItemPresentation;
 public interface ReasonMLExternalStatement extends PsiElement {
 
   @NotNull
+  List<ReasonMLBsDirective> getBsDirectiveList();
+
+  @NotNull
   ReasonMLExternalDeclaration getExternalDeclaration();
 
   @Nullable

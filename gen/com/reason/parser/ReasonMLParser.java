@@ -828,7 +828,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // EQUAL external_alias
-  //     | ARROW value_name EQUAL external_alias bs_directive*
+  //     | ARROW value_name EQUAL external_alias
   public static boolean external_declaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "external_declaration")) return false;
     if (!nextTokenIs(b, "<external declaration>", ARROW, EQUAL)) return false;
@@ -851,7 +851,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ARROW value_name EQUAL external_alias bs_directive*
+  // ARROW value_name EQUAL external_alias
   private static boolean external_declaration_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "external_declaration_1")) return false;
     boolean r;
@@ -860,25 +860,12 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = r && value_name(b, l + 1);
     r = r && consumeToken(b, EQUAL);
     r = r && external_alias(b, l + 1);
-    r = r && external_declaration_1_4(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // bs_directive*
-  private static boolean external_declaration_1_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "external_declaration_1_4")) return false;
-    int c = current_position_(b);
-    while (true) {
-      if (!bs_directive(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "external_declaration_1_4", c)) break;
-      c = current_position_(b);
-    }
-    return true;
-  }
-
   /* ********************************************************** */
-  // EXTERNAL value_name COLON type_information external_declaration SEMI
+  // EXTERNAL value_name COLON type_information external_declaration  bs_directive* SEMI
   public static boolean external_statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "external_statement")) return false;
     if (!nextTokenIs(b, EXTERNAL)) return false;
@@ -889,9 +876,22 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, COLON);
     r = r && type_information(b, l + 1);
     r = r && external_declaration(b, l + 1);
+    r = r && external_statement_5(b, l + 1);
     r = r && consumeToken(b, SEMI);
     exit_section_(b, m, EXTERNAL_STATEMENT, r);
     return r;
+  }
+
+  // bs_directive*
+  private static boolean external_statement_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "external_statement_5")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!bs_directive(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "external_statement_5", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1240,6 +1240,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // (  module_statement
+  //     | external_statement
   //     | include_statement
   //     | type_statement
   //     | let_statement )*
@@ -1257,6 +1258,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   // module_statement
+  //     | external_statement
   //     | include_statement
   //     | type_statement
   //     | let_statement
@@ -1265,6 +1267,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = module_statement(b, l + 1);
+    if (!r) r = external_statement(b, l + 1);
     if (!r) r = include_statement(b, l + 1);
     if (!r) r = type_statement(b, l + 1);
     if (!r) r = let_statement(b, l + 1);

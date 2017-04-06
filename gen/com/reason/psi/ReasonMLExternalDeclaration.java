@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLExternalDeclaration extends PsiElement {
 
   @NotNull
-  List<ReasonMLBsDirective> getBsDirectiveList();
-
-  @NotNull
   ReasonMLExternalAlias getExternalAlias();
 
   @Nullable
