@@ -59,8 +59,9 @@ private type_information ::=
 // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 type_expr ::=
       UNIT
+    | LBRACE DOT DOT RBRACE
     | LPAREN type_expr (COMMA type_expr)* RPAREN type_constr
-    | type_constr (type_expr | (ARROW type_expr)*)
+    | type_constr (type_expr (ARROW type_expr)*)?
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
 type_constr ::=
@@ -78,11 +79,7 @@ poly_type_expr ::= /*?*/
 // ----------
 
 external_statement ::=
-    EXTERNAL value_name COLON type_information external_declaration  bs_directive* SEMI { methods=[getPresentation] }
-
-external_declaration ::=
-      EQUAL external_alias
-    | ARROW value_name EQUAL external_alias
+    EXTERNAL value_name COLON type_expr EQUAL external_alias bs_directive* SEMI { methods=[getPresentation] }
 
 external_alias ::=
     STRING

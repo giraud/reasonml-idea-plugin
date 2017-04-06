@@ -39,10 +39,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExternalDeclaration(@NotNull ReasonMLExternalDeclaration o) {
-    visitPsiElement(o);
-  }
-
   public void visitExternalStatement(@NotNull ReasonMLExternalStatement o) {
     visitPsiElement(o);
   }

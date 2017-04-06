@@ -47,7 +47,7 @@ public class ReasonMLPsiImplUtil {
             public String getPresentableText() {
                 String letName = let.getLetBinding().getValueName().getText();
                 if (isField) {
-                    return letName + (let.hasInferredType() ? ": " + let.getInferredType() : "" );
+                    return letName + (let.hasInferredType() ? ": " + let.getInferredType() : "");
                 }
 
                 return letName + "(..)";
@@ -94,15 +94,15 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public String getPresentableText() {
-//                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
+                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
                 String externalName = external.getValueName().getText();
-//                if (externalAlias == null) {
-                return externalName;
-//                }
+                if (externalAlias.getTextLength() == 2) {
+                    return externalName;
+                }
 
-//                String externalAliasText = externalAlias.getText();
-//                String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
-//                return externalAliasName.equals(externalName) ? externalName : externalAliasName + " -> " + externalName;
+                String externalAliasText = externalAlias.getText();
+                String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
+                return externalName + (externalAliasName.equals(externalName) ? "" : " ⇐ " + externalAliasName);
             }
 
             @Nullable

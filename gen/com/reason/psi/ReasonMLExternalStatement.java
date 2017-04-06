@@ -12,16 +12,10 @@ public interface ReasonMLExternalStatement extends PsiElement {
   List<ReasonMLBsDirective> getBsDirectiveList();
 
   @NotNull
-  ReasonMLExternalDeclaration getExternalDeclaration();
+  ReasonMLExternalAlias getExternalAlias();
 
-  @Nullable
-  ReasonMLRecordTypeDecl getRecordTypeDecl();
-
-  @Nullable
-  ReasonMLTupleTypeDecl getTupleTypeDecl();
-
-  @Nullable
-  ReasonMLTypeConstr getTypeConstr();
+  @NotNull
+  ReasonMLTypeExpr getTypeExpr();
 
   @NotNull
   ReasonMLValueName getValueName();

@@ -35,26 +35,14 @@ public class ReasonMLExternalStatementImpl extends ASTWrapperPsiElement implemen
 
   @Override
   @NotNull
-  public ReasonMLExternalDeclaration getExternalDeclaration() {
-    return findNotNullChildByClass(ReasonMLExternalDeclaration.class);
+  public ReasonMLExternalAlias getExternalAlias() {
+    return findNotNullChildByClass(ReasonMLExternalAlias.class);
   }
 
   @Override
-  @Nullable
-  public ReasonMLRecordTypeDecl getRecordTypeDecl() {
-    return findChildByClass(ReasonMLRecordTypeDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTupleTypeDecl getTupleTypeDecl() {
-    return findChildByClass(ReasonMLTupleTypeDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTypeConstr getTypeConstr() {
-    return findChildByClass(ReasonMLTypeConstr.class);
+  @NotNull
+  public ReasonMLTypeExpr getTypeExpr() {
+    return findNotNullChildByClass(ReasonMLTypeExpr.class);
   }
 
   @Override
