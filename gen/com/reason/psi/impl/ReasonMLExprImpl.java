@@ -51,6 +51,12 @@ public class ReasonMLExprImpl extends ASTWrapperPsiElement implements ReasonMLEx
   }
 
   @Override
+  @NotNull
+  public List<ReasonMLParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
+  }
+
+  @Override
   @Nullable
   public ReasonMLPatternMatching getPatternMatching() {
     return findChildByClass(ReasonMLPatternMatching.class);
