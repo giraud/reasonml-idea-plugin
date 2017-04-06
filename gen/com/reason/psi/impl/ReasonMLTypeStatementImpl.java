@@ -28,27 +28,15 @@ public class ReasonMLTypeStatementImpl extends ASTWrapperPsiElement implements R
   }
 
   @Override
-  @Nullable
-  public ReasonMLRecordTypeDecl getRecordTypeDecl() {
-    return findChildByClass(ReasonMLRecordTypeDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTupleTypeDecl getTupleTypeDecl() {
-    return findChildByClass(ReasonMLTupleTypeDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLTypeConstr getTypeConstr() {
-    return findChildByClass(ReasonMLTypeConstr.class);
-  }
-
-  @Override
   @NotNull
   public ReasonMLTypeConstrName getTypeConstrName() {
     return findNotNullChildByClass(ReasonMLTypeConstrName.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLTypeExpr getTypeExpr() {
+    return findChildByClass(ReasonMLTypeExpr.class);
   }
 
   public ItemPresentation getPresentation() {

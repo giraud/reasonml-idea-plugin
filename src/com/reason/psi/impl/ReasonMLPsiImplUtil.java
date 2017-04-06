@@ -42,10 +42,10 @@ public class ReasonMLPsiImplUtil {
                 ReasonMLLetBinding letBinding = let.getLetBinding();
                 String letName = letBinding.getLetName().getText();
                 if (isFunction(letBinding)) {
-                    return letName + (let.hasInferredType() ? ": " + let.getInferredType() : "");
+                    return letName + "(..)";
                 }
 
-                return letName + "(..)";
+                return letName + (let.hasInferredType() ? ": " + let.getInferredType() : "");
             }
 
             @Nullable
@@ -57,7 +57,7 @@ public class ReasonMLPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return !isFunction(let.getLetBinding()) ? ReasonMLIcons.FUNCTION : ReasonMLIcons.LET;
+                return isFunction(let.getLetBinding()) ? ReasonMLIcons.FUNCTION : ReasonMLIcons.LET;
             }
         };
     }

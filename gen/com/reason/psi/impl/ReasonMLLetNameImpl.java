@@ -11,14 +11,14 @@ import static com.reason.psi.ReasonMLTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.reason.psi.*;
 
-public class ReasonMLRecordTypeDeclImpl extends ASTWrapperPsiElement implements ReasonMLRecordTypeDecl {
+public class ReasonMLLetNameImpl extends ASTWrapperPsiElement implements ReasonMLLetName {
 
-  public ReasonMLRecordTypeDeclImpl(ASTNode node) {
+  public ReasonMLLetNameImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ReasonMLVisitor visitor) {
-    visitor.visitRecordTypeDecl(this);
+    visitor.visitLetName(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,8 @@ public class ReasonMLRecordTypeDeclImpl extends ASTWrapperPsiElement implements 
 
   @Override
   @NotNull
-  public List<ReasonMLFieldTypeDecl> getFieldTypeDeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLFieldTypeDecl.class);
+  public ReasonMLValueName getValueName() {
+    return findNotNullChildByClass(ReasonMLValueName.class);
   }
 
 }

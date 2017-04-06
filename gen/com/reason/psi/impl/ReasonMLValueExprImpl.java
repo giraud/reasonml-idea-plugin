@@ -40,8 +40,8 @@ public class ReasonMLValueExprImpl extends ASTWrapperPsiElement implements Reaso
 
   @Override
   @Nullable
-  public ReasonMLValueName getValueName() {
-    return findChildByClass(ReasonMLValueName.class);
+  public ReasonMLUntypedObject getUntypedObject() {
+    return findChildByClass(ReasonMLUntypedObject.class);
   }
 
   @Override

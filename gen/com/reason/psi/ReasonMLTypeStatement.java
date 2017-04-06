@@ -8,17 +8,11 @@ import com.intellij.navigation.ItemPresentation;
 
 public interface ReasonMLTypeStatement extends PsiElement {
 
-  @Nullable
-  ReasonMLRecordTypeDecl getRecordTypeDecl();
-
-  @Nullable
-  ReasonMLTupleTypeDecl getTupleTypeDecl();
-
-  @Nullable
-  ReasonMLTypeConstr getTypeConstr();
-
   @NotNull
   ReasonMLTypeConstrName getTypeConstrName();
+
+  @Nullable
+  ReasonMLTypeExpr getTypeExpr();
 
   ItemPresentation getPresentation();
 

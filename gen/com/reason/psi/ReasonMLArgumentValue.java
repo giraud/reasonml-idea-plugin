@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLExternalDeclaration extends PsiElement {
-
-  @NotNull
-  ReasonMLExternalAlias getExternalAlias();
+public interface ReasonMLArgumentValue extends PsiElement {
 
   @Nullable
+  ReasonMLField getField();
+
+  @Nullable
+  ReasonMLUntypedObject getUntypedObject();
+
+  @NotNull
   ReasonMLValueName getValueName();
 
 }

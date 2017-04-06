@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLPolyTypeExpr extends PsiElement {
+public interface ReasonMLLetName extends PsiElement {
 
-  @Nullable
-  ReasonMLTypeConstr getTypeConstr();
-
-  @Nullable
-  ReasonMLTypeExpr getTypeExpr();
+  @NotNull
+  ReasonMLValueName getValueName();
 
 }

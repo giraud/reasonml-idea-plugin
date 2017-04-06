@@ -7,19 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLArgument extends PsiElement {
 
-  @Nullable
-  ReasonMLConstant getConstant();
-
-  @Nullable
-  ReasonMLField getField();
-
-  @Nullable
-  ReasonMLJsx getJsx();
-
-  @Nullable
-  ReasonMLRecordDecl getRecordDecl();
-
   @NotNull
-  List<ReasonMLValueName> getValueNameList();
+  ReasonMLArgumentValue getArgumentValue();
+
+  @Nullable
+  ReasonMLValueName getValueName();
 
 }

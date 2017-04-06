@@ -48,13 +48,9 @@ include_statement ::=
 // ----------
 
 type_statement ::=
-     TYPE type_constr_name (EQUAL type_information)? SEMI {
+     TYPE type_constr_name (EQUAL type_expr)? SEMI {
         methods=[getPresentation]
     }
-
-private type_information ::=
-      UNIT
-    | type_constr? (tuple_type_decl | record_type_decl)
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 type_expr ::=
@@ -62,17 +58,21 @@ type_expr ::=
 
 private single_type_expr ::=
       UNIT
-    | type_constr (LBRACE DOT DOT RBRACE | QUOTE LIDENT)?
+    | OPTION type_constr
+    | LIST type_constr
+    | record_type_decl
+    | type_constr (record_type_decl | QUOTE LIDENT | value_path)?
+
+private record_type_decl ::=
+    LBRACE (DOT DOT?)? (field_type_decl (COMMA field_type_decl)*)? RBRACE
+
+field_type_decl ::=
+    field_name COLON single_type_expr
+
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
 type_constr ::=
-      bs_directive
-    | (module_path DOT)? type_constr_name
-
-poly_type_expr ::= /*?*/
-      (QUOTE LIDENT)+ DOT type_expr
-    | OPTION type_constr
-    | type_expr
+    (module_path DOT)? type_constr_name
 
 // ----------
 // external
@@ -99,7 +99,7 @@ private sequenced_expr ::=
 expr ::=
       NONE
     | SOME expr
-    | FUN parameter* ARROW let_binding_body
+//    | FUN parameter* ARROW let_binding_body
     | LPAREN sequenced_expr? RPAREN
     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
     | IF LPAREN boolean_expr RPAREN LBRACE sequenced_expr RBRACE (ELSE LBRACE sequenced_expr RBRACE)*
@@ -131,13 +131,17 @@ boolean_expr ::=
 
 value_expr ::=
       signed_constant
-    | value_path (DOT value_path)* (SHARP SHARP value_name | argument*)
+    | value_path (DOT value_path)* (untyped_object () | argument*)
+
+untyped_object ::=
+    SHARP SHARP value_name (SHARP SHARP value_name)*
 
 argument ::=
-      constant
-    | value_name (SHARP SHARP value_name | DOT field)?
-    | jsx
-    | record_decl
+      SHORTCUT argument_value
+    | value_name SHORTCUT argument_value
+
+argument_value ::=
+    value_name (untyped_object | DOT field)?
 
 // ----------
 // PATTERN
@@ -167,7 +171,7 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name)
+    value_name EQUAL expr /*(LPAREN expr RPAREN | record_decl | constant | value_name)*/
 
 jsxContent ::=
       COMMENT
@@ -216,19 +220,6 @@ field ::=
 // ----------
 // RECORD / tuple
 // ----------
-
-record_type_decl ::=
-      LBRACE DOT DOT RBRACE
-    | LBRACE (DOT|DOT DOT)? field_type_decl (COMMA field_type_decl)* RBRACE
-
-field_type_decl ::=
-    field_name COLON poly_type_expr
-
-tuple_type_decl ::=
-    LPAREN tuple_type_field_decl (COMMA tuple_type_field_decl)* RPAREN
-
-tuple_type_field_decl ::=
-    poly_type_expr
 
 record_decl ::=
     LBRACE field_decl (COMMA field_decl)* RBRACE

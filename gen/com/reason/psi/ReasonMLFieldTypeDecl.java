@@ -11,6 +11,12 @@ public interface ReasonMLFieldTypeDecl extends PsiElement {
   ReasonMLFieldName getFieldName();
 
   @NotNull
-  ReasonMLPolyTypeExpr getPolyTypeExpr();
+  List<ReasonMLFieldTypeDecl> getFieldTypeDeclList();
+
+  @Nullable
+  ReasonMLTypeConstr getTypeConstr();
+
+  @Nullable
+  ReasonMLValuePath getValuePath();
 
 }

@@ -27,33 +27,15 @@ public class ReasonMLArgumentImpl extends ASTWrapperPsiElement implements Reason
   }
 
   @Override
-  @Nullable
-  public ReasonMLConstant getConstant() {
-    return findChildByClass(ReasonMLConstant.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLField getField() {
-    return findChildByClass(ReasonMLField.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLJsx getJsx() {
-    return findChildByClass(ReasonMLJsx.class);
-  }
-
-  @Override
-  @Nullable
-  public ReasonMLRecordDecl getRecordDecl() {
-    return findChildByClass(ReasonMLRecordDecl.class);
-  }
-
-  @Override
   @NotNull
-  public List<ReasonMLValueName> getValueNameList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
+  public ReasonMLArgumentValue getArgumentValue() {
+    return findNotNullChildByClass(ReasonMLArgumentValue.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLValueName getValueName() {
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }

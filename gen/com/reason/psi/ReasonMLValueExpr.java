@@ -14,7 +14,7 @@ public interface ReasonMLValueExpr extends PsiElement {
   ReasonMLSignedConstant getSignedConstant();
 
   @Nullable
-  ReasonMLValueName getValueName();
+  ReasonMLUntypedObject getUntypedObject();
 
   @NotNull
   List<ReasonMLValuePath> getValuePathList();

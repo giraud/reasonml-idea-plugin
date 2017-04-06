@@ -9,6 +9,7 @@ import com.reason.psi.impl.*;
 public interface ReasonMLTypes {
 
   IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
+  IElementType ARGUMENT_VALUE = new ReasonMLElementType("ARGUMENT_VALUE");
   IElementType BOOLEAN_EXPR = new ReasonMLElementType("BOOLEAN_EXPR");
   IElementType BS_DIRECTIVE = new ReasonMLElementType("BS_DIRECTIVE");
   IElementType CONSTANT = new ReasonMLElementType("CONSTANT");
@@ -36,19 +37,16 @@ public interface ReasonMLTypes {
   IElementType PARAMETER_EXPR = new ReasonMLElementType("PARAMETER_EXPR");
   IElementType PATTERN = new ReasonMLElementType("PATTERN");
   IElementType PATTERN_MATCHING = new ReasonMLElementType("PATTERN_MATCHING");
-  IElementType POLY_TYPE_EXPR = new ReasonMLElementType("POLY_TYPE_EXPR");
   IElementType RECORD_DECL = new ReasonMLElementType("RECORD_DECL");
-  IElementType RECORD_TYPE_DECL = new ReasonMLElementType("RECORD_TYPE_DECL");
   IElementType SIGNED_CONSTANT = new ReasonMLElementType("SIGNED_CONSTANT");
   IElementType START_TAG = new ReasonMLElementType("START_TAG");
   IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
   IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
-  IElementType TUPLE_TYPE_DECL = new ReasonMLElementType("TUPLE_TYPE_DECL");
-  IElementType TUPLE_TYPE_FIELD_DECL = new ReasonMLElementType("TUPLE_TYPE_FIELD_DECL");
   IElementType TYPE_CONSTR = new ReasonMLElementType("TYPE_CONSTR");
   IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
   IElementType TYPE_EXPR = new ReasonMLElementType("TYPE_EXPR");
   IElementType TYPE_STATEMENT = new ReasonMLElementType("TYPE_STATEMENT");
+  IElementType UNTYPED_OBJECT = new ReasonMLElementType("UNTYPED_OBJECT");
   IElementType VALUE_EXPR = new ReasonMLElementType("VALUE_EXPR");
   IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
   IElementType VALUE_PATH = new ReasonMLElementType("VALUE_PATH");
@@ -78,6 +76,7 @@ public interface ReasonMLTypes {
   IElementType LBRACKET = new ReasonMLTokenType("LBRACKET");
   IElementType LET = new ReasonMLTokenType("LET");
   IElementType LIDENT = new ReasonMLTokenType("LIDENT");
+  IElementType LIST = new ReasonMLTokenType("LIST");
   IElementType LPAREN = new ReasonMLTokenType("LPAREN");
   IElementType LT = new ReasonMLTokenType("LT");
   IElementType MINUS = new ReasonMLTokenType("MINUS");
@@ -115,6 +114,9 @@ public interface ReasonMLTypes {
       IElementType type = node.getElementType();
        if (type == ARGUMENT) {
         return new ReasonMLArgumentImpl(node);
+      }
+      else if (type == ARGUMENT_VALUE) {
+        return new ReasonMLArgumentValueImpl(node);
       }
       else if (type == BOOLEAN_EXPR) {
         return new ReasonMLBooleanExprImpl(node);
@@ -197,14 +199,8 @@ public interface ReasonMLTypes {
       else if (type == PATTERN_MATCHING) {
         return new ReasonMLPatternMatchingImpl(node);
       }
-      else if (type == POLY_TYPE_EXPR) {
-        return new ReasonMLPolyTypeExprImpl(node);
-      }
       else if (type == RECORD_DECL) {
         return new ReasonMLRecordDeclImpl(node);
-      }
-      else if (type == RECORD_TYPE_DECL) {
-        return new ReasonMLRecordTypeDeclImpl(node);
       }
       else if (type == SIGNED_CONSTANT) {
         return new ReasonMLSignedConstantImpl(node);
@@ -218,12 +214,6 @@ public interface ReasonMLTypes {
       else if (type == TAG_PROPERTY) {
         return new ReasonMLTagPropertyImpl(node);
       }
-      else if (type == TUPLE_TYPE_DECL) {
-        return new ReasonMLTupleTypeDeclImpl(node);
-      }
-      else if (type == TUPLE_TYPE_FIELD_DECL) {
-        return new ReasonMLTupleTypeFieldDeclImpl(node);
-      }
       else if (type == TYPE_CONSTR) {
         return new ReasonMLTypeConstrImpl(node);
       }
@@ -235,6 +225,9 @@ public interface ReasonMLTypes {
       }
       else if (type == TYPE_STATEMENT) {
         return new ReasonMLTypeStatementImpl(node);
+      }
+      else if (type == UNTYPED_OBJECT) {
+        return new ReasonMLUntypedObjectImpl(node);
       }
       else if (type == VALUE_EXPR) {
         return new ReasonMLValueExprImpl(node);

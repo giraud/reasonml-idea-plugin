@@ -28,8 +28,20 @@ public class ReasonMLTypeExprImpl extends ASTWrapperPsiElement implements Reason
 
   @Override
   @NotNull
+  public List<ReasonMLFieldTypeDecl> getFieldTypeDeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLFieldTypeDecl.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLTypeConstr> getTypeConstrList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLTypeConstr.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLValuePath> getValuePathList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValuePath.class);
   }
 
 }

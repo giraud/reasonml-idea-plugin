@@ -8,6 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLTypeExpr extends PsiElement {
 
   @NotNull
+  List<ReasonMLFieldTypeDecl> getFieldTypeDeclList();
+
+  @NotNull
   List<ReasonMLTypeConstr> getTypeConstrList();
+
+  @NotNull
+  List<ReasonMLValuePath> getValuePathList();
 
 }
