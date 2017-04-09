@@ -15,11 +15,49 @@ ReasonML language plugin for idea
 - code folding
 - pair braces matcher
 - reformat on save (*)
+- Type annotation (* merlin)
+- Completion (* merlin)
 
-_(*) You need to define an environment variable REASON_REFMT_BIN that contains the absolute path to the refmt binary_
+_(*) See integration_
+
+## Screenshots
+
+Type annotations (linux only):
+
+![type](type.gif)
+
+Reformat on save (Ctrl+s)
+
+![refmt](refmt.gif)
+
+## Integration
+
+Integration with reason tools need to be explicitly set with VM properties.
+
+Note: To edit your `idea[64].vmoptions` you can do it from the console, 
+or via the menu `help > Edit Custom VM Options`. 
+
+### Linux
+
+- Install [reason-cli](https://github.com/reasonml/reason-cli)
+- Edit your `idea[64].vmoptions`
+- Add the following properties:
+```properties
+-DreasonMerlin=<absolute path to node>/bin/ocamlmerlin
+-DreasonRefmt=<absolute path to node>/bin/refmt
+```
+
+### Windows
+
+- Add `bs-platform` to your project
+- Edit your `idea[64].vmoptions`
+- Add the following properties:
+```properties
+-DreasonRefmt=<absolute path to node_modules>/bs-platform/bin/refmt.exe
+```
 
 ## Development
 
 This project is heavily inspired by :
 - [custom language tutorial](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support_tutorial.html) from intellij
-- [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide) from sidharthkuruvila
+- [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide) from sidharthkuruvila ( :+1: )
