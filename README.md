@@ -53,7 +53,7 @@ or via the menu `help > Edit Custom VM Options`.
 - Edit your `idea[64].vmoptions`
 - Add the following properties:
 ```properties
--DreasonRefmt=<absolute path to node_modules>/bs-platform/bin/refmt.exe
+-DreasonRefmt=<absolute path to your project>/node_modules/bs-platform/bin/refmt.exe
 ```
 
 ## Development
