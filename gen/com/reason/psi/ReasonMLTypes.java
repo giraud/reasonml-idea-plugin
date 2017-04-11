@@ -10,8 +10,10 @@ public interface ReasonMLTypes {
 
   IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
   IElementType ARGUMENT_VALUE = new ReasonMLElementType("ARGUMENT_VALUE");
+  IElementType ATTRIBUTE_ID = new ReasonMLElementType("ATTRIBUTE_ID");
+  IElementType ATTRIBUTE_ID_REC = new ReasonMLElementType("ATTRIBUTE_ID_REC");
+  IElementType ATTRIBUTE_PAYLOAD = new ReasonMLElementType("ATTRIBUTE_PAYLOAD");
   IElementType BOOLEAN_EXPR = new ReasonMLElementType("BOOLEAN_EXPR");
-  IElementType BS_DIRECTIVE = new ReasonMLElementType("BS_DIRECTIVE");
   IElementType CONSTANT = new ReasonMLElementType("CONSTANT");
   IElementType END_TAG = new ReasonMLElementType("END_TAG");
   IElementType EXPR = new ReasonMLElementType("EXPR");
@@ -23,8 +25,10 @@ public interface ReasonMLTypes {
   IElementType FIELD_NAME = new ReasonMLElementType("FIELD_NAME");
   IElementType FIELD_TYPE_DECL = new ReasonMLElementType("FIELD_TYPE_DECL");
   IElementType INCLUDE_STATEMENT = new ReasonMLElementType("INCLUDE_STATEMENT");
+  IElementType ITEM_ATTRIBUTE = new ReasonMLElementType("ITEM_ATTRIBUTE");
   IElementType JSX = new ReasonMLElementType("JSX");
   IElementType JSX_CONTENT = new ReasonMLElementType("JSX_CONTENT");
+  IElementType LABEL_NAME = new ReasonMLElementType("LABEL_NAME");
   IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
   IElementType LET_NAME = new ReasonMLElementType("LET_NAME");
   IElementType LET_STATEMENT = new ReasonMLElementType("LET_STATEMENT");
@@ -51,10 +55,9 @@ public interface ReasonMLTypes {
   IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
   IElementType VALUE_PATH = new ReasonMLElementType("VALUE_PATH");
 
+  IElementType ARROBASE = new ReasonMLTokenType("ARROBASE");
   IElementType ARROW = new ReasonMLTokenType("ARROW");
   IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
-  IElementType BBS = new ReasonMLTokenType("BBS");
-  IElementType BS = new ReasonMLTokenType("BS");
   IElementType CARRET = new ReasonMLTokenType("CARRET");
   IElementType CLOSE_TAG = new ReasonMLTokenType("CLOSE_TAG");
   IElementType COLON = new ReasonMLTokenType("COLON");
@@ -118,11 +121,17 @@ public interface ReasonMLTypes {
       else if (type == ARGUMENT_VALUE) {
         return new ReasonMLArgumentValueImpl(node);
       }
+      else if (type == ATTRIBUTE_ID) {
+        return new ReasonMLAttributeIdImpl(node);
+      }
+      else if (type == ATTRIBUTE_ID_REC) {
+        return new ReasonMLAttributeIdRecImpl(node);
+      }
+      else if (type == ATTRIBUTE_PAYLOAD) {
+        return new ReasonMLAttributePayloadImpl(node);
+      }
       else if (type == BOOLEAN_EXPR) {
         return new ReasonMLBooleanExprImpl(node);
-      }
-      else if (type == BS_DIRECTIVE) {
-        return new ReasonMLBsDirectiveImpl(node);
       }
       else if (type == CONSTANT) {
         return new ReasonMLConstantImpl(node);
@@ -157,11 +166,17 @@ public interface ReasonMLTypes {
       else if (type == INCLUDE_STATEMENT) {
         return new ReasonMLIncludeStatementImpl(node);
       }
+      else if (type == ITEM_ATTRIBUTE) {
+        return new ReasonMLItemAttributeImpl(node);
+      }
       else if (type == JSX) {
         return new ReasonMLJsxImpl(node);
       }
       else if (type == JSX_CONTENT) {
         return new ReasonMLJsxContentImpl(node);
+      }
+      else if (type == LABEL_NAME) {
+        return new ReasonMLLabelNameImpl(node);
       }
       else if (type == LET_BINDING) {
         return new ReasonMLLetBindingImpl(node);

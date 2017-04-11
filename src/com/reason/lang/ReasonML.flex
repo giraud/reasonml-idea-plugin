@@ -94,8 +94,7 @@ LITERAL_MODIFIER=[G-Zg-z]
 
     "::"   { return SHORTCUT; }
     "=>"   { return ARROW; }
-    "@@bs" { return BBS; }
-    "@bs"  { return BS; }
+    "@"    { return ARROBASE; }
 
     "===" { return EQEQEQUAL; }
 //    "=="  { return EQEQUAL; }

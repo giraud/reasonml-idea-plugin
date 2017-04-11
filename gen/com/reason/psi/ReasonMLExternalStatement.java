@@ -9,10 +9,10 @@ import com.intellij.navigation.ItemPresentation;
 public interface ReasonMLExternalStatement extends PsiElement {
 
   @NotNull
-  List<ReasonMLBsDirective> getBsDirectiveList();
+  ReasonMLExternalAlias getExternalAlias();
 
   @NotNull
-  ReasonMLExternalAlias getExternalAlias();
+  List<ReasonMLItemAttribute> getItemAttributeList();
 
   @NotNull
   ReasonMLTypeExpr getTypeExpr();

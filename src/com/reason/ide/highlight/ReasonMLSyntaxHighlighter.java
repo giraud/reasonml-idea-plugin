@@ -18,7 +18,7 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.reason.psi.ReasonMLTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
-    private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, BBS);
+    private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, ARROBASE);
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQUAL, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT, SLASH, SLASHDOT, CARRET);
     private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 

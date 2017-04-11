@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ReasonMLFieldTypeDecl extends PsiElement {
+public interface ReasonMLItemAttribute extends PsiElement {
 
   @NotNull
-  ReasonMLFieldName getFieldName();
+  ReasonMLAttributeIdRec getAttributeIdRec();
 
   @Nullable
-  ReasonMLTypeExpr getTypeExpr();
+  ReasonMLAttributePayload getAttributePayload();
 
 }

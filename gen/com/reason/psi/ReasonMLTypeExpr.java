@@ -11,6 +11,9 @@ public interface ReasonMLTypeExpr extends PsiElement {
   List<ReasonMLFieldTypeDecl> getFieldTypeDeclList();
 
   @NotNull
+  List<ReasonMLLabelName> getLabelNameList();
+
+  @NotNull
   List<ReasonMLTypeConstr> getTypeConstrList();
 
   @NotNull

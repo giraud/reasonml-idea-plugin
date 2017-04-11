@@ -54,7 +54,7 @@ type_statement ::=
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 type_expr ::=
-    single_type_expr (ARROW single_type_expr)*
+    (label_name SHORTCUT)? single_type_expr (ARROW (label_name SHORTCUT)? single_type_expr)*
 
 private single_type_expr ::=
       UNIT
@@ -71,7 +71,7 @@ private record_type_decl ::=
     LBRACE (DOT DOT?)? (field_type_decl (COMMA field_type_decl)*)? RBRACE
 
 field_type_decl ::=
-    field_name COLON type_expr
+    field_name (COLON type_expr)?
 
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
@@ -84,7 +84,7 @@ type_constr ::=
 // ----------
 
 external_statement ::=
-    EXTERNAL value_name COLON type_expr EQUAL external_alias bs_directive* SEMI { methods=[getPresentation] }
+    EXTERNAL value_name COLON type_expr EQUAL external_alias item_attribute* SEMI { methods=[getPresentation] }
 
 external_alias ::=
     STRING
@@ -286,9 +286,24 @@ module_name ::=
 type_constr_name ::=
     LIDENT
 
+label_name ::=
+    LIDENT
+
 // ----------
-// BUCKLESCRIPT
+// Attributes
+//     https://caml.inria.fr/pub/docs/manual-ocaml/extn.html#sec246
 // ----------
 
-bs_directive ::=
-    LBRACKET (BBS|BS) DOT (value_name|MODULE) constant? RBRACKET
+item_attribute ::=
+    LBRACKET ARROBASE ARROBASE attribute_id_rec attribute_payload? RBRACKET
+
+attribute_id_rec ::=
+    attribute_id (DOT attribute_id)
+
+attribute_id ::=
+      MODULE /* bs */
+    | LIDENT
+    | UIDENT
+
+attribute_payload ::=
+    expr
