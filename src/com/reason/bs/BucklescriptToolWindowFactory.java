@@ -2,6 +2,9 @@ package com.reason.bs;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.impl.ConsoleViewImpl;
+import com.intellij.execution.process.ProcessEvent;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.ProcessListener;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
@@ -12,6 +15,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
@@ -19,15 +23,19 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
+
 public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAware {
     @Override
     public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow toolWindow) {
+        BucklescriptCompiler bsc = ServiceManager.getService(project, BucklescriptCompiler.class);
+
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
 
         ConsoleViewImpl console = (ConsoleViewImpl) TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
         panel.setContent(console.getComponent());
 
-        ActionToolbar toolbar = createToolbar(console);
+        ActionToolbar toolbar = createToolbar(console, bsc);
         toolbar.setTargetComponent(console.getComponent());
         panel.setToolbar(toolbar.getComponent());
 
@@ -37,19 +45,22 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
         contentManager.addContent(content);
 
         // Start compiler
-        BucklescriptCompiler bsb = ServiceManager.getService(project, BucklescriptCompiler.class);
-        console.attachToProcess(bsb.getHandler());
-        bsb.startNotify();
+        ProcessHandler handler = bsc.getHandler();
+        handler.addProcessListener(new MyProcessListener(console, toolbar));
+        console.attachToProcess(handler);
+        bsc.startNotify();
     }
 
-    private static ActionToolbar createToolbar(ConsoleViewImpl console) {
+    private static ActionToolbar createToolbar(ConsoleViewImpl console, BucklescriptCompiler bsc) {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new BucklescriptConsole.ClearLogAction(console));
+        group.add(new BucklescriptConsole.StartAction(bsc));
         return ActionManager.getInstance().createActionToolbar("left", group, false);
     }
 
     static class BucklescriptConsole {
+
         public static class ClearLogAction extends DumbAwareAction {
             private ConsoleView myConsole;
 
@@ -68,6 +79,59 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
             public void actionPerformed(final AnActionEvent e) {
                 myConsole.clear();
             }
+        }
+
+        public static class StartAction extends DumbAwareAction {
+            private final BucklescriptCompiler bsc;
+            private boolean enable = false;
+
+            StartAction(BucklescriptCompiler bsc) {
+                super("Start", "Start bucklescript process", AllIcons.Actions.Execute);
+                this.bsc = bsc;
+            }
+
+            void setEnable(boolean value) {
+                this.enable = value;
+            }
+
+            @Override
+            public void update(AnActionEvent e) {
+                e.getPresentation().setEnabled(this.enable);
+            }
+
+            @Override
+            public void actionPerformed(final AnActionEvent e) {
+                this.enable = false;
+                this.bsc.restart();
+            }
+        }
+    }
+
+    private static class MyProcessListener implements ProcessListener {
+        private final ConsoleViewImpl console;
+        private final ActionToolbar toolbar;
+
+        MyProcessListener(ConsoleViewImpl console, ActionToolbar toolbar) {
+            this.console = console;
+            this.toolbar = toolbar;
+        }
+
+        @Override
+        public void startNotified(ProcessEvent event) {
+        }
+
+        @Override
+        public void processTerminated(ProcessEvent event) {
+            console.print("\nProcess has terminated, fix the problem before restarting it.", ERROR_OUTPUT);
+            ((BucklescriptConsole.StartAction) toolbar.getActions().get(2)).setEnable(true);
+        }
+
+        @Override
+        public void processWillTerminate(ProcessEvent event, boolean willBeDestroyed) {
+        }
+
+        @Override
+        public void onTextAvailable(ProcessEvent event, Key outputType) {
         }
     }
 }

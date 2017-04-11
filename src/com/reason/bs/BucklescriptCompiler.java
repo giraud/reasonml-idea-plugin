@@ -10,12 +10,14 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.ReasonMLNotification;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
 public class BucklescriptCompiler extends AbstractProjectComponent {
 
     private KillableColoredProcessHandler bsb;
+    private GeneralCommandLine commandLine;
 
     protected BucklescriptCompiler(Project project) {
         super(project);
@@ -23,7 +25,8 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
 
     @Override
     public void projectOpened() {
-        if (!"true".equals(System.getProperty("reasonBsb"))) {
+        String reasonBsb = System.getProperty("reasonBsb");
+        if (reasonBsb == null) {
             Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Bsb is disabled, you need to manually launch an external process", NotificationType.WARNING));
             return;
         }
@@ -34,22 +37,17 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
             baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(null);
         }
 
-        VirtualFile bsbBinary = baseDir.findFileByRelativePath("node_modules/bs-platform/bin/bsb.exe");
+        VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
         if (bsbBinary == null) {
             Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't find bsb, be sure that it is installed.", NotificationType.ERROR));
             // Add notification system that watch node_modules
             return;
         }
 
-        GeneralCommandLine commandLine = new GeneralCommandLine(bsbBinary.getCanonicalPath(), "-make-world", "-w");
+        this.commandLine = new GeneralCommandLine(bsbBinary.getCanonicalPath(), "-make-world", "-w");
         commandLine.setWorkDirectory(baseDir.getCanonicalPath());
 
-        try {
-            this.bsb = new KillableColoredProcessHandler(commandLine);
-        } catch (ExecutionException e) {
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
-        }
-
+        this.restart();
 /*
         ProcessBuilder processBuilder = new ProcessBuilder(bsbBinary.getCanonicalPath(), "-make-world", "-w")
                 .directory(new File(baseDir.getCanonicalPath()))
@@ -112,10 +110,11 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
 
     @Override
     public void projectClosed() {
-        if (this.bsb != null) {
-            this.bsb.killProcess();
-            this.bsb = null;
-        }
+        killIt();
+    }
+
+    ProcessHandler getHandler() {
+        return this.bsb;
     }
 
     // Wait for the toolwindow to be ready before starting the process
@@ -123,7 +122,22 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         this.bsb.startNotify();
     }
 
-    ProcessHandler getHandler() {
-        return this.bsb;
+    @Nullable
+    ProcessHandler restart() {
+        try {
+            killIt();
+            this.bsb = new KillableColoredProcessHandler(this.commandLine, true);
+            return this.bsb;
+        } catch (ExecutionException e) {
+            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
+        }
+        return null;
+    }
+
+    private void killIt() {
+        if (this.bsb != null) {
+            this.bsb.killProcess();
+            this.bsb = null;
+        }
     }
 }

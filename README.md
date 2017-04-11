@@ -7,6 +7,8 @@ ReasonML language plugin for idea
 
 :exclamation: This is a **work in progress**, the language has very basic - and partially implemented - functionalities.
 
+This code might change quite a lot or break in the future.
+
 ## Features
 
 - Structured view
