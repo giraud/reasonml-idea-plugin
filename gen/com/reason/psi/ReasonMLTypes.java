@@ -41,11 +41,13 @@ public interface ReasonMLTypes {
   IElementType PARAMETER_EXPR = new ReasonMLElementType("PARAMETER_EXPR");
   IElementType PATTERN = new ReasonMLElementType("PATTERN");
   IElementType PATTERN_MATCHING = new ReasonMLElementType("PATTERN_MATCHING");
+  IElementType POLYMORPHIC_VARIANT_TYPE = new ReasonMLElementType("POLYMORPHIC_VARIANT_TYPE");
   IElementType RECORD_DECL = new ReasonMLElementType("RECORD_DECL");
   IElementType SIGNED_CONSTANT = new ReasonMLElementType("SIGNED_CONSTANT");
   IElementType START_TAG = new ReasonMLElementType("START_TAG");
   IElementType TAG_NAME = new ReasonMLElementType("TAG_NAME");
   IElementType TAG_PROPERTY = new ReasonMLElementType("TAG_PROPERTY");
+  IElementType TAG_SPEC_FIRST = new ReasonMLElementType("TAG_SPEC_FIRST");
   IElementType TYPE_CONSTR = new ReasonMLElementType("TYPE_CONSTR");
   IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
   IElementType TYPE_EXPR = new ReasonMLElementType("TYPE_EXPR");
@@ -58,6 +60,7 @@ public interface ReasonMLTypes {
   IElementType ARROBASE = new ReasonMLTokenType("ARROBASE");
   IElementType ARROW = new ReasonMLTokenType("ARROW");
   IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
+  IElementType BACKTICK = new ReasonMLTokenType("BACKTICK");
   IElementType CARRET = new ReasonMLTokenType("CARRET");
   IElementType CLOSE_TAG = new ReasonMLTokenType("CLOSE_TAG");
   IElementType COLON = new ReasonMLTokenType("COLON");
@@ -214,6 +217,9 @@ public interface ReasonMLTypes {
       else if (type == PATTERN_MATCHING) {
         return new ReasonMLPatternMatchingImpl(node);
       }
+      else if (type == POLYMORPHIC_VARIANT_TYPE) {
+        return new ReasonMLPolymorphicVariantTypeImpl(node);
+      }
       else if (type == RECORD_DECL) {
         return new ReasonMLRecordDeclImpl(node);
       }
@@ -228,6 +234,9 @@ public interface ReasonMLTypes {
       }
       else if (type == TAG_PROPERTY) {
         return new ReasonMLTagPropertyImpl(node);
+      }
+      else if (type == TAG_SPEC_FIRST) {
+        return new ReasonMLTagSpecFirstImpl(node);
       }
       else if (type == TYPE_CONSTR) {
         return new ReasonMLTypeConstrImpl(node);

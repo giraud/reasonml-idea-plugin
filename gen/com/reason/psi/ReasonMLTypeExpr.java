@@ -14,6 +14,9 @@ public interface ReasonMLTypeExpr extends PsiElement {
   List<ReasonMLLabelName> getLabelNameList();
 
   @NotNull
+  List<ReasonMLPolymorphicVariantType> getPolymorphicVariantTypeList();
+
+  @NotNull
   List<ReasonMLTypeConstr> getTypeConstrList();
 
   @NotNull

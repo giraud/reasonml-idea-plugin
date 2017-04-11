@@ -113,6 +113,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "]"   { return RBRACKET; }
     "#"   { return SHARP; }
     "?"   { return QUESTION_MARK; }
+    "`"   { return BACKTICK; }
 
     "/>" { return AUTO_CLOSE_TAG; }
     "</" { return CLOSE_TAG; }

@@ -8,6 +8,9 @@ import com.intellij.navigation.ItemPresentation;
 
 public interface ReasonMLTypeStatement extends PsiElement {
 
+  @Nullable
+  ReasonMLItemAttribute getItemAttribute();
+
   @NotNull
   ReasonMLTypeConstrName getTypeConstrName();
 

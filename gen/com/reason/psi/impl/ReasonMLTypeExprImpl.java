@@ -40,6 +40,12 @@ public class ReasonMLTypeExprImpl extends ASTWrapperPsiElement implements Reason
 
   @Override
   @NotNull
+  public List<ReasonMLPolymorphicVariantType> getPolymorphicVariantTypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLPolymorphicVariantType.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLTypeConstr> getTypeConstrList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLTypeConstr.class);
   }

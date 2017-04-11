@@ -122,6 +122,9 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     else if (t == PATTERN_MATCHING) {
       r = pattern_matching(b, 0);
     }
+    else if (t == POLYMORPHIC_VARIANT_TYPE) {
+      r = polymorphic_variant_type(b, 0);
+    }
     else if (t == RECORD_DECL) {
       r = record_decl(b, 0);
     }
@@ -136,6 +139,9 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
     else if (t == TAG_PROPERTY) {
       r = tag_property(b, 0);
+    }
+    else if (t == TAG_SPEC_FIRST) {
+      r = tag_spec_first(b, 0);
     }
     else if (t == TYPE_CONSTR) {
       r = type_constr(b, 0);
@@ -1665,6 +1671,44 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LBRACKET PIPE tag_spec_first (PIPE tag_spec_first)* RBRACKET
+  public static boolean polymorphic_variant_type(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "polymorphic_variant_type")) return false;
+    if (!nextTokenIs(b, LBRACKET)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LBRACKET, PIPE);
+    r = r && tag_spec_first(b, l + 1);
+    r = r && polymorphic_variant_type_3(b, l + 1);
+    r = r && consumeToken(b, RBRACKET);
+    exit_section_(b, m, POLYMORPHIC_VARIANT_TYPE, r);
+    return r;
+  }
+
+  // (PIPE tag_spec_first)*
+  private static boolean polymorphic_variant_type_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "polymorphic_variant_type_3")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!polymorphic_variant_type_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "polymorphic_variant_type_3", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // PIPE tag_spec_first
+  private static boolean polymorphic_variant_type_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "polymorphic_variant_type_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PIPE);
+    r = r && tag_spec_first(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // ( COMMENT | open_statement | module_statement | include_statement | let_statement | expr_statement | type_statement | external_statement )*
   static boolean reasonFile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "reasonFile")) return false;
@@ -1871,6 +1915,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   // UNIT
   //     | OPTION type_constr
   //     | LIST type_constr
+  //     | polymorphic_variant_type
   //     | tuple_type_decl
   //     | record_type_decl
   //     | type_constr (record_type_decl | QUOTE LIDENT | value_path)?
@@ -1881,9 +1926,10 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, UNIT);
     if (!r) r = single_type_expr_1(b, l + 1);
     if (!r) r = single_type_expr_2(b, l + 1);
+    if (!r) r = polymorphic_variant_type(b, l + 1);
     if (!r) r = tuple_type_decl(b, l + 1);
     if (!r) r = record_type_decl(b, l + 1);
-    if (!r) r = single_type_expr_5(b, l + 1);
+    if (!r) r = single_type_expr_6(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1911,26 +1957,26 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   // type_constr (record_type_decl | QUOTE LIDENT | value_path)?
-  private static boolean single_type_expr_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "single_type_expr_5")) return false;
+  private static boolean single_type_expr_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr_6")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = type_constr(b, l + 1);
-    r = r && single_type_expr_5_1(b, l + 1);
+    r = r && single_type_expr_6_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (record_type_decl | QUOTE LIDENT | value_path)?
-  private static boolean single_type_expr_5_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "single_type_expr_5_1")) return false;
-    single_type_expr_5_1_0(b, l + 1);
+  private static boolean single_type_expr_6_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr_6_1")) return false;
+    single_type_expr_6_1_0(b, l + 1);
     return true;
   }
 
   // record_type_decl | QUOTE LIDENT | value_path
-  private static boolean single_type_expr_5_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "single_type_expr_5_1_0")) return false;
+  private static boolean single_type_expr_6_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "single_type_expr_6_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = record_type_decl(b, l + 1);
@@ -2036,6 +2082,19 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, DOT);
     r = r && value_name(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // BACKTICK tag_name
+  public static boolean tag_spec_first(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_spec_first")) return false;
+    if (!nextTokenIs(b, BACKTICK)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BACKTICK);
+    r = r && tag_name(b, l + 1);
+    exit_section_(b, m, TAG_SPEC_FIRST, r);
     return r;
   }
 
@@ -2194,7 +2253,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TYPE type_constr_name (EQUAL type_expr)? SEMI
+  // TYPE type_constr_name (EQUAL type_expr)? item_attribute? SEMI
   public static boolean type_statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "type_statement")) return false;
     if (!nextTokenIs(b, TYPE)) return false;
@@ -2203,6 +2262,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, TYPE);
     r = r && type_constr_name(b, l + 1);
     r = r && type_statement_2(b, l + 1);
+    r = r && type_statement_3(b, l + 1);
     r = r && consumeToken(b, SEMI);
     exit_section_(b, m, TYPE_STATEMENT, r);
     return r;
@@ -2224,6 +2284,13 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     r = r && type_expr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // item_attribute?
+  private static boolean type_statement_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "type_statement_3")) return false;
+    item_attribute(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

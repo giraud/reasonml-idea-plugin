@@ -28,6 +28,12 @@ public class ReasonMLTypeStatementImpl extends ASTWrapperPsiElement implements R
   }
 
   @Override
+  @Nullable
+  public ReasonMLItemAttribute getItemAttribute() {
+    return findChildByClass(ReasonMLItemAttribute.class);
+  }
+
+  @Override
   @NotNull
   public ReasonMLTypeConstrName getTypeConstrName() {
     return findNotNullChildByClass(ReasonMLTypeConstrName.class);

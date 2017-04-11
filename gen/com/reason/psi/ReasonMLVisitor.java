@@ -139,6 +139,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitPolymorphicVariantType(@NotNull ReasonMLPolymorphicVariantType o) {
+    visitPsiElement(o);
+  }
+
   public void visitRecordDecl(@NotNull ReasonMLRecordDecl o) {
     visitPsiElement(o);
   }
@@ -156,6 +160,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitTagProperty(@NotNull ReasonMLTagProperty o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTagSpecFirst(@NotNull ReasonMLTagSpecFirst o) {
     visitPsiElement(o);
   }
 

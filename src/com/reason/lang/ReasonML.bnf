@@ -48,18 +48,18 @@ include_statement ::=
 // ----------
 
 type_statement ::=
-     TYPE type_constr_name (EQUAL type_expr)? SEMI {
+     TYPE type_constr_name (EQUAL type_expr)? item_attribute? SEMI {
         methods=[getPresentation]
     }
 
-// https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
-type_expr ::=
+type_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
     (label_name SHORTCUT)? single_type_expr (ARROW (label_name SHORTCUT)? single_type_expr)*
 
 private single_type_expr ::=
       UNIT
     | OPTION type_constr
     | LIST type_constr
+    | polymorphic_variant_type
     | tuple_type_decl
     | record_type_decl
     | type_constr (record_type_decl | QUOTE LIDENT | value_path)?
@@ -73,9 +73,13 @@ private record_type_decl ::=
 field_type_decl ::=
     field_name (COLON type_expr)?
 
+polymorphic_variant_type ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#polymorphic-variant-type
+  LBRACKET PIPE tag_spec_first (PIPE tag_spec_first)* RBRACKET
 
-// https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
-type_constr ::=
+tag_spec_first ::=
+    BACKTICK tag_name
+
+type_constr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typeconstr
     (module_path DOT)? type_constr_name
 
 // ----------
