@@ -14,6 +14,9 @@ public interface ReasonMLParameter extends PsiElement {
   List<ReasonMLField> getFieldList();
 
   @Nullable
+  ReasonMLLabelName getLabelName();
+
+  @Nullable
   ReasonMLParameterExpr getParameterExpr();
 
   @Nullable

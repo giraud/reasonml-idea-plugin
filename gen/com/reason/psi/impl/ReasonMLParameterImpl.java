@@ -40,6 +40,12 @@ public class ReasonMLParameterImpl extends ASTWrapperPsiElement implements Reaso
 
   @Override
   @Nullable
+  public ReasonMLLabelName getLabelName() {
+    return findChildByClass(ReasonMLLabelName.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLParameterExpr getParameterExpr() {
     return findChildByClass(ReasonMLParameterExpr.class);
   }

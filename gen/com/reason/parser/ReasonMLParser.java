@@ -1524,55 +1524,91 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // parameter_expr
-  //     | SHORTCUT value_name (EQUAL (constant | QUESTION_MARK))?
+  // label_name? SHORTCUT LPAREN? value_name (COLON type_expr) RPAREN? (EQUAL (constant | QUESTION_MARK))?
+  //     | parameter_expr
   //     | LPAREN parameter_expr (DOT type_expr)? RPAREN
   //     | LBRACE field (COMMA field)* RBRACE
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PARAMETER, "<parameter>");
-    r = parameter_expr(b, l + 1);
-    if (!r) r = parameter_1(b, l + 1);
+    r = parameter_0(b, l + 1);
+    if (!r) r = parameter_expr(b, l + 1);
     if (!r) r = parameter_2(b, l + 1);
     if (!r) r = parameter_3(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // SHORTCUT value_name (EQUAL (constant | QUESTION_MARK))?
-  private static boolean parameter_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_1")) return false;
+  // label_name? SHORTCUT LPAREN? value_name (COLON type_expr) RPAREN? (EQUAL (constant | QUESTION_MARK))?
+  private static boolean parameter_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, SHORTCUT);
+    r = parameter_0_0(b, l + 1);
+    r = r && consumeToken(b, SHORTCUT);
+    r = r && parameter_0_2(b, l + 1);
     r = r && value_name(b, l + 1);
-    r = r && parameter_1_2(b, l + 1);
+    r = r && parameter_0_4(b, l + 1);
+    r = r && parameter_0_5(b, l + 1);
+    r = r && parameter_0_6(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
+  // label_name?
+  private static boolean parameter_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_0")) return false;
+    label_name(b, l + 1);
+    return true;
+  }
+
+  // LPAREN?
+  private static boolean parameter_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_2")) return false;
+    consumeToken(b, LPAREN);
+    return true;
+  }
+
+  // COLON type_expr
+  private static boolean parameter_0_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
+    r = r && type_expr(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // RPAREN?
+  private static boolean parameter_0_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_5")) return false;
+    consumeToken(b, RPAREN);
+    return true;
+  }
+
   // (EQUAL (constant | QUESTION_MARK))?
-  private static boolean parameter_1_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_1_2")) return false;
-    parameter_1_2_0(b, l + 1);
+  private static boolean parameter_0_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_6")) return false;
+    parameter_0_6_0(b, l + 1);
     return true;
   }
 
   // EQUAL (constant | QUESTION_MARK)
-  private static boolean parameter_1_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_1_2_0")) return false;
+  private static boolean parameter_0_6_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_6_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUAL);
-    r = r && parameter_1_2_0_1(b, l + 1);
+    r = r && parameter_0_6_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // constant | QUESTION_MARK
-  private static boolean parameter_1_2_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "parameter_1_2_0_1")) return false;
+  private static boolean parameter_0_6_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parameter_0_6_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = constant(b, l + 1);
