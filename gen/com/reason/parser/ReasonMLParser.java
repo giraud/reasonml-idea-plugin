@@ -1318,14 +1318,15 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // value_name
+  // LPAREN RPAREN | value_name
   public static boolean let_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "let_name")) return false;
-    if (!nextTokenIs(b, LIDENT)) return false;
+    if (!nextTokenIs(b, "<let name>", LIDENT, LPAREN)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = value_name(b, l + 1);
-    exit_section_(b, m, LET_NAME, r);
+    Marker m = enter_section_(b, l, _NONE_, LET_NAME, "<let name>");
+    r = parseTokens(b, 0, LPAREN, RPAREN);
+    if (!r) r = value_name(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

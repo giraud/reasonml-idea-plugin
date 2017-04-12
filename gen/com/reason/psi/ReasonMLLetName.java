@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLLetName extends PsiElement {
 
-  @NotNull
+  @Nullable
   ReasonMLValueName getValueName();
 
 }

@@ -204,7 +204,7 @@ let_binding ::=
     { methods=[isFunction] }
 
 let_name ::=
-    value_name
+    LPAREN RPAREN | value_name
 
 private let_binding_body ::=
       LBRACE expr (SEMI expr)* RBRACE

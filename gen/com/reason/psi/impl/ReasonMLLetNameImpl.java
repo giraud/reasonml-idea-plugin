@@ -27,9 +27,9 @@ public class ReasonMLLetNameImpl extends ASTWrapperPsiElement implements ReasonM
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ReasonMLValueName getValueName() {
-    return findNotNullChildByClass(ReasonMLValueName.class);
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }
