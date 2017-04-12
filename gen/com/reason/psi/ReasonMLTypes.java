@@ -10,13 +10,13 @@ public interface ReasonMLTypes {
 
   IElementType ARGUMENT = new ReasonMLElementType("ARGUMENT");
   IElementType ARGUMENT_VALUE = new ReasonMLElementType("ARGUMENT_VALUE");
+  IElementType ATTRIBUTE = new ReasonMLElementType("ATTRIBUTE");
   IElementType ATTRIBUTE_ID = new ReasonMLElementType("ATTRIBUTE_ID");
   IElementType ATTRIBUTE_ID_REC = new ReasonMLElementType("ATTRIBUTE_ID_REC");
   IElementType ATTRIBUTE_PAYLOAD = new ReasonMLElementType("ATTRIBUTE_PAYLOAD");
   IElementType BOOLEAN_EXPR = new ReasonMLElementType("BOOLEAN_EXPR");
   IElementType CONSTANT = new ReasonMLElementType("CONSTANT");
   IElementType END_TAG = new ReasonMLElementType("END_TAG");
-  IElementType EXPR = new ReasonMLElementType("EXPR");
   IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
   IElementType EXTERNAL_ALIAS = new ReasonMLElementType("EXTERNAL_ALIAS");
   IElementType EXTERNAL_STATEMENT = new ReasonMLElementType("EXTERNAL_STATEMENT");
@@ -42,6 +42,7 @@ public interface ReasonMLTypes {
   IElementType PATTERN = new ReasonMLElementType("PATTERN");
   IElementType PATTERN_MATCHING = new ReasonMLElementType("PATTERN_MATCHING");
   IElementType POLYMORPHIC_VARIANT_TYPE = new ReasonMLElementType("POLYMORPHIC_VARIANT_TYPE");
+  IElementType POLY_TYPE = new ReasonMLElementType("POLY_TYPE");
   IElementType RECORD_DECL = new ReasonMLElementType("RECORD_DECL");
   IElementType SIGNED_CONSTANT = new ReasonMLElementType("SIGNED_CONSTANT");
   IElementType START_TAG = new ReasonMLElementType("START_TAG");
@@ -90,6 +91,7 @@ public interface ReasonMLTypes {
   IElementType MODULE = new ReasonMLTokenType("MODULE");
   IElementType MUL = new ReasonMLTokenType("MUL");
   IElementType MULDOT = new ReasonMLTokenType("MULDOT");
+  IElementType MUTABLE = new ReasonMLTokenType("MUTABLE");
   IElementType NONE = new ReasonMLTokenType("NONE");
   IElementType OPEN = new ReasonMLTokenType("OPEN");
   IElementType OPTION = new ReasonMLTokenType("OPTION");
@@ -124,6 +126,9 @@ public interface ReasonMLTypes {
       else if (type == ARGUMENT_VALUE) {
         return new ReasonMLArgumentValueImpl(node);
       }
+      else if (type == ATTRIBUTE) {
+        return new ReasonMLAttributeImpl(node);
+      }
       else if (type == ATTRIBUTE_ID) {
         return new ReasonMLAttributeIdImpl(node);
       }
@@ -141,9 +146,6 @@ public interface ReasonMLTypes {
       }
       else if (type == END_TAG) {
         return new ReasonMLEndTagImpl(node);
-      }
-      else if (type == EXPR) {
-        return new ReasonMLExprImpl(node);
       }
       else if (type == EXPR_STATEMENT) {
         return new ReasonMLExprStatementImpl(node);
@@ -219,6 +221,9 @@ public interface ReasonMLTypes {
       }
       else if (type == POLYMORPHIC_VARIANT_TYPE) {
         return new ReasonMLPolymorphicVariantTypeImpl(node);
+      }
+      else if (type == POLY_TYPE) {
+        return new ReasonMLPolyTypeImpl(node);
       }
       else if (type == RECORD_DECL) {
         return new ReasonMLRecordDeclImpl(node);

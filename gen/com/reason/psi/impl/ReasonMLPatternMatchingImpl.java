@@ -28,14 +28,56 @@ public class ReasonMLPatternMatchingImpl extends ASTWrapperPsiElement implements
 
   @Override
   @NotNull
-  public List<ReasonMLExpr> getExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLExpr.class);
+  public List<ReasonMLBooleanExpr> getBooleanExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBooleanExpr.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLJsx> getJsxList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLJsx.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLLabelName> getLabelNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLLabelName.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLLetBinding> getLetBindingList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLLetBinding.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLParameter> getParameterList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
   }
 
   @Override
   @NotNull
   public List<ReasonMLPattern> getPatternList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLPattern.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLPatternMatching> getPatternMatchingList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLPatternMatching.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLValueExpr> getValueExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueExpr.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLValueName> getValueNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
   }
 
 }

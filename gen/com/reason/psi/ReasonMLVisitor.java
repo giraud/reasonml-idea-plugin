@@ -15,6 +15,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAttribute(@NotNull ReasonMLAttribute o) {
+    visitPsiElement(o);
+  }
+
   public void visitAttributeId(@NotNull ReasonMLAttributeId o) {
     visitPsiElement(o);
   }
@@ -36,10 +40,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitEndTag(@NotNull ReasonMLEndTag o) {
-    visitPsiElement(o);
-  }
-
-  public void visitExpr(@NotNull ReasonMLExpr o) {
     visitPsiElement(o);
   }
 
@@ -136,6 +136,10 @@ public class ReasonMLVisitor extends PsiElementVisitor {
   }
 
   public void visitPatternMatching(@NotNull ReasonMLPatternMatching o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPolyType(@NotNull ReasonMLPolyType o) {
     visitPsiElement(o);
   }
 

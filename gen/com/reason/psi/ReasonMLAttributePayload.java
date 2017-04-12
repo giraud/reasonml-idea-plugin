@@ -8,6 +8,27 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLAttributePayload extends PsiElement {
 
   @NotNull
-  ReasonMLExpr getExpr();
+  List<ReasonMLBooleanExpr> getBooleanExprList();
+
+  @NotNull
+  List<ReasonMLJsx> getJsxList();
+
+  @NotNull
+  List<ReasonMLLabelName> getLabelNameList();
+
+  @NotNull
+  List<ReasonMLLetBinding> getLetBindingList();
+
+  @NotNull
+  List<ReasonMLParameter> getParameterList();
+
+  @NotNull
+  List<ReasonMLPatternMatching> getPatternMatchingList();
+
+  @NotNull
+  List<ReasonMLValueExpr> getValueExprList();
+
+  @NotNull
+  List<ReasonMLValueName> getValueNameList();
 
 }

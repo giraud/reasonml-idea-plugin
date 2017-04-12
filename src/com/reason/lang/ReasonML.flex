@@ -64,16 +64,17 @@ LITERAL_MODIFIER=[G-Zg-z]
 <INITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
 
-    "module"    { return MODULE;}
-    "open"      { return OPEN; }
-    "include"   { return INCLUDE; }
-    "type"      { return TYPE; }
-    "let"       { return LET; }
-    "fun"       { return FUN; }
-    "external"  { return EXTERNAL; }
-    "unit"      { return UNIT; }
-    "if"        { return IF; }
-    "else"      { return ELSE; }
+    "mutable"    { return MUTABLE;}
+    "module"     { return MODULE;}
+    "open"       { return OPEN; }
+    "include"    { return INCLUDE; }
+    "type"       { return TYPE; }
+    "let"        { return LET; }
+    "fun"        { return FUN; }
+    "external"   { return EXTERNAL; }
+    "unit"       { return UNIT; }
+    "if"         { return IF; }
+    "else"       { return ELSE; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }

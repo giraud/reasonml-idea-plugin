@@ -53,12 +53,13 @@ type_statement ::=
     }
 
 type_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
-    (label_name SHORTCUT)? single_type_expr (ARROW (label_name SHORTCUT)? single_type_expr)*
+    (label_name SHORTCUT)? single_type_expr attribute? (ARROW (label_name SHORTCUT)? single_type_expr attribute?)*
 
 private single_type_expr ::=
       UNIT
     | OPTION type_constr
     | LIST type_constr
+    | poly_type
     | polymorphic_variant_type
     | tuple_type_decl
     | record_type_decl
@@ -71,7 +72,10 @@ private record_type_decl ::=
     LBRACE (DOT DOT?)? (field_type_decl (COMMA field_type_decl)*)? RBRACE
 
 field_type_decl ::=
-    field_name (COLON type_expr)?
+    MUTABLE? field_name (COLON type_expr)?
+
+poly_type ::=
+    PIPE UIDENT (PIPE UIDENT)*
 
 polymorphic_variant_type ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#polymorphic-variant-type
   LBRACKET PIPE tag_spec_first (PIPE tag_spec_first)* RBRACKET
@@ -104,7 +108,7 @@ expr_statement ::=
 private sequenced_expr ::=
     expr (SEMI expr)*
 
-expr ::=
+private expr ::=
       NONE
     | SOME expr
     | FUN parameter* ARROW let_binding_body
@@ -114,6 +118,8 @@ expr ::=
     | pattern_matching
     | jsx
     | let_binding
+    | SHORTCUT expr
+    | label_name SHORTCUT expr
     | value_expr (
               LPAREN expr RPAREN
             | QUESTION_MARK expr
@@ -297,6 +303,9 @@ label_name ::=
 // Attributes
 //     https://caml.inria.fr/pub/docs/manual-ocaml/extn.html#sec246
 // ----------
+
+attribute ::=
+    LBRACKET ARROBASE attribute_id_rec attribute_payload? RBRACKET
 
 item_attribute ::=
     LBRACKET ARROBASE ARROBASE attribute_id_rec attribute_payload? RBRACKET

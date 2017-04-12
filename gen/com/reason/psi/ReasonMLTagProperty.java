@@ -7,14 +7,32 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLTagProperty extends PsiElement {
 
+  @NotNull
+  List<ReasonMLBooleanExpr> getBooleanExprList();
+
   @Nullable
   ReasonMLConstant getConstant();
 
-  @Nullable
-  ReasonMLExpr getExpr();
+  @NotNull
+  List<ReasonMLJsx> getJsxList();
+
+  @NotNull
+  List<ReasonMLLabelName> getLabelNameList();
+
+  @NotNull
+  List<ReasonMLLetBinding> getLetBindingList();
+
+  @NotNull
+  List<ReasonMLParameter> getParameterList();
+
+  @NotNull
+  List<ReasonMLPatternMatching> getPatternMatchingList();
 
   @Nullable
   ReasonMLRecordDecl getRecordDecl();
+
+  @NotNull
+  List<ReasonMLValueExpr> getValueExprList();
 
   @NotNull
   List<ReasonMLValueName> getValueNameList();

@@ -8,7 +8,16 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLLetBinding extends PsiElement {
 
   @NotNull
-  List<ReasonMLExpr> getExprList();
+  List<ReasonMLBooleanExpr> getBooleanExprList();
+
+  @NotNull
+  List<ReasonMLJsx> getJsxList();
+
+  @NotNull
+  List<ReasonMLLabelName> getLabelNameList();
+
+  @NotNull
+  List<ReasonMLLetBinding> getLetBindingList();
 
   @NotNull
   ReasonMLLetName getLetName();
@@ -16,11 +25,17 @@ public interface ReasonMLLetBinding extends PsiElement {
   @NotNull
   List<ReasonMLParameter> getParameterList();
 
+  @NotNull
+  List<ReasonMLPatternMatching> getPatternMatchingList();
+
   @Nullable
   ReasonMLTypeExpr getTypeExpr();
 
-  @Nullable
-  ReasonMLValueName getValueName();
+  @NotNull
+  List<ReasonMLValueExpr> getValueExprList();
+
+  @NotNull
+  List<ReasonMLValueName> getValueNameList();
 
   boolean isFunction();
 
