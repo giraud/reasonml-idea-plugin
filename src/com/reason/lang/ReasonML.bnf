@@ -116,13 +116,17 @@ private expr ::=
     | LPAREN sequenced_expr? RPAREN
     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
     | IF LPAREN boolean_expr RPAREN LBRACE sequenced_expr RBRACE (ELSE LBRACE sequenced_expr RBRACE)*
-    | pattern_matching
+    | SWITCH expr LBRACE pattern_matching+ RBRACE
+    | SHORTCUT expr
     | jsx
     | let_binding
-    | SHORTCUT expr
     | label_name SHORTCUT expr
-    | value_expr (
+    | recursive_expr
+
+private recursive_expr ::=
+    value_expr (
               LPAREN expr RPAREN
+            | EQEQEQ expr
             | QUESTION_MARK expr
             | PLUS expr
             | PLUSDOT expr
@@ -141,8 +145,8 @@ private expr ::=
             | COLON expr
             | expr )*
 
-boolean_expr ::=
-    expr EQEQEQUAL expr
+private boolean_expr ::=
+    expr EQEQEQ expr
 
 value_expr ::=
       signed_constant
@@ -165,12 +169,13 @@ argument_value ::=
 // ----------
 
 pattern_matching ::=
-    PIPE pattern ARROW expr (PIPE pattern ARROW expr)*
+    PIPE pattern ARROW sequenced_expr
 
 pattern ::=
       NONE
-    | SOME value_name
-    | value_name
+    | SOME value_path
+    | value_path
+    | module_path
     | constant
 
 // ----------
@@ -191,7 +196,7 @@ tag_property ::=
 
 jsxContent ::=
       COMMENT
-    | LPAREN expr RPAREN
+    | expr
     | jsx
 
 // ----------
@@ -212,7 +217,10 @@ let_binding ::=
     { methods=[isFunction] }
 
 let_name ::=
-    LPAREN RPAREN | value_name
+    tuple_value | LPAREN RPAREN | value_name
+
+private tuple_value ::=
+    LPAREN value_name (COMMA value_name)* RPAREN
 
 private let_binding_body ::=
       LBRACE expr (SEMI expr)* RBRACE

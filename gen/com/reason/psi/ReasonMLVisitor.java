@@ -31,10 +31,6 @@ public class ReasonMLVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBooleanExpr(@NotNull ReasonMLBooleanExpr o) {
-    visitPsiElement(o);
-  }
-
   public void visitConstant(@NotNull ReasonMLConstant o) {
     visitPsiElement(o);
   }

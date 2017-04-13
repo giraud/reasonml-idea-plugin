@@ -75,6 +75,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "unit"       { return UNIT; }
     "if"         { return IF; }
     "else"       { return ELSE; }
+    "switch"     { return SWITCH; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }
@@ -97,7 +98,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "=>"   { return ARROW; }
     "@"    { return ARROBASE; }
 
-    "===" { return EQEQEQUAL; }
+    "===" { return EQEQEQ; }
 //    "=="  { return EQEQUAL; }
     "="   { return EQUAL; }
     ","   { return COMMA; }

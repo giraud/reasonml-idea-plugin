@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLAttributePayload extends PsiElement {
 
   @NotNull
-  List<ReasonMLBooleanExpr> getBooleanExprList();
-
-  @NotNull
   List<ReasonMLJsx> getJsxList();
 
   @NotNull

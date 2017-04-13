@@ -27,12 +27,6 @@ public class ReasonMLTagPropertyImpl extends ASTWrapperPsiElement implements Rea
   }
 
   @Override
-  @NotNull
-  public List<ReasonMLBooleanExpr> getBooleanExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBooleanExpr.class);
-  }
-
-  @Override
   @Nullable
   public ReasonMLConstant getConstant() {
     return findChildByClass(ReasonMLConstant.class);

@@ -28,12 +28,6 @@ public class ReasonMLFieldDeclImpl extends ASTWrapperPsiElement implements Reaso
 
   @Override
   @NotNull
-  public List<ReasonMLBooleanExpr> getBooleanExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBooleanExpr.class);
-  }
-
-  @Override
-  @NotNull
   public ReasonMLFieldName getFieldName() {
     return findNotNullChildByClass(ReasonMLFieldName.class);
   }

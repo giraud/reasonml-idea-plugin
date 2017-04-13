@@ -34,8 +34,14 @@ public class ReasonMLPatternImpl extends ASTWrapperPsiElement implements ReasonM
 
   @Override
   @Nullable
-  public ReasonMLValueName getValueName() {
-    return findChildByClass(ReasonMLValueName.class);
+  public ReasonMLModulePath getModulePath() {
+    return findChildByClass(ReasonMLModulePath.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLValuePath getValuePath() {
+    return findChildByClass(ReasonMLValuePath.class);
   }
 
 }

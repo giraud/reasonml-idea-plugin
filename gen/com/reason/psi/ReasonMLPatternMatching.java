@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLPatternMatching extends PsiElement {
 
   @NotNull
-  List<ReasonMLBooleanExpr> getBooleanExprList();
-
-  @NotNull
   List<ReasonMLJsx> getJsxList();
 
   @NotNull
@@ -23,7 +20,7 @@ public interface ReasonMLPatternMatching extends PsiElement {
   List<ReasonMLParameter> getParameterList();
 
   @NotNull
-  List<ReasonMLPattern> getPatternList();
+  ReasonMLPattern getPattern();
 
   @NotNull
   List<ReasonMLPatternMatching> getPatternMatchingList();

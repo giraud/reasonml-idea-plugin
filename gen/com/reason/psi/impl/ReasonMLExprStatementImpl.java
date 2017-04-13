@@ -28,12 +28,6 @@ public class ReasonMLExprStatementImpl extends ASTWrapperPsiElement implements R
 
   @Override
   @NotNull
-  public List<ReasonMLBooleanExpr> getBooleanExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBooleanExpr.class);
-  }
-
-  @Override
-  @NotNull
   public List<ReasonMLJsx> getJsxList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLJsx.class);
   }

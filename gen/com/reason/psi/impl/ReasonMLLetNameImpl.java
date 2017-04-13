@@ -27,9 +27,9 @@ public class ReasonMLLetNameImpl extends ASTWrapperPsiElement implements ReasonM
   }
 
   @Override
-  @Nullable
-  public ReasonMLValueName getValueName() {
-    return findChildByClass(ReasonMLValueName.class);
+  @NotNull
+  public List<ReasonMLValueName> getValueNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
   }
 
 }

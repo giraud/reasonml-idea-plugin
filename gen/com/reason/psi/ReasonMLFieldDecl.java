@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLFieldDecl extends PsiElement {
 
   @NotNull
-  List<ReasonMLBooleanExpr> getBooleanExprList();
-
-  @NotNull
   ReasonMLFieldName getFieldName();
 
   @NotNull

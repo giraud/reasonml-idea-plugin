@@ -28,12 +28,6 @@ public class ReasonMLPatternMatchingImpl extends ASTWrapperPsiElement implements
 
   @Override
   @NotNull
-  public List<ReasonMLBooleanExpr> getBooleanExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLBooleanExpr.class);
-  }
-
-  @Override
-  @NotNull
   public List<ReasonMLJsx> getJsxList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLJsx.class);
   }
@@ -58,8 +52,8 @@ public class ReasonMLPatternMatchingImpl extends ASTWrapperPsiElement implements
 
   @Override
   @NotNull
-  public List<ReasonMLPattern> getPatternList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLPattern.class);
+  public ReasonMLPattern getPattern() {
+    return findNotNullChildByClass(ReasonMLPattern.class);
   }
 
   @Override

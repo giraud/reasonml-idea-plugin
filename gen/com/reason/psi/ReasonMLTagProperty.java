@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLTagProperty extends PsiElement {
 
-  @NotNull
-  List<ReasonMLBooleanExpr> getBooleanExprList();
-
   @Nullable
   ReasonMLConstant getConstant();
 

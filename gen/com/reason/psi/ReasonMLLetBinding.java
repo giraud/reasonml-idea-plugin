@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface ReasonMLLetBinding extends PsiElement {
 
   @NotNull
-  List<ReasonMLBooleanExpr> getBooleanExprList();
-
-  @NotNull
   List<ReasonMLJsx> getJsxList();
 
   @NotNull
