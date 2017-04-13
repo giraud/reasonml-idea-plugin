@@ -33,9 +33,9 @@ public class ReasonMLValuePathImpl extends ASTWrapperPsiElement implements Reaso
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ReasonMLValueName getValueName() {
-    return findNotNullChildByClass(ReasonMLValueName.class);
+    return findChildByClass(ReasonMLValueName.class);
   }
 
 }

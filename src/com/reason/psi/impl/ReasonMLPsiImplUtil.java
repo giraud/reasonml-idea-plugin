@@ -121,7 +121,7 @@ public class ReasonMLPsiImplUtil {
             @Override
             public void visitElement(PsiElement element) {
                 //noinspection unchecked
-                if (element.getNode().getElementType() == ReasonMLTypes.EQUAL) {
+                if (element.getNode().getElementType() == ReasonMLTypes.EQ) {
                     result[0] = false;
                     stopWalking();
                 } else if (element.getNode().getElementType() == ReasonMLTypes.ARROW) {

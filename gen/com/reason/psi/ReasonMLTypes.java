@@ -69,8 +69,8 @@ public interface ReasonMLTypes {
   IElementType COMMENT = new ReasonMLTokenType("COMMENT");
   IElementType DOT = new ReasonMLTokenType("DOT");
   IElementType ELSE = new ReasonMLTokenType("ELSE");
-  IElementType EQEQEQUAL = new ReasonMLTokenType("EQEQEQUAL");
-  IElementType EQUAL = new ReasonMLTokenType("EQUAL");
+  IElementType EQ = new ReasonMLTokenType("EQ");
+  IElementType EQEQEQ = new ReasonMLTokenType("EQEQEQ");
   IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
   IElementType FALSE = new ReasonMLTokenType("FALSE");
   IElementType FLOAT = new ReasonMLTokenType("FLOAT");
@@ -112,6 +112,7 @@ public interface ReasonMLTypes {
   IElementType STAR = new ReasonMLTokenType("STAR");
   IElementType STARDOT = new ReasonMLTokenType("STARDOT");
   IElementType STRING = new ReasonMLTokenType("STRING");
+  IElementType SWITCH = new ReasonMLTokenType("SWITCH");
   IElementType TRUE = new ReasonMLTokenType("TRUE");
   IElementType TYPE = new ReasonMLTokenType("TYPE");
   IElementType UIDENT = new ReasonMLTokenType("UIDENT");
