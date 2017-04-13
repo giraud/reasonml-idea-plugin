@@ -1,10 +1,11 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.editor.*;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.EditorLinePainter;
+import com.intellij.openapi.editor.LineExtensionInfo;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
@@ -14,6 +15,8 @@ import com.intellij.ui.ColorUtil;
 import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.xdebugger.ui.DebuggerColors;
+import com.reason.ide.LineNumbering;
+import com.reason.merlin.types.MerlinPosition;
 import com.reason.psi.ReasonMLLetStatement;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,22 +35,32 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
             return null;
         }
 
-        Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-        if (selectedTextEditor == null) {
-            return null;
-        }
+//        Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+//        if (selectedTextEditor == null) {
+//            return null;
+//        }
 
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+        LineNumbering lineNumbering = new LineNumbering(document.getCharsSequence());
+
         Collection<ReasonMLLetStatement> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLetStatement.class);
 
         Function<ReasonMLLetStatement, String> findInferredType = letStatement -> {
             // Found a let statement, try to get its type if in correct line number
             int letOffset = letStatement.getTextOffset();
-            LogicalPosition letPosition = selectedTextEditor.offsetToLogicalPosition(letOffset);
-            return letPosition.line == lineNumber ? letStatement.getInferredType() : null;
+            // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
+            // but I would prefer to use runReadAction method.
+            MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset);
+//            LogicalPosition letPosition = new LogicalPosition;
+//            ApplicationManager.getApplication().runReadAction(() -> {
+//                letPosition[0] = selectedTextEditor.offsetToLogicalPosition(letOffset);
+//            });
+            return letPosition.line - 1 == lineNumber ? letStatement.getInferredType() : null;
         };
 
-        String inferredType = letStatements.parallelStream().map(findInferredType).filter(Objects::nonNull).findFirst().orElse(null);
+
+        String inferredType;
+            inferredType = letStatements.parallelStream().map(findInferredType).filter(Objects::nonNull).findFirst().orElse(null);
         if (inferredType == null) {
             return null;
         }

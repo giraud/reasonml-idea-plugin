@@ -64,6 +64,12 @@ public class ReasonMLTypeExprImpl extends ASTWrapperPsiElement implements Reason
 
   @Override
   @NotNull
+  public List<ReasonMLTypeConstrName> getTypeConstrNameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLTypeConstrName.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLTypeExpr> getTypeExprList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLTypeExpr.class);
   }

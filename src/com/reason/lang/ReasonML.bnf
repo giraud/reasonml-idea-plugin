@@ -59,6 +59,7 @@ private single_type_expr ::=
       UNIT
     | OPTION type_constr
     | LIST type_constr
+    | QUOTE type_constr_name
     | poly_type
     | polymorphic_variant_type
     | tuple_type_decl
@@ -146,6 +147,7 @@ boolean_expr ::=
 value_expr ::=
       signed_constant
     | value_path (DOT value_path)* (untyped_object () | argument*)
+    | module_path
 
 untyped_object ::=
     SHARP SHARP value_name (SHARP SHARP value_name)*
@@ -218,7 +220,7 @@ private let_binding_body ::=
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
-      label_name? SHORTCUT LPAREN? value_name (COLON type_expr) RPAREN? (EQUAL (constant | QUESTION_MARK))?
+      label_name? SHORTCUT LPAREN? value_name (COLON type_expr)? RPAREN? (EQUAL (constant | QUESTION_MARK))?
     | parameter_expr
     | LPAREN parameter_expr (DOT type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE

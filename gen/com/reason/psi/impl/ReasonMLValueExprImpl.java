@@ -34,6 +34,12 @@ public class ReasonMLValueExprImpl extends ASTWrapperPsiElement implements Reaso
 
   @Override
   @Nullable
+  public ReasonMLModulePath getModulePath() {
+    return findChildByClass(ReasonMLModulePath.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLSignedConstant getSignedConstant() {
     return findChildByClass(ReasonMLSignedConstant.class);
   }
