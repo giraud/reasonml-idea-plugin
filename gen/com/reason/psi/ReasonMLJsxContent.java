@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLJsxContent extends PsiElement {
 
-  @NotNull
-  List<ReasonMLJsx> getJsxList();
+  @Nullable
+  ReasonMLJsx getJsx();
 
   @NotNull
   List<ReasonMLLabelName> getLabelNameList();

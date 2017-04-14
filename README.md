@@ -9,6 +9,10 @@ ReasonML language plugin for idea
 
 This code might change quite a lot or break in the future.
 
+Known limitations:
+- idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
+- bug: `reformatOnSave` clear undo actions: no undo after saving the file 
+
 ## Features
 
 - Structured view

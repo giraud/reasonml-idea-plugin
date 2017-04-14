@@ -46,8 +46,12 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
 
         // Start compiler
         ProcessHandler handler = bsc.getHandler();
-        handler.addProcessListener(new MyProcessListener(console, toolbar));
-        console.attachToProcess(handler);
+        if (handler == null) {
+            console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);
+        } else {
+            handler.addProcessListener(new MyProcessListener(console, toolbar));
+            console.attachToProcess(handler);
+        }
         bsc.startNotify();
     }
 

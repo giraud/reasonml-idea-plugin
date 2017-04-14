@@ -34,12 +34,12 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         VirtualFile baseDir = this.myProject.getBaseDir();
         if (baseDir.findChild("node_modules") == null) {
             // try to find it one level deeper
-            baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(null);
+            baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
         }
 
         VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
         if (bsbBinary == null) {
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't find bsb, be sure that it is installed.", NotificationType.ERROR));
+            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
             // Add notification system that watch node_modules
             return;
         }
@@ -113,13 +113,16 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         killIt();
     }
 
+    @Nullable
     ProcessHandler getHandler() {
         return this.bsb;
     }
 
     // Wait for the toolwindow to be ready before starting the process
     void startNotify() {
-        this.bsb.startNotify();
+        if (this.bsb != null) {
+            this.bsb.startNotify();
+        }
     }
 
     @Nullable

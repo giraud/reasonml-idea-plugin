@@ -27,9 +27,9 @@ public class ReasonMLJsxContentImpl extends ASTWrapperPsiElement implements Reas
   }
 
   @Override
-  @NotNull
-  public List<ReasonMLJsx> getJsxList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLJsx.class);
+  @Nullable
+  public ReasonMLJsx getJsx() {
+    return findChildByClass(ReasonMLJsx.class);
   }
 
   @Override
