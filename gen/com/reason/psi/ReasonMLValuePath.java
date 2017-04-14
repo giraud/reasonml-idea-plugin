@@ -10,7 +10,7 @@ public interface ReasonMLValuePath extends PsiElement {
   @Nullable
   ReasonMLModulePath getModulePath();
 
-  @NotNull
+  @Nullable
   ReasonMLValueName getValueName();
 
 }

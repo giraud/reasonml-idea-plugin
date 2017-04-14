@@ -726,7 +726,7 @@ public class ReasonMLLexer implements FlexLexer {
             }
           case 77: break;
           case 14: 
-            { return EQUAL;
+            { return EQ;
             }
           case 78: break;
           case 15: 

@@ -100,7 +100,7 @@ LITERAL_MODIFIER=[G-Zg-z]
 
     "===" { return EQEQEQ; }
 //    "=="  { return EQEQUAL; }
-    "="   { return EQUAL; }
+    "="   { return EQ; }
     ","   { return COMMA; }
     ":"   { return COLON; }
     ";"   { return SEMI; }

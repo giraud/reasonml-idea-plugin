@@ -27,7 +27,7 @@ open_statement ::=
     OPEN module_path SEMI
 
 module_statement ::=
-    MODULE module_name EQUAL LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
+    MODULE module_name EQ LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
 
 module_body ::=
     (  module_statement
@@ -48,7 +48,7 @@ include_statement ::=
 // ----------
 
 type_statement ::=
-     TYPE type_constr_name (EQUAL type_expr)? item_attribute? SEMI {
+     TYPE type_constr_name (EQ type_expr)? item_attribute? SEMI {
         methods=[getPresentation]
     }
 
@@ -93,7 +93,7 @@ type_constr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#typec
 // ----------
 
 external_statement ::=
-    EXTERNAL value_name COLON type_expr EQUAL external_alias item_attribute* SEMI { methods=[getPresentation] }
+    EXTERNAL value_name COLON type_expr EQ external_alias item_attribute* SEMI { methods=[getPresentation] }
 
 external_alias ::=
     STRING
@@ -125,7 +125,8 @@ private expr ::=
 
 private recursive_expr ::=
     value_expr (
-              LPAREN expr RPAREN
+              expr
+            | LPAREN expr RPAREN
             | EQEQEQ expr
             | QUESTION_MARK expr
             | PLUS expr
@@ -142,8 +143,7 @@ private recursive_expr ::=
             | GT expr
             | CARRET expr
             | COMMA expr
-            | COLON expr
-            | expr )*
+            | COLON expr )*
 
 private boolean_expr ::=
     expr EQEQEQ expr
@@ -192,12 +192,12 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQUAL (LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*)
+    value_name EQ (LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*)
 
 jsxContent ::=
       COMMENT
-    | expr
     | jsx
+    | expr
 
 // ----------
 // LET
@@ -211,7 +211,7 @@ let_statement ::=
 
 let_binding ::=
     LET let_name (
-          (COLON type_expr)? EQUAL (FUN value_name parameter* ARROW)? let_binding_body
+          (COLON type_expr)? EQ (FUN value_name parameter* ARROW)? let_binding_body
         | parameter* ARROW let_binding_body/*scoped_expr*/
     )
     { methods=[isFunction] }
@@ -228,7 +228,7 @@ private let_binding_body ::=
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/patterns.html#pattern
 parameter ::=
-      label_name? SHORTCUT LPAREN? value_name (COLON type_expr)? RPAREN? (EQUAL (constant | QUESTION_MARK))?
+      label_name? SHORTCUT LPAREN? value_name (COLON type_expr)? RPAREN? (EQ (constant | QUESTION_MARK))?
     | parameter_expr
     | LPAREN parameter_expr (DOT type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE

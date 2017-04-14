@@ -14,6 +14,7 @@ public interface ReasonMLTypes {
   IElementType ATTRIBUTE_ID = new ReasonMLElementType("ATTRIBUTE_ID");
   IElementType ATTRIBUTE_ID_REC = new ReasonMLElementType("ATTRIBUTE_ID_REC");
   IElementType ATTRIBUTE_PAYLOAD = new ReasonMLElementType("ATTRIBUTE_PAYLOAD");
+  IElementType BOOLEAN_EXPR = new ReasonMLElementType("BOOLEAN_EXPR");
   IElementType CONSTANT = new ReasonMLElementType("CONSTANT");
   IElementType END_TAG = new ReasonMLElementType("END_TAG");
   IElementType EXPR_STATEMENT = new ReasonMLElementType("EXPR_STATEMENT");
@@ -68,8 +69,8 @@ public interface ReasonMLTypes {
   IElementType COMMENT = new ReasonMLTokenType("COMMENT");
   IElementType DOT = new ReasonMLTokenType("DOT");
   IElementType ELSE = new ReasonMLTokenType("ELSE");
+  IElementType EQ = new ReasonMLTokenType("EQ");
   IElementType EQEQEQ = new ReasonMLTokenType("EQEQEQ");
-  IElementType EQUAL = new ReasonMLTokenType("EQUAL");
   IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
   IElementType FALSE = new ReasonMLTokenType("FALSE");
   IElementType FLOAT = new ReasonMLTokenType("FLOAT");
@@ -137,6 +138,9 @@ public interface ReasonMLTypes {
       }
       else if (type == ATTRIBUTE_PAYLOAD) {
         return new ReasonMLAttributePayloadImpl(node);
+      }
+      else if (type == BOOLEAN_EXPR) {
+        return new ReasonMLBooleanExprImpl(node);
       }
       else if (type == CONSTANT) {
         return new ReasonMLConstantImpl(node);
