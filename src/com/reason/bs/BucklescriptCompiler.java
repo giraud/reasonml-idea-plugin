@@ -9,6 +9,7 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.ide.ReasonMLNotification;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,12 +32,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
             return;
         }
 
-        VirtualFile baseDir = this.myProject.getBaseDir();
-        if (baseDir.findChild("node_modules") == null) {
-            // try to find it one level deeper
-            baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
-        }
-
+        VirtualFile baseDir = Platform.findBaseRoot(this.myProject);
         VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
         if (bsbBinary == null) {
             Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));

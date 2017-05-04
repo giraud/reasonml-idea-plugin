@@ -40,28 +40,23 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
                 BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream()));
 
                 String text = document.getText();
-
                 writer.write(text);
-                writer.close();
+                writer.flush();
 
-                StringBuilder errorBuffer = new StringBuilder();
-                errReader.lines().forEach(errorBuffer::append);
-                if (0 < errorBuffer.length()) {
-                    String errorText = errorBuffer.toString();
+                String errorText = errReader.readLine();
+                if (null != errorText) {
                     // todo: transform into an annotation
                     Notifications.Bus.notify(new ReasonMLNotification("Reformat", errorText, NotificationType.ERROR));
                 } else {
                     StringBuilder refmtBuffer = new StringBuilder(text.length());
                     reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
-
-                    document.setText(refmtBuffer);
+                    document.replaceString(0, Integer.MAX_VALUE, refmtBuffer);
                 }
-            } catch (IOException e) {
-//                throw new UncheckedIOException(e);
-                System.err.println(e.getMessage());
+            } catch (IOException | RuntimeException e) {
+                e.printStackTrace();
             } finally {
                 if (refmt != null && refmt.isAlive()) {
-                    refmt.destroyForcibly();
+                    refmt.destroy();
                 }
             }
         }

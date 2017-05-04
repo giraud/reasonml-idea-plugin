@@ -32,10 +32,6 @@ class MerlinQueryTypesTask implements Runnable {
         }
 
         String filename = psiFile.getVirtualFile().getCanonicalPath();
-        // BIG HACK
-        if (Platform.isWindows()) {
-            filename = Platform.toLinuxSubSystemPath(filename);
-        }
 
         // Update merlin buffer
         merlin.sync(filename, this.psiFile.getText());

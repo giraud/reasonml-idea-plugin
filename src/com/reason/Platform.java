@@ -1,7 +1,10 @@
 package com.reason;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public class Platform {
@@ -35,8 +38,13 @@ public class Platform {
         return defaultBinary;
     }
 
-    // C:/sources/ReasonProject -> /mnt/sources/ReasonProject
-    public static String toLinuxSubSystemPath(String filename) {
-        return "/mnt/" + filename.substring(0, 1).toLowerCase() + filename.substring(2);
+    public static VirtualFile findBaseRoot(Project project) {
+        VirtualFile baseDir = project.getBaseDir();
+        if (baseDir.findChild("node_modules") == null) {
+            // try to find it one level deeper
+            return Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
+        }
+        return baseDir;
     }
+
 }
