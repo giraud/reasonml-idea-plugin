@@ -97,6 +97,7 @@ public interface ReasonMLTypes {
   IElementType OPEN = new ReasonMLTokenType("OPEN");
   IElementType OPTION = new ReasonMLTokenType("OPTION");
   IElementType PIPE = new ReasonMLTokenType("PIPE");
+  IElementType PIPE_FORWARD = new ReasonMLTokenType("PIPE_FORWARD");
   IElementType PLUS = new ReasonMLTokenType("PLUS");
   IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
   IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");

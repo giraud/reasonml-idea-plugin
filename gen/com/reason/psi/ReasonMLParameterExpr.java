@@ -10,8 +10,8 @@ public interface ReasonMLParameterExpr extends PsiElement {
   @Nullable
   ReasonMLConstant getConstant();
 
-  @Nullable
-  ReasonMLField getField();
+  @NotNull
+  List<ReasonMLField> getFieldList();
 
   @Nullable
   ReasonMLValueName getValueName();

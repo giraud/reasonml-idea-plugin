@@ -107,14 +107,15 @@ expr_statement ::=
     sequenced_expr SEMI
 
 private sequenced_expr ::=
-    expr (SEMI expr)*
+    expr (PIPE_FORWARD expr)? (SEMI expr (PIPE_FORWARD expr)?)*
 
 private expr ::=
       NONE
     | SOME expr
     | FUN parameter* ARROW let_binding_body
     | LPAREN sequenced_expr? RPAREN untyped_object?
-    | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
+    | LBRACE (DOT DOT DOT value_name COMMA?)? sequenced_expr RBRACE
+    | LBRACKET sequenced_expr RBRACKET
     | IF LPAREN expr RPAREN LBRACE sequenced_expr RBRACE (ELSE (IF LPAREN expr RPAREN)? LBRACE sequenced_expr RBRACE)*
     | SWITCH expr LBRACE pattern_matching+ RBRACE
     | SHORTCUT expr
@@ -192,7 +193,7 @@ end_tag ::=
     CLOSE_TAG tag_name GT
 
 tag_property ::=
-    value_name EQ (LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*)
+    value_name (EQ (LPAREN expr RPAREN | record_decl | constant | value_name (DOT value_name)*))?
 
 jsxContent ::=
       COMMENT
@@ -242,7 +243,7 @@ parameter ::=
 parameter_expr ::=
       constant
     | value_name
-    | LBRACE field RBRACE (AS value_name)?
+    | LBRACE field (COMMA field)* RBRACE (AS value_name)?
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#field
 field ::=

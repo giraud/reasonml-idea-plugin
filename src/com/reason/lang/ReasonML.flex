@@ -97,6 +97,7 @@ LITERAL_MODIFIER=[G-Zg-z]
 
     "::"   { return SHORTCUT; }
     "=>"   { return ARROW; }
+    "|>"   { return PIPE_FORWARD; }
     "@"    { return ARROBASE; }
 
     "===" { return EQEQEQ; }
