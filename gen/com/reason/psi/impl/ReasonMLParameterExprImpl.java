@@ -34,6 +34,12 @@ public class ReasonMLParameterExprImpl extends ASTWrapperPsiElement implements R
 
   @Override
   @Nullable
+  public ReasonMLField getField() {
+    return findChildByClass(ReasonMLField.class);
+  }
+
+  @Override
+  @Nullable
   public ReasonMLValueName getValueName() {
     return findChildByClass(ReasonMLValueName.class);
   }

@@ -113,9 +113,9 @@ private expr ::=
       NONE
     | SOME expr
     | FUN parameter* ARROW let_binding_body
-    | LPAREN sequenced_expr? RPAREN
+    | LPAREN sequenced_expr? RPAREN untyped_object?
     | LBRACE (DOT DOT DOT value_name COMMA?)? expr RBRACE
-    | IF LPAREN boolean_expr RPAREN LBRACE sequenced_expr RBRACE (ELSE LBRACE sequenced_expr RBRACE)*
+    | IF LPAREN expr RPAREN LBRACE sequenced_expr RBRACE (ELSE (IF LPAREN expr RPAREN)? LBRACE sequenced_expr RBRACE)*
     | SWITCH expr LBRACE pattern_matching+ RBRACE
     | SHORTCUT expr
     | jsx
@@ -128,6 +128,8 @@ private recursive_expr ::=
               expr
             | LPAREN expr RPAREN
             | EQEQEQ expr
+            | EQEQ expr
+            | EQ expr
             | QUESTION_MARK expr
             | PLUS expr
             | PLUSDOT expr
@@ -144,9 +146,6 @@ private recursive_expr ::=
             | CARRET expr
             | COMMA expr
             | COLON expr )*
-
-private boolean_expr ::=
-    expr EQEQEQ expr
 
 value_expr ::=
       signed_constant
@@ -174,6 +173,7 @@ pattern_matching ::=
 pattern ::=
       NONE
     | SOME value_path
+    | tuple_value
     | value_path
     | module_path
     | constant
@@ -217,10 +217,16 @@ let_binding ::=
     { methods=[isFunction] }
 
 let_name ::=
-    tuple_value | LPAREN RPAREN | value_name
+    tuple_value | LPAREN RPAREN | let_destructuring | value_name
+
+private let_destructuring ::=
+    LBRACE field (COMMA field)* RBRACE
 
 private tuple_value ::=
-    LPAREN value_name (COMMA value_name)* RPAREN
+    LPAREN tuple_field (COMMA tuple_field)* RPAREN
+
+private tuple_field ::=
+    constant | value_name | SOME value_name | NONE | UNDERSCORE
 
 private let_binding_body ::=
       LBRACE expr (SEMI expr)* RBRACE
@@ -230,12 +236,13 @@ private let_binding_body ::=
 parameter ::=
       label_name? SHORTCUT LPAREN? value_name (COLON type_expr)? RPAREN? (EQ (constant | QUESTION_MARK))?
     | parameter_expr
-    | LPAREN parameter_expr (DOT type_expr)? RPAREN
+    | LPAREN parameter_expr (COLON type_expr)? RPAREN
     | LBRACE field (COMMA field)* RBRACE
 
 parameter_expr ::=
       constant
     | value_name
+    | LBRACE field RBRACE (AS value_name)?
 
 // https://caml.inria.fr/pub/docs/manual-ocaml/names.html#field
 field ::=

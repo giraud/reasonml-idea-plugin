@@ -26,6 +26,9 @@ public interface ReasonMLFieldDecl extends PsiElement {
   List<ReasonMLPatternMatching> getPatternMatchingList();
 
   @NotNull
+  List<ReasonMLUntypedObject> getUntypedObjectList();
+
+  @NotNull
   List<ReasonMLValueExpr> getValueExprList();
 
   @NotNull

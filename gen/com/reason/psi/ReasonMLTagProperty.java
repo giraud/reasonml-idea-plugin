@@ -29,6 +29,9 @@ public interface ReasonMLTagProperty extends PsiElement {
   ReasonMLRecordDecl getRecordDecl();
 
   @NotNull
+  List<ReasonMLUntypedObject> getUntypedObjectList();
+
+  @NotNull
   List<ReasonMLValueExpr> getValueExprList();
 
   @NotNull

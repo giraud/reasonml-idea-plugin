@@ -29,6 +29,9 @@ public interface ReasonMLLetBinding extends PsiElement {
   ReasonMLTypeExpr getTypeExpr();
 
   @NotNull
+  List<ReasonMLUntypedObject> getUntypedObjectList();
+
+  @NotNull
   List<ReasonMLValueExpr> getValueExprList();
 
   @NotNull

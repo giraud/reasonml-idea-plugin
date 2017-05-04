@@ -64,6 +64,12 @@ public class ReasonMLPatternMatchingImpl extends ASTWrapperPsiElement implements
 
   @Override
   @NotNull
+  public List<ReasonMLUntypedObject> getUntypedObjectList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLUntypedObject.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLValueExpr> getValueExprList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueExpr.class);
   }

@@ -28,6 +28,18 @@ public class ReasonMLLetNameImpl extends ASTWrapperPsiElement implements ReasonM
 
   @Override
   @NotNull
+  public List<ReasonMLConstant> getConstantList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLConstant.class);
+  }
+
+  @Override
+  @NotNull
+  public List<ReasonMLField> getFieldList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLField.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLValueName> getValueNameList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
   }

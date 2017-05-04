@@ -59,6 +59,7 @@ public interface ReasonMLTypes {
 
   IElementType ARROBASE = new ReasonMLTokenType("ARROBASE");
   IElementType ARROW = new ReasonMLTokenType("ARROW");
+  IElementType AS = new ReasonMLTokenType("AS");
   IElementType AUTO_CLOSE_TAG = new ReasonMLTokenType("AUTO_CLOSE_TAG");
   IElementType BACKTICK = new ReasonMLTokenType("BACKTICK");
   IElementType CARRET = new ReasonMLTokenType("CARRET");
@@ -69,6 +70,7 @@ public interface ReasonMLTypes {
   IElementType DOT = new ReasonMLTokenType("DOT");
   IElementType ELSE = new ReasonMLTokenType("ELSE");
   IElementType EQ = new ReasonMLTokenType("EQ");
+  IElementType EQEQ = new ReasonMLTokenType("EQEQ");
   IElementType EQEQEQ = new ReasonMLTokenType("EQEQEQ");
   IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
   IElementType FALSE = new ReasonMLTokenType("FALSE");
@@ -115,6 +117,7 @@ public interface ReasonMLTypes {
   IElementType TRUE = new ReasonMLTokenType("TRUE");
   IElementType TYPE = new ReasonMLTokenType("TYPE");
   IElementType UIDENT = new ReasonMLTokenType("UIDENT");
+  IElementType UNDERSCORE = new ReasonMLTokenType("UNDERSCORE");
   IElementType UNIT = new ReasonMLTokenType("UNIT");
 
   class Factory {
