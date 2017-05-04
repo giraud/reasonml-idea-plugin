@@ -329,7 +329,7 @@ item_attribute ::=
     LBRACKET ARROBASE ARROBASE attribute_id_rec attribute_payload? RBRACKET
 
 attribute_id_rec ::=
-    attribute_id (DOT attribute_id)
+    attribute_id (DOT attribute_id)*
 
 attribute_id ::=
       MODULE /* bs */
@@ -337,4 +337,5 @@ attribute_id ::=
     | UIDENT
 
 attribute_payload ::=
-    expr
+      COLON type_expr
+    | expr

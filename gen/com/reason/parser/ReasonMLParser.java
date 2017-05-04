@@ -294,7 +294,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // attribute_id (DOT attribute_id)
+  // attribute_id (DOT attribute_id)*
   public static boolean attribute_id_rec(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_id_rec")) return false;
     boolean r;
@@ -305,9 +305,21 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // DOT attribute_id
+  // (DOT attribute_id)*
   private static boolean attribute_id_rec_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_id_rec_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!attribute_id_rec_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "attribute_id_rec_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // DOT attribute_id
+  private static boolean attribute_id_rec_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_id_rec_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, DOT);
@@ -317,13 +329,26 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // expr
+  // COLON type_expr 
+  //     | expr
   public static boolean attribute_payload(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute_payload")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE_PAYLOAD, "<attribute payload>");
-    r = expr(b, l + 1);
+    r = attribute_payload_0(b, l + 1);
+    if (!r) r = expr(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // COLON type_expr
+  private static boolean attribute_payload_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_payload_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
+    r = r && type_expr(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

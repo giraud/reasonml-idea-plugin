@@ -22,6 +22,9 @@ public interface ReasonMLAttributePayload extends PsiElement {
   @NotNull
   List<ReasonMLPatternMatching> getPatternMatchingList();
 
+  @Nullable
+  ReasonMLTypeExpr getTypeExpr();
+
   @NotNull
   List<ReasonMLUntypedObject> getUntypedObjectList();
 

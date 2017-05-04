@@ -57,6 +57,12 @@ public class ReasonMLAttributePayloadImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
+  @Nullable
+  public ReasonMLTypeExpr getTypeExpr() {
+    return findChildByClass(ReasonMLTypeExpr.class);
+  }
+
+  @Override
   @NotNull
   public List<ReasonMLUntypedObject> getUntypedObjectList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLUntypedObject.class);
