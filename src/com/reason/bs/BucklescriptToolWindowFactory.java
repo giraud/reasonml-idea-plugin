@@ -2,9 +2,7 @@ package com.reason.bs;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.impl.ConsoleViewImpl;
-import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessListener;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
@@ -15,7 +13,6 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
@@ -49,7 +46,7 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
         if (handler == null) {
             console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);
         } else {
-            handler.addProcessListener(new MyProcessListener(console, toolbar));
+            handler.addProcessListener(new BsbOutputListener(console, toolbar, project));
             console.attachToProcess(handler);
         }
         bsc.startNotify();
@@ -111,31 +108,4 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
         }
     }
 
-    private static class MyProcessListener implements ProcessListener {
-        private final ConsoleViewImpl console;
-        private final ActionToolbar toolbar;
-
-        MyProcessListener(ConsoleViewImpl console, ActionToolbar toolbar) {
-            this.console = console;
-            this.toolbar = toolbar;
-        }
-
-        @Override
-        public void startNotified(ProcessEvent event) {
-        }
-
-        @Override
-        public void processTerminated(ProcessEvent event) {
-            console.print("\nProcess has terminated, fix the problem before restarting it.", ERROR_OUTPUT);
-            ((BucklescriptConsole.StartAction) toolbar.getActions().get(2)).setEnable(true);
-        }
-
-        @Override
-        public void processWillTerminate(ProcessEvent event, boolean willBeDestroyed) {
-        }
-
-        @Override
-        public void onTextAvailable(ProcessEvent event, Key outputType) {
-        }
-    }
 }

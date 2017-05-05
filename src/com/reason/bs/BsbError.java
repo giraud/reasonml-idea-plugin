@@ -1,24 +1,17 @@
 package com.reason.bs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 class BsbError {
-    public String file;
     public String errorType;
-    public List<String> errors = new ArrayList<>();
+    public int line;
+    public int colStart;
+    public int colEnd;
+    public String message;
 
     @Override
     public String toString() {
         return "BsbError{" +
-                "file='" + file + '\'' +
-                ", errorType='" + errorType + '\'' +
-                ", errors=" + errors +
-                '}';
-    }
-
-    public String getCanonicalPath() {
-        int pos = file.lastIndexOf('"');
-        return file.substring(1, pos);
+                ", " + errorType +
+                ": L" + line + " " + colStart + ":" + colEnd +
+                ", " + message + '}';
     }
 }

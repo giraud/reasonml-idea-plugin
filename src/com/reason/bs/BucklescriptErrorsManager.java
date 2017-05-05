@@ -16,7 +16,10 @@ public abstract class BucklescriptErrorsManager {
         return project.getComponent(BucklescriptErrorsManager.class);
     }
 
-    abstract public void setError(BsbError error);
+    abstract public void setError(String file, BsbError error);
 
     abstract public Collection<BsbError> getError(String filePath);
+
+    public void clearErrors(String fileProcessed) {
+    }
 }

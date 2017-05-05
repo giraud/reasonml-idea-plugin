@@ -38,16 +38,17 @@ public class BucklescriptErrorsManagerImpl extends BucklescriptErrorsManager imp
     }
 
     @Override
-    public void setError(BsbError error) {
-        String canonicalPath = error.getCanonicalPath();
-        if (Platform.isWindows()) {
-            canonicalPath = canonicalPath.replaceAll("\\\\", "/");
-        }
-        this.errorsByFile.putValue(canonicalPath, error);
+    public void setError(String file, BsbError error) {
+        this.errorsByFile.putValue(file, error);
     }
 
     @Override
     public Collection<BsbError> getError(String filePath) {
         return this.errorsByFile.get(filePath);
+    }
+
+    @Override
+    public void clearErrors(String fileProcessed) {
+        this.errorsByFile.remove(fileProcessed);
     }
 }
