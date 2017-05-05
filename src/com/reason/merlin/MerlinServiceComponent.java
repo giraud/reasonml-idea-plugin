@@ -1,7 +1,6 @@
 package com.reason.merlin;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.base.Joiner;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.Platform;
@@ -123,7 +122,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     void addPath(Path path, List<String> paths) {
         List<String> jsonPaths = paths.stream().map(s -> this.merlin.writeValueAsString(s)).collect(toList());
-        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, NO_CONTEXT, "[\"path\", \"add\", \"" + path + "\", [" + Joiner.on(", ").join(jsonPaths) + "]]");
+        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, NO_CONTEXT, "[\"path\", \"add\", \"" + path + "\", [" + join(jsonPaths) + "]]");
     }
 
     @Override
@@ -134,7 +133,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     @Override
     public void enableExtensions(String filename, List<String> extensions) {
         List<String> collect = extensions.stream().map(s -> this.merlin.writeValueAsString(s)).collect(toList());
-        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"extension\", \"enable\", [" + Joiner.on(", ").join(collect) + "]]");
+        this.merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"extension\", \"enable\", [" + join(collect) + "]]");
     }
 
     @Override
@@ -159,5 +158,17 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         }
         String query = "[\"complete\", \"prefix\", " + this.merlin.writeValueAsString(prefix) + ", \"at\", " + this.merlin.writeValueAsString(position) + ", \"with\", \"doc\"]";
         return this.merlin.makeRequest(COMPLETION_TYPE_REFERENCE, filename, query);
+    }
+
+    private String join(Iterable<String> items) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (String item : items) {
+            if (!first) {
+                sb.append(",");
+            }
+            sb.append(item);
+        }
+        return sb.toString();
     }
 }

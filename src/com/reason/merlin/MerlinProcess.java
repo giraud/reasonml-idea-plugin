@@ -71,8 +71,8 @@ public class MerlinProcess implements Closeable {
             } else {
                 request = "{\"context\": [\"auto\", " + this.objectMapper.writeValueAsString(filename) + "], " +
                         "\"query\": " + query + "}";
-                //System.out.println("make request " + request);
             }
+            //System.out.println("=> " + request);
 
             this.writer.write(request);
             this.writer.flush();
@@ -85,6 +85,7 @@ public class MerlinProcess implements Closeable {
                 String content = this.reader.readLine();
                 JsonNode jsonNode = this.objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);
+                //System.out.println("<= " + responseNode);
 
                 try {
                     return this.objectMapper.convertValue(responseNode, type);
