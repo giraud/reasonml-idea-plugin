@@ -1,5 +1,6 @@
 package com.reason.ide.hints;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorLinePainter;
 import com.intellij.openapi.editor.LineExtensionInfo;
@@ -11,7 +12,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ui.ColorUtil;
 import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.xdebugger.ui.DebuggerColors;
@@ -48,10 +48,13 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
 
         Function<ReasonMLLetStatement, String> findInferredType = letStatement -> {
             // Found a let statement, try to get its type if in correct line number
-            int letOffset = letStatement.getTextOffset();
+            final int[] letOffset = new int[] {-1};
+            // ApplicationManager.getApplication().runReadAction(() -> { // Freezing pb
+                letOffset[0] = letStatement.getTextOffset();
+            // });
             // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
             // but I would prefer to use runReadAction method.
-            MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset);
+            MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset[0]);
 //            LogicalPosition letPosition = new LogicalPosition;
 //            ApplicationManager.getApplication().runReadAction(() -> {
 //                letPosition[0] = selectedTextEditor.offsetToLogicalPosition(letOffset);

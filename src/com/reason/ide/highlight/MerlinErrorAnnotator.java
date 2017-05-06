@@ -55,9 +55,11 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
     public void apply(@NotNull PsiFile file, List<MerlinError> annotationResult, @NotNull AnnotationHolder holder) {
         LineNumbering lineNumbering = new LineNumbering(file.getText());
         for (MerlinError error : annotationResult) {
-            int startOffset = lineNumbering.positionToOffset(error.start);
-            int endOffset = lineNumbering.positionToOffset(error.end);
-            holder.createAnnotation(severities.get(error.type), new TextRangeInterval(startOffset, endOffset), error.message);
+            if (error.start != null) {
+                int startOffset = lineNumbering.positionToOffset(error.start);
+                int endOffset = lineNumbering.positionToOffset(error.end);
+                holder.createAnnotation(severities.get(error.type), new TextRangeInterval(startOffset, endOffset), error.message);
+            }
         }
     }
 }
