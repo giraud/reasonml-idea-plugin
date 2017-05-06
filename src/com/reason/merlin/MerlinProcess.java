@@ -59,6 +59,7 @@ public class MerlinProcess implements Closeable {
         }
     }
 
+    @Nullable
     <R> R makeRequest(TypeReference<R> type, @Nullable String filename, String query) {
         if (this.merlin == null) {
             return null;
@@ -66,7 +67,7 @@ public class MerlinProcess implements Closeable {
 
         try {
             String request;
-            if (NO_CONTEXT == filename) {
+            if (filename == NO_CONTEXT) {
                 request = query;
             } else {
                 request = "{\"context\": [\"auto\", " + this.objectMapper.writeValueAsString(filename) + "], " +

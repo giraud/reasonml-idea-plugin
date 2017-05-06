@@ -35,10 +35,11 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
             return null;
         }
 
-//        Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-//        if (selectedTextEditor == null) {
-//            return null;
-//        }
+        // Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        // if (selectedTextEditor == null) {
+        //     return null;
+        // }
+        // Application application = ApplicationManager.getApplication();
 
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
         LineNumbering lineNumbering = new LineNumbering(document.getCharsSequence());
@@ -60,7 +61,7 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
 
 
         String inferredType;
-            inferredType = letStatements.parallelStream().map(findInferredType).filter(Objects::nonNull).findFirst().orElse(null);
+        inferredType = letStatements.parallelStream().map(findInferredType).filter(Objects::nonNull).findFirst().orElse(null);
         if (inferredType == null) {
             return null;
         }
@@ -70,23 +71,10 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
         return Collections.singletonList(info);
     }
 
-    private static boolean isDarkEditor() {
-        Color bg = EditorColorsManager.getInstance().getGlobalScheme().getDefaultBackground();
-        return ColorUtil.isDark(bg);
-    }
-
-    public static TextAttributes getNormalAttributes() {
+    private static TextAttributes getNormalAttributes() {
         TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(DebuggerColors.INLINED_VALUES);
         if (attributes == null || attributes.getForegroundColor() == null) {
-            return new TextAttributes(new JBColor(() -> isDarkEditor() ? new Color(0x3d8065) : Gray._135), null, null, null, Font.ITALIC);
-        }
-        return attributes;
-    }
-
-    public static TextAttributes getChangedAttributes() {
-        TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(DebuggerColors.INLINED_VALUES_MODIFIED);
-        if (attributes == null || attributes.getForegroundColor() == null) {
-            return new TextAttributes(new JBColor(() -> isDarkEditor() ? new Color(0xa1830a) : new Color(0xca8021)), null, null, null, Font.ITALIC);
+            return new TextAttributes(new JBColor(Gray._135, new Color(0x3d8065)), null, null, null, Font.ITALIC);
         }
         return attributes;
     }

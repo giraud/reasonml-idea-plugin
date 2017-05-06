@@ -13,6 +13,7 @@ import java.io.UncheckedIOException;
 import java.util.List;
 
 import static com.reason.merlin.MerlinProcess.NO_CONTEXT;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 public class MerlinServiceComponent implements MerlinService, com.intellij.openapi.components.ApplicationComponent {
@@ -87,7 +88,8 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public List<MerlinError> errors(String filename) {
-        return this.merlin.makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]");
+        List<MerlinError> merlinErrors = this.merlin.makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]");
+        return merlinErrors == null ? emptyList() : merlinErrors;
     }
 
     @Override

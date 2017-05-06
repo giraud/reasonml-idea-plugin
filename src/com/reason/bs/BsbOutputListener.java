@@ -17,7 +17,7 @@ class BsbOutputListener implements ProcessListener {
     private final ConsoleView console;
     private final ActionToolbar toolbar;
     private final BucklescriptErrorsManager errorsManager;
-    private String fileProcessed;
+    private String fileProcessed = "";
     private boolean building = false;
     private boolean failed;
     private BsbError bsbError;
@@ -46,19 +46,10 @@ class BsbOutputListener implements ProcessListener {
     @Override
     public void onTextAvailable(ProcessEvent event, Key outputType) {
         String text = event.getText().trim();
-        System.out.println("!" + text);
-        if (text.startsWith(">>>> Start compiling")) {
-//            System.out.println("STARTED " + this.baseDir);
-        } else if (text.startsWith(">>>> Finish compiling")) {
-            building = false;
-            failed = false;
-            fileProcessed = "";
-            bsbError = null;
+        if (text.startsWith(">>>> Finish compiling")) {
+            reset();
         } else if (text.startsWith("Building")) {
-            fileProcessed = "";
-            building = true;
-            failed = false;
-            bsbError = null;
+            reset();
         } else if (building && !text.isEmpty()) {
             fileProcessed = text.split(" ")[0].replace(".cmj", ".re").replace("\\", "/");
             building = false;
@@ -80,5 +71,12 @@ class BsbOutputListener implements ProcessListener {
                 this.errorsManager.setError(fileProcessed, bsbError);
             }
         }
+    }
+
+    private void reset() {
+        fileProcessed = "";
+        building = false;
+        failed = false;
+        bsbError = null;
     }
 }

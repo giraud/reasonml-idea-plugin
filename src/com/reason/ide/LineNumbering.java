@@ -1,6 +1,7 @@
 package com.reason.ide;
 
 import com.reason.merlin.types.MerlinPosition;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class LineNumbering {
         lineIndex.add(Integer.MAX_VALUE);
     }
 
-    public Integer positionToOffset(MerlinPosition position) {
+    public Integer positionToOffset(@NotNull MerlinPosition position) {
         return this.lineIndex.get(position.line - 1) + position.col;
     }
 
