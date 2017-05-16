@@ -6,6 +6,7 @@ ReasonML language plugin for idea
 ## Status
 
 :exclamation: This is a **work in progress**, the language has very basic - and partially implemented - functionalities.
+You can look at the [todo list](TODO.md).
 
 This code might change quite a lot or break in the future.
 
@@ -20,6 +21,7 @@ Known limitations:
 - Line commenting with ctrl-alt-l
 - code folding
 - pair braces matcher
+- bucklescript integration (_WIP_)
 - reformat on save (*)
 - Type annotation (* merlin)
 - Completion (* merlin)

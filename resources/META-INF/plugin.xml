@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.7</version>
+    <version>0.8</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
@@ -13,10 +13,8 @@
 
       To see how to integrate reason tools (merlin, refmt), go to the website.
 
-      0.7
-      - bucklescript integration
-      - rei files
-      - grammar updates
+      New in this version
+      - ...
     ]]>
     </change-notes>
 

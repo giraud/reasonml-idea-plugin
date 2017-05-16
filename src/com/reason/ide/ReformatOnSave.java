@@ -30,7 +30,7 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
         if (isReasonFile(document)) {
-            ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin);
+            ProcessBuilder processBuilder = new ProcessBuilder(this.refmtBin, "-use-stdin", "true", "-is-interface-pp", "false", "-print", "re", "-parse", "re");
 
             Process refmt = null;
             try {
@@ -43,17 +43,22 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
                 writer.write(text);
                 writer.close();
 
+                // Wait a little for refmt to do its stuff and can write to the error stream, might not work all the time...
+                Thread.sleep(100);
                 if (errReader.ready()) {
-                    String errorText = errReader.readLine();
+                    StringBuilder er = new StringBuilder();
+                    errReader.lines().forEach(line -> er.append(line).append(/*System.lineSeparator() ??*/"\n"));
                     // todo: transform into an annotation
-                    Notifications.Bus.notify(new ReasonMLNotification("Reformat", errorText, NotificationType.ERROR));
+                    Notifications.Bus.notify(new ReasonMLNotification("Reformat", er.toString(), NotificationType.ERROR));
                 } else {
-                    StringBuilder refmtBuffer = new StringBuilder(text.length());
+                    StringBuilder refmtBuffer = new StringBuilder();
                     reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
-                    // todo: Must not change document outside command or undo-transparent action. See com.intellij.openapi.command.WriteCommandAction or com.intellij.openapi.command.CommandProcessor
-                    document.setText(refmtBuffer);
+                    String newText = refmtBuffer.toString();
+                    if (!text.isEmpty() && !newText.isEmpty()) { // additional protection
+                        document.setText(refmtBuffer);
+                    }
                 }
-            } catch (IOException | RuntimeException e) {
+            } catch (InterruptedException | IOException | RuntimeException e) {
                 e.printStackTrace();
             } finally {
                 if (refmt != null && refmt.isAlive()) {
