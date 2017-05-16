@@ -22,7 +22,7 @@ public class ReasonMLFile extends PsiFileBase {
 
     @Override
     public String toString() {
-        return "ReasonML File";
+        return "Reason File";
     }
 
     @Override

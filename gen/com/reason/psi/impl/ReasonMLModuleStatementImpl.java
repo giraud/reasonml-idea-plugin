@@ -28,15 +28,21 @@ public class ReasonMLModuleStatementImpl extends ASTWrapperPsiElement implements
   }
 
   @Override
-  @NotNull
+  @Nullable
   public ReasonMLModuleBody getModuleBody() {
-    return findNotNullChildByClass(ReasonMLModuleBody.class);
+    return findChildByClass(ReasonMLModuleBody.class);
   }
 
   @Override
   @NotNull
   public ReasonMLModuleName getModuleName() {
     return findNotNullChildByClass(ReasonMLModuleName.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLModulePath getModulePath() {
+    return findChildByClass(ReasonMLModulePath.class);
   }
 
   public ItemPresentation getPresentation() {

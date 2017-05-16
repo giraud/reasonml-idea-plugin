@@ -27,7 +27,7 @@ open_statement ::=
     OPEN module_path SEMI
 
 module_statement ::=
-    MODULE module_name EQ LBRACE module_body RBRACE SEMI { methods=[getPresentation] }
+    MODULE module_name EQ (module_path/*alias*/ | LBRACE module_body RBRACE) SEMI { methods=[getPresentation] }
 
 module_body ::=
     (  module_statement
@@ -57,7 +57,7 @@ type_expr ::=  // https://caml.inria.fr/pub/docs/manual-ocaml/types.html#typexpr
 
 private single_type_expr ::=
       UNIT
-    | OPTION type_constr
+    | OPTION (LPAREN single_type_expr RPAREN | type_constr)
     | LIST type_constr
     | QUOTE type_constr_name
     | poly_type
@@ -174,6 +174,7 @@ pattern_matching ::=
 pattern ::=
       NONE
     | SOME value_path
+    | LBRACKET pattern (COMMA pattern)* (COMMA DOT DOT DOT value_path)? RBRACKET
     | tuple_value
     | value_path
     | module_path
@@ -211,8 +212,12 @@ let_statement ::=
     }
 
 let_binding ::=
-    LET let_name (
-          (COLON type_expr)? EQ (FUN value_name parameter* ARROW)? let_binding_body
+    LET REC? let_name (
+          (COLON type_expr)? EQ (
+              FUN value_name parameter* ARROW let_binding_body
+            | FUN pattern_matching+
+            | let_binding_body
+          )
         | parameter* ARROW let_binding_body/*scoped_expr*/
     )
     { methods=[isFunction] }

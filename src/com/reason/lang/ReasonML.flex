@@ -77,6 +77,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "else"       { return ELSE; }
     "switch"     { return SWITCH; }
     "as"         { return AS; }
+    "rec"        { return REC; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }

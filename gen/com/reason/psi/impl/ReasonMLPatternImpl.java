@@ -40,6 +40,12 @@ public class ReasonMLPatternImpl extends ASTWrapperPsiElement implements ReasonM
 
   @Override
   @NotNull
+  public List<ReasonMLPattern> getPatternList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLPattern.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLValueName> getValueNameList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLValueName.class);
   }

@@ -46,7 +46,9 @@
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="com.reason.ide.ReasonMLInterfaceFileTypeFactory"/>
         <fileTypeFactory implementation="com.reason.ide.ReasonMLFileTypeFactory"/>
+
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.ReasonMLParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.highlight.ReasonMLSyntaxHighlighterFactory"/>

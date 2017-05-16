@@ -7,6 +7,8 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
@@ -35,6 +37,11 @@ public class ReasonMLDocumentListener implements DocumentListener {
         subscriber = this.documentEventStream.
                 debounce(150, TimeUnit.MILLISECONDS).
                 subscribe(event -> EventQueue.invokeLater(() -> {
+                    ProgressIndicator progressIndicator = ProgressManager.getInstance().getProgressIndicator();
+                    if (progressIndicator != null && progressIndicator.isCanceled()) {
+                        return; // ? not sure about this one
+                    }
+
                     Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
                     if (selectedTextEditor != null) {
                         Document document = selectedTextEditor.getDocument();

@@ -8,11 +8,14 @@ import com.intellij.navigation.ItemPresentation;
 
 public interface ReasonMLModuleStatement extends PsiElement {
 
-  @NotNull
+  @Nullable
   ReasonMLModuleBody getModuleBody();
 
   @NotNull
   ReasonMLModuleName getModuleName();
+
+  @Nullable
+  ReasonMLModulePath getModulePath();
 
   ItemPresentation getPresentation();
 

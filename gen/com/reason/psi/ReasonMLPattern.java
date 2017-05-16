@@ -14,6 +14,9 @@ public interface ReasonMLPattern extends PsiElement {
   ReasonMLModulePath getModulePath();
 
   @NotNull
+  List<ReasonMLPattern> getPatternList();
+
+  @NotNull
   List<ReasonMLValueName> getValueNameList();
 
   @Nullable
