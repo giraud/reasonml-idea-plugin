@@ -5,13 +5,18 @@
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
-      ReasonML language plugin.
+      Reason language plugin.
     ]]></description>
 
     <change-notes><![CDATA[
       Work in progress. This is a plugin preview, use for tests only.
 
       To see how to integrate reason tools (merlin, refmt), go to the website.
+
+      0.7
+      - bucklescript integration
+      - rei files
+      - grammar updates
     ]]>
     </change-notes>
 

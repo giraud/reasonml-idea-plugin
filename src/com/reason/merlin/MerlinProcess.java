@@ -78,9 +78,9 @@ public class MerlinProcess implements Closeable {
             this.writer.write(request);
             this.writer.flush();
 
-            StringBuilder errorBuffer = new StringBuilder();
-            this.errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
-            if (0 < errorBuffer.length()) {
+            if (this.errorReader.ready()) {
+                StringBuilder errorBuffer = new StringBuilder();
+                this.errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
                 throw new RuntimeException(errorBuffer.toString());
             } else {
                 String content = this.reader.readLine();

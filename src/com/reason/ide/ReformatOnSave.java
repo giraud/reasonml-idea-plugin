@@ -41,16 +41,17 @@ class ReformatOnSave extends FileDocumentManagerAdapter {
 
                 String text = document.getText();
                 writer.write(text);
-                writer.flush();
+                writer.close();
 
-                String errorText = errReader.readLine();
-                if (null != errorText) {
+                if (errReader.ready()) {
+                    String errorText = errReader.readLine();
                     // todo: transform into an annotation
                     Notifications.Bus.notify(new ReasonMLNotification("Reformat", errorText, NotificationType.ERROR));
                 } else {
                     StringBuilder refmtBuffer = new StringBuilder(text.length());
                     reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
-                    document.replaceString(0, Integer.MAX_VALUE, refmtBuffer);
+                    // todo: Must not change document outside command or undo-transparent action. See com.intellij.openapi.command.WriteCommandAction or com.intellij.openapi.command.CommandProcessor
+                    document.setText(refmtBuffer);
                 }
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();

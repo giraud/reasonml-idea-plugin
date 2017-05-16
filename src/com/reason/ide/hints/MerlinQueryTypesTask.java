@@ -3,7 +3,6 @@ package com.reason.ide.hints;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.psi.PsiFile;
-import com.reason.Platform;
 import com.reason.merlin.MerlinService;
 import com.reason.merlin.types.MerlinPosition;
 import com.reason.merlin.types.MerlinType;
