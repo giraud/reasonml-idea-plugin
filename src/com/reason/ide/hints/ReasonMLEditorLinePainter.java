@@ -1,12 +1,13 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorLinePainter;
 import com.intellij.openapi.editor.LineExtensionInfo;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
@@ -23,8 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
-import java.util.function.Function;
 
 public class ReasonMLEditorLinePainter extends EditorLinePainter {
 
@@ -35,23 +34,37 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
             return null;
         }
 
-        // Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-        // if (selectedTextEditor == null) {
-        //     return null;
-        // }
-        // Application application = ApplicationManager.getApplication();
+        Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        if (selectedTextEditor == null) {
+            return null;
+        }
 
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
         LineNumbering lineNumbering = new LineNumbering(document.getCharsSequence());
 
         Collection<ReasonMLLetStatement> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLetStatement.class);
 
+        String inferredType = null;
+        for (ReasonMLLetStatement letStatement : letStatements) {
+            int letOffset = letStatement.getTextOffset();
+            // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
+            // but I would prefer to use runReadAction method.
+            MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset);
+//            LogicalPosition letPosition = new LogicalPosition;
+//            letPosition[0] = selectedTextEditor.offsetToLogicalPosition(letOffset);
+            if (letPosition.line - 1 == lineNumber) {
+                inferredType = letStatement.getInferredType();
+                break;
+            }
+        }
+
+/*
         Function<ReasonMLLetStatement, String> findInferredType = letStatement -> {
             // Found a let statement, try to get its type if in correct line number
-            final int[] letOffset = new int[] {-1};
-            // ApplicationManager.getApplication().runReadAction(() -> { // Freezing pb
+            final int[] letOffset = new int[]{-1};
+//            ApplicationManager.getApplication().runReadAction(() -> { // Freezing pb ?
                 letOffset[0] = letStatement.getTextOffset();
-            // });
+//            });
             // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
             // but I would prefer to use runReadAction method.
             MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset[0]);
@@ -65,6 +78,7 @@ public class ReasonMLEditorLinePainter extends EditorLinePainter {
 
         String inferredType;
         inferredType = letStatements.parallelStream().map(findInferredType).filter(Objects::nonNull).findFirst().orElse(null);
+*/
         if (inferredType == null) {
             return null;
         }
