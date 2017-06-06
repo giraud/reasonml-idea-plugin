@@ -46,6 +46,12 @@ public class ReasonMLAttributePayloadImpl extends ASTWrapperPsiElement implement
 
   @Override
   @NotNull
+  public List<ReasonMLModulePath> getModulePathList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLModulePath.class);
+  }
+
+  @Override
+  @NotNull
   public List<ReasonMLParameter> getParameterList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLParameter.class);
   }

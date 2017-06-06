@@ -17,6 +17,9 @@ public interface ReasonMLExprStatement extends PsiElement {
   List<ReasonMLLetBinding> getLetBindingList();
 
   @NotNull
+  List<ReasonMLModulePath> getModulePathList();
+
+  @NotNull
   List<ReasonMLParameter> getParameterList();
 
   @NotNull

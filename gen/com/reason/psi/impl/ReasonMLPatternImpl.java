@@ -27,9 +27,9 @@ public class ReasonMLPatternImpl extends ASTWrapperPsiElement implements ReasonM
   }
 
   @Override
-  @NotNull
-  public List<ReasonMLConstant> getConstantList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLConstant.class);
+  @Nullable
+  public ReasonMLConstant getConstant() {
+    return findChildByClass(ReasonMLConstant.class);
   }
 
   @Override
@@ -42,6 +42,12 @@ public class ReasonMLPatternImpl extends ASTWrapperPsiElement implements ReasonM
   @NotNull
   public List<ReasonMLPattern> getPatternList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ReasonMLPattern.class);
+  }
+
+  @Override
+  @Nullable
+  public ReasonMLTagName getTagName() {
+    return findChildByClass(ReasonMLTagName.class);
   }
 
   @Override

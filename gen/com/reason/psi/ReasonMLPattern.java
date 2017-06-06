@@ -7,14 +7,17 @@ import com.intellij.psi.PsiElement;
 
 public interface ReasonMLPattern extends PsiElement {
 
-  @NotNull
-  List<ReasonMLConstant> getConstantList();
+  @Nullable
+  ReasonMLConstant getConstant();
 
   @Nullable
   ReasonMLModulePath getModulePath();
 
   @NotNull
   List<ReasonMLPattern> getPatternList();
+
+  @Nullable
+  ReasonMLTagName getTagName();
 
   @NotNull
   List<ReasonMLValueName> getValueNameList();

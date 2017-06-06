@@ -20,6 +20,9 @@ public interface ReasonMLLetBinding extends PsiElement {
   ReasonMLLetName getLetName();
 
   @NotNull
+  List<ReasonMLModulePath> getModulePathList();
+
+  @NotNull
   List<ReasonMLParameter> getParameterList();
 
   @NotNull
