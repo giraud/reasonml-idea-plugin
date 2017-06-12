@@ -21,8 +21,8 @@ Known limitations:
 - Line commenting with ctrl-alt-l
 - code folding
 - pair braces matcher
-- bucklescript integration (_WIP_)
-- reformat on save (*)
+- bucklescript compiler integration
+- reformat on save (*) (by default, action is also mapped to `crtl alt shift R`)
 - Type annotation (* merlin)
 - Completion (* merlin)
 
@@ -32,11 +32,15 @@ _(*) See integration_
 
 Type annotations (linux only):
 
-![type](type.gif)
+![type](docs/type.gif)
 
 Reformat on save (Ctrl+s)
 
-![refmt](refmt.gif)
+![refmt](docs/refmt.gif)
+
+Bucklescript window
+
+![bsb](docs/bsb.gif)
 
 ## Integration
 
@@ -51,6 +55,7 @@ or via the menu `help > Edit Custom VM Options`.
 - Edit your `idea[64].vmoptions`
 - Add the following properties:
 ```properties
+-DreasonBsb=node_modules/bs-platform/bin/bsb.exe
 -DreasonMerlin=<absolute path to node>/bin/ocamlmerlin
 -DreasonRefmt=<absolute path to node>/bin/refmt
 ```
@@ -61,6 +66,7 @@ or via the menu `help > Edit Custom VM Options`.
 - Edit your `idea[64].vmoptions`
 - Add the following properties:
 ```properties
+-DreasonBsb=node_modules/bs-platform/bin/bsb.exe
 -DreasonRefmt=<absolute path to your project>/node_modules/bs-platform/bin/refmt.exe
 ```
 
