@@ -36,10 +36,8 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
         ContentManager contentManager = toolWindow.getContentManager();
         contentManager.addContent(content);
 
-        BucklescriptConsole.StartAction startAction = (BucklescriptConsole.StartAction) toolbar.getActions().get(2);
-        bsc.addListener(new BsbOutputListener(console, startAction, project));
-
         // Start compiler
+        bsc.addListener(new BsbOutputListener(console, toolbar, project));
         ProcessHandler handler = bsc.getHandler();
         if (handler == null) {
             console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);

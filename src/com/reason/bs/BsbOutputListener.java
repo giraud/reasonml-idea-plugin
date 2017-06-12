@@ -3,6 +3,7 @@ package com.reason.bs;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.execution.ui.ConsoleView;
+import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 
@@ -14,16 +15,16 @@ import static java.lang.Integer.parseInt;
 
 class BsbOutputListener implements ProcessListener {
     private final ConsoleView console;
-    private final BucklescriptConsole.StartAction startAction;
+    private final ActionToolbar toolbar;
     private final BucklescriptErrorsManager errorsManager;
     private String fileProcessed = "";
     private boolean building = false;
     private boolean failed;
     private BsbError bsbError;
 
-    BsbOutputListener(ConsoleView console, BucklescriptConsole.StartAction startAction, Project project) {
+    BsbOutputListener(ConsoleView console, ActionToolbar toolbar, Project project) {
         this.console = console;
-        this.startAction = startAction;
+        this.toolbar = toolbar;
         this.errorsManager = BucklescriptErrorsManager.getInstance(project);
     }
 
@@ -34,7 +35,8 @@ class BsbOutputListener implements ProcessListener {
     @Override
     public void processTerminated(ProcessEvent event) {
         console.print("\nProcess has terminated, fix the problem before restarting it.", ERROR_OUTPUT);
-        this.startAction.setEnable(true);
+        BucklescriptConsole.StartAction startAction = (BucklescriptConsole.StartAction) toolbar.getActions().get(2);
+        startAction.setEnable(true);
     }
 
     @Override
