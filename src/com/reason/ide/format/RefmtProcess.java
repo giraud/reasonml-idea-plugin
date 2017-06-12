@@ -1,10 +1,11 @@
-package com.reason.ide;
+package com.reason.ide.format;
 
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Platform;
+import com.reason.ide.ReasonMLNotification;
 
 import java.io.*;
 
@@ -19,7 +20,7 @@ class RefmtProcess {
     }
 
     // refmt API is not stable
-    boolean useDoubleDash() {
+    boolean useDoubleDash() throws IOException {
         Process process = null;
         BufferedReader reader = null;
 
@@ -32,8 +33,6 @@ class RefmtProcess {
                     return true;
                 }
             }
-        } catch (Exception err) {
-            log.error("refmt: " + err.getMessage());
         } finally {
             if (reader != null) {
                 try {

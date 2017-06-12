@@ -3,6 +3,7 @@ package com.reason.ide;
 import com.intellij.AppTopics;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.reason.ide.format.ReformatOnSave;
 import org.jetbrains.annotations.NotNull;
 
 public class ReasonDocumentManager implements ApplicationComponent {

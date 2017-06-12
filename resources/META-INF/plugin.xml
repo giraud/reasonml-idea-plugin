@@ -14,7 +14,9 @@
       To see how to integrate reason tools (merlin, refmt), go to the website.
 
       Change notes
-      - ...
+      - bsb integration
+      - fixed restart action in bsb console
+      - adding a refmt action (default keymap is ctrl alt shift R)
     ]]>
     </change-notes>
 
@@ -80,6 +82,10 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="reasonML.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
+            <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
+        </action>
     </actions>
 
 </idea-plugin>
