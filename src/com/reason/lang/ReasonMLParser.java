@@ -155,7 +155,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         exit_section_(builder, exprMarker, TYPE_EXPRESSION, true);
     }
 
-
     // **********
     // INCLUDE module_path SEMI
     // **********
@@ -292,6 +291,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     // **********
     // LET REC? (destructure|value_name) expression* (EQ expression | ARROW scoped_expression) SEMI
+    // LET REC? value_name COLON expression+ SEMI
     // **********
     private static void letExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "let expression")) {
@@ -338,6 +338,11 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
             }
         }
 
+        tokenType = builder.getTokenType();
+
+        // COLON means we are dealing with a definition, = or => is not needed, we can end with ;
+        boolean hasTypeDefinition = tokenType == COLON;
+
         // Anything before EQ|ARROW
         // anything but semi or start expression
         WhitespaceNotifier whitespace = new WhitespaceNotifier();
@@ -357,7 +362,9 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
         tokenType = builder.getTokenType();
         if (EQ != tokenType && ARROW != tokenType) {
-            builder.mark().error("'=' or '=>' expected");
+            if (!hasTypeDefinition) {
+                builder.mark().error("'=' or '=>' expected");
+            }
         } else {
             if (EQ == tokenType) {
                 builder.advanceLexer();

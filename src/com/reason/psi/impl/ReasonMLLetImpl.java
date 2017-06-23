@@ -3,8 +3,8 @@ package com.reason.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.reason.icons.ReasonMLIcons;
+import com.reason.psi.ReasonMLFunBody;
 import com.reason.psi.ReasonMLLet;
-import com.reason.psi.ReasonMLLetBinding;
 import com.reason.psi.ReasonMLValueName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +25,7 @@ public class ReasonMLLetImpl extends ReasonMLInferredTypeMixin implements Reason
 
     @Override
     public boolean isFunction() {
-        return findChildByClass(ReasonMLLetBinding.class) == null;
+        return findChildByClass(ReasonMLFunBody.class) != null;
     }
 
     public ItemPresentation getPresentation() {
