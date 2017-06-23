@@ -24,6 +24,12 @@ public class ReasonMLLetImpl extends ReasonMLInferredTypeMixin implements Reason
     }
 
     @Override
+    @Nullable
+    public ReasonMLFunBody getFunctionBody() {
+        return findChildByClass(ReasonMLFunBody.class);
+    }
+
+    @Override
     public boolean isFunction() {
         return findChildByClass(ReasonMLFunBody.class) != null;
     }

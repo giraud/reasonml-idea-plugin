@@ -22,6 +22,12 @@ public class ReasonMLTypeImpl extends ASTWrapperPsiElement implements ReasonMLTy
         return findNotNullChildByClass(ReasonMLTypeConstrName.class);
     }
 
+    @Nullable
+    @Override
+    public ReasonMLScopedExpr getScopedExpression() {
+        return findChildByClass(ReasonMLScopedExpr.class);
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable

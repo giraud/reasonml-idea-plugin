@@ -8,12 +8,17 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.ReasonMLTypes;
+import com.reason.psi.ReasonMLFunBody;
+import com.reason.psi.ReasonMLLet;
+import com.reason.psi.ReasonMLScopedExpr;
+import com.reason.psi.ReasonMLType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.reason.lang.ReasonMLTypes.*;
 
 public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
     @NotNull
@@ -23,12 +28,24 @@ public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
 
         PsiTreeUtil.processElements(root, element -> {
             IElementType elementType = element.getNode().getElementType();
-            if (elementType.equals(ReasonMLTypes.COMMENT)) {
+            if (COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
             }
-            if (elementType.equals(ReasonMLTypes.MODULE)) {
-                PsiElement lBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(element, ReasonMLTypes.LBRACE);
-                PsiElement rBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(lBrace, ReasonMLTypes.RBRACE);
+            else if (TYPE_EXPRESSION.equals(elementType)) {
+                ReasonMLScopedExpr scopedExpression = ((ReasonMLType) element).getScopedExpression();
+                if (scopedExpression != null) {
+                    descriptors.add(fold(scopedExpression));
+                }
+            }
+            else if (LET_EXPRESSION.equals(elementType)) {
+                ReasonMLFunBody functionBody = ((ReasonMLLet) element).getFunctionBody();
+                if (functionBody != null) {
+                    descriptors.add(fold(functionBody));
+                }
+            }
+            else if (MODULE.equals(elementType)) {
+                PsiElement lBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(element, LBRACE);
+                PsiElement rBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(lBrace, RBRACE);
                 if (lBrace != null && rBrace != null) {
                     FoldingDescriptor fold = foldBetween(element, lBrace, rBrace, 5);
                     if (fold != null)
@@ -44,7 +61,7 @@ public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
-        if (node.getElementType().equals(ReasonMLTypes.COMMENT)) {
+        if (node.getElementType().equals(COMMENT)) {
             return "/*...*/";
         }
         return "...";
