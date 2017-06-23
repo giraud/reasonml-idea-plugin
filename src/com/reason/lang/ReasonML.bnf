@@ -8,7 +8,7 @@
   psiPackage="com.reason.psi"
   psiImplPackage="com.reason.psi.impl"
 
-  elementTypeHolderClass="com.reason.psi.ReasonMLTypes"
+  elementTypeHolderClass="com.reason.lang.ReasonMLTypes"
   elementTypeClass="com.reason.psi.ReasonMLElementType"
   tokenTypeClass="com.reason.psi.ReasonMLTokenType"
 
@@ -17,13 +17,13 @@
 }
 
 reasonFile ::=
-    ( COMMENT | open_statement | module_statement | include_statement | let_statement | expr_statement | type_statement | external_statement )*
+    ( COMMENT | open_expression | module_statement | include_statement | let_statement | expr_statement | type_statement | external_statement )*
 
 // ----------
 // MODULE
 // ----------
 
-open_statement ::=
+open_expression ::=
     OPEN module_path SEMI
 
 module_statement ::=

@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.reason.psi.ReasonMLTypes.*;
+import static com.reason.lang.ReasonMLTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH);

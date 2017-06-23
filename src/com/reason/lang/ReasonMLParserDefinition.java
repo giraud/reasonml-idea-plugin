@@ -12,9 +12,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.parser.ReasonMLParser;
 import com.reason.psi.ReasonMLFile;
-import com.reason.psi.ReasonMLTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class ReasonMLParserDefinition implements ParserDefinition {
