@@ -10,15 +10,17 @@ import com.reason.psi.impl.*;
 public interface ReasonMLTypes {
 
     IElementType EXTERNAL_EXPRESSION = new ReasonMLElementType("EXTERNAL_EXPRESSION");
-    IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
-    IElementType LET_EXPRESSION = new ReasonMLElementType("LET_EXPRESSION");
-    IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
-    IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
     IElementType MODULE_EXPRESSION = new ReasonMLElementType("MODULE_EXPRESSION");
     IElementType OPEN_EXPRESSION = new ReasonMLElementType("OPEN_EXPRESSION");
+    IElementType LET_EXPRESSION = new ReasonMLElementType("LET_EXPRESSION");
+    IElementType TYPE_EXPRESSION = new ReasonMLElementType("TYPE_EXPRESSION");
+    IElementType INCLUDE_EXPRESSION = new ReasonMLElementType("INCLUDE_EXPRESSION");
+
+    IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
+    IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
+    IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
     IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
     IElementType SCOPED_EXPR = new ReasonMLElementType("SCOPED_EXPR");
-    IElementType TYPE_STATEMENT = new ReasonMLElementType("TYPE_STATEMENT");
     IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
 
     IElementType ARROBASE = new ReasonMLTokenType("ARROBASE");
@@ -106,7 +108,7 @@ public interface ReasonMLTypes {
                 return new ReasonMLTypeConstrNameImpl(node);
             } else if (type == SCOPED_EXPR) {
                 return new ReasonMLScopedExprImpl(node);
-            } else if (type == TYPE_STATEMENT) {
+            } else if (type == TYPE_EXPRESSION) {
                 return new ReasonMLTypeImpl(node);
             } else if (type == VALUE_NAME) {
                 return new ReasonMLValueNameImpl(node);

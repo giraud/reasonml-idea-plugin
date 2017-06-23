@@ -148,7 +148,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 //    else if (t == TYPE_EXPR) {
 //      r = type_expr(b, 0);
 //    }
-//    else if (t == TYPE_STATEMENT) {
+//    else if (t == TYPE_EXPRESSION) {
 //      r = type_statement(b, 0);
 //    }
 //    else if (t == UNTYPED_OBJECT) {
@@ -2968,7 +2968,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 //    r = r && type_statement_3(b, l + 1);
 //    r = r && type_statement_4(b, l + 1);
 //    r = r && consumeToken(b, SEMI);
-//    exit_section_(b, m, TYPE_STATEMENT, r);
+//    exit_section_(b, m, TYPE_EXPRESSION, r);
 //    return r;
 //  }
 //

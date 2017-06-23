@@ -6,6 +6,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ReasonMLTypes.*;
@@ -13,9 +14,10 @@ import static com.reason.lang.ReasonMLTypes.*;
 public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     private static final String ERR_SEMI_EXPECTED = "';' expected";
-    public static final String ERR_NAME_LIDENT = "Name must start with a lower case";
+    private static final String ERR_NAME_LIDENT = "Name must start with a lower case";
 
-    public ASTNode parse(IElementType t, PsiBuilder b) {
+    @NotNull
+    public ASTNode parse(@NotNull IElementType t, @NotNull PsiBuilder b) {
         parseLight(t, b);
         return b.getTreeBuilt();
     }
@@ -28,7 +30,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
     }
 
-    static boolean reasonFile(PsiBuilder builder) {
+    private static boolean reasonFile(PsiBuilder builder) {
         if (!recursion_guard_(builder, 1, "reasonFile")) {
             return false;
         }
@@ -40,15 +42,17 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 break;
             }
 
-            if (OPEN == tokenType) {
+            if (tokenType == OPEN) {
                 openExpression(builder, 1);
-            } else if (TYPE == tokenType) {
+            } else if (tokenType == INCLUDE) {
+                includeExpression(builder, 1);
+            } else if (tokenType == TYPE) {
                 typeExpression(builder, 1);
-            } else if (MODULE == tokenType) {
+            } else if (tokenType == MODULE) {
                 moduleExpression(builder, 1);
-            } else if (EXTERNAL == tokenType) {
+            } else if (tokenType == EXTERNAL) {
                 externalExpression(builder, 1);
-            } else if (LET == tokenType) {
+            } else if (tokenType == LET) {
                 letExpression(builder, 1);
             } else {
                 builder.advanceLexer();
@@ -64,11 +68,11 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // OPEN module_path ;
+    // OPEN module_path SEMI
     // **********
-    static boolean openExpression(PsiBuilder builder, int recLevel) {
+    private static void openExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "openExpression")) {
-            return false;
+            return;
         }
 
         // We found an 'open' keyword, continue until a ';' or another toplevel expression is found
@@ -83,14 +87,14 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         endExpression(builder);
         exit_section_(builder, moduleMarker, OPEN_EXPRESSION, true);
 
-        return true;
     }
 
     // **********
     // TYPE type_name EQ (scoped_expression | expr) ;
-    private static boolean typeExpression(PsiBuilder builder, int recLevel) {
+    // **********
+    private static void typeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "type expression")) {
-            return false;
+            return;
         }
 
         // enter type
@@ -148,16 +152,39 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
         // end of type
         endExpression(builder);
-        exit_section_(builder, exprMarker, TYPE_STATEMENT/*EXPR*/, true);
+        exit_section_(builder, exprMarker, TYPE_EXPRESSION, true);
+    }
 
-        return true;
+
+    // **********
+    // INCLUDE module_path SEMI
+    // **********
+    private static void includeExpression(PsiBuilder builder, int recLevel) {
+        if (!recursion_guard_(builder, recLevel, "include expression")) {
+            return;
+        }
+
+        // enter
+        Marker exprMarker = enter_section_(builder);
+        builder.advanceLexer();
+
+        IElementType tokenType = builder.getTokenType();
+        if (tokenType != SEMI) {
+            // module path
+            module_path(builder, recLevel + 1);
+        }
+
+
+        endExpression(builder);
+        exit_section_(builder, exprMarker, INCLUDE_EXPRESSION, true);
     }
 
     // **********
     // MODULE module_name EQ (module_alias | scoped_expression) SEMI
-    private static boolean moduleExpression(PsiBuilder builder, int recLevel) {
+    // **********
+    private static void moduleExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module expression")) {
-            return false;
+            return;
         }
 
         // enter module
@@ -205,15 +232,13 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
         endExpression(builder);
         exit_section_(builder, moduleMarker, MODULE_EXPRESSION, true);
-
-        return true;
     }
 
     // **********
     // EXTERNAL external_name COLON expression* SEMI
-    private static boolean externalExpression(PsiBuilder builder, int recLevel) {
+    private static void externalExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "external expression")) {
-            return false;
+            return;
         }
 
         // enter external
@@ -263,52 +288,67 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         // end of external
         endExpression(builder);
         exit_section_(builder, exprMarker, EXTERNAL_EXPRESSION, true);
-
-        return true;
     }
 
     // **********
-    // LET value_name expression* (EQ expression | ARROW scoped_expression) SEMI
-    private static boolean letExpression(PsiBuilder builder, int recLevel) {
+    // LET REC? (destructure|value_name) expression* (EQ expression | ARROW scoped_expression) SEMI
+    // **********
+    private static void letExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "let expression")) {
-            return false;
+            return;
         }
 
         // enter LET
         Marker exprMarker = enter_section_(builder);
         builder.advanceLexer();
 
-        // value name
+        // might be recursive
         IElementType tokenType = builder.getTokenType();
-        if (tokenType != SEMI) {
-            Marker nameMarker = enter_section_(builder);
-            Marker errorMarker = null;
-            boolean isNameCorrect = tokenType == LIDENT;
-
-            if (!isNameCorrect) {
-                errorMarker = builder.mark();
-            }
-
+        if (tokenType == REC) {
             builder.advanceLexer();
+        }
 
-            if (!isNameCorrect) {
-                errorMarker.error(ERR_NAME_LIDENT);
+        tokenType = builder.getTokenType();
+        if (tokenType != SEMI) {
+            if (tokenType == LPAREN) {
+                // we are dealing with destructuring
+                advanceUntil(builder, recLevel + 1, RPAREN);
+                builder.advanceLexer();
+            } else if (tokenType == LBRACE) {
+                // we are dealing with destructuring
+                advanceUntil(builder, recLevel + 1, RBRACE);
+                builder.advanceLexer();
+            } else {
+                // value name
+                Marker nameMarker = enter_section_(builder);
+                Marker errorMarker = null;
+                boolean isNameCorrect = tokenType == LIDENT;
+
+                if (!isNameCorrect) {
+                    errorMarker = builder.mark();
+                }
+
+                builder.advanceLexer();
+
+                if (!isNameCorrect) {
+                    errorMarker.error(ERR_NAME_LIDENT);
+                }
+
+                exit_section_(builder, nameMarker, VALUE_NAME, true);
             }
-
-            exit_section_(builder, nameMarker, VALUE_NAME, true);
         }
 
         // Anything before EQ|ARROW
         // anything but semi or start expression
-        boolean[] skipped = new boolean[]{false}; // faire une classe
-        builder.setWhitespaceSkippedCallback((type, start, end) -> skipped[0] = true);
+        WhitespaceNotifier whitespace = new WhitespaceNotifier();
+        builder.setWhitespaceSkippedCallback(whitespace::notify);
 
         while (true) {
             tokenType = builder.getTokenType();
-            if ((skipped[0] && (tokenType == EQ || tokenType == ARROW)) || isStartExpression(tokenType)) {
+            if ((whitespace.isSkipped() && (tokenType == EQ || tokenType == ARROW)) || isStartExpression(tokenType)) {
                 break;
             } else {
-                skipped[0] = false;
+                whitespace.setSkipped();
             }
             builder.advanceLexer();
         }
@@ -344,7 +384,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         endExpression(builder);
         exit_section_(builder, exprMarker, LET_EXPRESSION, true);
 
-        return true;
     }
 
     private static void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
@@ -354,6 +393,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
             tokenType = builder.getTokenType();
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
             }
             if (isStartExpression(tokenType)) {
                 break;
@@ -361,10 +401,22 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
     }
 
+    private static void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
+        IElementType tokenType;
+        while (true) {
+            builder.advanceLexer();
+            tokenType = builder.getTokenType();
+            if (LBRACE == tokenType) {
+                scopedExpression(builder, recLevel + 1);
+            } else if (tokenType == null || tokenType == SEMI || tokenType == nextTokenType) {
+                break;
+            }
+        }
+    }
 
-    static boolean module_path(PsiBuilder builder, int recLevel) {
+    private static void module_path(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module path")) {
-            return false;
+            return;
         }
 
         Marker marker = enter_section_(builder);
@@ -396,14 +448,14 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
 
         exit_section_(builder, marker, MODULE_PATH, true);
-        return true;
     }
 
     // **********
     // Pattern: LBRACE expression* RBRACE
-    static boolean scopedExpression(PsiBuilder builder, int recLevel) {
+    // **********
+    private static void scopedExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "scoped expression")) {
-            return false;
+            return;
         }
 
         // Mark the start of the scoped expression
@@ -419,6 +471,8 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
             // start expressions ?
             if (tokenType == OPEN) {
                 openExpression(builder, recLevel + 1);
+            } else if (tokenType == INCLUDE) {
+                includeExpression(builder, recLevel + 1);
             } else if (tokenType == TYPE) {
                 typeExpression(builder, recLevel + 1);
             } else if (tokenType == MODULE) {
@@ -442,7 +496,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
 
         exit_section_(builder, marker, SCOPED_EXPR, true);
-        return true;
     }
 
     private static boolean isStartExpression(IElementType tokenType) {
@@ -456,6 +509,22 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
             builder.advanceLexer();
         } else {
             builder.mark().error(ERR_SEMI_EXPECTED);
+        }
+    }
+
+    private static class WhitespaceNotifier {
+        private boolean skipped = true;
+
+        void notify(IElementType type, int start, int end) {
+            this.skipped = true;
+        }
+
+        boolean isSkipped() {
+            return this.skipped;
+        }
+
+        void setSkipped() {
+            this.skipped = false;
         }
     }
 }
