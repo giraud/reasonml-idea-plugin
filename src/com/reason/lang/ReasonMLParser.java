@@ -393,70 +393,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     }
 
-    private static void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
-        IElementType tokenType;
-        while (true) {
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
-            if (LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            }
-            if (isStartExpression(tokenType)) {
-                break;
-            }
-        }
-    }
-
-    private static void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
-        IElementType tokenType;
-        while (true) {
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
-            if (LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-            } else if (tokenType == null || tokenType == SEMI || tokenType == nextTokenType) {
-                break;
-            }
-        }
-    }
-
-    private static void module_path(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "module path")) {
-            return;
-        }
-
-        Marker marker = enter_section_(builder);
-        Marker errorMarker = null;
-
-        boolean incorrectName = builder.getTokenType() != UIDENT;
-        if (incorrectName) {
-            errorMarker = builder.mark();
-        }
-
-        builder.advanceLexer();
-
-        while (true) {
-            IElementType tokenType = builder.getTokenType();
-            if (tokenType == EQ || isStartExpression(tokenType)) {
-                break;
-            }
-
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
-            if (tokenType != SEMI && tokenType != UIDENT && tokenType != DOT && !incorrectName) {
-                incorrectName = true;
-                errorMarker = builder.mark();
-            }
-        }
-
-        if (incorrectName) {
-            errorMarker.error("Module path expected: module names start with an uppercase");
-        }
-
-        exit_section_(builder, marker, MODULE_PATH, true);
-    }
-
     // **********
     // Pattern: LBRACE expression* RBRACE
     // **********
@@ -503,6 +439,73 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
 
         exit_section_(builder, marker, SCOPED_EXPR, true);
+    }
+
+    private static void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
+        IElementType tokenType;
+        while (true) {
+            builder.advanceLexer();
+            tokenType = builder.getTokenType();
+            if (LBRACE == tokenType) {
+                scopedExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
+            }
+            if (isStartExpression(tokenType)) {
+                break;
+            }
+        }
+    }
+
+    private static void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
+        IElementType tokenType;
+        while (true) {
+            builder.advanceLexer();
+            tokenType = builder.getTokenType();
+            if (LBRACE == tokenType) {
+                scopedExpression(builder, recLevel + 1);
+            } else if (tokenType == null || tokenType == SEMI || tokenType == nextTokenType) {
+                break;
+            }
+        }
+    }
+
+    // ***** UIDENT (DOT UIDENT)*
+    private static void module_path(PsiBuilder builder, int recLevel) {
+        if (!recursion_guard_(builder, recLevel, "module path")) {
+            return;
+        }
+
+        Marker marker = enter_section_(builder);
+        Marker errorMarker = null;
+
+        // First element must be a module name
+        Marker nameMarker = enter_section_(builder);
+        boolean incorrectName = builder.getTokenType() != UIDENT;
+        if (incorrectName) {
+            errorMarker = builder.mark();
+        }
+        builder.advanceLexer();
+        exit_section_(builder, nameMarker, MODULE_NAME, true);
+
+        while (true) {
+            IElementType tokenType = builder.getTokenType();
+            if (tokenType == EQ || isStartExpression(tokenType)) {
+                break;
+            }
+
+            builder.advanceLexer();
+            tokenType = builder.getTokenType();
+            if (tokenType != SEMI && tokenType != UIDENT && tokenType != DOT && !incorrectName) {
+                incorrectName = true;
+                errorMarker = builder.mark();
+            }
+        }
+
+        if (incorrectName) {
+            errorMarker.error("Module path expected: module names start with an uppercase");
+        }
+
+        exit_section_(builder, marker, MODULE_PATH, true);
     }
 
     private static boolean isStartExpression(IElementType tokenType) {
