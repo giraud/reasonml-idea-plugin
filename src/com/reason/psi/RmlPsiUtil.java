@@ -1,4 +1,4 @@
-package com.reason.psi.impl;
+package com.reason.psi;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -7,8 +7,6 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.ReasonMLFileType;
-import com.reason.psi.ReasonMLFile;
-import com.reason.psi.ReasonMLModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -16,10 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class RmlPsiUtil {
+class RmlPsiUtil {
 
     @NotNull
-    public static List<PsiFile> findFileModules(Project project, String name) {
+    static List<PsiFile> findFileModules(@NotNull Project project, @NotNull String name) {
         ArrayList<PsiFile> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, ReasonMLFileType.INSTANCE.getDefaultExtension());
@@ -33,7 +31,7 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<ReasonMLModule> findModules(Project project, String name) {
+    static List<ReasonMLModule> findModules(@NotNull Project project, @NotNull String name) {
         ArrayList<ReasonMLModule> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, ReasonMLFileType.INSTANCE.getDefaultExtension());
@@ -53,7 +51,7 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<ReasonMLModule> findModules(Project project) {
+    static List<ReasonMLModule> findModules(@NotNull Project project) {
         ArrayList<ReasonMLModule> result = new ArrayList<>();
 
 

@@ -1,10 +1,9 @@
-package com.reason.psi.impl;
+package com.reason.psi;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.*;
 import com.reason.icons.ReasonMLIcons;
-import com.reason.psi.ReasonMLModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +13,7 @@ import java.util.List;
 public class RmlModuleReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
     private final String myName;
 
-    public RmlModuleReference(@NotNull PsiElement element, String name) {
+    RmlModuleReference(@NotNull PsiElement element, String name) {
         super(element);
         myName = name;
     }
