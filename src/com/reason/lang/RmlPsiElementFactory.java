@@ -3,6 +3,8 @@ package com.reason.lang;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.reason.psi.ReasonMLModule;
+import com.reason.psi.ReasonMLModuleName;
 import com.reason.psi.impl.*;
 
 public class RmlPsiElementFactory {
@@ -17,9 +19,9 @@ public class RmlPsiElementFactory {
         } else if (type == ReasonMLTypes.LET_EXPRESSION) {
             return new ReasonMLLetImpl(node);
         } else if (type == ReasonMLTypes.MODULE_NAME) {
-            return new ReasonMLModuleNameImpl(node);
+            return new ReasonMLModuleName(node);
         } else if (type == ReasonMLTypes.MODULE_EXPRESSION) {
-            return new ReasonMLModuleImpl(node);
+            return new ReasonMLModule(node);
         } else if (type == ReasonMLTypes.TYPE_CONSTR_NAME) {
             return new ReasonMLTypeConstrNameImpl(node);
         } else if (type == ReasonMLTypes.SCOPED_EXPR) {
