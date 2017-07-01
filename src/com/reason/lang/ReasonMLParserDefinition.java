@@ -63,6 +63,6 @@ public class ReasonMLParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        return ReasonMLTypes.Factory.createElement(node);
+        return RmlPsiElementFactory.createElement(node);
     }
 }

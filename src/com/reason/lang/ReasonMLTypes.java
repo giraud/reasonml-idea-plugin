@@ -23,6 +23,7 @@ public interface ReasonMLTypes {
     IElementType SCOPED_EXPR = new ReasonMLElementType("SCOPED_EXPR");
     IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
 
+    IElementType ANDAND = new ReasonMLTokenType("ANDAND");
     IElementType ARROBASE = new ReasonMLTokenType("ARROBASE");
     IElementType ARROW = new ReasonMLTokenType("ARROW");
     IElementType AS = new ReasonMLTokenType("AS");
@@ -38,6 +39,7 @@ public interface ReasonMLTypes {
     IElementType EQ = new ReasonMLTokenType("EQ");
     IElementType EQEQ = new ReasonMLTokenType("EQEQ");
     IElementType EQEQEQ = new ReasonMLTokenType("EQEQEQ");
+    IElementType EXCLAMATION_MARK = new ReasonMLTokenType("EXCLAMATION_MARK");
     IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
     IElementType FALSE = new ReasonMLTokenType("FALSE");
     IElementType FLOAT = new ReasonMLTokenType("FLOAT");
@@ -89,31 +91,4 @@ public interface ReasonMLTypes {
     IElementType UNDERSCORE = new ReasonMLTokenType("UNDERSCORE");
     IElementType UNIT = new ReasonMLTokenType("UNIT");
 
-    class Factory {
-        static PsiElement createElement(ASTNode node) {
-            IElementType type = node.getElementType();
-            if (type == EXTERNAL_EXPRESSION) {
-                return new ReasonMLExternalImpl(node);
-            } else if (type == FUN_BODY) {
-                return new ReasonMLFunBodyImpl(node);
-            } else if (type == LET_BINDING) {
-                return new ReasonMLLetBindingImpl(node);
-            } else if (type == LET_EXPRESSION) {
-                return new ReasonMLLetImpl(node);
-            } else if (type == MODULE_NAME) {
-                return new ReasonMLModuleNameImpl(node);
-            } else if (type == MODULE_EXPRESSION) {
-                return new ReasonMLModuleImpl(node);
-            } else if (type == TYPE_CONSTR_NAME) {
-                return new ReasonMLTypeConstrNameImpl(node);
-            } else if (type == SCOPED_EXPR) {
-                return new ReasonMLScopedExprImpl(node);
-            } else if (type == TYPE_EXPRESSION) {
-                return new ReasonMLTypeImpl(node);
-            } else if (type == VALUE_NAME) {
-                return new ReasonMLValueNameImpl(node);
-            }
-            return new ReasonMLTokenImpl(node);
-        }
-    }
 }

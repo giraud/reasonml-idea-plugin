@@ -96,6 +96,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
 
+    "&&"   { return ANDAND; }
     "::"   { return SHORTCUT; }
     "=>"   { return ARROW; }
     "|>"   { return PIPE_FORWARD; }
@@ -118,6 +119,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "]"   { return RBRACKET; }
     "#"   { return SHARP; }
     "?"   { return QUESTION_MARK; }
+    "!"   { return EXCLAMATION_MARK; }
     "`"   { return BACKTICK; }
     "_"   { return UNDERSCORE; }
 
