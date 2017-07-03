@@ -3,34 +3,32 @@ package com.reason.lang;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.psi.ReasonMLModule;
-import com.reason.psi.ReasonMLModuleName;
-import com.reason.psi.impl.*;
+import com.reason.psi.*;
 
-public class RmlPsiElementFactory {
+class RmlPsiElementFactory {
     static PsiElement createElement(ASTNode node) {
         IElementType type = node.getElementType();
         if (type == ReasonMLTypes.EXTERNAL_EXPRESSION) {
-            return new ReasonMLExternalImpl(node);
+            return new ReasonMLExternal(node);
         } else if (type == ReasonMLTypes.FUN_BODY) {
-            return new ReasonMLFunBodyImpl(node);
+            return new ReasonMLFunBody(node);
         } else if (type == ReasonMLTypes.LET_BINDING) {
-            return new ReasonMLLetBindingImpl(node);
+            return new ReasonMLLetBinding(node);
         } else if (type == ReasonMLTypes.LET_EXPRESSION) {
-            return new ReasonMLLetImpl(node);
+            return new ReasonMLLet(node);
         } else if (type == ReasonMLTypes.MODULE_NAME) {
             return new ReasonMLModuleName(node);
         } else if (type == ReasonMLTypes.MODULE_EXPRESSION) {
             return new ReasonMLModule(node);
         } else if (type == ReasonMLTypes.TYPE_CONSTR_NAME) {
-            return new ReasonMLTypeConstrNameImpl(node);
+            return new ReasonMLTypeConstrName(node);
         } else if (type == ReasonMLTypes.SCOPED_EXPR) {
-            return new ReasonMLScopedExprImpl(node);
+            return new ReasonMLScopedExpr(node);
         } else if (type == ReasonMLTypes.TYPE_EXPRESSION) {
-            return new ReasonMLTypeImpl(node);
+            return new ReasonMLType(node);
         } else if (type == ReasonMLTypes.VALUE_NAME) {
-            return new ReasonMLValueNameImpl(node);
+            return new ReasonMLValueName(node);
         }
-        return new ReasonMLTokenImpl(node);
+        return new ReasonMLToken(node);
     }
 }

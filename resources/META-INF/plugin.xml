@@ -75,8 +75,8 @@
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BucklescriptToolWindowFactory"/>
 
-        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule" implementationClass="com.reason.psi.impl.RmlModuleManipulator"/>
-        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName" implementationClass="com.reason.psi.impl.RmlModuleNameManipulator"/>
+        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule" implementationClass="com.reason.psi.RmlModuleManipulator"/>
+        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName" implementationClass="com.reason.psi.RmlModuleNameManipulator"/>
 
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>

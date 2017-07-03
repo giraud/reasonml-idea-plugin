@@ -1,6 +1,11 @@
 package com.reason.psi;
 
-import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTNode;
 
-public interface ReasonMLTypeConstrName extends PsiElement {
+public class ReasonMLTypeConstrName extends ASTWrapperPsiElement {
+
+    public ReasonMLTypeConstrName(ASTNode node) {
+        super(node);
+    }
 }

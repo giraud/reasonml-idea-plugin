@@ -1,18 +1,60 @@
 package com.reason.psi;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.reason.icons.ReasonMLIcons;
+import com.reason.psi.impl.ReasonMLInferredTypeMixin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ReasonMLLet extends ReasonMLInferredType {
+import javax.swing.*;
+
+public class ReasonMLLet extends ReasonMLInferredTypeMixin {
+
+    public ReasonMLLet(ASTNode node) {
+        super(node);
+    }
 
     @NotNull
-    ReasonMLValueName getLetName();
+    public ReasonMLValueName getLetName() {
+        return findNotNullChildByClass(ReasonMLValueName.class);
+    }
 
     @Nullable
-    ReasonMLFunBody getFunctionBody();
+    public ReasonMLFunBody getFunctionBody() {
+        return findChildByClass(ReasonMLFunBody.class);
+    }
 
-    boolean isFunction();
+    public boolean isFunction() {
+        return findChildByClass(ReasonMLFunBody.class) != null;
+    }
 
-    ItemPresentation getPresentation();
+    @Override
+    public ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                String letName = getLetName().getText();
+                if (isFunction()) {
+                    return letName + "(..)";
+                }
+
+                return letName + (hasInferredType() ? ": " + getInferredType() : "");
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return isFunction() ? ReasonMLIcons.FUNCTION : ReasonMLIcons.LET;
+            }
+        };
+    }
+
 }

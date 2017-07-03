@@ -6,13 +6,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.ReasonMLIcons;
-import com.reason.psi.impl.RmlNamedElementImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonMLModule extends RmlNamedElementImpl {
+public class ReasonMLModule extends RmlNamedElement {
 
     public ReasonMLModule(ASTNode node) {
         super(node);
@@ -24,7 +23,7 @@ public class ReasonMLModule extends RmlNamedElementImpl {
     }
 
     @NotNull
-    public ReasonMLModuleName getModuleName() {
+    ReasonMLModuleName getModuleName() {
         return findNotNullChildByClass(ReasonMLModuleName.class);
     }
 

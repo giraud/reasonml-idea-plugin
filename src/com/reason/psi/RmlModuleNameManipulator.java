@@ -1,4 +1,4 @@
-package com.reason.psi.impl;
+package com.reason.psi;
 
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;

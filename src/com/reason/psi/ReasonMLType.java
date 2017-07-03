@@ -1,18 +1,52 @@
 package com.reason.psi;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.reason.icons.ReasonMLIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ReasonMLType extends PsiElement {
+import javax.swing.*;
+
+public class ReasonMLType extends ASTWrapperPsiElement {
+
+    public ReasonMLType(ASTNode node) {
+        super(node);
+    }
 
     @NotNull
-    ReasonMLTypeConstrName getTypeConstrName();
+    public ReasonMLTypeConstrName getTypeConstrName() {
+        return findNotNullChildByClass(ReasonMLTypeConstrName.class);
+    }
 
     @Nullable
-    ReasonMLScopedExpr getScopedExpression();
+    public ReasonMLScopedExpr getScopedExpression() {
+        return findChildByClass(ReasonMLScopedExpr.class);
+    }
 
-    ItemPresentation getPresentation();
+    @Override
+    public ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return getTypeConstrName().getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return ReasonMLIcons.TYPE;
+            }
+        };
+    }
 
 }

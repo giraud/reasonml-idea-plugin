@@ -1,7 +1,13 @@
 package com.reason.psi;
 
-import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTNode;
 
-public interface ReasonMLFunBody extends PsiElement {
+public class ReasonMLFunBody extends ASTWrapperPsiElement {
+
+    public ReasonMLFunBody(ASTNode node) {
+        super(node);
+    }
+
 
 }

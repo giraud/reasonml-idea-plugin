@@ -1,7 +1,12 @@
 package com.reason.psi;
 
-import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTNode;
 
-public interface ReasonMLScopedExpr extends PsiElement {
+public class ReasonMLScopedExpr extends ASTWrapperPsiElement {
+
+    public ReasonMLScopedExpr(ASTNode node) {
+        super(node);
+    }
 
 }
