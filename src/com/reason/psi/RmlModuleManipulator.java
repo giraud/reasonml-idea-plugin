@@ -3,7 +3,6 @@ package com.reason.psi;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.psi.ReasonMLModule;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlModuleManipulator extends AbstractElementManipulator<ReasonMLModule> {

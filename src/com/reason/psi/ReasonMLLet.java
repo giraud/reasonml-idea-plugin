@@ -15,9 +15,9 @@ public class ReasonMLLet extends ReasonMLInferredTypeMixin {
         super(node);
     }
 
-    @NotNull
-    public ReasonMLValueName getLetName() {
-        return findNotNullChildByClass(ReasonMLValueName.class);
+    @Nullable
+    private ReasonMLValueName getLetName() {
+        return findChildByClass(ReasonMLValueName.class);
     }
 
     @Nullable
@@ -25,17 +25,23 @@ public class ReasonMLLet extends ReasonMLInferredTypeMixin {
         return findChildByClass(ReasonMLFunBody.class);
     }
 
-    public boolean isFunction() {
+    private boolean isFunction() {
         return findChildByClass(ReasonMLFunBody.class) != null;
     }
 
+    @Nullable
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
-                String letName = getLetName().getText();
+                ReasonMLValueName letValueName = getLetName();
+                if (letValueName == null) {
+                    return "_";
+                }
+
+                String letName = letValueName.getText();
                 if (isFunction()) {
                     return letName + "(..)";
                 }

@@ -20,7 +20,7 @@ public class ReasonMLParserDefinition implements ParserDefinition {
     private static final TokenSet COMMENTS = TokenSet.create(ReasonMLTypes.COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(ReasonMLTypes.STRING);
 
-    private static final IFileElementType FILE = new IFileElementType(Language.<ReasonMLLanguage>findInstance(ReasonMLLanguage.class));
+    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(ReasonMLLanguage.class));
 
     @NotNull
     @Override

@@ -1,11 +1,8 @@
 package com.reason.lang;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.psi.ReasonMLElementType;
 import com.reason.psi.ReasonMLTokenType;
-import com.reason.psi.impl.*;
 
 public interface ReasonMLTypes {
 

@@ -3,7 +3,6 @@ package com.reason.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElement;
 import com.reason.icons.ReasonMLIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +16,7 @@ public class ReasonMLType extends ASTWrapperPsiElement {
     }
 
     @NotNull
-    public ReasonMLTypeConstrName getTypeConstrName() {
+    private ReasonMLTypeConstrName getTypeConstrName() {
         return findNotNullChildByClass(ReasonMLTypeConstrName.class);
     }
 

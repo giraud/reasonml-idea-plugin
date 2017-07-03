@@ -525,6 +525,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     private static class WhitespaceNotifier {
         private boolean skipped = true;
 
+        @SuppressWarnings("unused")
         void notify(IElementType type, int start, int end) {
             this.skipped = true;
         }
