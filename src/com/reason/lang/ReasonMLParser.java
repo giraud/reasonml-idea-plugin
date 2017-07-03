@@ -15,6 +15,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     private static final String ERR_SEMI_EXPECTED = "';' expected";
     private static final String ERR_NAME_LIDENT = "Name must start with a lower case";
+    public static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
 
     @NotNull
     public ASTNode parse(@NotNull IElementType t, @NotNull PsiBuilder b) {
@@ -476,33 +477,40 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
 
         Marker marker = enter_section_(builder);
-        Marker errorMarker = null;
+//        Marker errorMarker = null;
 
         // First element must be a module name
-        Marker nameMarker = enter_section_(builder);
         boolean incorrectName = builder.getTokenType() != UIDENT;
-        if (incorrectName) {
-            errorMarker = builder.mark();
-        }
+        Marker nameMarker = enter_section_(builder);
         builder.advanceLexer();
-        exit_section_(builder, nameMarker, MODULE_NAME, true);
-
-        while (true) {
-            IElementType tokenType = builder.getTokenType();
-            if (tokenType == EQ || isStartExpression(tokenType)) {
-                break;
-            }
-
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
-            if (tokenType != SEMI && tokenType != UIDENT && tokenType != DOT && !incorrectName) {
-                incorrectName = true;
-                errorMarker = builder.mark();
-            }
-        }
-
         if (incorrectName) {
-            errorMarker.error("Module path expected: module names start with an uppercase");
+            nameMarker.error(ERR_NAME_UPPERCASE);
+        } else {
+            exit_section_(builder, nameMarker, MODULE_NAME, true);
+
+            while (true) {
+                nameMarker = enter_section_(builder);
+                IElementType tokenType = builder.getTokenType();
+
+                if (tokenType != DOT && tokenType != SEMI && tokenType != UIDENT) {
+                    builder.advanceLexer();
+                    nameMarker.error(ERR_NAME_UPPERCASE);
+                    break;
+                }
+
+                if (tokenType == SEMI) {
+                    nameMarker.drop();
+                    break;
+                }
+                if (tokenType == DOT) {
+                    nameMarker.drop();
+                    builder.advanceLexer();
+                    continue;
+                }
+
+                builder.advanceLexer();
+                exit_section_(builder, nameMarker, MODULE_NAME, true);
+            }
         }
 
         exit_section_(builder, marker, MODULE_PATH, true);
