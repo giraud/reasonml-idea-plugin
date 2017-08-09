@@ -15,6 +15,7 @@ public interface ReasonMLTypes {
 
     IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
     IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
+    IElementType MODULE_CONSTR = new ReasonMLElementType("MODULE_CONSTR");
     IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
     IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
     IElementType SCOPED_EXPR = new ReasonMLElementType("SCOPED_EXPR");
