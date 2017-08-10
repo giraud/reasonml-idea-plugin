@@ -137,6 +137,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "-"   { return MINUS; }
     "/"   { return SLASH; }
     "*"   { return STAR; }
+    "%"   { return PERCENT; }
 }
 
 <IN_STRING> {

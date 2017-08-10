@@ -91,7 +91,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // TYPE type_name EQ (scoped_expression | expr) ;
+    // TYPE type_name any* EQ (scoped_expression | expr) ;
     // **********
     private static void typeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "type expression")) {
@@ -120,6 +120,12 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
             }
 
             exit_section_(builder, nameMarker, TYPE_CONSTR_NAME, true);
+        }
+
+        // anything until EQ or SEMI
+        tokenType = builder.getTokenType();
+        if (tokenType != EQ && tokenType != SEMI) {
+            advanceUntil(builder, recLevel++, EQ);
         }
 
         tokenType = builder.getTokenType();
@@ -180,7 +186,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // MODULE module_name EQ (module_alias | scoped_expression) SEMI
+    // MODULE TYPE? module_name EQ (module_alias | scoped_expression) SEMI
     // **********
     private static void moduleExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module expression")) {
@@ -193,6 +199,12 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
         IElementType tokenType = builder.getTokenType();
         if (tokenType != SEMI) {
+            // might be a module definition only
+            if (tokenType == TYPE) {
+                builder.advanceLexer();
+                tokenType = builder.getTokenType();
+            }
+
             // module name
             boolean isNameIncorrect = tokenType != UIDENT;
             Marker errorMarker = null;

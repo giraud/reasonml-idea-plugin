@@ -66,6 +66,7 @@ public interface ReasonMLTypes {
     IElementType PIPE = new ReasonMLTokenType("PIPE");
     IElementType PIPE_FORWARD = new ReasonMLTokenType("PIPE_FORWARD");
     IElementType PLUS = new ReasonMLTokenType("PLUS");
+    IElementType PERCENT = new ReasonMLTokenType("PERCENT");
     IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
     IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
     IElementType QUOTE = new ReasonMLTokenType("QUOTE");
