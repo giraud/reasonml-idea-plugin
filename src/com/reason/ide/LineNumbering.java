@@ -24,7 +24,12 @@ public class LineNumbering {
     }
 
     public Integer positionToOffset(@NotNull MerlinPosition position) {
-        return this.lineIndex.get(position.line - 1) + position.col;
+        int index = position.line - 1;
+        if (index < 0) {
+            index = 0;
+        }
+        int lines = this.lineIndex.size();
+        return this.lineIndex.get(index >= lines ? lines : index) + position.col;
     }
 
     public Integer positionToOffset(int line, int col) {
