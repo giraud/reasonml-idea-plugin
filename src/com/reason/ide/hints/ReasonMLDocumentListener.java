@@ -14,6 +14,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.psi.ReasonMLLet;
+import com.reason.psi.ReasonMLValueName;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -49,8 +50,8 @@ public class ReasonMLDocumentListener implements DocumentListener {
                             Collection<ReasonMLLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLet.class);
                             List<LogicalPosition> positions = letStatements.stream().map(letStatement -> {
                                 // Found a let statement, try to get its type
-//                                ReasonMLLetName letName = letStatement.getLetBinding()/*getLetName()*/;
-                                int nameOffset = 1; //letName.getTextOffset();
+                                ReasonMLValueName letName = letStatement.getLetName();
+                                int nameOffset = letName.getTextOffset();
                                 return selectedTextEditor.offsetToLogicalPosition(nameOffset);
                             }).collect(Collectors.toList());
 

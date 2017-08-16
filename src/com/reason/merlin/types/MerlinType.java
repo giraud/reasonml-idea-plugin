@@ -1,7 +1,5 @@
 package com.reason.merlin.types;
 
-import com.reason.merlin.types.MerlinPosition;
-
 public class MerlinType {
     public MerlinPosition start;
     public MerlinPosition end;
