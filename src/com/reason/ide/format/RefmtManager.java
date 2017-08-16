@@ -8,12 +8,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 public class RefmtManager {
     private static RefmtManager instance;
 
-    private final RefmtProcess refmtProcess;
-    private final boolean useDoubleDash;
+    private final RefmtProcess m_refmtProcess;
+    private final boolean m_useDoubleDash;
 
     private RefmtManager(RefmtProcess refmtProcess, boolean useDoubleDash) {
-        this.refmtProcess = refmtProcess;
-        this.useDoubleDash = useDoubleDash;
+        m_refmtProcess = refmtProcess;
+        m_useDoubleDash = useDoubleDash;
     }
 
     // Bad implementation, should have synchronisation locks
@@ -21,7 +21,7 @@ public class RefmtManager {
         if (instance == null) {
             RefmtProcess refmtProcess = new RefmtProcess();
             try {
-                boolean useDoubleDash = refmtProcess.useDoubleDash();
+                boolean useDoubleDash = true; // not working: refmtProcess.useDoubleDash();
                 instance = new RefmtManager(refmtProcess, useDoubleDash);
             } catch (Exception err) {
                 Logger.getInstance("ReasonML.refmt").error("refmt: " + err.getMessage());
@@ -34,7 +34,7 @@ public class RefmtManager {
     void refmt(Document document) {
         if (isReasonFile(document)) {
             String oldText = document.getText();
-            String newText = this.refmtProcess.run(this.useDoubleDash, oldText);
+            String newText = m_refmtProcess.run(m_useDoubleDash, oldText);
             if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
                 document.setText(newText);
             }
