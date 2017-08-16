@@ -33,7 +33,7 @@ public class ReasonMLCompletionContributor extends CompletionContributor {
                 MerlinPosition position = lineNumbering.offsetToPosition(parameters.getOffset());
                 MerlinCompletion completion = merlin.completions(originalFile.getName(), suitablePrefix, position);
 
-                System.out.println("Completion prefix: " + suitablePrefix);
+                // System.out.println("Completion prefix: " + suitablePrefix);
                 for (MerlinCompletionEntry entry : completion.entries) {
                     resultSet.addElement(LookupElementBuilder.
                             create(entry.name).
