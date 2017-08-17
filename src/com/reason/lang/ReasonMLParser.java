@@ -86,7 +86,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
         IElementType tokenType = builder.getTokenType();
         if (tokenType != SEMI) {
-            module_path(builder, recLevel + 1);
+            modulePath(builder, recLevel + 1);
         }
 
         endExpression(builder);
@@ -181,7 +181,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         IElementType tokenType = builder.getTokenType();
         if (tokenType != SEMI) {
             // module path
-            module_path(builder, recLevel + 1);
+            modulePath(builder, recLevel + 1);
             tokenType = builder.getTokenType();
             if (tokenType == LBRACE) {
                 scopedExpression(builder, recLevel + 1);
@@ -253,7 +253,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                         scopedExpression(builder, recLevel + 1);
                     } else if (tokenType != SEMI) {
                         // module alias
-                        module_path(builder, recLevel + 1);
+                        modulePath(builder, recLevel + 1);
                     }
                 }
             } else if (tokenType == EQ || tokenType == COLON) {
@@ -273,7 +273,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                         scopedExpression(builder, recLevel + 1);
                     } else if (tokenType != SEMI) {
                         // module alias
-                        module_path(builder, recLevel + 1);
+                        modulePath(builder, recLevel + 1);
                     }
                 }
             } else {
@@ -560,8 +560,8 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
     }
 
-    // ***** UIDENT (DOT UIDENT)* ( (.*) )::constr
-    private static void module_path(PsiBuilder builder, int recLevel) {
+    // ***** UIDENT (DOT UIDENT|scoped_expression)* ( (.*) )::constr
+    private static void modulePath(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module path")) {
             return;
         }
@@ -627,8 +627,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         IElementType tokenType = builder.getTokenType();
         if (tokenType == SEMI) {
             builder.advanceLexer();
-        }
-        else if (tokenType != RBRACE) { // Last expression in a scope can also omit semi
+        } else if (tokenType != RBRACE) { // Last expression in a scope can also omit semi
             fail(builder, ERR_SEMI_EXPECTED);
         }
     }
