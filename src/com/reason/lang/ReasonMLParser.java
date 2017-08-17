@@ -15,7 +15,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     private static final String ERR_SEMI_EXPECTED = "';' expected";
     private static final String ERR_NAME_LIDENT = "Name must start with a lower case";
-    public static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
+    private static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
 
     @NotNull
     public ASTNode parse(@NotNull IElementType t, @NotNull PsiBuilder b) {
@@ -186,7 +186,8 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // MODULE TYPE? module_name EQ (module_alias | scoped_expression) SEMI
+    // MODULE TYPE? module_name | (COLON module_type)? EQ                          (module_alias | scoped_expression) SEMI
+    //                          | (LPAREN any RPAREN)+ (COLON module_type)? ARROW
     // **********
     private static void moduleExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module expression")) {
@@ -223,24 +224,51 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
             exit_section_(builder, moduleNameMarker, MODULE_NAME, true);
 
-            // =
             tokenType = builder.getTokenType();
-            if (tokenType == EQ) {
-                builder.advanceLexer();
+            if (tokenType == LPAREN) {
+                // module constructor (function)
+                advanceUntil(builder, recLevel + 1, ARROW);
 
                 tokenType = builder.getTokenType();
-                if (tokenType == LBRACE) {
-                    // scoped body, anything inside braces
-                    scopedExpression(builder, recLevel + 1);
-                } else if (tokenType != SEMI) {
-                    // module alias
-                    module_path(builder, recLevel + 1);
+                if (tokenType != ARROW) {
+                    builder.mark().error("'=' expected");
+                } else {
+                    // module definition
+                    builder.advanceLexer();
+
+                    tokenType = builder.getTokenType();
+                    if (tokenType == LBRACE) {
+                        // scoped body, anything inside braces
+                        scopedExpression(builder, recLevel + 1);
+                    } else if (tokenType != SEMI) {
+                        // module alias
+                        module_path(builder, recLevel + 1);
+                    }
+                }
+            } else if (tokenType == EQ || tokenType == COLON) {
+                if (tokenType == COLON) {
+                    // module type
+                    advanceUntil(builder, recLevel + 1, EQ);
+                    tokenType = builder.getTokenType();
+                }
+
+                if (tokenType == EQ) {
+                    // module definition
+                    builder.advanceLexer();
+
+                    tokenType = builder.getTokenType();
+                    if (tokenType == LBRACE) {
+                        // scoped body, anything inside braces
+                        scopedExpression(builder, recLevel + 1);
+                    } else if (tokenType != SEMI) {
+                        // module alias
+                        module_path(builder, recLevel + 1);
+                    }
                 }
             } else {
                 builder.mark().error("'=' expected");
             }
         }
-
 
         endExpression(builder);
         exit_section_(builder, moduleMarker, MODULE_EXPRESSION, true);
@@ -478,14 +506,50 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         }
     }
 
+    private static void parenExpression(PsiBuilder builder, int recLevel) {
+        if (!recursion_guard_(builder, recLevel, "skip paren")) {
+            return;
+        }
+
+        IElementType tokenType;
+        while (true) {
+            builder.advanceLexer();
+            tokenType = builder.getTokenType();
+            if (RPAREN == tokenType) {
+                builder.advanceLexer();
+                return;
+            }
+            if (LBRACE == tokenType) {
+                scopedExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
+            } else if (LPAREN == tokenType) {
+                parenExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
+            }
+            if (isStartExpression(tokenType)) {
+                break;
+            }
+        }
+    }
+
     private static void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
+        if (!recursion_guard_(builder, recLevel, "advance until")) {
+            return;
+        }
+
         IElementType tokenType;
         while (true) {
             builder.advanceLexer();
             tokenType = builder.getTokenType();
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
-            } else if (tokenType == null || tokenType == SEMI || tokenType == nextTokenType) {
+                tokenType = builder.getTokenType();
+            } else if (LPAREN == tokenType) {
+                parenExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
+            }
+
+            if (tokenType == null || tokenType == SEMI || tokenType == nextTokenType) {
                 break;
             }
         }
