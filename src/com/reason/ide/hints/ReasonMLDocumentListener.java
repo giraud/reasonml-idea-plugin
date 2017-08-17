@@ -22,6 +22,7 @@ import io.reactivex.subjects.Subject;
 import java.awt.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -48,12 +49,19 @@ public class ReasonMLDocumentListener implements DocumentListener {
                         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                         if (psiFile != null) {
                             Collection<ReasonMLLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLet.class);
-                            List<LogicalPosition> positions = letStatements.stream().map(letStatement -> {
-                                // Found a let statement, try to get its type
-                                ReasonMLValueName letName = letStatement.getLetName();
-                                int nameOffset = letName.getTextOffset();
-                                return selectedTextEditor.offsetToLogicalPosition(nameOffset);
-                            }).collect(Collectors.toList());
+                            List<LogicalPosition> positions = letStatements.stream().
+                                    map(letStatement -> {
+                                        // Found a let statement, try to get its type
+                                        ReasonMLValueName letName = letStatement.getLetName();
+                                        if (letName == null) {
+                                            return null;
+                                        }
+
+                                        int nameOffset = letName.getTextOffset();
+                                        return selectedTextEditor.offsetToLogicalPosition(nameOffset);
+                                    }).
+                                    filter(Objects::nonNull).
+                                    collect(Collectors.toList());
 
                             if (!positions.isEmpty()) {
                                 MerlinQueryTypesTask merlinTask = new MerlinQueryTypesTask(psiFile, letStatements, positions);
