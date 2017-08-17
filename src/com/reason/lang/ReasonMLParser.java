@@ -342,7 +342,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // LET REC? MODULE? (destructure|value_name) expression* (EQ expression | ARROW scoped_expression) SEMI
+    // LET REC? MODULE? (destructure|value_name) expression* (EQ (scoped_)expression | ARROW scoped_expression) SEMI
     // LET REC? MODULE? value_name COLON expression+ SEMI
     // **********
     private static void letExpression(PsiBuilder builder, int recLevel) {
@@ -427,25 +427,19 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 fail(builder, "'=' or '=>' expected");
             }
         } else {
-            if (EQ == tokenType) {
-                builder.advanceLexer();
-                Marker bindingMarker = enter_section_(builder);
+            boolean isFunction = ARROW == tokenType;
+
+            builder.advanceLexer();
+            Marker funMarker = enter_section_(builder);
+
+            tokenType = builder.getTokenType();
+            if (LBRACE == tokenType) {
+                scopedExpression(builder, recLevel + 1);
+            } else {
                 advanceUntilNextStart(builder, recLevel + 1);
-                exit_section_(builder, bindingMarker, LET_BINDING, true);
-            } else if (ARROW == tokenType) {
-                // function detected
-                builder.advanceLexer();
-                Marker funMarker = enter_section_(builder);
-
-                tokenType = builder.getTokenType();
-                if (LBRACE == tokenType) {
-                    scopedExpression(builder, recLevel + 1);
-                } else {
-                    advanceUntilNextStart(builder, recLevel + 1);
-                }
-
-                exit_section_(builder, funMarker, FUN_BODY, true);
             }
+
+            exit_section_(builder, funMarker, isFunction ? FUN_BODY : LET_BINDING, true);
         }
 
         // end of LET
