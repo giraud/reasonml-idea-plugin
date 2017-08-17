@@ -624,11 +624,11 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
             return;
         }
 
-        IElementType tokenType;
-        tokenType = builder.getTokenType();
+        IElementType tokenType = builder.getTokenType();
         if (tokenType == SEMI) {
             builder.advanceLexer();
-        } else {
+        }
+        else if (tokenType != RBRACE) { // Last expression in a scope can also omit semi
             fail(builder, ERR_SEMI_EXPECTED);
         }
     }
