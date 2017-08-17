@@ -14,6 +14,10 @@ import static com.reason.lang.ReasonMLTypes.*;
 public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     private static final String ERR_SEMI_EXPECTED = "';' expected";
+    private static final String ERR_RBRACE_EXPECTED = "'}' expected";
+    private static final String ERR_EQ_EXPECTED = "'=' expected";
+    private static final String ERR_ARROW_EXPECTED = "'=>' expected";
+    private static final String ERR_COLON_EXPECTED = "':' expected";
     private static final String ERR_NAME_LIDENT = "Name must start with a lower case";
     private static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
 
@@ -132,7 +136,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         if (tokenType != SEMI) {
             // =
             if (tokenType != EQ) {
-                builder.mark().error("'=' expected");
+                fail(builder, ERR_EQ_EXPECTED);
             } else {
                 builder.advanceLexer();
             }
@@ -163,7 +167,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // INCLUDE module_path SEMI
+    // INCLUDE module_path (scoped_expression)? SEMI
     // **********
     private static void includeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "include expression")) {
@@ -178,8 +182,15 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         if (tokenType != SEMI) {
             // module path
             module_path(builder, recLevel + 1);
+            tokenType = builder.getTokenType();
+            if (tokenType == LBRACE) {
+                scopedExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
+            }
+            if (tokenType != SEMI) {
+                fail(builder, ERR_SEMI_EXPECTED);
+            }
         }
-
 
         endExpression(builder);
         exit_section_(builder, exprMarker, INCLUDE_EXPRESSION, true);
@@ -231,7 +242,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
                 tokenType = builder.getTokenType();
                 if (tokenType != ARROW) {
-                    builder.mark().error("'=' expected");
+                    fail(builder, ERR_ARROW_EXPECTED);
                 } else {
                     // module definition
                     builder.advanceLexer();
@@ -266,7 +277,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                     }
                 }
             } else {
-                builder.mark().error("'=' expected");
+                fail(builder, ERR_EQ_EXPECTED);
             }
         }
 
@@ -310,7 +321,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         if (tokenType == COLON) {
             builder.advanceLexer();
         } else {
-            builder.mark().error("':' expected");
+            fail(builder, ERR_COLON_EXPECTED);
         }
 
         tokenType = builder.getTokenType();
@@ -413,7 +424,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         tokenType = builder.getTokenType();
         if (EQ != tokenType && ARROW != tokenType) {
             if (!hasTypeDefinition) {
-                builder.mark().error("'=' or '=>' expected");
+                fail(builder, "'=' or '=>' expected");
             }
         } else {
             if (EQ == tokenType) {
@@ -483,7 +494,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
         IElementType tokenType = builder.getTokenType();
         if (tokenType != RBRACE) {
-            builder.mark().error("'}' expected");
+            fail(builder, ERR_RBRACE_EXPECTED);
         } else {
             builder.advanceLexer();
         }
@@ -579,31 +590,22 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
                 if (tokenType == LPAREN) {
                     // Anything until we get to closing paren or semi
-                    builder.advanceLexer();
-                    while (true) {
-                        tokenType = builder.getTokenType();
-                        if (tokenType == SEMI) {
-                            nameMarker.drop();
-                            break;
-                        }
-                        if (tokenType == RPAREN) {
-                            builder.advanceLexer();
-                            exit_section_(builder, nameMarker, MODULE_CONSTR, true);
-                            break;
-                        }
-                        builder.advanceLexer();
-                    }
+                    parenExpression(builder, recLevel + 1);
                     continue;
                 }
-                if (tokenType == SEMI) {
+
+                // a semi or scope is found, stop module path exploration
+                if (tokenType == SEMI || tokenType == LBRACE) {
                     nameMarker.drop();
                     break;
                 }
+
                 if (tokenType == DOT) {
                     nameMarker.drop();
                     builder.advanceLexer();
                     continue;
                 }
+
                 if (tokenType != UIDENT) {
                     builder.advanceLexer();
                     nameMarker.error(ERR_NAME_UPPERCASE);
@@ -633,8 +635,12 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         if (tokenType == SEMI) {
             builder.advanceLexer();
         } else {
-            builder.mark().error(ERR_SEMI_EXPECTED);
+            fail(builder, ERR_SEMI_EXPECTED);
         }
+    }
+
+    private static void fail(PsiBuilder builder, String message) {
+        builder.mark().error(message);
     }
 
     private static class WhitespaceNotifier {
