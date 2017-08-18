@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.reason.Platform;
+import com.reason.ide.ReasonMLNotification;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -86,6 +89,9 @@ public class MerlinProcess implements Closeable {
                 String content = this.reader.readLine();
                 JsonNode jsonNode = this.objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);
+                if (responseNode == null) {
+                    return null;
+                }
                 //System.out.println("<= " + responseNode);
 
                 try {
@@ -100,6 +106,7 @@ public class MerlinProcess implements Closeable {
         }
     }
 
+    @Nullable
     private JsonNode extractResponse(JsonNode merlinResult) {
         JsonNode classField = merlinResult.get("class");
         JsonNode value = merlinResult.get("value");
@@ -109,7 +116,12 @@ public class MerlinProcess implements Closeable {
             return value;
         }
 
-        throw new RuntimeException(value.toString());
+        // Something went wrong with merlin, it can be: failure|error|exception
+        // https://github.com/ocaml/merlin/blob/master/doc/dev/PROTOCOL.md#answers
+        boolean isFailure = "failure".equals(responseType);
+        Notifications.Bus.notify(new ReasonMLNotification("Merlin", responseType, value.toString(), isFailure ? NotificationType.WARNING : NotificationType.ERROR, null));
+
+        return null;
     }
 
     String writeValueAsString(Object value) {
