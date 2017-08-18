@@ -506,7 +506,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 scopedExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
             }
-            if (isStartExpression(tokenType)) {
+            if (isStartExpression(tokenType) || tokenType == RBRACE) {
                 break;
             }
         }
