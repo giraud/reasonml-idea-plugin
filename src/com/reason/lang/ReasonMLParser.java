@@ -29,6 +29,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
 
     public void parseLight(IElementType t, PsiBuilder b) {
         boolean r;
+        //b.setDebugMode(true);
         b = adapt_builder_(t, b, this, null);
         Marker m = enter_section_(b, 0, _COLLAPSE_, null);
         r = reasonFile(b);
@@ -583,6 +584,7 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 IElementType tokenType = builder.getTokenType();
 
                 if (tokenType == LPAREN) {
+                    nameMarker.drop();
                     // Anything until we get to closing paren or semi
                     parenExpression(builder, recLevel + 1);
                     continue;
