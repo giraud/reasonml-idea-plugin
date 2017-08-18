@@ -43,30 +43,36 @@ public class ReasonMLDocumentListener implements DocumentListener {
                         return; // ? not sure about this one
                     }
 
-                    Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-                    if (selectedTextEditor != null) {
-                        Document document = selectedTextEditor.getDocument();
-                        PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-                        if (psiFile != null) {
-                            Collection<ReasonMLLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLet.class);
-                            List<LogicalPosition> positions = letStatements.stream().
-                                    map(letStatement -> {
-                                        // Found a let statement, try to get its type
-                                        ReasonMLValueName letName = letStatement.getLetName();
-                                        if (letName == null) {
-                                            return null;
-                                        }
+                    try {
+                        Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+                        if (selectedTextEditor != null) {
+                            Document document = selectedTextEditor.getDocument();
+                            PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+                            if (psiFile != null) {
+                                Collection<ReasonMLLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLet.class);
+                                List<LogicalPosition> positions = letStatements.stream().
+                                        map(letStatement -> {
+                                            // Found a let statement, try to get its type
+                                            ReasonMLValueName letName = letStatement.getLetName();
+                                            if (letName == null) {
+                                                return null;
+                                            }
 
-                                        int nameOffset = letName.getTextOffset();
-                                        return selectedTextEditor.offsetToLogicalPosition(nameOffset);
-                                    }).
-                                    collect(Collectors.toList());
+                                            int nameOffset = letName.getTextOffset();
+                                            return selectedTextEditor.offsetToLogicalPosition(nameOffset);
+                                        }).
+                                        collect(Collectors.toList());
 
-                            if (!positions.isEmpty()) {
-                                MerlinQueryTypesTask merlinTask = new MerlinQueryTypesTask(psiFile, letStatements, positions);
-                                ApplicationManager.getApplication().executeOnPooledThread(merlinTask); // Let statement has been modified
+                                if (!positions.isEmpty()) {
+                                    MerlinQueryTypesTask merlinTask = new MerlinQueryTypesTask(psiFile, letStatements, positions);
+                                    ApplicationManager.getApplication().executeOnPooledThread(merlinTask); // Let statement has been modified
+                                }
                             }
                         }
+                    }
+                    catch (Error e) {
+                        // might produce an AssertionError when project is disposed but the invokeLater still process that code
+                        // do nothing
                     }
                 }));
     }
