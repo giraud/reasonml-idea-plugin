@@ -12,7 +12,7 @@ This code might change quite a lot or break in the future.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
-- bug: `reformatOnSave` clear undo actions: no undo after saving the file 
+- bug: reformat on save clear undo actions: no undo after saving the file 
 
 ## Features
 
@@ -49,6 +49,9 @@ Integration with reason tools need to be explicitly set with VM properties.
 Note: To edit your `idea[64].vmoptions` you can do it from the console, 
 or via the menu `help > Edit Custom VM Options`. 
 
+:exclamation: you can omit the `reasonReformatOnSave` property if you don't want it, because refmt integration is not ready yet.
+You can still use keyboard mapping.
+
 ### Linux
 
 - Install [reason-cli](https://github.com/reasonml/reason-cli)
@@ -58,6 +61,7 @@ or via the menu `help > Edit Custom VM Options`.
 -DreasonBsb=node_modules/bs-platform/bin/bsb.exe
 -DreasonMerlin=<absolute path to node>/bin/ocamlmerlin
 -DreasonRefmt=<absolute path to node>/bin/refmt
+-DreasonReformatOnSave=true|false
 ```
 
 ### Windows
@@ -68,6 +72,7 @@ or via the menu `help > Edit Custom VM Options`.
 ```properties
 -DreasonBsb=node_modules/bs-platform/bin/bsb.exe
 -DreasonRefmt=<absolute path to your project>/node_modules/bs-platform/bin/refmt.exe
+-DreasonReformatOnSave=true|false
 ```
 
 ## Development
