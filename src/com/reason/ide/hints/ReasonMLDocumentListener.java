@@ -60,7 +60,6 @@ public class ReasonMLDocumentListener implements DocumentListener {
                                         int nameOffset = letName.getTextOffset();
                                         return selectedTextEditor.offsetToLogicalPosition(nameOffset);
                                     }).
-                                    filter(Objects::nonNull).
                                     collect(Collectors.toList());
 
                             if (!positions.isEmpty()) {
