@@ -286,6 +286,61 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         exit_section_(builder, moduleMarker, MODULE_EXPRESSION, true);
     }
 
+    // ***** UIDENT (DOT UIDENT|scoped_expression)* ( (.*) )::constr
+    private static void modulePath(PsiBuilder builder, int recLevel) {
+        if (!recursion_guard_(builder, recLevel, "module path")) {
+            return;
+        }
+
+        Marker marker = enter_section_(builder);
+
+        // First element must be a module name
+        boolean incorrectName = builder.getTokenType() != UIDENT;
+        Marker nameMarker = enter_section_(builder);
+        builder.advanceLexer();
+        if (incorrectName) {
+            nameMarker.error(ERR_NAME_UPPERCASE);
+        } else {
+            exit_section_(builder, nameMarker, MODULE_NAME, true);
+
+            // Then we can have other modules with dot notation
+            while (true) {
+                nameMarker = enter_section_(builder);
+                IElementType tokenType = builder.getTokenType();
+
+                if (tokenType == LPAREN) {
+                    nameMarker.drop();
+                    // Anything until we get to closing paren or semi
+                    parenExpression(builder, recLevel + 1);
+                    continue;
+                }
+
+                // a semi or scope is found, stop module path exploration
+                if (tokenType == SEMI || tokenType == LBRACE) {
+                    nameMarker.drop();
+                    break;
+                }
+
+                if (tokenType == DOT) {
+                    nameMarker.drop();
+                    builder.advanceLexer();
+                    continue;
+                }
+
+                if (tokenType != UIDENT) {
+                    builder.advanceLexer();
+                    nameMarker.error(ERR_NAME_UPPERCASE);
+                    break;
+                }
+
+                builder.advanceLexer();
+                exit_section_(builder, nameMarker, MODULE_NAME, true);
+            }
+        }
+
+        exit_section_(builder, marker, MODULE_PATH, true);
+    }
+
     // **********
     // EXTERNAL external_name COLON expression* SEMI
     private static void externalExpression(PsiBuilder builder, int recLevel) {
@@ -506,6 +561,10 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 scopedExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
             }
+            else if (LPAREN == tokenType) {
+                parenExpression(builder, recLevel + 1);
+                tokenType = builder.getTokenType();
+            }
             if (isStartExpression(tokenType) || tokenType == RBRACE) {
                 break;
             }
@@ -521,10 +580,8 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
         while (true) {
             builder.advanceLexer();
             tokenType = builder.getTokenType();
-            if (RPAREN == tokenType) {
-                builder.advanceLexer();
-                return;
-            }
+
+            // If a new scope is found, recursively process it
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
@@ -532,8 +589,11 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 parenExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
             }
-            if (isStartExpression(tokenType)) {
-                break;
+
+            // Advance until a right paren is found, or nothing else is found
+            if (RPAREN == tokenType || tokenType == null) {
+                builder.advanceLexer();
+                return;
             }
         }
     }
@@ -559,61 +619,6 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
                 break;
             }
         }
-    }
-
-    // ***** UIDENT (DOT UIDENT|scoped_expression)* ( (.*) )::constr
-    private static void modulePath(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "module path")) {
-            return;
-        }
-
-        Marker marker = enter_section_(builder);
-
-        // First element must be a module name
-        boolean incorrectName = builder.getTokenType() != UIDENT;
-        Marker nameMarker = enter_section_(builder);
-        builder.advanceLexer();
-        if (incorrectName) {
-            nameMarker.error(ERR_NAME_UPPERCASE);
-        } else {
-            exit_section_(builder, nameMarker, MODULE_NAME, true);
-
-            // Then we can have other modules with dot notation
-            while (true) {
-                nameMarker = enter_section_(builder);
-                IElementType tokenType = builder.getTokenType();
-
-                if (tokenType == LPAREN) {
-                    nameMarker.drop();
-                    // Anything until we get to closing paren or semi
-                    parenExpression(builder, recLevel + 1);
-                    continue;
-                }
-
-                // a semi or scope is found, stop module path exploration
-                if (tokenType == SEMI || tokenType == LBRACE) {
-                    nameMarker.drop();
-                    break;
-                }
-
-                if (tokenType == DOT) {
-                    nameMarker.drop();
-                    builder.advanceLexer();
-                    continue;
-                }
-
-                if (tokenType != UIDENT) {
-                    builder.advanceLexer();
-                    nameMarker.error(ERR_NAME_UPPERCASE);
-                    break;
-                }
-
-                builder.advanceLexer();
-                exit_section_(builder, nameMarker, MODULE_NAME, true);
-            }
-        }
-
-        exit_section_(builder, marker, MODULE_PATH, true);
     }
 
     private static boolean isStartExpression(IElementType tokenType) {
