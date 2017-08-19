@@ -313,7 +313,12 @@ public class RmlParser implements PsiParser, LightPsiParser {
                     // Anything until we get to closing paren or semi
                     parenExpression(builder, recLevel + 1);
                     continue;
+                } else if (tokenType == LBRACE) {
+                    nameMarker.drop();
+                    // scoped body, anything inside braces
+                    scopedExpression(builder, recLevel + 1);
                 }
+
 
                 // a semi or scope is found, stop module path exploration
                 if (tokenType == SEMI || tokenType == LBRACE) {
@@ -537,6 +542,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 letExpression(builder, recLevel + 1);
             } else if (tokenType == LBRACE) {
                 scopedExpression(builder, recLevel + 1);
+            } else if (tokenType == LPAREN) {
+                parenExpression(builder, recLevel + 1);
             } else {
                 builder.advanceLexer();
             }
@@ -560,8 +567,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
-            }
-            else if (LPAREN == tokenType) {
+            } else if (LPAREN == tokenType) {
                 parenExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
             }
