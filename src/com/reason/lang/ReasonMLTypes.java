@@ -47,6 +47,7 @@ public interface ReasonMLTypes {
     IElementType IF = new ReasonMLTokenType("IF");
     IElementType INCLUDE = new ReasonMLTokenType("INCLUDE");
     IElementType INT = new ReasonMLTokenType("INT");
+    IElementType LARRAY = new ReasonMLTokenType("LARRAY");
     IElementType LBRACE = new ReasonMLTokenType("LBRACE");
     IElementType LBRACKET = new ReasonMLTokenType("LBRACKET");
     IElementType LET = new ReasonMLTokenType("LET");
@@ -70,6 +71,7 @@ public interface ReasonMLTypes {
     IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
     IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
     IElementType QUOTE = new ReasonMLTokenType("QUOTE");
+    IElementType RARRAY = new ReasonMLTokenType("RARRAY");
     IElementType RBRACE = new ReasonMLTokenType("RBRACE");
     IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
     IElementType REC = new ReasonMLTokenType("REC");

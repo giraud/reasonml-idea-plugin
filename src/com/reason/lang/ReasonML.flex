@@ -100,7 +100,11 @@ LITERAL_MODIFIER=[G-Zg-z]
     "::"   { return SHORTCUT; }
     "=>"   { return ARROW; }
     "|>"   { return PIPE_FORWARD; }
-    "@"    { return ARROBASE; }
+    "/>"   { return AUTO_CLOSE_TAG; }
+    "</"   { return CLOSE_TAG; }
+    "[|"   { return LARRAY; }
+    "|]"   { return RARRAY; }
+    "()"   { return UNIT; }
 
     "===" { return EQEQEQ; }
     "=="  { return EQEQ; }
@@ -117,14 +121,13 @@ LITERAL_MODIFIER=[G-Zg-z]
     "}"   { return RBRACE; }
     "["   { return LBRACKET; }
     "]"   { return RBRACKET; }
+    "@"   { return ARROBASE; }
     "#"   { return SHARP; }
     "?"   { return QUESTION_MARK; }
     "!"   { return EXCLAMATION_MARK; }
     "`"   { return BACKTICK; }
     "_"   { return UNDERSCORE; }
 
-    "/>" { return AUTO_CLOSE_TAG; }
-    "</" { return CLOSE_TAG; }
     "<"  { return LT; }
     ">"  { return GT; }
 
