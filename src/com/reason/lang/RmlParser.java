@@ -9,9 +9,9 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ReasonMLTypes.*;
+import static com.reason.lang.RmlTypes.*;
 
-public class ReasonMLParser implements PsiParser, LightPsiParser {
+public class RmlParser implements PsiParser, LightPsiParser {
 
     private static final String ERR_SEMI_EXPECTED = "';' expected";
     private static final String ERR_RBRACE_EXPECTED = "'}' expected";
@@ -22,18 +22,18 @@ public class ReasonMLParser implements PsiParser, LightPsiParser {
     private static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
 
     @NotNull
-    public ASTNode parse(@NotNull IElementType t, @NotNull PsiBuilder b) {
-        parseLight(t, b);
-        return b.getTreeBuilt();
+    public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
+        parseLight(elementType, builder);
+        return builder.getTreeBuilt();
     }
 
-    public void parseLight(IElementType t, PsiBuilder b) {
+    public void parseLight(IElementType elementType, PsiBuilder builder) {
         boolean r;
         //b.setDebugMode(true);
-        b = adapt_builder_(t, b, this, null);
-        Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-        r = reasonFile(b);
-        exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
+        builder = adapt_builder_(elementType, builder, this, null);
+        Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
+        r = reasonFile(builder);
+        exit_section_(builder, 0, m, elementType, r, true, TRUE_CONDITION);
     }
 
     private static boolean reasonFile(PsiBuilder builder) {

@@ -1,9 +1,9 @@
 import com.intellij.testFramework.ParsingTestCase;
-import com.reason.lang.ReasonMLParserDefinition;
+import com.reason.lang.RmlParserDefinition;
 
 public class LetConstantsTest extends ParsingTestCase {
     public LetConstantsTest() {
-        super("", "re", new ReasonMLParserDefinition());
+        super("", "re", new RmlParserDefinition());
     }
 
     public void testLetConstants() {

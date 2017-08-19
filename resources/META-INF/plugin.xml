@@ -53,7 +53,7 @@
         <fileTypeFactory implementation="com.reason.ide.ReasonMLInterfaceFileTypeFactory"/>
         <fileTypeFactory implementation="com.reason.ide.ReasonMLFileTypeFactory"/>
 
-        <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.ReasonMLParserDefinition"/>
+        <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.highlight.ReasonMLSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>

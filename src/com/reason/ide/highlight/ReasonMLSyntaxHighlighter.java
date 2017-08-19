@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.ReasonMLLexerAdapter;
+import com.reason.lang.RmlLexerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.reason.lang.ReasonMLTypes.*;
+import static com.reason.lang.RmlTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH);
@@ -50,7 +50,7 @@ public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new ReasonMLLexerAdapter();
+        return new RmlLexerAdapter();
     }
 
     @NotNull

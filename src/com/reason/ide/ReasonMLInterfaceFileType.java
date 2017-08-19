@@ -2,7 +2,7 @@ package com.reason.ide;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.reason.icons.ReasonMLIcons;
-import com.reason.lang.ReasonMLLanguage;
+import com.reason.lang.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +12,7 @@ public class ReasonMLInterfaceFileType extends LanguageFileType {
     public static final ReasonMLInterfaceFileType INSTANCE = new ReasonMLInterfaceFileType();
 
     private ReasonMLInterfaceFileType() {
-        super(ReasonMLLanguage.INSTANCE);
+        super(RmlLanguage.INSTANCE);
     }
 
     @NotNull

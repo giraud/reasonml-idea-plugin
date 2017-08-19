@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.reason.lang.ReasonMLTypes.*;
+import static com.reason.lang.RmlTypes.*;
 
 public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
     @NotNull

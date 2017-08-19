@@ -15,17 +15,17 @@ import com.intellij.psi.tree.TokenSet;
 import com.reason.psi.ReasonMLFile;
 import org.jetbrains.annotations.NotNull;
 
-public class ReasonMLParserDefinition implements ParserDefinition {
+public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(ReasonMLTypes.COMMENT);
-    private static final TokenSet STRINGS = TokenSet.create(ReasonMLTypes.STRING);
+    private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.COMMENT);
+    private static final TokenSet STRINGS = TokenSet.create(RmlTypes.STRING);
 
-    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(ReasonMLLanguage.class));
+    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(RmlLanguage.class));
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new ReasonMLLexerAdapter();
+        return new RmlLexerAdapter();
     }
 
     @NotNull
@@ -45,7 +45,7 @@ public class ReasonMLParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
-        return new ReasonMLParser();
+        return new RmlParser();
     }
 
     @Override

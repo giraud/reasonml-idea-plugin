@@ -4,15 +4,15 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.ReasonMLTypes;
+import com.reason.lang.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ReasonMLPairedBraceMatcher implements PairedBraceMatcher {
     private static BracePair[] PAIRS = new BracePair[]{
-            new BracePair(ReasonMLTypes.LBRACE, ReasonMLTypes.RBRACE, true),
-            new BracePair(ReasonMLTypes.LPAREN, ReasonMLTypes.RPAREN, true),
-            new BracePair(ReasonMLTypes.LBRACKET, ReasonMLTypes.RBRACKET, false),
+            new BracePair(RmlTypes.LBRACE, RmlTypes.RBRACE, true),
+            new BracePair(RmlTypes.LPAREN, RmlTypes.RPAREN, true),
+            new BracePair(RmlTypes.LBRACKET, RmlTypes.RBRACKET, false),
     };
 
     @Override

@@ -4,7 +4,7 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.psi.ReasonMLElementType;
 import com.reason.psi.ReasonMLTokenType;
 
-public interface ReasonMLTypes {
+public interface RmlTypes {
 
     IElementType EXTERNAL_EXPRESSION = new ReasonMLElementType("EXTERNAL_EXPRESSION");
     IElementType MODULE_EXPRESSION = new ReasonMLElementType("MODULE_EXPRESSION");
@@ -15,7 +15,6 @@ public interface ReasonMLTypes {
 
     IElementType LET_BINDING = new ReasonMLElementType("LET_BINDING");
     IElementType MODULE_NAME = new ReasonMLElementType("MODULE_NAME");
-    IElementType MODULE_CONSTR = new ReasonMLElementType("MODULE_CONSTR");
     IElementType MODULE_PATH = new ReasonMLElementType("MODULE_PATH");
     IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
     IElementType SCOPED_EXPR = new ReasonMLElementType("SCOPED_EXPR");
@@ -58,8 +57,6 @@ public interface ReasonMLTypes {
     IElementType MINUS = new ReasonMLTokenType("MINUS");
     IElementType MINUSDOT = new ReasonMLTokenType("MINUSDOT");
     IElementType MODULE = new ReasonMLTokenType("MODULE");
-    //IElementType MUL = new ReasonMLTokenType("MUL");
-    //IElementType MULDOT = new ReasonMLTokenType("MULDOT");
     IElementType MUTABLE = new ReasonMLTokenType("MUTABLE");
     IElementType NONE = new ReasonMLTokenType("NONE");
     IElementType OPEN = new ReasonMLTokenType("OPEN");
