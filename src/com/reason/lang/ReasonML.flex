@@ -1,4 +1,4 @@
-package com.reason;
+package com.reason.lang;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
