@@ -1,6 +1,7 @@
 package com.reason.merlin;
 
 import com.reason.merlin.types.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -9,12 +10,15 @@ public interface MerlinService {
 
     List<MerlinError> errors(String filename);
 
+    @Nullable
     MerlinVersion version();
 
+    @Nullable
     MerlinVersion selectVersion(int version);
 
     void sync(String filename, String buffer);
 
+    @Nullable
     Object dump(String filename, DumpFlag flag);
 
     List<MerlinToken> dumpTokens(String filename);
@@ -25,6 +29,7 @@ public interface MerlinService {
 
     void enableExtensions(String filename, List<String> extensions);
 
+    @Nullable
     Object projectGet();
 
     List<MerlinType> findType(String filename, MerlinPosition position);
