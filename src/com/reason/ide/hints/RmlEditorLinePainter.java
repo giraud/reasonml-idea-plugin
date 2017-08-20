@@ -25,7 +25,7 @@ import java.awt.*;
 import java.util.Collection;
 import java.util.Collections;
 
-public class ReasonMLEditorLinePainter extends EditorLinePainter {
+public class RmlEditorLinePainter extends EditorLinePainter {
 
     @Override
     public Collection<LineExtensionInfo> getLineExtensions(@NotNull Project project, @NotNull VirtualFile file, int lineNumber) {

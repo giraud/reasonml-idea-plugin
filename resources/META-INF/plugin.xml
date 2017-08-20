@@ -10,7 +10,7 @@
 
     <change-notes><![CDATA[
       <ul>
-      <li>Improved parser: fixing missing parser code for 'if' and 'unit'</li>
+      <li>Types are now displayed when editor get focus</li>
       </ul>
 
       <p>Work in progress. This is a plugin preview, use for tests only.</p>
@@ -37,7 +37,7 @@
 
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.ReasonMLProjectTracker</implementation-class>
+            <implementation-class>com.reason.ide.RmlProjectTracker</implementation-class>
         </component>
         <component>
             <implementation-class>com.reason.bs.BucklescriptCompiler</implementation-class>
@@ -70,7 +70,7 @@
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
 
         <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
-        <editor.linePainter implementation="com.reason.ide.hints.ReasonMLEditorLinePainter"/>
+        <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BucklescriptToolWindowFactory"/>
 

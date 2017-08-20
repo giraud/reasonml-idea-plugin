@@ -13,6 +13,7 @@ public class ReasonMLPairedBraceMatcher implements PairedBraceMatcher {
             new BracePair(RmlTypes.LBRACE, RmlTypes.RBRACE, true),
             new BracePair(RmlTypes.LPAREN, RmlTypes.RPAREN, true),
             new BracePair(RmlTypes.LBRACKET, RmlTypes.RBRACKET, false),
+            new BracePair(RmlTypes.LARRAY, RmlTypes.RARRAY, false),
     };
 
     @Override
