@@ -58,7 +58,7 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
             if (error.start != null) {
                 int startOffset = lineNumbering.positionToOffset(error.start);
                 int endOffset = lineNumbering.positionToOffset(error.end);
-                holder.createAnnotation(severities.get(error.type), new TextRangeInterval(startOffset, endOffset), error.message);
+                holder.createAnnotation(severities.get(error.type), new TextRangeInterval(startOffset, endOffset), "[merlin] " + error.message);
             }
         }
     }
