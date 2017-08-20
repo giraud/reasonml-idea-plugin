@@ -1,10 +1,8 @@
 List of todos
 
-- [ ] Implements a BNF grammar that supports reason syntax
-- [ ] reformatOnSave with undo
-- [ ] use runReadAction and get rid of the exception
-- [ ] rename tokens
-- [ ] renaming a file renames the module calls
-- [ ] collapse functions / types
-- [ ] navigation between modules
-- [ ] inlining variables
+- :x: reformatOnSave with undo
+- :x: renaming a file renames the module calls
+- :x: navigation between modules
+
+- :white_check_mark: Implements a basic parser that supports reason syntax
+- :white_check_mark: collapse functions / types

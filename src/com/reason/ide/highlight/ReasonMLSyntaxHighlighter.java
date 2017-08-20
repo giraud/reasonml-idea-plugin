@@ -19,7 +19,7 @@ import static com.reason.lang.RmlTypes.*;
 
 public class ReasonMLSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO);
-    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQ, EQEQEQ, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT, SLASH, SLASHDOT, CARRET, ARROBASE);
+    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQ, EQEQEQ, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT, SLASH, SLASHDOT, CARRET, ARROBASE, PIPE_FORWARD);
     private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 
     public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
