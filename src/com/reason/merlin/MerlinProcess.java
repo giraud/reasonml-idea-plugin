@@ -97,7 +97,11 @@ public class MerlinProcess implements Closeable {
                 try {
                     return this.objectMapper.convertValue(responseNode, type);
                 } catch (RuntimeException e) {
-                    System.err.println("Conversion error of request " + content + "\n  " + e.getMessage());
+                    System.err.println("!! Request conversion error" );
+                    System.err.println("        file: " + filename);
+                    System.err.println("     request: " + filename);
+                    System.err.println("     content: " + content);
+                    System.err.println("         msg: " + e.getMessage());
                     throw e;
                 }
             }

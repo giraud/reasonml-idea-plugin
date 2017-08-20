@@ -66,7 +66,7 @@
         <lang.psiStructureViewFactory language="ReasonML"
                                       implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.ReasonMLCommenter"/>
-        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.ReasonMLFoldingBuilder"/>
+        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
 
         <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>

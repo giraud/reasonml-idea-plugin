@@ -26,6 +26,11 @@ public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferre
         return findChildByClass(ReasonMLFunBody.class);
     }
 
+    @Nullable
+    public ReasonMLLetBinding getLetBinding() {
+        return findChildByClass(ReasonMLLetBinding.class);
+    }
+
     private boolean isFunction() {
         return findChildByClass(ReasonMLFunBody.class) != null;
     }
@@ -78,5 +83,4 @@ public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferre
             }
         };
     }
-
 }

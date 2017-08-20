@@ -8,10 +8,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.psi.ReasonMLFunBody;
-import com.reason.psi.ReasonMLLet;
-import com.reason.psi.ReasonMLScopedExpr;
-import com.reason.psi.ReasonMLType;
+import com.reason.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +17,7 @@ import java.util.List;
 
 import static com.reason.lang.RmlTypes.*;
 
-public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
+public class RmlFoldingBuilder extends FoldingBuilderEx {
     @NotNull
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
@@ -38,14 +35,11 @@ public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
                 }
             }
             else if (LET_EXPRESSION.equals(elementType)) {
-                ReasonMLFunBody functionBody = ((ReasonMLLet) element).getFunctionBody();
-                if (functionBody != null) {
-                    descriptors.add(fold(functionBody));
-                }
+                foldLet(descriptors, (ReasonMLLet) element);
             }
             else if (MODULE.equals(elementType)) {
-                PsiElement lBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(element, LBRACE);
-                PsiElement rBrace = ReasonMLPsiTreeUtil.getNextSiblingOfType(lBrace, RBRACE);
+                PsiElement lBrace = RmlPsiTreeUtil.getNextSiblingOfType(element, LBRACE);
+                PsiElement rBrace = RmlPsiTreeUtil.getNextSiblingOfType(lBrace, RBRACE);
                 if (lBrace != null && rBrace != null) {
                     FoldingDescriptor fold = foldBetween(element, lBrace, rBrace, 5);
                     if (fold != null)
@@ -58,13 +52,25 @@ public class ReasonMLFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
+    private void foldLet(List<FoldingDescriptor> descriptors, ReasonMLLet letExpression) {
+        ReasonMLFunBody functionBody = letExpression.getFunctionBody();
+        if (functionBody != null) {
+            descriptors.add(fold(functionBody));
+        } else {
+            ReasonMLLetBinding letBinding = letExpression.getLetBinding();
+            if (letBinding != null) {
+                descriptors.add((fold(letBinding)));
+            }
+        }
+    }
+
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
         if (node.getElementType().equals(COMMENT)) {
             return "/*...*/";
         }
-        return "...";
+        return "{...}";
     }
 
     @Override
