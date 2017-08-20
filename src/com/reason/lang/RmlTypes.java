@@ -40,10 +40,12 @@ public interface RmlTypes {
     IElementType EXTERNAL = new ReasonMLTokenType("EXTERNAL");
     IElementType FALSE = new ReasonMLTokenType("FALSE");
     IElementType FLOAT = new ReasonMLTokenType("FLOAT");
+    IElementType FOR = new ReasonMLElementType("FOR");
     IElementType FUN = new ReasonMLTokenType("FUN");
     IElementType FUN_BODY = new ReasonMLTokenType("FUN_BODY");
     IElementType GT = new ReasonMLTokenType("GT");
     IElementType IF = new ReasonMLTokenType("IF");
+    IElementType IN = new ReasonMLElementType("IN");
     IElementType INCLUDE = new ReasonMLTokenType("INCLUDE");
     IElementType INT = new ReasonMLTokenType("INT");
     IElementType LARRAY = new ReasonMLTokenType("LARRAY");
@@ -68,6 +70,7 @@ public interface RmlTypes {
     IElementType PLUSDOT = new ReasonMLTokenType("PLUSDOT");
     IElementType QUESTION_MARK = new ReasonMLTokenType("QUESTION_MARK");
     IElementType QUOTE = new ReasonMLTokenType("QUOTE");
+    IElementType RAISE = new ReasonMLElementType("RAISE");
     IElementType RARRAY = new ReasonMLTokenType("RARRAY");
     IElementType RBRACE = new ReasonMLTokenType("RBRACE");
     IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
@@ -83,7 +86,9 @@ public interface RmlTypes {
     IElementType STARDOT = new ReasonMLTokenType("STARDOT");
     IElementType STRING = new ReasonMLTokenType("STRING");
     IElementType SWITCH = new ReasonMLTokenType("SWITCH");
+    IElementType TO = new ReasonMLElementType("TO");
     IElementType TRUE = new ReasonMLTokenType("TRUE");
+    IElementType TRY = new ReasonMLTokenType("TRY");
     IElementType TYPE = new ReasonMLTokenType("TYPE");
     IElementType UIDENT = new ReasonMLTokenType("UIDENT");
     IElementType UNDERSCORE = new ReasonMLTokenType("UNDERSCORE");

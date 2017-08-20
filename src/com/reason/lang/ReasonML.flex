@@ -78,6 +78,11 @@ LITERAL_MODIFIER=[G-Zg-z]
     "switch"     { return SWITCH; }
     "as"         { return AS; }
     "rec"        { return REC; }
+    "try"        { return TRY; }
+    "raise"      { return RAISE; }
+    "for"        { return FOR; }
+    "in"         { return IN; }
+    "to"         { return TO; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }
