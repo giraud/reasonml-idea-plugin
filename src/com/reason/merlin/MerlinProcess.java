@@ -129,9 +129,11 @@ public class MerlinProcess implements Closeable {
 
         // Something went wrong with merlin, it can be: failure|error|exception
         // https://github.com/ocaml/merlin/blob/master/doc/dev/PROTOCOL.md#answers
-        boolean isFailure = "failure".equals(responseType);
-        Notifications.Bus.notify(new ReasonMLNotification("Merlin", responseType, value.toString(), isFailure ? NotificationType.WARNING : NotificationType.ERROR, null));
+        if ("error".equals(responseType)) {
+            Notifications.Bus.notify(new ReasonMLNotification("Merlin", responseType, value.toString(), NotificationType.ERROR, null));
+        }
 
+        // failure or error should not be reported to the user
         return null;
     }
 
