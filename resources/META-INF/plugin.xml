@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.16</version>
+    <version>0.17</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
@@ -12,6 +12,7 @@
       <ul>
       <li>Types are now displayed when editor get focus</li>
       <li>Don't report merlin exceptions to user</li>
+      <li>Fixed merlin communication (I hope)</li>
       </ul>
 
       <p>Work in progress. This is a plugin preview, use for tests only.</p>
