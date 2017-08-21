@@ -41,8 +41,9 @@ class MerlinQueryTypesTask implements Runnable {
             if (position != null) {
                 List<MerlinType> types = merlin.findType(filename, new MerlinPosition(position));
                 if (!types.isEmpty()) {
-                    //System.out.println(letStatement.getLetBinding().getValueName().getText() + ": " + types.stream().map(merlinType -> merlinType.type).reduce("", (s, s2) -> s + ", " + s2));
-                    letStatement.setInferredType(types.get(0).type);
+                    // System.out.println(letStatement.getLetName().getText() + ": " + types.stream().map(merlinType -> merlinType.type).reduce("", (s, s2) -> s + s2.replaceAll("\n", "").replaceAll("\\s+", "") + ", "));
+                    // Display only the first one, might be wrong !?
+                    letStatement.setInferredType(types.get(0).type.replaceAll("\n", "").replaceAll("\\s+", " "));
                 }
             }
             i++;

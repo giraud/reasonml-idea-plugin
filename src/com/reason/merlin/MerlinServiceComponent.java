@@ -135,7 +135,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     @Override
     public void enableExtensions(String filename, List<String> extensions) {
         List<String> collect = extensions.stream().map(s -> m_merlin.writeValueAsString(s)).collect(toList());
-        m_merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"extension\", \"enable\", [" + join(collect) + "]]");
+        m_merlin.makeRequest(OBJECT_TYPE_REFERENCE, filename, "[\"extension\", \"enable\", [" + Joiner.join(collect) + "]]");
     }
 
     @Nullable
@@ -165,16 +165,4 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         return merlinCompletion == null ? NO_COMPLETION : merlinCompletion;
     }
 
-    private String join(Iterable<String> items) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (String item : items) {
-            if (!first) {
-                sb.append(",");
-            }
-            sb.append(item);
-            first = false;
-        }
-        return sb.toString();
-    }
 }

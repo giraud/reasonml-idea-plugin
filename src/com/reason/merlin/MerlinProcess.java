@@ -62,7 +62,7 @@ public class MerlinProcess implements Closeable {
     }
 
     @Nullable
-    synchronized <R> R makeRequest(TypeReference<R> type, @Nullable String filename, String query) {
+    <R> R makeRequest(TypeReference<R> type, @Nullable String filename, String query) {
         if (m_merlin == null) {
             return null;
         }
@@ -80,13 +80,16 @@ public class MerlinProcess implements Closeable {
             m_writer.write(request);
             m_writer.flush();
 
+            // just a little tempo to have a chance to get data from merlin
+            // Not perfect, but might be enough for now
+            InterruptedSleep(50);
+
             if (m_errorReader.ready()) {
                 StringBuilder errorBuffer = new StringBuilder();
                 m_errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
                 throw new RuntimeException(errorBuffer.toString());
             } else {
                 String content = m_reader.readLine();
-                // System.out.println("<= content: " + content);
                 JsonNode jsonNode = m_objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);
                 if (responseNode == null) {
@@ -142,6 +145,14 @@ public class MerlinProcess implements Closeable {
             return m_objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void InterruptedSleep(int timeToWait) {
+        try {
+            Thread.sleep(timeToWait);
+        } catch (InterruptedException e) {
+            // Do nothing
         }
     }
 }
