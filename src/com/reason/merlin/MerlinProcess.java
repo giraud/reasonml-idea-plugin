@@ -89,6 +89,7 @@ public class MerlinProcess implements Closeable {
                 m_errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
                 throw new RuntimeException(errorBuffer.toString());
             } else {
+                waitUntilReady();
                 String content = m_reader.readLine();
                 JsonNode jsonNode = m_objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);
@@ -114,6 +115,20 @@ public class MerlinProcess implements Closeable {
             System.err.println("     request: " + query);
             System.err.println("         msg: " + e.getMessage());
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void waitUntilReady() throws IOException {
+        long start = System.currentTimeMillis();
+        boolean isReady = m_reader.ready();
+        while (!isReady) {
+            if (60000 < (System.currentTimeMillis() - start)) {
+                // max 1s
+                isReady = true;
+            } else {
+                InterruptedSleep(20);
+                isReady = m_reader.ready();
+            }
         }
     }
 
