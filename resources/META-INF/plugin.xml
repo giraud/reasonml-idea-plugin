@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.17</version>
+    <version>0.18</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
@@ -9,13 +9,18 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version 0.18</b>
+      <ul>
+      <li>Reformat action with undo</li>
+      </ul>
+      <b>version 0.17</b>
       <ul>
       <li>Types are now displayed when editor get focus</li>
       <li>Don't report merlin exceptions to user</li>
       <li>Fixed merlin communication (I hope)</li>
       </ul>
 
-      <p>Work in progress. This is a plugin preview, use for tests only.</p>
+      <p>Work in progress.</p>
       <p>To see how to integrate reason tools (merlin, refmt), go to the website.</p>
     ]]>
     </change-notes>
