@@ -5,7 +5,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Platform;
-import com.reason.ide.ReasonMLNotification;
+import com.reason.ide.RmlNotification;
 
 import java.io.*;
 
@@ -71,7 +71,7 @@ class RefmtProcess {
                 StringBuilder er = new StringBuilder();
                 errReader.lines().forEach(line -> er.append(line).append(/*System.lineSeparator() ??*/"\n"));
                 // todo: transform into an annotation
-                Notifications.Bus.notify(new ReasonMLNotification("Reformat", er.toString(), NotificationType.ERROR));
+                Notifications.Bus.notify(new RmlNotification("Reformat", er.toString(), NotificationType.ERROR));
             } else {
                 StringBuilder refmtBuffer = new StringBuilder();
                 reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));

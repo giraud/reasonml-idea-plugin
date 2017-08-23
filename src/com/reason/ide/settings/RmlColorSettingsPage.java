@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Map;
 
-public class ReasonMLColorSettingsPage implements ColorSettingsPage {
+public class RmlColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comment", RmlSyntaxHighlighter.COMMENT_),
             new AttributesDescriptor("Module name", RmlSyntaxHighlighter.MODULE_NAME_),

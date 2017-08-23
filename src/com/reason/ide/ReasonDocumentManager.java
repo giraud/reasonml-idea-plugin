@@ -20,7 +20,7 @@ public class ReasonDocumentManager implements ApplicationComponent {
     public void initComponent() {
         Boolean reasonReformatOnSave = Boolean.valueOf(System.getProperty("reasonReformatOnSave"));
         if (reasonReformatOnSave) {
-            Notifications.Bus.notify(new ReasonMLNotification("Refmt", "reformat on save is enabled", NotificationType.INFORMATION));
+            Notifications.Bus.notify(new RmlNotification("Refmt", "reformat on save is enabled", NotificationType.INFORMATION));
             ReformatOnSave handler = new ReformatOnSave();
             ApplicationManager.getApplication().getMessageBus().connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, handler);
         }

@@ -3,7 +3,7 @@ package com.reason.psi;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.ide.ReasonMLFileType;
+import com.reason.ide.RmlFileType;
 import com.reason.lang.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public class ReasonMLFile extends PsiFileBase {
     @NotNull
     @Override
     public FileType getFileType() {
-        return ReasonMLFileType.INSTANCE;
+        return RmlFileType.INSTANCE;
     }
 
     @Override

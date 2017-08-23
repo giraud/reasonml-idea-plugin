@@ -3,7 +3,7 @@ package com.reason.ide;
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;
 
-public class ReasonMLCommenter  implements Commenter {
+public class RmlCommenter implements Commenter {
     @Nullable
     @Override
     public String getLineCommentPrefix() {

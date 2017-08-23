@@ -8,7 +8,7 @@ import com.reason.lang.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ReasonMLPairedBraceMatcher implements PairedBraceMatcher {
+public class RmlPairedBraceMatcher implements PairedBraceMatcher {
     private static BracePair[] PAIRS = new BracePair[]{
             new BracePair(RmlTypes.LBRACE, RmlTypes.RBRACE, true),
             new BracePair(RmlTypes.LPAREN, RmlTypes.RPAREN, true),
@@ -16,6 +16,7 @@ public class ReasonMLPairedBraceMatcher implements PairedBraceMatcher {
             new BracePair(RmlTypes.LARRAY, RmlTypes.RARRAY, false),
     };
 
+    @NotNull
     @Override
     public BracePair[] getPairs() {
         return PAIRS;

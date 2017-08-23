@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.Platform;
-import com.reason.ide.ReasonMLNotification;
+import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -148,7 +148,7 @@ public class MerlinProcess implements Closeable {
         // Something went wrong with merlin, it can be: failure|error|exception
         // https://github.com/ocaml/merlin/blob/master/doc/dev/PROTOCOL.md#answers
         if ("error".equals(responseType)) {
-            Notifications.Bus.notify(new ReasonMLNotification("Merlin", responseType, value.toString(), NotificationType.ERROR, null));
+            Notifications.Bus.notify(new RmlNotification("Merlin", responseType, value.toString(), NotificationType.ERROR, null));
         }
 
         // failure or error should not be reported to the user

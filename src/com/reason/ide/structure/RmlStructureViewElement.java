@@ -13,15 +13,16 @@ import com.reason.psi.ReasonMLLet;
 import com.reason.psi.ReasonMLModule;
 import com.reason.psi.ReasonMLScopedExpr;
 import com.reason.psi.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReasonMLStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
+public class RmlStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private PsiElement element;
 
-    ReasonMLStructureViewElement(PsiElement element) {
+    RmlStructureViewElement(PsiElement element) {
         this.element = element;
     }
 
@@ -49,16 +50,28 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
                 ((NavigationItem) element).canNavigateToSource();
     }
 
+    @NotNull
     @Override
     public String getAlphaSortKey() {
-        return element instanceof PsiNamedElement ? ((PsiNamedElement) element).getName() : null;
+        if (element instanceof PsiNamedElement) {
+            String name = ((PsiNamedElement) element).getName();
+            return name == null ? "" : name;
+        }
+        return "";
     }
 
+    @NotNull
     @Override
     public ItemPresentation getPresentation() {
-        return element instanceof NavigationItem ? ((NavigationItem) element).getPresentation() : null;
+        if (element instanceof NavigationItem) {
+            ItemPresentation presentation = ((NavigationItem) element).getPresentation();
+            if (presentation != null)
+            return presentation;
+        }
+        throw new RuntimeException("Unknown presentation");
     }
 
+    @NotNull
     @Override
     public TreeElement[] getChildren() {
         if (element instanceof ReasonMLFile) {
@@ -73,22 +86,22 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
 
                 if (externals != null) {
                     for (ReasonMLExternal external : externals) {
-                        treeElements.add(new ReasonMLStructureViewElement(external));
+                        treeElements.add(new RmlStructureViewElement(external));
                     }
                 }
                 if (types != null) {
                     for (ReasonMLType type : types) {
-                        treeElements.add(new ReasonMLStructureViewElement(type));
+                        treeElements.add(new RmlStructureViewElement(type));
                     }
                 }
                 if (modules != null) {
                     for (ReasonMLModule module : modules) {
-                        treeElements.add(new ReasonMLStructureViewElement(module));
+                        treeElements.add(new RmlStructureViewElement(module));
                     }
                 }
                 if (lets != null) {
                     for (ReasonMLLet let : lets) {
-                        treeElements.add(new ReasonMLStructureViewElement(let));
+                        treeElements.add(new RmlStructureViewElement(let));
                     }
                 }
 
@@ -116,22 +129,22 @@ public class ReasonMLStructureViewElement implements StructureViewTreeElement, S
 
             if (types != null) {
                 for (ReasonMLType type : types) {
-                    treeElements.add(new ReasonMLStructureViewElement(type));
+                    treeElements.add(new RmlStructureViewElement(type));
                 }
             }
             if (externals != null) {
                 for (ReasonMLExternal external : externals) {
-                    treeElements.add(new ReasonMLStructureViewElement(external));
+                    treeElements.add(new RmlStructureViewElement(external));
                 }
             }
             if (modules != null) {
                 for (ReasonMLModule module : modules) {
-                    treeElements.add(new ReasonMLStructureViewElement(module));
+                    treeElements.add(new RmlStructureViewElement(module));
                 }
             }
             if (lets != null) {
                 for (ReasonMLLet let : lets) {
-                    treeElements.add(new ReasonMLStructureViewElement(let));
+                    treeElements.add(new RmlStructureViewElement(let));
                 }
             }
 

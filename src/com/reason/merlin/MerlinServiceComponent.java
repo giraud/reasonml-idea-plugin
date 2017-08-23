@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.Platform;
-import com.reason.ide.ReasonMLNotification;
+import com.reason.ide.RmlNotification;
 import com.reason.merlin.types.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,16 +53,16 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         try {
             m_merlin = new MerlinProcess(merlinBin);
         } catch (IOException e) {
-            Notifications.Bus.notify(new ReasonMLNotification("Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
             return;
         }
 
         // Automatically select latest version
         try {
             MerlinVersion merlinVersion = selectVersion(3);
-            Notifications.Bus.notify(new ReasonMLNotification("Merlin", "Found", merlinVersion.toString(), NotificationType.INFORMATION, null));
+            Notifications.Bus.notify(new RmlNotification("Merlin", "Found", merlinVersion.toString(), NotificationType.INFORMATION, null));
         } catch (UncheckedIOException e) {
-            Notifications.Bus.notify(new ReasonMLNotification("Merlin", "Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR, null));
+            Notifications.Bus.notify(new RmlNotification("Merlin", "Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR, null));
             disposeComponent();
         }
     }

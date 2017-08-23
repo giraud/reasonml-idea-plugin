@@ -9,15 +9,15 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ReasonMLStructureViewFactory implements PsiStructureViewFactory {
+public class RmlStructureViewFactory implements PsiStructureViewFactory {
     @Nullable
     @Override
-    public StructureViewBuilder getStructureViewBuilder(final PsiFile psiFile) {
+    public StructureViewBuilder getStructureViewBuilder(@NotNull PsiFile psiFile) {
         return new TreeBasedStructureViewBuilder() {
             @NotNull
             @Override
             public StructureViewModel createStructureViewModel(@Nullable Editor editor) {
-                return new ReasonMLStructureViewModel(psiFile);
+                return new RmlStructureViewModel(psiFile);
             }
         };
     }

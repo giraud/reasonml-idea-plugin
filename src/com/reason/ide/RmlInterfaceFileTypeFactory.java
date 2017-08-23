@@ -5,9 +5,9 @@ import com.intellij.openapi.fileTypes.FileTypeConsumer;
 import com.intellij.openapi.fileTypes.FileTypeFactory;
 import org.jetbrains.annotations.NotNull;
 
-public class ReasonMLInterfaceFileTypeFactory extends FileTypeFactory {
+public class RmlInterfaceFileTypeFactory extends FileTypeFactory {
     @Override
     public void createFileTypes(@NotNull FileTypeConsumer fileTypeConsumer) {
-        fileTypeConsumer.consume(ReasonMLInterfaceFileType.INSTANCE, "rei");
+        fileTypeConsumer.consume(RmlInterfaceFileType.INSTANCE, "rei");
     }
 }

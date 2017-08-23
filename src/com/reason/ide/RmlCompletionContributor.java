@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonMLCompletionContributor extends CompletionContributor {
+public class RmlCompletionContributor extends CompletionContributor {
 
-    public ReasonMLCompletionContributor() {
+    public RmlCompletionContributor() {
         MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
 
         CompletionProvider<CompletionParameters> completionProvider = new CompletionProvider<CompletionParameters>() {

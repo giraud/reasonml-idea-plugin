@@ -51,25 +51,25 @@
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.reason.ide.ReasonMLInterfaceFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.ReasonMLFileTypeFactory"/>
+        <fileTypeFactory implementation="com.reason.ide.RmlInterfaceFileTypeFactory"/>
+        <fileTypeFactory implementation="com.reason.ide.RmlFileTypeFactory"/>
 
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
-        <colorSettingsPage implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
+        <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator" />
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BucklescriptErrorAnnotator" />
 
-        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.ReasonMLCompletionContributor"/>
+        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
 
         <lang.psiStructureViewFactory language="ReasonML"
-                                      implementationClass="com.reason.ide.structure.ReasonMLStructureViewFactory"/>
-        <lang.commenter language="ReasonML" implementationClass="com.reason.ide.ReasonMLCommenter"/>
+                                      implementationClass="com.reason.ide.structure.RmlStructureViewFactory"/>
+        <lang.commenter language="ReasonML" implementationClass="com.reason.ide.RmlCommenter"/>
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
-        <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.ReasonMLPairedBraceMatcher"/>
+        <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
 
         <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>

@@ -18,7 +18,13 @@ public class BucklescriptErrorAnnotator extends ExternalAnnotator<Collection<Bsb
     @Override
     public Collection<BsbError> collectInformation(@NotNull PsiFile file) {
         Project project = file.getProject();
-        String canonicalPath = file.getVirtualFile().getCanonicalPath().substring(project.getBaseDir().getCanonicalPath().length() + 1);
+        String filePath = file.getVirtualFile().getCanonicalPath();
+        String projecPath = project.getBaseDir().getCanonicalPath();
+        if (filePath == null || projecPath == null) {
+            return null;
+        }
+
+        String canonicalPath = filePath.substring(projecPath.length() + 1);
         return BucklescriptErrorsManager.getInstance(project).getError(canonicalPath);
     }
 

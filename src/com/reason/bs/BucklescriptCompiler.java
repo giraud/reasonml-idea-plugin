@@ -11,7 +11,7 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
-import com.reason.ide.ReasonMLNotification;
+import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
 public class BucklescriptCompiler extends AbstractProjectComponent {
@@ -28,14 +28,14 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     public void projectOpened() {
         String reasonBsb = System.getProperty("reasonBsb");
         if (reasonBsb == null) {
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Bsb is disabled, you need to manually launch an external process", NotificationType.WARNING));
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Bsb is disabled, you need to manually launch an external process", NotificationType.WARNING));
             return;
         }
 
         VirtualFile baseDir = Platform.findBaseRoot(this.myProject);
         VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
         if (bsbBinary == null) {
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
             // Add notification system that watch node_modules
             return;
         }
@@ -52,7 +52,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         try {
             this.bsb = processBuilder.start();
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bsb.getInputStream()));
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Enabled", "Background compilation is using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Enabled", "Background compilation is using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
 
             this.streamListener = new Thread(() -> {
                 String line = null;
@@ -99,7 +99,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
             });
             this.streamListener.start();
         } catch (IOException e) {
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
 */
     }
@@ -131,7 +131,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
             }
             return this.bsb;
         } catch (ExecutionException e) {
-            Notifications.Bus.notify(new ReasonMLNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
         return null;
     }

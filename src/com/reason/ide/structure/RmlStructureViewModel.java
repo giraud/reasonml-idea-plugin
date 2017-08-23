@@ -8,9 +8,9 @@ import com.intellij.psi.PsiFile;
 import com.reason.psi.ReasonMLFile;
 import org.jetbrains.annotations.NotNull;
 
-public class ReasonMLStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
-    public  ReasonMLStructureViewModel(PsiFile psiFile) {
-        super(psiFile, new ReasonMLStructureViewElement(psiFile));
+public class RmlStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
+    RmlStructureViewModel(PsiFile psiFile) {
+        super(psiFile, new RmlStructureViewElement(psiFile));
     }
 
     @NotNull

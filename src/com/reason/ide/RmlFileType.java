@@ -3,38 +3,38 @@ package com.reason.ide;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.reason.icons.ReasonMLIcons;
 import com.reason.lang.RmlLanguage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class ReasonMLInterfaceFileType extends LanguageFileType {
-    public static final ReasonMLInterfaceFileType INSTANCE = new ReasonMLInterfaceFileType();
+public class RmlFileType extends LanguageFileType {
+    public static final RmlFileType INSTANCE = new RmlFileType();
 
-    private ReasonMLInterfaceFileType() {
+    private RmlFileType() {
         super(RmlLanguage.INSTANCE);
     }
 
     @NotNull
     @Override
     public String getName() {
-        return "Reason interface file";
+        return "Reason file";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "Reason language interface file";
+        return "Reason language file";
     }
 
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "rei";
+        return "re";
     }
 
     @Nullable
     @Override
     public Icon getIcon() {
-        return ReasonMLIcons.INTERFACE_FILE;
-    }}
+        return ReasonMLIcons.FILE;
+    }
+}
