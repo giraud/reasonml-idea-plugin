@@ -6,7 +6,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.reason.icons.ReasonMLIcons;
-import com.reason.ide.highlight.ReasonMLSyntaxHighlighter;
+import com.reason.ide.highlight.RmlSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,17 +15,17 @@ import java.util.Map;
 
 public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Comment", ReasonMLSyntaxHighlighter.COMMENT_),
-            new AttributesDescriptor("Module name", ReasonMLSyntaxHighlighter.MODULE_NAME_),
-            new AttributesDescriptor("Option", ReasonMLSyntaxHighlighter.OPTION_),
-            new AttributesDescriptor("Tag", ReasonMLSyntaxHighlighter.TAG_),
-            new AttributesDescriptor("Keyword", ReasonMLSyntaxHighlighter.KEYWORD_),
-            new AttributesDescriptor("Operation", ReasonMLSyntaxHighlighter.OPERATION_SIGN_),
-            new AttributesDescriptor("String", ReasonMLSyntaxHighlighter.STRING_),
-            new AttributesDescriptor("Semicolon", ReasonMLSyntaxHighlighter.SEMICOLON_),
-            new AttributesDescriptor("Braces", ReasonMLSyntaxHighlighter.BRACES_),
-            new AttributesDescriptor("Brackets", ReasonMLSyntaxHighlighter.BRACKETS_),
-            new AttributesDescriptor("Parenthesis", ReasonMLSyntaxHighlighter.PARENS_),
+            new AttributesDescriptor("Comment", RmlSyntaxHighlighter.COMMENT_),
+            new AttributesDescriptor("Module name", RmlSyntaxHighlighter.MODULE_NAME_),
+            new AttributesDescriptor("Option", RmlSyntaxHighlighter.OPTION_),
+            new AttributesDescriptor("Tag", RmlSyntaxHighlighter.TAG_),
+            new AttributesDescriptor("Keyword", RmlSyntaxHighlighter.KEYWORD_),
+            new AttributesDescriptor("Operation", RmlSyntaxHighlighter.OPERATION_SIGN_),
+            new AttributesDescriptor("String", RmlSyntaxHighlighter.STRING_),
+            new AttributesDescriptor("Semicolon", RmlSyntaxHighlighter.SEMICOLON_),
+            new AttributesDescriptor("Braces", RmlSyntaxHighlighter.BRACES_),
+            new AttributesDescriptor("Brackets", RmlSyntaxHighlighter.BRACKETS_),
+            new AttributesDescriptor("Parenthesis", RmlSyntaxHighlighter.PARENS_),
     };
 
     @Nullable
@@ -37,7 +37,7 @@ public class ReasonMLColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public SyntaxHighlighter getHighlighter() {
-        return new ReasonMLSyntaxHighlighter();
+        return new RmlSyntaxHighlighter();
     }
 
     @NotNull

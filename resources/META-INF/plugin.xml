@@ -56,10 +56,10 @@
 
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
-                                       implementationClass="com.reason.ide.highlight.ReasonMLSyntaxHighlighterFactory"/>
+                                       implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonMLColorSettingsPage"/>
 
-        <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.ReasonMLAnnotator"/>
+        <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator" />
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BucklescriptErrorAnnotator" />
 

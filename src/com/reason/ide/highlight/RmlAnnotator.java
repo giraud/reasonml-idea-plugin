@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.reason.psi.ReasonMLModuleName;
 import org.jetbrains.annotations.NotNull;
 
-public class ReasonMLAnnotator implements Annotator {
+public class RmlAnnotator implements Annotator {
 
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (!(element instanceof ReasonMLModuleName)) {
@@ -18,6 +18,6 @@ public class ReasonMLAnnotator implements Annotator {
         final ReasonMLModuleName moduleName = (ReasonMLModuleName) element;
 
         holder.createInfoAnnotation(moduleName, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
-        holder.createInfoAnnotation(moduleName, null).setEnforcedTextAttributes(EditorColorsManager.getInstance().getGlobalScheme().getAttributes(ReasonMLSyntaxHighlighter.MODULE_NAME_));
+        holder.createInfoAnnotation(moduleName, null).setEnforcedTextAttributes(EditorColorsManager.getInstance().getGlobalScheme().getAttributes(RmlSyntaxHighlighter.MODULE_NAME_));
     }
 }
