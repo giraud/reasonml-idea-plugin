@@ -2,7 +2,7 @@ package com.reason.ide.format;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
@@ -19,7 +19,11 @@ public class RefmtAction extends AnAction {
             Project project = e.getProject();
             if (project != null && data != null) {
                 Document document = PsiDocumentManager.getInstance(project).getDocument(data);
-                ApplicationManager.getApplication().runWriteAction(() -> instance.refmt(document));
+                if (document != null) {
+                    WriteCommandAction.writeCommandAction(project).run(() -> {
+                        instance.refmt(document);
+                    });
+                }
             }
         }
     }
