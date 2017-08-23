@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 
@@ -15,8 +16,11 @@ public class RefmtAction extends AnAction {
         RefmtManager instance = RefmtManager.getInstance();
         if (instance != null) {
             PsiFile data = e.getData(PSI_FILE);
-            Document document = PsiDocumentManager.getInstance(e.getProject()).getDocument(data);
-            ApplicationManager.getApplication().runWriteAction(() -> instance.refmt(document));
+            Project project = e.getProject();
+            if (project != null && data != null) {
+                Document document = PsiDocumentManager.getInstance(project).getDocument(data);
+                ApplicationManager.getApplication().runWriteAction(() -> instance.refmt(document));
+            }
         }
     }
 }
