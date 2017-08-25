@@ -74,14 +74,19 @@ public class RmlParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // OPEN module_path SEMI
+    // OPEN EXCLAMATION_MARK? module_path SEMI
     // **********
     private static void openExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "openExpression")) {
             return;
         }
 
-        // We found an 'open' keyword, continue until a ';' or another toplevel expression is found
+        IElementType nextTokenType = builder.lookAhead(1);
+        if (nextTokenType == EXCLAMATION_MARK) {
+            builder.advanceLexer();
+        }
+
+        // Continue until a ';' or another toplevel expression is found
         Marker moduleMarker = enter_section_(builder);
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
