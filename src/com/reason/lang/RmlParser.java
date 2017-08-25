@@ -198,7 +198,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // MODULE TYPE? module_name | (COLON module_type)? EQ                          (module_alias | scoped_expression) SEMI
+    // MODULE TYPE? module_name | SEMI
+    //                          | (COLON module_type)? EQ                          (module_alias | scoped_expression) SEMI
     //                          | (LPAREN any RPAREN)+ (COLON module_type)? ARROW
     // **********
     private static void moduleExpression(PsiBuilder builder, int recLevel) {
@@ -235,48 +236,50 @@ public class RmlParser implements PsiParser, LightPsiParser {
             exit_section_(builder, moduleNameMarker, MODULE_NAME, true);
 
             tokenType = builder.getTokenType();
-            if (tokenType == LPAREN) {
-                // module constructor (function)
-                advanceUntil(builder, recLevel + 1, ARROW);
+            if (tokenType != SEMI) {
+                if (tokenType == LPAREN) {
+                    // module constructor (function)
+                    advanceUntil(builder, recLevel + 1, ARROW);
 
-                tokenType = builder.getTokenType();
-                if (tokenType != ARROW) {
-                    fail(builder, ERR_ARROW_EXPECTED);
+                    tokenType = builder.getTokenType();
+                    if (tokenType != ARROW) {
+                        fail(builder, ERR_ARROW_EXPECTED);
+                    } else {
+                        // module definition
+                        builder.advanceLexer();
+
+                        tokenType = builder.getTokenType();
+                        if (tokenType == LBRACE) {
+                            // scoped body, anything inside braces
+                            scopedExpression(builder, recLevel + 1);
+                        } else if (tokenType != SEMI) {
+                            // module alias
+                            modulePath(builder, recLevel + 1);
+                        }
+                    }
+                } else if (tokenType == EQ || tokenType == COLON) {
+                    if (tokenType == COLON) {
+                        // module type
+                        advanceUntil(builder, recLevel + 1, EQ);
+                        tokenType = builder.getTokenType();
+                    }
+
+                    if (tokenType == EQ) {
+                        // module definition
+                        builder.advanceLexer();
+
+                        tokenType = builder.getTokenType();
+                        if (tokenType == LBRACE) {
+                            // scoped body, anything inside braces
+                            scopedExpression(builder, recLevel + 1);
+                        } else if (tokenType != SEMI) {
+                            // module alias
+                            modulePath(builder, recLevel + 1);
+                        }
+                    }
                 } else {
-                    // module definition
-                    builder.advanceLexer();
-
-                    tokenType = builder.getTokenType();
-                    if (tokenType == LBRACE) {
-                        // scoped body, anything inside braces
-                        scopedExpression(builder, recLevel + 1);
-                    } else if (tokenType != SEMI) {
-                        // module alias
-                        modulePath(builder, recLevel + 1);
-                    }
+                    fail(builder, ERR_EQ_EXPECTED);
                 }
-            } else if (tokenType == EQ || tokenType == COLON) {
-                if (tokenType == COLON) {
-                    // module type
-                    advanceUntil(builder, recLevel + 1, EQ);
-                    tokenType = builder.getTokenType();
-                }
-
-                if (tokenType == EQ) {
-                    // module definition
-                    builder.advanceLexer();
-
-                    tokenType = builder.getTokenType();
-                    if (tokenType == LBRACE) {
-                        // scoped body, anything inside braces
-                        scopedExpression(builder, recLevel + 1);
-                    } else if (tokenType != SEMI) {
-                        // module alias
-                        modulePath(builder, recLevel + 1);
-                    }
-                }
-            } else {
-                fail(builder, ERR_EQ_EXPECTED);
             }
         }
 
@@ -441,19 +444,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
             } else {
                 // value name
                 Marker nameMarker = enter_section_(builder);
-                Marker errorMarker = null;
-                boolean isNameCorrect = isModuleAlias ? tokenType == UIDENT : tokenType == LIDENT;
-
-                if (!isNameCorrect) {
-                    errorMarker = builder.mark();
-                }
-
                 builder.advanceLexer();
-
-                if (!isNameCorrect) {
-                    errorMarker.error(ERR_NAME_LIDENT);
-                }
-
                 exit_section_(builder, nameMarker, VALUE_NAME, true);
             }
         }

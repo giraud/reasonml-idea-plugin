@@ -130,6 +130,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "#"   { return SHARP; }
     "?"   { return QUESTION_MARK; }
     "!"   { return EXCLAMATION_MARK; }
+    "$"   { return DOLLAR; }
     "`"   { return BACKTICK; }
     "_"   { return UNDERSCORE; }
 

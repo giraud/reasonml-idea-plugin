@@ -31,6 +31,7 @@ public interface RmlTypes {
     IElementType COLON = new ReasonMLTokenType("COLON");
     IElementType COMMA = new ReasonMLTokenType("COMMA");
     IElementType COMMENT = new ReasonMLTokenType("COMMENT");
+    IElementType DOLLAR = new ReasonMLTokenType("DOLLAR");
     IElementType DOT = new ReasonMLTokenType("DOT");
     IElementType ELSE = new ReasonMLTokenType("ELSE");
     IElementType EQ = new ReasonMLTokenType("EQ");
