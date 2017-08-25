@@ -44,10 +44,15 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
         return "/* This is a comment */\n\n" +
-                "type t = { key: int };\n" +
-                "let add x y => x + y;\n" +
-                "let constant = \"My constant\";\n" +
                 "module ModuleName = {\n" +
+                "  type t = { key: int };\n" +
+                "  let add x y => x + y;\n" +
+                "  let myList = [ 1, 2, 3 ];\n" +
+                "  let array = [| 1, 2, 3 |];\n" +
+                "  let choice x = switch (myOption)\n" +
+                "      | None => \"nok\"\n" +
+                "      | Some value => \"ok\"\n" +
+                "  let constant = \"My constant\";\n" +
                 "};\n\n" +
                 "React.createElement <div prop=value/> <Button> (ReactElement.toString \"ok\") </Button>\n";
     }

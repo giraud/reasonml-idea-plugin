@@ -18,8 +18,12 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.reason.lang.RmlTypes.*;
 
 public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
-    private static final Set<IElementType> KEYWORD_TYPES = of(OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO);
-    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(EQ, EQEQEQ, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT, SLASH, SLASHDOT, CARRET, ARROBASE, PIPE_FORWARD);
+    private static final Set<IElementType> KEYWORD_TYPES = of(
+            OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO
+    );
+    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(
+            EQ, EQEQEQ, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT,
+            SLASH, SLASHDOT, CARRET, ARROBASE, PIPE_FORWARD, REF, EXCLAMATION_MARK);
     private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 
     public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
@@ -33,16 +37,21 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey BRACES_ = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
     public static final TextAttributesKey PARENS_ = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
     public static final TextAttributesKey OPERATION_SIGN_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+    public static final TextAttributesKey DOT_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.DOT);
+    public static final TextAttributesKey COMMA_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.COMMA);
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
+    private static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
     private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
     private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
     private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
     private static final TextAttributesKey[] TAG_KEYS = new TextAttributesKey[]{TAG_};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
     private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
+    private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{DOT_};
+    private static final TextAttributesKey[] COMMA_KEYS = new TextAttributesKey[]{COMMA_};
     private static final TextAttributesKey[] OPERATION_SIGN_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
@@ -60,10 +69,16 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMENT_KEYS;
         } else if (tokenType.equals(LBRACE) || tokenType.equals(RBRACE)) {
             return BRACE_KEYS;
+        } else if (tokenType.equals(LBRACKET) || tokenType.equals(RBRACKET) || tokenType.equals(LARRAY) || tokenType.equals(RARRAY)) {
+            return BRACKET_KEYS;
         } else if (tokenType.equals(LPAREN) || tokenType.equals(RPAREN)) {
             return PAREN_KEYS;
         } else if (tokenType.equals(AUTO_CLOSE_TAG) || tokenType.equals(CLOSE_TAG) || tokenType.equals(GT) || tokenType.equals(LT)) {
             return TAG_KEYS;
+        } else if (DOT.equals(tokenType)) {
+            return DOT_KEYS;
+        } else if (COMMA.equals(tokenType)) {
+            return COMMA_KEYS;
         } else if (SEMI.equals(tokenType)) {
             return SEMICOLON_KEYS;
         } else if (STRING.equals(tokenType)) {

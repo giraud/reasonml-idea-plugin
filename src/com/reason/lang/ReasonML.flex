@@ -78,6 +78,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "switch"     { return SWITCH; }
     "as"         { return AS; }
     "rec"        { return REC; }
+    "ref"        { return REF; }
     "try"        { return TRY; }
     "raise"      { return RAISE; }
     "for"        { return FOR; }
@@ -132,7 +133,6 @@ LITERAL_MODIFIER=[G-Zg-z]
     "!"   { return EXCLAMATION_MARK; }
     "$"   { return DOLLAR; }
     "`"   { return BACKTICK; }
-    "_"   { return UNDERSCORE; }
 
     "<"  { return LT; }
     ">"  { return GT; }

@@ -76,6 +76,7 @@ public interface RmlTypes {
     IElementType RBRACE = new ReasonMLTokenType("RBRACE");
     IElementType RBRACKET = new ReasonMLTokenType("RBRACKET");
     IElementType REC = new ReasonMLTokenType("REC");
+    IElementType REF = new ReasonMLTokenType("REF");
     IElementType RPAREN = new ReasonMLTokenType("RPAREN");
     IElementType SEMI = new ReasonMLTokenType("SEMI");
     IElementType SHARP = new ReasonMLTokenType("SHARP");
