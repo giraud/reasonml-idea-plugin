@@ -14,11 +14,13 @@ import com.reason.Platform;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+
 public class BucklescriptCompiler extends AbstractProjectComponent {
 
-    private KillableColoredProcessHandler bsb;
-    private GeneralCommandLine commandLine;
-    private ProcessListener outputListener;
+    private KillableColoredProcessHandler m_bsb;
+    private GeneralCommandLine m_commandLine;
+    private ProcessListener m_outputListener;
 
     protected BucklescriptCompiler(Project project) {
         super(project);
@@ -33,28 +35,36 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         }
 
         VirtualFile baseDir = Platform.findBaseRoot(this.myProject);
-        VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
-        if (bsbBinary == null) {
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
-            // Add notification system that watch node_modules
-            return;
+
+        String bsbPath;
+        if (new File(reasonBsb).isAbsolute()) {
+            bsbPath = reasonBsb;
         }
+        else {
+            VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
+            if (bsbBinary == null) {
+                Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
+                // Add notification system that watch node_modules
+                return;
+            }
+            bsbPath = bsbBinary.getCanonicalPath();
+        }
+        
+        m_commandLine = new GeneralCommandLine(bsbPath, "-make-world", "-w");
+        m_commandLine.setWorkDirectory(baseDir.getCanonicalPath());
 
-        this.commandLine = new GeneralCommandLine(bsbBinary.getCanonicalPath(), "-make-world", "-w");
-        commandLine.setWorkDirectory(baseDir.getCanonicalPath());
-
-        this.recreate();
+        recreate();
 /*
         ProcessBuilder processBuilder = new ProcessBuilder(bsbBinary.getCanonicalPath(), "-make-world", "-w")
                 .directory(new File(baseDir.getCanonicalPath()))
                 .redirectErrorStream(true);
 
         try {
-            this.bsb = processBuilder.start();
+            m_bsb = processBuilder.start();
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bsb.getInputStream()));
             Notifications.Bus.notify(new RmlNotification("Bsb", "Enabled", "Background compilation is using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
 
-            this.streamListener = new Thread(() -> {
+            m_streamListener = new Thread(() -> {
                 String line = null;
                 BsbError errorMode = null;
 
@@ -97,7 +107,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
                     }
                 }
             });
-            this.streamListener.start();
+            m_streamListener.start();
         } catch (IOException e) {
             Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
@@ -111,13 +121,13 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
 
     @Nullable
     ProcessHandler getHandler() {
-        return this.bsb;
+        return m_bsb;
     }
 
     // Wait for the toolwindow to be ready before starting the process
     void startNotify() {
-        if (this.bsb != null) {
-            this.bsb.startNotify();
+        if (m_bsb != null) {
+            m_bsb.startNotify();
         }
     }
 
@@ -125,11 +135,11 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     ProcessHandler recreate() {
         try {
             killIt();
-            this.bsb = new KillableColoredProcessHandler(this.commandLine, true);
-            if (this.outputListener != null) {
-                this.bsb.addProcessListener(this.outputListener);
+            m_bsb = new KillableColoredProcessHandler(m_commandLine, true);
+            if (m_outputListener != null) {
+                m_bsb.addProcessListener(m_outputListener);
             }
-            return this.bsb;
+            return m_bsb;
         } catch (ExecutionException e) {
             Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
@@ -137,16 +147,16 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     }
 
     private void killIt() {
-        if (this.bsb != null) {
-            this.bsb.killProcess();
-            this.bsb = null;
+        if (m_bsb != null) {
+            m_bsb.killProcess();
+            m_bsb = null;
         }
     }
 
     void addListener(ProcessListener outputListener) {
-        this.outputListener = outputListener;
-        if (this.bsb != null) {
-            this.bsb.addProcessListener(outputListener);
+        m_outputListener = outputListener;
+        if (m_bsb != null) {
+            m_bsb.addProcessListener(outputListener);
         }
     }
 }
