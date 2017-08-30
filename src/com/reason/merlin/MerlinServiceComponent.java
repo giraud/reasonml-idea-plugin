@@ -3,6 +3,7 @@ package com.reason.merlin;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.reason.Joiner;
 import com.reason.Platform;
 import com.reason.ide.RmlNotification;
 import com.reason.merlin.types.*;

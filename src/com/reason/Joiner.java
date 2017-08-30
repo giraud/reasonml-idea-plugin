@@ -1,8 +1,8 @@
-package com.reason.merlin;
+package com.reason;
 
-class Joiner {
+public class Joiner {
 
-    static String join(Iterable<String> items) {
+    public static String join(Iterable<String> items) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (String item : items) {

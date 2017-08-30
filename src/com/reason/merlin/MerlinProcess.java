@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.Platform;
+import com.reason.Streams;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +37,7 @@ public class MerlinProcess implements Closeable {
             commands = asList("bash", "-c", "export PATH=" + absolutePath + ":$PATH && ocamlmerlin");
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(commands).redirectErrorStream(true);
+        ProcessBuilder processBuilder = new ProcessBuilder(commands);
 
         m_merlin = processBuilder.start();
         m_writer = new BufferedWriter(new OutputStreamWriter(m_merlin.getOutputStream()));
@@ -81,15 +82,13 @@ public class MerlinProcess implements Closeable {
             m_writer.flush();
 
             // just a little tempo to have a chance to get data from merlin
-            // Not perfect, but might be enough for now
-            InterruptedSleep(50);
+            Streams.waitUntilReady(m_reader, m_errorReader);
 
             if (m_errorReader.ready()) {
                 StringBuilder errorBuffer = new StringBuilder();
                 m_errorReader.lines().forEach(l -> errorBuffer.append(l).append(System.lineSeparator()));
                 throw new RuntimeException(errorBuffer.toString());
             } else {
-                waitUntilReady();
                 String content = m_reader.readLine();
                 JsonNode jsonNode = m_objectMapper.readTree(content);
                 JsonNode responseNode = extractResponse(jsonNode);
@@ -115,20 +114,6 @@ public class MerlinProcess implements Closeable {
             System.err.println("     request: " + query);
             System.err.println("         msg: " + e.getMessage());
             throw new UncheckedIOException(e);
-        }
-    }
-
-    private void waitUntilReady() throws IOException {
-        long start = System.currentTimeMillis();
-        boolean isReady = m_reader.ready();
-        while (!isReady) {
-            if (60000 < (System.currentTimeMillis() - start)) {
-                // max 1s
-                isReady = true;
-            } else {
-                InterruptedSleep(20);
-                isReady = m_reader.ready();
-            }
         }
     }
 
@@ -163,11 +148,4 @@ public class MerlinProcess implements Closeable {
         }
     }
 
-    private void InterruptedSleep(int timeToWait) {
-        try {
-            Thread.sleep(timeToWait);
-        } catch (InterruptedException e) {
-            // Do nothing
-        }
-    }
 }
