@@ -20,7 +20,6 @@ import static java.util.Collections.singletonList;
 class MerlinProcess3 {
 
     // private static final List<String> DOCKER_COMMAND = asList("docker", "run", "-i", "ocamla");
-    // private static final List<String> MERLIN_COMMAND = asList("ocamlmerlin", "server");
     private final List<String> m_merlinCommand;
 
     private ObjectMapper m_objectMapper;
@@ -55,7 +54,7 @@ class MerlinProcess3 {
     private String runCommand(String filename, String source, List<String> command) throws IOException {
         List<String> commands = new ArrayList<>();
 
-        long start = System.currentTimeMillis();
+        // long start = System.currentTimeMillis();
 
         commands.addAll(m_merlinCommand);
         commands.addAll(command);
@@ -77,14 +76,13 @@ class MerlinProcess3 {
         }
 
         String content = m_reader.readLine();
-        long end = System.currentTimeMillis();
 
-        System.out.println((end - start) + "ms > " + Joiner.join(" ", commands) + " << " + content);
+        // long end = System.currentTimeMillis();
+        // System.out.println((end - start) + "ms > " + Joiner.join(" ", commands) + " << " + content);
 
         return content;
     }
 
-    @SuppressWarnings("Duplicates")
     @Nullable
     private JsonNode extractResponse(JsonNode merlinResult) {
         // !! handle notifications
