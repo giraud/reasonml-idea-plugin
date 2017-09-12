@@ -1,13 +1,21 @@
 package com.reason.merlin.types;
 
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class MerlinType {
     public MerlinPosition start;
     public MerlinPosition end;
     public String type;
     public String tail; // no | position | call
-    public List sub; // not in the doc ?
+
+    public MerlinType() {
+    }
+
+    public MerlinType(JsonNode node) {
+        this.start = new MerlinPosition(node.get("start"));
+        this.end = new MerlinPosition(node.get("end"));
+        this.type = node.get("type").textValue();
+    }
 
     @Override
     public String toString() {

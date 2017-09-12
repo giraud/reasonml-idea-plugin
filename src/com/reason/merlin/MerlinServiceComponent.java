@@ -1,6 +1,7 @@
 package com.reason.merlin;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.Platform;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.reason.merlin.MerlinProcess2.NO_CONTEXT;
@@ -87,15 +89,16 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public List<MerlinError> errors(String filename, String source) {
-        List<MerlinError> merlinErrors;
+        final List<MerlinError> merlinErrors = new ArrayList<>();
 
         if (m_useProtocol3) {
-            merlinErrors = m_merlin3.execute(ERRORS_TYPE_REFERENCE, filename, source, singletonList("errors"));
+            JsonNode valueNode = m_merlin3.execute(filename, source, singletonList("errors"));
+            valueNode.elements().forEachRemaining(element -> merlinErrors.add(new MerlinError(element)));
         } else {
-            merlinErrors = m_merlin2.makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]");
+            merlinErrors.addAll(m_merlin2.makeRequest(ERRORS_TYPE_REFERENCE, filename, "[\"errors\"]"));
         }
 
-        return merlinErrors == null ? emptyList() : merlinErrors;
+        return merlinErrors;
     }
 
     @Nullable
@@ -116,21 +119,28 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public List<MerlinType> typeExpression(String filename, String source, MerlinPosition position) {
-        return m_merlin3.execute(TYPE_TYPE_REFERENCE, filename, source, asList("type-enclosing", "-position", position.toShortString()));
+        List<MerlinType> result = new ArrayList<>();
+
+        // [ {"start":{"line":1,"col":4},"end":{"line":1,"col":6},"type":"float","tail":"no"} ]
+        JsonNode valueNode = m_merlin3.execute(filename, source, asList("type-enclosing", "-position", position.toShortString()));
+        valueNode.elements().forEachRemaining(element -> result.add(new MerlinType(element)));
+
+        return result;
     }
 
     @Override
     public MerlinCompletion completions(String filename, String source, MerlinPosition position, String prefix) {
-        MerlinCompletion merlinCompletion;
+        final MerlinCompletion merlinCompletion = new MerlinCompletion();
 
         if (m_useProtocol3) {
-            merlinCompletion = m_merlin3.execute(COMPLETION_TYPE_REFERENCE, filename, source, asList("complete-prefix", "-position", position.toShortString(), "-prefix", prefix));
+            // {entries":[{"name":"append","kind":"Value","desc":"list 'a => list 'a => list 'a","info":""},...],"context":null}
+            JsonNode valueNode = m_merlin3.execute(filename, source, asList("complete-prefix", "-position", position.toShortString(), "-prefix", prefix));
+            valueNode.get("entries").elements().forEachRemaining(element -> merlinCompletion.entries.add(new MerlinCompletionEntry(element)));
         } else {
-            if (m_merlin2 == null) {
-                return NO_COMPLETION;
+            if (m_merlin2 != null) {
+                String query = "[\"complete\", \"prefix\", " + m_merlin2.writeValueAsString(prefix) + ", \"at\", " + m_merlin2.writeValueAsString(position) + ", \"with\", \"doc\"]";
+//                merlinCompletion = m_merlin2.makeRequest(COMPLETION_TYPE_REFERENCE, filename, query);
             }
-            String query = "[\"complete\", \"prefix\", " + m_merlin2.writeValueAsString(prefix) + ", \"at\", " + m_merlin2.writeValueAsString(position) + ", \"with\", \"doc\"]";
-            merlinCompletion = m_merlin2.makeRequest(COMPLETION_TYPE_REFERENCE, filename, query);
         }
 
         return merlinCompletion == null ? NO_COMPLETION : merlinCompletion;

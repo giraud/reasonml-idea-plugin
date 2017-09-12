@@ -1,5 +1,6 @@
 package com.reason.merlin.types;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.intellij.openapi.editor.LogicalPosition;
 
 public class MerlinPosition {
@@ -16,6 +17,11 @@ public class MerlinPosition {
 
     public MerlinPosition(LogicalPosition position) {
         this(position.line + 1, position.column);
+    }
+
+    public MerlinPosition(JsonNode node) {
+        this.line = node.get("line").asInt();
+        this.col = node.get("col").asInt();
     }
 
     public int getLine() {

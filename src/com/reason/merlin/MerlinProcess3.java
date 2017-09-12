@@ -1,8 +1,8 @@
 package com.reason.merlin;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.Joiner;
@@ -15,11 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 class MerlinProcess3 {
 
-    static final List<String> DOCKER_COMMAND = asList("docker", "run", "-i", "ocamlu");
-    static final List<String> MERLIN_COMMAND = asList("ocamlmerlin", "single");
+    private static final List<String> DOCKER_COMMAND = asList("docker", "run", "-i", "ocamla");
+    private static final List<String> MERLIN_COMMAND = asList("ocamlmerlin", "single");
 
     private File m_merlinBin;
     private ObjectMapper m_objectMapper;
@@ -29,7 +30,29 @@ class MerlinProcess3 {
         m_objectMapper = new ObjectMapper();
     }
 
-    String runCommand(String filename, String source, List<String> command) throws IOException {
+    MerlinVersion version() {
+        try {
+            MerlinVersion merlinVersion = new MerlinVersion();
+            merlinVersion.merlin = runCommand(null, null, singletonList("-version"));
+            return merlinVersion;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    JsonNode execute(String filename, String source, List<String> command) {
+        try {
+            String content = runCommand(filename, source, command);
+            JsonNode jsonNode = m_objectMapper.readTree(content);
+            JsonNode valueNode = extractResponse(jsonNode);
+            return valueNode == null ? NullNode.getInstance() : valueNode;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private String runCommand(String filename, String source, List<String> command) throws IOException {
         List<String> commands = new ArrayList<>();
 
         long start = System.currentTimeMillis();
@@ -41,7 +64,6 @@ class MerlinProcess3 {
             commands.add("-filename");
             commands.add(filename);
         }
-        System.out.println(">> " + Joiner.join(" ", commands));
 
         ProcessBuilder pb = new ProcessBuilder(commands);
         pb.redirectErrorStream(true);
@@ -58,54 +80,15 @@ class MerlinProcess3 {
         String content = m_reader.readLine();
         long end = System.currentTimeMillis();
 
-        System.out.println("--- " + (end - start) + "ms");
-        System.out.println("    <= " + content);
+        System.out.println((end - start) + "ms > " + Joiner.join(" ", commands) + " << " + content);
 
         return content;
     }
 
-    <R> R execute(TypeReference<R> type, String filename, String source, List<String> command) {
-        List<String> commands = new ArrayList<>();
-
-        try {
-            String content = runCommand(filename, source, command);
-
-            JsonNode jsonNode = m_objectMapper.readTree(content);
-            JsonNode responseNode = extractResponse(jsonNode);
-            if (responseNode == null) {
-                return null;
-            }
-
-            try {
-                return m_objectMapper.convertValue(responseNode, type);
-            } catch (RuntimeException e) {
-                System.err.println("!! Request conversion error");
-                System.err.println("        file: " + filename);
-                System.err.println("     request: " + Joiner.join(" ", commands));
-                System.err.println("     content: " + content);
-                System.err.println("         msg: " + e.getMessage());
-                throw e;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return null;
-    }
-
-    MerlinVersion version() {
-        try {
-            MerlinVersion merlinVersion = new MerlinVersion();
-            merlinVersion.merlin = runCommand(null, null, asList("-version"));
-            return merlinVersion;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @Nullable
     private JsonNode extractResponse(JsonNode merlinResult) {
+        // !! handle notifications
+
         JsonNode classField = merlinResult.get("class");
         if (classField == null) {
             return null;
