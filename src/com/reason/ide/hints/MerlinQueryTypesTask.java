@@ -33,13 +33,14 @@ class MerlinQueryTypesTask implements Runnable {
         String filename = m_psiFile.getVirtualFile().getCanonicalPath();
 
         // Update merlin buffer
-        merlin.sync(filename, m_psiFile.getText());
+        String source = m_psiFile.getText();
+        merlin.sync(filename, source);
 
         int i = 0;
         for (ReasonMLLet letStatement : m_letStatements) {
             LogicalPosition position = m_positions.get(i);
             if (position != null) {
-                List<MerlinType> types = merlin.findType(filename, new MerlinPosition(position));
+                List<MerlinType> types = merlin.typeExpression(filename, source, new MerlinPosition(position));
                 if (!types.isEmpty()) {
                     // System.out.println(letStatement.getLetName().getText() + ": " + types.stream().map(merlinType -> merlinType.type).reduce("", (s, s2) -> s + s2.replaceAll("\n", "").replaceAll("\\s+", "") + ", "));
                     // Display only the first one, might be wrong !?

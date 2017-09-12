@@ -31,7 +31,7 @@ public class RmlCompletionContributor extends CompletionContributor {
                 String suitablePrefix = findSuitablePrefix(parameters, text);
 
                 MerlinPosition position = lineNumbering.offsetToPosition(parameters.getOffset());
-                MerlinCompletion completion = merlin.completions(originalFile.getName(), suitablePrefix, position);
+                MerlinCompletion completion = merlin.completions(originalFile.getName(), text, position, suitablePrefix);
 
                 // System.out.println("Completion prefix: " + suitablePrefix);
                 for (MerlinCompletionEntry entry : completion.entries) {

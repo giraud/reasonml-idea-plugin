@@ -26,6 +26,10 @@ public class MerlinPosition {
         return col;
     }
 
+    public String toShortString() {
+        return line + ":" + col;
+    }
+
     @Override
     public String toString() {
         return "{\"line\":" + line + ", \"col\":" + col + "}";

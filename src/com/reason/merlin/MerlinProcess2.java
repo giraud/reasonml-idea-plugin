@@ -17,7 +17,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-public class MerlinProcess implements Closeable {
+public class MerlinProcess2 implements Closeable {
 
     static final String NO_CONTEXT = null;
 
@@ -27,7 +27,7 @@ public class MerlinProcess implements Closeable {
     private BufferedReader m_reader;
     private BufferedReader m_errorReader;
 
-    MerlinProcess(String merlinBin) throws IOException {
+    MerlinProcess2(String merlinBin) throws IOException {
         List<String> commands;
 
         if (Platform.isWindows()) {

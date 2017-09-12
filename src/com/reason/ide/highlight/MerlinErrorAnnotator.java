@@ -24,6 +24,7 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
     private final Map<MerlinErrorType, HighlightSeverity> severities = new HashMap<>();
 
     public MerlinErrorAnnotator() {
+        severities.put(MerlinErrorType.error, HighlightSeverity.ERROR);
         severities.put(MerlinErrorType.type, HighlightSeverity.ERROR);
         severities.put(MerlinErrorType.parser, HighlightSeverity.ERROR);
         severities.put(MerlinErrorType.env, HighlightSeverity.ERROR);
@@ -34,7 +35,6 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
     @Nullable
     @Override
     public MerlinInfo collectInformation(@NotNull PsiFile file) {
-        // Find corresponding project ?
         return new MerlinInfo(file, file.getText());
     }
 
@@ -44,7 +44,7 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
         MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
         if (merlin != null && merlin.isRunning()) {
             String filename = collectedInfo.getFile().getVirtualFile().getCanonicalPath();
-            return merlin.errors(filename);
+            return merlin.errors(filename, collectedInfo.getBuffer());
         }
 
         return emptyList();

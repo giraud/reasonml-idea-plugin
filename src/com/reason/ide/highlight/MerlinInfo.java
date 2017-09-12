@@ -3,19 +3,19 @@ package com.reason.ide.highlight;
 import com.intellij.psi.PsiFile;
 
 class MerlinInfo {
-    private final PsiFile file;
-    private final String buffer;
+    private final PsiFile m_file;
+    private final String m_buffer;
 
     MerlinInfo(PsiFile file, String buffer) {
-        this.file = file;
-        this.buffer = buffer;
+        m_file = file;
+        m_buffer = buffer;
     }
 
     PsiFile getFile() {
-        return file;
+        return m_file;
     }
 
     String getBuffer() {
-        return buffer;
+        return m_buffer;
     }
 }
