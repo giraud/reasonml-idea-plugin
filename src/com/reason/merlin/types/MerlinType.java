@@ -8,9 +8,6 @@ public class MerlinType {
     public String type;
     public String tail; // no | position | call
 
-    public MerlinType() {
-    }
-
     public MerlinType(JsonNode node) {
         this.start = new MerlinPosition(node.get("start"));
         this.end = new MerlinPosition(node.get("end"));

@@ -42,7 +42,7 @@ public class MerlinErrorAnnotator extends ExternalAnnotator<MerlinInfo, List<Mer
     @Override
     public List<MerlinError> doAnnotate(MerlinInfo collectedInfo) {
         MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
-        if (merlin != null && merlin.isRunning()) {
+        if (merlin != null) {
             String filename = collectedInfo.getFile().getVirtualFile().getCanonicalPath();
             return merlin.errors(filename, collectedInfo.getBuffer());
         }

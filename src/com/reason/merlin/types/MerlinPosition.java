@@ -7,9 +7,6 @@ public class MerlinPosition {
     public int line;
     public int col;
 
-    public MerlinPosition() {
-    }
-
     public MerlinPosition(int line, int col) {
         this.line = line;
         this.col = col;

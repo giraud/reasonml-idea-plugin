@@ -19,15 +19,16 @@ import static java.util.Collections.singletonList;
 
 class MerlinProcess3 {
 
-    private static final List<String> DOCKER_COMMAND = asList("docker", "run", "-i", "ocamla");
-    private static final List<String> MERLIN_COMMAND = asList("ocamlmerlin", "single");
+    // private static final List<String> DOCKER_COMMAND = asList("docker", "run", "-i", "ocamla");
+    // private static final List<String> MERLIN_COMMAND = asList("ocamlmerlin", "server");
+    private final List<String> m_merlinCommand;
 
-    private File m_merlinBin;
     private ObjectMapper m_objectMapper;
 
     MerlinProcess3(String merlinBin) throws IOException {
-        m_merlinBin = new File(merlinBin).getAbsoluteFile();
+        File m_merlinBin = new File(merlinBin).getAbsoluteFile();
         m_objectMapper = new ObjectMapper();
+        m_merlinCommand = asList(m_merlinBin.getName(), "server");
     }
 
     MerlinVersion version() {
@@ -36,9 +37,8 @@ class MerlinProcess3 {
             merlinVersion.merlin = runCommand(null, null, singletonList("-version"));
             return merlinVersion;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     JsonNode execute(String filename, String source, List<String> command) {
@@ -57,8 +57,7 @@ class MerlinProcess3 {
 
         long start = System.currentTimeMillis();
 
-        commands.addAll(DOCKER_COMMAND);
-        commands.addAll(MERLIN_COMMAND);
+        commands.addAll(m_merlinCommand);
         commands.addAll(command);
         if (filename != null) {
             commands.add("-filename");
@@ -85,6 +84,7 @@ class MerlinProcess3 {
         return content;
     }
 
+    @SuppressWarnings("Duplicates")
     @Nullable
     private JsonNode extractResponse(JsonNode merlinResult) {
         // !! handle notifications

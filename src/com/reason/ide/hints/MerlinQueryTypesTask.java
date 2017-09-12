@@ -26,7 +26,7 @@ class MerlinQueryTypesTask implements Runnable {
     @Override
     public void run() {
         MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
-        if (merlin == null || !merlin.isRunning()) {
+        if (merlin == null) {
             return;
         }
 
@@ -34,7 +34,6 @@ class MerlinQueryTypesTask implements Runnable {
 
         // Update merlin buffer
         String source = m_psiFile.getText();
-        merlin.sync(filename, source);
 
         int i = 0;
         for (ReasonMLLet letStatement : m_letStatements) {
