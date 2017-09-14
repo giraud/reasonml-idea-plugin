@@ -41,13 +41,16 @@ class MerlinProcess3 {
     }
 
     JsonNode execute(String filename, String source, List<String> command) {
+        String content = "";
         try {
-            String content = runCommand(filename, source, command);
+            content = runCommand(filename, source, command);
             JsonNode jsonNode = m_objectMapper.readTree(content);
             JsonNode valueNode = extractResponse(jsonNode);
             return valueNode == null ? NullNode.getInstance() : valueNode;
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("An error occurred when executing a command for the file " + filename + "\n"
+            + "The command is: " + Joiner.join(" ", command) + "\n"
+            + "The output from merlin is: " + content, ex);
         }
     }
 
