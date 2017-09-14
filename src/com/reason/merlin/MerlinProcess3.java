@@ -19,28 +19,34 @@ import static java.util.Collections.singletonList;
 
 class MerlinProcess3 {
 
-    // private static final List<String> DOCKER_COMMAND = asList("docker", "run", "-i", "ocamla");
     private final List<String> m_merlinCommand;
-
-    private ObjectMapper m_objectMapper;
+    private final String m_merlinBin;
+    private final ObjectMapper m_objectMapper;
+    private boolean m_found = false;
 
     MerlinProcess3(String merlinBin) throws IOException {
-        File m_merlinBin = new File(merlinBin).getAbsoluteFile();
+        m_merlinBin = merlinBin;
         m_objectMapper = new ObjectMapper();
-        m_merlinCommand = asList(m_merlinBin.getName(), "server");
+        m_merlinCommand = asList(m_merlinBin, "server");
     }
 
     MerlinVersion version() {
         try {
             MerlinVersion merlinVersion = new MerlinVersion();
             merlinVersion.merlin = runCommand(null, null, singletonList("-version"));
+            m_found = true;
             return merlinVersion;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Notifications.Bus.notify(new RmlNotification("Error locating merlin", "Can't find merlin, using '" + m_merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
+            throw new UncheckedIOException(e);
         }
     }
 
     JsonNode execute(String filename, String source, List<String> command) {
+        if (!m_found) {
+            return NullNode.getInstance();
+        }
+
         String content = "";
         try {
             content = runCommand(filename, source, command);
@@ -49,8 +55,8 @@ class MerlinProcess3 {
             return valueNode == null ? NullNode.getInstance() : valueNode;
         } catch (Exception ex) {
             throw new RuntimeException("An error occurred when executing a command for the file " + filename + "\n"
-            + "The command is: " + Joiner.join(" ", command) + "\n"
-            + "The output from merlin is: " + content, ex);
+                    + "The command is: " + Joiner.join(" ", command) + "\n"
+                    + "The output from merlin is: " + content, ex);
         }
     }
 

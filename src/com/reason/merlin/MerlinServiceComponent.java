@@ -42,7 +42,6 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
             MerlinVersion merlinVersion = selectVersion(3);
             Notifications.Bus.notify(new RmlNotification("Merlin", "Found", merlinVersion.toString(), NotificationType.INFORMATION, null));
         } catch (UncheckedIOException e) {
-            Notifications.Bus.notify(new RmlNotification("Merlin", "Merlin not found", "Check that you have a REASON_MERLIN_BIN environment variable that contains the absolute path to the ocamlmerlin binary", NotificationType.ERROR, null));
             disposeComponent();
         }
     }
