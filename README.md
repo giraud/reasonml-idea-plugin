@@ -1,7 +1,7 @@
 # reasonml-idea-plugin
 ReasonML language plugin for idea
 
-![screenshot](webstorm.png)
+![screenshot](screenshot.png)
 
 ## Status
 
@@ -9,6 +9,8 @@ ReasonML language plugin for idea
 You can look at the [todo list](TODO.md).
 
 This code might change quite a lot or break in the future.
+
+**Merlin 3+ is required**.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
@@ -54,13 +56,13 @@ You can still use keyboard mapping.
 
 ### Linux
 
-- Install [reason-cli](https://github.com/reasonml/reason-cli)
+- Install `reason.1.13.7` and `merlin.3.0.2` using opam (you can't use reason-cli because merlin 3+ is required)
 - Edit your `idea[64].vmoptions`
 - Add the following properties:
 ```properties
 -DreasonBsb=node_modules/bs-platform/bin/bsb.exe
--DreasonMerlin=<absolute path to node>/bin/ocamlmerlin
--DreasonRefmt=<absolute path to node>/bin/refmt
+-DreasonMerlin=<absolute path to opam>/bin/ocamlmerlin
+-DreasonRefmt=<absolute path to opam>/bin/refmt
 -DreasonReformatOnSave=true|false
 ```
 
