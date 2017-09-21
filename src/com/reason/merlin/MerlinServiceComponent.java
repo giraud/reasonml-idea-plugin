@@ -76,7 +76,10 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         final MerlinCompletion merlinCompletion = new MerlinCompletion();
 
         JsonNode valueNode = m_merlin3.execute(filename, source, asList("complete-prefix", "-position", position.toShortString(), "-prefix", prefix, "-doc", "true"));
-        valueNode.get("entries").elements().forEachRemaining(element -> merlinCompletion.entries.add(new MerlinCompletionEntry(element)));
+         JsonNode entries = valueNode.get("entries");
+        if (entries != null) {
+            entries.elements().forEachRemaining(element -> merlinCompletion.entries.add(new MerlinCompletionEntry(element)));
+        }
 
         return merlinCompletion;
     }
