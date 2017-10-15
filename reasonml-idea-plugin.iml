@@ -11,7 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="io.reactivex.rxjava2:rxjava:2.0.8" level="project" />
-    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.8.7" level="project" />
+    <orderEntry type="library" name="io.reactivex.rxjava2:rxjava:2.1.5" level="project" />
+    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.9.2" level="project" />
   </component>
 </module>

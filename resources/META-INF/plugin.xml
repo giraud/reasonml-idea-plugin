@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.19</version>
+    <version>0.20</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
@@ -9,6 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version 0.20</b>
+      <ul>
+      <li>Fixed a NPE</li>
+      </ul>
       <b>version 0.19</b>
       <ul>
       <li>(!) Merlin 3+ is mandatory</li>
