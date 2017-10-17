@@ -3,17 +3,16 @@ package com.reason.ide.format;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class RefmtManager {
     private static RefmtManager instance;
 
     private final RefmtProcess m_refmtProcess;
-    private final boolean m_useDoubleDash;
 
-    private RefmtManager(RefmtProcess refmtProcess, boolean useDoubleDash) {
+    private RefmtManager(RefmtProcess refmtProcess) {
         m_refmtProcess = refmtProcess;
-        m_useDoubleDash = useDoubleDash;
     }
 
     // Bad implementation, should have synchronisation locks
@@ -21,8 +20,7 @@ public class RefmtManager {
         if (instance == null) {
             RefmtProcess refmtProcess = new RefmtProcess();
             try {
-                boolean useDoubleDash = true; // not working: refmtProcess.useDoubleDash();
-                instance = new RefmtManager(refmtProcess, useDoubleDash);
+                instance = new RefmtManager(refmtProcess);
             } catch (Exception err) {
                 Logger.getInstance("ReasonML.refmt").error("refmt: " + err.getMessage());
             }
@@ -31,10 +29,10 @@ public class RefmtManager {
         return instance;
     }
 
-    void refmt(Document document) {
+    void refmt(Project project, Document document) {
         if (isReasonFile(document)) {
             String oldText = document.getText();
-            String newText = m_refmtProcess.run(m_useDoubleDash, oldText);
+            String newText = m_refmtProcess.run(project, oldText);
             if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
                 document.setText(newText);
             }

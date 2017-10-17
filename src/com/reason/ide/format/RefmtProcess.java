@@ -4,56 +4,31 @@ package com.reason.ide.format;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.reason.Platform;
+import com.reason.Streams;
 import com.reason.ide.RmlNotification;
 
 import java.io.*;
 
 class RefmtProcess {
 
-    private final String refmtBin;
-    private final Logger log;
+    private final String m_refmtBin;
+    private final Logger m_log;
 
     RefmtProcess() {
-        this.refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "refmt");
-        log = Logger.getInstance("ReasonML.refmt");
+        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/bin/refmt.exe");
+        m_log = Logger.getInstance("ReasonML.refmt");
     }
 
-    // refmt API is not stable
-    boolean useDoubleDash() throws IOException {
-        Process process = null;
-        BufferedReader reader = null;
-
-        try {
-            process = Runtime.getRuntime().exec(this.refmtBin + " --help");
-            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.indexOf("--use-stdin") > 0) {
-                    return true;
-                }
-            }
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
-            if (process != null) {
-                try {
-                    process.waitFor();
-                } catch (InterruptedException e) {
-                    // do nothing
-                }
-            }
+    String run(Project project, String code) {
+        String refmtPath = Platform.getBinaryPath(project, m_refmtBin);
+        if (refmtPath == null) {
+            // Use a watcher ?
+            return code;
         }
-        return false;
-    }
 
-    String run(boolean useDoubleDash, String code) {
-        ProcessBuilder processBuilder = useDoubleDash ? new ProcessBuilder(this.refmtBin) : new ProcessBuilder(this.refmtBin, "-use-stdin", "true", "-is-interface-pp", "false", "-print", "re", "-parse", "re");
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath);
 
         Process refmt = null;
         try {
@@ -64,24 +39,21 @@ class RefmtProcess {
 
             writer.write(code);
             writer.close();
+            Streams.waitUntilReady(reader, errReader);
 
-            // Wait a little for refmt to do its stuff and can write to the error stream, might not work all the time...
-            Thread.sleep(50);
+            StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {
-                StringBuilder er = new StringBuilder();
-                errReader.lines().forEach(line -> er.append(line).append(/*System.lineSeparator() ??*/"\n"));
-                // todo: transform into an annotation
-                Notifications.Bus.notify(new RmlNotification("Reformat", er.toString(), NotificationType.ERROR));
+                errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
+                Notifications.Bus.notify(new RmlNotification("Reformat", msgBuffer.toString(), NotificationType.ERROR));
             } else {
-                StringBuilder refmtBuffer = new StringBuilder();
-                reader.lines().forEach(line -> refmtBuffer.append(line).append(/*System.lineSeparator() ??*/"\n"));
-                String newText = refmtBuffer.toString();
+                reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
+                String newText = msgBuffer.toString();
                 if (!code.isEmpty() && !newText.isEmpty()) { // additional protection
                     return newText;
                 }
             }
-        } catch (InterruptedException | IOException | RuntimeException e) {
-            log.error(e.getMessage());
+        } catch (IOException | RuntimeException e) {
+            m_log.error(e.getMessage());
         } finally {
             if (refmt != null && refmt.isAlive()) {
                 refmt.destroy();

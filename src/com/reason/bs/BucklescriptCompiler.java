@@ -14,8 +14,6 @@ import com.reason.Platform;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-
 public class BucklescriptCompiler extends AbstractProjectComponent {
 
     private KillableColoredProcessHandler m_bsb;
@@ -34,22 +32,14 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
             return;
         }
 
-        VirtualFile baseDir = Platform.findBaseRoot(this.myProject);
+        VirtualFile baseDir = Platform.findBaseRoot(myProject);
+        String bsbPath = Platform.getBinaryPath(myProject, reasonBsb);
+        if (bsbPath == null) {
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
+            // Add notification system that watch node_modules
+            return;
+        }
 
-        String bsbPath;
-        if (new File(reasonBsb).isAbsolute()) {
-            bsbPath = reasonBsb;
-        }
-        else {
-            VirtualFile bsbBinary = baseDir.findFileByRelativePath(reasonBsb);
-            if (bsbBinary == null) {
-                Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
-                // Add notification system that watch node_modules
-                return;
-            }
-            bsbPath = bsbBinary.getCanonicalPath();
-        }
-        
         m_commandLine = new GeneralCommandLine(bsbPath, "-make-world", "-w");
         m_commandLine.setWorkDirectory(baseDir.getCanonicalPath());
 

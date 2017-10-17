@@ -9,6 +9,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      current
+      <ul>
+      <li>
+      refmt path can be absolute or relative to the project. If reasonRefmt is not set, the default value is now set
+      to node_modules/bs-platform/bin/refmt.exe
+      </li>
+      </ul>
       <b>version 0.20</b>
       <ul>
       <li>Fixed a NPE</li>

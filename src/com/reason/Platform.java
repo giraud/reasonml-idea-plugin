@@ -3,7 +3,9 @@ package com.reason;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -45,4 +47,15 @@ public class Platform {
         return baseDir;
     }
 
+    @Nullable
+    public static String getBinaryPath(Project project, String binary) {
+        if (new File(binary).isAbsolute()) {
+            return binary;
+        }
+
+        VirtualFile baseDir = Platform.findBaseRoot(project);
+        VirtualFile absoluteBinary = baseDir.findFileByRelativePath(binary);
+
+        return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
+    }
 }

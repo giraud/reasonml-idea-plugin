@@ -16,7 +16,7 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
         // WriteCommandAction.writeCommandAction(project).run(() -> {
-        RefmtManager.getInstance().refmt(document);
+        //   RefmtManager.getInstance().refmt(project, document);
         // });
     }
 }

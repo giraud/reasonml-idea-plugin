@@ -13,15 +13,15 @@ import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 public class RefmtAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
-        RefmtManager instance = RefmtManager.getInstance();
-        if (instance != null) {
+        RefmtManager refmt = RefmtManager.getInstance();
+        if (refmt != null) {
             PsiFile data = e.getData(PSI_FILE);
             Project project = e.getProject();
             if (project != null && data != null) {
                 Document document = PsiDocumentManager.getInstance(project).getDocument(data);
                 if (document != null) {
                     WriteCommandAction.writeCommandAction(project).run(() -> {
-                        instance.refmt(document);
+                        refmt.refmt(project, document);
                     });
                 }
             }
