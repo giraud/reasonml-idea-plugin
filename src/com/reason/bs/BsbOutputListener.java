@@ -2,30 +2,26 @@ package com.reason.bs;
 
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.reason.bs.console.ConsoleBus;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
 import static java.lang.Integer.parseInt;
 
-class BsbOutputListener implements ProcessListener {
-    private final ConsoleView console;
-    private final ActionToolbar toolbar;
-    private final BucklescriptErrorsManager errorsManager;
-    private String fileProcessed = "";
-    private boolean building = false;
-    private boolean failed;
-    private BsbError bsbError;
+public class BsbOutputListener implements ProcessListener {
+    private final ConsoleBus m_consoleNotifier;
+    private final BucklescriptErrorsManager m_errorsManager;
+    private String m_fileProcessed = "";
+    private boolean m_building = false;
+    private boolean m_failed;
+    private BsbError m_bsbError;
 
-    BsbOutputListener(ConsoleView console, ActionToolbar toolbar, Project project) {
-        this.console = console;
-        this.toolbar = toolbar;
-        this.errorsManager = BucklescriptErrorsManager.getInstance(project);
+    public BsbOutputListener(ConsoleBus consoleNotifier, Project project) {
+        m_consoleNotifier = consoleNotifier;
+        m_errorsManager = BucklescriptErrorsManager.getInstance(project);
     }
 
     @Override
@@ -33,14 +29,12 @@ class BsbOutputListener implements ProcessListener {
     }
 
     @Override
-    public void processTerminated(ProcessEvent event) {
-        console.print("\nProcess has terminated, fix the problem before restarting it.", ERROR_OUTPUT);
-        BucklescriptConsole.StartAction startAction = (BucklescriptConsole.StartAction) toolbar.getActions().get(2);
-        startAction.setEnable(true);
+    public void processWillTerminate(ProcessEvent event, boolean willBeDestroyed) {
     }
 
     @Override
-    public void processWillTerminate(ProcessEvent event, boolean willBeDestroyed) {
+    public void processTerminated(ProcessEvent event) {
+        m_consoleNotifier.processTerminated();
     }
 
     @Override
@@ -50,33 +44,33 @@ class BsbOutputListener implements ProcessListener {
             reset();
         } else if (text.startsWith("Building")) {
             reset();
-        } else if (building && !text.isEmpty()) {
-            fileProcessed = text.split(" ")[0].replace(".cmj", ".re").replace("\\", "/");
-            building = false;
-            this.errorsManager.clearErrors(fileProcessed);
-        } else if (!fileProcessed.isEmpty()) {
+        } else if (m_building && !text.isEmpty()) {
+            m_fileProcessed = text.split(" ")[0].replace(".cmj", ".re").replace("\\", "/");
+            m_building = false;
+            m_errorsManager.clearErrors(m_fileProcessed);
+        } else if (!m_fileProcessed.isEmpty()) {
             if (text.startsWith("FAILED")) {
-                failed = true;
-            } else if (failed && text.startsWith("File ")) {
+                m_failed = true;
+            } else if (m_failed && text.startsWith("File ")) {
                 Pattern pattern = Pattern.compile(".*, line (\\d+), characters (\\d+)-(\\d+).*");
                 Matcher matcher = pattern.matcher(text);
                 if (matcher.matches()) {
-                    bsbError = new BsbError();
-                    bsbError.line = parseInt(matcher.group(1));
-                    bsbError.colStart = parseInt(matcher.group(2));
-                    bsbError.colEnd = parseInt(matcher.group(3));
+                    m_bsbError = new BsbError();
+                    m_bsbError.line = parseInt(matcher.group(1));
+                    m_bsbError.colStart = parseInt(matcher.group(2));
+                    m_bsbError.colEnd = parseInt(matcher.group(3));
                 }
-            } else if (this.bsbError != null && text.startsWith("Error")) {
-                this.bsbError.message = text;
-                this.errorsManager.setError(fileProcessed, bsbError);
+            } else if (m_bsbError != null && text.startsWith("Error")) {
+                m_bsbError.message = text;
+                m_errorsManager.setError(m_fileProcessed, m_bsbError);
             }
         }
     }
 
     private void reset() {
-        fileProcessed = "";
-        building = false;
-        failed = false;
-        bsbError = null;
+        m_fileProcessed = "";
+        m_building = false;
+        m_failed = false;
+        m_bsbError = null;
     }
 }

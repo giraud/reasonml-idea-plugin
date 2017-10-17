@@ -1,4 +1,4 @@
-package com.reason.bs;
+package com.reason.bs.console;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.impl.ConsoleViewImpl;
@@ -13,6 +13,8 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
+import com.reason.bs.BsbOutputListener;
+import com.reason.bs.BucklescriptCompiler;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
@@ -37,7 +39,7 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
         contentManager.addContent(content);
 
         // Start compiler
-        bsc.addListener(new BsbOutputListener(console, toolbar, project));
+        bsc.addListener(new BsbOutputListener(new ConsoleBusImpl(console, toolbar), project));
         ProcessHandler handler = bsc.getHandler();
         if (handler == null) {
             console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);
@@ -47,4 +49,21 @@ public class BucklescriptToolWindowFactory implements ToolWindowFactory, DumbAwa
         bsc.startNotify();
     }
 
+    static class ConsoleBusImpl implements ConsoleBus {
+
+        private final ConsoleViewImpl m_console;
+        private final ActionToolbar m_toolbar;
+
+        ConsoleBusImpl(ConsoleViewImpl console, ActionToolbar toolbar) {
+            m_console = console;
+            m_toolbar = toolbar;
+        }
+
+        @Override
+        public void processTerminated() {
+            m_console.print("\nProcess has terminated, fix the problem before restarting it.", ERROR_OUTPUT);
+            StartAction startAction = (StartAction) m_toolbar.getActions().get(2);
+            startAction.setEnable(true);
+        }
+    }
 }

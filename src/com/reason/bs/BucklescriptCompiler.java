@@ -44,64 +44,6 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         m_commandLine.setWorkDirectory(baseDir.getCanonicalPath());
 
         recreate();
-/*
-        ProcessBuilder processBuilder = new ProcessBuilder(bsbBinary.getCanonicalPath(), "-make-world", "-w")
-                .directory(new File(baseDir.getCanonicalPath()))
-                .redirectErrorStream(true);
-
-        try {
-            m_bsb = processBuilder.start();
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(bsb.getInputStream()));
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Enabled", "Background compilation is using '" + bsbBinary.getCanonicalPath() + "'", NotificationType.INFORMATION, null));
-
-            m_streamListener = new Thread(() -> {
-                String line = null;
-                BsbError errorMode = null;
-
-                while (true) {
-                    try {
-                        line = bufferedReader.readLine();
-
-                        if (errorMode != null) {
-                            if (line != null && !line.isEmpty()) {
-                                if (line.startsWith("File")) {
-                                    errorMode.file = line.substring(5);
-                                } else if (line.startsWith("Error")) {
-                                    errorMode.errorType = line.substring(7);
-                                } else if (line.charAt(0) == ' ') {
-                                    // still error
-                                } else if (errorMode.errorType != null) {
-                                    System.out.println("ERROR DETECTED: " + errorMode);
-                                    BucklescriptErrorsManager.getInstance(myProject).setError(errorMode);
-                                    errorMode = null;
-                                }
-                            }
-                        } else if (line.startsWith("FAILED")) {
-                            errorMode = new BsbError();
-                        } else if (line.startsWith(">>>> Start compiling")) {
-                            // starts
-                            System.out.println("START");
-                        } else if (line.startsWith(">>>> Finish compiling")) {
-                            System.out.println("STOP");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (line != null && !line.isEmpty()) {
-                        if (errorMode != null && errorMode.errorType != null) {
-                            errorMode.errors.add(line.trim());
-                        }
-                        System.out.println("» " + line);
-                        // redirect to a console (like wallaby) somewhere ?
-                    }
-                }
-            });
-            m_streamListener.start();
-        } catch (IOException e) {
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
-        }
-*/
     }
 
     @Override
@@ -110,19 +52,19 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     }
 
     @Nullable
-    ProcessHandler getHandler() {
+    public ProcessHandler getHandler() {
         return m_bsb;
     }
 
     // Wait for the toolwindow to be ready before starting the process
-    void startNotify() {
+    public void startNotify() {
         if (m_bsb != null) {
             m_bsb.startNotify();
         }
     }
 
     @Nullable
-    ProcessHandler recreate() {
+    public ProcessHandler recreate() {
         try {
             killIt();
             m_bsb = new KillableColoredProcessHandler(m_commandLine, true);
@@ -143,7 +85,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         }
     }
 
-    void addListener(ProcessListener outputListener) {
+    public void addListener(ProcessListener outputListener) {
         m_outputListener = outputListener;
         if (m_bsb != null) {
             m_bsb.addProcessListener(outputListener);
