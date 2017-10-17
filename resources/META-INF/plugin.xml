@@ -94,7 +94,7 @@
         <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
-        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.console.BucklescriptToolWindowFactory"/>
+        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BucklescriptToolWindowFactory"/>
 
         <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule" implementationClass="com.reason.psi.RmlModuleManipulator"/>
         <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName" implementationClass="com.reason.psi.RmlModuleNameManipulator"/>
