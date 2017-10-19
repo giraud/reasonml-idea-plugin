@@ -62,11 +62,11 @@
             <implementation-class>com.reason.ide.RmlProjectTracker</implementation-class>
         </component>
         <component>
-            <implementation-class>com.reason.bs.BucklescriptCompiler</implementation-class>
+            <implementation-class>com.reason.bs.BsbCompiler</implementation-class>
         </component>
         <component>
-            <interface-class>com.reason.bs.BucklescriptErrorsManager</interface-class>
-            <implementation-class>com.reason.bs.BucklescriptErrorsManagerImpl</implementation-class>
+            <interface-class>com.reason.bs.BsbErrorsManager</interface-class>
+            <implementation-class>com.reason.bs.BsbErrorsManagerImpl</implementation-class>
         </component>
     </project-components>
 
@@ -81,7 +81,7 @@
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator" />
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BucklescriptErrorAnnotator" />
+        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BsbErrorAnnotator" />
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
 
@@ -94,7 +94,7 @@
         <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
-        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BucklescriptToolWindowFactory"/>
+        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BsbToolWindowFactory"/>
 
         <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule" implementationClass="com.reason.psi.RmlModuleManipulator"/>
         <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName" implementationClass="com.reason.psi.RmlModuleNameManipulator"/>

@@ -4,20 +4,20 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
-import com.reason.bs.BucklescriptCompiler;
+import com.reason.bs.BsbCompiler;
 
 public class StartAction extends DumbAwareAction {
-    private final BucklescriptCompiler m_bsc;
+    private final BsbCompiler m_bsc;
     private final ConsoleView m_console;
     private boolean m_enable = false;
 
-    StartAction(ConsoleView console, BucklescriptCompiler bsc) {
+    StartAction(ConsoleView console, BsbCompiler bsc) {
         super("Start", "Start bucklescript process", AllIcons.Actions.Execute);
         m_bsc = bsc;
         m_console = console;
     }
 
-    public void setEnable(boolean value) {
+    void setEnable(boolean value) {
         m_enable = value;
     }
 

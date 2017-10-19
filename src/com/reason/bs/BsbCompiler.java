@@ -14,13 +14,13 @@ import com.reason.Platform;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
-public class BucklescriptCompiler extends AbstractProjectComponent {
+public class BsbCompiler extends AbstractProjectComponent {
 
     private KillableColoredProcessHandler m_bsb;
     private GeneralCommandLine m_commandLine;
     private ProcessListener m_outputListener;
 
-    protected BucklescriptCompiler(Project project) {
+    protected BsbCompiler(Project project) {
         super(project);
     }
 
@@ -52,11 +52,11 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
     }
 
     @Nullable
-    public ProcessHandler getHandler() {
+    ProcessHandler getHandler() {
         return m_bsb;
     }
 
-    // Wait for the toolwindow to be ready before starting the process
+    // Wait for the tool window to be ready before starting the process
     public void startNotify() {
         if (m_bsb != null) {
             m_bsb.startNotify();
@@ -85,7 +85,7 @@ public class BucklescriptCompiler extends AbstractProjectComponent {
         }
     }
 
-    public void addListener(ProcessListener outputListener) {
+    void addListener(ProcessListener outputListener) {
         m_outputListener = outputListener;
         if (m_bsb != null) {
             m_bsb.addProcessListener(outputListener);

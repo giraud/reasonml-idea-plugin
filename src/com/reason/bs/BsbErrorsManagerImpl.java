@@ -1,19 +1,21 @@
 package com.reason.bs;
 
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.containers.ConcurrentMultiMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public class BucklescriptErrorsManagerImpl extends BucklescriptErrorsManager implements ProjectComponent {
+public class BsbErrorsManagerImpl extends BsbErrorsManager implements ProjectComponent {
 
     private ConcurrentMultiMap<String, BsbError> m_errorsByFile;
 
     @NotNull
     @Override
     public String getComponentName() {
-        return BucklescriptErrorsManager.class.getSimpleName();
+        return BsbErrorsManager.class.getSimpleName();
     }
 
     @Override
@@ -37,17 +39,21 @@ public class BucklescriptErrorsManagerImpl extends BucklescriptErrorsManager imp
     }
 
     @Override
-    public void setError(String file, BsbError error) {
-        m_errorsByFile.putValue(file, error);
+    public void setError(String filePath, BsbError error) {
+        VirtualFile fileByUrl = VirtualFileManager.getInstance().findFileByUrl("file://" + filePath);
+        if (fileByUrl != null) {
+            m_errorsByFile.putValue(fileByUrl.getCanonicalPath(), error);
+        }
     }
 
     @Override
-    public Collection<BsbError> getError(String filePath) {
+    public Collection<BsbError> getErrors(String filePath) {
         return m_errorsByFile.get(filePath);
     }
 
     @Override
     public void clearErrors(String fileProcessed) {
-        m_errorsByFile.remove(fileProcessed);
+        m_errorsByFile.clear();
+        //m_errorsByFile.remove(fileProcessed);
     }
 }
