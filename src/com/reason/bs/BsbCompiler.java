@@ -40,7 +40,7 @@ public class BsbCompiler extends AbstractProjectComponent {
             return;
         }
 
-        m_commandLine = new GeneralCommandLine(bsbPath, "-make-world", "-w");
+        m_commandLine = new GeneralCommandLine("node", bsbPath, "-no-color", "-make-world", "-w");
         m_commandLine.setWorkDirectory(baseDir.getCanonicalPath());
 
         recreate();
@@ -67,7 +67,7 @@ public class BsbCompiler extends AbstractProjectComponent {
     public ProcessHandler recreate() {
         try {
             killIt();
-            m_bsb = new KillableColoredProcessHandler(m_commandLine, true);
+            m_bsb = new KillableColoredProcessHandler(m_commandLine);
             if (m_outputListener != null) {
                 m_bsb.addProcessListener(m_outputListener);
             }
