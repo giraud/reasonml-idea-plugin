@@ -9,11 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.reason.bs.BsbCompiler;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
-
-public class BsbConsole extends ConsoleViewImpl implements ConsoleBus {
-
-    private ActionToolbar m_toolbar;
+public class BsbConsole extends ConsoleViewImpl {
 
     public BsbConsole(@NotNull Project project) {
         super(project, true);
@@ -25,17 +21,10 @@ public class BsbConsole extends ConsoleViewImpl implements ConsoleBus {
         group.add(new ClearLogAction(this));
         group.add(new StartAction(this, bsc));
 
-        m_toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
-        m_toolbar.setTargetComponent(this.getComponent());
+        ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
+        toolbar.setTargetComponent(this.getComponent());
 
-        return m_toolbar;
-    }
-
-    @Override
-    public void processTerminated() {
-        print("\nProcess has terminated, fix the problem before restarting it.", ERROR_OUTPUT);
-        StartAction startAction = (StartAction) m_toolbar.getActions().get(2);
-        startAction.setEnable(true);
+        return toolbar;
     }
 
 }

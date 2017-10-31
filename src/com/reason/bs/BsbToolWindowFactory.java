@@ -32,7 +32,7 @@ public class BsbToolWindowFactory implements ToolWindowFactory, DumbAware {
         toolWindow.getContentManager().addContent(content);
 
         // Start compiler
-        bsc.addListener(new BsbOutputListener(console, project));
+        bsc.addListener(new BsbOutputListener(project));
         ProcessHandler handler = bsc.getHandler();
         if (handler == null) {
             console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);

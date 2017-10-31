@@ -40,7 +40,7 @@ public class BsbCompiler extends AbstractProjectComponent {
             return;
         }
 
-        m_commandLine = new GeneralCommandLine("node", bsbPath, "-no-color", "-make-world", "-w");
+        m_commandLine = new GeneralCommandLine(bsbPath, "-no-color", "-make-world");
         m_commandLine.setWorkDirectory(baseDir.getCanonicalPath());
 
         recreate();

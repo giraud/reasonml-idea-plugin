@@ -1,28 +1,29 @@
 package com.reason.bs;
 
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.reason.bs.console.ConsoleBus;
 
 import static java.lang.Integer.parseInt;
 
 public class BsbOutputListener implements ProcessListener {
-    private final ConsoleBus m_consoleNotifier;
     private final BsbErrorsManager m_errorsManager;
+    private final Project m_project;
     private String m_fileProcessed = "";
     private boolean m_failed;
     private int m_failedLine;
     private BsbErrorsManager.BsbError m_bsbError;
 
-    BsbOutputListener(ConsoleBus consoleNotifier, Project project) {
-        m_consoleNotifier = consoleNotifier;
+    BsbOutputListener(Project project) {
+        m_project = project;
         m_errorsManager = BsbErrorsManager.getInstance(project);
     }
 
     @Override
     public void startNotified(ProcessEvent event) {
+        m_errorsManager.clearErrors(""); //?
     }
 
     @Override
@@ -31,16 +32,19 @@ public class BsbOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(ProcessEvent event) {
-        m_consoleNotifier.processTerminated();
+        DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(m_project);
+        codeAnalyzer.restart(/*psifile?*/);
     }
 
     @Override
     public void onTextAvailable(ProcessEvent event, Key outputType) {
         String text = event.getText();
         if (text.charAt(0) != '\n' && text.charAt(0) != ' ' && m_failedLine > 0) {
-            m_bsbError.message = "Found error at L" + m_bsbError.line + " for " + m_fileProcessed;
-            System.out.println(m_bsbError.message);
-            m_errorsManager.setError(m_fileProcessed, m_bsbError);
+            if (m_bsbError != null) {
+                m_bsbError.message = "Found error at L" + m_bsbError.line + " for " + m_fileProcessed;
+                //System.out.println(m_bsbError.message);
+                //m_errorsManager.setError(m_fileProcessed, m_bsbError); not until it works
+            }
             reset();
         }
 
@@ -64,18 +68,11 @@ public class BsbOutputListener implements ProcessListener {
                 }
             }
             m_failedLine++;
-        }
-        else if (text.startsWith(">>>> Start compiling")) {
-            System.out.println("Reset all errors");
-            m_errorsManager.clearErrors("");
-        }
-        else if (text.startsWith(">>>> Finish compiling")) {
-            reset();
-            // Refresh external annotator !?
-        } else if (text.startsWith("Building")) {
-            reset();
-        }
-        else if (text.startsWith("FAILED")) {
+//        } else if (text.startsWith(">>>> Finish compiling")) { //?
+//            reset();
+//        } else if (text.startsWith("Building")) { //?
+//            reset();
+        } else if (text.startsWith("FAILED")) {
             m_failed = true;
             m_failedLine = 0;
         }

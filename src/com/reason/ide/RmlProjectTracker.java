@@ -4,6 +4,7 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.ide.hints.RmlDocumentListener;
 
@@ -23,6 +24,8 @@ public class RmlProjectTracker extends AbstractProjectComponent {
 
         m_messageBusConnection = myProject.getMessageBus().connect();
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new RmlFileEditorListener(myProject));
+
+        VirtualFileManager.getInstance().addVirtualFileListener(new RmlVirtualFileListener(myProject));
     }
 
     @Override
