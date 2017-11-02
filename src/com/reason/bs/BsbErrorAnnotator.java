@@ -39,7 +39,6 @@ public class BsbErrorAnnotator extends ExternalAnnotator<Collection<BsbErrorsMan
 
     @Override
     public void apply(@NotNull PsiFile file, Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
-        System.out.println("apply to " + file.getVirtualFile().getCanonicalPath());
         LineNumbering lineNumbering = new LineNumbering(file.getText());
         for (BsbErrorAnnotation annotation : annotationResult) {
             System.out.println("  >> " + annotation.m_message);

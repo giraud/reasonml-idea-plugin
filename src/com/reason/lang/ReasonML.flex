@@ -133,6 +133,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "!"   { return EXCLAMATION_MARK; }
     "$"   { return DOLLAR; }
     "`"   { return BACKTICK; }
+    "~"   { return TILDE; }
 
     "<"  { return LT; }
     ">"  { return GT; }

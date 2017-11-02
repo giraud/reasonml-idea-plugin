@@ -88,6 +88,7 @@ public interface RmlTypes {
     IElementType STARDOT = new ReasonMLTokenType("STARDOT");
     IElementType STRING = new ReasonMLTokenType("STRING");
     IElementType SWITCH = new ReasonMLTokenType("SWITCH");
+    IElementType TILDE = new ReasonMLElementType("TILDE");
     IElementType TO = new ReasonMLElementType("TO");
     IElementType TRUE = new ReasonMLTokenType("TRUE");
     IElementType TRY = new ReasonMLTokenType("TRY");
