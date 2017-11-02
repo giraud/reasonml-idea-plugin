@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.20</version>
+    <version>0.21</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
@@ -9,12 +9,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      current
+      <b>version 0.21</b>
       <ul>
       <li>
       refmt path can be absolute or relative to the project. If reasonRefmt is not set, the default value is now set
       to node_modules/bs-platform/bin/refmt.exe
       </li>
+      <li>
+      Bsb is no more used in watch mode, but we run it each time a file is modified 
       </ul>
       <b>version 0.20</b>
       <ul>
