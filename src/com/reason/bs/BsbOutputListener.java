@@ -32,6 +32,10 @@ public class BsbOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(ProcessEvent event) {
+        if (m_bsbError != null) {
+            m_errorsManager.setError(m_fileProcessed, m_bsbError);
+            reset();
+        }
         DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(m_project);
         codeAnalyzer.restart();
     }

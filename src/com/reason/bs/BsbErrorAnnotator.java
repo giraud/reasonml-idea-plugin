@@ -2,6 +2,7 @@ package com.reason.bs;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
+import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.reason.ide.LineNumbering;
@@ -56,17 +57,23 @@ public class BsbErrorAnnotator extends ExternalAnnotator<Collection<BsbErrorsMan
     public void apply(@NotNull PsiFile file, Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
         LineNumbering lineNumbering = new LineNumbering(file.getText());
         for (BsbErrorAnnotation annotation : annotationResult) {
-            PsiElement elementAtOffset;
+            PsiElement elementAtOffset = null;
+            /*
             if (annotation.m_element != null) {
                 elementAtOffset = annotation.m_element;
             } else {
                 int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
                 elementAtOffset = findElementAtOffset(file, startOffset);
             }
+            */
 
             if (elementAtOffset != null) {
                 holder.createErrorAnnotation(elementAtOffset, annotation.m_message);
                 BsbErrorsManager.getInstance(file.getProject()).associatePsiElement(file.getVirtualFile(), elementAtOffset);
+            } else {
+                int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
+                int endOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_endOffset);
+                holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.m_message);
             }
         }
     }
