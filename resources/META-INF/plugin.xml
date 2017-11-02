@@ -9,6 +9,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>current</b>
+      <ul>
+      <li>
+      Parse Bsb errors and use them to annotate source code
+      </li>
+      </ul>
       <b>version 0.21</b>
       <ul>
       <li>

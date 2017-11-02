@@ -23,7 +23,7 @@ public class BsbOutputListener implements ProcessListener {
 
     @Override
     public void startNotified(ProcessEvent event) {
-        m_errorsManager.clearErrors(""); //?
+        m_errorsManager.clearErrors();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class BsbOutputListener implements ProcessListener {
     @Override
     public void processTerminated(ProcessEvent event) {
         DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(m_project);
-        codeAnalyzer.restart(/*psifile?*/);
+        codeAnalyzer.restart();
     }
 
     @Override
@@ -41,9 +41,7 @@ public class BsbOutputListener implements ProcessListener {
         String text = event.getText();
         if (text.charAt(0) != '\n' && text.charAt(0) != ' ' && m_failedLine > 0) {
             if (m_bsbError != null) {
-                m_bsbError.message = "Found error at L" + m_bsbError.line + " for " + m_fileProcessed;
-                //System.out.println(m_bsbError.message);
-                //m_errorsManager.setError(m_fileProcessed, m_bsbError); not until it works
+                m_errorsManager.setError(m_fileProcessed, m_bsbError);
             }
             reset();
         }
@@ -67,11 +65,15 @@ public class BsbOutputListener implements ProcessListener {
                     }
                 }
             }
+
+            if (4 < m_failedLine) {
+                char c = text.charAt(2);
+                if ('\n' != c && (c < '0' || '9' < c)) {
+                    m_bsbError.message += text;
+                }
+            }
+
             m_failedLine++;
-//        } else if (text.startsWith(">>>> Finish compiling")) { //?
-//            reset();
-//        } else if (text.startsWith("Building")) { //?
-//            reset();
         } else if (text.startsWith("FAILED")) {
             m_failed = true;
             m_failedLine = 0;

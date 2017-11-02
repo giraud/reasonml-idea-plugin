@@ -41,7 +41,6 @@ public class BsbErrorAnnotator extends ExternalAnnotator<Collection<BsbErrorsMan
     public void apply(@NotNull PsiFile file, Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
         LineNumbering lineNumbering = new LineNumbering(file.getText());
         for (BsbErrorAnnotation annotation : annotationResult) {
-            System.out.println("  >> " + annotation.m_message);
             int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
             int endOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_endOffset);
             holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.m_message);

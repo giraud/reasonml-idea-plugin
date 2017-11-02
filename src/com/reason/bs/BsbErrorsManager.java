@@ -20,15 +20,14 @@ public abstract class BsbErrorsManager {
 
     abstract public Collection<BsbError> getErrors(String filePath);
 
-    public void clearErrors(String fileProcessed) {
-    }
+    abstract public void clearErrors();
 
     static class BsbError {
-        public String errorType;
-        public int line;
-        public int colStart;
-        public int colEnd;
-        public String message;
+        String errorType;
+        int line;
+        int colStart;
+        int colEnd;
+        String message = "";
 
         @Override
         public String toString() {

@@ -52,8 +52,7 @@ public class BsbErrorsManagerImpl extends BsbErrorsManager implements ProjectCom
     }
 
     @Override
-    public void clearErrors(String fileProcessed) {
+    public void clearErrors() {
         m_errorsByFile.clear();
-        //m_errorsByFile.remove(fileProcessed);
     }
 }
