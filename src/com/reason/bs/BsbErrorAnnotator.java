@@ -2,7 +2,7 @@ package com.reason.bs;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
-import com.intellij.openapi.editor.impl.TextRangeInterval;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.reason.ide.LineNumbering;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class BsbErrorAnnotator extends ExternalAnnotator<Collection<BsbErrorsManager.BsbError>, Collection<BsbErrorAnnotator.BsbErrorAnnotation>> {
 
@@ -31,19 +32,42 @@ public class BsbErrorAnnotator extends ExternalAnnotator<Collection<BsbErrorsMan
 
         for (BsbErrorsManager.BsbError bsbError : collectedInfo) {
             // Find the PsiElement and attach annotation to it !
-            result.add(new BsbErrorAnnotation(bsbError.line - 1, bsbError.colStart - 1, bsbError.colEnd - 1, bsbError.message));
+            result.add(new BsbErrorAnnotation(bsbError.line - 1, bsbError.colStart - 1, bsbError.colEnd - 1, bsbError.message, bsbError.element));
         }
 
         return result;
+    }
+
+
+    @Nullable
+    public static PsiElement findElementAtOffset(@NotNull PsiFile file, int offset) {
+        final List<PsiFile> psiRoots = file.getViewProvider().getAllFiles();
+        for (PsiElement root : psiRoots) {
+            final PsiElement elementAt = root.findElementAt(offset);
+            if (elementAt != null) {
+                return elementAt;
+            }
+        }
+
+        return null;
     }
 
     @Override
     public void apply(@NotNull PsiFile file, Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
         LineNumbering lineNumbering = new LineNumbering(file.getText());
         for (BsbErrorAnnotation annotation : annotationResult) {
-            int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
-            int endOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_endOffset);
-            holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.m_message);
+            PsiElement elementAtOffset;
+            if (annotation.m_element != null) {
+                elementAtOffset = annotation.m_element;
+            } else {
+                int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
+                elementAtOffset = findElementAtOffset(file, startOffset);
+            }
+
+            if (elementAtOffset != null) {
+                holder.createErrorAnnotation(elementAtOffset, annotation.m_message);
+                BsbErrorsManager.getInstance(file.getProject()).associatePsiElement(file.getVirtualFile(), elementAtOffset);
+            }
         }
     }
 
@@ -52,12 +76,14 @@ public class BsbErrorAnnotator extends ExternalAnnotator<Collection<BsbErrorsMan
         final int m_startOffset;
         final int m_endOffset;
         String m_message;
+        PsiElement m_element;
 
-        BsbErrorAnnotation(int line, int startOffset, int endOffset, String message) {
+        BsbErrorAnnotation(int line, int startOffset, int endOffset, String message, PsiElement element) {
             m_line = line;
             m_startOffset = startOffset;
             m_endOffset = endOffset;
             m_message = message;
+            m_element = element;
         }
     }
 }

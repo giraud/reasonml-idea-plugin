@@ -39,14 +39,36 @@ public class BsbOutputListener implements ProcessListener {
     @Override
     public void onTextAvailable(ProcessEvent event, Key outputType) {
         String text = event.getText();
-        if (text.charAt(0) != '\n' && text.charAt(0) != ' ' && m_failedLine > 0) {
-            if (m_bsbError != null) {
-                m_errorsManager.setError(m_fileProcessed, m_bsbError);
-            }
-            reset();
-        }
 
         if (m_failed) {
+            if (text.startsWith("File")) {
+                // Extract file path and error position
+                String[] tokens = text.trim().split(", ");
+                if (tokens.length == 3) {
+                    m_fileProcessed = tokens[0].substring(6, tokens[0].length() - 1);
+                    String line = tokens[1].substring(5);
+                    String position = tokens[2].substring(11, tokens[2].length() - 1);
+                    String[] columns = position.split("-");
+                    // If everything went ok, creates a new error
+                    m_bsbError = new BsbErrorsManager.BsbError();
+                    m_bsbError.line = parseInt(line);
+                    m_bsbError.colStart = parseInt(columns[0]);
+                    m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]) + 1;
+                }
+                return;
+            }
+            if (text.startsWith("Error:")) {
+                m_bsbError.message = text;
+            }
+
+            if (text.charAt(0) != '\n' && text.charAt(0) != ' ' && m_failedLine > 0) {
+                if (m_bsbError != null) {
+                    m_errorsManager.setError(m_fileProcessed, m_bsbError);
+                }
+                reset();
+                return;
+            }
+
             // The third line contains file information, I hope it won't change
             if (m_failedLine == 3) {
                 // Extract file path and error position

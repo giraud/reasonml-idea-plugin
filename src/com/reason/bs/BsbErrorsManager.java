@@ -1,6 +1,8 @@
 package com.reason.bs;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -22,12 +24,15 @@ public abstract class BsbErrorsManager {
 
     abstract public void clearErrors();
 
+    public abstract void associatePsiElement(VirtualFile virtualFile, PsiElement elementAtOffset);
+
     static class BsbError {
         String errorType;
         int line;
         int colStart;
         int colEnd;
         String message = "";
+        PsiElement element;
 
         @Override
         public String toString() {
