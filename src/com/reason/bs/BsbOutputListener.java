@@ -57,7 +57,7 @@ public class BsbOutputListener implements ProcessListener {
                     m_bsbError = new BsbErrorsManager.BsbError();
                     m_bsbError.line = parseInt(line);
                     m_bsbError.colStart = parseInt(columns[0]);
-                    m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]) + 1;
+                    m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]);
                 }
                 return;
             }
@@ -87,7 +87,7 @@ public class BsbOutputListener implements ProcessListener {
                         m_bsbError = new BsbErrorsManager.BsbError();
                         m_bsbError.line = parseInt(line);
                         m_bsbError.colStart = parseInt(columns[0]);
-                        m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]) + 1;
+                        m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]);
                     }
                 }
             }

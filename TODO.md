@@ -1,11 +1,12 @@
 List of todos
 
-- [x] merlin 3 support
-- [ ] super errors displayed correctly in console (colors / annotation)
+- [ ] find usages of external
+- [ ] super errors displayed with colors in console
 - [ ] completion with doc (ctrl-q)
 - [ ] ctrl-q on token to display doc
-- [ ] reformatOnSave with undo
 - [ ] renaming a file renames the module calls
 - [ ] navigation between modules
 
-- [ ] remove the watch mode of bsb and call it when a file is saved ?
+- [x] merlin 3 support
+- [x] extract errors from super errors and create annotations
+- [x] remove the watch mode of bsb and call it when a file is saved
