@@ -26,17 +26,16 @@ public class BsbCompiler extends AbstractProjectComponent {
 
     @Override
     public void projectOpened() {
-        String reasonBsb = System.getProperty("reasonBsb");
-        if (reasonBsb == null) {
+        String bsbBin = Platform.getBinary("REASON_BSB_BIN", "reasonBsb", "node_modules/bs-platform/bin/bsb.exe");
+        if (bsbBin == null) {
             Notifications.Bus.notify(new RmlNotification("Bsb", "Bsb is disabled, you need to manually launch an external process", NotificationType.WARNING));
             return;
         }
 
         VirtualFile baseDir = Platform.findBaseRoot(myProject);
-        String bsbPath = Platform.getBinaryPath(myProject, reasonBsb);
+        String bsbPath = Platform.getBinaryPath(myProject, bsbBin);
         if (bsbPath == null) {
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + reasonBsb + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
-            // Add notification system that watch node_modules
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find bsb using value '" + bsbBin + "' from property 'reasonBsb'.\nBase directory is '" + baseDir.getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.", NotificationType.ERROR));
             return;
         }
 
