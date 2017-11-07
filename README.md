@@ -14,7 +14,6 @@ This code might change quite a lot or break in the future.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
-- bug: reformat on save clear undo actions: no undo after saving the file 
 
 ## Features
 
@@ -24,7 +23,7 @@ Known limitations:
 - code folding
 - pair braces matcher
 - bucklescript compiler integration
-- reformat on save (*) (by default, action is also mapped to `crtl alt shift R`)
+- reformat (by default, action is also mapped to `crtl alt shift R`)
 - Type annotation (* merlin)
 - Completion (* merlin)
 
@@ -36,7 +35,7 @@ Type annotations (linux only):
 
 ![type](docs/type.gif)
 
-Reformat on save (Ctrl+s)
+Reformat using refmt(3)
 
 ![refmt](docs/refmt.gif)
 
@@ -46,13 +45,8 @@ Bucklescript window
 
 ## Integration
 
-Integration with reason tools need to be explicitly set with VM properties.
-
 Note: To edit your `idea[64].vmoptions` you can do it from the console, 
 or via the menu `help > Edit Custom VM Options`. 
-
-:exclamation: you can omit the `reasonReformatOnSave` property if you don't want it, because refmt integration is not ready yet.
-You can still use keyboard mapping.
 
 ### Linux
 
@@ -63,18 +57,18 @@ You can still use keyboard mapping.
 -DreasonBsb=node_modules/bs-platform/bin/bsb.exe
 -DreasonMerlin=<absolute path to opam>/bin/ocamlmerlin
 -DreasonRefmt=<absolute path to opam>/bin/refmt
--DreasonReformatOnSave=true|false
 ```
 
 ### Windows
 
 - Add `bs-platform` to your project
-- Edit your `idea[64].vmoptions`
-- Add the following properties:
+- If `bs-platform` is installed locally (defined in your `package.json`), then you should have nothing else to do
+- If `bs-platform` is installed globally:
+-- Edit your `idea[64].vmoptions`
+-- Add the following properties:
 ```properties
--DreasonBsb=node_modules/bs-platform/bin/bsb.exe
--DreasonRefmt=<absolute path to your project>/node_modules/bs-platform/bin/refmt.exe
--DreasonReformatOnSave=true|false
+-DreasonBsb=<absolute_path>/bsb.exe
+-DreasonRefmt=<absolute_path>/refmt3.exe
 ```
 
 ## Development
