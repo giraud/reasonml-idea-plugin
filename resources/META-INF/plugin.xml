@@ -14,6 +14,7 @@
       <li>
       New default values for bsb and refmt. bsb=> node_modules/bs-platform/bin/bsb.exe, refmt=> node_modules/bs-platform/bin/refmt3.exe
       </li>
+      </ul>
       <b>version 0.22</b>
       <ul>
       <li>
