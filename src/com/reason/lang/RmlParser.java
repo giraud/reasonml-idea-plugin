@@ -18,7 +18,6 @@ public class RmlParser implements PsiParser, LightPsiParser {
     private static final String ERR_EQ_EXPECTED = "'=' expected";
     private static final String ERR_ARROW_EXPECTED = "'=>' expected";
     private static final String ERR_COLON_EXPECTED = "':' expected";
-    private static final String ERR_NAME_LIDENT = "Name must start with a lower case";
     private static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
 
     @NotNull
@@ -153,8 +152,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 Marker marker = enter_section_(builder);
 
                 while (true) {
-                    builder.advanceLexer();
-                    tokenType = builder.getTokenType();
+                    tokenType = advance(builder);
                     if (isStartExpression(tokenType)) {
                         break;
                     }
@@ -213,8 +211,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         if (tokenType != SEMI) {
             // might be a module definition only
             if (tokenType == TYPE) {
-                builder.advanceLexer();
-                tokenType = builder.getTokenType();
+                tokenType = advance(builder);
             }
 
             // module name
@@ -246,9 +243,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                         fail(builder, ERR_ARROW_EXPECTED);
                     } else {
                         // module definition
-                        builder.advanceLexer();
-
-                        tokenType = builder.getTokenType();
+                        tokenType = advance(builder);
                         if (tokenType == LBRACE) {
                             // scoped body, anything inside braces
                             scopedExpression(builder, recLevel + 1);
@@ -266,9 +261,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
                     if (tokenType == EQ) {
                         // module definition
-                        builder.advanceLexer();
-
-                        tokenType = builder.getTokenType();
+                        tokenType = advance(builder);
                         if (tokenType == LBRACE) {
                             // scoped body, anything inside braces
                             scopedExpression(builder, recLevel + 1);
@@ -389,8 +382,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         if (tokenType != SEMI) {
             // anything but semi
             while (true) {
-                builder.advanceLexer();
-                tokenType = builder.getTokenType();
+                tokenType = advance(builder);
                 if (tokenType == null || tokenType == SEMI) {
                     break;
                 }
@@ -403,6 +395,10 @@ public class RmlParser implements PsiParser, LightPsiParser {
     }
 
     // **********
+    // NEW!
+    // LET REC? MODULE? (destructure|value_name) expression* (EQ (LPAREN expression RPAREN ARROW scoped_expression | (scoped_)expression) SEMI
+    //
+    // OLD!
     // LET REC? MODULE? (destructure|value_name) expression* (EQ (scoped_)expression | ARROW scoped_expression) SEMI
     // LET REC? MODULE? value_name COLON expression+ SEMI
     // **********
@@ -410,8 +406,6 @@ public class RmlParser implements PsiParser, LightPsiParser {
         if (!recursion_guard_(builder, recLevel, "let expression")) {
             return;
         }
-
-        boolean isModuleAlias = false;
 
         // enter LET
         Marker exprMarker = enter_section_(builder);
@@ -425,7 +419,6 @@ public class RmlParser implements PsiParser, LightPsiParser {
         // might be a module alias
         tokenType = builder.getTokenType();
         if (tokenType == MODULE) {
-            isModuleAlias = true;
             builder.advanceLexer();
         }
 
@@ -480,9 +473,34 @@ public class RmlParser implements PsiParser, LightPsiParser {
             boolean isFunction = ARROW == tokenType;
 
             builder.advanceLexer();
-            Marker funMarker = enter_section_(builder);
+            Marker bindMarker = enter_section_(builder);
 
             tokenType = builder.getTokenType();
+            if (LPAREN == tokenType || UNIT == tokenType) {
+                // New function syntax ?
+                Marker paramsMarker = enter_section_(builder);
+                if (LPAREN == tokenType) {
+                    parenExpression(builder, recLevel + 1);
+                } else {
+                    builder.advanceLexer();
+                }
+
+                tokenType = builder.getTokenType();
+                isFunction = ARROW == tokenType;
+                if (isFunction) {
+                    bindMarker.drop();
+                    exit_section_(builder, paramsMarker, FUN_PARAMS, true);
+                } else {
+                    paramsMarker.drop();
+                }
+
+                tokenType = advance(builder);
+
+                if (isFunction) {
+                    bindMarker = enter_section_(builder);
+                }
+            }
+
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
             } else if (IF == tokenType) {
@@ -491,7 +509,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 advanceUntilNextStart(builder, recLevel + 1);
             }
 
-            exit_section_(builder, funMarker, isFunction ? FUN_BODY : LET_BINDING, true);
+            exit_section_(builder, bindMarker, isFunction ? FUN_BODY : LET_BINDING, true);
         }
 
         // end of LET
@@ -582,8 +600,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     private static void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
         IElementType tokenType;
         while (true) {
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
+            tokenType = advance(builder);
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
@@ -597,6 +614,10 @@ public class RmlParser implements PsiParser, LightPsiParser {
         }
     }
 
+
+    // **********
+    // Pattern: LPAREN {{token-start}} expression* RPAREN {{token-end}}
+    // **********
     private static void parenExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "skip paren")) {
             return;
@@ -604,8 +625,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
         IElementType tokenType;
         while (true) {
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
+            tokenType = advance(builder);
 
             // If a new scope is found, recursively process it
             if (LBRACE == tokenType) {
@@ -636,8 +656,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
         IElementType tokenType;
         while (true) {
-            builder.advanceLexer();
-            tokenType = builder.getTokenType();
+            tokenType = advance(builder);
             if (LBRACE == tokenType) {
                 scopedExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();

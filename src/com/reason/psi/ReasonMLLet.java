@@ -3,6 +3,8 @@ package com.reason.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
 import com.reason.icons.ReasonMLIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +37,17 @@ public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferre
         return findChildByClass(ReasonMLFunBody.class) != null;
     }
 
+    private boolean isRecursive() {
+        // Find first element after the LET
+        PsiElement firstChild = getFirstChild();
+        PsiElement sibling = firstChild.getNextSibling();
+        if (sibling != null && sibling instanceof PsiWhiteSpace) {
+            sibling = sibling.getNextSibling();
+        }
+
+        return sibling != null && "rec".equals(sibling.getText());
+    }
+
     @Override
     public void setInferredType(String inferredType) {
         this.inferredType = inferredType;
@@ -64,7 +77,7 @@ public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferre
 
                 String letName = letValueName.getText();
                 if (isFunction()) {
-                    return letName + "(..)";
+                    return letName + "(..)" + (isRecursive() ? ": rec" : "");
                 }
 
                 return letName + (hasInferredType() ? ": " + getInferredType() : "");

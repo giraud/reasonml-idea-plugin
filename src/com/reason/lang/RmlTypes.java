@@ -43,6 +43,7 @@ public interface RmlTypes {
     IElementType FLOAT = new ReasonMLTokenType("FLOAT");
     IElementType FOR = new ReasonMLElementType("FOR");
     IElementType FUN = new ReasonMLTokenType("FUN");
+    IElementType FUN_PARAMS = new ReasonMLTokenType("FUN_PARAMS");
     IElementType FUN_BODY = new ReasonMLTokenType("FUN_BODY");
     IElementType GT = new ReasonMLTokenType("GT");
     IElementType IF = new ReasonMLTokenType("IF");
