@@ -27,6 +27,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Braces", RmlSyntaxHighlighter.BRACES_),
             new AttributesDescriptor("Brackets", RmlSyntaxHighlighter.BRACKETS_),
             new AttributesDescriptor("Parenthesis", RmlSyntaxHighlighter.PARENS_),
+            new AttributesDescriptor("Type argument", RmlSyntaxHighlighter.TYPE_ARGUMENT_),
     };
 
     @Nullable
@@ -47,8 +48,12 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
         return "/* This is a comment */\n\n" +
                 "module ModuleName = {\n" +
                 "  type t = { key: int };\n" +
+                "  type tree 'a =\n"+
+                "  | Node (tree 'a) (tree 'a)\n" +
+                "  | Leaf;\n\n" +
+
                 "  let add = (x y) => x + y;\n" +
-                "  let myList = [ 1, 2, 3 ];\n" +
+                "  let myList = [ 1.0, 2.0, 3. ];\n" +
                 "  let array = [| 1, 2, 3 |];\n" +
                 "  let choice x = switch (myOption)\n" +
                 "      | None => \"nok\"\n" +
@@ -56,6 +61,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
                 "  let constant = \"My constant\";\n" +
                 "  let numericConstant = 123;\n" +
                 "};\n\n" +
+
                 "React.createElement <div prop=value/> <Button> (ReactElement.toString \"ok\") </Button>\n";
     }
 

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.23</version>
+    <version>0.24</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">hgiraud</vendor>
 
     <description><![CDATA[
@@ -9,6 +9,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version 0.24</b>
+      <ul>
+      <li>
+      Add Number and Type argument in color settings (#13).
+      </li>
+      </ul>
       <b>version 0.23</b>
       <ul>
       <li>

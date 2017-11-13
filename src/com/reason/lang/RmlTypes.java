@@ -45,6 +45,7 @@ public interface RmlTypes {
     IElementType FUN = new ReasonMLTokenType("FUN");
     IElementType FUN_PARAMS = new ReasonMLTokenType("FUN_PARAMS");
     IElementType FUN_BODY = new ReasonMLTokenType("FUN_BODY");
+    IElementType TYPE_ARGUMENT = new ReasonMLTokenType("TYPE_ARGUMENT");
     IElementType GT = new ReasonMLTokenType("GT");
     IElementType IF = new ReasonMLTokenType("IF");
     IElementType IN = new ReasonMLElementType("IN");

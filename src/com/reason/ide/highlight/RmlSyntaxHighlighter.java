@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.RmlLexerAdapter;
+import com.reason.lang.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -26,6 +27,8 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
             SLASH, SLASHDOT, CARRET, ARROBASE, PIPE_FORWARD, REF, EXCLAMATION_MARK);
     private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 
+    private static final TextAttributesKey TYPE_ARGUMENT = TextAttributesKey.createTextAttributesKey("TYPE_ARGUMENT");
+
     public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey NUMBER_ = createTextAttributesKey("REASONML_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
@@ -38,6 +41,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey BRACES_ = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
     public static final TextAttributesKey PARENS_ = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
     public static final TextAttributesKey OPERATION_SIGN_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+    public static final TextAttributesKey TYPE_ARGUMENT_ = createTextAttributesKey("REASONML_TYPE_ARGUMENT", TYPE_ARGUMENT);
     private static final TextAttributesKey DOT_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.DOT);
     private static final TextAttributesKey COMMA_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.COMMA);
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
@@ -45,6 +49,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] NUMBER_KEYS = new TextAttributesKey[]{NUMBER_};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
+    private static final TextAttributesKey[] TYPE_ARGUMENT_KEYS = new TextAttributesKey[]{TYPE_ARGUMENT_};
     private static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
     private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
     private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
@@ -81,6 +86,8 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
             return TAG_KEYS;
         } else if (DOT.equals(tokenType)) {
             return DOT_KEYS;
+        } else if (RmlTypes.TYPE_ARGUMENT.equals(tokenType)) {
+            return TYPE_ARGUMENT_KEYS;
         } else if (COMMA.equals(tokenType)) {
             return COMMA_KEYS;
         } else if (SEMI.equals(tokenType)) {
