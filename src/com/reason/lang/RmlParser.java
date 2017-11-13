@@ -108,22 +108,26 @@ public class RmlParser implements PsiParser, LightPsiParser {
         // enter type
         Marker exprMarker = enter_section_(builder);
 
+        String constrName = "";
+
         // type name
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
             Marker nameMarker = enter_section_(builder);
-            Marker errorMarker = null;
-            boolean isNameCorrect = tokenType == LIDENT;
+//            Marker errorMarker = null;
+//            boolean isNameCorrect = tokenType == LIDENT;
 
-            if (!isNameCorrect) {
-                errorMarker = builder.mark();
-            }
+//            if (isNameCorrect) {
+            constrName = builder.getTokenText();
+//            } else {
+//                errorMarker = builder.mark();
+//            }
 
             builder.advanceLexer();
 
-            if (!isNameCorrect) {
-                errorMarker.error("Type name must start with a lower case");
-            }
+//            if (!isNameCorrect) {
+//                errorMarker.error("Type name must start with a lower case");
+//            }
 
             exit_section_(builder, nameMarker, TYPE_CONSTR_NAME, true);
         }
@@ -146,13 +150,19 @@ public class RmlParser implements PsiParser, LightPsiParser {
             tokenType = builder.getTokenType();
             if (tokenType == LBRACE) {
                 // scoped body, anything inside braces
-                scopedExpression(builder, recLevel + 1);
+                scopedTypeExpression(builder, recLevel + 1, constrName);
             } else {
                 // anything but semi or start expression
                 Marker marker = enter_section_(builder);
 
                 while (true) {
                     tokenType = advance(builder);
+                    if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
+                        Marker constrMarker = builder.mark();
+                        tokenType = advance(builder);
+                        exit_section_(builder, constrMarker, TYPE_CONSTR_NAME, true);
+                    }
+
                     if (isStartExpression(tokenType)) {
                         break;
                     }
@@ -551,6 +561,10 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // Pattern: LBRACE expression* RBRACE
     // **********
     private static void scopedExpression(PsiBuilder builder, int recLevel) {
+        scopedTypeExpression(builder, recLevel, null);
+    }
+
+    private static void scopedTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
         if (!recursion_guard_(builder, recLevel, "scoped expression")) {
             return;
         }
@@ -579,11 +593,17 @@ public class RmlParser implements PsiParser, LightPsiParser {
             } else if (tokenType == LET) {
                 letExpression(builder, recLevel + 1);
             } else if (tokenType == LBRACE) {
-                scopedExpression(builder, recLevel + 1);
+                scopedTypeExpression(builder, recLevel + 1, constrName);
             } else if (tokenType == LPAREN) {
-                parenExpression(builder, recLevel + 1);
+                parenTypeExpression(builder, recLevel + 1, constrName);
             } else {
-                builder.advanceLexer();
+                tokenType = advance(builder);
+                if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
+                    Marker constrMarker = builder.mark();
+                    advance(builder);
+                    exit_section_(builder, constrMarker, TYPE_CONSTR_NAME, true);
+                }
+
             }
         }
 
@@ -619,6 +639,10 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // Pattern: LPAREN {{token-start}} expression* RPAREN {{token-end}}
     // **********
     private static void parenExpression(PsiBuilder builder, int recLevel) {
+        parenTypeExpression(builder, recLevel, null);
+    }
+
+    private static void parenTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
         if (!recursion_guard_(builder, recLevel, "skip paren")) {
             return;
         }
@@ -634,6 +658,12 @@ public class RmlParser implements PsiParser, LightPsiParser {
             } else if (LPAREN == tokenType) {
                 parenExpression(builder, recLevel + 1);
                 tokenType = builder.getTokenType();
+            } else {
+                if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
+                    Marker constrMarker = builder.mark();
+                    tokenType = advance(builder);
+                    exit_section_(builder, constrMarker, TYPE_CONSTR_NAME, true);
+                }
             }
 
             // Advance until a right paren is found, or nothing else is found
