@@ -22,6 +22,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Keyword", RmlSyntaxHighlighter.KEYWORD_),
             new AttributesDescriptor("Operation", RmlSyntaxHighlighter.OPERATION_SIGN_),
             new AttributesDescriptor("String", RmlSyntaxHighlighter.STRING_),
+            new AttributesDescriptor("Number", RmlSyntaxHighlighter.NUMBER_),
             new AttributesDescriptor("Semicolon", RmlSyntaxHighlighter.SEMICOLON_),
             new AttributesDescriptor("Braces", RmlSyntaxHighlighter.BRACES_),
             new AttributesDescriptor("Brackets", RmlSyntaxHighlighter.BRACKETS_),
@@ -46,13 +47,14 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
         return "/* This is a comment */\n\n" +
                 "module ModuleName = {\n" +
                 "  type t = { key: int };\n" +
-                "  let add x y => x + y;\n" +
+                "  let add = (x y) => x + y;\n" +
                 "  let myList = [ 1, 2, 3 ];\n" +
                 "  let array = [| 1, 2, 3 |];\n" +
                 "  let choice x = switch (myOption)\n" +
                 "      | None => \"nok\"\n" +
-                "      | Some value => \"ok\"\n" +
+                "      | Some(value) => \"ok\"\n" +
                 "  let constant = \"My constant\";\n" +
+                "  let numericConstant = 123;\n" +
                 "};\n\n" +
                 "React.createElement <div prop=value/> <Button> (ReactElement.toString \"ok\") </Button>\n";
     }
