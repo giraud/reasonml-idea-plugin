@@ -22,7 +22,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(
             OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO, TRUE, FALSE,
             // OCaml
-            MATCH, WITH, DO, DONE, OBJECT, END, LAZY, ASSERT, THEN, FUNCTION
+            MATCH, WITH, DO, DONE, OBJECT, END, LAZY, ASSERT, THEN, FUNCTION, STRUCT, SIG, VAL
     );
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(
             EQ, EQEQEQ, ARROW, SIMPLE_ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT,

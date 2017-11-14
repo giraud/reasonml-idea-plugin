@@ -98,6 +98,10 @@ LITERAL_MODIFIER=[G-Zg-z]
     "with"       { return WITH; }
     "then"       { return THEN; }
     "function"   { return FUNCTION; }
+    "sig"        { return SIG; }
+    "struct"     { return STRUCT; }
+    "val"        { return VAL; }
+    //
 
 
     "option"    { return OPTION; }

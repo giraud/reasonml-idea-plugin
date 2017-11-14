@@ -314,7 +314,11 @@ public class RmlParser implements PsiParser, LightPsiParser {
         Marker nameMarker = enter_section_(builder);
         builder.advanceLexer();
         if (incorrectName) {
-            nameMarker.error(ERR_NAME_UPPERCASE);
+            if (ParserOptions.Validation == m_options) {
+                nameMarker.error(ERR_NAME_UPPERCASE);
+            } else {
+                nameMarker.drop();
+            }
         } else {
             exit_section_(builder, nameMarker, MODULE_NAME, true);
 

@@ -90,6 +90,7 @@ public interface RmlTypes {
     IElementType REF = new ReasonMLTokenType("REF");
     IElementType RPAREN = new ReasonMLTokenType("RPAREN");
     IElementType SEMI = new ReasonMLTokenType("SEMI");
+    IElementType SIG = new ReasonMLTokenType("SIG");
     IElementType SIMPLE_ARROW = new ReasonMLTokenType("SIMPLE_ARROW");
     IElementType SHARP = new ReasonMLTokenType("SHARP");
     IElementType SHORTCUT = new ReasonMLTokenType("SHORTCUT");
@@ -99,6 +100,7 @@ public interface RmlTypes {
     IElementType STAR = new ReasonMLTokenType("STAR");
     IElementType STARDOT = new ReasonMLTokenType("STARDOT");
     IElementType STRING = new ReasonMLTokenType("STRING");
+    IElementType STRUCT = new ReasonMLTokenType("STRUCT");
     IElementType SWITCH = new ReasonMLTokenType("SWITCH");
     IElementType TILDE = new ReasonMLElementType("TILDE");
     IElementType TO = new ReasonMLElementType("TO");
@@ -108,6 +110,7 @@ public interface RmlTypes {
     IElementType TYPE = new ReasonMLTokenType("TYPE");
     IElementType UIDENT = new ReasonMLTokenType("UIDENT");
     IElementType UNIT = new ReasonMLTokenType("UNIT");
+    IElementType VAL = new ReasonMLTokenType("VAL");
     IElementType WITH = new ReasonMLTokenType("WITH");
 
 }
