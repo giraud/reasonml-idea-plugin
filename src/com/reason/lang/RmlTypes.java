@@ -49,6 +49,7 @@ public interface RmlTypes {
     IElementType FUN = new ReasonMLTokenType("FUN");
     IElementType FUN_PARAMS = new ReasonMLTokenType("FUN_PARAMS");
     IElementType FUN_BODY = new ReasonMLTokenType("FUN_BODY");
+    IElementType FUNCTION = new ReasonMLTokenType("FUNCTION");
     IElementType TYPE_ARGUMENT = new ReasonMLTokenType("TYPE_ARGUMENT");
     IElementType GT = new ReasonMLTokenType("GT");
     IElementType IF = new ReasonMLTokenType("IF");
@@ -64,6 +65,7 @@ public interface RmlTypes {
     IElementType LIST = new ReasonMLTokenType("LIST");
     IElementType LPAREN = new ReasonMLTokenType("LPAREN");
     IElementType LT = new ReasonMLTokenType("LT");
+    IElementType MATCH = new ReasonMLTokenType("MATCH");
     IElementType MINUS = new ReasonMLTokenType("MINUS");
     IElementType MINUSDOT = new ReasonMLTokenType("MINUSDOT");
     IElementType MODULE = new ReasonMLTokenType("MODULE");
@@ -100,10 +102,12 @@ public interface RmlTypes {
     IElementType SWITCH = new ReasonMLTokenType("SWITCH");
     IElementType TILDE = new ReasonMLElementType("TILDE");
     IElementType TO = new ReasonMLElementType("TO");
+    IElementType THEN = new ReasonMLTokenType("TRUE");
     IElementType TRUE = new ReasonMLTokenType("TRUE");
     IElementType TRY = new ReasonMLTokenType("TRY");
     IElementType TYPE = new ReasonMLTokenType("TYPE");
     IElementType UIDENT = new ReasonMLTokenType("UIDENT");
     IElementType UNIT = new ReasonMLTokenType("UNIT");
+    IElementType WITH = new ReasonMLTokenType("WITH");
 
 }

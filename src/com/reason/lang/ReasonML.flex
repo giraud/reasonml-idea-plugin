@@ -85,6 +85,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "for"        { return FOR; }
     "in"         { return IN; }
 
+    // OCaml
     "of"         { return OF; }
     "to"         { return TO; }
     "do"         { return DO; }
@@ -93,6 +94,11 @@ LITERAL_MODIFIER=[G-Zg-z]
     "end"        { return END; }
     "assert"     { return ASSERT; }
     "lazy"       { return LAZY; }
+    "match"      { return MATCH; }
+    "with"       { return WITH; }
+    "then"       { return THEN; }
+    "function"   { return FUNCTION; }
+
 
     "option"    { return OPTION; }
     "None"      { return NONE; }
