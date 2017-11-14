@@ -53,7 +53,8 @@ LITERAL_MODIFIER=[G-Zg-z]
 %state WAITING_VALUE
 %state INITIAL
 %state IN_STRING
-%state IN_COMMENT
+%state IN_RML_COMMENT
+%state IN_OCL_COMMENT
 
 %%
 
@@ -83,7 +84,15 @@ LITERAL_MODIFIER=[G-Zg-z]
     "raise"      { return RAISE; }
     "for"        { return FOR; }
     "in"         { return IN; }
+
+    "of"         { return OF; }
     "to"         { return TO; }
+    "do"         { return DO; }
+    "done"       { return DONE; }
+    "object"     { return OBJECT; }
+    "end"        { return END; }
+    "assert"     { return ASSERT; }
+    "lazy"       { return LAZY; }
 
     "option"    { return OPTION; }
     "None"      { return NONE; }
@@ -101,11 +110,13 @@ LITERAL_MODIFIER=[G-Zg-z]
     "'"{LOWERCASE}{IDENTCHAR}*       { return TYPE_ARGUMENT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
-    "/*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
+    "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }
+    "(*" { yybegin(IN_OCL_COMMENT); commentDepth = 1; tokenStart(); }
 
     "&&"   { return ANDAND; }
     "::"   { return SHORTCUT; }
     "=>"   { return ARROW; }
+    "->"   { return SIMPLE_ARROW; }
     "|>"   { return PIPE_FORWARD; }
     "/>"   { return AUTO_CLOSE_TAG; }
     "</"   { return CLOSE_TAG; }
@@ -164,9 +175,16 @@ LITERAL_MODIFIER=[G-Zg-z]
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return STRING; }
 }
 
-<IN_COMMENT> {
+<IN_RML_COMMENT> {
     "/*" { commentDepth += 1; }
     "*/" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return COMMENT; } }
+    . | {NEWLINE} { }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return COMMENT; }
+}
+
+<IN_OCL_COMMENT> {
+    "(*" { commentDepth += 1; }
+    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return COMMENT; } }
     . | {NEWLINE} { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return COMMENT; }
 }

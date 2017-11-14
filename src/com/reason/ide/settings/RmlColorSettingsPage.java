@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class RmlColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Comment", RmlSyntaxHighlighter.COMMENT_),
+            new AttributesDescriptor("Comment", RmlSyntaxHighlighter.RML_COMMENT_),
             new AttributesDescriptor("Module name", RmlSyntaxHighlighter.MODULE_NAME_),
             new AttributesDescriptor("Option", RmlSyntaxHighlighter.OPTION_),
             new AttributesDescriptor("Tag", RmlSyntaxHighlighter.TAG_),
@@ -48,7 +48,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
         return "/* This is a comment */\n\n" +
                 "module ModuleName = {\n" +
                 "  type t = { key: int };\n" +
-                "  type tree 'a =\n"+
+                "  type tree 'a =\n" +
                 "  | Node (tree 'a) (tree 'a)\n" +
                 "  | Leaf;\n\n" +
 

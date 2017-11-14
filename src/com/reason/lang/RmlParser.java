@@ -13,12 +13,23 @@ import static com.reason.lang.RmlTypes.*;
 
 public class RmlParser implements PsiParser, LightPsiParser {
 
+    enum ParserOptions {
+        Validation,
+        NoValidation
+    }
+
     private static final String ERR_SEMI_EXPECTED = "';' expected";
     private static final String ERR_RBRACE_EXPECTED = "'}' expected";
     private static final String ERR_EQ_EXPECTED = "'=' expected";
     private static final String ERR_ARROW_EXPECTED = "'=>' expected";
     private static final String ERR_COLON_EXPECTED = "':' expected";
     private static final String ERR_NAME_UPPERCASE = "Name must start with an uppercase";
+
+    private final ParserOptions m_options;
+
+    RmlParser(ParserOptions options) {
+        m_options = options;
+    }
 
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
@@ -35,7 +46,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         exit_section_(builder, 0, m, elementType, r, true, TRUE_CONDITION);
     }
 
-    private static boolean reasonFile(PsiBuilder builder) {
+    private boolean reasonFile(PsiBuilder builder) {
         if (!recursion_guard_(builder, 1, "reasonFile")) {
             return false;
         }
@@ -75,7 +86,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // OPEN EXCLAMATION_MARK? module_path SEMI
     // **********
-    private static void openExpression(PsiBuilder builder, int recLevel) {
+    private void openExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "openExpression")) {
             return;
         }
@@ -100,7 +111,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // TYPE type_name any* EQ (scoped_expression | expr) ;
     // **********
-    private static void typeExpression(PsiBuilder builder, int recLevel) {
+    private void typeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "type expression")) {
             return;
         }
@@ -180,7 +191,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // INCLUDE module_path (scoped_expression)? SEMI
     // **********
-    private static void includeExpression(PsiBuilder builder, int recLevel) {
+    private void includeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "include expression")) {
             return;
         }
@@ -210,7 +221,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     //                          | (COLON module_type)? EQ                          (module_alias | scoped_expression) SEMI
     //                          | (LPAREN any RPAREN)+ (COLON module_type)? ARROW
     // **********
-    private static void moduleExpression(PsiBuilder builder, int recLevel) {
+    private void moduleExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module expression")) {
             return;
         }
@@ -291,7 +302,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     }
 
     // ***** UIDENT (DOT UIDENT|scoped_expression)* ( (.*) )::constr
-    private static void modulePath(PsiBuilder builder, int recLevel) {
+    private void modulePath(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module path")) {
             return;
         }
@@ -352,7 +363,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
     // **********
     // EXTERNAL external_name COLON expression* SEMI
-    private static void externalExpression(PsiBuilder builder, int recLevel) {
+    private void externalExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "external expression")) {
             return;
         }
@@ -412,7 +423,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // LET REC? MODULE? (destructure|value_name) expression* (EQ (scoped_)expression | ARROW scoped_expression) SEMI
     // LET REC? MODULE? value_name COLON expression+ SEMI
     // **********
-    private static void letExpression(PsiBuilder builder, int recLevel) {
+    private void letExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "let expression")) {
             return;
         }
@@ -528,7 +539,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
     }
 
-    private static void ifExpression(PsiBuilder builder, int recLevel, boolean containsIf) {
+    private void ifExpression(PsiBuilder builder, int recLevel, boolean containsIf) {
         if (!recursion_guard_(builder, recLevel, "if expression")) {
             return;
         }
@@ -560,11 +571,11 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // Pattern: LBRACE expression* RBRACE
     // **********
-    private static void scopedExpression(PsiBuilder builder, int recLevel) {
+    private void scopedExpression(PsiBuilder builder, int recLevel) {
         scopedTypeExpression(builder, recLevel, null);
     }
 
-    private static void scopedTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
+    private void scopedTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
         if (!recursion_guard_(builder, recLevel, "scoped expression")) {
             return;
         }
@@ -617,7 +628,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         exit_section_(builder, marker, SCOPED_EXPR, true);
     }
 
-    private static void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
+    private void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
         IElementType tokenType;
         while (true) {
             tokenType = advance(builder);
@@ -638,11 +649,11 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // Pattern: LPAREN {{token-start}} expression* RPAREN {{token-end}}
     // **********
-    private static void parenExpression(PsiBuilder builder, int recLevel) {
+    private void parenExpression(PsiBuilder builder, int recLevel) {
         parenTypeExpression(builder, recLevel, null);
     }
 
-    private static void parenTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
+    private void parenTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
         if (!recursion_guard_(builder, recLevel, "skip paren")) {
             return;
         }
@@ -679,7 +690,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         return builder.getTokenType();
     }
 
-    private static void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
+    private void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
         if (!recursion_guard_(builder, recLevel, "advance until")) {
             return;
         }
@@ -705,7 +716,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         return tokenType == null || tokenType == SEMI || tokenType == MODULE || tokenType == OPEN || tokenType == TYPE || tokenType == LET;
     }
 
-    private static void endExpression(PsiBuilder builder) {
+    private void endExpression(PsiBuilder builder) {
         // Last expression in the file can omit semi
         if (builder.eof()) {
             return;
@@ -719,8 +730,10 @@ public class RmlParser implements PsiParser, LightPsiParser {
         }
     }
 
-    private static void fail(PsiBuilder builder, String message) {
-        builder.mark().error(message);
+    private void fail(PsiBuilder builder, String message) {
+        if (ParserOptions.Validation == m_options) {
+            builder.mark().error(message);
+        }
     }
 
     private static class WhitespaceNotifier {

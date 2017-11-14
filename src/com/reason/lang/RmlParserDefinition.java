@@ -15,6 +15,8 @@ import com.intellij.psi.tree.TokenSet;
 import com.reason.psi.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
+import static com.reason.lang.RmlParser.ParserOptions.Validation;
+
 public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.COMMENT);
@@ -45,7 +47,7 @@ public class RmlParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
-        return new RmlParser();
+        return new RmlParser(Validation);
     }
 
     @Override

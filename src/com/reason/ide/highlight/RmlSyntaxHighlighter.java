@@ -20,16 +20,18 @@ import static com.reason.lang.RmlTypes.*;
 
 public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(
-            OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO
+            OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO,
+            // OCaml
+            DO, DONE, OBJECT, END, LAZY, ASSERT
     );
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(
-            EQ, EQEQEQ, ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT,
+            EQ, EQEQEQ, ARROW, SIMPLE_ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT,
             SLASH, SLASHDOT, CARRET, ARROBASE, PIPE_FORWARD, REF, EXCLAMATION_MARK);
     private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 
     private static final TextAttributesKey TYPE_ARGUMENT = TextAttributesKey.createTextAttributesKey("TYPE_ARGUMENT");
 
-    public static final TextAttributesKey COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey RML_COMMENT_ = createTextAttributesKey("REASONML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey NUMBER_ = createTextAttributesKey("REASONML_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
     public static final TextAttributesKey TAG_ = createTextAttributesKey("REASONML_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
@@ -47,7 +49,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] NUMBER_KEYS = new TextAttributesKey[]{NUMBER_};
-    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
+    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{RML_COMMENT_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] TYPE_ARGUMENT_KEYS = new TextAttributesKey[]{TYPE_ARGUMENT_};
     private static final TextAttributesKey[] BRACKET_KEYS = new TextAttributesKey[]{BRACKETS_};
