@@ -10,10 +10,9 @@ You can look at the [todo list](TODO.md).
 
 This code might change quite a lot or break in the future.
 
-**Merlin 3+ is required**.
-
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
+- if using merlin, then merlin 3+ is required
 
 ## Features
 
@@ -28,6 +27,8 @@ Known limitations:
 - Completion (* merlin)
 
 _(*) See integration_
+
+This plugin offer a lightweight integration for Ocaml files, mainly syntax highlighting.
 
 ## Screenshots
 
