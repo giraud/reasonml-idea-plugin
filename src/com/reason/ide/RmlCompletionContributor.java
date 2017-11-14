@@ -6,7 +6,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
-import com.reason.icons.ReasonMLIcons;
+import com.reason.icons.Icons;
 import com.reason.merlin.MerlinService;
 import com.reason.merlin.types.MerlinCompletion;
 import com.reason.merlin.types.MerlinCompletionEntry;
@@ -51,13 +51,13 @@ public class RmlCompletionContributor extends CompletionContributor {
     private Icon getIcon(MerlinCompletionEntry entry) {
         Icon entryIcon = null;
         if ("Type".equals(entry.kind)) {
-            entryIcon = ReasonMLIcons.TYPE;
+            entryIcon = Icons.TYPE;
         } else if ("Value".equals(entry.kind)) {
-            entryIcon = ReasonMLIcons.VALUE;
+            entryIcon = Icons.VALUE;
         } else if ("Module".equals(entry.kind)) {
-            entryIcon = ReasonMLIcons.MODULE;
+            entryIcon = Icons.MODULE;
         } else if ("Signature".equals(entry.kind)) {
-            entryIcon = ReasonMLIcons.SIGNATURE;
+            entryIcon = Icons.SIGNATURE;
         }
         return entryIcon;
     }

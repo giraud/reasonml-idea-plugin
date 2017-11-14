@@ -5,7 +5,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.icons.ReasonMLIcons;
+import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +62,7 @@ public class ReasonMLModule extends RmlNamedElement {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return ReasonMLIcons.MODULE;
+                return Icons.MODULE;
             }
         };
     }

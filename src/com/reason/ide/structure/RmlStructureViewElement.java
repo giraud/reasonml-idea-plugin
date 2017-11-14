@@ -74,7 +74,7 @@ public class RmlStructureViewElement implements StructureViewTreeElement, Sortab
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (element instanceof ReasonMLFile) {
+        if (element instanceof RmlFile) {
             ReasonMLModule[] modules = PsiTreeUtil.getChildrenOfType(element, ReasonMLModule.class);
             ReasonMLLet[] lets = PsiTreeUtil.getChildrenOfType(element, ReasonMLLet.class);
             ReasonMLType[] types = PsiTreeUtil.getChildrenOfType(element, ReasonMLType.class);

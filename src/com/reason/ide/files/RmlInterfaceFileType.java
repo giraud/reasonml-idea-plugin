@@ -1,7 +1,7 @@
-package com.reason.ide;
+package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.icons.ReasonMLIcons;
+import com.reason.icons.Icons;
 import com.reason.lang.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,5 +36,5 @@ public class RmlInterfaceFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return ReasonMLIcons.INTERFACE_FILE;
+        return Icons.INTERFACE_FILE;
     }}

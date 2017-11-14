@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.RmlFileType;
+import com.reason.ide.files.RmlFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

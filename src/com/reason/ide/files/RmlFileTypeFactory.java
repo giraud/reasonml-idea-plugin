@@ -1,6 +1,7 @@
-package com.reason.ide;
+package com.reason.ide.files;
 
-import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.fileTypes.FileTypeConsumer;
+import com.intellij.openapi.fileTypes.FileTypeFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlFileTypeFactory extends FileTypeFactory {

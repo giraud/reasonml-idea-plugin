@@ -5,7 +5,7 @@ import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
-import com.reason.psi.ReasonMLFile;
+import com.reason.psi.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
@@ -26,6 +26,6 @@ public class RmlStructureViewModel extends StructureViewModelBase implements Str
 
     @Override
     public boolean isAlwaysLeaf(StructureViewTreeElement element) {
-        return element instanceof ReasonMLFile;
+        return element instanceof RmlFile;
     }
 }

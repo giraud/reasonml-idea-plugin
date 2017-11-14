@@ -91,12 +91,34 @@
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.reason.ide.RmlInterfaceFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.RmlFileTypeFactory"/>
+        <!--
+         | File types
+         -->
 
+        <!-- Reason -->
+        <fileTypeFactory implementation="com.reason.ide.files.RmlInterfaceFileTypeFactory"/>
+        <fileTypeFactory implementation="com.reason.ide.files.RmlFileTypeFactory"/>
+        <!-- Ocaml -->
+        <fileTypeFactory implementation="com.reason.ide.files.OclInterfaceFileTypeFactory"/>
+        <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
+
+        <!--
+         | Parsers
+         -->
+
+        <!-- Reason -->
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
+        <!-- Ocaml -->
+        <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.OclParserDefinition"/>
+        <lang.syntaxHighlighterFactory key="Ocaml"
+                                       implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
+
+        <!--
+         | Others
+         -->
+
         <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>

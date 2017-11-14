@@ -5,7 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
-import com.reason.icons.ReasonMLIcons;
+import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +92,7 @@ public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferre
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return isFunction() ? ReasonMLIcons.FUNCTION : ReasonMLIcons.LET;
+                return isFunction() ? Icons.FUNCTION : Icons.LET;
             }
         };
     }

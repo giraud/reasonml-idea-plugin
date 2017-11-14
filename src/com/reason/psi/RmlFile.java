@@ -3,14 +3,14 @@ package com.reason.psi;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.ide.RmlFileType;
+import com.reason.ide.files.RmlFileType;
 import com.reason.lang.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class ReasonMLFile extends PsiFileBase {
-    public ReasonMLFile(@NotNull FileViewProvider viewProvider) {
+public class RmlFile extends PsiFileBase {
+    public RmlFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, RmlLanguage.INSTANCE);
     }
 

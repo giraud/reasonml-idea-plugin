@@ -12,15 +12,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.psi.RmlFile;
+import com.reason.psi.OclFile;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlParserDefinition implements ParserDefinition {
+public class OclParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(RmlTypes.STRING);
 
-    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(RmlLanguage.class));
+    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclLanguage.class));
 
     @NotNull
     @Override
@@ -54,7 +54,7 @@ public class RmlParserDefinition implements ParserDefinition {
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
-        return new RmlFile(viewProvider);
+        return new OclFile(viewProvider);
     }
 
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {

@@ -3,7 +3,7 @@ package com.reason.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
-import com.reason.icons.ReasonMLIcons;
+import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +43,7 @@ public class ReasonMLType extends ASTWrapperPsiElement {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return ReasonMLIcons.TYPE;
+                return Icons.TYPE;
             }
         };
     }

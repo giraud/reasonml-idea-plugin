@@ -11,6 +11,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.bs.BsbCompiler;
 import com.reason.bs.console.BsbConsole;
+import com.reason.ide.files.RmlFileType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

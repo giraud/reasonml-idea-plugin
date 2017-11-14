@@ -3,7 +3,7 @@ package com.reason.psi;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.*;
-import com.reason.icons.ReasonMLIcons;
+import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +50,7 @@ public class RmlModuleReference extends PsiReferenceBase<PsiElement> implements 
 
         List<ReasonMLModule> modules = RmlPsiUtil.findModules(myElement.getProject());
         for (ReasonMLModule module : modules) {
-            result.add(LookupElementBuilder.create(module).withIcon(ReasonMLIcons.MODULE).withTypeText("VARIANTS:" + module.getContainingFile().getName()));
+            result.add(LookupElementBuilder.create(module).withIcon(Icons.MODULE).withTypeText("VARIANTS:" + module.getContainingFile().getName()));
         }
 
         return result.toArray();
