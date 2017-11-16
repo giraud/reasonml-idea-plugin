@@ -136,6 +136,9 @@ LITERAL_MODIFIER=[G-Zg-z]
     "===" { return EQEQEQ; }
     "=="  { return EQEQ; }
     "="   { return EQ; }
+    "!==" { return NOT_EQEQ; }
+    "!="  { return NOT_EQ; }
+    "<>"  { return DIFF; }
     ","   { return COMMA; }
     ":"   { return COLON; }
     ";"   { return SEMI; }

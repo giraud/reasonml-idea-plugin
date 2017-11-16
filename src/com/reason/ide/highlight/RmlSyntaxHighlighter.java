@@ -27,7 +27,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     );
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(
             ANDAND, SHORTCUT, ARROW, SIMPLE_ARROW, PIPE_FORWARD,
-            EQEQEQ, EQEQ, EQ, COLON, QUOTE,
+            EQEQEQ, EQEQ, EQ, NOT_EQEQ, NOT_EQ, DIFF, COLON, QUOTE,
             CARRET, PLUSDOT, MINUSDOT, SLASHDOT, STARDOT, PLUS, MINUS, SLASH, STAR, PERCENT,
             PIPE, ARROBASE, SHARP, QUESTION_MARK, EXCLAMATION_MARK
     );

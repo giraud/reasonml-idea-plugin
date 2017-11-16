@@ -34,12 +34,15 @@ public interface RmlTypes {
     IElementType COLON = new ReasonMLTokenType("COLON");
     IElementType COMMA = new ReasonMLTokenType("COMMA");
     IElementType COMMENT = new ReasonMLTokenType("COMMENT");
+    IElementType DIFF = new ReasonMLTokenType("DIFF");
     IElementType DOLLAR = new ReasonMLTokenType("DOLLAR");
     IElementType DOT = new ReasonMLTokenType("DOT");
     IElementType DO = new ReasonMLTokenType("DO");
     IElementType DONE = new ReasonMLTokenType("DONE");
     IElementType ELSE = new ReasonMLTokenType("ELSE");
     IElementType END = new ReasonMLTokenType("END");
+    IElementType NOT_EQ = new ReasonMLTokenType("EQ");
+    IElementType NOT_EQEQ = new ReasonMLTokenType("EQEQ");
     IElementType EQ = new ReasonMLTokenType("EQ");
     IElementType EQEQ = new ReasonMLTokenType("EQEQ");
     IElementType EQEQEQ = new ReasonMLTokenType("EQEQEQ");
