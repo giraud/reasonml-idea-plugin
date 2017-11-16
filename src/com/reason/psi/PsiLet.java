@@ -11,30 +11,30 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferredType {
+public class PsiLet extends ASTWrapperPsiElement implements PsiInferredType {
     private String inferredType = "";
 
-    public ReasonMLLet(ASTNode node) {
+    public PsiLet(ASTNode node) {
         super(node);
     }
 
     @Nullable
-    public ReasonMLValueName getLetName() {
-        return findChildByClass(ReasonMLValueName.class);
+    public PsiValueName getLetName() {
+        return findChildByClass(PsiValueName.class);
     }
 
     @Nullable
-    public ReasonMLFunBody getFunctionBody() {
-        return findChildByClass(ReasonMLFunBody.class);
+    public PsiFunBody getFunctionBody() {
+        return findChildByClass(PsiFunBody.class);
     }
 
     @Nullable
-    public ReasonMLLetBinding getLetBinding() {
-        return findChildByClass(ReasonMLLetBinding.class);
+    public PsiLetBinding getLetBinding() {
+        return findChildByClass(PsiLetBinding.class);
     }
 
     private boolean isFunction() {
-        return findChildByClass(ReasonMLFunBody.class) != null;
+        return findChildByClass(PsiFunBody.class) != null;
     }
 
     private boolean isRecursive() {
@@ -70,7 +70,7 @@ public class ReasonMLLet extends ASTWrapperPsiElement implements ReasonMLInferre
             @NotNull
             @Override
             public String getPresentableText() {
-                ReasonMLValueName letValueName = getLetName();
+                PsiValueName letValueName = getLetName();
                 if (letValueName == null) {
                     return "_";
                 }

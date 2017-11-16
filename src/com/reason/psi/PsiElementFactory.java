@@ -1,38 +1,38 @@
-package com.reason.lang;
+package com.reason.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.psi.*;
+import com.reason.lang.RmlTypes;
 
-class PsiElementFactory {
-    static PsiElement createElement(ASTNode node) {
+public class PsiElementFactory {
+    public static PsiElement createElement(ASTNode node) {
         IElementType type = node.getElementType();
         if (type == RmlTypes.EXTERNAL_EXPRESSION) {
-            return new ReasonMLExternal(node);
+            return new PsiExternal(node);
         } else if (type == RmlTypes.FUN_BODY) {
-            return new ReasonMLFunBody(node);
+            return new PsiFunBody(node);
         } else if (type == RmlTypes.LET_BINDING) {
-            return new ReasonMLLetBinding(node);
+            return new PsiLetBinding(node);
         } else if (type == RmlTypes.LET_EXPRESSION) {
-            return new ReasonMLLet(node);
+            return new PsiLet(node);
         } else if (type == RmlTypes.ANNOTATION_EXPRESSION) {
             return new PsiAnnotation(node);
         } else if (type == RmlTypes.ANNOTATION_NAME) {
             return new PsiAnnotationName(node);
         } else if (type == RmlTypes.MODULE_NAME) {
-            return new ReasonMLModuleName(node);
+            return new PsiModuleName(node);
         } else if (type == RmlTypes.MODULE_EXPRESSION) {
-            return new ReasonMLModule(node);
+            return new PsiModule(node);
         } else if (type == RmlTypes.TYPE_CONSTR_NAME) {
-            return new ReasonMLTypeConstrName(node);
+            return new PsiTypeConstrName(node);
         } else if (type == RmlTypes.SCOPED_EXPR) {
-            return new ReasonMLScopedExpr(node);
+            return new PsiScopedExpr(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
-            return new ReasonMLType(node);
+            return new PsiType(node);
         } else if (type == RmlTypes.VALUE_NAME) {
-            return new ReasonMLValueName(node);
+            return new PsiValueName(node);
         }
-        return new ReasonMLToken(node);
+        return new PsiToken(node);
     }
 }

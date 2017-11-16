@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Every element which can be renamed or referenced needs to implement this interface.
  */
-abstract class RmlNamedElement extends ASTWrapperPsiElement implements PsiNameIdentifierOwner {
-    RmlNamedElement(@NotNull ASTNode node) {
+abstract class PsiNamedElement extends ASTWrapperPsiElement implements PsiNameIdentifierOwner {
+    PsiNamedElement(@NotNull ASTNode node) {
         super(node);
     }
 }

@@ -21,8 +21,8 @@ public class SignatureProvider implements InlayParameterHintsProvider {
     @NotNull
     @Override
     public List<InlayInfo> getParameterHints(PsiElement element) {
-//        if (element instanceof ReasonMLLet) {
-//            ReasonMLLet letStatement = (ReasonMLLet) element;
+//        if (element instanceof PsiLet) {
+//            PsiLet letStatement = (PsiLet) element;
 //            if (!letStatement.getLetBinding().isFunction()) {
 //                if (letStatement.hasInferredType()) {
 //                    return singletonList(new InlayInfo(letStatement.getInferredType(), 14/*letStatement.getLetBinding().getValueName().getTextOffset()*/));
@@ -44,7 +44,7 @@ public class SignatureProvider implements InlayParameterHintsProvider {
     @Override
     public MethodInfo getMethodInfo(PsiElement element) {
         System.out.println("getMethodInfo " + element);
-        if (element instanceof ReasonMLLet) {
+        if (element instanceof PsiLet) {
             MethodInfo methodInfo = new MethodInfo("fqn", asList("p1", "p2"));
             return methodInfo;
         }

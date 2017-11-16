@@ -124,10 +124,10 @@
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BsbToolWindowFactory"/>
 
-        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule"
-                                 implementationClass="com.reason.psi.RmlModuleManipulator"/>
-        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName"
-                                 implementationClass="com.reason.psi.RmlModuleNameManipulator"/>
+        <lang.elementManipulator forClass="com.reason.psi.PsiModule"
+                                 implementationClass="com.reason.psi.PsiModuleManipulator"/>
+        <lang.elementManipulator forClass="com.reason.psi.PsiModuleName"
+                                 implementationClass="com.reason.psi.PsiModuleNameManipulator"/>
 
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>

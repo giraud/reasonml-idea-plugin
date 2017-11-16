@@ -9,20 +9,20 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonMLType extends ASTWrapperPsiElement {
+public class PsiType extends ASTWrapperPsiElement {
 
-    public ReasonMLType(ASTNode node) {
+    public PsiType(ASTNode node) {
         super(node);
     }
 
     @NotNull
-    private ReasonMLTypeConstrName getTypeConstrName() {
-        return findNotNullChildByClass(ReasonMLTypeConstrName.class);
+    private PsiTypeConstrName getTypeConstrName() {
+        return findNotNullChildByClass(PsiTypeConstrName.class);
     }
 
     @Nullable
-    public ReasonMLScopedExpr getScopedExpression() {
-        return findChildByClass(ReasonMLScopedExpr.class);
+    public PsiScopedExpr getScopedExpression() {
+        return findChildByClass(PsiScopedExpr.class);
     }
 
     @Override

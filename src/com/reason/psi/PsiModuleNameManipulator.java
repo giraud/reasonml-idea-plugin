@@ -5,9 +5,9 @@ import com.intellij.psi.AbstractElementManipulator;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlModuleNameManipulator extends AbstractElementManipulator<ReasonMLModuleName> {
+public class PsiModuleNameManipulator extends AbstractElementManipulator<PsiModuleName> {
     @Override
-    public ReasonMLModuleName handleContentChange(@NotNull ReasonMLModuleName element, @NotNull TextRange textRange, String s) throws IncorrectOperationException {
+    public PsiModuleName handleContentChange(@NotNull PsiModuleName element, @NotNull TextRange textRange, String s) throws IncorrectOperationException {
         // TODO: why
         return element;
     }

@@ -11,20 +11,20 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonMLModule extends RmlNamedElement {
+public class PsiModule extends PsiNamedElement {
 
-    public ReasonMLModule(ASTNode node) {
+    public PsiModule(ASTNode node) {
         super(node);
     }
 
     @Nullable
-    public ReasonMLScopedExpr getModuleBody() {
-        return findChildByClass(ReasonMLScopedExpr.class);
+    public PsiScopedExpr getModuleBody() {
+        return findChildByClass(PsiScopedExpr.class);
     }
 
     @NotNull
-    ReasonMLModuleName getModuleName() {
-        return findNotNullChildByClass(ReasonMLModuleName.class);
+    PsiModuleName getModuleName() {
+        return findNotNullChildByClass(PsiModuleName.class);
     }
 
     @Nullable

@@ -4,15 +4,15 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
 
-public class ReasonMLModuleName extends ASTWrapperPsiElement {
+public class PsiModuleName extends ASTWrapperPsiElement {
 
-    public ReasonMLModuleName(ASTNode node) {
+    public PsiModuleName(ASTNode node) {
         super(node);
     }
 
     @Override
     public PsiReference getReference() {
-        return new RmlModuleReference(this, getText());
+        return new PsiModuleReference(this, getText());
     }
 
     @Override

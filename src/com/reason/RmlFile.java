@@ -1,28 +1,28 @@
-package com.reason.psi;
+package com.reason;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.ide.files.OclFileType;
-import com.reason.lang.OclLanguage;
+import com.reason.ide.files.RmlFileType;
+import com.reason.lang.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class OclFile extends PsiFileBase {
-    public OclFile(@NotNull FileViewProvider viewProvider) {
-        super(viewProvider, OclLanguage.INSTANCE);
+public class RmlFile extends PsiFileBase {
+    public RmlFile(@NotNull FileViewProvider viewProvider) {
+        super(viewProvider, RmlLanguage.INSTANCE);
     }
 
     @NotNull
     @Override
     public FileType getFileType() {
-        return OclFileType.INSTANCE;
+        return RmlFileType.INSTANCE;
     }
 
     @Override
     public String toString() {
-        return "Ocaml File";
+        return "Reason File";
     }
 
     @Override

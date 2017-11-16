@@ -3,9 +3,9 @@ package com.reason.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
-public class ReasonMLScopedExpr extends ASTWrapperPsiElement {
+public class PsiToken extends ASTWrapperPsiElement {
 
-    public ReasonMLScopedExpr(ASTNode node) {
+    public PsiToken(ASTNode node) {
         super(node);
     }
 

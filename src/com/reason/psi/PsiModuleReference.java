@@ -10,10 +10,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RmlModuleReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class PsiModuleReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
     private final String myName;
 
-    RmlModuleReference(@NotNull PsiElement element, String name) {
+    PsiModuleReference(@NotNull PsiElement element, String name) {
         super(element);
         myName = name;
     }
@@ -23,13 +23,13 @@ public class RmlModuleReference extends PsiReferenceBase<PsiElement> implements 
     public ResolveResult[] multiResolve(boolean incompleteCode) {
         List<ResolveResult> results = new ArrayList<>();
 
-        List<PsiFile> files = RmlPsiUtil.findFileModules(myElement.getProject(), myName);
+        List<PsiFile> files = PsiUtil.findFileModules(myElement.getProject(), myName);
         for (PsiFile file : files) {
             results.add(new PsiElementResolveResult(file));
         }
 
-        List<ReasonMLModule> modules = RmlPsiUtil.findModules(myElement.getProject(), myName);
-        for (ReasonMLModule module : modules) {
+        List<PsiModule> modules = PsiUtil.findModules(myElement.getProject(), myName);
+        for (PsiModule module : modules) {
             results.add(new PsiElementResolveResult(module));
         }
 
@@ -48,8 +48,8 @@ public class RmlModuleReference extends PsiReferenceBase<PsiElement> implements 
     public Object[] getVariants() {
         List<LookupElement> result = new ArrayList<>();
 
-        List<ReasonMLModule> modules = RmlPsiUtil.findModules(myElement.getProject());
-        for (ReasonMLModule module : modules) {
+        List<PsiModule> modules = PsiUtil.findModules(myElement.getProject());
+        for (PsiModule module : modules) {
             result.add(LookupElementBuilder.create(module).withIcon(Icons.MODULE).withTypeText("VARIANTS:" + module.getContainingFile().getName()));
         }
 

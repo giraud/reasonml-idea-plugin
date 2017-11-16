@@ -28,11 +28,11 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
             if (COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
             } else if (TYPE_EXPRESSION.equals(elementType)) {
-                foldType(descriptors, (ReasonMLType) element);
+                foldType(descriptors, (PsiType) element);
             } else if (LET_EXPRESSION.equals(elementType)) {
-                foldLet(descriptors, (ReasonMLLet) element);
+                foldLet(descriptors, (PsiLet) element);
             } else if (MODULE_EXPRESSION.equals(elementType)) {
-                foldModule(descriptors, (ReasonMLModule) element);
+                foldModule(descriptors, (PsiModule) element);
             }
             return true;
         });
@@ -40,22 +40,22 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, ReasonMLType typeExpression) {
+    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
         FoldingDescriptor fold = fold(typeExpression.getScopedExpression());
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldLet(List<FoldingDescriptor> descriptors, ReasonMLLet letExpression) {
-        ReasonMLFunBody functionBody = letExpression.getFunctionBody();
+    private void foldLet(List<FoldingDescriptor> descriptors, PsiLet letExpression) {
+        PsiFunBody functionBody = letExpression.getFunctionBody();
         if (functionBody != null) {
             FoldingDescriptor fold = fold(functionBody);
             if (fold != null) {
                 descriptors.add(fold);
             }
         } else {
-            ReasonMLLetBinding letBinding = letExpression.getLetBinding();
+            PsiLetBinding letBinding = letExpression.getLetBinding();
             FoldingDescriptor fold = fold(letBinding);
             if (fold != null) {
                 descriptors.add(fold);
@@ -63,13 +63,13 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(List<FoldingDescriptor> descriptors, ReasonMLModule module) {
+    private void foldModule(List<FoldingDescriptor> descriptors, PsiModule module) {
         FoldingDescriptor fold = fold(module.getModuleBody());
         if (fold != null) {
             descriptors.add(fold);
         }
-        // PsiElement lBrace = RmlPsiTreeUtil.getNextSiblingOfType(element, LBRACE);
-        // PsiElement rBrace = RmlPsiTreeUtil.getNextSiblingOfType(lBrace, RBRACE);
+        // PsiElement lBrace = PsiTreeUtil.getNextSiblingOfType(element, LBRACE);
+        // PsiElement rBrace = PsiTreeUtil.getNextSiblingOfType(lBrace, RBRACE);
         // if (lBrace != null && rBrace != null) {
         //     FoldingDescriptor fold = foldBetween(element, lBrace, rBrace, 5);
         //     if (fold != null)

@@ -18,7 +18,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.xdebugger.ui.DebuggerColors;
 import com.reason.ide.LineNumbering;
 import com.reason.merlin.types.MerlinPosition;
-import com.reason.psi.ReasonMLLet;
+import com.reason.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -42,10 +42,10 @@ public class RmlEditorLinePainter extends EditorLinePainter {
         PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
         LineNumbering lineNumbering = new LineNumbering(document.getCharsSequence());
 
-        Collection<ReasonMLLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, ReasonMLLet.class);
+        Collection<PsiLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
 
         String inferredType = null;
-        for (ReasonMLLet letStatement : letStatements) {
+        for (PsiLet letStatement : letStatements) {
             int letOffset = letStatement.getTextOffset();
             // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
             // but I would prefer to use runReadAction method.
@@ -59,7 +59,7 @@ public class RmlEditorLinePainter extends EditorLinePainter {
         }
 
 /*
-        Function<ReasonMLLet, String> findInferredType = letStatement -> {
+        Function<PsiLet, String> findInferredType = letStatement -> {
             // Found a let statement, try to get its type if in correct line number
             final int[] letOffset = new int[]{-1};
 //            ApplicationManager.getApplication().runReadAction(() -> { // Freezing pb ?

@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-class RmlPsiUtil {
+class PsiUtil {
 
     @NotNull
     static List<PsiFile> findFileModules(@NotNull Project project, @NotNull String name) {
@@ -31,15 +31,15 @@ class RmlPsiUtil {
     }
 
     @NotNull
-    static List<ReasonMLModule> findModules(@NotNull Project project, @NotNull String name) {
-        ArrayList<ReasonMLModule> result = new ArrayList<>();
+    static List<PsiModule> findModules(@NotNull Project project, @NotNull String name) {
+        ArrayList<PsiModule> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
         for (VirtualFile virtualFile : virtualFiles) {
             PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            ReasonMLModule[] modules = PsiTreeUtil.getChildrenOfType(file, ReasonMLModule.class);
+            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(file, PsiModule.class);
             if (modules != null) {
-                for (ReasonMLModule module : modules) {
+                for (PsiModule module : modules) {
                     if (name.equals(module.getModuleName().getText())) {
                         result.add(module);
                     }
@@ -51,14 +51,14 @@ class RmlPsiUtil {
     }
 
     @NotNull
-    static List<ReasonMLModule> findModules(@NotNull Project project) {
-        ArrayList<ReasonMLModule> result = new ArrayList<>();
+    static List<PsiModule> findModules(@NotNull Project project) {
+        ArrayList<PsiModule> result = new ArrayList<>();
 
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
         for (VirtualFile virtualFile : virtualFiles) {
             PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            ReasonMLModule[] modules = PsiTreeUtil.getChildrenOfType(file, ReasonMLModule.class);
+            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(file, PsiModule.class);
             if (modules != null) {
                 result.addAll(Arrays.asList(modules));
             }

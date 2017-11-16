@@ -12,7 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.psi.RmlFile;
+import com.reason.psi.PsiElementFactory;
+import com.reason.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
 import static com.reason.lang.RmlParser.ParserOptions.Validation;

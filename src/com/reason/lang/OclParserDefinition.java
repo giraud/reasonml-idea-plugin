@@ -12,7 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.psi.OclFile;
+import com.reason.OclFile;
+import com.reason.psi.PsiElementFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class OclParserDefinition implements ParserDefinition {

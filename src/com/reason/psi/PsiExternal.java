@@ -9,15 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonMLExternal extends ASTWrapperPsiElement {
+public class PsiExternal extends ASTWrapperPsiElement {
 
-    public ReasonMLExternal(ASTNode node) {
+    public PsiExternal(ASTNode node) {
         super(node);
     }
 
     @NotNull
-    public ReasonMLValueName getValueName() {
-        return findNotNullChildByClass(ReasonMLValueName.class);
+    public PsiValueName getValueName() {
+        return findNotNullChildByClass(PsiValueName.class);
     }
 
     @Override
