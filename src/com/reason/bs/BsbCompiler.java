@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class BsbCompiler extends AbstractProjectComponent {
 
     private KillableColoredProcessHandler m_bsb;
-    private GeneralCommandLine m_commandLine;
+    private @Nullable GeneralCommandLine m_commandLine;
     private ProcessListener m_outputListener;
 
     protected BsbCompiler(Project project) {
@@ -64,16 +64,19 @@ public class BsbCompiler extends AbstractProjectComponent {
 
     @Nullable
     public ProcessHandler recreate() {
-        try {
-            killIt();
-            m_bsb = new KillableColoredProcessHandler(m_commandLine);
-            if (m_outputListener != null) {
-                m_bsb.addProcessListener(m_outputListener);
+        if (m_commandLine != null) {
+            try {
+                killIt();
+                m_bsb = new KillableColoredProcessHandler(m_commandLine);
+                if (m_outputListener != null) {
+                    m_bsb.addProcessListener(m_outputListener);
+                }
+                return m_bsb;
+            } catch (ExecutionException e) {
+                Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
             }
-            return m_bsb;
-        } catch (ExecutionException e) {
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
+
         return null;
     }
 
