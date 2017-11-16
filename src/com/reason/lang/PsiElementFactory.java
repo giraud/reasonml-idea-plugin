@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.psi.*;
 
-class RmlPsiElementFactory {
+class PsiElementFactory {
     static PsiElement createElement(ASTNode node) {
         IElementType type = node.getElementType();
         if (type == RmlTypes.EXTERNAL_EXPRESSION) {
@@ -16,6 +16,10 @@ class RmlPsiElementFactory {
             return new ReasonMLLetBinding(node);
         } else if (type == RmlTypes.LET_EXPRESSION) {
             return new ReasonMLLet(node);
+        } else if (type == RmlTypes.ANNOTATION_EXPRESSION) {
+            return new PsiAnnotation(node);
+        } else if (type == RmlTypes.ANNOTATION_NAME) {
+            return new PsiAnnotationName(node);
         } else if (type == RmlTypes.MODULE_NAME) {
             return new ReasonMLModuleName(node);
         } else if (type == RmlTypes.MODULE_EXPRESSION) {

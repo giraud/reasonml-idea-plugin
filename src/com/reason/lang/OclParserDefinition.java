@@ -63,6 +63,6 @@ public class OclParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        return RmlPsiElementFactory.createElement(node);
+        return PsiElementFactory.createElement(node);
     }
 }

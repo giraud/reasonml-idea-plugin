@@ -70,6 +70,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 externalExpression(builder, 1);
             } else if (tokenType == LET) {
                 letExpression(builder, 1);
+            } else if (tokenType == LBRACKET) {
+                annotationExpression(builder, 1);
             } else {
                 builder.advanceLexer();
             }
@@ -419,6 +421,47 @@ public class RmlParser implements PsiParser, LightPsiParser {
         exit_section_(builder, exprMarker, EXTERNAL_EXPRESSION, true);
     }
 
+    private void annotationExpression(PsiBuilder builder, int recLevel) {
+        if (!recursion_guard_(builder, recLevel, "annotation expression")) {
+            return;
+        }
+
+        // enter ANNOTATION
+        Marker exprMarker = enter_section_(builder);
+
+        IElementType tokenType = advance(builder);
+        if (tokenType != ARROBASE) {
+            // oops, not an annotation, revert
+            exprMarker.drop();
+            advanceUntilNextStart(builder, recLevel + 1);
+            return;
+        }
+
+        Marker annMarker = enter_section_(builder);
+
+        // Anything before SPACE or RBRACKET
+        WhitespaceNotifier whitespace = new WhitespaceNotifier(false);
+        builder.setWhitespaceSkippedCallback(whitespace::notify);
+        tokenType = advance(builder);
+        while (true) {
+            if (whitespace.isSkipped() || tokenType == RBRACKET) {
+                break;
+            } else {
+                whitespace.setSkipped();
+            }
+            tokenType =  advance(builder);
+        }
+        builder.setWhitespaceSkippedCallback(null);
+
+        exit_section_(builder, annMarker, ANNOTATION_NAME, true);
+
+        advanceUntil(builder, recLevel + 1, RBRACKET);
+        advance(builder);
+
+        // end of ANNOTATION
+        exit_section_(builder, exprMarker, ANNOTATION_EXPRESSION, true);
+    }
+
     // **********
     // NEW!
     // LET REC? MODULE? (destructure|value_name) expression* (EQ (LPAREN expression RPAREN ARROW scoped_expression | (scoped_)expression) SEMI
@@ -474,7 +517,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
         // Anything before EQ|ARROW
         // anything but semi or start expression
-        WhitespaceNotifier whitespace = new WhitespaceNotifier();
+        WhitespaceNotifier whitespace = new WhitespaceNotifier(true);
         builder.setWhitespaceSkippedCallback(whitespace::notify);
 
         while (true) {
@@ -611,6 +654,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 scopedTypeExpression(builder, recLevel + 1, constrName);
             } else if (tokenType == LPAREN) {
                 parenTypeExpression(builder, recLevel + 1, constrName);
+            } else if (tokenType == LBRACKET) {
+                annotationExpression(builder, recLevel + 1);
             } else {
                 tokenType = advance(builder);
                 if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
@@ -741,19 +786,23 @@ public class RmlParser implements PsiParser, LightPsiParser {
     }
 
     private static class WhitespaceNotifier {
-        private boolean skipped = true;
+        private boolean m_skipped;
+
+        WhitespaceNotifier(boolean skipped) {
+            m_skipped = skipped;
+        }
 
         @SuppressWarnings("unused")
         void notify(IElementType type, int start, int end) {
-            this.skipped = true;
+            m_skipped = true;
         }
 
         boolean isSkipped() {
-            return this.skipped;
+            return m_skipped;
         }
 
         void setSkipped() {
-            this.skipped = false;
+            m_skipped = false;
         }
     }
 }

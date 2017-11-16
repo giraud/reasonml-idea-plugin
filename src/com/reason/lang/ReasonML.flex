@@ -103,7 +103,6 @@ LITERAL_MODIFIER=[G-Zg-z]
     "val"        { return VAL; }
     //
 
-
     "option"    { return OPTION; }
     "None"      { return NONE; }
     "Some"      { return SOME; }

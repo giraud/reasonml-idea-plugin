@@ -10,6 +10,8 @@ public interface RmlTypes {
     IElementType MODULE_EXPRESSION = new ReasonMLElementType("MODULE_EXPRESSION");
     IElementType OPEN_EXPRESSION = new ReasonMLElementType("OPEN_EXPRESSION");
     IElementType LET_EXPRESSION = new ReasonMLElementType("LET_EXPRESSION");
+    IElementType ANNOTATION_EXPRESSION = new ReasonMLElementType("ANNOTATION_EXPRESSION");
+    IElementType ANNOTATION_NAME = new ReasonMLElementType("ANNOTATION_NAME");
     IElementType TYPE_EXPRESSION = new ReasonMLElementType("TYPE_EXPRESSION");
     IElementType INCLUDE_EXPRESSION = new ReasonMLElementType("INCLUDE_EXPRESSION");
 
