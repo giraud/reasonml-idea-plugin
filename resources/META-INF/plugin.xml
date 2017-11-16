@@ -11,66 +11,33 @@
     <change-notes><![CDATA[
       <b>version 0.27</b>
       <ul>
-      <li>
-        Fixed an IllegalArgumentException in KillableColoredProcessHandler
-      </li>
+        <li>Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
+        <li>Improving reason parser</li>
       </ul>
+
       <b>version 0.26</b>
       <ul>
-      <li>
-      Improving parsers.
-      </li>
+        <li>Improving parsers</li>
       </ul>
+
       <b>version 0.25</b>
       <ul>
-      <li>
-      Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14).
-      </li>
+        <li>Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14)</li>
       </ul>
+
       <b>version 0.24</b>
       <ul>
-      <li>
-      Add Number and Type argument in color settings (#13).
-      </li>
+        <li>Add Number and Type argument in color settings (#13).</li>
       </ul>
+
       <b>version 0.23</b>
       <ul>
-      <li>
-      New default values for bsb and refmt. bsb=> node_modules/bs-platform/bin/bsb.exe, refmt=> node_modules/bs-platform/bin/refmt3.exe
-      </li>
+        <li>New default values for bsb and refmt. bsb=> node_modules/bs-platform/bin/bsb.exe, refmt=> node_modules/bs-platform/bin/refmt3.exe</li>
       </ul>
+
       <b>version 0.22</b>
       <ul>
-      <li>
-      Parse Bsb super errors and use them to annotate source code
-      </li>
-      </ul>
-      <b>version 0.21</b>
-      <ul>
-      <li>
-      refmt path can be absolute or relative to the project. If reasonRefmt is not set, the default value is now set
-      to node_modules/bs-platform/bin/refmt.exe
-      </li>
-      <li>
-      Bsb is no more used in watch mode, but we run it each time a file is modified 
-      </ul>
-      <b>version 0.20</b>
-      <ul>
-      <li>Fixed a NPE</li>
-      </ul>
-      <b>version 0.19</b>
-      <ul>
-      <li>(!) Merlin 3+ is mandatory</li>
-      </ul>
-      <b>version 0.18</b>
-      <ul>
-      <li>Reformat action with undo</li>
-      </ul>
-      <b>version 0.17</b>
-      <ul>
-      <li>Types are now displayed when editor get focus</li>
-      <li>Don't report merlin exceptions to user</li>
-      <li>Fixed merlin communication (I hope)</li>
+        <li>Parse Bsb super errors and use them to annotate source code</li>
       </ul>
 
       <p>Work in progress.</p>
@@ -140,8 +107,8 @@
         <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator" />
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BsbErrorAnnotator" />
+        <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
+        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BsbErrorAnnotator"/>
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
 
@@ -151,13 +118,16 @@
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
 
-        <codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>
+        <codeInsight.parameterNameHints language="ReasonML"
+                                        implementationClass="com.reason.ide.hints.SignatureProvider"/>
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BsbToolWindowFactory"/>
 
-        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule" implementationClass="com.reason.psi.RmlModuleManipulator"/>
-        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName" implementationClass="com.reason.psi.RmlModuleNameManipulator"/>
+        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModule"
+                                 implementationClass="com.reason.psi.RmlModuleManipulator"/>
+        <lang.elementManipulator forClass="com.reason.psi.ReasonMLModuleName"
+                                 implementationClass="com.reason.psi.RmlModuleNameManipulator"/>
 
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
