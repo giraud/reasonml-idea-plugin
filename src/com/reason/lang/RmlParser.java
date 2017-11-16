@@ -219,8 +219,10 @@ public class RmlParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // MODULE TYPE? module_name | SEMI
-    //                          | (COLON module_type)? EQ                          (module_alias | scoped_expression) SEMI
+    // MODULE TYPE? module_name |                                              |   SEMI
+    //                          | EQ module_alias                              |
+    //             ::functor::  | EQ (COLON module_type)? scoped_expression)   |
+    // ???
     //                          | (LPAREN any RPAREN)+ (COLON module_type)? ARROW
     // **********
     private void moduleExpression(PsiBuilder builder, int recLevel) {
@@ -283,8 +285,22 @@ public class RmlParser implements PsiParser, LightPsiParser {
                     }
 
                     if (tokenType == EQ) {
-                        // module definition
                         tokenType = advance(builder);
+
+                        // If there is a parenthesis, it's a functor
+                        if (tokenType == LPAREN) {
+                            Marker functorParamsMarker = enter_section_(builder);
+
+                            parenExpression(builder, recLevel + 1);
+
+                            exit_section_(builder, functorParamsMarker, FUNCTOR_PARAMS, true);
+                            tokenType = advance(builder);
+                            if (tokenType == ARROW) {
+                                tokenType = advance(builder);
+                            }
+                        }
+
+                        // module definition
                         if (tokenType == LBRACE) {
                             // scoped body, anything inside braces
                             scopedExpression(builder, recLevel + 1);
@@ -421,6 +437,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
         exit_section_(builder, exprMarker, EXTERNAL_EXPRESSION, true);
     }
 
+    // **********
+    // [@bs.* any*?] any*
     private void annotationExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "annotation expression")) {
             return;
@@ -449,13 +467,15 @@ public class RmlParser implements PsiParser, LightPsiParser {
             } else {
                 whitespace.setSkipped();
             }
-            tokenType =  advance(builder);
+            tokenType = advance(builder);
         }
         builder.setWhitespaceSkippedCallback(null);
 
         exit_section_(builder, annMarker, ANNOTATION_NAME, true);
+        if (tokenType != RBRACKET) {
+            advanceUntil(builder, recLevel + 1, RBRACKET);
+        }
 
-        advanceUntil(builder, recLevel + 1, RBRACKET);
         advance(builder);
 
         // end of ANNOTATION

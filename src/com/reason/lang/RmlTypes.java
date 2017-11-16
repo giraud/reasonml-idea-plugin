@@ -21,6 +21,7 @@ public interface RmlTypes {
     IElementType TYPE_CONSTR_NAME = new ReasonMLElementType("TYPE_CONSTR_NAME");
     IElementType SCOPED_EXPR = new ReasonMLElementType("SCOPED_EXPR");
     IElementType VALUE_NAME = new ReasonMLElementType("VALUE_NAME");
+    IElementType FUNCTOR_PARAMS = new ReasonMLElementType("FUNCTOR_PARAMS");
 
     IElementType ANDAND = new ReasonMLTokenType("ANDAND");
     IElementType ARROBASE = new ReasonMLTokenType("ARROBASE");
