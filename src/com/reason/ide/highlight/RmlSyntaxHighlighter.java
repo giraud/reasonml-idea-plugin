@@ -21,12 +21,16 @@ import static com.reason.lang.RmlTypes.*;
 public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(
             OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO, TRUE, FALSE,
+            REF,
             // OCaml
             MATCH, WITH, DO, DONE, OBJECT, END, LAZY, ASSERT, THEN, FUNCTION, STRUCT, SIG, VAL
     );
     private static final Set<IElementType> OPERATION_SIGN_TYPES = of(
-            EQ, EQEQEQ, ARROW, SIMPLE_ARROW, SHORTCUT, COLON, SHARP, QUESTION_MARK, PLUS, PLUSDOT, MINUS, MINUSDOT, STAR, STARDOT,
-            SLASH, SLASHDOT, CARRET, ARROBASE, PIPE, PIPE_FORWARD, REF, EXCLAMATION_MARK);
+            ANDAND, SHORTCUT, ARROW, SIMPLE_ARROW, PIPE_FORWARD,
+            EQEQEQ, EQEQ, EQ, COLON, QUOTE,
+            CARRET, PLUSDOT, MINUSDOT, SLASHDOT, STARDOT, PLUS, MINUS, SLASH, STAR, PERCENT,
+            PIPE, ARROBASE, SHARP, QUESTION_MARK, EXCLAMATION_MARK
+    );
     private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
 
     private static final TextAttributesKey TYPE_ARGUMENT = TextAttributesKey.createTextAttributesKey("TYPE_ARGUMENT");
