@@ -55,24 +55,24 @@
 
     <application-components>
         <component>
-            <interface-class>com.reason.merlin.MerlinService</interface-class>
-            <implementation-class>com.reason.merlin.MerlinServiceComponent</implementation-class>
+            <interface-class>reason.merlin.MerlinService</interface-class>
+            <implementation-class>reason.merlin.MerlinServiceComponent</implementation-class>
         </component>
         <component>
-            <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
+            <implementation-class>reason.ide.ReasonDocumentManager</implementation-class>
         </component>
     </application-components>
 
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.RmlProjectTracker</implementation-class>
+            <implementation-class>reason.ide.RmlProjectTracker</implementation-class>
         </component>
         <component>
-            <implementation-class>com.reason.bs.BsbCompiler</implementation-class>
+            <implementation-class>reason.bs.BsbCompiler</implementation-class>
         </component>
         <component>
-            <interface-class>com.reason.bs.BsbErrorsManager</interface-class>
-            <implementation-class>com.reason.bs.BsbErrorsManagerImpl</implementation-class>
+            <interface-class>reason.bs.BsbErrorsManager</interface-class>
+            <implementation-class>reason.bs.BsbErrorsManagerImpl</implementation-class>
         </component>
     </project-components>
 
@@ -82,68 +82,68 @@
          -->
 
         <!-- Reason -->
-        <fileTypeFactory implementation="com.reason.ide.files.RmlInterfaceFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.files.RmlFileTypeFactory"/>
+        <fileTypeFactory implementation="reason.ide.files.RmlInterfaceFileTypeFactory"/>
+        <fileTypeFactory implementation="reason.ide.files.RmlFileTypeFactory"/>
         <!-- Ocaml -->
-        <fileTypeFactory implementation="com.reason.ide.files.OclInterfaceFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
+        <fileTypeFactory implementation="reason.ide.files.OclInterfaceFileTypeFactory"/>
+        <fileTypeFactory implementation="reason.ide.files.OclFileTypeFactory"/>
 
         <!--
          | Parsers
          -->
 
         <!-- Reason -->
-        <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
+        <lang.parserDefinition language="ReasonML" implementationClass="reason.lang.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory key="ReasonML"
-                                       implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
+                                       implementationClass="reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Ocaml -->
-        <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.OclParserDefinition"/>
+        <lang.parserDefinition language="Ocaml" implementationClass="reason.lang.OclParserDefinition"/>
         <lang.syntaxHighlighterFactory key="Ocaml"
-                                       implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
+                                       implementationClass="reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
 
         <!--
          | Structure
          -->
 
         <lang.psiStructureViewFactory language="ReasonML"
-                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+                                      implementationClass="reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="Ocaml"
-                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+                                      implementationClass="reason.ide.structure.StructureViewFactory"/>
 
         <!--
          | Others
          -->
 
-        <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
+        <colorSettingsPage implementation="reason.ide.settings.RmlColorSettingsPage"/>
 
-        <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BsbErrorAnnotator"/>
+        <annotator language="ReasonML" implementationClass="reason.ide.highlight.RmlAnnotator"/>
+        <externalAnnotator language="ReasonML" implementationClass="reason.ide.highlight.MerlinErrorAnnotator"/>
+        <externalAnnotator language="ReasonML" implementationClass="reason.bs.BsbErrorAnnotator"/>
 
-        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
+        <completion.contributor language="ReasonML" implementationClass="reason.ide.RmlCompletionContributor"/>
 
-        <lang.commenter language="ReasonML" implementationClass="com.reason.ide.RmlCommenter"/>
-        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
-        <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
+        <lang.commenter language="ReasonML" implementationClass="reason.ide.RmlCommenter"/>
+        <lang.foldingBuilder language="ReasonML" implementationClass="reason.ide.folding.RmlFoldingBuilder"/>
+        <lang.braceMatcher language="ReasonML" implementationClass="reason.ide.RmlPairedBraceMatcher"/>
 
         <codeInsight.parameterNameHints language="ReasonML"
-                                        implementationClass="com.reason.ide.hints.SignatureProvider"/>
-        <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
+                                        implementationClass="reason.ide.hints.SignatureProvider"/>
+        <editor.linePainter implementation="reason.ide.hints.RmlEditorLinePainter"/>
 
-        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BsbToolWindowFactory"/>
+        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="reason.bs.BsbToolWindowFactory"/>
 
-        <lang.elementManipulator forClass="com.reason.psi.PsiModule"
-                                 implementationClass="com.reason.psi.PsiModuleManipulator"/>
-        <lang.elementManipulator forClass="com.reason.psi.PsiModuleName"
-                                 implementationClass="com.reason.psi.PsiModuleNameManipulator"/>
+        <lang.elementManipulator forClass="reason.psi.PsiModule"
+                                 implementationClass="reason.psi.PsiModuleManipulator"/>
+        <lang.elementManipulator forClass="reason.psi.PsiModuleName"
+                                 implementationClass="reason.psi.PsiModuleNameManipulator"/>
 
-        <projectService serviceInterface="com.reason.merlin.MerlinService"
-                        serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
+        <projectService serviceInterface="reason.merlin.MerlinService"
+                        serviceImplementation="reason.merlin.MerlinServiceComponent"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
-        <action id="reasonML.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
+        <action id="reasonML.refmt" class="reason.ide.format.RefmtAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
         </action>
