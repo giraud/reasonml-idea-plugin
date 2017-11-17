@@ -69,7 +69,7 @@ public class PsiModule extends PsiNamedElement {
 
     @Override
     public String toString() {
-        return "Module '" + getName() + "'";
+        return "Module " + getName();
     }
 
 }

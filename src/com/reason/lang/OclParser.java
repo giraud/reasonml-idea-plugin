@@ -66,28 +66,25 @@ public class OclParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // OPEN EXCLAMATION_MARK? module_path SEMI
+    // OPEN EXCLAMATION_MARK? module_path
     // **********
     private void openExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "openExpression")) {
             return;
         }
 
+        Marker exprMarker = enter_section_(builder);
+
         IElementType nextTokenType = builder.lookAhead(1);
         if (nextTokenType == EXCLAMATION_MARK) {
-            builder.advanceLexer();
+            advance(builder);
         }
 
-        // Continue until a ';' or another toplevel expression is found
-        Marker moduleMarker = enter_section_(builder);
-        IElementType tokenType = advance(builder);
-        if (tokenType != SEMI) {
-            modulePath(builder, recLevel + 1);
-        }
+        // Continue until another expression is found
+        advance(builder);
+        modulePath(builder, recLevel + 1);
 
-        endExpression(builder);
-        exit_section_(builder, moduleMarker, OPEN_EXPRESSION, true);
-
+        exit_section_(builder, exprMarker, OPEN_EXPRESSION, true);
     }
 
     // **********
@@ -107,21 +104,8 @@ public class OclParser implements PsiParser, LightPsiParser {
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
             Marker nameMarker = enter_section_(builder);
-//            Marker errorMarker = null;
-//            boolean isNameCorrect = tokenType == LIDENT;
-
-//            if (isNameCorrect) {
             constrName = builder.getTokenText();
-//            } else {
-//                errorMarker = builder.mark();
-//            }
-
             builder.advanceLexer();
-
-//            if (!isNameCorrect) {
-//                errorMarker.error("Type name must start with a lower case");
-//            }
-
             exit_section_(builder, nameMarker, TYPE_CONSTR_NAME, true);
         }
 
@@ -134,9 +118,7 @@ public class OclParser implements PsiParser, LightPsiParser {
         tokenType = builder.getTokenType();
         if (tokenType != SEMI) {
             // =
-            if (tokenType != EQ) {
-                //fail(builder, ERR_EQ_EXPECTED);
-            } else {
+            if (tokenType == EQ) {
                 builder.advanceLexer();
             }
 
@@ -187,10 +169,6 @@ public class OclParser implements PsiParser, LightPsiParser {
             tokenType = builder.getTokenType();
             if (tokenType == LBRACE) {
                 scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            }
-            if (tokenType != SEMI) {
-                //fail(builder, ERR_SEMI_EXPECTED);
             }
         }
 
@@ -242,9 +220,7 @@ public class OclParser implements PsiParser, LightPsiParser {
                     advanceUntil(builder, recLevel + 1, ARROW);
 
                     tokenType = builder.getTokenType();
-                    if (tokenType != ARROW) {
-                        //fail(builder, ERR_ARROW_EXPECTED);
-                    } else {
+                    if (tokenType == ARROW) {
                         // module definition
                         tokenType = advance(builder);
                         if (tokenType == LBRACE) {
@@ -273,8 +249,6 @@ public class OclParser implements PsiParser, LightPsiParser {
                             modulePath(builder, recLevel + 1);
                         }
                     }
-                } else {
-                    //fail(builder, ERR_EQ_EXPECTED);
                 }
             }
         }
@@ -322,7 +296,7 @@ public class OclParser implements PsiParser, LightPsiParser {
 
 
                 // a semi or scope is found, stop module path exploration
-                if (tokenType == SEMI || tokenType == LBRACE) {
+                if (tokenType == LBRACE || isStartExpression(tokenType)) {
                     nameMarker.drop();
                     break;
                 }
@@ -382,8 +356,6 @@ public class OclParser implements PsiParser, LightPsiParser {
         // :
         if (tokenType == COLON) {
             builder.advanceLexer();
-        } else {
-            //fail(builder, ERR_COLON_EXPECTED);
         }
 
         tokenType = builder.getTokenType();
@@ -450,10 +422,7 @@ public class OclParser implements PsiParser, LightPsiParser {
             }
         }
 
-        tokenType = builder.getTokenType();
-
-        // COLON means we are dealing with a definition, = or => is not needed, we can end with ;
-        boolean hasTypeDefinition = tokenType == COLON;
+        builder.getTokenType();
 
         // Anything before EQ|ARROW
         // anything but semi or start expression
@@ -473,11 +442,7 @@ public class OclParser implements PsiParser, LightPsiParser {
         builder.setWhitespaceSkippedCallback(null);
 
         tokenType = builder.getTokenType();
-        if (EQ != tokenType && ARROW != tokenType) {
-            if (!hasTypeDefinition) {
-                //fail(builder, "'=' or '=>' expected");
-            }
-        } else {
+        if (EQ == tokenType || ARROW == tokenType) {
             boolean isFunction = ARROW == tokenType;
 
             builder.advanceLexer();
@@ -606,9 +571,7 @@ public class OclParser implements PsiParser, LightPsiParser {
         }
 
         IElementType tokenType = builder.getTokenType();
-        if (tokenType != RBRACE) {
-            //fail(builder, ERR_RBRACE_EXPECTED);
-        } else {
+        if (tokenType == RBRACE) {
             builder.advanceLexer();
         }
 
@@ -712,8 +675,6 @@ public class OclParser implements PsiParser, LightPsiParser {
         IElementType tokenType = builder.getTokenType();
         if (tokenType == SEMI) {
             builder.advanceLexer();
-        } else if (tokenType != RBRACE) { // Last expression in a scope can also omit semi
-            //fail(builder, ERR_SEMI_EXPECTED);
         }
     }
 
