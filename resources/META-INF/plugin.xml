@@ -11,8 +11,9 @@
     <change-notes><![CDATA[
       <b>version 0.27</b>
       <ul>
-        <li>Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
         <li>Improving reason parser</li>
+        <li>Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
+        <li>Structure view enabled for Ocaml files</li>
       </ul>
 
       <b>version 0.26</b>
@@ -101,6 +102,15 @@
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
 
         <!--
+         | Structure
+         -->
+
+        <lang.psiStructureViewFactory language="ReasonML"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Ocaml"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+
+        <!--
          | Others
          -->
 
@@ -112,8 +122,6 @@
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
 
-        <lang.psiStructureViewFactory language="ReasonML"
-                                      implementationClass="com.reason.ide.structure.RmlStructureViewFactory"/>
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.RmlCommenter"/>
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>

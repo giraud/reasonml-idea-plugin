@@ -8,6 +8,7 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.OclFile;
 import com.reason.RmlFile;
 import com.reason.psi.PsiExternal;
 import com.reason.psi.PsiLet;
@@ -20,10 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RmlStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
+public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private PsiElement element;
 
-    RmlStructureViewElement(PsiElement element) {
+    StructureViewElement(PsiElement element) {
         this.element = element;
     }
 
@@ -75,7 +76,7 @@ public class RmlStructureViewElement implements StructureViewTreeElement, Sortab
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (element instanceof RmlFile) {
+        if (element instanceof RmlFile || element instanceof OclFile) {
             PsiModule[] modules = PsiTreeUtil.getChildrenOfType(element, PsiModule.class);
             PsiLet[] lets = PsiTreeUtil.getChildrenOfType(element, PsiLet.class);
             PsiType[] types = PsiTreeUtil.getChildrenOfType(element, PsiType.class);
@@ -87,22 +88,22 @@ public class RmlStructureViewElement implements StructureViewTreeElement, Sortab
 
                 if (externals != null) {
                     for (PsiExternal external : externals) {
-                        treeElements.add(new RmlStructureViewElement(external));
+                        treeElements.add(new StructureViewElement(external));
                     }
                 }
                 if (types != null) {
                     for (PsiType type : types) {
-                        treeElements.add(new RmlStructureViewElement(type));
+                        treeElements.add(new StructureViewElement(type));
                     }
                 }
                 if (modules != null) {
                     for (PsiModule module : modules) {
-                        treeElements.add(new RmlStructureViewElement(module));
+                        treeElements.add(new StructureViewElement(module));
                     }
                 }
                 if (lets != null) {
                     for (PsiLet let : lets) {
-                        treeElements.add(new RmlStructureViewElement(let));
+                        treeElements.add(new StructureViewElement(let));
                     }
                 }
 
@@ -130,22 +131,22 @@ public class RmlStructureViewElement implements StructureViewTreeElement, Sortab
 
             if (types != null) {
                 for (PsiType type : types) {
-                    treeElements.add(new RmlStructureViewElement(type));
+                    treeElements.add(new StructureViewElement(type));
                 }
             }
             if (externals != null) {
                 for (PsiExternal external : externals) {
-                    treeElements.add(new RmlStructureViewElement(external));
+                    treeElements.add(new StructureViewElement(external));
                 }
             }
             if (modules != null) {
                 for (PsiModule module : modules) {
-                    treeElements.add(new RmlStructureViewElement(module));
+                    treeElements.add(new StructureViewElement(module));
                 }
             }
             if (lets != null) {
                 for (PsiLet let : lets) {
-                    treeElements.add(new RmlStructureViewElement(let));
+                    treeElements.add(new StructureViewElement(let));
                 }
             }
 

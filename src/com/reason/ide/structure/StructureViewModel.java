@@ -1,16 +1,16 @@
 package com.reason.ide.structure;
 
-import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
+import com.reason.OclFile;
 import com.reason.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
-    RmlStructureViewModel(PsiFile psiFile) {
-        super(psiFile, new RmlStructureViewElement(psiFile));
+public class StructureViewModel extends StructureViewModelBase implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
+    StructureViewModel(PsiFile psiFile) {
+        super(psiFile, new StructureViewElement(psiFile));
     }
 
     @NotNull
@@ -26,6 +26,6 @@ public class RmlStructureViewModel extends StructureViewModelBase implements Str
 
     @Override
     public boolean isAlwaysLeaf(StructureViewTreeElement element) {
-        return element instanceof RmlFile;
+        return element instanceof RmlFile || element instanceof OclFile;
     }
 }
