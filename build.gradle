@@ -1,0 +1,60 @@
+plugins {
+    id 'org.jetbrains.intellij' version "0.2.15"
+}
+
+allprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = javaVersion
+    tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+    sourceSets {
+        main {
+            java.srcDirs 'src', 'gen'
+            resources.srcDirs 'resources', 'plugin/resources'
+        }
+        test {
+            java.srcDir 'tests'
+        }
+    }
+
+    apply plugin: 'org.jetbrains.intellij'
+    intellij {
+        pluginName 'reasonml-plugin-idea'
+        version ideaVersion
+        downloadSources Boolean.valueOf(sources)
+        updateSinceUntilBuild = false
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.+'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.+'
+    compile project('jps-builder')
+    compile project('jps-shared')
+}
+
+project(':jps-builder') {
+    dependencies {
+        compile project(':jps-shared')
+    }
+}
+
+apply plugin: 'idea'
+idea {
+    project {
+        jdkName = javaVersion
+        languageLevel = javaVersion
+    }
+    module {
+        generatedSourceDirs += file('gen')
+    }
+}
+
+compileJava {
+}
+

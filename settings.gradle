@@ -1,0 +1,4 @@
+rootProject.name = 'reasonml-idea-plugin'
+include 'jps-shared'
+include 'jps-builder'
+
