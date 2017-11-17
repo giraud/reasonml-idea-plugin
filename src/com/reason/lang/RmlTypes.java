@@ -79,6 +79,7 @@ public interface RmlTypes {
     IElementType OF = new RmlElementType("OF");
     IElementType OPEN = new RmlTokenType("OPEN");
     IElementType OPTION = new RmlTokenType("OPTION");
+    IElementType POLY_VARIANT = new RmlTokenType("POLY_VARIANT");
     IElementType PIPE = new RmlTokenType("PIPE");
     IElementType PIPE_FORWARD = new RmlTokenType("PIPE_FORWARD");
     IElementType PLUS = new RmlTokenType("PLUS");

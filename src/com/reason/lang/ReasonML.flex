@@ -117,6 +117,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     {INT_LITERAL}{LITERAL_MODIFIER}? { return INT; }
     ({FLOAT_LITERAL} | {HEX_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return FLOAT; }
     "'"{LOWERCASE}{IDENTCHAR}*       { return TYPE_ARGUMENT; }
+    "`"{UPPERCASE}{IDENTCHAR}*       { return POLY_VARIANT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }

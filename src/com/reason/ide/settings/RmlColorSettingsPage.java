@@ -28,6 +28,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Brackets", RmlSyntaxHighlighter.BRACKETS_),
             new AttributesDescriptor("Parenthesis", RmlSyntaxHighlighter.PARENS_),
             new AttributesDescriptor("Type argument", RmlSyntaxHighlighter.TYPE_ARGUMENT_),
+            new AttributesDescriptor("Polymorphic variants", RmlSyntaxHighlighter.POLY_VARIANT_),
     };
 
     @Nullable
@@ -51,6 +52,8 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
                 "  type tree 'a =\n" +
                 "  | Node (tree 'a) (tree 'a)\n" +
                 "  | Leaf;\n\n" +
+
+                "  type t = [`Up | `Down | `Left | `Right]\n\n" +
 
                 "  let add = (x y) => x + y;\n" +
                 "  let myList = [ 1.0, 2.0, 3. ];\n" +
