@@ -4,8 +4,9 @@ package com.reason.lang;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.TokenType;
 
-import static reason.lang.RmlTypes.*;
+import static com.reason.lang.RmlTypes.*;
 import static com.intellij.psi.TokenType.*;
 
 /**
