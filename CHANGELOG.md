@@ -1,3 +1,13 @@
+## 0.27
+
+* :bug: Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
+* :rocket: 
+  * Structure view enabled for Ocaml files
+  * Infering types using bsc if no merlin found (wip)
+* :house: 
+  * Using gradle for build
+  * Improving reason parser
+
 ## 0.26
 
 * :house: Improving parsers

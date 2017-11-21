@@ -14,6 +14,7 @@
         <li>Improving reason parser</li>
         <li>Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
         <li>Structure view enabled for Ocaml files</li>
+        <li>Infering types using bsc if no merlin found (wip)</li>
       </ul>
 
       <b>version 0.26</b>
@@ -36,12 +37,7 @@
         <li>New default values for bsb and refmt. bsb=> node_modules/bs-platform/bin/bsb.exe, refmt=> node_modules/bs-platform/bin/refmt3.exe</li>
       </ul>
 
-      <b>version 0.22</b>
-      <ul>
-        <li>Parse Bsb super errors and use them to annotate source code</li>
-      </ul>
-
-      <p>Work in progress.</p>
+      <p>For all the changes, go to github CHANGELOG.md file</p>
       <p>To see how to integrate reason tools (merlin, refmt), go to the website.</p>
     ]]>
     </change-notes>

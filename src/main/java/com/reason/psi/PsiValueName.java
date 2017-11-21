@@ -2,6 +2,7 @@ package com.reason.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 public class PsiValueName extends ASTWrapperPsiElement {
 
@@ -10,6 +11,7 @@ public class PsiValueName extends ASTWrapperPsiElement {
     }
 
     public String getValue() {
-        return getFirstChild().getText();
+        PsiElement firstChild = getFirstChild();
+        return firstChild != null ? firstChild.getText() : "";
     }
 }
