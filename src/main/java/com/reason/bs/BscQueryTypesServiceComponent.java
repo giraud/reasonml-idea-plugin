@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+// WARNING... THIS IS A BIG WIP...
 public class BscQueryTypesServiceComponent implements BscQueryTypesService {
 
     @Nullable
@@ -38,46 +39,53 @@ public class BscQueryTypesServiceComponent implements BscQueryTypesService {
         if (bscPath != null && baseDir != null) {
             // Find corresponding cmi file... wip
             String filePath = file.getCanonicalPath();
-            String replace = filePath.substring(baseDir.getPath().length()).replace(file.getPresentableName(), file.getNameWithoutExtension() + ".cmi");
-            VirtualFile cmiFile = baseDir.findFileByRelativePath("lib/bs" + replace);
-            if (cmiFile == null) {
-                return result;
-            }
+            if (filePath != null) {
+                String replace = filePath.substring(baseDir.getPath().length()).replace(file.getPresentableName(), file.getNameWithoutExtension() + ".cmi");
+                VirtualFile cmiFile = baseDir.findFileByRelativePath("lib/bs" + replace);
+                if (cmiFile != null) {
+                    ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(bscPath, "-dtypedtree", cmiFile.getCanonicalPath());
+                    String basePath = baseDir.getCanonicalPath();
+                    if (basePath != null) {
+                        m_bscProcessBuilder.directory(new File(basePath));
 
-            ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(bscPath, "-dtypedtree", cmiFile.getCanonicalPath());
-            m_bscProcessBuilder.directory(new File(baseDir.getCanonicalPath()));
+                        Process bsc = null;
+                        try {
+                            bsc = m_bscProcessBuilder.start();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(bsc.getInputStream()));
+                            BufferedReader errReader = new BufferedReader(new InputStreamReader(bsc.getErrorStream()));
 
-            Process bsc = null;
-            try {
-                bsc = m_bscProcessBuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(bsc.getInputStream()));
-                BufferedReader errReader = new BufferedReader(new InputStreamReader(bsc.getErrorStream()));
+                            Streams.waitUntilReady(reader, errReader);
+                            StringBuilder msgBuffer = new StringBuilder();
+                            if (errReader.ready()) {
+                                errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
+                                Notifications.Bus.notify(new RmlNotification("Reformat", msgBuffer.toString(), NotificationType.ERROR));
+                            } else {
+                                reader.lines().forEach(line -> {
+                                    if (line.startsWith("type") || line.startsWith("val") || line.startsWith("module") || line.startsWith("external")) {
+                                        msgBuffer.append('\n');
+                                    }
+                                    msgBuffer.append(line);
+                                });
 
-                Streams.waitUntilReady(reader, errReader);
-                StringBuilder msgBuffer = new StringBuilder();
-                if (errReader.ready()) {
-                    errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                    Notifications.Bus.notify(new RmlNotification("Reformat", msgBuffer.toString(), NotificationType.ERROR));
-                } else {
-                    reader.lines().forEach(line -> {
-                        msgBuffer.append(line).append('\n');
-                        if (line.startsWith("val")) {
-                            System.out.println(line);
-                            // first level let detected
-                            String[] tokens = line.split(":", 1);
-                            if (tokens.length == 2) {
-                                result.put(tokens[0].substring(4, tokens[0].length() - 1), tokens[1]);
+                                String newText = msgBuffer.toString();
+                                //System.out.println(newText);
+
+                                String[] types = newText.split("\n");
+                                for (String type : types) {
+                                    if (type.startsWith("val")) {
+                                        int colonPos = type.indexOf(':');
+                                        result.put(type.substring(4, colonPos - 1), type.substring(colonPos + 1).replaceAll("\\s+", " "));
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace(); // no ! nothing in fact
+                        } finally {
+                            if (bsc != null) {
+                                bsc.destroy();
                             }
                         }
-                    });
-                    String newText = msgBuffer.toString();
-                    System.out.println(newText);
-                }
-            } catch (Exception e) {
-                e.printStackTrace(); // no ! nothing in fact
-            } finally {
-                if (bsc != null) {
-                    bsc.destroy();
+                    }
                 }
             }
         }

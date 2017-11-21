@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.merlin.MerlinService;
 import com.reason.psi.PsiLet;
 import com.reason.psi.PsiValueName;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,13 @@ import java.util.stream.Collectors;
 
 public class InferredTypes {
 
+    private static boolean m_useMerlin;
+
+    public InferredTypes() {
+        MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
+        m_useMerlin = merlin.hasVersion();
+    }
+
     public static void queryForSelectedTextEditor(Project project) {
         try {
             Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
@@ -29,8 +37,7 @@ public class InferredTypes {
                 if (psiFile != null) {
                     Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
 
-                    boolean useMerlin = true;
-                    if (useMerlin) {
+                    if (m_useMerlin) {
                         List<LogicalPosition> positions = letExpressions.stream().
                                 map(letExpressionToLogicalPosition(selectedTextEditor)).
                                 collect(Collectors.toList());

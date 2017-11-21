@@ -33,7 +33,7 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         try {
             m_merlin3 = new MerlinProcess3(merlinBin);
         } catch (IOException e) {
-            Notifications.Bus.notify(new RmlNotification("Error locating merlin", "Can't find merlin, using '" + merlinBin + "'\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin, using '" + merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
             return;
         }
 
@@ -59,6 +59,11 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     @Override
     public MerlinVersion selectVersion(int version) {
         return m_merlin3.version();
+    }
+
+    @Override
+    public boolean hasVersion() {
+        return m_merlin3 != null && m_merlin3.version() != null;
     }
 
     @Override

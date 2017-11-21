@@ -12,4 +12,6 @@ public interface MerlinService {
     List<MerlinType> typeExpression(String filename, String source, MerlinPosition position);
 
     MerlinCompletion completions(String filename, String source, MerlinPosition position, String prefix);
+
+    boolean hasVersion();
 }
