@@ -12,7 +12,7 @@ public class RmlProjectTracker extends AbstractProjectComponent {
 
     private RmlDocumentListener m_documentListener;
     private MessageBusConnection m_messageBusConnection;
-    private RmlVirtualFileListener m_vfListener;
+    private VirtualFileListener m_vfListener;
 
     protected RmlProjectTracker(Project project) {
         super(project);
@@ -26,7 +26,7 @@ public class RmlProjectTracker extends AbstractProjectComponent {
         m_messageBusConnection = myProject.getMessageBus().connect();
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new RmlFileEditorListener(myProject));
 
-        m_vfListener = new RmlVirtualFileListener(myProject);
+        m_vfListener = new VirtualFileListener(myProject);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
     }
 

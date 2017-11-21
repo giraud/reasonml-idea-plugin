@@ -34,14 +34,10 @@ repositories {
 dependencies {
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.+'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.+'
-    compile project('jps-builder')
-    compile project('jps-shared')
+    compile project('reason-jps-plugin')
 }
 
-project(':jps-builder') {
-    dependencies {
-        compile project(':jps-shared')
-    }
+project(':reason-jps-plugin') {
 }
 
 apply plugin: 'idea'

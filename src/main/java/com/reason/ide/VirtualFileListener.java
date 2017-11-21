@@ -11,16 +11,20 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.bs.BsbCompiler;
 import com.reason.bs.console.BsbConsole;
+import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-class RmlVirtualFileListener implements VirtualFileListener {
+/**
+ * Listener that detects all modifications on project files
+ */
+class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListener {
     private final Project m_project;
     private final BsbCompiler m_bsb;
 
-    RmlVirtualFileListener(Project project) {
+    VirtualFileListener(Project project) {
         m_project = project;
         m_bsb = ServiceManager.getService(m_project, BsbCompiler.class);
     }
@@ -42,7 +46,7 @@ class RmlVirtualFileListener implements VirtualFileListener {
     }
 
     private void runBsb(FileType eventFileType) {
-        if (eventFileType instanceof RmlFileType) {
+        if (eventFileType instanceof RmlFileType || eventFileType instanceof OclFileType) {
             ProcessHandler recreate = m_bsb.recreate();
             getBsbConsole().attachToProcess(recreate);
             m_bsb.startNotify();

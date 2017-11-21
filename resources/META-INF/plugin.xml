@@ -137,6 +137,9 @@
                         serviceImplementation="com.reason.bs.BscQueryTypesServiceComponent"/>
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
+
+        <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
+        <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
     </extensions>
 
     <actions>
