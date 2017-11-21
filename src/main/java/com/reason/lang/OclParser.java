@@ -9,6 +9,7 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.reason.lang.RmlTypes.EQ;
 
 public class OclParser implements PsiParser, LightPsiParser {
 
@@ -33,8 +34,8 @@ public class OclParser implements PsiParser, LightPsiParser {
         }
 
         int c = current_position_(builder);
+        IElementType tokenType = builder.getTokenType();
         while (true) {
-            IElementType tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
             }
@@ -59,6 +60,7 @@ public class OclParser implements PsiParser, LightPsiParser {
                 break;
             }
 
+            tokenType = builder.getTokenType();
             c = builder.rawTokenIndex();
         }
         return true;
@@ -87,7 +89,7 @@ public class OclParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // TYPE type_name any* EQ (scoped_expression | expr) ;
+    // TYPE type_name any*
     // **********
     private void typeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "type expression")) {
@@ -97,57 +99,19 @@ public class OclParser implements PsiParser, LightPsiParser {
         // enter type
         Marker exprMarker = enter_section_(builder);
 
-        String constrName = "";
-
         // type name
+        advance(builder);
+        Marker nameMarker = enter_section_(builder);
+        String constrName = builder.getTokenText();
         IElementType tokenType = advance(builder);
-        if (tokenType != RmlTypes.SEMI) {
-            Marker nameMarker = enter_section_(builder);
-            constrName = builder.getTokenText();
-            builder.advanceLexer();
-            exit_section_(builder, nameMarker, RmlTypes.TYPE_CONSTR_NAME, true);
-        }
+        exit_section_(builder, nameMarker, RmlTypes.TYPE_CONSTR_NAME, true);
 
-        // anything until EQ or SEMI
-        tokenType = builder.getTokenType();
-        if (tokenType != RmlTypes.EQ && tokenType != RmlTypes.SEMI) {
-            advanceUntil(builder, recLevel++, RmlTypes.EQ);
-        }
-
-        tokenType = builder.getTokenType();
-        if (tokenType != RmlTypes.SEMI) {
-            // =
-            if (tokenType == RmlTypes.EQ) {
-                builder.advanceLexer();
-            }
-
-            tokenType = builder.getTokenType();
-            if (tokenType == RmlTypes.LBRACE) {
-                // scoped body, anything inside braces
-                scopedTypeExpression(builder, recLevel + 1, constrName);
-            } else {
-                // anything but semi or start expression
-                Marker marker = enter_section_(builder);
-
-                while (true) {
-                    tokenType = advance(builder);
-                    if (RmlTypes.LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
-                        Marker constrMarker = builder.mark();
-                        tokenType = advance(builder);
-                        exit_section_(builder, constrMarker, RmlTypes.TYPE_CONSTR_NAME, true);
-                    }
-
-                    if (isStartExpression(tokenType)) {
-                        break;
-                    }
-                }
-
-                exit_section_(builder, marker, RmlTypes.SCOPED_EXPR, true);
-            }
+        // anything until new expression
+        if (!isStartExpression(tokenType)) {
+            advanceUntilNextStart(builder, recLevel++);
         }
 
         // end of type
-        endExpression(builder);
         exit_section_(builder, exprMarker, RmlTypes.TYPE_EXPRESSION, true);
     }
 
@@ -176,9 +140,8 @@ public class OclParser implements PsiParser, LightPsiParser {
     }
 
     // **********
-    // MODULE TYPE? module_name | SEMI
-    //                          | (COLON module_type)? EQ                          (module_alias | scoped_expression) SEMI
-    //                          | (LPAREN any RPAREN)+ (COLON module_type)? ARROW
+    // MODULE module_name any* EQ | STRUCT any* END
+    //                            | any+
     // **********
     private void moduleExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module expression")) {
@@ -187,72 +150,24 @@ public class OclParser implements PsiParser, LightPsiParser {
 
         // enter module
         Marker moduleMarker = enter_section_(builder);
+        advance(builder);
+
+        // module_name
+        Marker moduleNameMarker = enter_section_(builder);
         IElementType tokenType = advance(builder);
-        if (tokenType != RmlTypes.SEMI) {
-            // might be a module definition only
-            if (tokenType == RmlTypes.TYPE) {
-                tokenType = advance(builder);
-            }
+        exit_section_(builder, moduleNameMarker, RmlTypes.MODULE_NAME, true);
 
-            // module name
-            boolean isNameIncorrect = tokenType != RmlTypes.UIDENT;
-            Marker errorMarker = null;
-
-            Marker moduleNameMarker = enter_section_(builder);
-
-            if (isNameIncorrect) {
-                errorMarker = builder.mark();
-            }
-
-            builder.advanceLexer();
-
-            if (isNameIncorrect) {
-                errorMarker.error("Module name must start with upper case");
-            }
-
-            exit_section_(builder, moduleNameMarker, RmlTypes.MODULE_NAME, true);
-
-            tokenType = builder.getTokenType();
-            if (tokenType != RmlTypes.SEMI) {
-                if (tokenType == RmlTypes.LPAREN) {
-                    // module constructor (function)
-                    advanceUntil(builder, recLevel + 1, RmlTypes.ARROW);
-
-                    tokenType = builder.getTokenType();
-                    if (tokenType == RmlTypes.ARROW) {
-                        // module definition
-                        tokenType = advance(builder);
-                        if (tokenType == RmlTypes.LBRACE) {
-                            // scoped body, anything inside braces
-                            scopedExpression(builder, recLevel + 1);
-                        } else if (tokenType != RmlTypes.SEMI) {
-                            // module alias
-                            modulePath(builder, recLevel + 1);
-                        }
-                    }
-                } else if (tokenType == RmlTypes.EQ || tokenType == RmlTypes.COLON) {
-                    if (tokenType == RmlTypes.COLON) {
-                        // module type
-                        advanceUntil(builder, recLevel + 1, RmlTypes.EQ);
-                        tokenType = builder.getTokenType();
-                    }
-
-                    if (tokenType == RmlTypes.EQ) {
-                        // module definition
-                        tokenType = advance(builder);
-                        if (tokenType == RmlTypes.LBRACE) {
-                            // scoped body, anything inside braces
-                            scopedExpression(builder, recLevel + 1);
-                        } else if (tokenType != RmlTypes.SEMI) {
-                            // module alias
-                            modulePath(builder, recLevel + 1);
-                        }
-                    }
-                }
-            }
+        if (tokenType != EQ) {
+            advanceUntil(builder, recLevel + 1, EQ);
         }
 
-        endExpression(builder);
+        tokenType = advance(builder);
+        if (tokenType == RmlTypes.STRUCT) {
+            structExpression(builder, recLevel + 1);
+        } else {
+            advanceUntilNextStart(builder, recLevel + 1);
+        }
+
         exit_section_(builder, moduleMarker, RmlTypes.MODULE_EXPRESSION, true);
     }
 
@@ -430,7 +345,7 @@ public class OclParser implements PsiParser, LightPsiParser {
 
         while (true) {
             tokenType = builder.getTokenType();
-            if ((whitespace.isSkipped() && (tokenType == RmlTypes.EQ || tokenType == RmlTypes.ARROW)) || isStartExpression(tokenType)) {
+            if ((whitespace.isSkipped() && (tokenType == EQ || tokenType == RmlTypes.ARROW)) || isStartExpression(tokenType)) {
                 break;
             } else {
                 whitespace.setSkipped();
@@ -441,7 +356,7 @@ public class OclParser implements PsiParser, LightPsiParser {
         builder.setWhitespaceSkippedCallback(null);
 
         tokenType = builder.getTokenType();
-        if (RmlTypes.EQ == tokenType || RmlTypes.ARROW == tokenType) {
+        if (EQ == tokenType || RmlTypes.ARROW == tokenType) {
             boolean isFunction = RmlTypes.ARROW == tokenType;
 
             builder.advanceLexer();
@@ -634,14 +549,56 @@ public class OclParser implements PsiParser, LightPsiParser {
         }
     }
 
+    // **********
+    // Pattern: STRUCT expression* END
+    // **********
+    private IElementType structExpression(PsiBuilder builder, int recLevel) {
+        if (!recursion_guard_(builder, recLevel, "struct")) {
+            return builder.getTokenType();
+        }
+
+        IElementType tokenType = advance(builder);
+        while (true) {
+            // If a new scope is found, recursively process it
+            if (tokenType == RmlTypes.OPEN) {
+                openExpression(builder, recLevel + 1);
+            } else if (tokenType == RmlTypes.INCLUDE) {
+                includeExpression(builder, recLevel + 1);
+            } else if (tokenType == RmlTypes.TYPE) {
+                typeExpression(builder, recLevel + 1);
+            } else if (tokenType == RmlTypes.MODULE) {
+                moduleExpression(builder, recLevel + 1);
+            } else if (tokenType == RmlTypes.EXTERNAL) {
+                externalExpression(builder, recLevel + 1);
+            } else if (tokenType == RmlTypes.LET) {
+                letExpression(builder, recLevel + 1);
+            } else if (tokenType == RmlTypes.LBRACE) {
+                scopedTypeExpression(builder, recLevel + 1, null);
+            } else if (tokenType == RmlTypes.LPAREN) {
+                parenTypeExpression(builder, recLevel + 1, null);
+            } else if (RmlTypes.STRUCT == tokenType) {
+                tokenType = structExpression(builder, recLevel + 1);
+            } else {
+                advance(builder);
+            }
+
+            tokenType = builder.getTokenType();
+
+            // Advance until a END is found, or nothing else is found
+            if (RmlTypes.END == tokenType || tokenType == null) {
+                return advance(builder);
+            }
+        }
+    }
+
     private static IElementType advance(PsiBuilder builder) {
         builder.advanceLexer();
         return builder.getTokenType();
     }
 
-    private void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
+    private IElementType advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
         if (!recursion_guard_(builder, recLevel, "advance until")) {
-            return;
+            return nextTokenType;
         }
 
         IElementType tokenType;
@@ -659,6 +616,8 @@ public class OclParser implements PsiParser, LightPsiParser {
                 break;
             }
         }
+
+        return builder.getTokenType();
     }
 
     private static boolean isStartExpression(IElementType tokenType) {
