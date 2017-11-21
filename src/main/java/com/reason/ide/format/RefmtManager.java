@@ -2,9 +2,7 @@ package com.reason.ide.format;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 
 public class RefmtManager {
     private static RefmtManager instance;
@@ -29,19 +27,11 @@ public class RefmtManager {
         return instance;
     }
 
-    void refmt(Project project, Document document) {
-        if (isReasonFile(document)) {
-            String oldText = document.getText();
-            String newText = m_refmtProcess.run(project, oldText);
-            if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
-                document.setText(newText);
-            }
+    void refmt(Project project, String format, Document document) {
+        String oldText = document.getText();
+        String newText = m_refmtProcess.run(project, format, oldText);
+        if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
+            document.setText(newText);
         }
-    }
-
-    private boolean isReasonFile(Document document) {
-        VirtualFile file = FileDocumentManager.getInstance().getFile(document);
-        String extension = file == null ? null : file.getExtension();
-        return "re".equals(extension) || "rei".equals(extension);
     }
 }

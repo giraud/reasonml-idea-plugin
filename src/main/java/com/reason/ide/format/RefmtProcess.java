@@ -21,14 +21,14 @@ class RefmtProcess {
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 
-    String run(Project project, String code) {
+    String run(Project project, String format, String code) {
         String refmtPath = Platform.getBinaryPath(project, m_refmtBin);
         if (refmtPath == null) {
             // Use a watcher ?
             return code;
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath);
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format);
 
         Process refmt = null;
         try {

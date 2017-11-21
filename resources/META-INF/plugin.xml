@@ -9,6 +9,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version X</b>
+      <ul>
+        <li>Reformat action is working on ocaml source (refmt3)</li>
+      </ul>
+
       <b>version 0.27</b>
       <ul>
         <li>Improving reason parser</li>
