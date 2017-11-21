@@ -20,7 +20,7 @@ import static com.reason.lang.RmlTypes.*;
 public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(
             OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO, TRUE, FALSE,
-            REF,
+            REF, EXCEPTION,
             // OCaml
             MATCH, WITH, DO, DONE, OBJECT, END, LAZY, ASSERT, THEN, FUNCTION, STRUCT, SIG, VAL
     );

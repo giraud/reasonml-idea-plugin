@@ -45,6 +45,7 @@ public interface RmlTypes {
     IElementType EQ = new RmlTokenType("EQ");
     IElementType EQEQ = new RmlTokenType("EQEQ");
     IElementType EQEQEQ = new RmlTokenType("EQEQEQ");
+    IElementType EXCEPTION = new RmlTokenType("EXCEPTION");
     IElementType EXCLAMATION_MARK = new RmlTokenType("EXCLAMATION_MARK");
     IElementType EXTERNAL = new RmlTokenType("EXTERNAL");
     IElementType FALSE = new RmlTokenType("FALSE");

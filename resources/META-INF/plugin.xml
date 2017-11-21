@@ -103,13 +103,16 @@
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
 
         <!--
-         | Structure
+         | Structure / folding
          -->
 
         <lang.psiStructureViewFactory language="ReasonML"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="Ocaml"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+
+        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
+        <lang.foldingBuilder language="Ocaml" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
 
         <!--
          | Others
@@ -124,7 +127,6 @@
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
 
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.RmlCommenter"/>
-        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
 
         <codeInsight.parameterNameHints language="ReasonML"
