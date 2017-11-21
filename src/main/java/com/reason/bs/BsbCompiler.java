@@ -58,7 +58,11 @@ public class BsbCompiler extends AbstractProjectComponent {
     // Wait for the tool window to be ready before starting the process
     public void startNotify() {
         if (m_bsb != null) {
-            m_bsb.startNotify();
+            try {
+                m_bsb.startNotify();
+            } catch (Throwable e) {
+                // already done ?
+            }
         }
     }
 

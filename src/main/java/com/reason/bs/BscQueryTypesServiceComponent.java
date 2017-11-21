@@ -12,8 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 // WARNING... THIS IS A BIG WIP...
 public class BscQueryTypesServiceComponent implements BscQueryTypesService {
@@ -30,8 +28,8 @@ public class BscQueryTypesServiceComponent implements BscQueryTypesService {
     }
 
     @Override
-    public Map<String, String> types(Project project, VirtualFile file) {
-        Map<String, String> result = new HashMap<>();
+    public InferredTypes types(Project project, VirtualFile file) {
+        InferredTypesImplementation result = new InferredTypesImplementation();
 
         VirtualFile baseDir = Platform.findBaseRoot(project);
         String bscPath = Platform.getBinaryPath(project, m_bscBin); // in project aware component ?
@@ -61,6 +59,7 @@ public class BscQueryTypesServiceComponent implements BscQueryTypesService {
                                 Notifications.Bus.notify(new RmlNotification("Reformat", msgBuffer.toString(), NotificationType.ERROR));
                             } else {
                                 reader.lines().forEach(line -> {
+                                    //System.out.println("»" + line + "«");
                                     if (line.startsWith("type") || line.startsWith("val") || line.startsWith("module") || line.startsWith("external")) {
                                         msgBuffer.append('\n');
                                     }
@@ -68,14 +67,11 @@ public class BscQueryTypesServiceComponent implements BscQueryTypesService {
                                 });
 
                                 String newText = msgBuffer.toString();
-                                //System.out.println(newText);
+                                //System.out.println("---\n" + newText + "\n---");
 
                                 String[] types = newText.split("\n");
                                 for (String type : types) {
-                                    if (type.startsWith("val")) {
-                                        int colonPos = type.indexOf(':');
-                                        result.put(type.substring(4, colonPos - 1), type.substring(colonPos + 1).replaceAll("\\s+", " "));
-                                    }
+                                    result.add(type);
                                 }
                             }
                         } catch (Exception e) {

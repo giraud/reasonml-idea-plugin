@@ -1,15 +1,19 @@
 package com.reason.ide.hints;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.RmlFile;
 import com.reason.bs.BscQueryTypesService;
+import com.reason.bs.BscQueryTypesServiceComponent;
 import com.reason.psi.PsiLet;
+import com.reason.psi.PsiModule;
 import com.reason.psi.PsiValueName;
 
 import java.util.Collection;
-import java.util.Map;
 
 public class BscInferredTypesTask implements Runnable {
 
@@ -29,15 +33,32 @@ public class BscInferredTypesTask implements Runnable {
             return;
         }
 
-        Map<String, String> letTypes = bscTypes.types(project, m_psiFile.getVirtualFile());
+        BscQueryTypesServiceComponent.InferredTypes inferredTypes = bscTypes.types(project, m_psiFile.getVirtualFile());
 
-        for (PsiLet letStatement : m_letExpressions) {
-            PsiValueName letName = letStatement.getLetName();
-            if (letName != null) {
-                String type = letTypes.get(letName.getValue());
-                if (type != null) {
-                    letStatement.setInferredType(type);
+        ApplicationManager.getApplication().runReadAction(() -> {
+            for (PsiLet letStatement : m_letExpressions) {
+                PsiElement letParent = letStatement.getParent();
+                if (letParent instanceof RmlFile) {
+                    applyType(inferredTypes, letStatement);
+                } else {
+                    PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
+                    if (letModule != null) {
+                        BscQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
+                        if (inferredModuleTypes != null) {
+                            applyType(inferredModuleTypes, letStatement);
+                        }
+                    }
                 }
+            }
+        });
+    }
+
+    private void applyType(BscQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
+        PsiValueName letName = letStatement.getLetName();
+        if (letName != null) {
+            String type = inferredTypes.getLetType(letName.getValue());
+            if (type != null) {
+                letStatement.setInferredType(type);
             }
         }
     }

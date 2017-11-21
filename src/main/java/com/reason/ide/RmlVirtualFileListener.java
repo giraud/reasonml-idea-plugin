@@ -18,11 +18,11 @@ import javax.swing.*;
 
 class RmlVirtualFileListener implements VirtualFileListener {
     private final Project m_project;
-    private final BsbCompiler m_bsc;
+    private final BsbCompiler m_bsb;
 
     RmlVirtualFileListener(Project project) {
         m_project = project;
-        m_bsc = ServiceManager.getService(m_project, BsbCompiler.class);
+        m_bsb = ServiceManager.getService(m_project, BsbCompiler.class);
     }
 
     private BsbConsole getBsbConsole() { // once for all ?
@@ -43,9 +43,9 @@ class RmlVirtualFileListener implements VirtualFileListener {
 
     private void runBsb(FileType eventFileType) {
         if (eventFileType instanceof RmlFileType) {
-            ProcessHandler recreate = m_bsc.recreate();
+            ProcessHandler recreate = m_bsb.recreate();
             getBsbConsole().attachToProcess(recreate);
-            m_bsc.startNotify();
+            m_bsb.startNotify();
         }
     }
 
