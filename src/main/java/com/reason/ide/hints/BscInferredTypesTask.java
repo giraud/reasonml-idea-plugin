@@ -56,7 +56,7 @@ public class BscInferredTypesTask implements Runnable {
     private void applyType(BscQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
         PsiValueName letName = letStatement.getLetName();
         if (letName != null) {
-            String type = inferredTypes.getLetType(letName.getValue());
+            String type = inferredTypes.getLetType(letName.getName());
             if (type != null) {
                 letStatement.setInferredType(type);
             }

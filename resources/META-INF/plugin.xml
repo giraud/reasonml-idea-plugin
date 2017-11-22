@@ -118,6 +118,7 @@
         <lang.commenter language="Ocaml" implementationClass="com.reason.ide.OclCommenter"/>
 
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
+        <lang.braceMatcher language="Ocaml" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
 
 
         <!--
@@ -130,7 +131,7 @@
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BsbErrorAnnotator"/>
 
-        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.RmlCompletionContributor"/>
+        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.insight.CompletionContributor"/>
 
         <codeInsight.parameterNameHints language="ReasonML"
                                         implementationClass="com.reason.ide.hints.SignatureProvider"/>

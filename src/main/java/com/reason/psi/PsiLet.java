@@ -12,10 +12,16 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class PsiLet extends ASTWrapperPsiElement implements PsiInferredType {
-    private String inferredType = "";
+    private String m_inferredType = "";
 
     public PsiLet(ASTNode node) {
         super(node);
+    }
+
+    @Override
+    public String getName() {
+        PsiValueName letName = getLetName();
+        return letName == null ? "" : letName.getName();
     }
 
     @Nullable
@@ -48,20 +54,22 @@ public class PsiLet extends ASTWrapperPsiElement implements PsiInferredType {
         return sibling != null && "rec".equals(sibling.getText());
     }
 
+    //region Inferred type
     @Override
     public void setInferredType(String inferredType) {
-        this.inferredType = inferredType;
+        m_inferredType = inferredType.trim();
     }
 
     @Override
     public String getInferredType() {
-        return inferredType;
+        return m_inferredType;
     }
 
     @Override
     public boolean hasInferredType() {
-        return inferredType != null && !inferredType.isEmpty();
+        return m_inferredType != null && !m_inferredType.isEmpty();
     }
+    //endregion
 
     @Nullable
     @Override

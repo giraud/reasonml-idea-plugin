@@ -4,12 +4,14 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public class PsiModule extends PsiNamedElement {
 
@@ -17,16 +19,7 @@ public class PsiModule extends PsiNamedElement {
         super(node);
     }
 
-    @Nullable
-    public PsiScopedExpr getModuleBody() {
-        return findChildByClass(PsiScopedExpr.class);
-    }
-
-    @NotNull
-    PsiModuleName getModuleName() {
-        return findNotNullChildByClass(PsiModuleName.class);
-    }
-
+    //region PsiNamedElement
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
@@ -34,14 +27,29 @@ public class PsiModule extends PsiNamedElement {
     }
 
     @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        // TODO: Module setName
+        return null;
+    }
+    //endregion
+
+    @NotNull
+    PsiModuleName getModuleName() {
+        return findNotNullChildByClass(PsiModuleName.class);
+    }
+
+    @Nullable
+    public PsiScopedExpr getModuleBody() {
+        return findChildByClass(PsiScopedExpr.class);
+    }
+
+    @Override
     public String getName() {
         return getModuleName().getText();
     }
 
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        // TODO: Module setName
-        return null;
+    public Collection<PsiLet> getLetExpressions() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiLet.class);
     }
 
     public ItemPresentation getPresentation() {

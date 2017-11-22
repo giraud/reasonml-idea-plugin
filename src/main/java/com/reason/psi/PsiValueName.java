@@ -10,7 +10,7 @@ public class PsiValueName extends ASTWrapperPsiElement {
         super(node);
     }
 
-    public String getValue() {
+    public String getName() {
         PsiElement firstChild = getFirstChild();
         return firstChild != null ? firstChild.getText() : "";
     }

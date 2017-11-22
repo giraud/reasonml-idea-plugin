@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-class PsiUtil {
+public class RmlPsiUtil {
 
     @NotNull
     static List<PsiFile> findFileModules(@NotNull Project project, @NotNull String name) {
@@ -31,7 +31,7 @@ class PsiUtil {
     }
 
     @NotNull
-    static List<PsiModule> findModules(@NotNull Project project, @NotNull String name) {
+    public static List<PsiModule> findModules(@NotNull Project project, @NotNull String name) {
         ArrayList<PsiModule> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
