@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.reason.lang.RmlTypes.MODULE_PATH;
 
 public class PsiOpen extends ASTWrapperPsiElement {
-    PsiOpen(@NotNull ASTNode node) {
+    public PsiOpen(@NotNull ASTNode node) {
         super(node);
     }
 

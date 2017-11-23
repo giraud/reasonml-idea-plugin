@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class StructureViewModel extends StructureViewModelBase implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
     StructureViewModel(PsiFile psiFile) {
-        super(psiFile, new StructureViewElement(psiFile));
+        super(psiFile, new StructureViewElement(psiFile.getFirstChild()));
     }
 
     @NotNull

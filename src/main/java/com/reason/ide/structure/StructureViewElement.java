@@ -8,8 +8,6 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.OclFile;
-import com.reason.RmlFile;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,41 +16,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
-    private PsiElement element;
+    private PsiElement m_element;
 
     StructureViewElement(PsiElement element) {
-        this.element = element;
+        m_element = element;
     }
 
     @Override
     public Object getValue() {
-        return element;
+        return m_element;
     }
 
     @Override
     public void navigate(boolean requestFocus) {
-        if (element instanceof NavigationItem) {
-            ((NavigationItem) element).navigate(requestFocus);
+        if (m_element instanceof NavigationItem) {
+            ((NavigationItem) m_element).navigate(requestFocus);
         }
     }
 
     @Override
     public boolean canNavigate() {
-        return element instanceof NavigationItem &&
-                ((NavigationItem) element).canNavigate();
+        return m_element instanceof NavigationItem && ((NavigationItem) m_element).canNavigate();
     }
 
     @Override
     public boolean canNavigateToSource() {
-        return element instanceof NavigationItem &&
-                ((NavigationItem) element).canNavigateToSource();
+        return m_element instanceof NavigationItem && ((NavigationItem) m_element).canNavigateToSource();
     }
 
     @NotNull
     @Override
     public String getAlphaSortKey() {
-        if (element instanceof PsiNamedElement) {
-            String name = ((PsiNamedElement) element).getName();
+        if (m_element instanceof PsiNamedElement) {
+            String name = ((PsiNamedElement) m_element).getName();
             return name == null ? "" : name;
         }
         return "";
@@ -61,8 +57,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public ItemPresentation getPresentation() {
-        if (element instanceof NavigationItem) {
-            ItemPresentation presentation = ((NavigationItem) element).getPresentation();
+        if (m_element instanceof NavigationItem) {
+            ItemPresentation presentation = ((NavigationItem) m_element).getPresentation();
             if (presentation != null) {
                 return presentation;
             }
@@ -73,11 +69,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (element instanceof RmlFile || element instanceof OclFile) {
-            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(element, PsiModule.class);
-            PsiLet[] lets = PsiTreeUtil.getChildrenOfType(element, PsiLet.class);
-            PsiType[] types = PsiTreeUtil.getChildrenOfType(element, PsiType.class);
-            PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(element, PsiExternal.class);
+        if (m_element instanceof PsiModuleFile) {
+            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(m_element, PsiModule.class);
+            PsiLet[] lets = PsiTreeUtil.getChildrenOfType(m_element, PsiLet.class);
+            PsiType[] types = PsiTreeUtil.getChildrenOfType(m_element, PsiType.class);
+            PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(m_element, PsiExternal.class);
 
             List<TreeElement> treeElements;
             if (modules != null || lets != null || types != null || externals != null) {
@@ -106,8 +102,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
-        } else if (element instanceof PsiModule) {
-            List<TreeElement> treeElements = buildModuleStructure((PsiModule) element);
+        } else if (m_element instanceof PsiModule) {
+            List<TreeElement> treeElements = buildModuleStructure((PsiModule) m_element);
             if (treeElements != null) {
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }

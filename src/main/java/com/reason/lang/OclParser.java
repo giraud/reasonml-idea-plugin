@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.RmlTypes.EQ;
+import static com.reason.lang.RmlTypes.FILE_MODULE;
 
 public class OclParser implements PsiParser, LightPsiParser {
 
@@ -32,6 +33,8 @@ public class OclParser implements PsiParser, LightPsiParser {
         if (!recursion_guard_(builder, 1, "reasonFile")) {
             return false;
         }
+
+        Marker fileAsModuleMarker = builder.mark();
 
         int c = current_position_(builder);
         IElementType tokenType = builder.getTokenType();
@@ -63,6 +66,8 @@ public class OclParser implements PsiParser, LightPsiParser {
             tokenType = builder.getTokenType();
             c = builder.rawTokenIndex();
         }
+
+        fileAsModuleMarker.done(FILE_MODULE);
         return true;
     }
 

@@ -5,6 +5,7 @@ import com.reason.lang.core.stub.type.LetStubElementType;
 
 public interface RmlTypes {
 
+    IElementType FILE_MODULE = new RmlTokenType("FILE_MODULE");
     IElementType EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
     IElementType MODULE_EXPRESSION = new RmlElementType("MODULE_EXPRESSION");
     IElementType OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 
 public class PsiValueName extends ASTWrapperPsiElement {
 
-    PsiValueName(ASTNode node) {
+    public PsiValueName(ASTNode node) {
         super(node);
     }
 

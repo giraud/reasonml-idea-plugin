@@ -13,7 +13,6 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.lang.core.stub.type.RmlFileElementType;
-import com.reason.lang.core.psi.PsiElementFactory;
 import com.reason.RmlFile;
 import org.jetbrains.annotations.NotNull;
 

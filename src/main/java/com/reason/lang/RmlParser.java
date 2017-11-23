@@ -51,6 +51,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
             return false;
         }
 
+        Marker fileAsModuleMarker = builder.mark();
+
         int c = current_position_(builder);
         while (true) {
             IElementType tokenType = builder.getTokenType();
@@ -82,6 +84,8 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
             c = builder.rawTokenIndex();
         }
+
+        fileAsModuleMarker.done(FILE_MODULE);
         return true;
     }
 

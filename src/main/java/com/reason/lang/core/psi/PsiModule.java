@@ -64,8 +64,7 @@ public class PsiModule extends ASTWrapperPsiElement implements PsiRmlNamedElemen
             @Nullable
             @Override
             public String getLocationString() {
-                PsiFile containingFile = getContainingFile();
-                return containingFile == null ? null : containingFile.getName();
+                return null;
             }
 
             @Nullable
