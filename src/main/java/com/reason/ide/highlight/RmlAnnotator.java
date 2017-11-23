@@ -5,8 +5,8 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.psi.PsiElement;
-import com.reason.psi.PsiModuleName;
-import com.reason.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.PsiModuleName;
+import com.reason.lang.core.psi.PsiTypeConstrName;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;

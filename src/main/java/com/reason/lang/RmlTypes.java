@@ -1,13 +1,14 @@
 package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.stub.type.LetType;
 
 public interface RmlTypes {
 
     IElementType EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
     IElementType MODULE_EXPRESSION = new RmlElementType("MODULE_EXPRESSION");
     IElementType OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
-    IElementType LET_EXPRESSION = new RmlElementType("LET_EXPRESSION");
+    IElementType LET_EXPRESSION = new LetType();
     IElementType ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
     IElementType ANNOTATION_NAME = new RmlElementType("ANNOTATION_NAME");
     IElementType TYPE_EXPRESSION = new RmlElementType("TYPE_EXPRESSION");

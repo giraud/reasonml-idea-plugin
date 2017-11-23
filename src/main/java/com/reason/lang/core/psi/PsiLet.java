@@ -1,21 +1,29 @@
-package com.reason.psi;
+package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.core.stub.LetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiLet extends ASTWrapperPsiElement implements PsiInferredType {
+public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInferredType, PsiNameIdentifierOwner {
     private String m_inferredType = "";
 
     public PsiLet(ASTNode node) {
         super(node);
+    }
+
+    public PsiLet(LetStub stub, IStubElementType nodeType) {
+        super(stub, nodeType);
     }
 
     @Override
@@ -103,5 +111,21 @@ public class PsiLet extends ASTWrapperPsiElement implements PsiInferredType {
                 return isFunction() ? Icons.FUNCTION : Icons.LET;
             }
         };
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return getLetName();
+    }
+
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        throw new RuntimeException("Not yet implemented");
+    }
+
+    @Override
+    public String toString() {
+        return "Let " + getName();
     }
 }

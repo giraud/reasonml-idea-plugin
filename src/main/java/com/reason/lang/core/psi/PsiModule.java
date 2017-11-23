@@ -1,5 +1,6 @@
-package com.reason.psi;
+package com.reason.lang.core.psi;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -13,13 +14,13 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Collection;
 
-public class PsiModule extends PsiNamedElement {
+public class PsiModule extends ASTWrapperPsiElement implements PsiRmlNamedElement {
 
     public PsiModule(ASTNode node) {
         super(node);
     }
 
-    //region PsiNamedElement
+    //region PsiRmlNamedElement
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
@@ -34,7 +35,7 @@ public class PsiModule extends PsiNamedElement {
     //endregion
 
     @NotNull
-    PsiModuleName getModuleName() {
+    public PsiModuleName getModuleName() {
         return findNotNullChildByClass(PsiModuleName.class);
     }
 

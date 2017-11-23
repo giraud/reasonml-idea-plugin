@@ -7,15 +7,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Platform {
 
-    private static final boolean WINDOWS = System.getProperty("os.name").toLowerCase(Locale.getDefault()).contains("windows");
-
-    public static boolean isWindows() {
-        return WINDOWS;
-    }
+    private static Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
     public static String getBinary(String envVar, String propVar, String defaultBinary) {
         Logger log = Logger.getInstance("ReasonML");
@@ -39,10 +36,13 @@ public class Platform {
     }
 
     public static VirtualFile findBaseRoot(Project project) {
-        VirtualFile baseDir = project.getBaseDir();
-        if (baseDir.findChild("node_modules") == null) {
-            // try to find it one level deeper
-            return Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
+        VirtualFile baseDir = m_baseDirs.get(project);
+        if (baseDir == null) {
+            baseDir = project.getBaseDir();
+            if (baseDir.findChild("node_modules") == null) {
+                // try to find it one level deeper
+                return Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
+            }
         }
         return baseDir;
     }
@@ -61,5 +61,11 @@ public class Platform {
         VirtualFile absoluteBinary = baseDir.findFileByRelativePath(binary);
 
         return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
+    }
+
+    public static String removeProjectDir(Project project, String path) {
+        VirtualFile baseDir = Platform.findBaseRoot(project);
+        return path.substring(baseDir.getPath().length());
+        //return path.replace(baseRoot.getCanonicalPath(), "x");
     }
 }

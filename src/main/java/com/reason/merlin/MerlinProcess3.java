@@ -30,16 +30,20 @@ class MerlinProcess3 {
         m_merlinCommand = asList(m_merlinBin, "server");
     }
 
-    MerlinVersion version() {
+    @Nullable
+    MerlinVersion version(boolean notify) {
         try {
             MerlinVersion merlinVersion = new MerlinVersion();
             merlinVersion.merlin = runCommand(null, null, singletonList("-version"));
             m_found = true;
             return merlinVersion;
         } catch (IOException e) {
-            Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin using '" + m_merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
-            throw new UncheckedIOException(e);
+            if (notify) {
+                Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin using '" + m_merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
+                throw new UncheckedIOException(e);
+            }
         }
+        return null;
     }
 
     JsonNode execute(String filename, String source, List<String> command) {

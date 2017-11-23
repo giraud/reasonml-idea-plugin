@@ -1,4 +1,4 @@
-package com.reason.psi;
+package com.reason.lang.core;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -7,23 +7,21 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.RmlFileType;
+import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class RmlPsiUtil {
 
     @NotNull
-    static List<PsiFile> findFileModules(@NotNull Project project, @NotNull String name) {
+    public static List<PsiFile> findFileModules(@NotNull Project project, String extension, @NotNull String name) {
         ArrayList<PsiFile> result = new ArrayList<>();
 
-        Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
-        for (VirtualFile virtualFile : virtualFiles) {
-            if (name.equalsIgnoreCase(virtualFile.getNameWithoutExtension())) {
-                result.add(PsiManager.getInstance(project).findFile(virtualFile));
+        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, extension);
+        for (VirtualFile file : files) {
+            if (file.getNameWithoutExtension().toLowerCase(Locale.getDefault()).startsWith(name)) {
+                result.add(PsiManager.getInstance(project).findFile(file));
             }
         }
 

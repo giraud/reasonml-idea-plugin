@@ -10,8 +10,8 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.merlin.MerlinService;
-import com.reason.psi.PsiLet;
-import com.reason.psi.PsiValueName;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiValueName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

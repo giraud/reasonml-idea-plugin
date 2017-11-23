@@ -1,4 +1,4 @@
-package com.reason.psi;
+package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;

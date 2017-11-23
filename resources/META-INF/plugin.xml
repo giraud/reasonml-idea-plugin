@@ -139,15 +139,18 @@
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BsbToolWindowFactory"/>
 
-        <lang.elementManipulator forClass="com.reason.psi.PsiModule"
-                                 implementationClass="com.reason.psi.PsiModuleManipulator"/>
-        <lang.elementManipulator forClass="com.reason.psi.PsiModuleName"
-                                 implementationClass="com.reason.psi.PsiModuleNameManipulator"/>
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiModule"
+                                 implementationClass="com.reason.lang.core.psi.PsiModuleManipulator"/>
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiModuleName"
+                                 implementationClass="com.reason.lang.core.psi.PsiModuleNameManipulator"/>
 
         <projectService serviceInterface="com.reason.bs.BscQueryTypesService"
                         serviceImplementation="com.reason.bs.BscQueryTypesServiceComponent"/>
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
+
+        <stubElementTypeHolder class="com.reason.lang.core.stub.type.LetType"/>
+        <stubIndex implementation="com.reason.lang.core.stub.index.LetIndex"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->

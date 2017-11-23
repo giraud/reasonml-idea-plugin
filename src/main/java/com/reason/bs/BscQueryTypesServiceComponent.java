@@ -38,7 +38,7 @@ public class BscQueryTypesServiceComponent implements BscQueryTypesService {
             // Find corresponding cmi file... wip
             String filePath = file.getCanonicalPath();
             if (filePath != null) {
-                String replace = filePath.substring(baseDir.getPath().length()).replace(file.getPresentableName(), file.getNameWithoutExtension() + ".cmi");
+                String replace = Platform.removeProjectDir(project, filePath).replace(file.getPresentableName(), file.getNameWithoutExtension() + ".cmi");
                 VirtualFile cmiFile = baseDir.findFileByRelativePath("lib/bs" + replace);
                 if (cmiFile != null) {
                     ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(bscPath, "-dtypedtree", cmiFile.getCanonicalPath());

@@ -1,4 +1,4 @@
-package com.reason.psi;
+package com.reason.lang.core.psi;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;

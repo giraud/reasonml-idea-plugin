@@ -9,9 +9,9 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.RmlFile;
 import com.reason.bs.BscQueryTypesService;
 import com.reason.bs.BscQueryTypesServiceComponent;
-import com.reason.psi.PsiLet;
-import com.reason.psi.PsiModule;
-import com.reason.psi.PsiValueName;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiValueName;
 
 import java.util.Collection;
 

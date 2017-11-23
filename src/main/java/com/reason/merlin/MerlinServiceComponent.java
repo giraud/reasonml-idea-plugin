@@ -58,12 +58,12 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
 
     @Override
     public MerlinVersion selectVersion(int version) {
-        return m_merlin3.version();
+        return m_merlin3.version(true);
     }
 
     @Override
     public boolean hasVersion() {
-        return m_merlin3 != null && m_merlin3.version() != null;
+        return m_merlin3 != null && m_merlin3.version(false) != null;
     }
 
     @Override

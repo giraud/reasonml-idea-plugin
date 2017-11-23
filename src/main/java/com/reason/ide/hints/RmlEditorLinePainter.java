@@ -18,7 +18,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.xdebugger.ui.DebuggerColors;
 import com.reason.ide.LineNumbering;
 import com.reason.merlin.types.MerlinPosition;
-import com.reason.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

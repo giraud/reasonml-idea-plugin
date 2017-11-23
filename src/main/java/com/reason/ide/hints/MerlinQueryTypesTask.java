@@ -4,7 +4,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.psi.PsiFile;
 import com.reason.merlin.MerlinService;
-import com.reason.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.merlin.types.MerlinPosition;
 import com.reason.merlin.types.MerlinType;
 

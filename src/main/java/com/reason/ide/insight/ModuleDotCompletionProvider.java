@@ -7,15 +7,15 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.reason.icons.Icons;
-import com.reason.psi.PsiLet;
-import com.reason.psi.PsiModule;
-import com.reason.psi.RmlPsiUtil;
+import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 
-public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class ModuleDotCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
         PsiElement position = parameters.getPosition(); //  IntellijIdeazzz
@@ -28,9 +28,10 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
                 Collection<PsiLet> lets = module.getLetExpressions();
                 for (PsiLet let : lets) {
                     String inferredType = let.getInferredType();
-                    resultSet.addElement(LookupElementBuilder.create(let.getName()).
-                            withIcon(Icons.VALUE).
-                            withTypeText(inferredType == null ? "unknown type" : inferredType));
+                    resultSet.addElement(
+                            LookupElementBuilder.create(let.getName()).
+                                    withIcon(Icons.VALUE).
+                                    withTypeText(inferredType == null ? "unknown type" : inferredType));
                 }
             }
         }

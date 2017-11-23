@@ -12,7 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.psi.PsiElementFactory;
+import com.reason.lang.core.stub.type.RmlFileElementType;
+import com.reason.lang.core.psi.PsiElementFactory;
 import com.reason.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +54,7 @@ public class RmlParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return FILE;
+        return RmlFileElementType.INSTANCE;
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
