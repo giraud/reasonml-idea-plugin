@@ -149,7 +149,7 @@
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
 
-        <stubElementTypeHolder class="com.reason.lang.core.stub.type.LetType"/>
+        <stubElementTypeHolder class="com.reason.lang.core.stub.type.LetStubElementType"/>
         <stubIndex implementation="com.reason.lang.core.stub.index.LetIndex"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->

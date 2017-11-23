@@ -6,6 +6,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInferredType, PsiNameIdentifierOwner {
+public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInferredType, PsiNameIdentifierOwner, StubBasedPsiElement<LetStub> {
     private String m_inferredType = "";
 
     public PsiLet(ASTNode node) {

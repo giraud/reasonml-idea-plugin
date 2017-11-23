@@ -17,11 +17,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class LetType extends ILightStubElementType<LetStub, PsiLet> {
-    public static final int VERSION = 1;
-    public static final IStubElementType INSTANCE = new LetType();
+public class LetStubElementType extends ILightStubElementType<LetStub, PsiLet> {
+    public static final IStubElementType INSTANCE = new LetStubElementType();
 
-    public LetType() {
+    private LetStubElementType() {
         super("LET_EXPRESSION", RmlLanguage.INSTANCE);
     }
 
