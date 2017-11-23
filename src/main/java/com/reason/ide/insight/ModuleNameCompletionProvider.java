@@ -8,7 +8,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.codeInsight.lookup.LookupElementPresentation;
 import com.intellij.codeInsight.lookup.LookupElementRenderer;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.reason.Platform;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.reason.ide.insight.CompletionConstants.INTELLIJ_IDEA_RULEZZZ_LENGTH;
+import static com.reason.lang.core.RmlPsiUtil.fileNameToModuleName;
 import static com.reason.lang.core.RmlPsiUtil.findFileModules;
 
 public class ModuleNameCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -67,8 +67,4 @@ public class ModuleNameCompletionProvider extends CompletionProvider<CompletionP
         }
     }
 
-    private String fileNameToModuleName(PsiFile file) {
-        String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(file.getName());
-        return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault()) + nameWithoutExtension.substring(1);
-    }
 }

@@ -1,6 +1,7 @@
 package com.reason.lang.core;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -13,6 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class RmlPsiUtil {
+
+    public static String fileNameToModuleName(PsiFile file) {
+        String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(file.getName());
+        return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault()) + nameWithoutExtension.substring(1);
+    }
 
     @NotNull
     public static List<PsiFile> findFileModules(@NotNull Project project, String extension, @NotNull String name) {

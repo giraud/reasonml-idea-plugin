@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -8,8 +9,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Platform;
-import com.reason.RmlFile;
 import com.reason.icons.Icons;
+import com.reason.lang.core.RmlPsiUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,10 +25,10 @@ public class PsiModuleFile extends ASTWrapperPsiElement implements PsiRmlNamedEl
         ASTNode treeParent = node.getTreeParent();
         if (treeParent != null) {
             PsiElement psi = treeParent.getPsi();
-            if (psi instanceof RmlFile) {
-                RmlFile file = (RmlFile) psi;
+            if (psi instanceof PsiFileBase) {
+                PsiFileBase file = (PsiFileBase) psi;
                 VirtualFile virtualFile = file.getVirtualFile();
-                m_name = virtualFile == null ? file.getName() : virtualFile.getNameWithoutExtension();
+                m_name = virtualFile == null ? file.getName() : RmlPsiUtil.fileNameToModuleName(file);
             }
         }
     }
@@ -56,7 +57,6 @@ public class PsiModuleFile extends ASTWrapperPsiElement implements PsiRmlNamedEl
                 return m_name;
             }
 
-            @Nullable
             @Override
             public String getLocationString() {
                 PsiFile containingFile = getContainingFile();
