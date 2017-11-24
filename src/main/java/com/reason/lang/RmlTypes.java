@@ -120,5 +120,6 @@ public interface RmlTypes {
     IElementType UNIT = new RmlTokenType("UNIT");
     IElementType VAL = new RmlTokenType("VAL");
     IElementType WITH = new RmlTokenType("WITH");
+    IElementType WHEN = new RmlTokenType("WHEN");
 
 }

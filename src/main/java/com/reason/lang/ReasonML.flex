@@ -85,6 +85,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "for"        { return FOR; }
     "in"         { return IN; }
     "exception"  { return EXCEPTION; }
+    "when"       { return WHEN; }
 
     // OCaml
     "of"         { return OF; }
