@@ -41,8 +41,9 @@ public class Platform {
             baseDir = project.getBaseDir();
             if (baseDir.findChild("node_modules") == null) {
                 // try to find it one level deeper
-                return Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
+                baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
             }
+            m_baseDirs.put(project, baseDir);
         }
         return baseDir;
     }

@@ -1,5 +1,7 @@
 package com.reason.bs;
 
+import java.io.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
@@ -7,11 +9,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.Streams;
 import com.reason.ide.RmlNotification;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
 
 // WARNING... THIS IS A BIG WIP...
 public class BscQueryTypesServiceComponent implements BscQueryTypesService {
@@ -20,7 +17,12 @@ public class BscQueryTypesServiceComponent implements BscQueryTypesService {
     private String m_bscBin;
 
     public BscQueryTypesServiceComponent() {
-        m_bscBin = Platform.getBinary("REASON_BSB_BIN", "reasonBsb", "node_modules/bs-platform/bin/bsb.exe");
+        // Make a service !
+        m_bscBin = Platform.getBinary("REASON_BSB_BIN", "reasonBsb", "node_modules/bs-platform/lib/bsb.exe");
+        if (m_bscBin == null) {
+            m_bscBin = Platform.getBinary("REASON_BSB_BIN", "reasonBsb", "node_modules/bs-platform/bin/bsb.exe");
+        }
+
         if (m_bscBin != null) {
             // Use bsc, not bsb
             m_bscBin = m_bscBin.replace("bsb.exe", "bsc.exe");

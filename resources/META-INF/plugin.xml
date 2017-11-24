@@ -9,7 +9,8 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      <b>version X</b>
+      <b>version 0.28</b>
+
       <ul>
         <li>Reformat action is working on ocaml source (refmt3)</li>
       </ul>
@@ -37,13 +38,8 @@
         <li>Add Number and Type argument in color settings (#13).</li>
       </ul>
 
-      <b>version 0.23</b>
-      <ul>
-        <li>New default values for bsb and refmt. bsb=> node_modules/bs-platform/bin/bsb.exe, refmt=> node_modules/bs-platform/bin/refmt3.exe</li>
-      </ul>
-
       <p>For all the changes, go to github CHANGELOG.md file</p>
-      <p>To see how to integrate reason tools (merlin, refmt), go to the website.</p>
+      <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
     ]]>
     </change-notes>
 

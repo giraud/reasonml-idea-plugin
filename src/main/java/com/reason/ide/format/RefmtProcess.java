@@ -17,7 +17,12 @@ class RefmtProcess {
     private final Logger m_log;
 
     RefmtProcess() {
-        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/bin/refmt3.exe");
+        String refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/lib/refmt3.exe");
+        if (refmtBin == null) {
+            refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/bin/refmt3.exe");
+        }
+
+        m_refmtBin = refmtBin;
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 

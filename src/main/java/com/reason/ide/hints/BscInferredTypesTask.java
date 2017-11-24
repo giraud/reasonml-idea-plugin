@@ -11,6 +11,7 @@ import com.reason.bs.BscQueryTypesService;
 import com.reason.bs.BscQueryTypesServiceComponent;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiModuleFile;
 import com.reason.lang.core.psi.PsiValueName;
 
 import java.util.Collection;
@@ -38,7 +39,7 @@ public class BscInferredTypesTask implements Runnable {
         ApplicationManager.getApplication().runReadAction(() -> {
             for (PsiLet letStatement : m_letExpressions) {
                 PsiElement letParent = letStatement.getParent();
-                if (letParent instanceof RmlFile) {
+                if (letParent instanceof PsiModuleFile) {
                     applyType(inferredTypes, letStatement);
                 } else {
                     PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);

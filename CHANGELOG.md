@@ -1,3 +1,8 @@
+## 0.28
+
+* :rocket: Reformat action is working on ocaml source
+* :internal: Working on stub indexing and first implementation of completion using static analysis
+
 ## 0.27
 
 * :bug: Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
