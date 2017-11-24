@@ -1,12 +1,12 @@
 package com.reason.lang;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.RmlTypes.*;
@@ -14,8 +14,7 @@ import static com.reason.lang.RmlTypes.*;
 public class RmlParser implements PsiParser, LightPsiParser {
 
     enum ParserOptions {
-        Validation,
-        NoValidation
+        Validation, NoValidation
     }
 
     private static final String ERR_SEMI_EXPECTED = "';' expected";
@@ -92,9 +91,9 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // OPEN EXCLAMATION_MARK? module_path SEMI
     // **********
-    private void openExpression(PsiBuilder builder, int recLevel) {
+    private IElementType openExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "openExpression")) {
-            return;
+            return builder.getTokenType();
         }
 
         IElementType nextTokenType = builder.lookAhead(1);
@@ -102,51 +101,34 @@ public class RmlParser implements PsiParser, LightPsiParser {
             builder.advanceLexer();
         }
 
-        // Continue until a ';' or another toplevel expression is found
-        Marker moduleMarker = enter_section_(builder);
-        IElementType tokenType = advance(builder);
-        if (tokenType != SEMI) {
-            modulePath(builder, recLevel + 1);
-        }
+        Marker moduleMarker = enter_section(builder);
+        advance(builder);
+        modulePath(builder, recLevel + 1);
 
-        endExpression(builder);
-        exit_section_(builder, moduleMarker, OPEN_EXPRESSION, true);
-
+        endExpression(builder); // Continue until a ';' or another top level expression is found
+        return exit_section(builder, moduleMarker, OPEN_EXPRESSION);
     }
 
     // **********
     // TYPE type_name any* EQ (scoped_expression | expr) ;
     // **********
-    private void typeExpression(PsiBuilder builder, int recLevel) {
+    private IElementType typeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "type expression")) {
-            return;
+            return builder.getTokenType();
         }
 
         // enter type
-        Marker exprMarker = enter_section_(builder);
+        Marker typeMarker = enter_section(builder);
 
         String constrName = "";
 
         // type name
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
-            Marker nameMarker = enter_section_(builder);
-//            Marker errorMarker = null;
-//            boolean isNameCorrect = tokenType == LIDENT;
-
-//            if (isNameCorrect) {
+            Marker nameMarker = enter_section(builder);
             constrName = builder.getTokenText();
-//            } else {
-//                errorMarker = builder.mark();
-//            }
-
             builder.advanceLexer();
-
-//            if (!isNameCorrect) {
-//                errorMarker.error("Type name must start with a lower case");
-//            }
-
-            exit_section_(builder, nameMarker, TYPE_CONSTR_NAME, true);
+            exit_section(builder, nameMarker, TYPE_CONSTR_NAME);
         }
 
         // anything until EQ or SEMI
@@ -170,14 +152,14 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 scopedTypeExpression(builder, recLevel + 1, constrName);
             } else {
                 // anything but semi or start expression
-                Marker marker = enter_section_(builder);
+                Marker marker = enter_section(builder);
 
                 while (true) {
                     tokenType = advance(builder);
                     if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
                         Marker constrMarker = builder.mark();
                         tokenType = advance(builder);
-                        exit_section_(builder, constrMarker, TYPE_CONSTR_NAME, true);
+                        exit_section(builder, constrMarker, TYPE_CONSTR_NAME);
                     }
 
                     if (isStartExpression(tokenType)) {
@@ -185,33 +167,30 @@ public class RmlParser implements PsiParser, LightPsiParser {
                     }
                 }
 
-                exit_section_(builder, marker, SCOPED_EXPR, true);
+                exit_section(builder, marker, SCOPED_EXPR);
             }
         }
 
-        // end of type
-        endExpression(builder);
-        exit_section_(builder, exprMarker, TYPE_EXPRESSION, true);
+        endExpression(builder);// Continue until a ';' or another toplevel expression is found
+        return exit_section(builder, typeMarker, TYPE_EXPRESSION);
     }
 
     // **********
     // INCLUDE module_path (scoped_expression)? SEMI
     // **********
-    private void includeExpression(PsiBuilder builder, int recLevel) {
+    private IElementType includeExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "include expression")) {
-            return;
+            return builder.getTokenType();
         }
 
-        // enter
-        Marker exprMarker = enter_section_(builder);
+        Marker includeMarker = enter_section(builder);
+
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
             // module path
-            modulePath(builder, recLevel + 1);
-            tokenType = builder.getTokenType();
+            tokenType = modulePath(builder, recLevel + 1);
             if (tokenType == LBRACE) {
-                scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
+                tokenType = scopedExpression(builder, recLevel + 1);
             }
             if (tokenType != SEMI) {
                 fail(builder, ERR_SEMI_EXPECTED);
@@ -219,7 +198,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         }
 
         endExpression(builder);
-        exit_section_(builder, exprMarker, INCLUDE_EXPRESSION, true);
+        return exit_section(builder, includeMarker, INCLUDE_EXPRESSION);
     }
 
     // **********
@@ -229,13 +208,14 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // ???
     //                          | (LPAREN any RPAREN)+ (COLON module_type)? ARROW
     // **********
-    private void moduleExpression(PsiBuilder builder, int recLevel) {
+    private IElementType moduleExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module expression")) {
-            return;
+            return builder.getTokenType();
         }
 
         // enter module
-        Marker moduleMarker = enter_section_(builder);
+        Marker moduleMarker = enter_section(builder);
+
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
             // might be a module definition only
@@ -247,7 +227,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
             boolean isNameIncorrect = tokenType != UIDENT;
             Marker errorMarker = null;
 
-            Marker moduleNameMarker = enter_section_(builder);
+            Marker moduleNameMarker = enter_section(builder);
 
             if (isNameIncorrect) {
                 errorMarker = builder.mark();
@@ -259,7 +239,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 errorMarker.error("Module name must start with upper case");
             }
 
-            exit_section_(builder, moduleNameMarker, MODULE_NAME, true);
+            exit_section(builder, moduleNameMarker, MODULE_NAME);
 
             tokenType = builder.getTokenType();
             if (tokenType != SEMI) {
@@ -293,11 +273,11 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
                         // If there is a parenthesis, it's a functor
                         if (tokenType == LPAREN) {
-                            Marker functorParamsMarker = enter_section_(builder);
+                            Marker functorParamsMarker = enter_section(builder);
 
                             parenExpression(builder, recLevel + 1);
 
-                            exit_section_(builder, functorParamsMarker, FUNCTOR_PARAMS, true);
+                            exit_section(builder, functorParamsMarker, FUNCTOR_PARAMS);
                             tokenType = advance(builder);
                             if (tokenType == ARROW) {
                                 tokenType = advance(builder);
@@ -320,20 +300,20 @@ public class RmlParser implements PsiParser, LightPsiParser {
         }
 
         endExpression(builder);
-        exit_section_(builder, moduleMarker, MODULE_EXPRESSION, true);
+        return exit_section(builder, moduleMarker, MODULE_EXPRESSION);
     }
 
     // ***** UIDENT (DOT UIDENT|scoped_expression)* ( (.*) )::constr
-    private void modulePath(PsiBuilder builder, int recLevel) {
+    private IElementType modulePath(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "module path")) {
-            return;
+            return builder.getTokenType();
         }
 
-        Marker marker = enter_section_(builder);
+        Marker marker = enter_section(builder);
 
         // First element must be a module name
         boolean incorrectName = builder.getTokenType() != UIDENT;
-        Marker nameMarker = enter_section_(builder);
+        Marker nameMarker = enter_section(builder);
         builder.advanceLexer();
         if (incorrectName) {
             if (ParserOptions.Validation == m_options) {
@@ -342,11 +322,11 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 nameMarker.drop();
             }
         } else {
-            exit_section_(builder, nameMarker, MODULE_NAME, true);
+            exit_section(builder, nameMarker, MODULE_NAME);
 
             // Then we can have other modules with dot notation
             while (true) {
-                nameMarker = enter_section_(builder);
+                nameMarker = enter_section(builder);
                 IElementType tokenType = builder.getTokenType();
 
                 if (tokenType == LPAREN) {
@@ -359,7 +339,6 @@ public class RmlParser implements PsiParser, LightPsiParser {
                     // scoped body, anything inside braces
                     scopedExpression(builder, recLevel + 1);
                 }
-
 
                 // a semi or scope is found, stop module path exploration
                 if (tokenType == SEMI || tokenType == LBRACE) {
@@ -380,27 +359,27 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 }
 
                 builder.advanceLexer();
-                exit_section_(builder, nameMarker, MODULE_NAME, true);
+                exit_section(builder, nameMarker, MODULE_NAME);
             }
         }
 
-        exit_section_(builder, marker, MODULE_PATH, true);
+        return exit_section(builder, marker, MODULE_PATH);
     }
 
     // **********
     // EXTERNAL external_name COLON expression* SEMI
-    private void externalExpression(PsiBuilder builder, int recLevel) {
+    private IElementType externalExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "external expression")) {
-            return;
+            return builder.getTokenType();
         }
 
         // enter external
-        Marker exprMarker = enter_section_(builder);
+        Marker externalMarker = enter_section(builder);
 
         // name
         IElementType tokenType = advance(builder);
         if (tokenType != SEMI) {
-            Marker nameMarker = enter_section_(builder);
+            Marker nameMarker = enter_section(builder);
             Marker errorMarker = null;
             boolean isNameCorrect = tokenType == LIDENT;
 
@@ -414,7 +393,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 errorMarker.error("External name must start with a lower case");
             }
 
-            exit_section_(builder, nameMarker, VALUE_NAME, true);
+            exit_section(builder, nameMarker, VALUE_NAME);
         }
 
         tokenType = builder.getTokenType();
@@ -438,28 +417,27 @@ public class RmlParser implements PsiParser, LightPsiParser {
 
         // end of external
         endExpression(builder);
-        exit_section_(builder, exprMarker, EXTERNAL_EXPRESSION, true);
+        return exit_section(builder, externalMarker, EXTERNAL_EXPRESSION);
     }
 
     // **********
     // [@bs.* any*?] any*
-    private void annotationExpression(PsiBuilder builder, int recLevel) {
+    private IElementType annotationExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "annotation expression")) {
-            return;
+            return builder.getTokenType();
         }
 
         // enter ANNOTATION
-        Marker exprMarker = enter_section_(builder);
+        Marker annotationMarker = enter_section(builder);
 
         IElementType tokenType = advance(builder);
         if (tokenType != ARROBASE) {
             // oops, not an annotation, revert
-            exprMarker.drop();
-            advanceUntilNextStart(builder, recLevel + 1);
-            return;
+            annotationMarker.drop();
+            return advanceUntilNextStart(builder, recLevel + 1);
         }
 
-        Marker annMarker = enter_section_(builder);
+        Marker annMarker = enter_section(builder);
 
         // Anything before SPACE or RBRACKET
         WhitespaceNotifier whitespace = new WhitespaceNotifier(false);
@@ -475,7 +453,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         }
         builder.setWhitespaceSkippedCallback(null);
 
-        exit_section_(builder, annMarker, ANNOTATION_NAME, true);
+        exit_section(builder, annMarker, ANNOTATION_NAME);
         if (tokenType != RBRACKET) {
             advanceUntil(builder, recLevel + 1, RBRACKET);
         }
@@ -483,7 +461,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
         advance(builder);
 
         // end of ANNOTATION
-        exit_section_(builder, exprMarker, ANNOTATION_EXPRESSION, true);
+        return exit_section(builder, annotationMarker, ANNOTATION_EXPRESSION);
     }
 
     // **********
@@ -494,47 +472,43 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // LET REC? MODULE? (destructure|value_name) expression* (EQ (scoped_)expression | ARROW scoped_expression) SEMI
     // LET REC? MODULE? value_name COLON expression+ SEMI
     // **********
-    private void letExpression(PsiBuilder builder, int recLevel) {
+    private IElementType letExpression(PsiBuilder builder, int recLevel) {
         if (!recursion_guard_(builder, recLevel, "let expression")) {
-            return;
+            return builder.getTokenType();
         }
 
-        // enter LET
-        Marker exprMarker = enter_section_(builder);
+        // Enter LET
+        Marker letMarker = enter_section(builder);
 
         // Might be recursive
         IElementType tokenType = advance(builder);
         if (tokenType == REC) {
-            builder.advanceLexer();
+            tokenType = advance(builder);
         }
 
-        // might be a module alias
-        tokenType = builder.getTokenType();
+        // Might be a module alias
         if (tokenType == MODULE) {
-            builder.advanceLexer();
+            tokenType = advance(builder);
         }
 
-        tokenType = builder.getTokenType();
         if (tokenType != SEMI) {
             if (tokenType == UNIT) {
-                builder.advanceLexer();
+                tokenType = advance(builder);
             } else if (tokenType == LPAREN) {
                 // we are dealing with destructuring
                 advanceUntil(builder, recLevel + 1, RPAREN);
-                builder.advanceLexer();
+                tokenType = advance(builder);
             } else if (tokenType == LBRACE) {
                 // we are dealing with destructuring
                 advanceUntil(builder, recLevel + 1, RBRACE);
-                builder.advanceLexer();
+                tokenType = advance(builder);
             } else {
                 // value name
-                Marker nameMarker = enter_section_(builder);
-                builder.advanceLexer();
-                exit_section_(builder, nameMarker, VALUE_NAME, true);
+                Marker nameMarker = enter_section(builder);
+                tokenType = advance(builder);
+                exit_section(builder, nameMarker, VALUE_NAME);
             }
         }
-
-        tokenType = builder.getTokenType();
 
         // COLON means we are dealing with a definition, = or => is not needed, we can end with ;
         boolean hasTypeDefinition = tokenType == COLON;
@@ -565,12 +539,12 @@ public class RmlParser implements PsiParser, LightPsiParser {
             boolean isFunction = ARROW == tokenType;
 
             builder.advanceLexer();
-            Marker bindMarker = enter_section_(builder);
+            Marker bindMarker = enter_section(builder);
 
             tokenType = builder.getTokenType();
             if (LPAREN == tokenType || UNIT == tokenType) {
                 // New function syntax ?
-                Marker paramsMarker = enter_section_(builder);
+                Marker paramsMarker = enter_section(builder);
                 if (LPAREN == tokenType) {
                     parenExpression(builder, recLevel + 1);
                 } else {
@@ -581,7 +555,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 isFunction = ARROW == tokenType;
                 if (isFunction) {
                     bindMarker.drop();
-                    exit_section_(builder, paramsMarker, FUN_PARAMS, true);
+                    exit_section(builder, paramsMarker, FUN_PARAMS);
                 } else {
                     paramsMarker.drop();
                 }
@@ -589,7 +563,7 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 tokenType = advance(builder);
 
                 if (isFunction) {
-                    bindMarker = enter_section_(builder);
+                    bindMarker = enter_section(builder);
                 }
             }
 
@@ -601,13 +575,12 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 advanceUntilNextStart(builder, recLevel + 1);
             }
 
-            exit_section_(builder, bindMarker, isFunction ? FUN_BODY : LET_BINDING, true);
+            exit_section(builder, bindMarker, isFunction ? FUN_BODY : LET_BINDING);
         }
 
         // end of LET
         endExpression(builder);
-        exit_section_(builder, exprMarker, LET_EXPRESSION, true);
-
+        return exit_section(builder, letMarker, LET_EXPRESSION);
     }
 
     private void ifExpression(PsiBuilder builder, int recLevel, boolean containsIf) {
@@ -642,93 +615,93 @@ public class RmlParser implements PsiParser, LightPsiParser {
     // **********
     // Pattern: LBRACE expression* RBRACE
     // **********
-    private void scopedExpression(PsiBuilder builder, int recLevel) {
-        scopedTypeExpression(builder, recLevel, null);
+    private IElementType scopedExpression(PsiBuilder builder, int recLevel) {
+        return scopedTypeExpression(builder, recLevel, null);
     }
 
-    private void scopedTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
+    private IElementType scopedTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
         if (!recursion_guard_(builder, recLevel, "scoped expression")) {
-            return;
+            return builder.getTokenType();
         }
 
         // Mark the start of the scoped expression
-        Marker marker = enter_section_(builder);
-        builder.advanceLexer();
+        Marker marker = enter_section(builder);
+        IElementType tokenType = advance(builder);
 
         while (true) {
-            IElementType tokenType = builder.getTokenType();
             if (tokenType == null || tokenType == RBRACE) {
                 break;
             }
 
             // start expressions ?
             if (tokenType == OPEN) {
-                openExpression(builder, recLevel + 1);
+                tokenType = openExpression(builder, recLevel + 1);
             } else if (tokenType == INCLUDE) {
-                includeExpression(builder, recLevel + 1);
+                tokenType = includeExpression(builder, recLevel + 1);
             } else if (tokenType == TYPE) {
-                typeExpression(builder, recLevel + 1);
+                tokenType = typeExpression(builder, recLevel + 1);
             } else if (tokenType == MODULE) {
-                moduleExpression(builder, recLevel + 1);
+                tokenType = moduleExpression(builder, recLevel + 1);
             } else if (tokenType == EXTERNAL) {
-                externalExpression(builder, recLevel + 1);
+                tokenType = externalExpression(builder, recLevel + 1);
             } else if (tokenType == LET) {
-                letExpression(builder, recLevel + 1);
+                tokenType = letExpression(builder, recLevel + 1);
             } else if (tokenType == LBRACE) {
-                scopedTypeExpression(builder, recLevel + 1, constrName);
+                tokenType = scopedTypeExpression(builder, recLevel + 1, constrName);
             } else if (tokenType == LPAREN) {
-                parenTypeExpression(builder, recLevel + 1, constrName);
+                tokenType = parenTypeExpression(builder, recLevel + 1, constrName);
             } else if (tokenType == LBRACKET) {
-                annotationExpression(builder, recLevel + 1);
+                tokenType = annotationExpression(builder, recLevel + 1);
             } else {
                 tokenType = advance(builder);
                 if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
                     Marker constrMarker = builder.mark();
-                    advance(builder);
-                    exit_section_(builder, constrMarker, TYPE_CONSTR_NAME, true);
+                    tokenType = advance(builder);
+                    exit_section(builder, constrMarker, TYPE_CONSTR_NAME);
                 }
-
             }
         }
 
-        IElementType tokenType = builder.getTokenType();
+        tokenType = builder.getTokenType();
         if (tokenType != RBRACE) {
             fail(builder, ERR_RBRACE_EXPECTED);
         } else {
-            builder.advanceLexer();
+            advance(builder);
         }
 
-        exit_section_(builder, marker, SCOPED_EXPR, true);
+        return exit_section(builder, marker, SCOPED_EXPR);
     }
 
-    private void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
+    private IElementType advanceUntilNextStart(PsiBuilder builder, int recLevel) {
         IElementType tokenType;
+
         while (true) {
             tokenType = advance(builder);
+
             if (LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
+                tokenType = scopedExpression(builder, recLevel + 1);
             } else if (LPAREN == tokenType) {
-                parenExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
+                tokenType = parenExpression(builder, recLevel + 1);
             }
+
             if (isStartExpression(tokenType) || tokenType == RBRACE) {
                 break;
             }
         }
-    }
 
+        return tokenType;
+    }
 
     // **********
     // Pattern: LPAREN {{token-start}} expression* RPAREN {{token-end}}
     // **********
-    private void parenExpression(PsiBuilder builder, int recLevel) {
-        parenTypeExpression(builder, recLevel, null);
+    private IElementType parenExpression(PsiBuilder builder, int recLevel) {
+        return parenTypeExpression(builder, recLevel, null);
     }
 
-    private void parenTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
+    private IElementType parenTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
         if (!recursion_guard_(builder, recLevel, "skip paren")) {
-            return;
+            return builder.getTokenType();
         }
 
         IElementType tokenType;
@@ -746,21 +719,15 @@ public class RmlParser implements PsiParser, LightPsiParser {
                 if (LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
                     Marker constrMarker = builder.mark();
                     tokenType = advance(builder);
-                    exit_section_(builder, constrMarker, TYPE_CONSTR_NAME, true);
+                    exit_section(builder, constrMarker, TYPE_CONSTR_NAME);
                 }
             }
 
             // Advance until a right paren is found, or nothing else is found
             if (RPAREN == tokenType || tokenType == null) {
-                builder.advanceLexer();
-                return;
+                return advance(builder);
             }
         }
-    }
-
-    private static IElementType advance(PsiBuilder builder) {
-        builder.advanceLexer();
-        return builder.getTokenType();
     }
 
     private void advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
@@ -828,5 +795,19 @@ public class RmlParser implements PsiParser, LightPsiParser {
         void setSkipped() {
             m_skipped = false;
         }
+    }
+
+    private static IElementType advance(PsiBuilder builder) {
+        builder.advanceLexer();
+        return builder.getTokenType();
+    }
+
+    private static Marker enter_section(PsiBuilder builder) {
+        return builder.mark();
+    }
+
+    private static IElementType exit_section(PsiBuilder builder, Marker marker, IElementType scopedExpr) {
+        marker.done(scopedExpr);
+        return builder.getTokenType();
     }
 }

@@ -127,6 +127,6 @@ public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInfer
 
     @Override
     public String toString() {
-        return "Let " + getName();
+        return "Let(" + getName() + ")";
     }
 }

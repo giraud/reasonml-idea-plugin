@@ -1,9 +1,8 @@
 package jps.builder;
 
+import java.io.*;
 import org.jetbrains.jps.builders.BuildRootDescriptor;
 import org.jetbrains.jps.builders.BuildTarget;
-
-import java.io.File;
 
 public class BsbSourceRootDescriptor extends BuildRootDescriptor {
     private final File m_root;

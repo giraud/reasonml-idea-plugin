@@ -77,7 +77,7 @@ public class PsiModule extends ASTWrapperPsiElement implements PsiRmlNamedElemen
 
     @Override
     public String toString() {
-        return "Module " + getName();
+        return "Module(" + getName() + ")";
     }
 
 }
