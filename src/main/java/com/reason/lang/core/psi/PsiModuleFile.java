@@ -78,4 +78,8 @@ public class PsiModuleFile extends ASTWrapperPsiElement implements PsiRmlNamedEl
     public String toString() {
         return "ModuleFile(" + m_name + ")";
     }
+
+    public PsiModule[] getModules() {
+        return findChildrenByClass(PsiModule.class);
+    }
 }

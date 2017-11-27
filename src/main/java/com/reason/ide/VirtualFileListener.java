@@ -5,7 +5,10 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.VirtualFileCopyEvent;
+import com.intellij.openapi.vfs.VirtualFileEvent;
+import com.intellij.openapi.vfs.VirtualFileMoveEvent;
+import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
@@ -48,8 +51,10 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
     private void runBsb(FileType eventFileType) {
         if (eventFileType instanceof RmlFileType || eventFileType instanceof OclFileType) {
             ProcessHandler recreate = m_bsb.recreate();
-            getBsbConsole().attachToProcess(recreate);
-            m_bsb.startNotify();
+            if (recreate != null) {
+                getBsbConsole().attachToProcess(recreate);
+                m_bsb.startNotify();
+            }
         }
     }
 
