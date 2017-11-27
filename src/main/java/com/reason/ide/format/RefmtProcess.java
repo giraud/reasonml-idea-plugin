@@ -17,20 +17,18 @@ class RefmtProcess {
     private final Logger m_log;
 
     RefmtProcess() {
-        String refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/lib/refmt3.exe");
-        if (refmtBin == null) {
-            refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/bin/refmt3.exe");
-        }
-
-        m_refmtBin = refmtBin;
+        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/lib/refmt3.exe");
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 
     String run(Project project, String format, String code) {
         String refmtPath = Platform.getBinaryPath(project, m_refmtBin);
         if (refmtPath == null) {
-            // Use a watcher ?
-            return code;
+            refmtPath = Platform.getBinaryPath(project, "node_modules/bs-platform/bin/refmt3.exe");
+            if (refmtPath == null) {
+                // Use a watcher ?
+                return code;
+            }
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format);
