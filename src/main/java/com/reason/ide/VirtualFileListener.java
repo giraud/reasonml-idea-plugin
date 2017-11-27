@@ -1,17 +1,16 @@
 package com.reason.ide;
 
 import com.intellij.execution.process.ProcessHandler;
+import com.intellij.json.JsonFileType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.openapi.vfs.VirtualFileCopyEvent;
-import com.intellij.openapi.vfs.VirtualFileEvent;
-import com.intellij.openapi.vfs.VirtualFileMoveEvent;
-import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
+import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
+import com.reason.bs.BsConfig;
 import com.reason.bs.BsbCompiler;
 import com.reason.bs.console.BsbConsole;
 import com.reason.ide.files.OclFileType;
@@ -65,8 +64,16 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
 
     @Override
     public void contentsChanged(@NotNull VirtualFileEvent event) {
-        if (event.isFromSave()) {
-            runBsb(event.getFile().getFileType());
+        VirtualFile file = event.getFile();
+        FileType fileType = file.getFileType();
+
+        if (fileType instanceof JsonFileType) {
+            if (file.getName().equals("bsconfig.json")) {
+                // re-read bs dependencies
+                BsConfig.read(file);
+            }
+        } else if (event.isFromSave()) {
+            runBsb(fileType);
         }
     }
 

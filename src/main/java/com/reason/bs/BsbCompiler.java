@@ -1,6 +1,5 @@
 package com.reason.bs;
 
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.KillableColoredProcessHandler;
@@ -13,6 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.ide.RmlNotification;
+import org.jetbrains.annotations.Nullable;
 
 public class BsbCompiler extends AbstractProjectComponent {
 
@@ -40,11 +40,15 @@ public class BsbCompiler extends AbstractProjectComponent {
         VirtualFile baseDir = Platform.findBaseRoot(myProject);
         String bsbPath = Platform.getBinaryPath(myProject, bsbBin);
         if (bsbPath == null) {
-            Notifications.Bus.notify(new RmlNotification("Bsb",
-                                                         "Can't find bsb using value '" + bsbBin + "' from property 'reasonBsb'.\nBase directory is '" + baseDir
-                                                                 .getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.",
-                                                         NotificationType.ERROR));
-            return;
+            // Try the old path
+            bsbPath = Platform.getBinaryPath(myProject, "node_modules/bs-platform/bin/bsb.exe");
+            if (bsbPath == null) {
+                Notifications.Bus.notify(new RmlNotification("Bsb",
+                        "Can't find bsb using value '" + bsbBin + "' from property 'reasonBsb'.\nBase directory is '" + baseDir
+                                .getCanonicalPath() + "'.\nBe sure that bsb is installed and reachable from base directory.",
+                        NotificationType.ERROR));
+                return;
+            }
         }
 
         m_commandLine = new GeneralCommandLine(bsbPath, "-no-color", "-make-world");

@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.bs.BsConfig;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
@@ -24,10 +25,15 @@ public class RmlPsiUtil {
     public static List<PsiFile> findFileModules(@NotNull Project project, String extension, @NotNull String name) {
         ArrayList<PsiFile> result = new ArrayList<>();
 
+        BsConfig bsConfig = BsConfig.getInstance();
+
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, extension);
         for (VirtualFile file : files) {
-            if (file.getNameWithoutExtension().toLowerCase(Locale.getDefault()).startsWith(name)) {
-                result.add(PsiManager.getInstance(project).findFile(file));
+            String canonicalPath = file.getCanonicalPath();
+            if (bsConfig.accept(canonicalPath)) {
+                if (file.getNameWithoutExtension().toLowerCase(Locale.getDefault()).startsWith(name)) {
+                    result.add(PsiManager.getInstance(project).findFile(file));
+                }
             }
         }
 
