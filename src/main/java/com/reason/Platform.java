@@ -67,6 +67,9 @@ public class Platform {
     public static String removeProjectDir(Project project, String path) {
         VirtualFile baseDir = Platform.findBaseRoot(project);
         return path.substring(baseDir.getPath().length());
-        //return path.replace(baseRoot.getCanonicalPath(), "x");
+    }
+
+    public static String removeProjectDir(Project project, @Nullable VirtualFile file) {
+        return file == null ? "" : removeProjectDir(project, file.getPath());
     }
 }

@@ -24,21 +24,23 @@ import static com.reason.lang.core.RmlPsiUtil.findFileModules;
 
 class ModuleNameCompletion {
 
-    static void addModules(Project project, PsiModuleFile currentModule, String modulePrefix,/*@NotNull CompletionParameters parameters, ProcessingContext context,*/ @NotNull CompletionResultSet resultSet) {
+    static void complete(Project project, PsiModuleFile currentModule, String modulePrefix, @NotNull CompletionResultSet resultSet) {
         // First find all potential modules of current file
         PsiModule[] currentModules = currentModule.getModules();
         for (PsiModule module : currentModules) {
             String moduleName = module.getName();
-            LookupElementBuilder lookupModule = LookupElementBuilder.createWithSmartPointer(moduleName, module).
-                    withRenderer(new LookupElementRenderer<LookupElement>() {
-                        @Override
-                        public void renderElement(LookupElement element, LookupElementPresentation presentation) {
-                            presentation.setItemText(moduleName);
-                            presentation.setItemTextBold(true);
-                            presentation.setIcon(Icons.MODULE);
-                        }
-                    });
-            resultSet.addElement(lookupModule);
+            if (moduleName != null) {
+                LookupElementBuilder lookupModule = LookupElementBuilder.createWithSmartPointer(moduleName, module).
+                        withRenderer(new LookupElementRenderer<LookupElement>() {
+                            @Override
+                            public void renderElement(LookupElement element, LookupElementPresentation presentation) {
+                                presentation.setItemText(moduleName);
+                                presentation.setItemTextBold(true);
+                                presentation.setIcon(Icons.MODULE);
+                            }
+                        });
+                resultSet.addElement(lookupModule);
+            }
         }
 
         List<PsiFile> modules = new ArrayList<>();
@@ -57,9 +59,11 @@ class ModuleNameCompletion {
                                 presentation.setItemTextBold(true);
 
                                 PsiFile psiElement = (PsiFile) element.getPsiElement();
-                                presentation.setIcon(psiElement instanceof RmlFile ? Icons.RML_FILE : Icons.OCL_FILE);
-                                presentation.setTypeText(Platform.removeProjectDir(project, psiElement.getVirtualFile().getPath()));
-                                presentation.setTypeGrayed(true);
+                                if (psiElement != null) {
+                                    presentation.setIcon(psiElement instanceof RmlFile ? Icons.RML_FILE : Icons.OCL_FILE);
+                                    presentation.setTypeText(Platform.removeProjectDir(project, psiElement.getVirtualFile()));
+                                    presentation.setTypeGrayed(true);
+                                }
                             }
                         });
                 resultSet.addElement(lookupModule);

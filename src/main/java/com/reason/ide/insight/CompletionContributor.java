@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.instanceOf;
+import static com.reason.lang.RmlTypes.DOT;
 import static com.reason.lang.RmlTypes.UIDENT;
 
 public class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
@@ -35,18 +36,20 @@ public class CompletionContributor extends com.intellij.codeInsight.completion.C
                     PsiElement parent = position.getParent();
                     //PsiElement grandPa = parent.getParent();
                     PsiElement originalPosition = parameters.getOriginalPosition();
+                    PsiElement originalPrevSibling = originalPosition == null ? null : originalPosition.getPrevSibling();
                     //PsiElement originalParent = originalPosition != null ? originalPosition.getParent() : null;
 
-                    if (originalPosition instanceof LeafPsiElement) {
-                        if (parent instanceof PsiModuleFile) {
+                    if (parent instanceof PsiModuleFile) {
+                        // We are completing a top level expression
+                        if (originalPrevSibling != null && originalPrevSibling.getNode().getElementType() == DOT) {
+                            ModuleDotCompletionProvider.complete(result);
+                        } else if (originalPosition instanceof LeafPsiElement) {
                             if (originalPosition.getNode().getElementType() == UIDENT) {
                                 // Starts a ModuleName completion
-                                ModuleNameCompletion.addModules(file.getProject(), (PsiModuleFile) parent, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
+                                ModuleNameCompletion.complete(file.getProject(), (PsiModuleFile) parent, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
                             }
                         }
                     }
-
-
                 }
             });
         }
