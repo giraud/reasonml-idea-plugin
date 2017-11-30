@@ -19,6 +19,7 @@ import javax.swing.*;
 public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInferredType, PsiNameIdentifierOwner, StubBasedPsiElement<LetStub> {
     private String m_inferredType = "";
 
+    //region Constructors
     public PsiLet(ASTNode node) {
         super(node);
     }
@@ -26,6 +27,7 @@ public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInfer
     public PsiLet(LetStub stub, IStubElementType nodeType) {
         super(stub, nodeType);
     }
+    //endregion
 
     @Override
     public String getName() {
