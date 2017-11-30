@@ -1,44 +1,16 @@
-package com.reason.bs;
+package com.reason.bs.annotations;
 
-import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ConcurrentMultiMap;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-public class BsbErrorsManagerImpl extends BsbErrorsManager implements ProjectComponent {
+public class BsErrorsManagerImpl extends BsErrorsManager {
 
-    private ConcurrentMultiMap<String, BsbError> m_errorsByFile;
-
-    @NotNull
-    @Override
-    public String getComponentName() {
-        return BsbErrorsManager.class.getSimpleName();
-    }
-
-    @Override
-    public void projectOpened() {
-        m_errorsByFile = new ConcurrentMultiMap<>();
-    }
-
-    @Override
-    public void projectClosed() {
-        m_errorsByFile = null;
-    }
-
-    @Override
-    public void initComponent() {
-
-    }
-
-    @Override
-    public void disposeComponent() {
-
-    }
+    private ConcurrentMultiMap<String, BsbError> m_errorsByFile = new ConcurrentMultiMap<>();
 
     @Override
     public void setError(String filePath, BsbError error) {

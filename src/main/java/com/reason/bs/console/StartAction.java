@@ -4,16 +4,20 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
-import com.reason.bs.BsbCompiler;
+import com.intellij.openapi.project.Project;
+import com.reason.bs.BsCompiler;
+import com.reason.bs.Bucklescript;
+import com.reason.bs.BucklescriptProjectComponent;
 
 public class StartAction extends DumbAwareAction {
-    private final BsbCompiler m_bsc;
+
     private final ConsoleView m_console;
+    private final Project m_project;
     private boolean m_enable = false;
 
-    StartAction(ConsoleView console, BsbCompiler bsc) {
+    StartAction(ConsoleView console, Project project) {
         super("Start", "Start bucklescript process", AllIcons.Actions.Execute);
-        m_bsc = bsc;
+        m_project = project;
         m_console = console;
     }
 
@@ -29,7 +33,9 @@ public class StartAction extends DumbAwareAction {
     @Override
     public void actionPerformed(final AnActionEvent e) {
         m_enable = false;
-        m_console.attachToProcess(m_bsc.recreate());
-        m_bsc.startNotify();
+        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(m_project);
+        BsCompiler bsc = bucklescript.getCompiler();
+        m_console.attachToProcess(bsc.recreate());
+        bsc.startNotify();
     }
 }

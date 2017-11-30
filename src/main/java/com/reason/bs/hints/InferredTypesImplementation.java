@@ -1,9 +1,9 @@
-package com.reason.bs;
+package com.reason.bs.hints;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InferredTypesImplementation implements BscQueryTypesService.InferredTypes {
+public class InferredTypesImplementation implements BsQueryTypesService.InferredTypes {
     private final Map<String, String> m_let = new HashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
 
@@ -30,7 +30,7 @@ public class InferredTypesImplementation implements BscQueryTypesService.Inferre
         return m_let.get(name);
     }
 
-    public BscQueryTypesService.InferredTypes getModuleType(String name) {
+    public BsQueryTypesService.InferredTypes getModuleType(String name) {
         return m_modules.get(name);
     }
 }

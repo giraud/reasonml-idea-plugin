@@ -1,6 +1,7 @@
 package com.reason.bs;
 
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,20 +9,17 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BsConfig /*Project aware ?*/ {
+class BsConfig {
     private static Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
 
-    private static BsConfig INSTANCE;
-    private String[] m_deps;
+    private final String[] m_deps;
 
-    public static BsConfig getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new BsConfig();
-        }
-        return INSTANCE;
+    BsConfig(String[] deps) {
+        m_deps = deps;
     }
 
-    public static void read(VirtualFile bsconfig) {
+    @NotNull
+    static BsConfig read(@NotNull VirtualFile bsconfig) {
         try {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(bsconfig.getInputStream()))) {
                 // Quick and dirty code to read json values from bsconfig
@@ -29,26 +27,25 @@ public class BsConfig /*Project aware ?*/ {
                 reader.lines().forEach(line -> content.append(line.trim()));
                 // extract bs dependencies
                 Matcher matcher = DEPS_REGEXP.matcher(content.toString());
+
+                String[] deps = null;
                 if (matcher.matches()) {
                     String[] tokens = matcher.group(1).split(",");
-                    String[] deps = new String[tokens.length];
+                    deps = new String[tokens.length];
                     for (int i = 0; i < tokens.length; i++) {
                         String token = tokens[i].trim();
                         deps[i] = token.substring(1, token.length() - 1) + "/lib";
                     }
-                    getInstance().updateDeps(deps);
                 }
+
+                return new BsConfig(deps);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void updateDeps(String[] deps) {
-        m_deps = deps;
-    }
-
-    public boolean accept(String canonicalPath) {
+    boolean accept(String canonicalPath) {
         if (canonicalPath.contains("node_modules")) {
             for (String dep : m_deps) {
                 if (canonicalPath.contains(dep)) {

@@ -65,11 +65,8 @@
             <implementation-class>com.reason.ide.RmlProjectTracker</implementation-class>
         </component>
         <component>
-            <implementation-class>com.reason.bs.BsbCompiler</implementation-class>
-        </component>
-        <component>
-            <interface-class>com.reason.bs.BsbErrorsManager</interface-class>
-            <implementation-class>com.reason.bs.BsbErrorsManagerImpl</implementation-class>
+            <interface-class>com.reason.bs.Bucklescript</interface-class>
+            <implementation-class>com.reason.bs.BucklescriptProjectComponent</implementation-class>
         </component>
     </project-components>
 
@@ -125,7 +122,7 @@
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.BsbErrorAnnotator"/>
+        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.insight.CompletionContributor"/>
 
@@ -133,23 +130,21 @@
                                         implementationClass="com.reason.ide.hints.SignatureProvider"/>
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
-        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.BsbToolWindowFactory"/>
+        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
 
         <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiModule"
                                  implementationClass="com.reason.lang.core.psi.PsiModuleManipulator"/>
         <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiModuleName"
                                  implementationClass="com.reason.lang.core.psi.PsiModuleNameManipulator"/>
 
-        <projectService serviceInterface="com.reason.bs.BscQueryTypesService"
-                        serviceImplementation="com.reason.bs.BscQueryTypesServiceComponent"/>
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
 
         <!--<stubElementTypeHolder class="com.reason.lang.core.stub.type.ModuleStubElementType"/>-->
         <!--<stubIndex implementation="com.reason.lang.core.stub.index.ModuleIndex"/>-->
 
-        <!--<stubElementTypeHolder class="com.reason.lang.core.stub.type.LetStubElementType"/>-->
-        <!--<stubIndex implementation="com.reason.lang.core.stub.index.LetIndex"/>-->
+        <stubElementTypeHolder class="com.reason.lang.core.stub.type.LetStubElementType"/>
+        <stubIndex implementation="com.reason.lang.core.stub.index.LetIndex"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->

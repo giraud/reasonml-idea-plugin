@@ -3,6 +3,7 @@ package com.reason;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -14,7 +15,8 @@ public class Platform {
 
     private static Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
-    public static String getBinary(String envVar, String propVar, String defaultBinary) {
+    @NotNull
+    public static String getBinary(String envVar, String propVar, @NotNull String defaultBinary) {
         Logger log = Logger.getInstance("ReasonML");
         log.info("Identifying '" + defaultBinary + "' binary");
 

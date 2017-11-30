@@ -1,22 +1,11 @@
-package com.reason.bs;
+package com.reason.bs.annotations;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public abstract class BsbErrorsManager {
-    /**
-     * Returns the document manager instance for the specified project.
-     *
-     * @param project the project for which the document manager is requested.
-     * @return the document manager instance.
-     */
-    public static BsbErrorsManager getInstance(@NotNull Project project) {
-        return project.getComponent(BsbErrorsManager.class);
-    }
+public abstract class BsErrorsManager {
 
     abstract public void setError(String file, BsbError error);
 
@@ -26,12 +15,12 @@ public abstract class BsbErrorsManager {
 
     public abstract void associatePsiElement(VirtualFile virtualFile, PsiElement elementAtOffset);
 
-    static class BsbError {
+    public static class BsbError {
         String errorType;
-        int line;
-        int colStart;
-        int colEnd;
-        String message = "";
+        public int line;
+        public int colStart;
+        public int colEnd;
+        public String message = "";
         PsiElement element;
 
         @Override

@@ -1,14 +1,13 @@
 package com.reason.ide.hints;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.RmlFile;
-import com.reason.bs.BscQueryTypesService;
-import com.reason.bs.BscQueryTypesServiceComponent;
+import com.reason.bs.Bucklescript;
+import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.hints.BsQueryTypesService;
+import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleFile;
@@ -28,13 +27,8 @@ public class BscInferredTypesTask implements Runnable {
 
     @Override
     public void run() {
-        Project project = m_psiFile.getProject();
-        BscQueryTypesService bscTypes = ServiceManager.getService(project, BscQueryTypesService.class);
-        if (bscTypes == null) {
-            return;
-        }
-
-        BscQueryTypesServiceComponent.InferredTypes inferredTypes = bscTypes.types(project, m_psiFile.getVirtualFile());
+        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(m_psiFile.getProject());
+        BsQueryTypesServiceComponent.InferredTypes inferredTypes = bucklescript.queryTypes(m_psiFile.getVirtualFile());
 
         ApplicationManager.getApplication().runReadAction(() -> {
             for (PsiLet letStatement : m_letExpressions) {
@@ -44,7 +38,7 @@ public class BscInferredTypesTask implements Runnable {
                 } else {
                     PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
                     if (letModule != null) {
-                        BscQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
+                        BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
                         if (inferredModuleTypes != null) {
                             applyType(inferredModuleTypes, letStatement);
                         }
@@ -54,7 +48,7 @@ public class BscInferredTypesTask implements Runnable {
         });
     }
 
-    private void applyType(BscQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
+    private void applyType(BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
         PsiValueName letName = letStatement.getLetName();
         if (letName != null) {
             String type = inferredTypes.getLetType(letName.getName());

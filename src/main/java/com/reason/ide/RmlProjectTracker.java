@@ -6,7 +6,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
-import com.reason.bs.BsConfig;
 import com.reason.ide.hints.RmlDocumentListener;
 
 public class RmlProjectTracker extends AbstractProjectComponent {
@@ -29,8 +28,6 @@ public class RmlProjectTracker extends AbstractProjectComponent {
 
         m_vfListener = new VirtualFileListener(myProject);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
-
-        BsConfig.read(myProject.getBaseDir().findChild("bsconfig.json"));
     }
 
     @Override

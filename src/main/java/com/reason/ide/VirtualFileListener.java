@@ -1,60 +1,22 @@
 package com.reason.ide;
 
-import com.intellij.execution.process.ProcessHandler;
 import com.intellij.json.JsonFileType;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.*;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.Content;
-import com.reason.bs.BsConfig;
-import com.reason.bs.BsbCompiler;
-import com.reason.bs.console.BsbConsole;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.RmlFileType;
+import com.reason.bs.Bucklescript;
+import com.reason.bs.BucklescriptProjectComponent;
 import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
 
 /**
  * Listener that detects all modifications on project files
  */
 class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListener {
-    private final Project m_project;
-    private final BsbCompiler m_bsb;
+
+    private final Bucklescript m_bucklescript;
 
     VirtualFileListener(Project project) {
-        m_project = project;
-        m_bsb = ServiceManager.getService(m_project, BsbCompiler.class);
-    }
-
-    private BsbConsole getBsbConsole() { // once for all ?
-        BsbConsole console = null;
-
-        ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow("Bucklescript");
-        Content windowContent = window.getContentManager().getContent(0);
-        if (windowContent != null) {
-            SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
-            JComponent panelComponent = component.getComponent();
-            if (panelComponent != null) {
-                console = (BsbConsole) panelComponent.getComponent(0);
-            }
-        }
-
-        return console;
-    }
-
-    private void runBsb(FileType eventFileType) {
-        if (eventFileType instanceof RmlFileType || eventFileType instanceof OclFileType) {
-            ProcessHandler recreate = m_bsb.recreate();
-            if (recreate != null) {
-                getBsbConsole().attachToProcess(recreate);
-                m_bsb.startNotify();
-            }
-        }
+        m_bucklescript = BucklescriptProjectComponent.getInstance(project);
     }
 
     @Override
@@ -69,33 +31,31 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
 
         if (fileType instanceof JsonFileType) {
             if (file.getName().equals("bsconfig.json")) {
-                // re-read bs dependencies
-                BsConfig.read(file);
+                m_bucklescript.refresh();
             }
         } else if (event.isFromSave()) {
-            runBsb(fileType);
+            m_bucklescript.run(fileType);
         }
     }
 
     @Override
     public void fileCreated(@NotNull VirtualFileEvent event) {
-        runBsb(event.getFile().getFileType());
-
+        m_bucklescript.run(event.getFile().getFileType());
     }
 
     @Override
     public void fileDeleted(@NotNull VirtualFileEvent event) {
-        runBsb(event.getFile().getFileType());
+        m_bucklescript.run(event.getFile().getFileType());
     }
 
     @Override
     public void fileMoved(@NotNull VirtualFileMoveEvent event) {
-        runBsb(event.getFile().getFileType());
+        m_bucklescript.run(event.getFile().getFileType());
     }
 
     @Override
     public void fileCopied(@NotNull VirtualFileCopyEvent event) {
-        runBsb(event.getFile().getFileType());
+        m_bucklescript.run(event.getFile().getFileType());
     }
 
     @Override

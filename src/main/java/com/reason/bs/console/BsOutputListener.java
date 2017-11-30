@@ -1,29 +1,34 @@
-package com.reason.bs;
+package com.reason.bs.console;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.reason.bs.Bucklescript;
+import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.annotations.BsErrorsManager;
 
 import static java.lang.Integer.parseInt;
 
-public class BsbOutputListener implements ProcessListener {
-    private final BsbErrorsManager m_errorsManager;
+public class BsOutputListener implements ProcessListener {
+
+    private final Bucklescript m_bucklescript;
     private final Project m_project;
+
     private String m_fileProcessed = "";
     private boolean m_failed;
     private int m_failedLine;
-    private BsbErrorsManager.BsbError m_bsbError;
+    private BsErrorsManager.BsbError m_bsbError;
 
-    BsbOutputListener(Project project) {
+    BsOutputListener(Project project) {
         m_project = project;
-        m_errorsManager = BsbErrorsManager.getInstance(project);
+        m_bucklescript = BucklescriptProjectComponent.getInstance(project);
     }
 
     @Override
     public void startNotified(ProcessEvent event) {
-        m_errorsManager.clearErrors();
+        m_bucklescript.clearErrors();
     }
 
     @Override
@@ -33,7 +38,7 @@ public class BsbOutputListener implements ProcessListener {
     @Override
     public void processTerminated(ProcessEvent event) {
         if (m_bsbError != null) {
-            m_errorsManager.setError(m_fileProcessed, m_bsbError);
+            m_bucklescript.setError(m_fileProcessed, m_bsbError);
             reset();
         }
         DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(m_project);
@@ -54,7 +59,7 @@ public class BsbOutputListener implements ProcessListener {
                     String position = tokens[2].substring(11, tokens[2].length() - 1);
                     String[] columns = position.split("-");
                     // If everything went ok, creates a new error
-                    m_bsbError = new BsbErrorsManager.BsbError();
+                    m_bsbError = new BsErrorsManager.BsbError();
                     m_bsbError.line = parseInt(line);
                     m_bsbError.colStart = parseInt(columns[0]);
                     m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]);
@@ -67,7 +72,7 @@ public class BsbOutputListener implements ProcessListener {
 
             if (text.charAt(0) != '\n' && text.charAt(0) != ' ' && m_failedLine > 0) {
                 if (m_bsbError != null) {
-                    m_errorsManager.setError(m_fileProcessed, m_bsbError);
+                    m_bucklescript.setError(m_fileProcessed, m_bsbError);
                 }
                 reset();
                 return;
@@ -84,7 +89,7 @@ public class BsbOutputListener implements ProcessListener {
                         String line = positions[0];
                         String[] columns = positions[1].split("-");
                         // If everything went ok, creates a new error
-                        m_bsbError = new BsbErrorsManager.BsbError();
+                        m_bsbError = new BsErrorsManager.BsbError();
                         m_bsbError.line = parseInt(line);
                         m_bsbError.colStart = parseInt(columns[0]);
                         m_bsbError.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]);
