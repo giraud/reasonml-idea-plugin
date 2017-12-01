@@ -9,6 +9,7 @@ class ParserScope {
     boolean includeSemi = true;
     boolean complete = false;
     private PsiBuilder.Marker mark;
+    public boolean isExpression = false;
 
     ParserScope(ParserScopeEnum resolution, IElementType tokenType, PsiBuilder.Marker mark) {
         this.resolution = resolution;

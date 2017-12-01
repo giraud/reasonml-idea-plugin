@@ -8,6 +8,8 @@ enum ParserScopeEnum {
 
     module,
     moduleNamed,
+    moduleNamedEq,
+    moduleBinding,
 
     let,
     letNamed,
