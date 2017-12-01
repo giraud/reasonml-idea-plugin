@@ -7,11 +7,11 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.merlin.MerlinService;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiValueName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -62,7 +62,7 @@ public class InferredTypes {
     @NotNull
     private static Function<PsiLet, LogicalPosition> letExpressionToLogicalPosition(Editor selectedTextEditor) {
         return letStatement -> {
-            PsiValueName letName = letStatement.getLetName();
+            PsiElement letName = letStatement.getLetName();
             if (letName == null) {
                 return null;
             }

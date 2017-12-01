@@ -11,7 +11,6 @@ import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleFile;
-import com.reason.lang.core.psi.PsiValueName;
 
 import java.util.Collection;
 
@@ -49,9 +48,9 @@ public class BscInferredTypesTask implements Runnable {
     }
 
     private void applyType(BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
-        PsiValueName letName = letStatement.getLetName();
+        PsiElement letName = letStatement.getLetName();
         if (letName != null) {
-            String type = inferredTypes.getLetType(letName.getName());
+            String type = inferredTypes.getLetType(letName.getText());
             if (type != null) {
                 letStatement.setInferredType(type);
             }

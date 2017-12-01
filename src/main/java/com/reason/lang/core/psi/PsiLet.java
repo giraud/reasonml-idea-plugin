@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -10,13 +11,14 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.RmlTypes;
 import com.reason.lang.core.stub.LetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInferredType, PsiNameIdentifierOwner, StubBasedPsiElement<LetStub> {
+public class PsiLet extends ASTWrapperPsiElement/*StubBasedPsiElementBase<LetStub>*/ implements PsiInferredType, PsiNameIdentifierOwner/*, StubBasedPsiElement<LetStub>*/ {
     private String m_inferredType = "";
 
     //region Constructors
@@ -24,20 +26,20 @@ public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInfer
         super(node);
     }
 
-    public PsiLet(LetStub stub, IStubElementType nodeType) {
-        super(stub, nodeType);
-    }
+//    public PsiLet(LetStub stub, IStubElementType nodeType) {
+//        super(stub, nodeType);
+//    }
     //endregion
 
     @Override
     public String getName() {
-        PsiValueName letName = getLetName();
-        return letName == null ? "" : letName.getName();
+        PsiElement letName = getLetName();
+        return letName == null ? "" : letName.getText();
     }
 
     @Nullable
-    public PsiValueName getLetName() {
-        return findChildByClass(PsiValueName.class);
+    public PsiElement getLetName() {
+        return findChildByType(RmlTypes.VALUE_NAME);
     }
 
     @Nullable
@@ -89,7 +91,7 @@ public class PsiLet extends StubBasedPsiElementBase<LetStub> implements PsiInfer
             @NotNull
             @Override
             public String getPresentableText() {
-                PsiValueName letValueName = getLetName();
+                PsiElement letValueName = getLetName();
                 if (letValueName == null) {
                     return "_";
                 }

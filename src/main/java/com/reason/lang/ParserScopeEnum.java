@@ -6,6 +6,9 @@ enum ParserScopeEnum {
     open,
     openModulePath,
 
+    module,
+    moduleNamed,
+
     let,
     letNamed,
     letNamedEq,
@@ -15,4 +18,6 @@ enum ParserScopeEnum {
 
     startTag,
     closeTag,
+    tagProperty,
+    tagPropertyEq,
 }

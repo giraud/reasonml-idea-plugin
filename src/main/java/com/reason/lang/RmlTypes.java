@@ -9,7 +9,7 @@ public interface RmlTypes {
     IElementType EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
     IElementType MODULE_EXPRESSION = new RmlElementType("MODULE_EXPRESSION");
     IElementType OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
-    IElementType LET_EXPRESSION = LetStubElementType.INSTANCE;
+    IElementType LET_EXPRESSION = new RmlElementType("LET_EXPRESSION");
     IElementType ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
     IElementType ANNOTATION_NAME = new RmlElementType("ANNOTATION_NAME");
     IElementType TYPE_EXPRESSION = new RmlElementType("TYPE_EXPRESSION");
@@ -22,6 +22,7 @@ public interface RmlTypes {
     IElementType TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
     IElementType SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
     IElementType VALUE_NAME = new RmlElementType("VALUE_NAME");
+    IElementType PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
     IElementType FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
 
     IElementType ANDAND = new RmlTokenType("ANDAND");
@@ -35,6 +36,7 @@ public interface RmlTypes {
     IElementType TAG_START = new RmlTokenType("TAG_START");
     IElementType TAG_CLOSE = new RmlTokenType("TAG_CLOSE");
     IElementType TAG_NAME = new RmlTokenType("TAG_NAME");
+    IElementType TAG_PROPERTY = new RmlTokenType("TAG_PROPERTY");
     IElementType TAG_LT = new RmlTokenType("TAG_LT");
     IElementType TAG_GT = new RmlTokenType("TAG_GT");
     IElementType COLON = new RmlTokenType("COLON");

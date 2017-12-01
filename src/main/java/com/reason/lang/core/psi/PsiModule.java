@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -9,6 +10,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.RmlTypes;
 import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,16 +18,16 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Collection;
 
-public class PsiModule extends StubBasedPsiElementBase<ModuleStub> implements PsiRmlNamedElement, StubBasedPsiElement<ModuleStub> {
+public class PsiModule extends ASTWrapperPsiElement/*StubBasedPsiElementBase<ModuleStub>*/ implements PsiRmlNamedElement/*, StubBasedPsiElement<ModuleStub>*/ {
 
     //region Constructors
     public PsiModule(ASTNode node) {
         super(node);
     }
 
-    public PsiModule(ModuleStub stub, IStubElementType nodeType) {
-        super(stub, nodeType);
-    }
+//    public PsiModule(ModuleStub stub, IStubElementType nodeType) {
+//        super(stub, nodeType);
+//    }
     //endregion
 
     //region PsiRmlNamedElement
@@ -43,8 +45,8 @@ public class PsiModule extends StubBasedPsiElementBase<ModuleStub> implements Ps
     //endregion
 
     @NotNull
-    public PsiModuleName getModuleName() {
-        return findNotNullChildByClass(PsiModuleName.class);
+    public PsiElement getModuleName() {
+        return findNotNullChildByType(RmlTypes.MODULE_NAME);
     }
 
     @Nullable
