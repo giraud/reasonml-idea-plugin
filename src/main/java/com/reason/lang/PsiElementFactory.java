@@ -39,6 +39,10 @@ class PsiElementFactory {
             return new PsiType(node);
         } else if (type == RmlTypes.VALUE_NAME) {
             return new PsiValueName(node);
+        } else if (type == RmlTypes.TAG_START) {
+            return new TagStart(node);
+        } else if (type == RmlTypes.TAG_CLOSE) {
+            return new TagClose(node);
         }
 
         return new PsiToken(node);

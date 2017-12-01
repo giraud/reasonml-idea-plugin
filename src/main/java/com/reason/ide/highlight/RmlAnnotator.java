@@ -4,9 +4,12 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
+import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.TagClose;
+import com.reason.lang.core.psi.TagStart;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;
@@ -26,6 +29,9 @@ public class RmlAnnotator implements Annotator {
 
             holder.createInfoAnnotation(constrName, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(constrName, null).setEnforcedTextAttributes(globalScheme.getAttributes(RmlSyntaxHighlighter.TYPE_ARGUMENT_));
+        } else if (element instanceof TagStart || element instanceof TagClose) {
+            TextAttributes tagScheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TAG_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(tagScheme);
         }
     }
 }

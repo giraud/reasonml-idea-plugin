@@ -90,8 +90,6 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
             return PAREN_KEYS;
         } else if (tokenType.equals(INT) || tokenType.equals(FLOAT)) {
             return NUMBER_KEYS;
-        } else if (tokenType.equals(AUTO_CLOSE_TAG) || tokenType.equals(CLOSE_TAG) || tokenType.equals(GT) || tokenType.equals(LT)) {
-            return TAG_KEYS;
         } else if (DOT.equals(tokenType)) {
             return DOT_KEYS;
         } else if (TYPE_ARGUMENT.equals(tokenType)) {

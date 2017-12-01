@@ -15,6 +15,7 @@ public interface RmlTypes {
     IElementType TYPE_EXPRESSION = new RmlElementType("TYPE_EXPRESSION");
     IElementType INCLUDE_EXPRESSION = new RmlElementType("INCLUDE_EXPRESSION");
 
+    IElementType LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
     IElementType LET_BINDING = new RmlElementType("LET_BINDING");
     IElementType MODULE_NAME = new RmlElementType("MODULE_NAME");
     IElementType MODULE_PATH = new RmlElementType("MODULE_PATH");
@@ -28,10 +29,14 @@ public interface RmlTypes {
     IElementType ARROW = new RmlTokenType("ARROW");
     IElementType ASSERT = new RmlTokenType("ASSERT");
     IElementType AS = new RmlTokenType("AS");
-    IElementType AUTO_CLOSE_TAG = new RmlTokenType("AUTO_CLOSE_TAG");
     IElementType BACKTICK = new RmlTokenType("BACKTICK");
     IElementType CARRET = new RmlTokenType("CARRET");
-    IElementType CLOSE_TAG = new RmlTokenType("CLOSE_TAG");
+    IElementType TAG_AUTO_CLOSE = new RmlTokenType("TAG_AUTO_CLOSE");
+    IElementType TAG_START = new RmlTokenType("TAG_START");
+    IElementType TAG_CLOSE = new RmlTokenType("TAG_CLOSE");
+    IElementType TAG_NAME = new RmlTokenType("TAG_NAME");
+    IElementType TAG_LT = new RmlTokenType("TAG_LT");
+    IElementType TAG_GT = new RmlTokenType("TAG_GT");
     IElementType COLON = new RmlTokenType("COLON");
     IElementType COMMA = new RmlTokenType("COMMA");
     IElementType COMMENT = new RmlTokenType("COMMENT");

@@ -23,8 +23,6 @@ public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(RmlTypes.STRING);
 
-    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(RmlLanguage.class));
-
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
@@ -48,7 +46,7 @@ public class RmlParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
-        return new RmlParser(Validation);
+        return new RmlParser2();
     }
 
     @Override

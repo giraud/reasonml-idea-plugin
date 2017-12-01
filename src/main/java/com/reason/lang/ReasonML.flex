@@ -130,8 +130,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "=>"   { return ARROW; }
     "->"   { return SIMPLE_ARROW; }
     "|>"   { return PIPE_FORWARD; }
-    "/>"   { return AUTO_CLOSE_TAG; }
-    "</"   { return CLOSE_TAG; }
+    "/>"   { return TAG_AUTO_CLOSE; }
     "[|"   { return LARRAY; }
     "|]"   { return RARRAY; }
     "()"   { return UNIT; }
