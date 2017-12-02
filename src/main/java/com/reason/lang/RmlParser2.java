@@ -56,10 +56,10 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 // Loop on all scopes until a top level expression is found
                 if (!scopes.empty()) {
                     scope = scopes.pop();
-                    while (scope != null && scope.isExpression) {
-                        scope.done();
-                        scope = scopes.empty() ? null : scopes.pop();
-                    }
+//                    while (scope != null && scope.isExpression) {
+//                        scope.done();
+//                        scope = scopes.empty() ? null : scopes.pop();
+//                    }
                 }
 
                 if (scope != null) {
@@ -76,6 +76,9 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 }
                 else if (currentScope.resolution == moduleNamed) {
                     currentScope.resolution = moduleNamedEq;
+                }
+                else if (currentScope.resolution == typeNamed) {
+                    currentScope.resolution = typeNamedEq;
                 }
             } else if (tokenType == LPAREN) {
                 if (currentScope.resolution == letNamedEq) {
@@ -127,6 +130,11 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                     currentScope = markScope(builder, scopes, letFunBody, LET_BINDING);
                 }
             } else if (tokenType == LIDENT) {
+                if (currentScope.resolution == type) {
+                    builder.remapCurrentToken(TYPE_CONSTR_NAME);
+                    currentScope.resolution = typeNamed;
+                    currentScope.complete = true;
+                }
                 if (currentScope.resolution == let) {
                     builder.remapCurrentToken(VALUE_NAME);
                     currentScope.resolution = letNamed;
@@ -206,32 +214,26 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 currentScope = markScope(builder, scopes, open, OPEN_EXPRESSION);
             }
 
+            // Starts a type
+            else if (tokenType == TYPE) {
+                // clear scopes
+                endScopes(scopes);
+
+                currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION);
+            }
+
             // Starts a module
             else if (tokenType == MODULE) {
-                // clear incorrect scopes
-                if (!scopes.empty()) {
-                    ParserScope latestScope = scopes.peek();
-                    while (latestScope != null && latestScope.resolution != file && latestScope.tokenType != SCOPED_EXPR) {
-                        ParserScope scope = scopes.pop();
-                        scope.end();
-                        latestScope = getLatestScope(scopes);
-                    }
-                }
+                // clear scopes
+                endScopes(scopes);
 
                 currentScope = markScope(builder, scopes, module, MODULE_EXPRESSION);
             }
 
             // Starts a let
             else if (tokenType == LET) {
-                // clear incorrect scopes
-                if (!scopes.empty()) {
-                    ParserScope latestScope = scopes.peek();
-                    while (latestScope != null && latestScope.resolution != file && latestScope.tokenType != SCOPED_EXPR) {
-                        ParserScope scope = scopes.pop();
-                        scope.end();
-                        latestScope = getLatestScope(scopes);
-                    }
-                }
+                // clear scopes
+                endScopes(scopes);
 
                 currentScope = markScope(builder, scopes, let, LET_EXPRESSION);
             }
@@ -260,6 +262,17 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
 
         fileScope.done();
         return true;
+    }
+
+    private void endScopes(Stack<ParserScope> scopes) {
+        if (!scopes.empty()) {
+            ParserScope latestScope = scopes.peek();
+            while (latestScope != null && latestScope.resolution != file && latestScope.tokenType != SCOPED_EXPR) {
+                ParserScope scope = scopes.pop();
+                scope.end();
+                latestScope = getLatestScope(scopes);
+            }
+        }
     }
 
     @Nullable

@@ -22,4 +22,8 @@ enum ParserScopeEnum {
     closeTag,
     tagProperty,
     tagPropertyEq,
+
+    type,
+    typeNamed,
+    typeNamedEq,
 }

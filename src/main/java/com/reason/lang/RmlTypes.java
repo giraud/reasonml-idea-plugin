@@ -1,7 +1,6 @@
 package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.stub.type.LetStubElementType;
 
 public interface RmlTypes {
 

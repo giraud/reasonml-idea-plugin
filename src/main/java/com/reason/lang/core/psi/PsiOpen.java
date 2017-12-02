@@ -9,18 +9,19 @@ import org.jetbrains.annotations.NotNull;
 import static com.reason.lang.RmlTypes.MODULE_PATH;
 
 public class PsiOpen extends ASTWrapperPsiElement {
+
     public PsiOpen(@NotNull ASTNode node) {
         super(node);
     }
 
     @Override
     public String getName() {
-        PsiElement name = findChildByType(TokenSet.create(MODULE_PATH));
+        PsiElement name = findChildByType(MODULE_PATH);
         return name == null ? "" : name.getText();
     }
 
     @Override
     public String toString() {
-        return "Open " + getName();
+        return "Open(" + getName() + ")";
     }
 }

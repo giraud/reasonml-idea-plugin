@@ -9,12 +9,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.RmlTypes;
-import com.reason.lang.core.psi.PsiTypeConstrName;
-import com.reason.lang.core.psi.TagClose;
-import com.reason.lang.core.psi.TagStart;
 import org.jetbrains.annotations.NotNull;
-
-import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;
 
 public class RmlAnnotator implements Annotator {
 
@@ -26,14 +21,12 @@ public class RmlAnnotator implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(globalScheme.getAttributes(RmlSyntaxHighlighter.MODULE_NAME_));
         }
-        else if (element instanceof PsiTypeConstrName) {
-            PsiTypeConstrName constrName = (PsiTypeConstrName) element;
-
-            holder.createInfoAnnotation(constrName, null).setEnforcedTextAttributes(ERASE_MARKER);
-            holder.createInfoAnnotation(constrName, null).setEnforcedTextAttributes(globalScheme.getAttributes(RmlSyntaxHighlighter.TYPE_ARGUMENT_));
+        else if (elementType == RmlTypes.TYPE_CONSTR_NAME) {
+            TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TYPE_ARGUMENT_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         } else if (elementType == RmlTypes.TAG_START || elementType == RmlTypes.TAG_CLOSE) {
-            TextAttributes tagScheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TAG_);
-            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(tagScheme);
+            TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TAG_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         }
     }
 }

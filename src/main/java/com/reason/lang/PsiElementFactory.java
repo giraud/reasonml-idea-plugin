@@ -29,8 +29,6 @@ class PsiElementFactory {
             return new PsiAnnotationName(node);
         } else if (type == RmlTypes.MODULE) {
             return new PsiModule(node);
-        } else if (type == RmlTypes.TYPE_CONSTR_NAME) {
-            return new PsiTypeConstrName(node);
         } else if (type == RmlTypes.SCOPED_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
