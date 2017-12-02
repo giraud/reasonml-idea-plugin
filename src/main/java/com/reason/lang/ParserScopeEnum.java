@@ -26,4 +26,7 @@ enum ParserScopeEnum {
     type,
     typeNamed,
     typeNamedEq,
+
+    annotation,
+    annotationName,
 }

@@ -101,15 +101,58 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 }
             }
             else if (tokenType == LBRACE) {
+                // end all on going scopes
+                ParserScope scope = null;
+
+                // Loop on all scopes until a start expression is found
+                if (!scopes.empty()) {
+                    scope = scopes.peek();
+                    while (scope != null && !scope.startElement) {
+                        scope.end();
+                        scopes.pop();
+                        scope = scopes.empty() ? null : scopes.peek();
+                    }
+                }
+
                 currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR);
             }
             else if (tokenType == RBRACE) {
                 ParserScope scope = null;
 
+                // Loop on all scopes until a start expression is found
+                if (!scopes.empty()) {
+                    scope = scopes.peek();
+                    while (scope != null && scope.tokenType != SCOPED_EXPR) {
+                        scope.end();
+                        scopes.pop();
+                        scope = scopes.empty() ? null : scopes.peek();
+                    }
+                }
+
+                if (scope != null) {
+                    scopes.pop();
+                    builder.advanceLexer();
+                    dontMove = true;
+                    scope.done();
+                }
+
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
+            }
+            else if (tokenType == LBRACKET) {
+                IElementType nextTokenType = builder.rawLookup(1);
+                if (nextTokenType == ARROBASE) {
+                    // This is an annotation
+                    currentScope = markScope(builder, scopes, annotation, RmlTypes.ANNOTATION_EXPRESSION);
+                    currentScope.startElement = true;
+                }
+            }
+            else if (tokenType == RBRACKET) { // same than rbrace
+                ParserScope scope = null;
+
                 // Loop on all scopes until a scoped expression is found
                 if (!scopes.empty()) {
                     scope = scopes.pop();
-                    while (scope != null && scope.tokenType != SCOPED_EXPR) {
+                    while (scope != null && scope.tokenType != SCOPED_EXPR && scope.tokenType != ANNOTATION_EXPRESSION) {
                         scope.end();
                         scope = scopes.empty() ? null : scopes.pop();
                     }
@@ -152,7 +195,6 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                     // It is a module name/path
                     builder.remapCurrentToken(MODULE_NAME);
                     currentScope = markScope(builder, scopes, openModulePath, MODULE_PATH);
-                    currentScope.includeSemi = false;
                 }
                 else if (currentScope.resolution == module) {
                     builder.remapCurrentToken(MODULE_NAME);
@@ -199,6 +241,12 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 }
             }
 
+            else if (tokenType == ARROBASE) {
+                if (currentScope.resolution == annotation) {
+                    currentScope = markScope(builder, scopes, annotationName, ANNOTATION_NAME);
+                }
+            }
+
             // Starts an open
             else if (tokenType == OPEN) {
                 // clear incorrect scopes
@@ -220,14 +268,18 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 endScopes(scopes);
 
                 currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION);
+                currentScope.complete = false;
             }
 
             // Starts a module
             else if (tokenType == MODULE) {
-                // clear scopes
-                endScopes(scopes);
+                if (currentScope.resolution != annotationName) {
+                    // clear scopes
+                    endScopes(scopes);
 
-                currentScope = markScope(builder, scopes, module, MODULE_EXPRESSION);
+                    currentScope = markScope(builder, scopes, module, MODULE_EXPRESSION);
+                    currentScope.complete = false;
+                }
             }
 
             // Starts a let
@@ -236,6 +288,7 @@ public class RmlParser2 implements PsiParser, LightPsiParser {
                 endScopes(scopes);
 
                 currentScope = markScope(builder, scopes, let, LET_EXPRESSION);
+                currentScope.complete = false;
             }
 
             if (dontMove) {

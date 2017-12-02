@@ -6,10 +6,10 @@ import com.intellij.psi.tree.IElementType;
 class ParserScope {
     ParserScopeEnum resolution;
     IElementType tokenType;
-    boolean includeSemi = true;
-    boolean complete = false;
+    boolean startElement = false;
+    boolean complete = true;
+
     private PsiBuilder.Marker mark;
-    public boolean isExpression = false;
 
     ParserScope(ParserScopeEnum resolution, IElementType tokenType, PsiBuilder.Marker mark) {
         this.resolution = resolution;

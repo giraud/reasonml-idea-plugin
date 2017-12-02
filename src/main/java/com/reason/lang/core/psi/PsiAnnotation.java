@@ -11,12 +11,17 @@ public class PsiAnnotation extends ASTWrapperPsiElement {
     }
 
     @NotNull
-    PsiAnnotationName getAnnotationName() {
+    private PsiAnnotationName getAnnotationNameElement() {
         return findNotNullChildByClass(PsiAnnotationName.class);
     }
 
     @Override
+    public String getName() {
+        return getAnnotationNameElement().getText();
+    }
+
+    @Override
     public String toString() {
-        return "Annotation '" + getAnnotationName() + "'";
+        return "Annotation(" + getName() + ")";
     }
 }
