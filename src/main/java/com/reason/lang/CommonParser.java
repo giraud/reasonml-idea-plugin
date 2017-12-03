@@ -52,19 +52,25 @@ public abstract class CommonParser  implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, Stack<ParserScope> scopes, ParserScope fileScope);
 
-    protected void endScopes(Stack<ParserScope> scopes) {
+    @Nullable
+    protected ParserScope endScopes(Stack<ParserScope> scopes) {
+        ParserScope scope = null;
+
         if (!scopes.empty()) {
-            ParserScope scope = scopes.peek();
+            scope = scopes.peek();
             while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != startExpression) {
                 scopes.pop().end();
                 scope = getLatestScope(scopes);
             }
         }
+
+        return scope;
     }
 
     @Nullable
     ParserScope endScopesUntilStartExpression(Stack<ParserScope> scopes) {
         ParserScope scope = null;
+
         if (!scopes.empty()) {
             scope = scopes.peek();
             while (scope != null && scope.scopeType != startExpression) {
@@ -72,6 +78,7 @@ public abstract class CommonParser  implements PsiParser, LightPsiParser {
                 scope = getLatestScope(scopes);
             }
         }
+
         return scope;
     }
 

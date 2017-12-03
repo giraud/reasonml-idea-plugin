@@ -84,8 +84,6 @@ public class RmlParser2 extends CommonParser {
 
                 if (currentScope.resolution == typeNamedEq) {
                     currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression);
-                } else if (currentScope.resolution == letFunBody) {
-                    // do nothing, it is already a scoped expression
                 }
                 else if (currentScope.resolution == moduleNamedEq) {
                     currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression);
@@ -97,7 +95,11 @@ public class RmlParser2 extends CommonParser {
                 builder.advanceLexer();
                 dontMove = true;
 
-                endScopesUntilStartExpression(scopes);
+                ParserScope scope = endScopes(scopes);
+                if (scope != null && scope.scopeType == scopeExpression) {
+                    scopes.pop().end();
+                }
+
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
             }
 
