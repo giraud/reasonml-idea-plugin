@@ -30,5 +30,5 @@ enum ParserScopeEnum {
     annotation,
     annotationName,
 
-    objectBinding,
+    objectBinding, typeNamedEqPatternMatch, any,
 }

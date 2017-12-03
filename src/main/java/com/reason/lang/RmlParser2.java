@@ -87,20 +87,17 @@ public class RmlParser2 extends CommonParser {
                 } else if (currentScope.resolution == letFunBody) {
                     // do nothing, it is already a scoped expression
                 }
-                else {
+                else if (currentScope.resolution == moduleNamedEq) {
                     currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression);
+                }
+                else {
+                    currentScope = markScope(builder, scopes, any, null, scopeExpression);
                 }
             } else if (tokenType == RBRACE) {
                 builder.advanceLexer();
                 dontMove = true;
 
-                ParserScope startScope = endScopesUntilStartExpression(scopes);
-
-                if (startScope != null) {
-                    scopes.pop();
-                    startScope.end();
-                }
-
+                endScopesUntilStartExpression(scopes);
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
             }
 
@@ -138,6 +135,13 @@ public class RmlParser2 extends CommonParser {
                     builder.advanceLexer();
                     dontMove = true;
                     currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression);
+                }
+            }
+
+            //
+            else if (tokenType == PIPE) {
+                if (currentScope.resolution == typeNamedEq) {
+                    currentScope = markScope(builder, scopes, typeNamedEqPatternMatch, PATTERN_MATCH_EXPR, scopeExpression);
                 }
             }
 

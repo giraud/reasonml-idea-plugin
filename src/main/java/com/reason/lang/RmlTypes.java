@@ -19,6 +19,7 @@ public interface RmlTypes {
     IElementType MODULE_NAME = new RmlElementType("MODULE_NAME");
     IElementType MODULE_PATH = new RmlElementType("MODULE_PATH");
     IElementType TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
+    IElementType PATTERN_MATCH_EXPR = new RmlElementType("PATTERN_MATCH_EXPR");
     IElementType OBJECT_EXPR = new RmlElementType("OBJECT_EXPR");
     IElementType SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
     IElementType VALUE_NAME = new RmlElementType("VALUE_NAME");

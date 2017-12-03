@@ -29,7 +29,7 @@ class PsiElementFactory {
             return new PsiAnnotationName(node);
         } else if (type == RmlTypes.MODULE) {
             return new PsiModule(node);
-        } else if (type == RmlTypes.SCOPED_EXPR) {
+        } else if (type == RmlTypes.SCOPED_EXPR || type == RmlTypes.OBJECT_EXPR || type == RmlTypes.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
             return new PsiType(node);

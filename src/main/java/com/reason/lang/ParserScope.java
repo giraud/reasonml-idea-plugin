@@ -23,8 +23,13 @@ class ParserScope {
     }
 
     private void done() {
-        if (mark != null && tokenType != null) {
-            mark.done(tokenType);
+        if (mark != null) {
+            if (tokenType != null) {
+                mark.done(tokenType);
+            }
+            else {
+                mark.drop();
+            }
             mark = null;
         }
     }
