@@ -29,4 +29,6 @@ enum ParserScopeEnum {
 
     annotation,
     annotationName,
+
+    objectBinding,
 }

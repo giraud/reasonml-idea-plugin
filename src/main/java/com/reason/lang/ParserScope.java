@@ -6,7 +6,7 @@ import com.intellij.psi.tree.IElementType;
 class ParserScope {
     ParserScopeEnum resolution;
     IElementType tokenType;
-    boolean startElement = false;
+    ParserScopeType scopeType = ParserScopeType.any;
     boolean complete = true;
 
     private PsiBuilder.Marker mark;
@@ -17,22 +17,22 @@ class ParserScope {
         this.mark = mark;
     }
 
-    public void drop() {
-        if (mark != null) {
-            mark.drop();
-            mark = null;
-        }
+    public void end() {
+        if (complete) done();
+        else drop();
     }
 
-    public void done() {
+    private void done() {
         if (mark != null && tokenType != null) {
             mark.done(tokenType);
             mark = null;
         }
     }
 
-    public void end() {
-        if (complete) done();
-        else drop();
+    private void drop() {
+        if (mark != null) {
+            mark.drop();
+            mark = null;
+        }
     }
 }
