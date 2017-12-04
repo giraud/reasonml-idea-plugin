@@ -145,6 +145,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     ":"   { return COLON; }
     ";"   { return SEMI; }
     "'"   { return QUOTE; }
+    "..." { return DOTDOTDOT; }
     "."   { return DOT; }
     "|"   { return PIPE; }
     "("   { return LPAREN; }

@@ -1,20 +1,15 @@
 package com.reason.lang;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Stack;
 
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
-import static com.reason.lang.ParserScopeType.scopeExpression;
-import static com.reason.lang.ParserScopeType.startExpression;
+import static com.reason.lang.ParserScopeEnum.any;
+import static com.reason.lang.ParserScopeType.*;
 import static com.reason.lang.RmlTypes.*;
 
 public class RmlParser2 extends CommonParser {
@@ -35,6 +30,8 @@ public class RmlParser2 extends CommonParser {
                 // End current start-expression scope
                 ParserScope startScope = endScopesUntilStartExpression(scopes);
                 if (startScope != null) {
+                    builder.advanceLexer();
+                    dontMove = true;
                     scopes.pop();
                     startScope.end();
                 }
@@ -42,10 +39,13 @@ public class RmlParser2 extends CommonParser {
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
             }
 
-            //
+            // =
             else if (tokenType == EQ) {
                 if (currentScope.resolution == letNamed) {
                     currentScope.resolution = letNamedEq;
+                    builder.advanceLexer();
+                    dontMove = true;
+                    currentScope = markScope(builder, scopes, letBody, LET_BINDING, groupExpression);
                 } else if (currentScope.resolution == tagProperty) {
                     currentScope.resolution = tagPropertyEq;
                 } else if (currentScope.resolution == moduleNamed) {
@@ -84,12 +84,16 @@ public class RmlParser2 extends CommonParser {
 
                 if (currentScope.resolution == typeNamedEq) {
                     currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression);
-                }
-                else if (currentScope.resolution == moduleNamedEq) {
+                } else if (currentScope.resolution == moduleNamedEq) {
                     currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression);
-                }
-                else {
-                    currentScope = markScope(builder, scopes, any, null, scopeExpression);
+                } else {
+                    IElementType nextTokenType = builder.lookAhead(1);
+                    if (nextTokenType == DOTDOTDOT) {
+                        // object destructuring
+                        currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression);
+                    } else {
+                        currentScope = markScope(builder, scopes, any, null, scopeExpression);
+                    }
                 }
             } else if (tokenType == RBRACE) {
                 builder.advanceLexer();
@@ -136,7 +140,7 @@ public class RmlParser2 extends CommonParser {
                 if (currentScope.resolution == letNamedEqParameters) {
                     builder.advanceLexer();
                     dontMove = true;
-                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression);
+                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, groupExpression);
                 }
             }
 

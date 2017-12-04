@@ -46,6 +46,7 @@ public interface RmlTypes {
     IElementType DIFF = new RmlTokenType("DIFF");
     IElementType DOLLAR = new RmlTokenType("DOLLAR");
     IElementType DOT = new RmlTokenType("DOT");
+    IElementType DOTDOTDOT = new RmlTokenType("DOTDOTDOT");
     IElementType DO = new RmlTokenType("DO");
     IElementType DONE = new RmlTokenType("DONE");
     IElementType ELSE = new RmlTokenType("ELSE");

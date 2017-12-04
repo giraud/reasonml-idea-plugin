@@ -17,6 +17,7 @@ enum ParserScopeEnum {
     letNamedEqParameters,
     letParameters,
     letFunBody,
+    letBody,
 
     startTag,
     closeTag,
@@ -26,9 +27,12 @@ enum ParserScopeEnum {
     type,
     typeNamed,
     typeNamedEq,
+    typeNamedEqPatternMatch,
 
     annotation,
     annotationName,
 
-    objectBinding, typeNamedEqPatternMatch, any,
+    objectBinding,
+
+    any,
 }

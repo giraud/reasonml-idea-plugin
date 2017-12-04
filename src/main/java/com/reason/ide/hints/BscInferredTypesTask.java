@@ -11,6 +11,7 @@ import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleFile;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -36,7 +37,7 @@ public class BscInferredTypesTask implements Runnable {
                     applyType(inferredTypes, letStatement);
                 } else {
                     PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
-                    if (letModule != null) {
+                    if (letModule != null && inferredTypes != null) {
                         BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
                         if (inferredModuleTypes != null) {
                             applyType(inferredModuleTypes, letStatement);
@@ -47,9 +48,9 @@ public class BscInferredTypesTask implements Runnable {
         });
     }
 
-    private void applyType(BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
+    private void applyType(@Nullable BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
         PsiElement letName = letStatement.getLetName();
-        if (letName != null) {
+        if (letName != null && inferredTypes != null) {
             String type = inferredTypes.getLetType(letName.getText());
             if (type != null) {
                 letStatement.setInferredType(type);

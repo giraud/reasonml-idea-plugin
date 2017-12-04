@@ -12,6 +12,7 @@ import java.util.Stack;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.file;
+import static com.reason.lang.ParserScopeType.groupExpression;
 import static com.reason.lang.ParserScopeType.scopeExpression;
 import static com.reason.lang.ParserScopeType.startExpression;
 import static com.reason.lang.RmlTypes.*;
@@ -58,7 +59,7 @@ public abstract class CommonParser  implements PsiParser, LightPsiParser {
 
         if (!scopes.empty()) {
             scope = scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != startExpression) {
+            while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != startExpression && scope.scopeType != groupExpression) {
                 scopes.pop().end();
                 scope = getLatestScope(scopes);
             }
