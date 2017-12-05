@@ -156,12 +156,13 @@ public class RmlParser extends CommonParser {
                     builder.remapCurrentToken(VALUE_NAME);
                     currentScope.resolution = letNamed;
                     currentScope.complete = true;
+                } else if (currentScope.resolution == startTag) {
+                    // This is a property
+                    end(scopes);
+                    builder.remapCurrentToken(PROPERTY_NAME);
+                    currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY, groupExpression, LIDENT);
+                    currentScope.complete = true;
                 }
-                // else if (currentScope.resolution == startTag) {
-                // This is a property
-                //        builder.remapCurrentToken(PROPERTY_NAME);
-                //        currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY);
-                //    }
             } else if (tokenType == UIDENT) {
                 if (currentScope.resolution == open) {
                     // It is a module name/path
@@ -182,12 +183,12 @@ public class RmlParser extends CommonParser {
                 if (nextTokenType == LIDENT || nextTokenType == UIDENT) {
                     // Surely a tag
                     builder.remapCurrentToken(TAG_LT);
-                    currentScope = markScope(builder, scopes, startTag, TAG_START, any, TAG_LT);
+                    currentScope = markScope(builder, scopes, startTag, TAG_START, groupExpression, TAG_LT);
                     currentScope.complete = true;
 
                     builder.advanceLexer();
                     dontMove = true;
-                    //builder.remapCurrentToken(TAG_NAME);
+                    builder.remapCurrentToken(TAG_NAME);
                 } else if (nextTokenType == SLASH) {
                     builder.remapCurrentToken(TAG_LT);
                     currentScope = markScope(builder, scopes, closeTag, TAG_CLOSE, any, TAG_LT);
@@ -195,12 +196,9 @@ public class RmlParser extends CommonParser {
                 }
             } else if (tokenType == GT || tokenType == TAG_AUTO_CLOSE) {
                 if (currentScope.tokenType == TAG_PROPERTY) {
-                    //        currentScope.end();
-                    //        // factorise ?
-                    //        scopes.pop();
-                    //        if (!scopes.empty()) {
-                    //            currentScope = scopes.peek();
-                    //        }
+                    currentScope.end();
+                    scopes.pop();
+                    currentScope = scopes.empty() ? fileScope : scopes.peek();
                 }
 
                 if (currentScope.resolution == startTag || currentScope.resolution == closeTag) {

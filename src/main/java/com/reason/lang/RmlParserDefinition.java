@@ -1,7 +1,6 @@
 package com.reason.lang;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -12,11 +11,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.lang.core.stub.type.RmlFileElementType;
 import com.reason.RmlFile;
+import com.reason.lang.core.stub.type.RmlFileElementType;
 import org.jetbrains.annotations.NotNull;
-
-import static com.reason.lang.RmlParser.ParserOptions.Validation;
 
 public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -46,7 +43,7 @@ public class RmlParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
-        return new RmlParser2();
+        return new RmlParser();
     }
 
     @Override
