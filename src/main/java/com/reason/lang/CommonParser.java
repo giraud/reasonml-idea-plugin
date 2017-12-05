@@ -35,7 +35,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
         parseFile(builder, scopes, fileScope);
 
-        // if we have a scope at last position in file, wihtout SEMI, we need to handle it here
+        // if we have a scope at last position in file, without SEMI, we need to handle it here
         if (!scopes.empty()) {
             ParserScope scope = scopes.pop();
             while (scope != null) {
@@ -52,7 +52,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     protected abstract void parseFile(PsiBuilder builder, Stack<ParserScope> scopes, ParserScope fileScope);
 
     @Nullable
-    protected ParserScope endUntilScopeExpression(Stack<ParserScope> scopes, IElementType scopeElementType) {
+    ParserScope endUntilScopeExpression(Stack<ParserScope> scopes, IElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!scopes.empty()) {

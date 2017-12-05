@@ -6,6 +6,14 @@ enum ParserScopeEnum {
     open,
     openModulePath,
 
+    external,
+    externalNamed,
+
+    type,
+    typeNamed,
+    typeNamedEq,
+    typeNamedEqPatternMatch,
+
     module,
     moduleNamed,
     moduleNamedEq,
@@ -24,11 +32,6 @@ enum ParserScopeEnum {
     closeTag,
     tagProperty,
     tagPropertyEq,
-
-    type,
-    typeNamed,
-    typeNamedEq,
-    typeNamedEqPatternMatch,
 
     annotation,
     annotationName,
