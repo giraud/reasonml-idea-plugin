@@ -1,3 +1,7 @@
+## 0.29
+
+* :internal: Redesigned the reason parser
+
 ## 0.28
 
 * :rocket: Reformat action is working on ocaml source

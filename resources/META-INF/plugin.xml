@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.28</version>
+    <version>0.29</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -9,7 +9,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      <b>version 0.28</b>
+      <b>version 0.29</b>
+
+      <ul>
+        <li>Redesigned the reason parser</li>
+      </ul>
+
+     <b>version 0.28</b>
 
       <ul>
         <li>Reformat action is working on ocaml source (refmt3)</li>
@@ -31,11 +37,6 @@
       <b>version 0.25</b>
       <ul>
         <li>Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14)</li>
-      </ul>
-
-      <b>version 0.24</b>
-      <ul>
-        <li>Add Number and Type argument in color settings (#13).</li>
       </ul>
 
       <p>For all the changes, go to github CHANGELOG.md file</p>
