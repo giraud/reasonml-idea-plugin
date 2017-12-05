@@ -26,6 +26,7 @@ public interface RmlTypes {
     IElementType PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
     IElementType FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
 
+    IElementType AND = new RmlTokenType("AND");
     IElementType ANDAND = new RmlTokenType("ANDAND");
     IElementType ARROBASE = new RmlTokenType("ARROBASE");
     IElementType ARROW = new RmlTokenType("ARROW");

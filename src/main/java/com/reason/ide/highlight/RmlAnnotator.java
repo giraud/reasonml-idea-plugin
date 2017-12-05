@@ -20,12 +20,15 @@ public class RmlAnnotator implements Annotator {
         if (elementType == RmlTypes.MODULE_NAME) {
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(globalScheme.getAttributes(RmlSyntaxHighlighter.MODULE_NAME_));
-        }
-        else if (elementType == RmlTypes.TYPE_CONSTR_NAME) {
+        } else if (elementType == RmlTypes.TYPE_CONSTR_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TYPE_ARGUMENT_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
+        } else if (elementType == RmlTypes.ANNOTATION_NAME) {
+            TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.ANNOTATION_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         } else if (elementType == RmlTypes.TAG_START || elementType == RmlTypes.TAG_CLOSE) {
-            TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TAG_);
+            TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.MARKUP_TAG_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         }
     }

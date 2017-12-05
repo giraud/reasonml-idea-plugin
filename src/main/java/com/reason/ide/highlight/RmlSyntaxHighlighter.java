@@ -20,7 +20,7 @@ import static com.reason.lang.RmlTypes.*;
 public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> KEYWORD_TYPES = of(
             OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO, TRUE, FALSE,
-            REF, EXCEPTION, WHEN,
+            REF, EXCEPTION, WHEN, AND, REC,
             // OCaml
             MATCH, WITH, DO, DONE, OBJECT, END, LAZY, ASSERT, THEN, FUNCTION, STRUCT, SIG, VAL
     );
@@ -39,7 +39,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey MODULE_NAME_ = createTextAttributesKey("REASONML_MODULE_NAME", DefaultLanguageHighlighterColors.CLASS_NAME);
     public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey NUMBER_ = createTextAttributesKey("REASONML_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
-    public static final TextAttributesKey TAG_ = createTextAttributesKey("REASONML_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
+    public static final TextAttributesKey MARKUP_TAG_ = createTextAttributesKey("REASONML_MARKUP_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
     public static final TextAttributesKey OPTION_ = createTextAttributesKey("REASONML_OPTION");
     public static final TextAttributesKey KEYWORD_ = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey SEMICOLON_ = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
@@ -47,6 +47,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey BRACES_ = createTextAttributesKey("REASONML_BRACES", DefaultLanguageHighlighterColors.BRACES);
     public static final TextAttributesKey PARENS_ = createTextAttributesKey("REASONML_PARENS", DefaultLanguageHighlighterColors.PARENTHESES);
     public static final TextAttributesKey OPERATION_SIGN_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+    public static final TextAttributesKey ANNOTATION_ = createTextAttributesKey("REASONML_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
     public static final TextAttributesKey TYPE_ARGUMENT_ = createTextAttributesKey("REASONML_TYPE_ARGUMENT", TYPE_ARGUMENT_KEY);
     public static final TextAttributesKey POLY_VARIANT_ = createTextAttributesKey("REASONML_POLY_VARIANT", POLY_VARIANT_KEY);
     private static final TextAttributesKey DOT_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.DOT);
@@ -62,7 +63,6 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] BRACE_KEYS = new TextAttributesKey[]{BRACES_};
     private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
     private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
-    private static final TextAttributesKey[] TAG_KEYS = new TextAttributesKey[]{TAG_};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
     private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
     private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{DOT_};

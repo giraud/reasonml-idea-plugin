@@ -8,7 +8,6 @@ import java.util.Stack;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
-import static com.reason.lang.ParserScopeEnum.any;
 import static com.reason.lang.ParserScopeType.*;
 import static com.reason.lang.RmlTypes.*;
 
@@ -28,12 +27,12 @@ public class RmlParser2 extends CommonParser {
 
             if (tokenType == SEMI) {
                 // End current start-expression scope
-                ParserScope startScope = endScopesUntilStartExpression(scopes);
-                if (startScope != null) {
+                ParserScope scope = endUntilStart(scopes);
+                if (scope != null && scope.scopeType == startExpression) {
                     builder.advanceLexer();
                     dontMove = true;
                     scopes.pop();
-                    startScope.end();
+                    scope.end();
                 }
 
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
@@ -41,66 +40,64 @@ public class RmlParser2 extends CommonParser {
 
             // =
             else if (tokenType == EQ) {
-                if (currentScope.resolution == letNamed) {
+                if (currentScope.resolution == typeNamed) {
+                    currentScope.resolution = typeNamedEq;
+                } else if (currentScope.resolution == letNamed) {
                     currentScope.resolution = letNamedEq;
-                    builder.advanceLexer();
-                    dontMove = true;
-                    currentScope = markScope(builder, scopes, letBody, LET_BINDING, groupExpression);
                 } else if (currentScope.resolution == tagProperty) {
                     currentScope.resolution = tagPropertyEq;
                 } else if (currentScope.resolution == moduleNamed) {
                     currentScope.resolution = moduleNamedEq;
-                } else if (currentScope.resolution == typeNamed) {
-                    currentScope.resolution = typeNamedEq;
                 }
             }
 
             // ( ... )
             else if (tokenType == LPAREN) {
+                end(scopes);
                 if (currentScope.resolution == letNamedEq) {
                     // function parameters
-                    currentScope = markScope(builder, scopes, letParameters, LET_FUN_PARAMS);
+                    currentScope = markScope(builder, scopes, letParameters, LET_FUN_PARAMS, scopeExpression, LPAREN);
+                } else {
+                    currentScope = markScope(builder, scopes, paren, SCOPED_EXPR, scopeExpression, LPAREN);
                 }
             } else if (tokenType == RPAREN) {
-                if (currentScope.resolution == letParameters) {
-                    builder.advanceLexer();
-                    dontMove = true;
+                ParserScope scope = endUntilScopeExpression(scopes, LPAREN);
 
-                    if (!scopes.empty()) {
-                        ParserScope scope = scopes.pop();
-                        scope.end();
-                        if (!scopes.empty()) {
-                            currentScope = scopes.peek();
-                            currentScope.resolution = letNamedEqParameters;
-                        }
+                builder.advanceLexer();
+                dontMove = true;
+
+                if (scope != null) {
+                    scope.complete = true;
+                    scopes.pop().end();
+                    scope = getLatestScope(scopes);
+                    if (scope != null && scope.resolution == letNamedEq) {
+                        scope.resolution = letNamedEqParameters;
                     }
                 }
+
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
             }
 
             // { ... }
             else if (tokenType == LBRACE) {
-                // end all on going scopes
-                endScopes(scopes);
-
                 if (currentScope.resolution == typeNamedEq) {
-                    currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression);
+                    currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression, LBRACE);
                 } else if (currentScope.resolution == moduleNamedEq) {
-                    currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression);
+                    currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression, LBRACE);
+                } else if (currentScope.resolution == letNamedEqParameters) {
+                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression, LBRACE);
                 } else {
-                    IElementType nextTokenType = builder.lookAhead(1);
-                    if (nextTokenType == DOTDOTDOT) {
-                        // object destructuring
-                        currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression);
-                    } else {
-                        currentScope = markScope(builder, scopes, any, null, scopeExpression);
-                    }
+                    end(scopes);
+                    currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
                 }
             } else if (tokenType == RBRACE) {
+                ParserScope scope = endUntilScopeExpression(scopes, LBRACE);
+
                 builder.advanceLexer();
                 dontMove = true;
 
-                ParserScope scope = endScopes(scopes);
-                if (scope != null && scope.scopeType == scopeExpression) {
+                if (scope != null) {
+                    scope.complete = true;
                     scopes.pop().end();
                 }
 
@@ -112,24 +109,21 @@ public class RmlParser2 extends CommonParser {
                 IElementType nextTokenType = builder.rawLookup(1);
                 if (nextTokenType == ARROBASE) {
                     // This is an annotation
-                    currentScope = markScope(builder, scopes, annotation, ANNOTATION_EXPRESSION, startExpression);
+                    currentScope = markScope(builder, scopes, annotation, ANNOTATION_EXPRESSION, scopeExpression, LBRACKET);
+                } else {
+                    currentScope = markScope(builder, scopes, bracket, SCOPED_EXPR, scopeExpression, LBRACKET);
                 }
-            } else if (tokenType == RBRACKET) { // same than rbrace
-                ParserScope scope = null;
+            } else if (tokenType == RBRACKET) {
+                ParserScope scope = endUntilScopeExpression(scopes, LBRACKET);
 
-                // Loop on all scopes until a scoped expression is found
-                if (!scopes.empty()) {
-                    scope = scopes.pop();
-                    while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != startExpression) {
-                        scope.end();
-                        scope = scopes.empty() ? null : scopes.pop();
-                    }
-                }
+                builder.advanceLexer();
+                dontMove = true;
 
                 if (scope != null) {
-                    builder.advanceLexer();
-                    dontMove = true;
-                    scope.end();
+                    if (scope.resolution != annotation) {
+                        scope.complete = true;
+                    }
+                    scopes.pop().end();
                 }
 
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
@@ -137,18 +131,15 @@ public class RmlParser2 extends CommonParser {
 
             //
             else if (tokenType == ARROW) {
-                if (currentScope.resolution == letNamedEqParameters) {
-                    builder.advanceLexer();
-                    dontMove = true;
-                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, groupExpression);
-                }
+                builder.advanceLexer();
+                dontMove = true;
             }
 
             //
             else if (tokenType == PIPE) {
-                if (currentScope.resolution == typeNamedEq) {
-                    currentScope = markScope(builder, scopes, typeNamedEqPatternMatch, PATTERN_MATCH_EXPR, scopeExpression);
-                }
+                //    if (currentScope.resolution == typeNamedEq) {
+                //        currentScope = markScope(builder, scopes, typeNamedEqPatternMatch, PATTERN_MATCH_EXPR, scopeExpression);
+                //    }
             }
 
             //
@@ -157,110 +148,99 @@ public class RmlParser2 extends CommonParser {
                     builder.remapCurrentToken(TYPE_CONSTR_NAME);
                     currentScope.resolution = typeNamed;
                     currentScope.complete = true;
-                }
-                if (currentScope.resolution == let) {
+                } else if (currentScope.resolution == let) {
                     builder.remapCurrentToken(VALUE_NAME);
                     currentScope.resolution = letNamed;
                     currentScope.complete = true;
-                } else if (currentScope.resolution == startTag) {
-                    // This is a property
-                    builder.remapCurrentToken(PROPERTY_NAME);
-                    currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY);
                 }
-
+                // else if (currentScope.resolution == startTag) {
+                // This is a property
+                //        builder.remapCurrentToken(PROPERTY_NAME);
+                //        currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY);
+                //    }
             } else if (tokenType == UIDENT) {
                 if (currentScope.resolution == open) {
                     // It is a module name/path
+                    currentScope.complete = true;
                     builder.remapCurrentToken(MODULE_NAME);
-                    currentScope = markScope(builder, scopes, openModulePath, MODULE_PATH);
+                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH, any);
                 } else if (currentScope.resolution == module) {
                     builder.remapCurrentToken(MODULE_NAME);
                     currentScope.resolution = moduleNamed;
                     currentScope.complete = true;
                 }
-            } else if (tokenType == LT) {
+            }
+
+            //
+            else if (tokenType == LT) {
                 // Can be a symbol or a JSX tag
                 IElementType nextTokenType = builder.rawLookup(1);
                 if (nextTokenType == LIDENT || nextTokenType == UIDENT) {
                     // Surely a tag
                     builder.remapCurrentToken(TAG_LT);
-                    currentScope = markScope(builder, scopes, startTag, TAG_START);
+                    currentScope = markScope(builder, scopes, startTag, TAG_START, any, TAG_LT);
+                    currentScope.complete = true;
 
                     builder.advanceLexer();
                     dontMove = true;
-                    builder.remapCurrentToken(TAG_NAME);
+                    //builder.remapCurrentToken(TAG_NAME);
                 } else if (nextTokenType == SLASH) {
                     builder.remapCurrentToken(TAG_LT);
-                    currentScope = markScope(builder, scopes, closeTag, TAG_CLOSE);
+                    currentScope = markScope(builder, scopes, closeTag, TAG_CLOSE, any, TAG_LT);
+                    currentScope.complete = true;
                 }
             } else if (tokenType == GT || tokenType == TAG_AUTO_CLOSE) {
                 if (currentScope.tokenType == TAG_PROPERTY) {
-                    currentScope.end();
-                    // factorise ?
-                    scopes.pop();
-                    if (!scopes.empty()) {
-                        currentScope = scopes.peek();
-                    }
+                    //        currentScope.end();
+                    //        // factorise ?
+                    //        scopes.pop();
+                    //        if (!scopes.empty()) {
+                    //            currentScope = scopes.peek();
+                    //        }
                 }
 
                 if (currentScope.resolution == startTag || currentScope.resolution == closeTag) {
                     builder.remapCurrentToken(TAG_GT);
                     builder.advanceLexer();
                     dontMove = true;
+
                     currentScope.end();
                     scopes.pop();
-                    if (!scopes.empty()) {
-                        currentScope = scopes.peek();
-                    }
+
+                    currentScope = scopes.empty() ? fileScope : scopes.peek();
                 }
             } else if (tokenType == ARROBASE) {
                 if (currentScope.resolution == annotation) {
-                    currentScope = markScope(builder, scopes, annotationName, ANNOTATION_NAME);
+                    currentScope.complete = true;
+                    currentScope = mark(builder, scopes, annotationName, ANNOTATION_NAME, any);
+                    currentScope.complete = true;
                 }
             }
 
             // Starts an open
             else if (tokenType == OPEN) {
-                // clear incorrect scopes
-                if (!scopes.empty()) {
-                    ParserScope latestScope = scopes.peek();
-                    while (latestScope != null && latestScope.resolution != file) {
-                        ParserScope scope = scopes.pop();
-                        scope.end();
-                        latestScope = getLatestScope(scopes);
-                    }
-                }
-
-                currentScope = markScope(builder, scopes, open, OPEN_EXPRESSION, startExpression);
+                end(scopes);
+                currentScope = mark(builder, scopes, open, OPEN_EXPRESSION, startExpression);
             }
 
             // Starts a type
             else if (tokenType == TYPE) {
-                // clear scopes
-                endScopes(scopes);
-
-                currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION, startExpression);
-                currentScope.complete = false;
+                end(scopes);
+                currentScope = mark(builder, scopes, type, TYPE_EXPRESSION, startExpression);
             }
 
             // Starts a module
             else if (tokenType == MODULE) {
                 if (currentScope.resolution != annotationName) {
-                    // clear scopes
-                    endScopes(scopes);
-
-                    currentScope = markScope(builder, scopes, module, MODULE_EXPRESSION, startExpression);
-                    currentScope.complete = false;
+                    end(scopes);
+                    currentScope = mark(builder, scopes, module, MODULE_EXPRESSION, startExpression);
                 }
             }
 
             // Starts a let
             else if (tokenType == LET) {
-                // clear scopes
-                endScopes(scopes);
-
-                currentScope = markScope(builder, scopes, let, LET_EXPRESSION, startExpression);
-                currentScope.complete = false;
+                end(scopes);
+                currentScope = mark(builder, scopes, let, LET_EXPRESSION, startExpression);
             }
 
             if (dontMove) {

@@ -18,6 +18,7 @@ enum ParserScopeEnum {
     letParameters,
     letFunBody,
     letBody,
+    funBody,
 
     startTag,
     closeTag,
@@ -34,5 +35,7 @@ enum ParserScopeEnum {
 
     objectBinding,
 
-    any,
+    paren,
+    brace,
+    bracket,
 }

@@ -7,7 +7,8 @@ class ParserScope {
     ParserScopeEnum resolution;
     IElementType tokenType;
     ParserScopeType scopeType = ParserScopeType.any;
-    boolean complete = true;
+    IElementType scopeElementType;
+    boolean complete = false;
 
     private PsiBuilder.Marker mark;
 
@@ -18,16 +19,18 @@ class ParserScope {
     }
 
     public void end() {
-        if (complete) done();
-        else drop();
+        if (complete) {
+            done();
+        } else {
+            drop();
+        }
     }
 
     private void done() {
         if (mark != null) {
             if (tokenType != null) {
                 mark.done(tokenType);
-            }
-            else {
+            } else {
                 mark.drop();
             }
             mark = null;

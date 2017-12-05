@@ -12,12 +12,10 @@ import java.util.Stack;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.file;
-import static com.reason.lang.ParserScopeType.groupExpression;
-import static com.reason.lang.ParserScopeType.scopeExpression;
-import static com.reason.lang.ParserScopeType.startExpression;
-import static com.reason.lang.RmlTypes.*;
+import static com.reason.lang.ParserScopeType.*;
+import static com.reason.lang.RmlTypes.FILE_MODULE;
 
-public abstract class CommonParser  implements PsiParser, LightPsiParser {
+public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     @Override
     @NotNull
@@ -54,12 +52,12 @@ public abstract class CommonParser  implements PsiParser, LightPsiParser {
     protected abstract void parseFile(PsiBuilder builder, Stack<ParserScope> scopes, ParserScope fileScope);
 
     @Nullable
-    protected ParserScope endScopes(Stack<ParserScope> scopes) {
+    protected ParserScope endUntilScopeExpression(Stack<ParserScope> scopes, IElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!scopes.empty()) {
             scope = scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != startExpression && scope.scopeType != groupExpression) {
+            while (scope != null && scope.scopeType != scopeExpression && scope.scopeElementType != scopeElementType) {
                 scopes.pop().end();
                 scope = getLatestScope(scopes);
             }
@@ -69,12 +67,27 @@ public abstract class CommonParser  implements PsiParser, LightPsiParser {
     }
 
     @Nullable
-    ParserScope endScopesUntilStartExpression(Stack<ParserScope> scopes) {
+    protected ParserScope end(Stack<ParserScope> scopes) {
         ParserScope scope = null;
 
         if (!scopes.empty()) {
             scope = scopes.peek();
-            while (scope != null && scope.scopeType != startExpression) {
+            while (scope != null && scope.scopeType == any) {
+                scopes.pop().end();
+                scope = getLatestScope(scopes);
+            }
+        }
+
+        return scope;
+    }
+
+    @Nullable
+    ParserScope endUntilStart(Stack<ParserScope> scopes) {
+        ParserScope scope = null;
+
+        if (!scopes.empty()) {
+            scope = scopes.peek();
+            while (scope != null && scope.scopeType != startExpression && scope.scopeType != scopeExpression) {
                 scopes.pop().end();
                 scope = getLatestScope(scopes);
             }
@@ -88,15 +101,23 @@ public abstract class CommonParser  implements PsiParser, LightPsiParser {
         return scopes.empty() ? null : scopes.peek();
     }
 
-    ParserScope markScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
+    ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType) {
         ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
+        scope.scopeType = scopeType;
         scopes.push(scope);
         return scope;
     }
 
-    ParserScope markScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType) {
+    ParserScope markComplete(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType) {
+        ParserScope scope = mark(builder, scopes, resolution, tokenType, scopeType);
+        scope.complete = true;
+        return scope;
+    }
+
+    ParserScope markScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
         ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
         scope.scopeType = scopeType;
+        scope.scopeElementType = scopeElementType;
         scopes.push(scope);
         return scope;
     }

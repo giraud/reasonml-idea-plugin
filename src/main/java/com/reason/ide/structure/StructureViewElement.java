@@ -8,6 +8,8 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.OclFile;
+import com.reason.RmlFile;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,7 +71,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (m_element instanceof PsiModuleFile) {
+        if (m_element instanceof RmlFile || m_element instanceof OclFile) {
             PsiModule[] modules = PsiTreeUtil.getChildrenOfType(m_element, PsiModule.class);
             PsiLet[] lets = PsiTreeUtil.getChildrenOfType(m_element, PsiLet.class);
             PsiType[] types = PsiTreeUtil.getChildrenOfType(m_element, PsiType.class);

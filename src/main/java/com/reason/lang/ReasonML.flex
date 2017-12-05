@@ -86,7 +86,8 @@ LITERAL_MODIFIER=[G-Zg-z]
     "in"         { return IN; }
     "exception"  { return EXCEPTION; }
     "when"       { return WHEN; }
-
+    "and"        { return AND; }
+    
     // OCaml
     "of"         { return OF; }
     "to"         { return TO; }
@@ -133,7 +134,6 @@ LITERAL_MODIFIER=[G-Zg-z]
     "/>"   { return TAG_AUTO_CLOSE; }
     "[|"   { return LARRAY; }
     "|]"   { return RARRAY; }
-    "()"   { return UNIT; }
 
     "===" { return EQEQEQ; }
     "=="  { return EQEQ; }
@@ -145,7 +145,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     ":"   { return COLON; }
     ";"   { return SEMI; }
     "'"   { return QUOTE; }
-    "..." { return DOTDOTDOT; }
+    "..." { return DOTDOTDOT; }
     "."   { return DOT; }
     "|"   { return PIPE; }
     "("   { return LPAREN; }
