@@ -10,7 +10,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.ProcessingContext;
 import com.reason.RmlFile;
-import com.reason.lang.core.psi.PsiModuleFile;
 import com.reason.merlin.MerlinService;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,14 +38,14 @@ public class CompletionContributor extends com.intellij.codeInsight.completion.C
                     PsiElement originalPrevSibling = originalPosition == null ? null : originalPosition.getPrevSibling();
                     //PsiElement originalParent = originalPosition != null ? originalPosition.getParent() : null;
 
-                    if (parent instanceof PsiModuleFile) {
+                    if (parent instanceof RmlFile) {
                         // We are completing a top level expression
                         if (originalPrevSibling != null && originalPrevSibling.getNode().getElementType() == DOT) {
                             ModuleDotCompletionProvider.complete(result);
                         } else if (originalPosition instanceof LeafPsiElement) {
                             if (originalPosition.getNode().getElementType() == UIDENT) {
                                 // Starts a ModuleName completion
-                                ModuleNameCompletion.complete(file.getProject(), (PsiModuleFile) parent, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
+                                ModuleNameCompletion.complete(file.getProject(), (RmlFile) parent, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
                             }
                         }
                     }

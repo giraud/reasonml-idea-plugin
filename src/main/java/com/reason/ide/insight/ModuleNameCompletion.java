@@ -13,7 +13,6 @@ import com.reason.icons.Icons;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import static com.reason.lang.core.RmlPsiUtil.findFileModules;
 
 class ModuleNameCompletion {
 
-    static void complete(Project project, PsiModuleFile currentModule, String modulePrefix, @NotNull CompletionResultSet resultSet) {
+    static void complete(Project project, RmlFile currentModule, String modulePrefix, @NotNull CompletionResultSet resultSet) {
         // First find all potential modules of current file
         PsiModule[] currentModules = currentModule.getModules();
         for (PsiModule module : currentModules) {

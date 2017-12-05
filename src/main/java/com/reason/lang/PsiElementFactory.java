@@ -9,9 +9,7 @@ class PsiElementFactory {
     static PsiElement createElement(ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == RmlTypes.FILE_MODULE) {
-            return new PsiModuleFile(node);
-        } else if (type == RmlTypes.EXTERNAL_EXPRESSION) {
+        if (type == RmlTypes.EXTERNAL_EXPRESSION) {
             return new PsiExternal(node);
         } else if (type == RmlTypes.OPEN_EXPRESSION) {
             return new PsiOpen(node);

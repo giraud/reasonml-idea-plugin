@@ -4,13 +4,13 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.RmlFile;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleFile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class BscInferredTypesTask implements Runnable {
         ApplicationManager.getApplication().runReadAction(() -> {
             for (PsiLet letStatement : m_letExpressions) {
                 PsiElement letParent = letStatement.getParent();
-                if (letParent instanceof PsiModuleFile) {
+                if (letParent instanceof RmlFile) {
                     applyType(inferredTypes, letStatement);
                 } else {
                     PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
