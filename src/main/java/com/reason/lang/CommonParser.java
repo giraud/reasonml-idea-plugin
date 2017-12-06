@@ -97,6 +97,21 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     @Nullable
+    ParserScope endUntilStartForced(Stack<ParserScope> scopes) {
+        ParserScope scope = null;
+
+        if (!scopes.empty()) {
+            scope = scopes.peek();
+            while (scope != null && scope.scopeType != startExpression) {
+                scopes.pop().end();
+                scope = getLatestScope(scopes);
+            }
+        }
+
+        return scope;
+    }
+
+    @Nullable
     ParserScope getLatestScope(Stack<ParserScope> scopes) {
         return scopes.empty() ? null : scopes.peek();
     }

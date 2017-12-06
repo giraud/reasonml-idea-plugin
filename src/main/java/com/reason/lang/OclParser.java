@@ -1,60 +1,264 @@
 package com.reason.lang;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiBuilder.Marker;
-import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.RmlTypes.EQ;
-import static com.reason.lang.RmlTypes.FILE_MODULE;
+import java.util.Stack;
 
-public class OclParser implements PsiParser, LightPsiParser {
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.reason.lang.ParserScopeEnum.*;
+import static com.reason.lang.ParserScopeType.*;
+import static com.reason.lang.RmlTypes.*;
 
-    @NotNull
-    public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        parseLight(elementType, builder);
-        return builder.getTreeBuilt();
-    }
-
-    public void parseLight(IElementType elementType, PsiBuilder builder) {
-        boolean r;
-        //b.setDebugMode(true);
-        builder = adapt_builder_(elementType, builder, this, null);
-        Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
-        r = reasonFile(builder);
-        exit_section_(builder, 0, m, elementType, r, true, TRUE_CONDITION);
-    }
-
-    private boolean reasonFile(PsiBuilder builder) {
-        if (!recursion_guard_(builder, 1, "reasonFile")) {
-            return false;
-        }
-
-        Marker fileAsModuleMarker = builder.mark();
+public class OclParser extends CommonParser {
+    @Override
+    protected void parseFile(PsiBuilder builder, Stack<ParserScope> scopes, ParserScope fileScope) {
+        ParserScope currentScope = fileScope;
+        boolean dontMove = false;
+        IElementType tokenType = null;
+        IElementType previousTokenType = null;
 
         int c = current_position_(builder);
-        IElementType tokenType = builder.getTokenType();
         while (true) {
+            previousTokenType = tokenType;
+            tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
             }
 
-            if (tokenType == RmlTypes.OPEN) {
-                openExpression(builder, 1);
-            } else if (tokenType == RmlTypes.INCLUDE) {
-                includeExpression(builder, 1);
-            } else if (tokenType == RmlTypes.TYPE) {
-                typeExpression(builder, 1);
-            } else if (tokenType == RmlTypes.MODULE) {
-                moduleExpression(builder, 1);
-            } else if (tokenType == RmlTypes.EXTERNAL) {
-                externalExpression(builder, 1);
-            } else if (tokenType == RmlTypes.LET) {
-                letExpression(builder, 1);
+            if (tokenType == IN) {
+                // End current start-expression scope
+                ParserScope scope = endUntilStart(scopes);
+                if (scope != null && scope.scopeType == startExpression) {
+                    scopes.pop();
+                    scope.end();
+                }
+
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
+            }
+
+            // =
+            else if (tokenType == EQ) {
+                if (currentScope.resolution == typeNamed) {
+                    currentScope.resolution = typeNamedEq;
+                } else if (currentScope.resolution == letNamed) {
+                    currentScope.resolution = letNamedEq;
+                    builder.advanceLexer();
+                    dontMove = true;
+                    currentScope = markScope(builder, scopes, letNamedEq, LET_BINDING, scopeExpression, EQ);
+                    currentScope.complete = true;
+                } else if (currentScope.resolution == tagProperty) {
+                    currentScope.resolution = tagPropertyEq;
+                } else if (currentScope.resolution == moduleNamed) {
+                    currentScope.resolution = moduleNamedEq;
+                }
+            }
+
+            // ( ... )
+            else if (tokenType == LPAREN) {
+                end(scopes);
+//                if (currentScope.resolution == letNamedEq) {
+//                    // function parameters
+//                    currentScope = markScope(builder, scopes, letParameters, LET_FUN_PARAMS, scopeExpression, LPAREN);
+//                } else {
+                currentScope = markScope(builder, scopes, paren, SCOPED_EXPR, scopeExpression, LPAREN);
+//                }
+            } else if (tokenType == RPAREN) {
+                ParserScope scope = endUntilScopeExpression(scopes, LPAREN);
+
+                builder.advanceLexer();
+                dontMove = true;
+
+                if (scope != null) {
+                    scope.complete = true;
+                    scopes.pop().end();
+                    scope = getLatestScope(scopes);
+//                    if (scope != null && scope.resolution == letNamedEq) {
+//                        scope.resolution = letNamedEqParameters;
+//                    }
+                }
+
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
+            }
+
+            // { ... }
+            else if (tokenType == LBRACE) {
+//                if (currentScope.resolution == typeNamedEq) {
+//                    currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression, LBRACE);
+//                } else if (currentScope.resolution == moduleNamedEq) {
+//                    currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression, LBRACE);
+//                } else if (currentScope.resolution == letNamedEqParameters) {
+//                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression, LBRACE);
+//                } else {
+//                    end(scopes);
+//                    currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
+//                }
+            } else if (tokenType == RBRACE) {
+//                ParserScope scope = endUntilScopeExpression(scopes, LBRACE);
+//
+//                builder.advanceLexer();
+//                dontMove = true;
+//
+//                if (scope != null) {
+//                    scope.complete = true;
+//                    scopes.pop().end();
+//                }
+//
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
+            }
+
+            // [ ... ]
+            else if (tokenType == LBRACKET) {
+                IElementType nextTokenType = builder.rawLookup(1);
+                if (nextTokenType == ARROBASE) {
+                    // This is an annotation
+                    currentScope = markScope(builder, scopes, annotation, ANNOTATION_EXPRESSION, scopeExpression, LBRACKET);
+                } else {
+                    currentScope = markScope(builder, scopes, bracket, SCOPED_EXPR, scopeExpression, LBRACKET);
+                }
+            } else if (tokenType == RBRACKET) {
+                ParserScope scope = endUntilScopeExpression(scopes, LBRACKET);
+
+                builder.advanceLexer();
+                dontMove = true;
+
+                if (scope != null) {
+                    if (scope.resolution != annotation) {
+                        scope.complete = true;
+                    }
+                    scopes.pop().end();
+                }
+
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
+            }
+
+            //
+//            else if (tokenType == ARROW) {
+//                builder.advanceLexer();
+//                dontMove = true;
+//            }
+
+            //
+//            else if (tokenType == PIPE) {
+//                //    if (currentScope.resolution == typeNamedEq) {
+//                //        currentScope = markScope(builder, scopes, typeNamedEqPatternMatch, PATTERN_MATCH_EXPR, scopeExpression);
+//                //    }
+//            }
+
+            //
+            else if (tokenType == LIDENT) {
+                if (currentScope.resolution == type) {
+                    builder.remapCurrentToken(TYPE_CONSTR_NAME);
+                    currentScope.resolution = typeNamed;
+                    currentScope.complete = true;
+                } else if (currentScope.resolution == external) {
+                    builder.remapCurrentToken(VALUE_NAME);
+                    currentScope.resolution = externalNamed;
+                    currentScope.complete = true;
+                } else if (currentScope.resolution == let) {
+                    builder.remapCurrentToken(VALUE_NAME);
+                    currentScope.resolution = letNamed;
+                    currentScope.complete = true;
+//                } else if (currentScope.resolution == startTag) {
+//                    // This is a property
+//                    end(scopes);
+//                    builder.remapCurrentToken(PROPERTY_NAME);
+//                    currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY, groupExpression, LIDENT);
+//                    currentScope.complete = true;
+                }
+            } else if (tokenType == UIDENT) {
+                if (currentScope.resolution == open) {
+                    // It is a module name/path
+                    currentScope.complete = true;
+                    builder.remapCurrentToken(MODULE_NAME);
+                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH, any);
+                } else if (currentScope.resolution == module) {
+                    builder.remapCurrentToken(MODULE_NAME);
+                    currentScope.resolution = moduleNamed;
+                    currentScope.complete = true;
+                }
+            }
+
+            //
+            else if (tokenType == LT) {
+//                // Can be a symbol or a JSX tag
+//                IElementType nextTokenType = builder.rawLookup(1);
+//                if (nextTokenType == LIDENT || nextTokenType == UIDENT) {
+//                    // Surely a tag
+//                    builder.remapCurrentToken(TAG_LT);
+//                    currentScope = markScope(builder, scopes, startTag, TAG_START, groupExpression, TAG_LT);
+//                    currentScope.complete = true;
+//
+//                    builder.advanceLexer();
+//                    dontMove = true;
+//                    builder.remapCurrentToken(TAG_NAME);
+//                } else if (nextTokenType == SLASH) {
+//                    builder.remapCurrentToken(TAG_LT);
+//                    currentScope = markScope(builder, scopes, closeTag, TAG_CLOSE, any, TAG_LT);
+//                    currentScope.complete = true;
+//                }
+            } else if (tokenType == GT || tokenType == TAG_AUTO_CLOSE) {
+//                if (currentScope.tokenType == TAG_PROPERTY) {
+//                    currentScope.end();
+//                    scopes.pop();
+//                    currentScope = scopes.empty() ? fileScope : scopes.peek();
+//                }
+//
+//                if (currentScope.resolution == startTag || currentScope.resolution == closeTag) {
+//                    builder.remapCurrentToken(TAG_GT);
+//                    builder.advanceLexer();
+//                    dontMove = true;
+//
+//                    currentScope.end();
+//                    scopes.pop();
+//
+//                    currentScope = scopes.empty() ? fileScope : scopes.peek();
+//                }
+            } else if (tokenType == ARROBASE) {
+//                if (currentScope.resolution == annotation) {
+//                    currentScope.complete = true;
+//                    currentScope = mark(builder, scopes, annotationName, ANNOTATION_NAME, any);
+//                    currentScope.complete = true;
+//                }
+            }
+
+            // Starts an open
+            else if (tokenType == OPEN) {
+                endLikeSemi(previousTokenType, scopes, fileScope);
+                currentScope = mark(builder, scopes, open, OPEN_EXPRESSION, startExpression);
+            }
+
+            // Starts an external
+            else if (tokenType == EXTERNAL) {
+                endLikeSemi(previousTokenType, scopes, fileScope);
+                currentScope = mark(builder, scopes, external, EXTERNAL_EXPRESSION, startExpression);
+            }
+
+            // Starts a type
+            else if (tokenType == TYPE) {
+                endLikeSemi(previousTokenType, scopes, fileScope);
+                currentScope = mark(builder, scopes, type, TYPE_EXPRESSION, startExpression);
+            }
+
+            // Starts a module
+            else if (tokenType == MODULE) {
+                if (currentScope.resolution != annotationName) {
+                    endLikeSemi(previousTokenType, scopes, fileScope);
+                    currentScope = mark(builder, scopes, module, MODULE_EXPRESSION, startExpression);
+                }
+            }
+
+            // Starts a let
+            else if (tokenType == LET) {
+                if (previousTokenType != EQ) {
+                    endLikeSemi(previousTokenType, scopes, fileScope);
+                }
+                currentScope = mark(builder, scopes, let, LET_EXPRESSION, startExpression);
+            }
+
+            if (dontMove) {
+                dontMove = false;
             } else {
                 builder.advanceLexer();
             }
@@ -63,598 +267,28 @@ public class OclParser implements PsiParser, LightPsiParser {
                 break;
             }
 
-            tokenType = builder.getTokenType();
             c = builder.rawTokenIndex();
         }
-
-        fileAsModuleMarker.done(FILE_MODULE);
-        return true;
     }
 
-    // **********
-    // OPEN EXCLAMATION_MARK? module_path
-    // **********
-    private void openExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "openExpression")) {
-            return;
-        }
-
-        Marker exprMarker = enter_section_(builder);
-
-        IElementType nextTokenType = builder.lookAhead(1);
-        if (nextTokenType == RmlTypes.EXCLAMATION_MARK) {
-            advance(builder);
-        }
-
-        // Continue until another expression is found
-        advance(builder);
-        modulePath(builder, recLevel + 1);
-
-        exit_section_(builder, exprMarker, RmlTypes.OPEN_EXPRESSION, true);
-    }
-
-    // **********
-    // TYPE type_name any*
-    // **********
-    private void typeExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "type expression")) {
-            return;
-        }
-
-        // enter type
-        Marker exprMarker = enter_section_(builder);
-
-        // type name
-        advance(builder);
-        Marker nameMarker = enter_section_(builder);
-        String constrName = builder.getTokenText();
-        IElementType tokenType = advance(builder);
-        exit_section_(builder, nameMarker, RmlTypes.TYPE_CONSTR_NAME, true);
-
-        // anything until new expression
-        if (!isStartExpression(tokenType)) {
-            advanceUntilNextStart(builder, recLevel++);
-        }
-
-        // end of type
-        exit_section_(builder, exprMarker, RmlTypes.TYPE_EXPRESSION, true);
-    }
-
-    // **********
-    // INCLUDE module_path (scoped_expression)? SEMI
-    // **********
-    private void includeExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "include expression")) {
-            return;
-        }
-
-        // enter
-        Marker exprMarker = enter_section_(builder);
-        IElementType tokenType = advance(builder);
-        if (tokenType != RmlTypes.SEMI) {
-            // module path
-            modulePath(builder, recLevel + 1);
-            tokenType = builder.getTokenType();
-            if (tokenType == RmlTypes.LBRACE) {
-                scopedExpression(builder, recLevel + 1);
-            }
-        }
-
-        endExpression(builder);
-        exit_section_(builder, exprMarker, RmlTypes.INCLUDE_EXPRESSION, true);
-    }
-
-    // **********
-    // MODULE module_name any* EQ | STRUCT any* END
-    //                            | any+
-    // **********
-    private void moduleExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "module expression")) {
-            return;
-        }
-
-        // enter module
-        Marker moduleMarker = enter_section_(builder);
-        advance(builder);
-
-        // module_name
-        Marker moduleNameMarker = enter_section_(builder);
-        IElementType tokenType = advance(builder);
-        exit_section_(builder, moduleNameMarker, RmlTypes.MODULE_NAME, true);
-
-        if (tokenType != EQ) {
-            advanceUntil(builder, recLevel + 1, EQ);
-        }
-
-        tokenType = advance(builder);
-        if (tokenType == RmlTypes.STRUCT) {
-            structExpression(builder, recLevel + 1);
+    private ParserScope endLikeSemi(IElementType previousTokenType, Stack<ParserScope> scopes, ParserScope fileScope) {
+        ParserScope scope;
+        if (previousTokenType != IN) {
+            // force completion of scoped expressions
+            scope = endUntilStartForced(scopes);
         } else {
-            advanceUntilNextStart(builder, recLevel + 1);
+            // End current start-expression scope
+            scope = endUntilStart(scopes);
         }
 
-        exit_section_(builder, moduleMarker, RmlTypes.MODULE_EXPRESSION, true);
-    }
-
-    // ***** UIDENT (DOT UIDENT|scoped_expression)* ( (.*) )::constr
-    private void modulePath(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "module path")) {
-            return;
-        }
-
-        Marker marker = enter_section_(builder);
-
-        // First element must be a module name
-        boolean incorrectName = builder.getTokenType() != RmlTypes.UIDENT;
-        Marker nameMarker = enter_section_(builder);
-        builder.advanceLexer();
-        if (incorrectName) {
-            //if (ParserOptions.Validation == m_options) {
-            //    nameMarker.error(ERR_NAME_UPPERCASE);
-            //} else {
-            nameMarker.drop();
-            //}
-        } else {
-            exit_section_(builder, nameMarker, RmlTypes.MODULE_NAME, true);
-
-            // Then we can have other modules with dot notation
-            while (true) {
-                nameMarker = enter_section_(builder);
-                IElementType tokenType = builder.getTokenType();
-
-                if (tokenType == RmlTypes.LPAREN) {
-                    nameMarker.drop();
-                    // Anything until we get to closing paren or semi
-                    parenExpression(builder, recLevel + 1);
-                    continue;
-                } else if (tokenType == RmlTypes.LBRACE) {
-                    nameMarker.drop();
-                    // scoped body, anything inside braces
-                    scopedExpression(builder, recLevel + 1);
-                }
-
-
-                // a semi or scope is found, stop module path exploration
-                if (tokenType == RmlTypes.LBRACE || isStartExpression(tokenType)) {
-                    nameMarker.drop();
-                    break;
-                }
-
-                if (tokenType == RmlTypes.DOT) {
-                    nameMarker.drop();
-                    builder.advanceLexer();
-                    continue;
-                }
-
-                if (tokenType != RmlTypes.UIDENT) {
-                    builder.advanceLexer();
-                    //nameMarker.error(ERR_NAME_UPPERCASE);
-                    nameMarker.drop();
-                    break;
-                }
-
-                builder.advanceLexer();
-                exit_section_(builder, nameMarker, RmlTypes.MODULE_NAME, true);
+        if (scope != null) {
+            if (scope.scopeType == startExpression) {
+                scopes.pop();
+                scope.end();
             }
         }
 
-        exit_section_(builder, marker, RmlTypes.MODULE_PATH, true);
-    }
+        return scopes.empty() ? fileScope : scopes.peek();
 
-    // **********
-    // EXTERNAL external_name COLON expression* SEMI
-    private void externalExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "external expression")) {
-            return;
-        }
-
-        // enter external
-        Marker exprMarker = enter_section_(builder);
-
-        // name
-        IElementType tokenType = advance(builder);
-        if (tokenType != RmlTypes.SEMI) {
-            Marker nameMarker = enter_section_(builder);
-            Marker errorMarker = null;
-            boolean isNameCorrect = tokenType == RmlTypes.LIDENT;
-
-            if (!isNameCorrect) {
-                errorMarker = builder.mark();
-            }
-
-            builder.advanceLexer();
-
-            if (!isNameCorrect) {
-                errorMarker.error("External name must start with a lower case");
-            }
-
-            exit_section_(builder, nameMarker, RmlTypes.VALUE_NAME, true);
-        }
-
-        tokenType = builder.getTokenType();
-        // :
-        if (tokenType == RmlTypes.COLON) {
-            builder.advanceLexer();
-        }
-
-        tokenType = builder.getTokenType();
-        if (tokenType != RmlTypes.SEMI) {
-            // anything but semi
-            while (true) {
-                tokenType = advance(builder);
-                if (tokenType == null || tokenType == RmlTypes.SEMI) {
-                    break;
-                }
-            }
-        }
-
-        // end of external
-        endExpression(builder);
-        exit_section_(builder, exprMarker, RmlTypes.EXTERNAL_EXPRESSION, true);
-    }
-
-    // **********
-    // NEW!
-    // LET REC? MODULE? (destructure|value_name) expression* (EQ (LPAREN expression RPAREN ARROW scoped_expression | (scoped_)expression) SEMI
-    //
-    // OLD!
-    // LET REC? MODULE? (destructure|value_name) expression* (EQ (scoped_)expression | ARROW scoped_expression) SEMI
-    // LET REC? MODULE? value_name COLON expression+ SEMI
-    // **********
-    private void letExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "let expression")) {
-            return;
-        }
-
-        // enter LET
-        Marker exprMarker = enter_section_(builder);
-
-        // Might be recursive
-        IElementType tokenType = advance(builder);
-        if (tokenType == RmlTypes.REC) {
-            builder.advanceLexer();
-        }
-
-        // might be a module alias
-        tokenType = builder.getTokenType();
-        if (tokenType == RmlTypes.MODULE) {
-            builder.advanceLexer();
-        }
-
-        tokenType = builder.getTokenType();
-        if (tokenType != RmlTypes.SEMI) {
-            if (tokenType == RmlTypes.UNIT) {
-                builder.advanceLexer();
-            } else if (tokenType == RmlTypes.LPAREN) {
-                // we are dealing with destructuring
-                advanceUntil(builder, recLevel + 1, RmlTypes.RPAREN);
-                builder.advanceLexer();
-            } else if (tokenType == RmlTypes.LBRACE) {
-                // we are dealing with destructuring
-                advanceUntil(builder, recLevel + 1, RmlTypes.RBRACE);
-                builder.advanceLexer();
-            } else {
-                // value name
-                Marker nameMarker = enter_section_(builder);
-                builder.advanceLexer();
-                exit_section_(builder, nameMarker, RmlTypes.VALUE_NAME, true);
-            }
-        }
-
-        builder.getTokenType();
-
-        // Anything before EQ|ARROW
-        // anything but semi or start expression
-        WhitespaceNotifier whitespace = new WhitespaceNotifier();
-        builder.setWhitespaceSkippedCallback(whitespace::notify);
-
-        while (true) {
-            tokenType = builder.getTokenType();
-            if ((whitespace.isSkipped() && (tokenType == EQ || tokenType == RmlTypes.ARROW)) || isStartExpression(tokenType)) {
-                break;
-            } else {
-                whitespace.setSkipped();
-            }
-            builder.advanceLexer();
-        }
-
-        builder.setWhitespaceSkippedCallback(null);
-
-        tokenType = builder.getTokenType();
-        if (EQ == tokenType || RmlTypes.ARROW == tokenType) {
-            boolean isFunction = RmlTypes.ARROW == tokenType;
-
-            builder.advanceLexer();
-            Marker bindMarker = enter_section_(builder);
-
-            tokenType = builder.getTokenType();
-            if (RmlTypes.LPAREN == tokenType || RmlTypes.UNIT == tokenType) {
-                // New function syntax ?
-                Marker paramsMarker = enter_section_(builder);
-                if (RmlTypes.LPAREN == tokenType) {
-                    parenExpression(builder, recLevel + 1);
-                } else {
-                    builder.advanceLexer();
-                }
-
-                tokenType = builder.getTokenType();
-                isFunction = RmlTypes.ARROW == tokenType;
-                if (isFunction) {
-                    bindMarker.drop();
-                    exit_section_(builder, paramsMarker, RmlTypes.FUN_PARAMS, true);
-                } else {
-                    paramsMarker.drop();
-                }
-
-                tokenType = advance(builder);
-
-                if (isFunction) {
-                    bindMarker = enter_section_(builder);
-                }
-            }
-
-            if (RmlTypes.LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-            } else if (RmlTypes.IF == tokenType) {
-                ifExpression(builder, recLevel + 1, true);
-            } else {
-                advanceUntilNextStart(builder, recLevel + 1);
-            }
-
-            exit_section_(builder, bindMarker, isFunction ? RmlTypes.FUN_BODY : RmlTypes.LET_BINDING, true);
-        }
-
-        // end of LET
-        endExpression(builder);
-        exit_section_(builder, exprMarker, RmlTypes.LET_EXPRESSION, true);
-
-    }
-
-    private void ifExpression(PsiBuilder builder, int recLevel, boolean containsIf) {
-        if (!recursion_guard_(builder, recLevel, "if expression")) {
-            return;
-        }
-
-        IElementType tokenType = builder.getTokenType();
-
-        if (containsIf) {
-            tokenType = advance(builder);
-            if (tokenType != RmlTypes.LPAREN) {
-                //fail(builder, "'(' expected");
-                return;
-            }
-
-            parenExpression(builder, recLevel + 1);
-            tokenType = builder.getTokenType();
-        }
-
-        if (tokenType == RmlTypes.LBRACE) {
-            scopedExpression(builder, recLevel + 1);
-            tokenType = builder.getTokenType();
-        }
-
-        if (tokenType == RmlTypes.ELSE) {
-            tokenType = advance(builder);
-            ifExpression(builder, recLevel + 1, tokenType == RmlTypes.IF);
-        }
-    }
-
-    // **********
-    // Pattern: LBRACE expression* RBRACE
-    // **********
-    private void scopedExpression(PsiBuilder builder, int recLevel) {
-        scopedTypeExpression(builder, recLevel, null);
-    }
-
-    private void scopedTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
-        if (!recursion_guard_(builder, recLevel, "scoped expression")) {
-            return;
-        }
-
-        // Mark the start of the scoped expression
-        Marker marker = enter_section_(builder);
-        builder.advanceLexer();
-
-        while (true) {
-            IElementType tokenType = builder.getTokenType();
-            if (tokenType == null || tokenType == RmlTypes.RBRACE) {
-                break;
-            }
-
-            // start expressions ?
-            if (tokenType == RmlTypes.OPEN) {
-                openExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.INCLUDE) {
-                includeExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.TYPE) {
-                typeExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.MODULE) {
-                moduleExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.EXTERNAL) {
-                externalExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.LET) {
-                letExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.LBRACE) {
-                scopedTypeExpression(builder, recLevel + 1, constrName);
-            } else if (tokenType == RmlTypes.LPAREN) {
-                parenTypeExpression(builder, recLevel + 1, constrName);
-            } else {
-                tokenType = advance(builder);
-                if (RmlTypes.LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
-                    Marker constrMarker = builder.mark();
-                    advance(builder);
-                    exit_section_(builder, constrMarker, RmlTypes.TYPE_CONSTR_NAME, true);
-                }
-
-            }
-        }
-
-        IElementType tokenType = builder.getTokenType();
-        if (tokenType == RmlTypes.RBRACE) {
-            builder.advanceLexer();
-        }
-
-        exit_section_(builder, marker, RmlTypes.SCOPED_EXPR, true);
-    }
-
-    private void advanceUntilNextStart(PsiBuilder builder, int recLevel) {
-        IElementType tokenType;
-        while (true) {
-            tokenType = advance(builder);
-            if (RmlTypes.LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            } else if (RmlTypes.LPAREN == tokenType) {
-                parenExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            }
-            if (isStartExpression(tokenType) || tokenType == RmlTypes.RBRACE) {
-                break;
-            }
-        }
-    }
-
-
-    // **********
-    // Pattern: LPAREN {{token-start}} expression* RPAREN {{token-end}}
-    // **********
-    private void parenExpression(PsiBuilder builder, int recLevel) {
-        parenTypeExpression(builder, recLevel, null);
-    }
-
-    private void parenTypeExpression(PsiBuilder builder, int recLevel, String constrName) {
-        if (!recursion_guard_(builder, recLevel, "skip paren")) {
-            return;
-        }
-
-        IElementType tokenType;
-        while (true) {
-            tokenType = advance(builder);
-
-            // If a new scope is found, recursively process it
-            if (RmlTypes.LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            } else if (RmlTypes.LPAREN == tokenType) {
-                parenExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            } else {
-                if (RmlTypes.LIDENT.equals(tokenType) && constrName != null && !constrName.isEmpty() && constrName.equals(builder.getTokenText())) {
-                    Marker constrMarker = builder.mark();
-                    tokenType = advance(builder);
-                    exit_section_(builder, constrMarker, RmlTypes.TYPE_CONSTR_NAME, true);
-                }
-            }
-
-            // Advance until a right paren is found, or nothing else is found
-            if (RmlTypes.RPAREN == tokenType || tokenType == null) {
-                builder.advanceLexer();
-                return;
-            }
-        }
-    }
-
-    // **********
-    // Pattern: STRUCT expression* END
-    // **********
-    private IElementType structExpression(PsiBuilder builder, int recLevel) {
-        if (!recursion_guard_(builder, recLevel, "struct")) {
-            return builder.getTokenType();
-        }
-
-        IElementType tokenType = advance(builder);
-        while (true) {
-            // If a new scope is found, recursively process it
-            if (tokenType == RmlTypes.OPEN) {
-                openExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.INCLUDE) {
-                includeExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.TYPE) {
-                typeExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.MODULE) {
-                moduleExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.EXTERNAL) {
-                externalExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.LET) {
-                letExpression(builder, recLevel + 1);
-            } else if (tokenType == RmlTypes.LBRACE) {
-                scopedTypeExpression(builder, recLevel + 1, null);
-            } else if (tokenType == RmlTypes.LPAREN) {
-                parenTypeExpression(builder, recLevel + 1, null);
-            } else if (RmlTypes.STRUCT == tokenType) {
-                tokenType = structExpression(builder, recLevel + 1);
-            } else {
-                advance(builder);
-            }
-
-            tokenType = builder.getTokenType();
-
-            // Advance until a END is found, or nothing else is found
-            if (RmlTypes.END == tokenType || tokenType == null) {
-                return advance(builder);
-            }
-        }
-    }
-
-    private static IElementType advance(PsiBuilder builder) {
-        builder.advanceLexer();
-        return builder.getTokenType();
-    }
-
-    private IElementType advanceUntil(PsiBuilder builder, int recLevel, IElementType nextTokenType) {
-        if (!recursion_guard_(builder, recLevel, "advance until")) {
-            return nextTokenType;
-        }
-
-        IElementType tokenType;
-        while (true) {
-            tokenType = advance(builder);
-            if (RmlTypes.LBRACE == tokenType) {
-                scopedExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            } else if (RmlTypes.LPAREN == tokenType) {
-                parenExpression(builder, recLevel + 1);
-                tokenType = builder.getTokenType();
-            }
-
-            if (tokenType == null || tokenType == RmlTypes.SEMI || tokenType == nextTokenType) {
-                break;
-            }
-        }
-
-        return builder.getTokenType();
-    }
-
-    private static boolean isStartExpression(IElementType tokenType) {
-        return tokenType == null || tokenType == RmlTypes.SEMI || tokenType == RmlTypes.MODULE || tokenType == RmlTypes.OPEN || tokenType == RmlTypes.TYPE || tokenType == RmlTypes.LET;
-    }
-
-    private void endExpression(PsiBuilder builder) {
-        // Last expression in the file can omit semi
-        if (builder.eof()) {
-            return;
-        }
-
-        IElementType tokenType = builder.getTokenType();
-        if (tokenType == RmlTypes.SEMI) {
-            builder.advanceLexer();
-        }
-    }
-
-    private static class WhitespaceNotifier {
-        private boolean skipped = true;
-
-        @SuppressWarnings("unused")
-        void notify(IElementType type, int start, int end) {
-            this.skipped = true;
-        }
-
-        boolean isSkipped() {
-            return this.skipped;
-        }
-
-        void setSkipped() {
-            this.skipped = false;
-        }
     }
 }
