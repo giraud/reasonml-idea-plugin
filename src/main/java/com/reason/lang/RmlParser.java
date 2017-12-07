@@ -108,8 +108,9 @@ public class RmlParser extends CommonParser {
             else if (tokenType == LBRACKET) {
                 IElementType nextTokenType = builder.rawLookup(1);
                 if (nextTokenType == ARROBASE) {
-                    // This is an annotation
                     currentScope = markScope(builder, scopes, annotation, ANNOTATION_EXPRESSION, scopeExpression, LBRACKET);
+                } else if (nextTokenType == PERCENT) {
+                    currentScope = markScope(builder, scopes, macro, MACRO_EXPRESSION, scopeExpression, LBRACKET);
                 } else {
                     currentScope = markScope(builder, scopes, bracket, SCOPED_EXPR, scopeExpression, LBRACKET);
                 }
@@ -163,7 +164,10 @@ public class RmlParser extends CommonParser {
                     currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY, groupExpression, LIDENT);
                     currentScope.complete = true;
                 }
-            } else if (tokenType == UIDENT) {
+            }
+
+            //
+            else if (tokenType == UIDENT) {
                 if (currentScope.resolution == open) {
                     // It is a module name/path
                     currentScope.complete = true;
@@ -176,7 +180,7 @@ public class RmlParser extends CommonParser {
                 }
             }
 
-            //
+            // < ... >
             else if (tokenType == LT) {
                 // Can be a symbol or a JSX tag
                 IElementType nextTokenType = builder.rawLookup(1);
@@ -211,10 +215,22 @@ public class RmlParser extends CommonParser {
 
                     currentScope = scopes.empty() ? fileScope : scopes.peek();
                 }
-            } else if (tokenType == ARROBASE) {
+            }
+
+            //
+            else if (tokenType == ARROBASE) {
                 if (currentScope.resolution == annotation) {
                     currentScope.complete = true;
-                    currentScope = mark(builder, scopes, annotationName, ANNOTATION_NAME, any);
+                    currentScope = mark(builder, scopes, annotationName, MACRO_NAME, any);
+                    currentScope.complete = true;
+                }
+            }
+
+            //
+            else if (tokenType == PERCENT) {
+                if (currentScope.resolution == macro) {
+                    currentScope.complete = true;
+                    currentScope = mark(builder, scopes, macroName, MACRO_NAME, any);
                     currentScope.complete = true;
                 }
             }

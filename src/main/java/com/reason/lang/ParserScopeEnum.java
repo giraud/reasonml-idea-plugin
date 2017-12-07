@@ -35,7 +35,9 @@ enum ParserScopeEnum {
 
     annotation,
     annotationName,
-
+    macro,
+    macroName,
+    
     objectBinding,
 
     paren,

@@ -23,7 +23,7 @@ public class RmlAnnotator implements Annotator {
         } else if (elementType == RmlTypes.TYPE_CONSTR_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.TYPE_ARGUMENT_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
-        } else if (elementType == RmlTypes.ANNOTATION_NAME) {
+        } else if (elementType == RmlTypes.MACRO_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(RmlSyntaxHighlighter.ANNOTATION_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);

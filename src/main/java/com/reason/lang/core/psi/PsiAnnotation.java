@@ -11,8 +11,8 @@ public class PsiAnnotation extends ASTWrapperPsiElement {
     }
 
     @NotNull
-    private PsiAnnotationName getAnnotationNameElement() {
-        return findNotNullChildByClass(PsiAnnotationName.class);
+    private PsiMacroName getAnnotationNameElement() {
+        return findNotNullChildByClass(PsiMacroName.class);
     }
 
     @Override

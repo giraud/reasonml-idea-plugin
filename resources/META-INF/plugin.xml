@@ -125,6 +125,8 @@
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
+        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
+
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.insight.CompletionContributor"/>
 
         <codeInsight.parameterNameHints language="ReasonML"

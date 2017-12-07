@@ -10,7 +10,8 @@ public interface RmlTypes {
     IElementType OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
     IElementType LET_EXPRESSION = new RmlElementType("LET_EXPRESSION");
     IElementType ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
-    IElementType ANNOTATION_NAME = new RmlElementType("ANNOTATION_NAME");
+    IElementType MACRO_EXPRESSION = new RmlElementType("MACRO_EXPRESSION");
+    IElementType MACRO_NAME = new RmlElementType("MACRO_NAME");
     IElementType TYPE_EXPRESSION = new RmlElementType("TYPE_EXPRESSION");
     IElementType INCLUDE_EXPRESSION = new RmlElementType("INCLUDE_EXPRESSION");
 

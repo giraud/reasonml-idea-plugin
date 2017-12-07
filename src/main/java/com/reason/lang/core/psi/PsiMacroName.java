@@ -3,9 +3,9 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
-public class PsiAnnotationName extends ASTWrapperPsiElement {
+public class PsiMacroName extends ASTWrapperPsiElement {
 
-    public PsiAnnotationName(ASTNode node) {
+    public PsiMacroName(ASTNode node) {
         super(node);
     }
 

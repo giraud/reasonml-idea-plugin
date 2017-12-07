@@ -23,8 +23,8 @@ class PsiElementFactory {
             return new PsiFunBody(node);
         } else if (type == RmlTypes.LET_BINDING) {
             return new PsiLetBinding(node);
-        } else if (type == RmlTypes.ANNOTATION_NAME) {
-            return new PsiAnnotationName(node);
+        } else if (type == RmlTypes.MACRO_NAME) {
+            return new PsiMacroName(node);
         } else if (type == RmlTypes.MODULE) {
             return new PsiModule(node);
         } else if (type == RmlTypes.SCOPED_EXPR || type == RmlTypes.OBJECT_EXPR || type == RmlTypes.PATTERN_MATCH_EXPR) {
@@ -33,6 +33,8 @@ class PsiElementFactory {
             return new PsiType(node);
         } else if (type == RmlTypes.TAG_START) {
             return new TagStart(node);
+        } else if (type == RmlTypes.TAG_PROPERTY) {
+            return new TagProperty(node);
         } else if (type == RmlTypes.TAG_CLOSE) {
             return new TagClose(node);
         }
