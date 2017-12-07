@@ -149,6 +149,9 @@
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/ReasonDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
     </extensions>
 
     <actions>
