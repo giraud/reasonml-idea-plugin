@@ -76,7 +76,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         if (m_element instanceof RmlFile || m_element instanceof OclFile) {
             PsiModule[] modules = PsiTreeUtil.getChildrenOfType(m_element, PsiModule.class);
             PsiLet[] lets = PsiTreeUtil.getChildrenOfType(m_element, PsiLet.class);
-            PsiType[] types = PsiTreeUtil.getChildrenOfType(m_element, PsiType.class);
+            Type[] types = PsiTreeUtil.getChildrenOfType(m_element, Type.class);
             PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(m_element, PsiExternal.class);
 
             List<TreeElement> treeElements;
@@ -91,7 +91,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                     }
                 }
                 if (types != null) {
-                    for (PsiType type : types) {
+                    for (Type type : types) {
                         treeElements.add(new StructureViewElement(type));
                     }
                 }
@@ -122,7 +122,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     private List<TreeElement> buildModuleStructure(PsiModule moduleElement) {
         PsiScopedExpr moduleBody = moduleElement.getModuleBody();
         PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(moduleBody, PsiExternal.class);
-        PsiType[] types = PsiTreeUtil.getChildrenOfType(moduleBody, PsiType.class);
+        Type[] types = PsiTreeUtil.getChildrenOfType(moduleBody, Type.class);
         PsiLet[] lets = PsiTreeUtil.getChildrenOfType(moduleBody, PsiLet.class);
         PsiModule[] modules = PsiTreeUtil.getChildrenOfType(moduleBody, PsiModule.class);
 
@@ -131,7 +131,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             treeElements = new ArrayList<>((lets == null ? 0 : lets.length) + (types != null ? types.length : 0) + (externals != null ? externals.length : 0));
 
             if (types != null) {
-                for (PsiType type : types) {
+                for (Type type : types) {
                     treeElements.add(new StructureViewElement(type));
                 }
             }

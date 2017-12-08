@@ -27,7 +27,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
             if (COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
             } else if (TYPE_EXPRESSION.equals(elementType)) {
-                foldType(descriptors, (PsiType) element);
+                foldType(descriptors, (Type) element);
             } else if (LET_EXPRESSION.equals(elementType)) {
                 foldLet(descriptors, (PsiLet) element);
             } else if (MODULE_EXPRESSION.equals(elementType)) {
@@ -39,7 +39,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
+    private void foldType(List<FoldingDescriptor> descriptors, Type typeExpression) {
         FoldingDescriptor fold = fold(typeExpression.getScopedExpression());
         if (fold != null) {
             descriptors.add(fold);
