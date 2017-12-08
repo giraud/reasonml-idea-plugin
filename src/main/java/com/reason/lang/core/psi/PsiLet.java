@@ -1,34 +1,26 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.RmlTypes;
-import com.reason.lang.core.stub.LetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiLet extends ASTWrapperPsiElement/*StubBasedPsiElementBase<LetStub>*/ implements PsiInferredType, PsiNameIdentifierOwner/*, StubBasedPsiElement<LetStub>*/ {
+public class PsiLet extends ASTWrapperPsiElement implements PsiInferredType, PsiNameIdentifierOwner {
     private String m_inferredType = "";
 
     //region Constructors
     public PsiLet(ASTNode node) {
         super(node);
     }
-
-//    public PsiLet(LetStub stub, IStubElementType nodeType) {
-//        super(stub, nodeType);
-//    }
     //endregion
 
     @Override
@@ -126,7 +118,7 @@ public class PsiLet extends ASTWrapperPsiElement/*StubBasedPsiElementBase<LetStu
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        throw new RuntimeException("Not yet implemented");
+        return getNameIdentifier();
     }
 
     @Override
