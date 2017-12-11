@@ -1,12 +1,13 @@
 package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.stub.type.ModuleStubElementType;
 
 public interface RmlTypes {
 
     IElementType FILE_MODULE = new RmlTokenType("FILE_MODULE");
     IElementType EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
-    IElementType MODULE_EXPRESSION = new RmlElementType("MODULE_EXPRESSION");
+    IElementType MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION");
     IElementType OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
     IElementType LET_EXPRESSION = new RmlElementType("LET_EXPRESSION");
     IElementType ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
@@ -132,5 +133,4 @@ public interface RmlTypes {
     IElementType VAL = new RmlTokenType("VAL");
     IElementType WITH = new RmlTokenType("WITH");
     IElementType WHEN = new RmlTokenType("WHEN");
-
 }

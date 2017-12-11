@@ -120,12 +120,14 @@
          -->
 
         <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/ReasonDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
-        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
+        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.FindUsagesProvider"/>
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.insight.CompletionContributor"/>
 
@@ -143,17 +145,10 @@
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
 
-        <!--<stubElementTypeHolder class="com.reason.lang.core.stub.type.ModuleStubElementType"/>-->
-        <!--<stubIndex implementation="com.reason.lang.core.stub.index.ModuleIndex"/>-->
-
-        <!--<stubElementTypeHolder class="com.reason.lang.core.stub.type.LetStubElementType"/>-->
-        <!--<stubIndex implementation="com.reason.lang.core.stub.index.LetIndex"/>-->
+        <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
-
-        <additionalTextAttributes scheme="Default" file="colorSchemes/ReasonDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
     </extensions>
 
     <actions>

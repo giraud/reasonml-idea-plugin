@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.WordOccurrence;
 import com.intellij.lang.cacheBuilder.WordsScanner;
-import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.lexer.LexerBase;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
@@ -18,10 +17,8 @@ import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.RmlLexerAdapter;
 import com.reason.lang.RmlTypes;
 import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiType;
 
-public class RmlFindUsagesProvider implements FindUsagesProvider {
+public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
@@ -36,7 +33,7 @@ public class RmlFindUsagesProvider implements FindUsagesProvider {
                     for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                         int start = tokenStart + wordRange.getStartOffset();
                         int end = tokenStart + wordRange.getEndOffset();
-                        System.out.println("found occurrence: " + start + "/end " + lexer.getTokenText());
+                        System.out.println("scan: " + start + "," + end + " -> " + lexer.getTokenText());
                         processor.process(new WordOccurrence(fileText, start, end, WordOccurrence.Kind.CODE));
                     }
                 }
@@ -47,7 +44,7 @@ public class RmlFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof Module || element instanceof PsiExternal || element instanceof PsiType;
+        return element instanceof Module/* || element instanceof PsiExternal || element instanceof PsiType*/;
     }
 
     @Nullable

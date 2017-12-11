@@ -38,8 +38,6 @@ class PsiElementFactory {
             return new PsiLetBinding(node);
         } else if (type == RmlTypes.MACRO_NAME) {
             return new PsiMacroName(node);
-        } else if (type == RmlTypes.MODULE) {
-            return new ModuleImpl(node);
         } else if (type == RmlTypes.SCOPED_EXPR || type == RmlTypes.OBJECT_EXPR || type == RmlTypes.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
