@@ -17,6 +17,7 @@ import com.reason.lang.core.psi.TagClose;
 import com.reason.lang.core.psi.TagProperty;
 import com.reason.lang.core.psi.TagStart;
 import com.reason.lang.core.psi.impl.ModuleImpl;
+import com.reason.lang.core.psi.impl.ModuleNameImpl;
 
 class PsiElementFactory {
     static PsiElement createElement(ASTNode node) {
@@ -28,6 +29,8 @@ class PsiElementFactory {
             return new PsiOpen(node);
         } else if (type == RmlTypes.MODULE_EXPRESSION) {
             return new ModuleImpl(node);
+        } else if (type == RmlTypes.MODULE_NAME) {
+            return new ModuleNameImpl(node);
         } else if (type == RmlTypes.LET_EXPRESSION) {
             return new PsiLet(node);
         } else if (type == RmlTypes.ANNOTATION_EXPRESSION) {

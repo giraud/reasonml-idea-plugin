@@ -7,6 +7,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.RmlLanguage;
+import com.reason.lang.core.psi.Module;
 import com.reason.lang.core.psi.impl.ModuleImpl;
 
 public class RmlFile extends PsiFileBase {
@@ -30,7 +31,17 @@ public class RmlFile extends PsiFileBase {
         return super.getIcon(flags);
     }
 
-    public ModuleImpl[] getModules() {
-        return findChildrenByClass(ModuleImpl.class);
+    public Module[] getModules() {
+        return findChildrenByClass(Module.class);
+    }
+
+    public Module getModule(String name) {
+        Module[] modules = getModules();
+        for (Module module : modules) {
+            if (name.equals(module.getName())) {
+                return module;
+            }
+        }
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package com.reason.lang.core;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -13,6 +14,7 @@ import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.ModuleName;
 
 public class RmlPsiUtil {
 
@@ -61,7 +63,7 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    static List<Module> findModules(@NotNull Project project) {
+    public static List<Module> findModules(@NotNull Project project) {
         ArrayList<Module> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
@@ -74,5 +76,16 @@ public class RmlPsiUtil {
         }
 
         return result;
+    }
+
+    @NotNull
+    public static TextRange getTextRangeForReference(@NotNull ModuleName name) {
+        return rangeInParent(name.getTextRange(), name.getNameElement().getTextRange());
+    }
+
+    @NotNull
+    private static TextRange rangeInParent(@NotNull TextRange parent, @NotNull TextRange child) {
+        int start = child.getStartOffset() - parent.getStartOffset();
+        return TextRange.create(start, start + child.getLength());
     }
 }

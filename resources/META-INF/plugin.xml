@@ -149,11 +149,12 @@
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
+        <lang.refactoringSupport language="ReasonML" implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
-        <action id="reasonML.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
+        <action id="reason.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
         </action>

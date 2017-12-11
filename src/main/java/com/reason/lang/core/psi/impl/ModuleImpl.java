@@ -8,12 +8,14 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.RmlTypes;
 import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.ModuleName;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.stub.ModuleStub;
@@ -45,15 +47,24 @@ public class ModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements M
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findNotNullChildByType(RmlTypes.MODULE_NAME);
+        return findNotNullChildByClass(ModuleName.class);
     }
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        // TODO: Module setName
-        return null;
+        return this;
     }
     //endregion
+
+    @Override
+    public PsiReference getReference() {
+        return new ModuleReference(getModuleName());
+    }
+
+    @Override
+    public ModuleName getModuleName() {
+        return findChildByClass(ModuleName.class);
+    }
 
     @Nullable
     public PsiScopedExpr getModuleBody() {

@@ -17,6 +17,7 @@ import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.RmlLexerAdapter;
 import com.reason.lang.RmlTypes;
 import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.NamedElement;
 
 public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
     @Nullable
@@ -44,7 +45,7 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof Module/* || element instanceof PsiExternal || element instanceof PsiType*/;
+        return true; // element instanceof Module/* || element instanceof PsiExternal || element instanceof PsiType*/;
     }
 
     @Nullable
@@ -56,18 +57,21 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE);
+        return "module";
+        //return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE);
     }
 
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull PsiElement element) {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE);
+        return "module descriptive name";
+        //return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE);
     }
 
     @NotNull
     @Override
     public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);
+        return ((NamedElement) element).getName();
+        //return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);
     }
 }

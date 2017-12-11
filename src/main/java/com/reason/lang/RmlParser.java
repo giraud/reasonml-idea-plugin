@@ -47,7 +47,10 @@ public class RmlParser extends CommonParser {
                 } else if (currentScope.resolution == tagProperty) {
                     currentScope.resolution = tagPropertyEq;
                 } else if (currentScope.resolution == moduleNamed) {
+                    scopes.pop().end();
+                    currentScope = scopes.peek();
                     currentScope.resolution = moduleNamedEq;
+                    currentScope.complete = true;
                 }
             }
 
@@ -174,9 +177,17 @@ public class RmlParser extends CommonParser {
                     builder.remapCurrentToken(MODULE_NAME);
                     currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH, any);
                 } else if (currentScope.resolution == module) {
-                    builder.remapCurrentToken(MODULE_NAME);
-                    currentScope.resolution = moduleNamed;
+                    builder.remapCurrentToken(VALUE_NAME);
+                    currentScope = markScope(builder, scopes, moduleNamed, MODULE_NAME, any, UIDENT);
                     currentScope.complete = true;
+                } else {
+                    // !! variant
+                    builder.remapCurrentToken(VALUE_NAME);
+                    ParserScope scope = markScope(builder, scopes, moduleNamed, MODULE_NAME, any, UIDENT);
+                    scope.complete = true;
+                    builder.advanceLexer();
+                    dontMove = true;
+                    scope.end();
                 }
             }
 
