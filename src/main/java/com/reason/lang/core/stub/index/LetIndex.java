@@ -16,6 +16,6 @@ public class LetIndex extends StringStubIndexExtension<PsiLet> {
     @NotNull
     @Override
     public StubIndexKey<String, PsiLet> getKey() {
-        return RmlStubIndexKeys.LETS;
+        return IndexKeys.LETS;
     }
 }

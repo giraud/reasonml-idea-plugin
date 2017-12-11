@@ -1,14 +1,13 @@
 package com.reason;
 
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.RmlLanguage;
-import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
+import com.reason.lang.core.psi.impl.ModuleImpl;
 
 public class RmlFile extends PsiFileBase {
     public RmlFile(@NotNull FileViewProvider viewProvider) {
@@ -31,7 +30,7 @@ public class RmlFile extends PsiFileBase {
         return super.getIcon(flags);
     }
 
-    public PsiModule[] getModules() {
-        return findChildrenByClass(PsiModule.class);
+    public ModuleImpl[] getModules() {
+        return findChildrenByClass(ModuleImpl.class);
     }
 }

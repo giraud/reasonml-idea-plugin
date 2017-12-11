@@ -1,5 +1,8 @@
 package com.reason.ide.folding;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -8,12 +11,11 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.PsiFunBody;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiType;
 
 import static com.reason.lang.RmlTypes.*;
 
@@ -32,7 +34,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
             } else if (LET_EXPRESSION.equals(elementType)) {
                 foldLet(descriptors, (PsiLet) element);
             } else if (MODULE_EXPRESSION.equals(elementType)) {
-                foldModule(descriptors, (PsiModule) element);
+                foldModule(descriptors, (Module) element);
             }
             return true;
         });
@@ -63,7 +65,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(List<FoldingDescriptor> descriptors, PsiModule module) {
+    private void foldModule(List<FoldingDescriptor> descriptors, Module module) {
         FoldingDescriptor fold = fold(module.getModuleBody());
         if (fold != null) {
             descriptors.add(fold);

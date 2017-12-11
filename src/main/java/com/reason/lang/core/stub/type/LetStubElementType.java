@@ -1,22 +1,5 @@
 package com.reason.lang.core.stub.type;
 
-import com.intellij.lang.LighterAST;
-import com.intellij.lang.LighterASTNode;
-import com.intellij.lang.LighterASTTokenNode;
-import com.intellij.psi.impl.source.tree.LightTreeUtil;
-import com.intellij.psi.stubs.*;
-import com.intellij.util.CharTable;
-import com.intellij.util.io.StringRef;
-import com.reason.lang.RmlLanguage;
-import com.reason.lang.RmlTypes;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.stub.LetStub;
-import com.reason.lang.core.stub.LetStubImpl;
-import com.reason.lang.core.stub.index.RmlStubIndexKeys;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-
 public class LetStubElementType /*extends ILightStubElementType<LetStub, PsiLet>*/ {
 //    public static final IStubElementType INSTANCE = new LetStubElementType();
 //
@@ -50,7 +33,7 @@ public class LetStubElementType /*extends ILightStubElementType<LetStub, PsiLet>
 //    }
 //
 //    public void indexStub(@NotNull final LetStub stub, @NotNull final IndexSink sink) {
-//        sink.occurrence(RmlStubIndexKeys.LETS, stub.getName());
+//        sink.occurrence(IndexKeys.LETS, stub.getName());
 //    }
 //
 //    @Override

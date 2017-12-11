@@ -1,5 +1,8 @@
 package com.reason.ide.structure;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.SortableTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
@@ -10,12 +13,11 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.OclFile;
 import com.reason.RmlFile;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiType;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private PsiElement m_element;
@@ -72,14 +74,16 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @Override
     public TreeElement[] getChildren() {
         if (m_element instanceof RmlFile || m_element instanceof OclFile) {
-            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(m_element, PsiModule.class);
+            Module[] modules = PsiTreeUtil.getChildrenOfType(m_element, Module.class);
             PsiLet[] lets = PsiTreeUtil.getChildrenOfType(m_element, PsiLet.class);
             PsiType[] types = PsiTreeUtil.getChildrenOfType(m_element, PsiType.class);
             PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(m_element, PsiExternal.class);
 
             List<TreeElement> treeElements;
             if (modules != null || lets != null || types != null || externals != null) {
-                treeElements = new ArrayList<>((modules == null ? 0 : modules.length) + (lets == null ? 0 : lets.length) + (types == null ? 0 : types.length) + (externals == null ? 0 : externals.length));
+                treeElements = new ArrayList<>(
+                        (modules == null ? 0 : modules.length) + (lets == null ? 0 : lets.length) + (types == null ? 0 : types.length) + (externals == null ?
+                                0 : externals.length));
 
                 if (externals != null) {
                     for (PsiExternal external : externals) {
@@ -92,7 +96,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                     }
                 }
                 if (modules != null) {
-                    for (PsiModule module : modules) {
+                    for (Module module : modules) {
                         treeElements.add(new StructureViewElement(module));
                     }
                 }
@@ -104,8 +108,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
-        } else if (m_element instanceof PsiModule) {
-            List<TreeElement> treeElements = buildModuleStructure((PsiModule) m_element);
+        } else if (m_element instanceof Module) {
+            List<TreeElement> treeElements = buildModuleStructure((Module) m_element);
             if (treeElements != null) {
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
@@ -115,12 +119,12 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     @Nullable
-    private List<TreeElement> buildModuleStructure(PsiModule moduleElement) {
+    private List<TreeElement> buildModuleStructure(Module moduleElement) {
         PsiScopedExpr moduleBody = moduleElement.getModuleBody();
         PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(moduleBody, PsiExternal.class);
         PsiType[] types = PsiTreeUtil.getChildrenOfType(moduleBody, PsiType.class);
         PsiLet[] lets = PsiTreeUtil.getChildrenOfType(moduleBody, PsiLet.class);
-        PsiModule[] modules = PsiTreeUtil.getChildrenOfType(moduleBody, PsiModule.class);
+        Module[] modules = PsiTreeUtil.getChildrenOfType(moduleBody, Module.class);
 
         List<TreeElement> treeElements;
         if (lets != null || types != null || externals != null || modules != null) {
@@ -137,7 +141,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 }
             }
             if (modules != null) {
-                for (PsiModule module : modules) {
+                for (Module module : modules) {
                     treeElements.add(new StructureViewElement(module));
                 }
             }

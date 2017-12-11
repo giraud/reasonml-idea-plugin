@@ -1,5 +1,7 @@
 package com.reason.ide.insight;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -12,21 +14,16 @@ import com.reason.RmlFile;
 import com.reason.icons.Icons;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
-import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
+import com.reason.lang.core.psi.Module;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.reason.lang.core.RmlPsiUtil.fileNameToModuleName;
-import static com.reason.lang.core.RmlPsiUtil.findFileModules;
+import static com.reason.lang.core.RmlPsiUtil.*;
 
 class ModuleNameCompletion {
 
     static void complete(Project project, RmlFile currentModule, String modulePrefix, @NotNull CompletionResultSet resultSet) {
         // First find all potential modules of current file
-        PsiModule[] currentModules = currentModule.getModules();
-        for (PsiModule module : currentModules) {
+        Module[] currentModules = currentModule.getModules();
+        for (Module module : currentModules) {
             String moduleName = module.getName();
             if (moduleName != null) {
                 LookupElementBuilder lookupModule = LookupElementBuilder.createWithSmartPointer(moduleName, module).
@@ -69,5 +66,4 @@ class ModuleNameCompletion {
             }
         }
     }
-
 }

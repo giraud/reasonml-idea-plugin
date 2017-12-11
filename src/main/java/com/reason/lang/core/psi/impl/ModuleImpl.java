@@ -1,40 +1,44 @@
-package com.reason.lang.core.psi;
+package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.RmlTypes;
-import com.reason.lang.core.stub.ModuleStub;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiScopedExpr;
 
-import javax.swing.*;
-import java.util.Collection;
-
-public class PsiModule extends ASTWrapperPsiElement/*StubBasedPsiElementBase<ModuleStub>*/ implements PsiRmlNamedElement/*, StubBasedPsiElement<ModuleStub>*/ {
+public class ModuleImpl extends ASTWrapperPsiElement implements Module {
 
     //region Constructors
-    public PsiModule(ASTNode node) {
+    public ModuleImpl(ASTNode node) {
         super(node);
     }
 
-//    public PsiModule(ModuleStub stub, IStubElementType nodeType) {
-//        super(stub, nodeType);
-//    }
+    //    public ModuleImpl(ModuleStub stub, IStubElementType nodeType) {
+    //        super(stub, nodeType);
+    //    }
     //endregion
 
-    //region PsiRmlNamedElement
+    //region NamedElement
+    @Override
+    public String getName() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? "" : nameIdentifier.getText();
+    }
+
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return getModuleName();
+        return findNotNullChildByType(RmlTypes.MODULE_NAME);
     }
 
     @Override
@@ -44,19 +48,9 @@ public class PsiModule extends ASTWrapperPsiElement/*StubBasedPsiElementBase<Mod
     }
     //endregion
 
-    @NotNull
-    public PsiElement getModuleName() {
-        return findNotNullChildByType(RmlTypes.MODULE_NAME);
-    }
-
     @Nullable
     public PsiScopedExpr getModuleBody() {
         return findChildByClass(PsiScopedExpr.class);
-    }
-
-    @Override
-    public String getName() {
-        return getModuleName().getText();
     }
 
     public Collection<PsiLet> getLetExpressions() {
@@ -68,7 +62,7 @@ public class PsiModule extends ASTWrapperPsiElement/*StubBasedPsiElementBase<Mod
             @Nullable
             @Override
             public String getPresentableText() {
-                return getModuleName().getText();
+                return getName();
             }
 
             @Nullable
@@ -89,5 +83,4 @@ public class PsiModule extends ASTWrapperPsiElement/*StubBasedPsiElementBase<Mod
     public String toString() {
         return "Module(" + getName() + ")";
     }
-
 }

@@ -1,5 +1,7 @@
 package com.reason.ide.hints;
 
+import java.util.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -9,11 +11,8 @@ import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
+import com.reason.lang.core.psi.Module;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 public class BscInferredTypesTask implements Runnable {
 
@@ -36,7 +35,7 @@ public class BscInferredTypesTask implements Runnable {
                 if (letParent instanceof RmlFile) {
                     applyType(inferredTypes, letStatement);
                 } else {
-                    PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
+                    Module letModule = PsiTreeUtil.getParentOfType(letStatement, Module.class);
                     if (letModule != null && inferredTypes != null) {
                         BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
                         if (inferredModuleTypes != null) {

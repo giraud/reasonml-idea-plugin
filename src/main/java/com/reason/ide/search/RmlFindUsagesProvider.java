@@ -1,5 +1,7 @@
 package com.reason.ide.search;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.WordOccurrence;
 import com.intellij.lang.cacheBuilder.WordsScanner;
@@ -15,11 +17,9 @@ import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.RmlLexerAdapter;
 import com.reason.lang.RmlTypes;
+import com.reason.lang.core.psi.Module;
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class RmlFindUsagesProvider implements FindUsagesProvider {
     @Nullable
@@ -47,7 +47,7 @@ public class RmlFindUsagesProvider implements FindUsagesProvider {
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiModule || element instanceof PsiExternal || element instanceof PsiType;
+        return element instanceof Module || element instanceof PsiExternal || element instanceof PsiType;
     }
 
     @Nullable
