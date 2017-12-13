@@ -1,5 +1,5 @@
 package com.reason.lang.core.psi;
 
-public interface ModuleName extends NamedElement {
+public interface PsiModuleName extends PsiNamedElement {
     String getName();
 }

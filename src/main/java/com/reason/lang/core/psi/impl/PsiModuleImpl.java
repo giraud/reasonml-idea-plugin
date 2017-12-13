@@ -9,8 +9,8 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.ModuleName;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.stub.ModuleStub;
@@ -20,14 +20,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Collection;
 
-public class ModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements Module {
+public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
 
     //region Constructors
-    public ModuleImpl(ASTNode node) {
+    public PsiModuleImpl(ASTNode node) {
         super(node);
     }
 
-    public ModuleImpl(ModuleStub stub, IStubElementType nodeType) {
+    public PsiModuleImpl(ModuleStub stub, IStubElementType nodeType) {
         super(stub, nodeType);
     }
     //endregion
@@ -47,7 +47,7 @@ public class ModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements M
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(ModuleName.class);
+        return findChildByClass(PsiModuleName.class);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class ModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements M
     @Override
     public PsiReference getReference() {
         PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier != null && nameIdentifier instanceof ModuleName) {
-            return new ModuleReference((ModuleName) nameIdentifier);
+        if (nameIdentifier != null && nameIdentifier instanceof PsiModuleName) {
+            return new PsiModuleReference((PsiModuleName) nameIdentifier);
         }
 
         return null;

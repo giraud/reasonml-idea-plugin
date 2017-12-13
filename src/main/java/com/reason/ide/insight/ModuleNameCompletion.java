@@ -14,7 +14,7 @@ import com.reason.RmlFile;
 import com.reason.icons.Icons;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
-import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.PsiModule;
 
 import static com.reason.lang.core.RmlPsiUtil.*;
 
@@ -22,8 +22,8 @@ class ModuleNameCompletion {
 
     static void complete(Project project, RmlFile currentModule, String modulePrefix, @NotNull CompletionResultSet resultSet) {
         // First find all potential modules of current file
-        Module[] currentModules = currentModule.getModules();
-        for (Module module : currentModules) {
+        PsiModule[] currentModules = currentModule.getModules();
+        for (PsiModule module : currentModules) {
             String moduleName = module.getName();
             if (moduleName != null) {
                 LookupElementBuilder lookupModule = LookupElementBuilder.createWithSmartPointer(moduleName, module).

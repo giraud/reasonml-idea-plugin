@@ -5,9 +5,9 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.PsiModule;
 
-public class ModuleStub extends NamedStubBase<Module> {
+public class ModuleStub extends NamedStubBase<PsiModule> {
     public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name) {
         super(parent, elementType, name);
     }

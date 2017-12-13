@@ -13,7 +13,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.impl.TypeImpl;
 
 import static com.reason.lang.RmlTypes.*;
 
@@ -28,11 +27,11 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
             if (COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
             } else if (TYPE_EXPRESSION.equals(elementType)) {
-                foldType(descriptors, (Type) element);
+                foldType(descriptors, (PsiType) element);
             } else if (LET_EXPRESSION.equals(elementType)) {
                 foldLet(descriptors, (PsiLet) element);
             } else if (MODULE_EXPRESSION.equals(elementType)) {
-                foldModule(descriptors, (Module) element);
+                foldModule(descriptors, (PsiModule) element);
             }
             return true;
         });
@@ -40,7 +39,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, Type typeExpression) {
+    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
         FoldingDescriptor fold = fold(typeExpression.getScopedExpression());
         if (fold != null) {
             descriptors.add(fold);
@@ -63,7 +62,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(List<FoldingDescriptor> descriptors, Module module) {
+    private void foldModule(List<FoldingDescriptor> descriptors, PsiModule module) {
         FoldingDescriptor fold = fold(module.getModuleBody());
         if (fold != null) {
             descriptors.add(fold);

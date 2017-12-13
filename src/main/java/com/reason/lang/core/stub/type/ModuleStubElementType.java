@@ -9,22 +9,22 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.RmlLanguage;
-import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.impl.ModuleImpl;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.impl.PsiModuleImpl;
 import com.reason.lang.core.stub.ModuleStub;
 
-public class ModuleStubElementType extends IStubElementType<ModuleStub, Module> {
+public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModule> {
 
     public ModuleStubElementType(String name) {
         super(name, RmlLanguage.INSTANCE);
     }
 
-    public ModuleImpl createPsi(@NotNull final ModuleStub stub) {
-        return new ModuleImpl(stub, this);
+    public PsiModuleImpl createPsi(@NotNull final ModuleStub stub) {
+        return new PsiModuleImpl(stub, this);
     }
 
     @NotNull
-    public ModuleStub createStub(@NotNull final Module psi, final StubElement parentStub) {
+    public ModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
         return new ModuleStub(parentStub, this, psi.getName());
     }
 

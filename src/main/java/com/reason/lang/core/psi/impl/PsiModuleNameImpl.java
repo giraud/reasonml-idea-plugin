@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.RmlTypes;
-import com.reason.lang.core.psi.ModuleName;
+import com.reason.lang.core.psi.PsiModuleName;
 
-public class ModuleNameImpl extends ASTWrapperPsiElement implements ModuleName {
-    public ModuleNameImpl(@NotNull ASTNode node) {
+public class PsiModuleNameImpl extends ASTWrapperPsiElement implements PsiModuleName {
+    public PsiModuleNameImpl(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -28,7 +28,7 @@ public class ModuleNameImpl extends ASTWrapperPsiElement implements ModuleName {
 
     @Override
     public PsiReference getReference() {
-        return new ModuleReference(this);
+        return new PsiModuleReference(this);
     }
 
     @Nullable

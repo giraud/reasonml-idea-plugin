@@ -8,16 +8,11 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lexer.LexerBase;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.ElementDescriptionUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.usageView.UsageViewLongNameLocation;
-import com.intellij.usageView.UsageViewNodeTextLocation;
-import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.RmlLexerAdapter;
 import com.reason.lang.RmlTypes;
-import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.NamedElement;
+import com.reason.lang.core.psi.PsiNamedElement;
 
 public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
     @Nullable
@@ -71,7 +66,7 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
     @NotNull
     @Override
     public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-        return ((NamedElement) element).getName();
+        return ((PsiNamedElement) element).getName();
         //return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);
     }
 }

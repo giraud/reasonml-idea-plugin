@@ -7,8 +7,8 @@ import com.reason.lang.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TagProperty extends ASTWrapperPsiElement {
-    public TagProperty(@NotNull ASTNode node) {
+public class PsiTagProperty extends ASTWrapperPsiElement {
+    public PsiTagProperty(@NotNull ASTNode node) {
         super(node);
     }
 

@@ -8,15 +8,15 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.RmlTypes;
 import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.Type;
+import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class TypeImpl extends ASTWrapperPsiElement implements Type {
+public class PsiTypeImpl extends ASTWrapperPsiElement implements PsiType {
 
-    public TypeImpl(ASTNode node) {
+    public PsiTypeImpl(ASTNode node) {
         super(node);
     }
 

@@ -15,8 +15,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.ide.files.RmlFileType;
-import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.ModuleName;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiModuleName;
 
 public class RmlPsiUtil {
 
@@ -45,15 +45,15 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<Module> findModules(@NotNull Project project, @NotNull String name) {
-        ArrayList<Module> result = new ArrayList<>();
+    public static List<PsiModule> findModules(@NotNull Project project, @NotNull String name) {
+        ArrayList<PsiModule> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
         for (VirtualFile virtualFile : virtualFiles) {
             PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            Module[] modules = PsiTreeUtil.getChildrenOfType(file, Module.class);
+            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(file, PsiModule.class);
             if (modules != null) {
-                for (Module module : modules) {
+                for (PsiModule module : modules) {
                     if (name.equals(module.getName())) {
                         result.add(module);
                     }
@@ -65,13 +65,13 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<Module> findModules(@NotNull Project project) {
-        ArrayList<Module> result = new ArrayList<>();
+    public static List<PsiModule> findModules(@NotNull Project project) {
+        ArrayList<PsiModule> result = new ArrayList<>();
 
         Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
         for (VirtualFile virtualFile : virtualFiles) {
             PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            Module[] modules = PsiTreeUtil.getChildrenOfType(file, Module.class);
+            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(file, PsiModule.class);
             if (modules != null) {
                 result.addAll(Arrays.asList(modules));
             }
@@ -81,7 +81,7 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static TextRange getTextRangeForReference(@NotNull ModuleName name) {
+    public static TextRange getTextRangeForReference(@NotNull PsiModuleName name) {
         PsiElement nameIdentifier = name.getNameIdentifier();
         return rangeInParent(name.getTextRange(), nameIdentifier == null ? TextRange.EMPTY_RANGE : name.getTextRange());
     }

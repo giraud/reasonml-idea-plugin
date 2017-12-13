@@ -10,13 +10,13 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.RmlFile;
 import com.reason.lang.core.RmlPsiUtil;
-import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.ModuleName;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiModuleName;
 
-public class ModuleReference extends PsiReferenceBase<ModuleName> {
+public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
     private final String myReferenceName;
 
-    public ModuleReference(ModuleName element) {
+    public PsiModuleReference(PsiModuleName element) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
         myReferenceName = element.getName();
     }
@@ -42,7 +42,7 @@ public class ModuleReference extends PsiReferenceBase<ModuleName> {
     @Override
     public PsiElement resolve() {
         // From the definition of a module
-        Module module = PsiTreeUtil.getParentOfType(myElement, Module.class);
+        PsiModule module = PsiTreeUtil.getParentOfType(myElement, PsiModule.class);
         if (module != null && module.getNameIdentifier() == myElement) {
             return myElement;
         }

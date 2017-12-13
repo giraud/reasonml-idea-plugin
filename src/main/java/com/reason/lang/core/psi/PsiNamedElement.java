@@ -5,5 +5,5 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 /**
  * Every element which can be renamed or referenced needs to implement this interface.
  */
-public interface NamedElement extends PsiNameIdentifierOwner {
+public interface PsiNamedElement extends PsiNameIdentifierOwner {
 }

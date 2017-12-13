@@ -11,7 +11,7 @@ import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
-import com.reason.lang.core.psi.Module;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiLet;
 
 public class BscInferredTypesTask implements Runnable {
@@ -35,7 +35,7 @@ public class BscInferredTypesTask implements Runnable {
                 if (letParent instanceof RmlFile) {
                     applyType(inferredTypes, letStatement);
                 } else {
-                    Module letModule = PsiTreeUtil.getParentOfType(letStatement, Module.class);
+                    PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
                     if (letModule != null && inferredTypes != null) {
                         BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
                         if (inferredModuleTypes != null) {
