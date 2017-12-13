@@ -116,25 +116,28 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return scopes.empty() ? null : scopes.peek();
     }
 
-    ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType) {
+    ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
         ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
-        scope.scopeType = scopeType;
+        scope.scopeType = any;
         scopes.push(scope);
         return scope;
     }
 
-    ParserScope markComplete(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType) {
-        ParserScope scope = mark(builder, scopes, resolution, tokenType, scopeType);
+    ParserScope markComplete(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
+        ParserScope scope = mark(builder, scopes, resolution, tokenType);
         scope.complete = true;
         return scope;
     }
 
     ParserScope markScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
-        ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
+        ParserScope scope = mark(builder, scopes, resolution, tokenType);
         scope.scopeType = scopeType;
         scope.scopeElementType = scopeElementType;
-        scopes.push(scope);
         return scope;
     }
 
+    boolean advance(PsiBuilder builder) {
+        builder.advanceLexer();
+        return true;
+    }
 }

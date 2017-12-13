@@ -52,6 +52,7 @@ public class OclParser extends CommonParser {
                     currentScope.resolution = tagPropertyEq;
                 } else if (currentScope.resolution == moduleNamed) {
                     currentScope.resolution = moduleNamedEq;
+                    currentScope.complete = true;
                 }
             }
 
@@ -172,11 +173,14 @@ public class OclParser extends CommonParser {
                     // It is a module name/path
                     currentScope.complete = true;
                     builder.remapCurrentToken(MODULE_NAME);
-                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH, any);
+                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
                 } else if (currentScope.resolution == module) {
-                    builder.remapCurrentToken(MODULE_NAME);
+                    // Module definition
+                    builder.remapCurrentToken(VALUE_NAME);
+                    ParserScope scope = markComplete(builder, scopes, moduleNamed, MODULE_NAME);
+                    dontMove = advance(builder);
+                    scope.end();
                     currentScope.resolution = moduleNamed;
-                    currentScope.complete = true;
                 }
             }
 
@@ -226,26 +230,26 @@ public class OclParser extends CommonParser {
             // Starts an open
             else if (tokenType == OPEN) {
                 endLikeSemi(previousTokenType, scopes, fileScope);
-                currentScope = mark(builder, scopes, open, OPEN_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, open, OPEN_EXPRESSION, startExpression, OPEN);
             }
 
             // Starts an external
             else if (tokenType == EXTERNAL) {
                 endLikeSemi(previousTokenType, scopes, fileScope);
-                currentScope = mark(builder, scopes, external, EXTERNAL_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, external, EXTERNAL_EXPRESSION, startExpression, EXTERNAL);
             }
 
             // Starts a type
             else if (tokenType == TYPE) {
                 endLikeSemi(previousTokenType, scopes, fileScope);
-                currentScope = mark(builder, scopes, type, TYPE_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION, startExpression, TYPE);
             }
 
             // Starts a module
             else if (tokenType == MODULE) {
                 if (currentScope.resolution != annotationName) {
                     endLikeSemi(previousTokenType, scopes, fileScope);
-                    currentScope = mark(builder, scopes, module, MODULE_EXPRESSION, startExpression);
+                    currentScope = markScope(builder, scopes, module, MODULE_EXPRESSION, startExpression, MODULE);
                 }
             }
 
@@ -254,7 +258,7 @@ public class OclParser extends CommonParser {
                 if (previousTokenType != EQ) {
                     endLikeSemi(previousTokenType, scopes, fileScope);
                 }
-                currentScope = mark(builder, scopes, let, LET_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, let, LET_EXPRESSION, startExpression, LET);
             }
 
             if (dontMove) {

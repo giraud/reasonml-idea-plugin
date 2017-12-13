@@ -47,8 +47,6 @@ public class RmlParser extends CommonParser {
                 } else if (currentScope.resolution == tagProperty) {
                     currentScope.resolution = tagPropertyEq;
                 } else if (currentScope.resolution == moduleNamed) {
-                    scopes.pop().end();
-                    currentScope = scopes.peek();
                     currentScope.resolution = moduleNamedEq;
                     currentScope.complete = true;
                 }
@@ -175,18 +173,18 @@ public class RmlParser extends CommonParser {
                     // It is a module name/path
                     currentScope.complete = true;
                     builder.remapCurrentToken(MODULE_NAME);
-                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH, any);
+                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
                 } else if (currentScope.resolution == module) {
                     builder.remapCurrentToken(VALUE_NAME);
-                    currentScope = markScope(builder, scopes, moduleNamed, MODULE_NAME, any, UIDENT);
-                    currentScope.complete = true;
+                    ParserScope scope = markComplete(builder, scopes, moduleNamed, MODULE_NAME);
+                    dontMove = advance(builder);
+                    scope.end();
+                    currentScope.resolution = moduleNamed;
                 } else {
                     // !! variant
                     builder.remapCurrentToken(VALUE_NAME);
-                    ParserScope scope = markScope(builder, scopes, moduleNamed, MODULE_NAME, any, UIDENT);
-                    scope.complete = true;
-                    builder.advanceLexer();
-                    dontMove = true;
+                    ParserScope scope = markComplete(builder, scopes, moduleNamed, MODULE_NAME);
+                    dontMove = advance(builder);
                     scope.end();
                 }
             }
@@ -232,8 +230,7 @@ public class RmlParser extends CommonParser {
             else if (tokenType == ARROBASE) {
                 if (currentScope.resolution == annotation) {
                     currentScope.complete = true;
-                    currentScope = mark(builder, scopes, annotationName, MACRO_NAME, any);
-                    currentScope.complete = true;
+                    currentScope = markComplete(builder, scopes, annotationName, MACRO_NAME);
                 }
             }
 
@@ -241,7 +238,7 @@ public class RmlParser extends CommonParser {
             else if (tokenType == PERCENT) {
                 if (currentScope.resolution == macro) {
                     currentScope.complete = true;
-                    currentScope = mark(builder, scopes, macroName, MACRO_NAME, any);
+                    currentScope = markComplete(builder, scopes, macroName, MACRO_NAME);
                     currentScope.complete = true;
                 }
             }
@@ -249,33 +246,33 @@ public class RmlParser extends CommonParser {
             // Starts an open
             else if (tokenType == OPEN) {
                 end(scopes);
-                currentScope = mark(builder, scopes, open, OPEN_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, open, OPEN_EXPRESSION, startExpression, OPEN);
             }
 
             // Starts an external
             else if (tokenType == EXTERNAL) {
                 end(scopes);
-                currentScope = mark(builder, scopes, external, EXTERNAL_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, external, EXTERNAL_EXPRESSION, startExpression, EXTERNAL);
             }
 
             // Starts a type
             else if (tokenType == TYPE) {
                 end(scopes);
-                currentScope = mark(builder, scopes, type, TYPE_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION, startExpression, TYPE);
             }
 
             // Starts a module
             else if (tokenType == MODULE) {
                 if (currentScope.resolution != annotationName) {
                     end(scopes);
-                    currentScope = mark(builder, scopes, module, MODULE_EXPRESSION, startExpression);
+                    currentScope = markScope(builder, scopes, module, MODULE_EXPRESSION, startExpression, MODULE);
                 }
             }
 
             // Starts a let
             else if (tokenType == LET) {
                 end(scopes);
-                currentScope = mark(builder, scopes, let, LET_EXPRESSION, startExpression);
+                currentScope = markScope(builder, scopes, let, LET_EXPRESSION, startExpression, LET);
             }
 
             if (dontMove) {

@@ -41,4 +41,9 @@ public class ModuleNameImpl extends ASTWrapperPsiElement implements ModuleName {
     public PsiElement getNameIdentifier() {
         return getNameElement();
     }
+
+    @Override
+    public String toString() {
+        return "Module.name(" + getName() + ")";
+    }
 }
