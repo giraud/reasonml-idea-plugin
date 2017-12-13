@@ -1,6 +1,8 @@
 package com.reason.ide.folding;
 
 import java.util.*;
+
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
@@ -11,11 +13,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.Module;
-import com.reason.lang.core.psi.PsiFunBody;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.TypeImpl;
 
 import static com.reason.lang.RmlTypes.*;
 
@@ -30,7 +28,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
             if (COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
             } else if (TYPE_EXPRESSION.equals(elementType)) {
-                foldType(descriptors, (PsiType) element);
+                foldType(descriptors, (Type) element);
             } else if (LET_EXPRESSION.equals(elementType)) {
                 foldLet(descriptors, (PsiLet) element);
             } else if (MODULE_EXPRESSION.equals(elementType)) {
@@ -42,7 +40,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
+    private void foldType(List<FoldingDescriptor> descriptors, Type typeExpression) {
         FoldingDescriptor fold = fold(typeExpression.getScopedExpression());
         if (fold != null) {
             descriptors.add(fold);

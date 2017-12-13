@@ -1,19 +1,22 @@
-package com.reason.lang.core.psi;
+package com.reason.lang.core.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.RmlTypes;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.Type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiType extends ASTWrapperPsiElement {
+public class TypeImpl extends ASTWrapperPsiElement implements Type {
 
-    public PsiType(ASTNode node) {
+    public TypeImpl(ASTNode node) {
         super(node);
     }
 
@@ -22,9 +25,20 @@ public class PsiType extends ASTWrapperPsiElement {
         return findNotNullChildByType(RmlTypes.TYPE_CONSTR_NAME);
     }
 
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return null;
+    }
+
     @Override
     public String getName() {
         return getTypeConstrElement().getText();
+    }
+
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return null;
     }
 
     @Nullable

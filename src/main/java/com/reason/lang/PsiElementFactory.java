@@ -12,7 +12,7 @@ import com.reason.lang.core.psi.PsiMacroName;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiToken;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.TypeImpl;
 import com.reason.lang.core.psi.TagClose;
 import com.reason.lang.core.psi.TagProperty;
 import com.reason.lang.core.psi.TagStart;
@@ -44,7 +44,7 @@ class PsiElementFactory {
         } else if (type == RmlTypes.SCOPED_EXPR || type == RmlTypes.OBJECT_EXPR || type == RmlTypes.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
-            return new PsiType(node);
+            return new TypeImpl(node);
         } else if (type == RmlTypes.TAG_START) {
             return new TagStart(node);
         } else if (type == RmlTypes.TAG_PROPERTY) {
