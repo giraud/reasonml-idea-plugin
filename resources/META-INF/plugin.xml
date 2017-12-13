@@ -114,6 +114,11 @@
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
         <lang.braceMatcher language="Ocaml" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
 
+        <!--
+         | Doc
+         -->
+
+        <lang.documentationProvider language="ReasonML" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
 
         <!--
          | Others

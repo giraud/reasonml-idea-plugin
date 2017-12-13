@@ -39,4 +39,8 @@ public class RmlFile extends PsiFileBase {
         }
         return null;
     }
+
+    public String asModuleName() {
+        return getName();
+    }
 }
