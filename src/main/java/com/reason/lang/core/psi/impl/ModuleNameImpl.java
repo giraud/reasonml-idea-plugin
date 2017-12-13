@@ -17,18 +17,13 @@ public class ModuleNameImpl extends ASTWrapperPsiElement implements ModuleName {
 
     @Override
     public String getName() {
-        PsiElement nameElement = getNameElement();
+        PsiElement nameElement = getNameIdentifier();
         return nameElement == null ? "" : nameElement.getText();
     }
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;  // TODO implement method
-    }
-
-    @Override
-    public PsiElement getNameElement() {
-        return findNotNullChildByType(RmlTypes.VALUE_NAME);
     }
 
     @Override
@@ -39,7 +34,7 @@ public class ModuleNameImpl extends ASTWrapperPsiElement implements ModuleName {
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return getNameElement();
+        return findChildByType(RmlTypes.VALUE_NAME);
     }
 
     @Override

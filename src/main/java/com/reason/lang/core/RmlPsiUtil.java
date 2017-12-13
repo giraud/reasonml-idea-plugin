@@ -1,6 +1,8 @@
 package com.reason.lang.core;
 
 import java.util.*;
+
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -80,7 +82,8 @@ public class RmlPsiUtil {
 
     @NotNull
     public static TextRange getTextRangeForReference(@NotNull ModuleName name) {
-        return rangeInParent(name.getTextRange(), name.getNameElement().getTextRange());
+        PsiElement nameIdentifier = name.getNameIdentifier();
+        return rangeInParent(name.getTextRange(), nameIdentifier == null ? TextRange.EMPTY_RANGE : name.getTextRange());
     }
 
     @NotNull

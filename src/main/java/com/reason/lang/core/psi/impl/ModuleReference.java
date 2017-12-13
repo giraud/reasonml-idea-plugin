@@ -24,11 +24,16 @@ public class ModuleReference extends PsiReferenceBase<ModuleName> {
     @Override
     public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createModuleName(myElement.getProject(), newName);
-
-        ASTNode oldNameNode = myElement.getNameElement().getNode();
         ASTNode newNameNode = newNameIdentifier.getNode();
 
-        myElement.getNode().replaceChild(oldNameNode, newNameNode);
+        PsiElement nameIdentifier = myElement.getNameIdentifier();
+        if (nameIdentifier == null) {
+            myElement.getNode().addChild(newNameNode);
+        }
+        else {
+            ASTNode oldNameNode = nameIdentifier.getNode();
+            myElement.getNode().replaceChild(oldNameNode, newNameNode);
+        }
 
         return myElement;
     }
@@ -38,7 +43,7 @@ public class ModuleReference extends PsiReferenceBase<ModuleName> {
     public PsiElement resolve() {
         // From the definition of a module
         Module module = PsiTreeUtil.getParentOfType(myElement, Module.class);
-        if (module != null && module.getModuleName() == myElement) {
+        if (module != null && module.getNameIdentifier() == myElement) {
             return myElement;
         }
 
@@ -46,7 +51,7 @@ public class ModuleReference extends PsiReferenceBase<ModuleName> {
         if (containingFile instanceof RmlFile) {
             module = ((RmlFile) containingFile).getModule(myReferenceName);
             if (module != null) {
-                return module.getModuleName();
+                return module.getNameIdentifier();
             }
             //return ContainerUtil.getFirstItem(ErlangPsiImplUtil.getErlangMacrosFromIncludes((ErlangFile) containingFile, false, myReferenceName));
         }
