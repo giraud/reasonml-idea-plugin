@@ -24,9 +24,4 @@ public class OclFile extends PsiFileBase {
     public String toString() {
         return "Ocaml File";
     }
-
-    @Override
-    public Icon getIcon(int flags) {
-        return super.getIcon(flags);
-    }
 }

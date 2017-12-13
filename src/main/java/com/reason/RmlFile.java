@@ -26,11 +26,6 @@ public class RmlFile extends PsiFileBase {
         return "Reason File";
     }
 
-    @Override
-    public Icon getIcon(int flags) {
-        return super.getIcon(flags);
-    }
-
     public Module[] getModules() {
         return findChildrenByClass(Module.class);
     }
