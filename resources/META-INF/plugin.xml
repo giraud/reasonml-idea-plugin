@@ -105,8 +105,8 @@
         <lang.psiStructureViewFactory language="Ocaml"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
-        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
-        <lang.foldingBuilder language="Ocaml" implementationClass="com.reason.ide.folding.RmlFoldingBuilder"/>
+        <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
+        <lang.foldingBuilder language="Ocaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
 
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.RmlCommenter"/>
         <lang.commenter language="Ocaml" implementationClass="com.reason.ide.OclCommenter"/>
@@ -133,6 +133,9 @@
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
         <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.FindUsagesProvider"/>
+        <lang.refactoringSupport language="ReasonML"
+                                 implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
+        <elementDescriptionProvider implementation="com.reason.ide.search.DescriptionProvider"/>
 
         <completion.contributor language="ReasonML" implementationClass="com.reason.ide.insight.CompletionContributor"/>
 

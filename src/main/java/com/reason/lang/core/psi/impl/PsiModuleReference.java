@@ -1,7 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -12,11 +10,13 @@ import com.reason.RmlFile;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
     private final String myReferenceName;
 
-    public PsiModuleReference(PsiModuleName element) {
+    PsiModuleReference(PsiModuleName element) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
         myReferenceName = element.getName();
     }
@@ -24,13 +24,12 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
     @Override
     public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createModuleName(myElement.getProject(), newName);
-        ASTNode newNameNode = newNameIdentifier.getNode();
+        ASTNode newNameNode = newNameIdentifier.getFirstChild().getNode();
 
         PsiElement nameIdentifier = myElement.getNameIdentifier();
         if (nameIdentifier == null) {
             myElement.getNode().addChild(newNameNode);
-        }
-        else {
+        } else {
             ASTNode oldNameNode = nameIdentifier.getNode();
             myElement.getNode().replaceChild(oldNameNode, newNameNode);
         }
@@ -53,7 +52,6 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
             if (module != null) {
                 return module.getNameIdentifier();
             }
-            //return ContainerUtil.getFirstItem(ErlangPsiImplUtil.getErlangMacrosFromIncludes((ErlangFile) containingFile, false, myReferenceName));
         }
 
         return null;
@@ -62,6 +60,6 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];  // TODO implement method
+        return new Object[0];
     }
 }

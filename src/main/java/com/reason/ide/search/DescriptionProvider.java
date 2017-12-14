@@ -1,0 +1,36 @@
+package com.reason.ide.search;
+
+import com.intellij.psi.ElementDescriptionLocation;
+import com.intellij.psi.ElementDescriptionProvider;
+import com.intellij.psi.PsiElement;
+import com.intellij.usageView.UsageViewLongNameLocation;
+import com.intellij.usageView.UsageViewNodeTextLocation;
+import com.intellij.usageView.UsageViewShortNameLocation;
+import com.intellij.usageView.UsageViewTypeLocation;
+import com.reason.lang.core.psi.PsiModuleName;
+import com.reason.lang.core.psi.PsiNamedElement;
+import org.jetbrains.annotations.NotNull;
+
+public class DescriptionProvider implements ElementDescriptionProvider {
+
+    @Override
+    public String getElementDescription(@NotNull PsiElement element, @NotNull ElementDescriptionLocation location) {
+        if (location == UsageViewNodeTextLocation.INSTANCE && element instanceof PsiNamedElement) {
+            return getElementDescription(element, UsageViewShortNameLocation.INSTANCE);
+        }
+
+        if (location == UsageViewShortNameLocation.INSTANCE || location == UsageViewLongNameLocation.INSTANCE) {
+            if (element instanceof PsiNamedElement) {
+                return ((PsiNamedElement) element).getName();
+            }
+        }
+
+        if (location == UsageViewTypeLocation.INSTANCE) {
+            if (element instanceof PsiModuleName) {
+                return "module";
+            }
+        }
+
+        return "<unknown>";
+    }
+}

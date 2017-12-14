@@ -23,7 +23,8 @@ public class PsiModuleNameImpl extends ASTWrapperPsiElement implements PsiModule
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return null;  // TODO implement method
+        // I don't understand what to do with that
+        return this;
     }
 
     @Override

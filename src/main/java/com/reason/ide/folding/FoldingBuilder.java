@@ -16,7 +16,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 
 import static com.reason.lang.RmlTypes.*;
 
-public class RmlFoldingBuilder extends FoldingBuilderEx {
+public class FoldingBuilder extends FoldingBuilderEx {
     @NotNull
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
@@ -27,7 +27,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
             if (COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
             } else if (TYPE_EXPRESSION.equals(elementType)) {
-                foldType(descriptors, (Type) element);
+                foldType(descriptors, (PsiType) element);
             } else if (LET_EXPRESSION.equals(elementType)) {
                 foldLet(descriptors, (PsiLet) element);
             } else if (MODULE_EXPRESSION.equals(elementType)) {
@@ -39,7 +39,7 @@ public class RmlFoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, Type typeExpression) {
+    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
         FoldingDescriptor fold = fold(typeExpression.getScopedExpression());
         if (fold != null) {
             descriptors.add(fold);
