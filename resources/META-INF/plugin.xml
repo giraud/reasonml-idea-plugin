@@ -125,7 +125,15 @@
          | Doc
          -->
 
-        <lang.documentationProvider language="ReasonML" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+        <lang.documentationProvider language="ReasonML"
+                                    implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+
+        <!--
+         | Search
+         -->
+
+        <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
+        <stubIndex implementation="com.reason.ide.search.LetIndex"/>
 
         <!--
          | Others
@@ -159,11 +167,10 @@
         <projectService serviceInterface="com.reason.merlin.MerlinService"
                         serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
 
-        <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
-
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
-        <lang.refactoringSupport language="ReasonML" implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
+        <lang.refactoringSupport language="ReasonML"
+                                 implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.icons.IconProvider"/>
     </extensions>

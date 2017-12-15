@@ -62,7 +62,7 @@ public class InferredTypes {
     @NotNull
     private static Function<PsiLet, LogicalPosition> letExpressionToLogicalPosition(Editor selectedTextEditor) {
         return letStatement -> {
-            PsiElement letName = letStatement.getLetName();
+            PsiElement letName = letStatement.getNameIdentifier();
             if (letName == null) {
                 return null;
             }
