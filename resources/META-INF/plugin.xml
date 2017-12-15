@@ -5,7 +5,7 @@
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
-      Reason language plugin.
+      Reason language plugin.
     ]]></description>
 
     <change-notes><![CDATA[
@@ -33,7 +33,7 @@
         <li>Improving reason parser</li>
         <li>Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
         <li>Structure view enabled for Ocaml files</li>
-        <li>Infering types using bsc if no merlin found (wip)</li>
+        <li>Inferring types using bsc if no merlin found (wip)</li>
       </ul>
 
       <b>version 0.26</b>
@@ -46,7 +46,7 @@
         <li>Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14)</li>
       </ul>
 
-      <p>For all the changes, go to github CHANGELOG.md file</p>
+      <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
       <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
     ]]>
     </change-notes>

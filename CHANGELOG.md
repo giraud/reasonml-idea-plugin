@@ -1,23 +1,35 @@
+# Changelog
+
+> **Tags:**
+> - :boom:       [Breaking Change]
+> - :rocket:     [New Feature]
+> - :bug:        [Bug Fix]
+> - :memo:       [Documentation]
+> - :house:      [Internal]
+> - :nail_care:  [Polish]
+
+(_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
+
 ## 0.30
 
-* :internal: Fix Idea 15 compatibility
-* :internal: Work done on indexing and referencing (module)
+* :house: Fix Idea 15 compatibility
+* :house: Work done on indexing and referencing (module)
 
 ## 0.29
 
-* :internal: Redesigned the reason parser
+* :house: Redesigned the reason parser
 
 ## 0.28
 
 * :rocket: Reformat action is working on ocaml source
-* :internal: Working on stub indexing and first implementation of completion using static analysis
+* :house: Working on stub indexing and first implementation of completion using static analysis
 
 ## 0.27
 
 * :bug: Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
 * :rocket: 
-  * Structure view enabled for Ocaml files
-  * Infering types using bsc if no merlin found (wip)
+  * Structure view enabled for OCaml files
+  * Inferring types using bsc if no merlin found (wip)
 * :house: 
   * Using gradle for build
   * Improving reason parser
