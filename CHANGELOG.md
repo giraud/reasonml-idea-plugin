@@ -1,3 +1,8 @@
+## 0.30
+
+* :internal: Fix Idea 15 compatibility
+* :internal: Work done on indexing and referencing (module)
+
 ## 0.29
 
 * :internal: Redesigned the reason parser
