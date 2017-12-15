@@ -59,7 +59,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
      * @return the bucklescript instance.
      */
     public static Bucklescript getInstance(Project project) {
-        return ServiceManager.getService(project, Bucklescript.class);
+        return project.getComponent(Bucklescript.class);
     }
 
     @Override

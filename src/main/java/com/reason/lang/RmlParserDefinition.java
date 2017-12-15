@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.RmlFile;
+import com.reason.ide.files.RmlFile;
 import com.reason.lang.core.stub.type.RmlFileStubElementType;
 import org.jetbrains.annotations.NotNull;
 

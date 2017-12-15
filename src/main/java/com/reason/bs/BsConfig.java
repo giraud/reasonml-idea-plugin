@@ -46,7 +46,7 @@ class BsConfig {
     }
 
     boolean accept(String canonicalPath) {
-        if (canonicalPath.contains("node_modules")) {
+        if (canonicalPath.contains("node_modules") && m_deps != null) {
             for (String dep : m_deps) {
                 if (canonicalPath.contains(dep)) {
                     return true;

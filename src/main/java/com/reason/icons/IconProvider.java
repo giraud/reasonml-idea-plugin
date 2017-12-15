@@ -1,8 +1,8 @@
 package com.reason.icons;
 
 import com.intellij.psi.PsiElement;
-import com.reason.OclFile;
-import com.reason.RmlFile;
+import com.reason.ide.files.OclFile;
+import com.reason.ide.files.RmlFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

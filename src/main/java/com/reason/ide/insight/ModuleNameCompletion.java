@@ -10,7 +10,7 @@ import com.intellij.codeInsight.lookup.LookupElementRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
-import com.reason.RmlFile;
+import com.reason.ide.files.RmlFile;
 import com.reason.icons.Icons;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;

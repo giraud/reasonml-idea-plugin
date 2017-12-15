@@ -4,8 +4,8 @@ import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
-import com.reason.OclFile;
-import com.reason.RmlFile;
+import com.reason.ide.files.OclFile;
+import com.reason.ide.files.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
 public class StructureViewModel extends StructureViewModelBase implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {

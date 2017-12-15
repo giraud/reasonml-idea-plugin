@@ -7,7 +7,7 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.psi.tree.IStubFileElementType;
-import com.reason.RmlFile;
+import com.reason.ide.files.RmlFile;
 import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.stub.RmlFileStub;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
+    private static final int VERSION = 1;
     public static final IStubFileElementType INSTANCE = new RmlFileStubElementType();
 
     private RmlFileStubElementType() {
@@ -36,6 +37,11 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
     }
 
     @Override
+    public int getStubVersion() {
+        return VERSION;
+    }
+
+    @Override
     public void serialize(@NotNull RmlFileStub stub, @NotNull StubOutputStream dataStream) throws IOException {
     }
 
@@ -48,6 +54,6 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
     @NotNull
     @Override
     public String getExternalId() {
-        return "reason.file";
+        return "reason.FILE";
     }
 }

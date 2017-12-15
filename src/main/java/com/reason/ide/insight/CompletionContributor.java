@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.ProcessingContext;
-import com.reason.RmlFile;
+import com.reason.ide.files.RmlFile;
 import com.reason.merlin.MerlinService;
 import org.jetbrains.annotations.NotNull;
 
