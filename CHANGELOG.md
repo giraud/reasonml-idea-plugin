@@ -40,11 +40,11 @@
 
 ## 0.25
 
-* :rocket: Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14)
+* :rocket: [#14](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/14) Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors
 
 ## 0.24
 
-* :nail_care: Add Number and Type argument in color settings (#13).
+* :nail_care: [#13](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/13) Add Number and Type argument in color settings
 
 ## 0.23
 
