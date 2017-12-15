@@ -42,7 +42,7 @@
 
 * :rocket: Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14)
 
-## 0.24
+## 0.24
 
 * :nail_care: Add Number and Type argument in color settings (#13).
 
