@@ -27,6 +27,10 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
     }
 
     @Override
+    public void disposeComponent() { // for compatibility with idea#143
+    }
+
+    @Override
     public void initComponent() {
         String merlinBin = Platform.getBinary("REASON_MERLIN_BIN", "reasonMerlin", "ocamlmerlin");
 

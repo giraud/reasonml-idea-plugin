@@ -1,26 +1,11 @@
 package com.reason.ide.hints;
 
-import com.intellij.codeInsight.hints.HintInfo;
-import com.intellij.codeInsight.hints.InlayInfo;
-import com.intellij.codeInsight.hints.InlayParameterHintsProvider;
-import com.intellij.codeInsight.hints.Option;
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+// just an experiment, cancelled for now
+public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
 
-import java.util.List;
-import java.util.Set;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-
-// just an experiment
-public class SignatureProvider implements InlayParameterHintsProvider {
-
-    @NotNull
-    @Override
-    public List<InlayInfo> getParameterHints(PsiElement element) {
+    //@NotNull
+    //@Override
+    //public List<InlayInfo> getParameterHints(PsiElement element) {
 //        if (element instanceof PsiLet) {
 //            PsiLet letStatement = (PsiLet) element;
 //            if (!letStatement.getLetBinding().isFunction()) {
@@ -30,14 +15,14 @@ public class SignatureProvider implements InlayParameterHintsProvider {
 //            }
 //        }
 
-        return emptyList();
-    }
-
-    @Nullable
-    @Override
-    public HintInfo getHintInfo(PsiElement psiElement) {
-        return null;
-    }
+    //return emptyList();
+    //}
+    //
+    //@Nullable
+    //@Override
+    //public HintInfo getHintInfo(PsiElement psiElement) {
+    //    return null;
+    //}
 
 /*
     @Nullable
@@ -52,31 +37,31 @@ public class SignatureProvider implements InlayParameterHintsProvider {
     }
 */
 
-    @NotNull
-    @Override
-    public Set<String> getDefaultBlackList() {
-        return emptySet();
-    }
-
-    @Nullable
-    @Override
-    public Language getBlackListDependencyLanguage() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public List<Option> getSupportedOptions() {
-        return emptyList();
-    }
-
-    @Override
-    public boolean isBlackListSupported() {
-        return false;
-    }
-
-    @Override
-    public String getInlayPresentation(@NotNull String inlayText) {
-        return inlayText;
-    }
+    //@NotNull
+    //@Override
+    //public Set<String> getDefaultBlackList() {
+    //    return emptySet();
+    //}
+    //
+    //@Nullable
+    //@Override
+    //public Language getBlackListDependencyLanguage() {
+    //    return null;
+    //}
+    //
+    //@NotNull
+    //@Override
+    //public List<Option> getSupportedOptions() {
+    //    return emptyList();
+    //}
+    //
+    //@Override
+    //public boolean isBlackListSupported() {
+    //    return false;
+    //}
+    //
+    //@Override
+    //public String getInlayPresentation(@NotNull String inlayText) {
+    //    return inlayText;
+    //}
 }

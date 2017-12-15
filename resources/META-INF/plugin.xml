@@ -9,6 +9,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version 0.30</b>
+
+      <ul>
+        <li>Renaming and indexing modules (in simple cases)</li>
+        <li>Fix compatibility with Idea 15</li>
+      </ul>
+
       <b>version 0.29</b>
 
       <ul>
@@ -45,7 +52,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="141.0"/>
+    <idea-version since-build="143.0"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

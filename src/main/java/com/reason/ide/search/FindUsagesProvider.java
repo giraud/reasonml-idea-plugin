@@ -22,6 +22,7 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
+        //return new DefaultWordsScanner(new RmlLexerAdapter(), TokenSet.create(RmlTypes.UIDENT, RmlTypes.VALUE_NAME), TokenSet.EMPTY, TokenSet.EMPTY);
         return (fileText, processor) -> {
             LexerBase lexer = new RmlLexerAdapter();
             lexer.start(fileText);
@@ -33,7 +34,7 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
                     for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                         int start = tokenStart + wordRange.getStartOffset();
                         int end = tokenStart + wordRange.getEndOffset();
-                        System.out.println("scan: " + start + "," + end + " -> " + lexer.getTokenText());
+                        //System.out.println("scan: " + start + "," + end + " -> " + lexer.getTokenText());
                         processor.process(new WordOccurrence(fileText, start, end, WordOccurrence.Kind.CODE));
                     }
                 }

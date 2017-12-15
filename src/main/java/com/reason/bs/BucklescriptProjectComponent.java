@@ -44,6 +44,14 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
         m_project = project;
     }
 
+    @Override
+    public void initComponent() { // For compatibility with idea#143
+    }
+
+    @Override
+    public void disposeComponent() { // For compatibility with idea#143
+    }
+
     /**
      * Returns the bucklescript instance for the specified project.
      *

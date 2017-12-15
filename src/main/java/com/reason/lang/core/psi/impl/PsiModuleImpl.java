@@ -52,7 +52,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this;
+        return this; // Use PsiModuleReference.handleElementRename()
     }
     //endregion
 

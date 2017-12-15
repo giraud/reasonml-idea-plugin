@@ -14,11 +14,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
-    private final String myReferenceName;
+
+    private final String m_referenceName;
 
     PsiModuleReference(PsiModuleName element) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
-        myReferenceName = element.getName();
+        m_referenceName = element.getName();
     }
 
     @Override
@@ -48,7 +49,7 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
 
         PsiFile containingFile = myElement.getContainingFile();
         if (containingFile instanceof RmlFile) {
-            module = ((RmlFile) containingFile).getModule(myReferenceName);
+            module = ((RmlFile) containingFile).getModule(m_referenceName);
             if (module != null) {
                 return module.getNameIdentifier();
             }

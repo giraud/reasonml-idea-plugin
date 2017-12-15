@@ -9,11 +9,11 @@ import com.reason.RmlFile;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.RmlLanguage;
 
-public class RmlElementFactory {
+class RmlElementFactory {
     private RmlElementFactory() {
     }
 
-    public static PsiElement createModuleName(Project project, String name) {
+    static PsiElement createModuleName(Project project, String name) {
         RmlFile dummyFile = createFileFromText(project, "module " + name + " = {};");
         return dummyFile.getModules()[0].getNameIdentifier();
     }

@@ -14,11 +14,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class RmlFileElementType extends IStubFileElementType<RmlFileStub> {
-    private static final int VERSION = 1;
-    public static final IStubFileElementType INSTANCE = new RmlFileElementType();
+public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
+    public static final IStubFileElementType INSTANCE = new RmlFileStubElementType();
 
-    private RmlFileElementType() {
+    private RmlFileStubElementType() {
         super("REASON_FILE", RmlLanguage.INSTANCE);
     }
 
@@ -37,11 +36,6 @@ public class RmlFileElementType extends IStubFileElementType<RmlFileStub> {
     }
 
     @Override
-    public int getStubVersion() {
-        return VERSION;
-    }
-
-    @Override
     public void serialize(@NotNull RmlFileStub stub, @NotNull StubOutputStream dataStream) throws IOException {
     }
 
@@ -54,6 +48,6 @@ public class RmlFileElementType extends IStubFileElementType<RmlFileStub> {
     @NotNull
     @Override
     public String getExternalId() {
-        return "ReasonML.file";
+        return "reason.file";
     }
 }

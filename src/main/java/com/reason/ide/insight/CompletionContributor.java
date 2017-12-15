@@ -18,7 +18,7 @@ import java.util.Locale;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.instanceOf;
 import static com.reason.lang.RmlTypes.DOT;
-import static com.reason.lang.RmlTypes.UIDENT;
+import static com.reason.lang.RmlTypes.VALUE_NAME;
 
 public class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
@@ -33,19 +33,19 @@ public class CompletionContributor extends com.intellij.codeInsight.completion.C
                     PsiElement position = parameters.getPosition();
                     PsiFile file = position.getContainingFile();
                     PsiElement parent = position.getParent();
-                    //PsiElement grandPa = parent.getParent();
+                    PsiElement grandPa = parent == null ? null : parent.getParent();
                     PsiElement originalPosition = parameters.getOriginalPosition();
                     PsiElement originalPrevSibling = originalPosition == null ? null : originalPosition.getPrevSibling();
                     //PsiElement originalParent = originalPosition != null ? originalPosition.getParent() : null;
 
-                    if (parent instanceof RmlFile) {
+                    if (grandPa instanceof RmlFile) {
                         // We are completing a top level expression
                         if (originalPrevSibling != null && originalPrevSibling.getNode().getElementType() == DOT) {
                             ModuleDotCompletionProvider.complete(result);
                         } else if (originalPosition instanceof LeafPsiElement) {
-                            if (originalPosition.getNode().getElementType() == UIDENT) {
+                            if (originalPosition.getNode().getElementType() == VALUE_NAME) {
                                 // Starts a ModuleName completion
-                                ModuleNameCompletion.complete(file.getProject(), (RmlFile) parent, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
+                                ModuleNameCompletion.complete(file.getProject(), (RmlFile) grandPa, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
                             }
                         }
                     }

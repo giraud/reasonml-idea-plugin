@@ -20,26 +20,24 @@ public class PsiTypeImpl extends ASTWrapperPsiElement implements PsiType {
         super(node);
     }
 
-    @NotNull
-    private PsiElement getTypeConstrElement() {
-        return findNotNullChildByType(RmlTypes.TYPE_CONSTR_NAME);
-    }
-
+    //region PsiNamedElement
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return null;
+        return findChildByType(RmlTypes.TYPE_CONSTR_NAME);
     }
 
     @Override
     public String getName() {
-        return getTypeConstrElement().getText();
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return null;
+        return this;
     }
+    //endregion
 
     @Nullable
     public PsiScopedExpr getScopedExpression() {

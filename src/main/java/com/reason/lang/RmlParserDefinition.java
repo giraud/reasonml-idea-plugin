@@ -12,7 +12,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.RmlFile;
-import com.reason.lang.core.stub.type.RmlFileElementType;
+import com.reason.lang.core.stub.type.RmlFileStubElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlParserDefinition implements ParserDefinition {
@@ -48,7 +48,7 @@ public class RmlParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return RmlFileElementType.INSTANCE;
+        return RmlFileStubElementType.INSTANCE;
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {

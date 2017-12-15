@@ -13,7 +13,7 @@ public class PsiTagProperty extends ASTWrapperPsiElement {
     }
 
     @Nullable
-    public PsiElement getNameElement() {
+    private PsiElement getNameElement() {
         return findChildByType(RmlTypes.PROPERTY_NAME);
     }
 

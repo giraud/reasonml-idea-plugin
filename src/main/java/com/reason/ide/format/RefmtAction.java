@@ -23,9 +23,8 @@ public class RefmtAction extends AnAction {
                 String format = file instanceof OclFile ? "ml" : "re";
                 Document document = PsiDocumentManager.getInstance(project).getDocument(file);
                 if (document != null) {
-                    WriteCommandAction.writeCommandAction(project).run(() -> {
-                        refmt.refmt(project, format, document);
-                    });
+                    //WriteCommandAction.writeCommandAction(project).run(() -> refmt.refmt(project, format, document));
+                    WriteCommandAction.runWriteCommandAction(project, () -> refmt.refmt(project, format, document)); // idea#143
                 }
             }
         }
