@@ -57,7 +57,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
         if (!scopes.empty()) {
             scope = scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && scope.scopeElementType != scopeElementType) {
+            while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeElementType != scopeElementType)) {
                 scopes.pop().end();
                 scope = getLatestScope(scopes);
             }
@@ -133,6 +133,12 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         ParserScope scope = mark(builder, scopes, resolution, tokenType);
         scope.scopeType = scopeType;
         scope.scopeElementType = scopeElementType;
+        return scope;
+    }
+
+    ParserScope markCompleteScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
+        ParserScope scope = markScope(builder, scopes, resolution, tokenType, scopeType, scopeElementType);
+        scope.complete = true;
         return scope;
     }
 

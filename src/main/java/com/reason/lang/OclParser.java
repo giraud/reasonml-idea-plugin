@@ -27,12 +27,28 @@ public class OclParser extends CommonParser {
                 break;
             }
 
+            // in
             if (tokenType == IN) {
                 // End current start-expression scope
                 ParserScope scope = endUntilStart(scopes);
                 if (scope != null && scope.scopeType == startExpression) {
                     scopes.pop();
                     scope.end();
+                }
+
+                currentScope = scopes.empty() ? fileScope : scopes.peek();
+            }
+
+            // end (like a })
+            else if (tokenType == END) {
+                ParserScope scope = endUntilScopeExpression(scopes, null);
+
+                builder.advanceLexer();
+                dontMove = true;
+
+                if (scope != null) {
+                    scope.complete = true;
+                    scopes.pop().end();
                 }
 
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
@@ -92,20 +108,20 @@ public class OclParser extends CommonParser {
 //                } else if (currentScope.resolution == letNamedEqParameters) {
 //                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression, LBRACE);
 //                } else {
-//                    end(scopes);
-//                    currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
+                    end(scopes);
+                    currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
 //                }
             } else if (tokenType == RBRACE) {
-//                ParserScope scope = endUntilScopeExpression(scopes, LBRACE);
-//
-//                builder.advanceLexer();
-//                dontMove = true;
-//
-//                if (scope != null) {
-//                    scope.complete = true;
-//                    scopes.pop().end();
-//                }
-//
+                ParserScope scope = endUntilScopeExpression(scopes, LBRACE);
+
+                builder.advanceLexer();
+                dontMove = true;
+
+                if (scope != null) {
+                    scope.complete = true;
+                    scopes.pop().end();
+                }
+
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
             }
 
@@ -177,10 +193,19 @@ public class OclParser extends CommonParser {
                 } else if (currentScope.resolution == module) {
                     // Module definition
                     builder.remapCurrentToken(VALUE_NAME);
-                    ParserScope scope = markComplete(builder, scopes, moduleNamed, MODULE_NAME);
+                    PsiBuilder.Marker name = builder.mark();
                     dontMove = advance(builder);
-                    scope.end();
+                    name.done(MODULE_NAME);
                     currentScope.resolution = moduleNamed;
+                }
+            }
+
+            //
+            else if (tokenType == SIG) {
+                // Module signature
+                if (currentScope.resolution == moduleNamedEq) {
+                    end(scopes);
+                    currentScope = markScope(builder, scopes, moduleSignature, SCOPED_EXPR, scopeExpression, SIG);
                 }
             }
 
@@ -241,8 +266,10 @@ public class OclParser extends CommonParser {
 
             // Starts a type
             else if (tokenType == TYPE) {
-                endLikeSemi(previousTokenType, scopes, fileScope);
-                currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION, startExpression, TYPE);
+                if (currentScope.resolution != module) {
+                    endLikeSemi(previousTokenType, scopes, fileScope);
+                    currentScope = markScope(builder, scopes, type, TYPE_EXPRESSION, startExpression, TYPE);
+                }
             }
 
             // Starts a module
@@ -277,7 +304,7 @@ public class OclParser extends CommonParser {
 
     private ParserScope endLikeSemi(IElementType previousTokenType, Stack<ParserScope> scopes, ParserScope fileScope) {
         ParserScope scope;
-        if (previousTokenType != IN) {
+        if (previousTokenType != IN && previousTokenType != SIG) {
             // force completion of scoped expressions
             scope = endUntilStartForced(scopes);
         } else {
