@@ -78,7 +78,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             m_element.acceptChildren(new PsiElementVisitor() {
                 @Override
                 public void visitElement(PsiElement element) {
-                    if (element instanceof NavigatablePsiElement && !(element instanceof PsiScopedExpr)) {
+                    if (element instanceof PsiStructuredElement) {
                         treeElements.add(new StructureViewElement(element));
                     }
                 }
@@ -103,8 +103,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         moduleBody.acceptChildren(new PsiElementVisitor() {
             @Override
             public void visitElement(PsiElement element) {
-                if (element instanceof PsiExternal || element instanceof PsiException || element instanceof PsiLet
-                        || element instanceof PsiType || element instanceof PsiModule) {
+                if (element instanceof PsiStructuredElement) {
                     treeElements.add(new StructureViewElement(element));
                 }
             }

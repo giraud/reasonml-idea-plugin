@@ -6,7 +6,7 @@ import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.stub.PsiTypeStub;
 import org.jetbrains.annotations.Nullable;
 
-public interface PsiType extends PsiNamedElement, NavigatablePsiElement, StubBasedPsiElement<PsiTypeStub> {
+public interface PsiType extends PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
     @Nullable
     PsiElement getScopedExpression();
 }

@@ -174,6 +174,11 @@ public class OclParser extends CommonParser {
                     currentScope.complete = true;
                     builder.remapCurrentToken(MODULE_NAME);
                     currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
+                } else if (currentScope.resolution == include) {
+                    // It is a module name/path
+                    currentScope.complete = true;
+                    builder.remapCurrentToken(MODULE_NAME);
+                    currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
                 } else if (currentScope.resolution == exception) {
                     currentScope.complete = true;
                     builder.remapCurrentToken(VALUE_NAME);
@@ -251,6 +256,12 @@ public class OclParser extends CommonParser {
             else if (tokenType == OPEN) {
                 endLikeSemi(previousTokenType, scopes, fileScope);
                 currentScope = markScope(builder, scopes, open, OPEN_EXPRESSION, startExpression, OPEN);
+            }
+
+            // Starts an include
+            else if (tokenType == INCLUDE) {
+                endLikeSemi(previousTokenType, scopes, fileScope);
+                currentScope = markScope(builder, scopes, include, INCLUDE_EXPRESSION, startExpression, INCLUDE);
             }
 
             // Starts an external

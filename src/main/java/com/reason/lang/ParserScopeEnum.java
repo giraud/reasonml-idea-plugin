@@ -6,6 +6,8 @@ enum ParserScopeEnum {
     open,
     openModulePath,
 
+    include,
+
     external,
     externalNamed,
 

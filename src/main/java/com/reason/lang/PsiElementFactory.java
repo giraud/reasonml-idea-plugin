@@ -18,6 +18,8 @@ class PsiElementFactory {
             return new PsiExceptionNameImpl(node);
         } else if (type == RmlTypes.OPEN_EXPRESSION) {
             return new PsiOpen(node);
+        } else if (type == RmlTypes.INCLUDE_EXPRESSION) {
+            return new PsiIncludeImpl(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
             return new PsiTypeImpl(node);
         } else if (type == RmlTypes.TYPE_CONSTR_NAME) {
