@@ -134,6 +134,7 @@
 
         <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
         <stubIndex implementation="com.reason.ide.search.LetIndex"/>
+        <stubIndex implementation="com.reason.ide.search.TypeIndex"/>
 
         <!--
          | Others

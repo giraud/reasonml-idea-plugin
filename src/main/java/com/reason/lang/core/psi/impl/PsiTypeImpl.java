@@ -1,24 +1,34 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.RmlTypes;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.stub.ModuleStub;
+import com.reason.lang.core.stub.PsiTypeStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiTypeImpl extends ASTWrapperPsiElement implements PsiType {
+public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements PsiType {
 
+    //region Constructors
     public PsiTypeImpl(ASTNode node) {
         super(node);
     }
+
+    public PsiTypeImpl(PsiTypeStub stub, IStubElementType nodeType) {
+        super(stub, nodeType);
+    }
+    //endregion
 
     //region PsiNamedElement
     @Nullable

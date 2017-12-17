@@ -3,6 +3,7 @@ package com.reason.lang;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.stub.type.ModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
+import com.reason.lang.core.stub.type.PsiTypeElementType;
 
 public interface RmlTypes {
 
@@ -14,7 +15,7 @@ public interface RmlTypes {
     IElementType ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
     IElementType MACRO_EXPRESSION = new RmlElementType("MACRO_EXPRESSION");
     IElementType MACRO_NAME = new RmlElementType("MACRO_NAME");
-    IElementType TYPE_EXPRESSION = new RmlElementType("TYPE_EXPRESSION");
+    IElementType TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION");
     IElementType INCLUDE_EXPRESSION = new RmlElementType("INCLUDE_EXPRESSION");
 
     IElementType LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
