@@ -62,7 +62,7 @@ public class OclParser extends CommonParser {
                     currentScope.resolution = letNamedEq;
                     builder.advanceLexer();
                     dontMove = true;
-                    currentScope = markScope(builder, scopes, letNamedEq, LET_BINDING, scopeExpression, EQ);
+                    currentScope = markScope(builder, scopes, letNamedEq, LET_BINDING, groupExpression, EQ);
                     currentScope.complete = true;
                 } else if (currentScope.resolution == tagProperty) {
                     currentScope.resolution = tagPropertyEq;
@@ -75,12 +75,7 @@ public class OclParser extends CommonParser {
             // ( ... )
             else if (tokenType == LPAREN) {
                 end(scopes);
-//                if (currentScope.resolution == letNamedEq) {
-//                    // function parameters
-//                    currentScope = markScope(builder, scopes, letParameters, LET_FUN_PARAMS, scopeExpression, LPAREN);
-//                } else {
                 currentScope = markScope(builder, scopes, paren, SCOPED_EXPR, scopeExpression, LPAREN);
-//                }
             } else if (tokenType == RPAREN) {
                 ParserScope scope = endUntilScopeExpression(scopes, LPAREN);
 
@@ -91,9 +86,6 @@ public class OclParser extends CommonParser {
                     scope.complete = true;
                     scopes.pop().end();
                     scope = getLatestScope(scopes);
-//                    if (scope != null && scope.resolution == letNamedEq) {
-//                        scope.resolution = letNamedEqParameters;
-//                    }
                 }
 
                 currentScope = scopes.empty() ? fileScope : scopes.peek();
@@ -101,16 +93,8 @@ public class OclParser extends CommonParser {
 
             // { ... }
             else if (tokenType == LBRACE) {
-//                if (currentScope.resolution == typeNamedEq) {
-//                    currentScope = markScope(builder, scopes, objectBinding, OBJECT_EXPR, scopeExpression, LBRACE);
-//                } else if (currentScope.resolution == moduleNamedEq) {
-//                    currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression, LBRACE);
-//                } else if (currentScope.resolution == letNamedEqParameters) {
-//                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression, LBRACE);
-//                } else {
                 end(scopes);
                 currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
-//                }
             } else if (tokenType == RBRACE) {
                 ParserScope scope = endUntilScopeExpression(scopes, LBRACE);
 
@@ -203,14 +187,22 @@ public class OclParser extends CommonParser {
                 }
             }
 
-            //
+            // module signature
             else if (tokenType == SIG) {
-                // Module signature
                 if (currentScope.resolution == moduleNamedEq) {
                     end(scopes);
                     currentScope = markScope(builder, scopes, moduleSignature, SCOPED_EXPR, scopeExpression, SIG);
                 }
             }
+
+            // module body
+            else if (tokenType == STRUCT) {
+                if (currentScope.resolution == moduleNamedEq) {
+                    end(scopes);
+                    currentScope = markScope(builder, scopes, moduleBinding, SCOPED_EXPR, scopeExpression, STRUCT);
+                }
+            }
+
 
             //
             else if (tokenType == LT) {
@@ -321,7 +313,7 @@ public class OclParser extends CommonParser {
 
     private ParserScope endLikeSemi(IElementType previousTokenType, Stack<ParserScope> scopes, ParserScope fileScope) {
         ParserScope scope;
-        if (previousTokenType != IN && previousTokenType != SIG) {
+        if (previousTokenType != IN && previousTokenType != SIG && previousTokenType != STRUCT) {
             // force completion of scoped expressions
             scope = endUntilStartForced(scopes);
         } else {

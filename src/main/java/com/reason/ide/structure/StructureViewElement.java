@@ -78,7 +78,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             m_element.acceptChildren(new PsiElementVisitor() {
                 @Override
                 public void visitElement(PsiElement element) {
-                    if (element instanceof NavigatablePsiElement) {
+                    if (element instanceof NavigatablePsiElement && !(element instanceof PsiScopedExpr)) {
                         treeElements.add(new StructureViewElement(element));
                     }
                 }
