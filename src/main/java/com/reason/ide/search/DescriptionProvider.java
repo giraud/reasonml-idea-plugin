@@ -9,6 +9,7 @@ import com.intellij.usageView.UsageViewShortNameLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiTypeName;
 import org.jetbrains.annotations.NotNull;
 
 public class DescriptionProvider implements ElementDescriptionProvider {
@@ -28,6 +29,8 @@ public class DescriptionProvider implements ElementDescriptionProvider {
         if (location == UsageViewTypeLocation.INSTANCE) {
             if (element instanceof PsiModuleName) {
                 return "module";
+            } else if (element instanceof PsiTypeName) {
+                return "type";
             }
         }
 

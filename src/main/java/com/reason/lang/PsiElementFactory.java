@@ -4,10 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiLetImpl;
-import com.reason.lang.core.psi.impl.PsiModuleImpl;
-import com.reason.lang.core.psi.impl.PsiModuleNameImpl;
-import com.reason.lang.core.psi.impl.PsiTypeImpl;
+import com.reason.lang.core.psi.impl.*;
 
 class PsiElementFactory {
     static PsiElement createElement(ASTNode node) {
@@ -17,6 +14,10 @@ class PsiElementFactory {
             return new PsiExternal(node);
         } else if (type == RmlTypes.OPEN_EXPRESSION) {
             return new PsiOpen(node);
+        } else if (type == RmlTypes.TYPE_EXPRESSION) {
+            return new PsiTypeImpl(node);
+        } else if (type == RmlTypes.TYPE_CONSTR_NAME) {
+            return new PsiTypeNameImpl(node);
         } else if (type == RmlTypes.MODULE_EXPRESSION) {
             return new PsiModuleImpl(node);
         } else if (type == RmlTypes.MODULE_NAME) {
@@ -33,8 +34,6 @@ class PsiElementFactory {
             return new PsiMacroName(node);
         } else if (type == RmlTypes.SCOPED_EXPR || type == RmlTypes.OBJECT_EXPR || type == RmlTypes.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
-        } else if (type == RmlTypes.TYPE_EXPRESSION) {
-            return new PsiTypeImpl(node);
         } else if (type == RmlTypes.TAG_START) {
             return new PsiTagStart(node);
         } else if (type == RmlTypes.TAG_PROPERTY) {

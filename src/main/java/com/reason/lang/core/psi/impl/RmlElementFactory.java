@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi.impl;
 
+import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
@@ -16,6 +17,11 @@ class RmlElementFactory {
     static PsiElement createModuleName(Project project, String name) {
         RmlFile dummyFile = createFileFromText(project, "module " + name + " = {};");
         return dummyFile.getModules()[0].getNameIdentifier();
+    }
+
+    public static PsiElement createTypeName(Project project, String name) {
+        RmlFile dummyFile = createFileFromText(project, "type " + name + ";");
+        return ((PsiType) dummyFile.getFirstChild()).getNameIdentifier();
     }
 
     @NotNull

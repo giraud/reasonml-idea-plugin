@@ -15,6 +15,7 @@ import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.RmlLexerAdapter;
 import com.reason.lang.RmlTypes;
 import com.reason.lang.core.psi.PsiModuleName;
+import com.reason.lang.core.psi.PsiTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +35,7 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
                     for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                         int start = tokenStart + wordRange.getStartOffset();
                         int end = tokenStart + wordRange.getEndOffset();
-                        //System.out.println("scan: " + start + "," + end + " -> " + lexer.getTokenText());
+                        System.out.println("scan: " + start + "," + end + " -> " + lexer.getTokenText());
                         processor.process(new WordOccurrence(fileText, start, end, WordOccurrence.Kind.CODE));
                     }
                 }
@@ -45,7 +46,7 @@ public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsag
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiModuleName;
+        return element instanceof PsiModuleName || element instanceof PsiTypeName;
     }
 
     @Nullable

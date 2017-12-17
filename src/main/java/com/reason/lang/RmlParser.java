@@ -147,7 +147,10 @@ public class RmlParser extends CommonParser {
             //
             else if (tokenType == LIDENT) {
                 if (currentScope.resolution == type) {
-                    builder.remapCurrentToken(TYPE_CONSTR_NAME);
+                    builder.remapCurrentToken(VALUE_NAME);
+                    ParserScope scope = markComplete(builder, scopes, typeNamed, TYPE_CONSTR_NAME);
+                    dontMove = advance(builder);
+                    scope.end();
                     currentScope.resolution = typeNamed;
                     currentScope.complete = true;
                 } else if (currentScope.resolution == external) {
