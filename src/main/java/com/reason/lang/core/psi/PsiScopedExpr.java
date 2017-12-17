@@ -9,4 +9,8 @@ public class PsiScopedExpr extends ASTWrapperPsiElement {
         super(node);
     }
 
+    @Override
+    public boolean canNavigate() {
+        return false;
+    }
 }
