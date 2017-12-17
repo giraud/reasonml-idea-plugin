@@ -12,6 +12,10 @@ class PsiElementFactory {
 
         if (type == RmlTypes.EXTERNAL_EXPRESSION) {
             return new PsiExternal(node);
+        } else if (type == RmlTypes.EXCEPTION_EXPRESSION) {
+            return new PsiExceptionImpl(node);
+        } else if (type == RmlTypes.EXCEPTION_NAME) {
+            return new PsiExceptionNameImpl(node);
         } else if (type == RmlTypes.OPEN_EXPRESSION) {
             return new PsiOpen(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {

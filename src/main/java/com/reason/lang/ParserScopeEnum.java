@@ -44,4 +44,7 @@ enum ParserScopeEnum {
     paren,
     brace,
     bracket,
+
+    exception,
+    exceptionNamed,
 }

@@ -108,8 +108,8 @@ public class OclParser extends CommonParser {
 //                } else if (currentScope.resolution == letNamedEqParameters) {
 //                    currentScope = markScope(builder, scopes, letFunBody, LET_BINDING, scopeExpression, LBRACE);
 //                } else {
-                    end(scopes);
-                    currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
+                end(scopes);
+                currentScope = markScope(builder, scopes, brace, SCOPED_EXPR, scopeExpression, LBRACE);
 //                }
             } else if (tokenType == RBRACE) {
                 ParserScope scope = endUntilScopeExpression(scopes, LBRACE);
@@ -190,12 +190,15 @@ public class OclParser extends CommonParser {
                     currentScope.complete = true;
                     builder.remapCurrentToken(MODULE_NAME);
                     currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
+                } else if (currentScope.resolution == exception) {
+                    currentScope.complete = true;
+                    builder.remapCurrentToken(VALUE_NAME);
+                    dontMove = markToken(builder, EXCEPTION_NAME);
+                    currentScope.resolution = exceptionNamed;
                 } else if (currentScope.resolution == module) {
                     // Module definition
                     builder.remapCurrentToken(VALUE_NAME);
-                    PsiBuilder.Marker name = builder.mark();
-                    dontMove = advance(builder);
-                    name.done(MODULE_NAME);
+                    dontMove = markToken(builder, MODULE_NAME);
                     currentScope.resolution = moduleNamed;
                 }
             }
@@ -288,6 +291,13 @@ public class OclParser extends CommonParser {
                 currentScope = markScope(builder, scopes, let, LET_EXPRESSION, startExpression, LET);
             }
 
+            // Starts an exception
+            else if (tokenType == EXCEPTION) {
+                endLikeSemi(previousTokenType, scopes, fileScope);
+                currentScope = markScope(builder, scopes, exception, EXCEPTION_EXPRESSION, startExpression, EXCEPTION);
+            }
+
+
             if (dontMove) {
                 dontMove = false;
             } else {
@@ -300,6 +310,13 @@ public class OclParser extends CommonParser {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private boolean markToken(PsiBuilder builder, IElementType elementType) {
+        PsiBuilder.Marker name = builder.mark();
+        boolean dontMove = advance(builder);
+        name.done(elementType);
+        return dontMove;
     }
 
     private ParserScope endLikeSemi(IElementType previousTokenType, Stack<ParserScope> scopes, ParserScope fileScope) {

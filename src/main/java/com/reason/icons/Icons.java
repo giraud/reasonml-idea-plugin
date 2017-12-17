@@ -1,5 +1,7 @@
 package com.reason.icons;
 
+import com.intellij.openapi.util.IconLoader;
+
 import javax.swing.*;
 
 import static com.intellij.openapi.util.IconLoader.getIcon;
@@ -18,6 +20,7 @@ public class Icons {
     public static final Icon MODULE = getIcon("/nodes/method.png");
     public static final Icon LET = getIcon("/nodes/field.png");
     public static final Icon FUNCTION = getIcon("/nodes/function.png");
+    public static final Icon EXCEPTION = getIcon("/nodes/exceptionClass.png");
     public static final Icon EXTERNAL = getIcon("/nodes/enum.png");
 
     public static final Icon VALUE = getIcon("/nodes/variable.png");

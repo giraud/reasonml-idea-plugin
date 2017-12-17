@@ -1,6 +1,8 @@
 package com.reason.ide.structure;
 
 import java.util.*;
+
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.structureView.StructureViewTreeElement;
@@ -13,11 +15,6 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiType;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private PsiElement m_element;
@@ -77,6 +74,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             PsiModule[] modules = PsiTreeUtil.getChildrenOfType(m_element, PsiModule.class);
             PsiLet[] lets = PsiTreeUtil.getChildrenOfType(m_element, PsiLet.class);
             PsiType[] types = PsiTreeUtil.getChildrenOfType(m_element, PsiType.class);
+            PsiException[] exceptions = PsiTreeUtil.getChildrenOfType(m_element, PsiException.class);
             PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(m_element, PsiExternal.class);
 
             List<TreeElement> treeElements;
@@ -88,6 +86,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 if (externals != null) {
                     for (PsiExternal external : externals) {
                         treeElements.add(new StructureViewElement(external));
+                    }
+                }
+                if (exceptions != null) {
+                    for (PsiException exception : exceptions) {
+                        treeElements.add(new StructureViewElement(exception));
                     }
                 }
                 if (types != null) {
@@ -122,6 +125,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     private List<TreeElement> buildModuleStructure(PsiModule moduleElement) {
         PsiScopedExpr moduleBody = moduleElement.getModuleBody();
         PsiExternal[] externals = PsiTreeUtil.getChildrenOfType(moduleBody, PsiExternal.class);
+        PsiException[] exceptions = PsiTreeUtil.getChildrenOfType(moduleBody, PsiException.class);
         PsiType[] types = PsiTreeUtil.getChildrenOfType(moduleBody, PsiType.class);
         PsiLet[] lets = PsiTreeUtil.getChildrenOfType(moduleBody, PsiLet.class);
         PsiModule[] modules = PsiTreeUtil.getChildrenOfType(moduleBody, PsiModule.class);
@@ -130,6 +134,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         if (lets != null || types != null || externals != null || modules != null) {
             treeElements = new ArrayList<>((lets == null ? 0 : lets.length) + (types != null ? types.length : 0) + (externals != null ? externals.length : 0));
 
+            if (exceptions != null) {
+                for (PsiException exception : exceptions) {
+                    treeElements.add(new StructureViewElement(exception));
+                }
+            }
             if (types != null) {
                 for (PsiType type : types) {
                     treeElements.add(new StructureViewElement(type));
