@@ -11,7 +11,7 @@ class PsiElementFactory {
         IElementType type = node.getElementType();
 
         if (type == RmlTypes.EXTERNAL_EXPRESSION) {
-            return new PsiExternal(node);
+            return new PsiExternalImpl(node);
         } else if (type == RmlTypes.EXCEPTION_EXPRESSION) {
             return new PsiExceptionImpl(node);
         } else if (type == RmlTypes.EXCEPTION_NAME) {
