@@ -14,7 +14,7 @@
       <ul>
         <li>val expressions (OCaml) are displayed in the structure view</li>
         <li>Exceptions are displayed in the structure view</li>
-        <li>[#18](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/18) Incorrect handling of characters in parser</li>
+        <li>Incorrect handling of characters in parser</li>
         <li>Improve OCaml parser</li>
       </ul>
 
