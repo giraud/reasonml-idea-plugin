@@ -35,11 +35,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     //region NamedElement
     @Override
     public String getName() {
-        ModuleStub moduleStub = getStub();
-        if (moduleStub != null) {
-            return moduleStub.getName();
-        }
-
         PsiElement nameIdentifier = getNameIdentifier();
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
@@ -55,16 +50,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return this; // Use PsiModuleReference.handleElementRename()
     }
     //endregion
-
-    @Override
-    public PsiReference getReference() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier != null && nameIdentifier instanceof PsiModuleName) {
-            return new PsiModuleReference((PsiModuleName) nameIdentifier);
-        }
-
-        return null;
-    }
 
     @Nullable
     public PsiScopedExpr getModuleBody() {
