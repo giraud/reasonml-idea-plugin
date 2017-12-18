@@ -1,11 +1,11 @@
 package com.reason.ide.files;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
 
 public class RmlFile extends PsiFileBase {
     public RmlFile(@NotNull FileViewProvider viewProvider) {

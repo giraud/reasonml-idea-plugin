@@ -1,14 +1,12 @@
 package com.reason.lang.core;
 
 import java.util.*;
-
-import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
@@ -17,12 +15,25 @@ import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleName;
+import com.reason.lang.core.psi.PsiNamedElement;
 
 public class RmlPsiUtil {
 
+    public static String fileNameToModuleName(VirtualFile file) {
+        return fileNameToModuleName(file.getName());
+    }
+
     public static String fileNameToModuleName(PsiFile file) {
-        String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(file.getName());
+        return fileNameToModuleName(file.getName());
+        //String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(file.getName());
+        //return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault()) + nameWithoutExtension.substring(1);
+    }
+
+    public static String fileNameToModuleName(String filename) {
+        String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(filename);
+        if (nameWithoutExtension.isEmpty()) {
+            return "";
+        }
         return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault()) + nameWithoutExtension.substring(1);
     }
 
