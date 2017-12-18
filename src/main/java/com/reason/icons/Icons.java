@@ -19,6 +19,7 @@ public class Icons {
     // From jetbrains ide
     public static final Icon MODULE = getIcon("/nodes/method.png");
     public static final Icon LET = getIcon("/nodes/field.png");
+    public static final Icon VAL = getIcon("/css/pseudo-class.png");
     public static final Icon FUNCTION = getIcon("/nodes/function.png");
     public static final Icon EXCEPTION = getIcon("/nodes/exceptionClass.png");
     public static final Icon EXTERNAL = getIcon("/nodes/enum.png");

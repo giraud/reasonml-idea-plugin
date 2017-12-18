@@ -10,20 +10,21 @@ public interface RmlTypes {
     IElementType ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
     IElementType EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
     IElementType EXCEPTION_EXPRESSION = new RmlElementType("EXCEPTION_EXPRESSION");
+    IElementType EXCEPTION_NAME = new RmlElementType("EXCEPTION_NAME");
     IElementType FILE_MODULE = new RmlTokenType("FILE_MODULE");
     IElementType INCLUDE_EXPRESSION = new RmlElementType("INCLUDE_EXPRESSION");
     IElementType LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION");
     IElementType MACRO_EXPRESSION = new RmlElementType("MACRO_EXPRESSION");
     IElementType MACRO_NAME = new RmlElementType("MACRO_NAME");
     IElementType MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION");
+    IElementType MODULE_NAME = new RmlElementType("MODULE_NAME");
+    IElementType MODULE_PATH = new RmlElementType("MODULE_PATH");
     IElementType OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
     IElementType TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION");
+    IElementType VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION");
 
     IElementType LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
     IElementType LET_BINDING = new RmlElementType("LET_BINDING");
-    IElementType EXCEPTION_NAME = new RmlElementType("EXCEPTION_NAME");
-    IElementType MODULE_NAME = new RmlElementType("MODULE_NAME");
-    IElementType MODULE_PATH = new RmlElementType("MODULE_PATH");
     IElementType TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
     IElementType PATTERN_MATCH_EXPR = new RmlElementType("PATTERN_MATCH_EXPR");
     IElementType OBJECT_EXPR = new RmlElementType("OBJECT_EXPR");

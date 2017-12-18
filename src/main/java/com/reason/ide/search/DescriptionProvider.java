@@ -34,6 +34,6 @@ public class DescriptionProvider implements ElementDescriptionProvider {
             }
         }
 
-        return "<unknown>";
+        return null;
     }
 }

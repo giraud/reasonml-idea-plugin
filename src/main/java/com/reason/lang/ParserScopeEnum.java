@@ -31,6 +31,9 @@ enum ParserScopeEnum {
     letBody,
     funBody,
 
+    val,
+    valNamed,
+
     startTag,
     closeTag,
     tagProperty,
@@ -40,7 +43,7 @@ enum ParserScopeEnum {
     annotationName,
     macro,
     macroName,
-    
+
     objectBinding,
 
     paren,

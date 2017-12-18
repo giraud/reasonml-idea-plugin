@@ -30,6 +30,8 @@ class PsiElementFactory {
             return new PsiModuleNameImpl(node);
         } else if (type == RmlTypes.LET_EXPRESSION) {
             return new PsiLetImpl(node);
+        } else if (type == RmlTypes.VAL_EXPRESSION) {
+            return new PsiValImpl(node);
         } else if (type == RmlTypes.ANNOTATION_EXPRESSION) {
             return new PsiAnnotation(node);
         } else if (type == RmlTypes.FUN_BODY) {
