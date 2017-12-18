@@ -87,7 +87,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "exception"  { return EXCEPTION; }
     "when"       { return WHEN; }
     "and"        { return AND; }
-    
+
     // OCaml
     "of"         { return OF; }
     "to"         { return TO; }
@@ -121,6 +121,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     ({FLOAT_LITERAL} | {HEX_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return FLOAT; }
     "'"{LOWERCASE}{IDENTCHAR}*       { return TYPE_ARGUMENT; }
     "`"{UPPERCASE}{IDENTCHAR}*       { return POLY_VARIANT; }
+    "'"."'"                          { return CHAR; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }

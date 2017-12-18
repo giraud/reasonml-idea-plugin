@@ -100,7 +100,7 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMA_KEYS;
         } else if (SEMI.equals(tokenType)) {
             return SEMICOLON_KEYS;
-        } else if (STRING.equals(tokenType)) {
+        } else if (STRING.equals(tokenType) || CHAR.equals(tokenType)) {
             return STRING_KEYS;
         } else if (KEYWORD_TYPES.contains(tokenType)) {
             return KEYWORD_KEYS;

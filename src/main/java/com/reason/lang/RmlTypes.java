@@ -69,6 +69,7 @@ public interface RmlTypes {
     IElementType EXTERNAL = new RmlTokenType("EXTERNAL");
     IElementType FALSE = new RmlTokenType("FALSE");
     IElementType FLOAT = new RmlTokenType("FLOAT");
+    IElementType CHAR = new RmlElementType("CHAR");
     IElementType FOR = new RmlElementType("FOR");
     IElementType FUN = new RmlTokenType("FUN");
     IElementType FUN_PARAMS = new RmlTokenType("FUN_PARAMS");
