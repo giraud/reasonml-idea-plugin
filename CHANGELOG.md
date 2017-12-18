@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.31
+
+* :nail_care: val expressions (OCaml) are displayed in the structure view
+* :nail_care: Exceptions are displayed in the structure view
+* :bug: [#18](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/18) Incorrect handling of characters in parser 
+* :house: Improve OCaml parser
+
 ## 0.30
 
 * :house: Fix Idea 15 compatibility

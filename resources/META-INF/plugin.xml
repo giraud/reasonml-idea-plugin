@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.30</version>
+    <version>0.31</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -9,6 +9,15 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version 0.31</b>
+
+      <ul>
+        <li>val expressions (OCaml) are displayed in the structure view</li>
+        <li>Exceptions are displayed in the structure view</li>
+        <li>[#18](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/18) Incorrect handling of characters in parser</li>
+        <li>Improve OCaml parser</li>
+      </ul>
+
       <b>version 0.30</b>
 
       <ul>
@@ -34,16 +43,6 @@
         <li>Fixed an IllegalArgumentException in KillableColoredProcessHandler</li>
         <li>Structure view enabled for Ocaml files</li>
         <li>Inferring types using bsc if no merlin found (wip)</li>
-      </ul>
-
-      <b>version 0.26</b>
-      <ul>
-        <li>Improving parsers</li>
-      </ul>
-
-      <b>version 0.25</b>
-      <ul>
-        <li>Add a very lightweight support of OCaml, to have more syntax coloring and no incorrect parser errors (#14)</li>
       </ul>
 
       <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
