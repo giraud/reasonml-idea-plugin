@@ -34,6 +34,6 @@ public class DescriptionProvider implements ElementDescriptionProvider {
             }
         }
 
-        return null;
+        return element.toString();
     }
 }
