@@ -17,7 +17,7 @@ class PsiElementFactory {
         } else if (type == RmlTypes.EXCEPTION_NAME) {
             return new PsiExceptionNameImpl(node);
         } else if (type == RmlTypes.OPEN_EXPRESSION) {
-            return new PsiOpen(node);
+            return new PsiOpenImpl(node);
         } else if (type == RmlTypes.INCLUDE_EXPRESSION) {
             return new PsiIncludeImpl(node);
         } else if (type == RmlTypes.TYPE_EXPRESSION) {
@@ -28,6 +28,8 @@ class PsiElementFactory {
             return new PsiModuleImpl(node);
         } else if (type == RmlTypes.MODULE_NAME) {
             return new PsiModuleNameImpl(node);
+        } else if (type == RmlTypes.MODULE_PATH) {
+            return new PsiModulePath(node);
         } else if (type == RmlTypes.LET_EXPRESSION) {
             return new PsiLetImpl(node);
         } else if (type == RmlTypes.VAL_EXPRESSION) {

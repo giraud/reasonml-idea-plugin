@@ -175,8 +175,11 @@ public class RmlParser extends CommonParser {
                 if (currentScope.resolution == open) {
                     // It is a module name/path
                     currentScope.complete = true;
-                    builder.remapCurrentToken(MODULE_NAME);
+                    builder.remapCurrentToken(VALUE_NAME);
                     currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
+                    PsiBuilder.Marker mark = builder.mark();
+                    dontMove = advance(builder);
+                    mark.done(MODULE_NAME);
                 } else if (currentScope.resolution == module) {
                     builder.remapCurrentToken(VALUE_NAME);
                     ParserScope scope = markComplete(builder, scopes, moduleNamed, MODULE_NAME);
