@@ -12,7 +12,6 @@ public class Icons {
     public static final Icon BLUE_FILE = getIcon("/icons/reason-file-blue.png");
     public static final Icon YELLOW_FILE = getIcon("/icons/reason-file-yellow.png");
     public static final Icon TYPE = getIcon("/icons/type.png");
-    public static final Icon OPEN = getIcon("/icons/open.png");
 
     public static final Icon OCL_FILE = getIcon("/icons/ocaml-file.png");
     public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocaml-file-blue.png");
@@ -27,4 +26,5 @@ public class Icons {
     public static final Icon VALUE = getIcon("/nodes/variable.png");
     public static final Icon SIGNATURE = getIcon("/nodes/static.png");
     public static final Icon INCLUDE = getIcon("/nodes/interface.png");
+    public static final Icon OPEN = getIcon("/objectBrowser/showModules.png");
 }
