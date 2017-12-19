@@ -1,22 +1,22 @@
 package com.reason.ide.structure;
 
-import java.util.*;
-
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.SortableTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiStructuredElement;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private PsiElement m_element;
@@ -100,14 +100,16 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         List<TreeElement> treeElements = new ArrayList<>();
         PsiScopedExpr moduleBody = moduleElement.getModuleBody();
 
-        moduleBody.acceptChildren(new PsiElementVisitor() {
-            @Override
-            public void visitElement(PsiElement element) {
-                if (element instanceof PsiStructuredElement) {
-                    treeElements.add(new StructureViewElement(element));
+        if (moduleBody != null) {
+            moduleBody.acceptChildren(new PsiElementVisitor() {
+                @Override
+                public void visitElement(PsiElement element) {
+                    if (element instanceof PsiStructuredElement) {
+                        treeElements.add(new StructureViewElement(element));
+                    }
                 }
-            }
-        });
+            });
+        }
 
         return treeElements;
     }

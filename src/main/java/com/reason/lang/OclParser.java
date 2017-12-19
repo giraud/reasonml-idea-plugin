@@ -1,10 +1,12 @@
 package com.reason.lang;
 
-import java.util.*;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import java.util.Stack;
+
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
 import static com.reason.lang.ParserScopeType.*;
 import static com.reason.lang.RmlTypes.*;
@@ -186,8 +188,9 @@ public class OclParser extends CommonParser {
                 if (currentScope.resolution == open) {
                     // It is a module name/path
                     currentScope.complete = true;
-                    builder.remapCurrentToken(MODULE_NAME);
+                    builder.remapCurrentToken(VALUE_NAME);
                     currentScope = markComplete(builder, scopes, openModulePath, MODULE_PATH);
+                    dontMove = advance(builder, MODULE_NAME);
                 } else if (currentScope.resolution == include) {
                     // It is a module name/path
                     currentScope.complete = true;

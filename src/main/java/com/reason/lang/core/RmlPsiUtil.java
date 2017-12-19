@@ -1,7 +1,5 @@
 package com.reason.lang.core;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
@@ -13,9 +11,15 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.ide.files.FileBase;
+import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 
 public class RmlPsiUtil {
 
@@ -38,17 +42,23 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<PsiFile> findFileModules(@NotNull Project project, String extension, @NotNull String name) {
+    public static List<PsiFile> findFileModules(@NotNull Project project, String extension, @NotNull String name, boolean exact) {
         ArrayList<PsiFile> result = new ArrayList<>();
 
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+        PsiManager psiManager = PsiManager.getInstance(project);
 
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, extension);
-        for (VirtualFile file : files) {
-            String canonicalPath = file.getCanonicalPath();
+        for (VirtualFile vFile : files) {
+            String canonicalPath = vFile.getCanonicalPath();
             if (bucklescript.isDependency(canonicalPath)) {
-                if (file.getNameWithoutExtension().toLowerCase(Locale.getDefault()).startsWith(name)) {
-                    result.add(PsiManager.getInstance(project).findFile(file));
+                FileBase file = (FileBase) psiManager.findFile(vFile);
+                if (file != null) {
+                    String fileModuleName = file.asModuleName();
+                    boolean found = exact ? fileModuleName.equals(name) : fileModuleName.startsWith(name);
+                    if (found) {
+                        result.add(file);
+                    }
                 }
             }
         }
@@ -74,6 +84,21 @@ public class RmlPsiUtil {
         }
 
         return result;
+    }
+
+    @Nullable
+    public static PsiFile findFileModule(Project project, String name) {
+        List<PsiFile> rmlModules = findFileModules(project, RmlFileType.INSTANCE.getDefaultExtension(), name, true);
+        if (rmlModules.size() == 1) {
+            return rmlModules.get(0);
+        }
+
+        List<PsiFile> oclModules = findFileModules(project, OclFileType.INSTANCE.getDefaultExtension(), name, true);
+        if (oclModules.size() == 1) {
+            return oclModules.get(0);
+        }
+
+        return null;
     }
 
     @NotNull

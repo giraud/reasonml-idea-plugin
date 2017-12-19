@@ -4,7 +4,6 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -158,7 +157,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
 
     @Override
     public boolean isDependency(String path) {
-        return m_config != null && m_config.accept(path);
+        return m_config == null || m_config.accept(path);
     }
 
     @Override

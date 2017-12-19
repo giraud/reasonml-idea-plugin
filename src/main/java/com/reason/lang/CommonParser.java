@@ -146,4 +146,12 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder.advanceLexer();
         return true;
     }
+
+    boolean advance(PsiBuilder builder, IElementType elementType) {
+        PsiBuilder.Marker mark = builder.mark();
+        advance(builder);
+        mark.done(elementType);
+        return true;
+    }
+
 }

@@ -6,10 +6,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.files.RmlFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
+import com.reason.lang.core.psi.PsiOpen;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,18 +42,26 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
     @Nullable
     @Override
     public PsiElement resolve() {
-        // From the definition of a module
-        PsiModule module = PsiTreeUtil.getParentOfType(myElement, PsiModule.class);
-        if (module != null && module.getNameIdentifier() == myElement) {
-            return myElement;
+        PsiElement parent = PsiTreeUtil.getParentOfType(myElement, PsiModule.class, PsiOpen.class);
+
+        // If name is used in a module definition, it's already the reference
+        if (parent instanceof PsiModule && ((PsiModule) parent).getNameIdentifier() == myElement) {
+            return null;
         }
 
-        PsiFile containingFile = myElement.getContainingFile();
-        if (containingFile instanceof RmlFile) {
-            module = ((RmlFile) containingFile).getModule(m_referenceName);
-            if (module != null) {
-                return module.getNameIdentifier();
+        // In open expression, name resolve to a file
+        if (parent instanceof PsiOpen) {
+            PsiFile file = RmlPsiUtil.findFileModule(myElement.getProject(), m_referenceName);
+            if (file != null) {
+                return file;
             }
+        }
+
+        // Try to find the expression in current file (this is WIP)
+        PsiFile containingFile = myElement.getContainingFile();
+        PsiModule module = ((FileBase) containingFile).getModule(m_referenceName);
+        if (module != null) {
+            return module.getNameIdentifier();
         }
 
         return null;

@@ -1,7 +1,5 @@
 package com.reason.ide.insight;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -10,13 +8,18 @@ import com.intellij.codeInsight.lookup.LookupElementRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
-import com.reason.ide.files.RmlFile;
 import com.reason.icons.Icons;
 import com.reason.ide.files.OclFileType;
+import com.reason.ide.files.RmlFile;
 import com.reason.ide.files.RmlFileType;
 import com.reason.lang.core.psi.PsiModule;
+import org.jetbrains.annotations.NotNull;
 
-import static com.reason.lang.core.RmlPsiUtil.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.reason.lang.core.RmlPsiUtil.fileNameToModuleName;
+import static com.reason.lang.core.RmlPsiUtil.findFileModules;
 
 class ModuleNameCompletion {
 
@@ -40,8 +43,8 @@ class ModuleNameCompletion {
         }
 
         List<PsiFile> modules = new ArrayList<>();
-        modules.addAll(findFileModules(project, RmlFileType.INSTANCE.getDefaultExtension(), modulePrefix));
-        modules.addAll(findFileModules(project, OclFileType.INSTANCE.getDefaultExtension(), modulePrefix));
+        modules.addAll(findFileModules(project, RmlFileType.INSTANCE.getDefaultExtension(), modulePrefix, false));
+        modules.addAll(findFileModules(project, OclFileType.INSTANCE.getDefaultExtension(), modulePrefix, false));
 
         if (!modules.isEmpty()) {
             for (PsiFile module : modules) {
