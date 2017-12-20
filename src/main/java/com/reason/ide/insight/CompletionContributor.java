@@ -23,7 +23,8 @@ import static com.reason.lang.RmlTypes.VALUE_NAME;
 public class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
     public CompletionContributor() {
-        boolean useMerlin = ApplicationManager.getApplication().getComponent(MerlinService.class).hasVersion();
+        MerlinService merlinService = ApplicationManager.getApplication().getComponent(MerlinService.class);
+        boolean useMerlin = merlinService != null && merlinService.hasVersion();
         if (useMerlin) {
             extend(CompletionType.BASIC, psiElement(), new MerlinCompletionProvider());
         } else {

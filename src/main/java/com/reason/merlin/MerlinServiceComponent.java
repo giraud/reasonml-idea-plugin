@@ -1,10 +1,7 @@
 package com.reason.merlin;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.reason.Platform;
-import com.reason.ide.RmlNotification;
 import com.reason.merlin.types.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,14 +34,14 @@ public class MerlinServiceComponent implements MerlinService, com.intellij.opena
         try {
             m_merlin3 = new MerlinProcess3(merlinBin);
         } catch (IOException e) {
-            Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin, using '" + merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
+//            Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin, using '" + merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
             return;
         }
 
         // Automatically select latest version
         try {
             MerlinVersion merlinVersion = selectVersion(3);
-            Notifications.Bus.notify(new RmlNotification("Merlin", "Found", merlinVersion.toString(), NotificationType.INFORMATION, null));
+//            Notifications.Bus.notify(new RmlNotification("Merlin", "Found", merlinVersion.toString(), NotificationType.INFORMATION, null));
         } catch (UncheckedIOException e) {
             disposeComponent();
         }

@@ -39,7 +39,7 @@ class MerlinProcess3 {
             return merlinVersion;
         } catch (IOException e) {
             if (notify) {
-                Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin using '" + m_merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
+//                Notifications.Bus.notify(new RmlNotification("Merlin not found", "Can't find merlin using '" + m_merlinBin + "', types inference will use bsc", NotificationType.INFORMATION));
                 throw new UncheckedIOException(e);
             }
         }

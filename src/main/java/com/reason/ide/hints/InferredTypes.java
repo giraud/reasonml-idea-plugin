@@ -10,8 +10,8 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.merlin.MerlinService;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.merlin.MerlinService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ public class InferredTypes {
 
     public InferredTypes() {
         MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
-        m_useMerlin = merlin.hasVersion();
+        m_useMerlin = merlin != null && merlin.hasVersion();
     }
 
     public static void queryForSelectedTextEditor(Project project) {
@@ -46,8 +46,7 @@ public class InferredTypes {
                             MerlinQueryTypesTask inferredTypesTask = new MerlinQueryTypesTask(psiFile, letExpressions, positions);
                             ApplicationManager.getApplication().executeOnPooledThread(inferredTypesTask);
                         }
-                    }
-                    else {
+                    } else {
                         BscInferredTypesTask inferredTypesTask = new BscInferredTypesTask(psiFile, letExpressions);
                         ApplicationManager.getApplication().executeOnPooledThread(inferredTypesTask);
                     }
