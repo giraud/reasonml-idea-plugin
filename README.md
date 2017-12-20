@@ -71,6 +71,28 @@ The plugin will find and use the binaries found in the `node_modules/bs-platform
 
 The plugin will use the binaries defined in the properties.
 
+## What?
+
+- Why don't you consider using Language Server Protocol ?
+
+Mainly because I want a strong integration in the IDE and I need first class support of windows OS.
+I like the idea to only have to activate the plugin and be productive (it's not the case yet, obviously).
+
+- What versions does the plugin support at the moment?
+
+It should be work with idea 15
+
+- How is it different than [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide)?
+
+I wanted to have a plugin dedicated to reason and that's why I created one called reasonml, not ocaml. 
+
+Then I realised that I still need ocaml support and that people are asking for it.
+
+I started this plugin by studying and copying parts of the ocaml plugin, but now the 2 projects are taking different orientations, technically. 
+I am moving away from merlin and trying to use the most of Intellij structures. 
+
+Now, they have incompatible implementations, and different goals. 
+
 ## Development
 
 This project is heavily inspired by :
