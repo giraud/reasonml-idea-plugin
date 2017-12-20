@@ -12,7 +12,6 @@ This code might change quite a lot or break in the future.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
-- if using merlin, then merlin 3+ is required
 
 ## Features
 
@@ -23,16 +22,15 @@ Known limitations:
 - pair braces matcher
 - bucklescript compiler integration
 - reformat (by default, action is also mapped to `crtl alt shift R`)
-- Type annotation (* merlin)
-- Completion (* merlin)
+- Type annotation (* bs)
 
 _(*) See integration_
 
-This plugin offer a lightweight integration for Ocaml files, mainly syntax highlighting.
+This plugin offer a lightweight integration for Ocaml files.
 
 ## Screenshots
 
-Type annotations (linux only):
+Type annotations:
 
 ![type](docs/type.gif)
 
@@ -44,33 +42,34 @@ Bucklescript window
 
 ![bsb](docs/bsb.gif)
 
-## Integration
+## Bucklescript
+
+Advanced features, like syntax error highlighting or type annotations require the installation of [Bucklescript](https://bucklescript.github.io/).
+
+Bucklescript has an excellent support of Windows. 
 
 Note: To edit your `idea[64].vmoptions` you can do it from the console, 
 or via the menu `help > Edit Custom VM Options`. 
 
-### Linux
+### Local installation
 
-- Install `reason.1.13.7` and `merlin.3.0.2` using opam (you can't use reason-cli because merlin 3+ is required)
+- Install bucklescript locally to your project using npm or yarn
+- Start idea 
+
+The plugin will find and use the binaries found in the `node_modules/bs-platform` directory.
+
+### Global installation
+
+- Install bucklescript globally
 - Edit your `idea[64].vmoptions`
 - Add the following properties:
-```properties
--DreasonBsb=node_modules/bs-platform/bin/bsb.exe
--DreasonMerlin=<absolute path to opam>/bin/ocamlmerlin
--DreasonRefmt=<absolute path to opam>/bin/refmt
-```
-
-### Windows
-
-- Add `bs-platform` to your project
-- If `bs-platform` is installed locally (defined in your `package.json`), then you should have nothing else to do
-- If `bs-platform` is installed globally:
--- Edit your `idea[64].vmoptions`
--- Add the following properties:
 ```properties
 -DreasonBsb=<absolute_path>/bsb.exe
 -DreasonRefmt=<absolute_path>/refmt3.exe
 ```
+- Start idea
+
+The plugin will use the binaries defined in the properties.
 
 ## Development
 
