@@ -76,7 +76,6 @@ The plugin will use the binaries defined in the properties.
 - Why don't you consider using Language Server Protocol ?
 
 Mainly because I want a strong integration in the IDE and I need first class support of windows OS.
-I like the idea to only have to activate the plugin and be productive (it's not the case yet, obviously).
 
 - What versions does the plugin support at the moment?
 
