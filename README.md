@@ -92,6 +92,12 @@ I am moving away from merlin and trying to use the most of Intellij structures.
 
 Now, they have incompatible implementations, and different goals. 
 
+## How to help
+
+- Give this project some love, star it or star the plugin page in [intellij repository](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin)
+- Fill the github repo with specific issues
+- Be patient
+
 ## Development
 
 This project is heavily inspired by :
