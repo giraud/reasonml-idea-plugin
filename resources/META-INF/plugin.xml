@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.31</version>
+    <version>0.32</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -9,6 +9,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <b>version 0.32</b>
+
+      <ul>
+         <li>Updated notification message when bsb not found</li>
+         <li>Improve lexer</li>
+         <li>Implements 'go to' for Open expression (simple case)</li>
+      </ul>
+
       <b>version 0.31</b>
 
       <ul>
@@ -162,8 +170,8 @@
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
 
-        <projectService serviceInterface="com.reason.merlin.MerlinService"
-                        serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>
+        <!--<projectService serviceInterface="com.reason.merlin.MerlinService"-->
+        <!--serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>-->
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->

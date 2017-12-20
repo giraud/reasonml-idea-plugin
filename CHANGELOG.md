@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.32
+
+* :nail_care* [#20](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/20) Improved notification, add plugin name and link to github 
+* :rocket: 'go to' for Open expression (ctrl+click)
+* :bug: [#19](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/19) Character constant with an octal character not highlighted correctly 
+
 ## 0.31
 
 * :nail_care: val expressions (OCaml) are displayed in the structure view
