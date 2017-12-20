@@ -40,14 +40,8 @@ public interface RmlTypes {
     IElementType ASSERT = new RmlTokenType("ASSERT");
     IElementType AS = new RmlTokenType("AS");
     IElementType BACKTICK = new RmlTokenType("BACKTICK");
+    IElementType BEGIN = new RmlTokenType("BEGIN");
     IElementType CARRET = new RmlTokenType("CARRET");
-    IElementType TAG_AUTO_CLOSE = new RmlTokenType("TAG_AUTO_CLOSE");
-    IElementType TAG_START = new RmlTokenType("TAG_START");
-    IElementType TAG_CLOSE = new RmlTokenType("TAG_CLOSE");
-    IElementType TAG_NAME = new RmlTokenType("TAG_NAME");
-    IElementType TAG_PROPERTY = new RmlTokenType("TAG_PROPERTY");
-    IElementType TAG_LT = new RmlTokenType("TAG_LT");
-    IElementType TAG_GT = new RmlTokenType("TAG_GT");
     IElementType COLON = new RmlTokenType("COLON");
     IElementType COMMA = new RmlTokenType("COMMA");
     IElementType COMMENT = new RmlTokenType("COMMENT");
@@ -128,6 +122,13 @@ public interface RmlTypes {
     IElementType STRING = new RmlTokenType("STRING");
     IElementType STRUCT = new RmlTokenType("STRUCT");
     IElementType SWITCH = new RmlTokenType("SWITCH");
+    IElementType TAG_AUTO_CLOSE = new RmlTokenType("TAG_AUTO_CLOSE");
+    IElementType TAG_START = new RmlTokenType("TAG_START");
+    IElementType TAG_CLOSE = new RmlTokenType("TAG_CLOSE");
+    IElementType TAG_NAME = new RmlTokenType("TAG_NAME");
+    IElementType TAG_PROPERTY = new RmlTokenType("TAG_PROPERTY");
+    IElementType TAG_LT = new RmlTokenType("TAG_LT");
+    IElementType TAG_GT = new RmlTokenType("TAG_GT");
     IElementType TILDE = new RmlElementType("TILDE");
     IElementType TO = new RmlElementType("TO");
     IElementType THEN = new RmlTokenType("TRUE");
@@ -137,6 +138,7 @@ public interface RmlTypes {
     IElementType UIDENT = new RmlTokenType("UIDENT");
     IElementType UNIT = new RmlTokenType("UNIT");
     IElementType VAL = new RmlTokenType("VAL");
-    IElementType WITH = new RmlTokenType("WITH");
     IElementType WHEN = new RmlTokenType("WHEN");
+    IElementType WHILE = new RmlTokenType("WHILE");
+    IElementType WITH = new RmlTokenType("WITH");
 }

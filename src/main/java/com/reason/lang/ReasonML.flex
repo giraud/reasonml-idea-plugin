@@ -41,14 +41,34 @@ NEWLINE=("\r"* "\n")
 LOWERCASE=[a-z_]
 UPPERCASE=[A-Z]
 IDENTCHAR=[A-Za-z_0-9']
-DECIMAL_LITERAL=[0-9] [0-9_]*
-HEX_LITERAL="0" [xX] [0-9A-Fa-f][0-9A-Fa-f_]*
-OCT_LITERAL="0" [oO] [0-7] [0-7_]*
+
+DECIMAL=[0-9]
+DECIMAL_SEP=[0-9_]
+HEXA=[0-9A-Fa-f]
+HEXA_SEP=[0-9A-Fa-f_]
+OCTAL=[0-7]
+OCTAL_SEP=[0-7_]
+
+DECIMAL_LITERAL={DECIMAL} {DECIMAL_SEP}*
+HEXA_LITERAL="0" [xX] {HEXA} {HEXA_SEP}*
+OCT_LITERAL="0" [oO] {OCTAL} {OCTAL_SEP}*
 BIN_LITERAL="0" [bB] [0-1] [0-1_]*
-INT_LITERAL= { DECIMAL_LITERAL } | { HEX_LITERAL } | { OCT_LITERAL } | { BIN_LITERAL }
-FLOAT_LITERAL=[0-9] [0-9_]* ("." [0-9_]* )? ([eE] [+-]? [0-9] [0-9_]* )?
-HEX_FLOAT_LITERAL="0" [xX] [0-9A-Fa-f] [0-9A-Fa-f_]* ("." [0-9A-Fa-f_]* )? ([pP] [+-]? [0-9] [0-9_]* )?
+INT_LITERAL= {DECIMAL_LITERAL} | {HEXA_LITERAL} | {OCT_LITERAL} | {BIN_LITERAL}
+FLOAT_LITERAL={DECIMAL} {DECIMAL_SEP}* ("." {DECIMAL_SEP}* )? ([eE] [+-]? {DECIMAL} {DECIMAL_SEP}* )?
+HEXA_FLOAT_LITERAL="0" [xX] {HEXA} {HEXA_SEP}* ("." {HEXA_SEP}* )? ([pP] [+-]? {DECIMAL} {DECIMAL_SEP}* )?
 LITERAL_MODIFIER=[G-Zg-z]
+
+ESCAPE_BACKSLASH="\\\\"
+ESCAPE_SINGLE_QUOTE="\\'"
+ESCAPE_LF="\\n"
+ESCAPE_TAB="\\t"
+ESCAPE_BACKSPACE="\\b"
+ESCAPE_CR="\\r"
+ESCAPE_QUOTE="\\\""
+ESCAPE_DECIMAL="\\" {DECIMAL} {DECIMAL} {DECIMAL}
+ESCAPE_HEXA="\\x" {HEXA} {HEXA}
+ESCAPE_OCTAL="\\o" [0-3] {OCTAL} {OCTAL}
+ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_TAB} | {ESCAPE_BACKSPACE } | { ESCAPE_CR } | { ESCAPE_QUOTE } | {ESCAPE_DECIMAL} | {ESCAPE_HEXA} | {ESCAPE_OCTAL}
 
 %state WAITING_VALUE
 %state INITIAL
@@ -87,6 +107,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "exception"  { return EXCEPTION; }
     "when"       { return WHEN; }
     "and"        { return AND; }
+    "while"      { return WHILE; }
 
     // OCaml
     "of"         { return OF; }
@@ -94,6 +115,7 @@ LITERAL_MODIFIER=[G-Zg-z]
     "do"         { return DO; }
     "done"       { return DONE; }
     "object"     { return OBJECT; }
+    "begin"      { return BEGIN; }
     "end"        { return END; }
     "assert"     { return ASSERT; }
     "lazy"       { return LAZY; }
@@ -115,13 +137,13 @@ LITERAL_MODIFIER=[G-Zg-z]
     "false"     { return FALSE; }
     "true"      { return TRUE; }
 
+    "'" ( {ESCAPE_CHAR} | . ) "'"    { return CHAR; }
     {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
     {INT_LITERAL}{LITERAL_MODIFIER}? { return INT; }
-    ({FLOAT_LITERAL} | {HEX_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return FLOAT; }
+    ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return FLOAT; }
     "'"{LOWERCASE}{IDENTCHAR}*       { return TYPE_ARGUMENT; }
     "`"{UPPERCASE}{IDENTCHAR}*       { return POLY_VARIANT; }
-    "'"."'"                          { return CHAR; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }
