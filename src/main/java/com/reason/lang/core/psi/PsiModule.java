@@ -9,8 +9,11 @@ import org.jetbrains.annotations.Nullable;
 
 public interface PsiModule extends PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<ModuleStub> {
     @Nullable
-    PsiScopedExpr getModuleBody();
+    PsiScopedExpr getBody();
+
+    @Nullable
+    PsiSignature getSignature();
 
     @NotNull
-    ModulePath getModulePath();
+    ModulePath getQPath();
 }

@@ -1,20 +1,16 @@
 package com.reason.lang.core.stub.type;
 
-import java.io.*;
-
+import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
-import com.reason.lang.core.ModulePath;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.RmlLanguage;
+import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
 import com.reason.lang.core.stub.ModuleStub;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModule> {
 
@@ -28,7 +24,7 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
 
     @NotNull
     public ModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new ModuleStub(parentStub, this, psi.getName(), psi.getModulePath());
+        return new ModuleStub(parentStub, this, psi.getName(), psi.getQPath());
     }
 
     public void serialize(@NotNull final ModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {

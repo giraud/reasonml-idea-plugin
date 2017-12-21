@@ -1,10 +1,5 @@
 package com.reason.ide.folding;
 
-import java.util.*;
-
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -13,6 +8,12 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.reason.lang.RmlTypes.*;
 
@@ -63,17 +64,15 @@ public class FoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldModule(List<FoldingDescriptor> descriptors, PsiModule module) {
-        FoldingDescriptor fold = fold(module.getModuleBody());
-        if (fold != null) {
-            descriptors.add(fold);
+        FoldingDescriptor foldSignature = fold(module.getSignature());
+        if (foldSignature != null) {
+            descriptors.add(foldSignature);
         }
-        // PsiElement lBrace = PsiTreeUtil.getNextSiblingOfType(element, LBRACE);
-        // PsiElement rBrace = PsiTreeUtil.getNextSiblingOfType(lBrace, RBRACE);
-        // if (lBrace != null && rBrace != null) {
-        //     FoldingDescriptor fold = foldBetween(element, lBrace, rBrace, 5);
-        //     if (fold != null)
-        //         descriptors.add(fold);
-        // }
+
+        FoldingDescriptor foldBody = fold(module.getBody());
+        if (foldBody != null) {
+            descriptors.add(foldBody);
+        }
     }
 
     @Nullable

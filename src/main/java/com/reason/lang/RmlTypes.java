@@ -29,6 +29,7 @@ public interface RmlTypes {
     IElementType PATTERN_MATCH_EXPR = new RmlElementType("PATTERN_MATCH_EXPR");
     IElementType OBJECT_EXPR = new RmlElementType("OBJECT_EXPR");
     IElementType SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
+    IElementType SIG_SCOPE = new RmlElementType("SIG_SCOPE");
     IElementType VALUE_NAME = new RmlElementType("VALUE_NAME");
     IElementType PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
     IElementType FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");

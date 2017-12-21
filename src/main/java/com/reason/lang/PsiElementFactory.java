@@ -46,6 +46,8 @@ class PsiElementFactory {
             return new PsiScopedExpr(node);
         } else if (type == RmlTypes.TAG_START) {
             return new PsiTagStart(node);
+        } else if (type == RmlTypes.SIG_SCOPE) {
+            return new PsiSignatureImpl(node);
         } else if (type == RmlTypes.TAG_PROPERTY) {
             return new PsiTagProperty(node);
         } else if (type == RmlTypes.TAG_CLOSE) {

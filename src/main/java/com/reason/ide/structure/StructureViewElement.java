@@ -11,7 +11,6 @@ import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import org.jetbrains.annotations.NotNull;
 
@@ -98,10 +97,13 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     private List<TreeElement> buildModuleStructure(PsiModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
-        PsiScopedExpr moduleBody = moduleElement.getModuleBody();
+        PsiElement rootElement = moduleElement.getSignature();
+        if (rootElement == null) {
+            rootElement = moduleElement.getBody();
+        }
 
-        if (moduleBody != null) {
-            moduleBody.acceptChildren(new PsiElementVisitor() {
+        if (rootElement != null) {
+            rootElement.acceptChildren(new PsiElementVisitor() {
                 @Override
                 public void visitElement(PsiElement element) {
                     if (element instanceof PsiStructuredElement) {

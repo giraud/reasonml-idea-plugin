@@ -84,6 +84,14 @@ public class OclParser extends CommonParser {
                 }
             }
 
+            // :
+            else if (tokenType == COLON) {
+                if (currentScope.resolution == moduleNamed) {
+                    currentScope.resolution = moduleNamedColon;
+                    currentScope.complete = true;
+                }
+            }
+
             // ( ... )
             else if (tokenType == LPAREN) {
                 end(scopes);
@@ -211,9 +219,9 @@ public class OclParser extends CommonParser {
 
             // module signature
             else if (tokenType == SIG) {
-                if (currentScope.resolution == moduleNamedEq) {
+                if (currentScope.resolution == moduleNamedEq || currentScope.resolution == moduleNamedColon) {
                     end(scopes);
-                    currentScope = markScope(builder, scopes, moduleSignature, SCOPED_EXPR, scopeExpression, SIG);
+                    currentScope = markScope(builder, scopes, moduleSignature, SIG_SCOPE, scopeExpression, SIG);
                 }
             }
 

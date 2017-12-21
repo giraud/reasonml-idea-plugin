@@ -19,6 +19,7 @@ enum ParserScopeEnum {
     module,
     moduleNamed,
     moduleNamedEq,
+    moduleNamedColon,
     moduleSignature,
     moduleBinding,
 

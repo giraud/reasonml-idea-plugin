@@ -9,10 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleName;
-import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,8 +54,13 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     //endregion
 
     @Nullable
-    public PsiScopedExpr getModuleBody() {
+    public PsiScopedExpr getBody() {
         return findChildByClass(PsiScopedExpr.class);
+    }
+
+    @Nullable
+    public PsiSignature getSignature() {
+        return findChildByClass(PsiSignature.class);
     }
 
     public Collection<PsiLet> getLetExpressions() {
@@ -89,7 +91,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
 
     @NotNull
     @Override
-    public ModulePath getModulePath() {
+    public ModulePath getQPath() {
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
 
