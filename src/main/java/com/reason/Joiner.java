@@ -15,4 +15,17 @@ public class Joiner {
         return sb.toString();
     }
 
+    public static String join(String separator, String[] items) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (String item : items) {
+            if (!first) {
+                sb.append(separator);
+            }
+            sb.append(item);
+            first = false;
+        }
+        return sb.toString();
+    }
+
 }

@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.lang.core.psi.PsiModule;
 
 public class ModuleIndex extends StringStubIndexExtension<PsiModule> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     @Override
     public int getVersion() {

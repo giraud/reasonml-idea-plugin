@@ -1,6 +1,9 @@
 package com.reason.lang.core.stub.type;
 
 import java.io.*;
+
+import com.intellij.util.io.StringRef;
+import com.reason.lang.core.ModulePath;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
@@ -25,16 +28,31 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
 
     @NotNull
     public ModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new ModuleStub(parentStub, this, psi.getName());
+        return new ModuleStub(parentStub, this, psi.getName(), psi.getModulePath());
     }
 
     public void serialize(@NotNull final ModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        String[] moduleQN = stub.getModulePath().getNames();
+        dataStream.writeInt(moduleQN.length);
+        for (String name : moduleQN) {
+            dataStream.writeUTFFast(name);
+        }
+
     }
 
     @NotNull
     public ModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
-        return new ModuleStub(parentStub, this, dataStream.readName());
+        StringRef moduleName = dataStream.readName();
+        int moduleQNLength = dataStream.readInt();
+        String[] moduleQN = new String[moduleQNLength];
+        for (int i = 0; i < moduleQNLength; i++) {
+            moduleQN[i] = dataStream.readUTFFast();
+
+        }
+        ModulePath modulePath = new ModulePath(moduleQN);
+
+        return new ModuleStub(parentStub, this, moduleName, modulePath);
     }
 
     public void indexStub(@NotNull final ModuleStub stub, @NotNull final IndexSink sink) {

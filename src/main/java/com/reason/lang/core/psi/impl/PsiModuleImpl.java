@@ -4,23 +4,28 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.core.ModulePath;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
-import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
+
+    private ModulePath m_modulePath;
 
     //region Constructors
     public PsiModuleImpl(ASTNode node) {
@@ -80,6 +85,25 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
                 return Icons.MODULE;
             }
         };
+    }
+
+    @NotNull
+    @Override
+    public ModulePath getModulePath() {
+        if (m_modulePath == null) {
+            List<PsiElement> parents = new ArrayList<>();
+
+            PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+            while (parent != null) {
+                parents.add(parent);
+                parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+            }
+
+            parents.add(getContainingFile());
+            Collections.reverse(parents);
+            m_modulePath = new ModulePath(parents);
+        }
+        return m_modulePath;
     }
 
     @Override
