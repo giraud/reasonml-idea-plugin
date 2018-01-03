@@ -147,6 +147,8 @@
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
+        <annotator language="Ocaml" implementationClass="com.reason.ide.highlight.OclAnnotator"/>
+
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
