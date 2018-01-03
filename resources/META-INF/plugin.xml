@@ -95,11 +95,11 @@
 
         <!-- Reason -->
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
-        <lang.syntaxHighlighterFactory key="ReasonML"
+        <lang.syntaxHighlighterFactory language="ReasonML"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Ocaml -->
         <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.OclParserDefinition"/>
-        <lang.syntaxHighlighterFactory key="Ocaml"
+        <lang.syntaxHighlighterFactory language="Ocaml"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
 
         <!--
