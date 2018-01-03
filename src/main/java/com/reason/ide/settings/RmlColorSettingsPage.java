@@ -1,12 +1,12 @@
 package com.reason.ide.settings;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.reason.icons.Icons;
-import com.reason.ide.highlight.RmlSyntaxHighlighter;
+import com.reason.ide.highlight.MlSyntaxHighlighter;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,21 +20,21 @@ import static com.intellij.openapi.util.io.FileUtil.loadTextAndClose;
 
 public class RmlColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Annotation", RmlSyntaxHighlighter.ANNOTATION_),
-            new AttributesDescriptor("Comment", RmlSyntaxHighlighter.RML_COMMENT_),
-            new AttributesDescriptor("Module name", RmlSyntaxHighlighter.MODULE_NAME_),
-            new AttributesDescriptor("Option", RmlSyntaxHighlighter.OPTION_),
-            new AttributesDescriptor("Markup tag", RmlSyntaxHighlighter.MARKUP_TAG_),
-            new AttributesDescriptor("Keyword", RmlSyntaxHighlighter.KEYWORD_),
-            new AttributesDescriptor("Operation", RmlSyntaxHighlighter.OPERATION_SIGN_),
-            new AttributesDescriptor("String", RmlSyntaxHighlighter.STRING_),
-            new AttributesDescriptor("Number", RmlSyntaxHighlighter.NUMBER_),
-            new AttributesDescriptor("Semicolon", RmlSyntaxHighlighter.SEMICOLON_),
-            new AttributesDescriptor("Braces", RmlSyntaxHighlighter.BRACES_),
-            new AttributesDescriptor("Brackets", RmlSyntaxHighlighter.BRACKETS_),
-            new AttributesDescriptor("Parenthesis", RmlSyntaxHighlighter.PARENS_),
-            new AttributesDescriptor("Type argument", RmlSyntaxHighlighter.TYPE_ARGUMENT_),
-            new AttributesDescriptor("Polymorphic variants", RmlSyntaxHighlighter.POLY_VARIANT_),
+            new AttributesDescriptor("Annotation", MlSyntaxHighlighter.ANNOTATION_),
+            new AttributesDescriptor("Comment", MlSyntaxHighlighter.RML_COMMENT_),
+            new AttributesDescriptor("Module name", MlSyntaxHighlighter.MODULE_NAME_),
+            new AttributesDescriptor("Option", MlSyntaxHighlighter.OPTION_),
+            new AttributesDescriptor("Markup tag", MlSyntaxHighlighter.MARKUP_TAG_),
+            new AttributesDescriptor("Keyword", MlSyntaxHighlighter.KEYWORD_),
+            new AttributesDescriptor("Operation", MlSyntaxHighlighter.OPERATION_SIGN_),
+            new AttributesDescriptor("String", MlSyntaxHighlighter.STRING_),
+            new AttributesDescriptor("Number", MlSyntaxHighlighter.NUMBER_),
+            new AttributesDescriptor("Semicolon", MlSyntaxHighlighter.SEMICOLON_),
+            new AttributesDescriptor("Braces", MlSyntaxHighlighter.BRACES_),
+            new AttributesDescriptor("Brackets", MlSyntaxHighlighter.BRACKETS_),
+            new AttributesDescriptor("Parenthesis", MlSyntaxHighlighter.PARENS_),
+            new AttributesDescriptor("Type argument", MlSyntaxHighlighter.TYPE_ARGUMENT_),
+            new AttributesDescriptor("Polymorphic variants", MlSyntaxHighlighter.POLY_VARIANT_),
     };
 
     @Nullable
@@ -45,8 +45,8 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
 
     @NotNull
     @Override
-    public SyntaxHighlighter getHighlighter() {
-        return new RmlSyntaxHighlighter();
+    public com.intellij.openapi.fileTypes.SyntaxHighlighter getHighlighter() {
+        return new MlSyntaxHighlighter(RmlTypes.INSTANCE);
     }
 
     @NotNull
@@ -67,7 +67,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     static Map<String, TextAttributesKey> additionalTags = new HashMap<>();
 
     static {
-        additionalTags.put("ANNOTATION_NAME", RmlSyntaxHighlighter.ANNOTATION_);
+        additionalTags.put("ANNOTATION_NAME", MlSyntaxHighlighter.ANNOTATION_);
     }
 
     @Nullable

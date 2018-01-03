@@ -1,22 +1,22 @@
 package com.reason.lang.core.psi.impl;
 
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.RmlTypes;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiExternal;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class PsiExternalImpl extends ASTWrapperPsiElement implements PsiExternal {
+import javax.swing.*;
+
+public class PsiExternalImpl extends MlASTWrapperPsiElement implements PsiExternal {
 
     //region Constructors
-    public PsiExternalImpl(ASTNode node) {
-        super(node);
+    public PsiExternalImpl(MlTypes types, ASTNode node) {
+        super(types, node);
     }
     //endregion
 
@@ -24,7 +24,7 @@ public class PsiExternalImpl extends ASTWrapperPsiElement implements PsiExternal
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findNotNullChildByType(RmlTypes.VALUE_NAME);
+        return findNotNullChildByType(m_types.VALUE_NAME);
     }
 
     @Override

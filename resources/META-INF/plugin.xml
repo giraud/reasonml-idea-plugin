@@ -94,13 +94,13 @@
          -->
 
         <!-- Reason -->
-        <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.RmlParserDefinition"/>
+        <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.reason.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory language="ReasonML"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Ocaml -->
-        <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.OclParserDefinition"/>
+        <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Ocaml"
-                                       implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
+                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
 
         <!--
          | Structure / folding / comments
@@ -150,7 +150,7 @@
         <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
-        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.FindUsagesProvider"/>
+        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.refactoringSupport language="ReasonML"
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
         <elementDescriptionProvider implementation="com.reason.ide.search.DescriptionProvider"/>

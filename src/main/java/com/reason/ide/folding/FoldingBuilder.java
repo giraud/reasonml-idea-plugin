@@ -9,13 +9,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.reason.lang.RmlTypes.*;
+import static com.reason.lang.reason.RmlTypes.*;
 
 public class FoldingBuilder extends FoldingBuilderEx {
     @NotNull
@@ -25,13 +26,13 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
         PsiTreeUtil.processElements(root, element -> {
             IElementType elementType = element.getNode().getElementType();
-            if (COMMENT.equals(elementType)) {
+            if (RmlTypes.INSTANCE.COMMENT.equals(elementType)) {
                 descriptors.add(fold(element));
-            } else if (TYPE_EXPRESSION.equals(elementType)) {
+            } else if (RmlTypes.INSTANCE.TYPE_EXPRESSION.equals(elementType)) {
                 foldType(descriptors, (PsiType) element);
-            } else if (LET_EXPRESSION.equals(elementType)) {
+            } else if (RmlTypes.INSTANCE.LET_EXPRESSION.equals(elementType)) {
                 foldLet(descriptors, (PsiLet) element);
-            } else if (MODULE_EXPRESSION.equals(elementType)) {
+            } else if (RmlTypes.INSTANCE.MODULE_EXPRESSION.equals(elementType)) {
                 foldModule(descriptors, (PsiModule) element);
             }
             return true;
@@ -78,7 +79,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
-        if (node.getElementType().equals(COMMENT)) {
+        if (node.getElementType().equals(RmlTypes.INSTANCE.COMMENT)) {
             return "/*...*/";
         }
         return "{...}";

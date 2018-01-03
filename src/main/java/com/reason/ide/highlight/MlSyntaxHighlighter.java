@@ -6,7 +6,10 @@ import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.RmlLexerAdapter;
+import com.reason.lang.LexerAdapter;
+import com.reason.lang.MlTypes;
+import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -15,22 +18,44 @@ import java.util.Set;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
-import static com.reason.lang.RmlTypes.*;
 
-public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
-    private static final Set<IElementType> KEYWORD_TYPES = of(
-            OPEN, MODULE, FUN, LET, TYPE, INCLUDE, EXTERNAL, IF, ELSE, SWITCH, TRY, RAISE, FOR, IN, TO, TRUE, FALSE,
-            REF, EXCEPTION, WHEN, AND, REC, WHILE,
-            // OCaml
-            MATCH, WITH, DO, DONE, OBJECT, BEGIN, END, LAZY, ASSERT, THEN, FUNCTION, STRUCT, SIG, VAL
+public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
+
+    private static final Set<IElementType> RML_KEYWORD_TYPES = of(
+            RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN, RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE,
+            RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE, RmlTypes.INSTANCE.SWITCH,
+            RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN, RmlTypes.INSTANCE.TO, RmlTypes.INSTANCE.TRUE, RmlTypes.INSTANCE.FALSE,
+            RmlTypes.INSTANCE.REF, RmlTypes.INSTANCE.EXCEPTION, RmlTypes.INSTANCE.WHEN, RmlTypes.INSTANCE.AND, RmlTypes.INSTANCE.REC, RmlTypes.INSTANCE.WHILE
     );
-    private static final Set<IElementType> OPERATION_SIGN_TYPES = of(
-            ANDAND, SHORTCUT, ARROW, SIMPLE_ARROW, PIPE_FORWARD,
-            EQEQEQ, EQEQ, EQ, NOT_EQEQ, NOT_EQ, DIFF, COLON, QUOTE,
-            CARRET, PLUSDOT, MINUSDOT, SLASHDOT, STARDOT, PLUS, MINUS, SLASH, STAR, PERCENT,
-            PIPE, ARROBASE, SHARP, QUESTION_MARK, EXCLAMATION_MARK
+
+    private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
+            RmlTypes.INSTANCE.ANDAND, RmlTypes.INSTANCE.SHORTCUT, RmlTypes.INSTANCE.ARROW, RmlTypes.INSTANCE.SIMPLE_ARROW, RmlTypes.INSTANCE.PIPE_FORWARD,
+            RmlTypes.INSTANCE.EQEQEQ, RmlTypes.INSTANCE.EQEQ, RmlTypes.INSTANCE.EQ, RmlTypes.INSTANCE.NOT_EQEQ, RmlTypes.INSTANCE.NOT_EQ, RmlTypes.INSTANCE.DIFF, RmlTypes.INSTANCE.COLON, RmlTypes.INSTANCE.QUOTE,
+            RmlTypes.INSTANCE.CARRET, RmlTypes.INSTANCE.PLUSDOT, RmlTypes.INSTANCE.MINUSDOT, RmlTypes.INSTANCE.SLASHDOT, RmlTypes.INSTANCE.STARDOT, RmlTypes.INSTANCE.PLUS, RmlTypes.INSTANCE.MINUS, RmlTypes.INSTANCE.SLASH, RmlTypes.INSTANCE.STAR, RmlTypes.INSTANCE.PERCENT,
+            RmlTypes.INSTANCE.PIPE, RmlTypes.INSTANCE.ARROBASE, RmlTypes.INSTANCE.SHARP, RmlTypes.INSTANCE.QUESTION_MARK, RmlTypes.INSTANCE.EXCLAMATION_MARK
     );
-    private static final Set<IElementType> OPTIONS_TYPES = of(NONE, SOME, OPTION);
+
+    private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME, RmlTypes.INSTANCE.OPTION);
+
+    private static final Set<IElementType> OCL_KEYWORD_TYPES = of(
+            OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN, OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE,
+            OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL, OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.SWITCH,
+            OclTypes.INSTANCE.TRY, OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN, OclTypes.INSTANCE.TO, OclTypes.INSTANCE.TRUE, OclTypes.INSTANCE.FALSE,
+            OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION, OclTypes.INSTANCE.WHEN, OclTypes.INSTANCE.AND, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.WHILE,
+            //
+            OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE, OclTypes.INSTANCE.OBJECT,
+            OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY, OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN,
+            OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.VAL
+    );
+
+    private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES = of(
+            OclTypes.INSTANCE.ANDAND, OclTypes.INSTANCE.SHORTCUT, OclTypes.INSTANCE.ARROW, OclTypes.INSTANCE.SIMPLE_ARROW, OclTypes.INSTANCE.PIPE_FORWARD,
+            OclTypes.INSTANCE.EQEQEQ, OclTypes.INSTANCE.EQEQ, OclTypes.INSTANCE.EQ, OclTypes.INSTANCE.NOT_EQEQ, OclTypes.INSTANCE.NOT_EQ, OclTypes.INSTANCE.DIFF, OclTypes.INSTANCE.COLON, OclTypes.INSTANCE.QUOTE,
+            OclTypes.INSTANCE.CARRET, OclTypes.INSTANCE.PLUSDOT, OclTypes.INSTANCE.MINUSDOT, OclTypes.INSTANCE.SLASHDOT, OclTypes.INSTANCE.STARDOT, OclTypes.INSTANCE.PLUS, OclTypes.INSTANCE.MINUS, OclTypes.INSTANCE.SLASH, OclTypes.INSTANCE.STAR, OclTypes.INSTANCE.PERCENT,
+            OclTypes.INSTANCE.PIPE, OclTypes.INSTANCE.ARROBASE, OclTypes.INSTANCE.SHARP, OclTypes.INSTANCE.QUESTION_MARK, OclTypes.INSTANCE.EXCLAMATION_MARK
+    );
+
+    private static final Set<IElementType> OCL_OPTIONS_TYPES = of(OclTypes.INSTANCE.NONE, OclTypes.INSTANCE.SOME, OclTypes.INSTANCE.OPTION);
 
     private static final TextAttributesKey TYPE_ARGUMENT_KEY = TextAttributesKey.createTextAttributesKey("TYPE_ARGUMENT");
     private static final TextAttributesKey POLY_VARIANT_KEY = TextAttributesKey.createTextAttributesKey("POLY_VARIANT");
@@ -71,45 +96,61 @@ public class RmlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
+    private MlTypes m_types;
+
+    public MlSyntaxHighlighter(MlTypes types) {
+        m_types = types;
+    }
+
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new RmlLexerAdapter();
+        return new LexerAdapter(m_types);
     }
 
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(COMMENT)) {
+        if (tokenType.equals(m_types.COMMENT)) {
             return COMMENT_KEYS;
-        } else if (tokenType.equals(LBRACE) || tokenType.equals(RBRACE)) {
+        } else if (tokenType.equals(m_types.LBRACE) || tokenType.equals(m_types.RBRACE)) {
             return BRACE_KEYS;
-        } else if (tokenType.equals(LBRACKET) || tokenType.equals(RBRACKET) || tokenType.equals(LARRAY) || tokenType.equals(RARRAY)) {
+        } else if (tokenType.equals(m_types.LBRACKET) || tokenType.equals(m_types.RBRACKET) || tokenType.equals(m_types.LARRAY) || tokenType.equals(m_types.RARRAY)) {
             return BRACKET_KEYS;
-        } else if (tokenType.equals(LPAREN) || tokenType.equals(RPAREN)) {
+        } else if (tokenType.equals(m_types.LPAREN) || tokenType.equals(m_types.RPAREN)) {
             return PAREN_KEYS;
-        } else if (tokenType.equals(INT) || tokenType.equals(FLOAT)) {
+        } else if (tokenType.equals(m_types.INT) || tokenType.equals(m_types.FLOAT)) {
             return NUMBER_KEYS;
-        } else if (DOT.equals(tokenType)) {
+        } else if (m_types.DOT.equals(tokenType)) {
             return DOT_KEYS;
-        } else if (TYPE_ARGUMENT.equals(tokenType)) {
+        } else if (m_types.TYPE_ARGUMENT.equals(tokenType)) {
             return TYPE_ARGUMENT_KEYS;
-        } else if (POLY_VARIANT.equals(tokenType)) {
+        } else if (m_types.POLY_VARIANT.equals(tokenType)) {
             return POLY_VARIANT_KEYS;
-        } else if (COMMA.equals(tokenType)) {
+        } else if (m_types.COMMA.equals(tokenType)) {
             return COMMA_KEYS;
-        } else if (SEMI.equals(tokenType)) {
+        } else if (m_types.SEMI.equals(tokenType)) {
             return SEMICOLON_KEYS;
-        } else if (STRING.equals(tokenType) || CHAR.equals(tokenType)) {
+        } else if (m_types.STRING.equals(tokenType) || m_types.CHAR.equals(tokenType)) {
             return STRING_KEYS;
-        } else if (KEYWORD_TYPES.contains(tokenType)) {
-            return KEYWORD_KEYS;
-        } else if (OPERATION_SIGN_TYPES.contains(tokenType)) {
-            return OPERATION_SIGN_KEYS;
-        } else if (OPTIONS_TYPES.contains(tokenType)) {
-            return OPTION_KEYS;
         } else if (BAD_CHARACTER.equals(tokenType)) {
             return BAD_CHAR_KEYS;
+        } else if (m_types == RmlTypes.INSTANCE) {
+            if (RML_KEYWORD_TYPES.contains(tokenType)) {
+                return KEYWORD_KEYS;
+            } else if (RML_OPERATION_SIGN_TYPES.contains(tokenType)) {
+                return OPERATION_SIGN_KEYS;
+            } else if (RML_OPTIONS_TYPES.contains(tokenType)) {
+                return OPTION_KEYS;
+            }
+        } else if (m_types == OclTypes.INSTANCE) {
+            if (OCL_KEYWORD_TYPES.contains(tokenType)) {
+                return KEYWORD_KEYS;
+            } else if (OCL_OPERATION_SIGN_TYPES.contains(tokenType)) {
+                return OPERATION_SIGN_KEYS;
+            } else if (OCL_OPTIONS_TYPES.contains(tokenType)) {
+                return OPTION_KEYS;
+            }
         }
 
         return EMPTY_KEYS;

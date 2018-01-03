@@ -12,25 +12,26 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
-import com.reason.lang.RmlLexerAdapter;
-import com.reason.lang.RmlTypes;
+import com.reason.lang.LexerAdapter;
 import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiTypeName;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
+public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
         //return new DefaultWordsScanner(new RmlLexerAdapter(), TokenSet.create(RmlTypes.UIDENT, RmlTypes.VALUE_NAME), TokenSet.EMPTY, TokenSet.EMPTY);
         return (fileText, processor) -> {
-            LexerBase lexer = new RmlLexerAdapter();
+            RmlTypes types = RmlTypes.INSTANCE;
+            LexerBase lexer = new LexerAdapter(types);
             lexer.start(fileText);
             IElementType tokenType;
             while ((tokenType = lexer.getTokenType()) != null) {
                 //TODO process occurrences in string literals and comments
-                if (tokenType == RmlTypes.LIDENT || tokenType == RmlTypes.UIDENT || tokenType == RmlTypes.MODULE_NAME || tokenType == RmlTypes.VALUE_NAME) {
+                if (tokenType == types.LIDENT || tokenType == types.UIDENT || tokenType == types.MODULE_NAME || tokenType == types.VALUE_NAME) {
                     int tokenStart = lexer.getTokenStart();
                     for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                         int start = tokenStart + wordRange.getStartOffset();

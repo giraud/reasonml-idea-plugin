@@ -2,7 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.reason.icons.Icons;
-import com.reason.lang.OclLanguage;
+import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

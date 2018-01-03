@@ -1,19 +1,21 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.RmlTypes;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiModuleName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiModuleNameImpl extends ASTWrapperPsiElement implements PsiModuleName {
-    public PsiModuleNameImpl(@NotNull ASTNode node) {
-        super(node);
+public class PsiModuleNameImpl extends MlASTWrapperPsiElement implements PsiModuleName {
+
+    //region Constructors
+    public PsiModuleNameImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
+    //endregion
 
     //region NamedElement
     @Override
@@ -25,7 +27,7 @@ public class PsiModuleNameImpl extends ASTWrapperPsiElement implements PsiModule
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(RmlTypes.VALUE_NAME);
+        return findChildByType(m_types.VALUE_NAME);
     }
 
     @Override

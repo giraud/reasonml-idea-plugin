@@ -1,6 +1,6 @@
 package com.reason.lang;
 
-enum ParserScopeEnum {
+public enum ParserScopeEnum {
     file,
 
     open,

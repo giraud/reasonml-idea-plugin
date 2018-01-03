@@ -2,7 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.lang.OclLanguage;
+import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 
 public class OclFile extends FileBase {

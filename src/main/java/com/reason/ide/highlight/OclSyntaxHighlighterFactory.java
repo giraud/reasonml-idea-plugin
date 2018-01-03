@@ -1,15 +1,15 @@
 package com.reason.ide.highlight;
 
-import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
+public class OclSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
     public com.intellij.openapi.fileTypes.SyntaxHighlighter getSyntaxHighlighter(Project project, VirtualFile virtualFile) {
-        return new MlSyntaxHighlighter(RmlTypes.INSTANCE);
+        return new MlSyntaxHighlighter(OclTypes.INSTANCE);
     }
 }

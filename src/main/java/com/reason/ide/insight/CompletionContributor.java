@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.files.RmlFile;
+import com.reason.lang.reason.RmlTypes;
 import com.reason.merlin.MerlinService;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,12 +18,11 @@ import java.util.Locale;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.instanceOf;
-import static com.reason.lang.RmlTypes.DOT;
-import static com.reason.lang.RmlTypes.VALUE_NAME;
 
 public class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
     public CompletionContributor() {
+        RmlTypes rmlTypes = RmlTypes.INSTANCE;
         MerlinService merlinService = ApplicationManager.getApplication().getComponent(MerlinService.class);
         boolean useMerlin = merlinService != null && merlinService.hasVersion();
         if (useMerlin) {
@@ -41,10 +41,10 @@ public class CompletionContributor extends com.intellij.codeInsight.completion.C
 
                     if (grandPa instanceof RmlFile) {
                         // We are completing a top level expression
-                        if (originalPrevSibling != null && originalPrevSibling.getNode().getElementType() == DOT) {
+                        if (originalPrevSibling != null && originalPrevSibling.getNode().getElementType() == rmlTypes.DOT) {
                             ModuleDotCompletionProvider.complete(result);
                         } else if (originalPosition instanceof LeafPsiElement) {
-                            if (originalPosition.getNode().getElementType() == VALUE_NAME) {
+                            if (originalPosition.getNode().getElementType() == rmlTypes.VALUE_NAME) {
                                 // Starts a ModuleName completion
                                 ModuleNameCompletion.complete(file.getProject(), (RmlFile) grandPa, originalPosition.getText().toLowerCase(Locale.getDefault()), result);
                             }

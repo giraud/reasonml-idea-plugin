@@ -1,6 +1,6 @@
 package com.reason.lang;
 
-enum ParserScopeType {
+public enum ParserScopeType {
     any,
     startExpression,
     scopeExpression,

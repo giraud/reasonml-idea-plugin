@@ -6,7 +6,6 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
 
-import static com.reason.lang.RmlTypes.*;
 import static com.intellij.psi.TokenType.*;
 
 /**
@@ -540,6 +539,11 @@ public class ReasonMLLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+  public ReasonMLLexer(MlTypes types) {
+    this.types = types;
+  }
+
+  private MlTypes types;
   private int tokenStartIndex;
   private CharSequence quotedStringId;
   private int commentDepth;
@@ -810,15 +814,15 @@ public class ReasonMLLexer implements FlexLexer {
         zzDoEOF();
         switch (zzLexicalState) {
             case IN_STRING: {
-              yybegin(INITIAL); tokenEnd(); return STRING;
+              yybegin(INITIAL); tokenEnd(); return types.STRING;
             }  // fall though
             case 270: break;
             case IN_RML_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
             }  // fall though
             case 271: break;
             case IN_OCL_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
             }  // fall though
             case 272: break;
             default:
@@ -843,32 +847,32 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 111: break;
           case 4: 
-            { return LIDENT;
+            { return types.LIDENT;
             } 
             // fall through
           case 112: break;
           case 5: 
-            { return UIDENT;
+            { return types.UIDENT;
             } 
             // fall through
           case 113: break;
           case 6: 
-            { return QUOTE;
+            { return types.QUOTE;
             } 
             // fall through
           case 114: break;
           case 7: 
-            { return INT;
+            { return types.INT;
             } 
             // fall through
           case 115: break;
           case 8: 
-            { return DOT;
+            { return types.DOT;
             } 
             // fall through
           case 116: break;
           case 9: 
-            { return PLUS;
+            { return types.PLUS;
             } 
             // fall through
           case 117: break;
@@ -878,127 +882,127 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 118: break;
           case 11: 
-            { return BACKTICK;
+            { return types.BACKTICK;
             } 
             // fall through
           case 119: break;
           case 12: 
-            { return SLASH;
+            { return types.SLASH;
             } 
             // fall through
           case 120: break;
           case 13: 
-            { return STAR;
+            { return types.STAR;
             } 
             // fall through
           case 121: break;
           case 14: 
-            { return LPAREN;
+            { return types.LPAREN;
             } 
             // fall through
           case 122: break;
           case 15: 
-            { return COLON;
+            { return types.COLON;
             } 
             // fall through
           case 123: break;
           case 16: 
-            { return EQ;
+            { return types.EQ;
             } 
             // fall through
           case 124: break;
           case 17: 
-            { return GT;
+            { return types.GT;
             } 
             // fall through
           case 125: break;
           case 18: 
-            { return MINUS;
+            { return types.MINUS;
             } 
             // fall through
           case 126: break;
           case 19: 
-            { return PIPE;
+            { return types.PIPE;
             } 
             // fall through
           case 127: break;
           case 20: 
-            { return LBRACKET;
+            { return types.LBRACKET;
             } 
             // fall through
           case 128: break;
           case 21: 
-            { return RBRACKET;
+            { return types.RBRACKET;
             } 
             // fall through
           case 129: break;
           case 22: 
-            { return EXCLAMATION_MARK;
+            { return types.EXCLAMATION_MARK;
             } 
             // fall through
           case 130: break;
           case 23: 
-            { return LT;
+            { return types.LT;
             } 
             // fall through
           case 131: break;
           case 24: 
-            { return COMMA;
+            { return types.COMMA;
             } 
             // fall through
           case 132: break;
           case 25: 
-            { return SEMI;
+            { return types.SEMI;
             } 
             // fall through
           case 133: break;
           case 26: 
-            { return RPAREN;
+            { return types.RPAREN;
             } 
             // fall through
           case 134: break;
           case 27: 
-            { return LBRACE;
+            { return types.LBRACE;
             } 
             // fall through
           case 135: break;
           case 28: 
-            { return RBRACE;
+            { return types.RBRACE;
             } 
             // fall through
           case 136: break;
           case 29: 
-            { return ARROBASE;
+            { return types.ARROBASE;
             } 
             // fall through
           case 137: break;
           case 30: 
-            { return SHARP;
+            { return types.SHARP;
             } 
             // fall through
           case 138: break;
           case 31: 
-            { return QUESTION_MARK;
+            { return types.QUESTION_MARK;
             } 
             // fall through
           case 139: break;
           case 32: 
-            { return DOLLAR;
+            { return types.DOLLAR;
             } 
             // fall through
           case 140: break;
           case 33: 
-            { return TILDE;
+            { return types.TILDE;
             } 
             // fall through
           case 141: break;
           case 34: 
-            { return CARRET;
+            { return types.CARRET;
             } 
             // fall through
           case 142: break;
           case 35: 
-            { return PERCENT;
+            { return types.PERCENT;
             } 
             // fall through
           case 143: break;
@@ -1008,62 +1012,62 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 144: break;
           case 37: 
-            { yybegin(INITIAL); tokenEnd(); return STRING;
+            { yybegin(INITIAL); tokenEnd(); return types.STRING;
             } 
             // fall through
           case 145: break;
           case 38: 
-            { return TYPE_ARGUMENT;
+            { return types.TYPE_ARGUMENT;
             } 
             // fall through
           case 146: break;
           case 39: 
-            { return FLOAT;
+            { return types.FLOAT;
             } 
             // fall through
           case 147: break;
           case 40: 
-            { return OF;
+            { return types.OF;
             } 
             // fall through
           case 148: break;
           case 41: 
-            { return PLUSDOT;
+            { return types.PLUSDOT;
             } 
             // fall through
           case 149: break;
           case 42: 
-            { return TO;
+            { return types.TO;
             } 
             // fall through
           case 150: break;
           case 43: 
-            { return AS;
+            { return types.AS;
             } 
             // fall through
           case 151: break;
           case 44: 
-            { return DO;
+            { return types.DO;
             } 
             // fall through
           case 152: break;
           case 45: 
-            { return IF;
+            { return types.IF;
             } 
             // fall through
           case 153: break;
           case 46: 
-            { return IN;
+            { return types.IN;
             } 
             // fall through
           case 154: break;
           case 47: 
-            { return POLY_VARIANT;
+            { return types.POLY_VARIANT;
             } 
             // fall through
           case 155: break;
           case 48: 
-            { return SLASHDOT;
+            { return types.SLASHDOT;
             } 
             // fall through
           case 156: break;
@@ -1073,12 +1077,12 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 157: break;
           case 50: 
-            { return TAG_AUTO_CLOSE;
+            { return types.TAG_AUTO_CLOSE;
             } 
             // fall through
           case 158: break;
           case 51: 
-            { return STARDOT;
+            { return types.STARDOT;
             } 
             // fall through
           case 159: break;
@@ -1088,57 +1092,57 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 160: break;
           case 53: 
-            { return ANDAND;
+            { return types.ANDAND;
             } 
             // fall through
           case 161: break;
           case 54: 
-            { return SHORTCUT;
+            { return types.SHORTCUT;
             } 
             // fall through
           case 162: break;
           case 55: 
-            { return EQEQ;
+            { return types.EQEQ;
             } 
             // fall through
           case 163: break;
           case 56: 
-            { return ARROW;
+            { return types.ARROW;
             } 
             // fall through
           case 164: break;
           case 57: 
-            { return MINUSDOT;
+            { return types.MINUSDOT;
             } 
             // fall through
           case 165: break;
           case 58: 
-            { return SIMPLE_ARROW;
+            { return types.SIMPLE_ARROW;
             } 
             // fall through
           case 166: break;
           case 59: 
-            { return PIPE_FORWARD;
+            { return types.PIPE_FORWARD;
             } 
             // fall through
           case 167: break;
           case 60: 
-            { return RARRAY;
+            { return types.RARRAY;
             } 
             // fall through
           case 168: break;
           case 61: 
-            { return LARRAY;
+            { return types.LARRAY;
             } 
             // fall through
           case 169: break;
           case 62: 
-            { return NOT_EQ;
+            { return types.NOT_EQ;
             } 
             // fall through
           case 170: break;
           case 63: 
-            { return DIFF;
+            { return types.DIFF;
             } 
             // fall through
           case 171: break;
@@ -1148,222 +1152,222 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 172: break;
           case 65: 
-            { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return COMMENT; }
+            { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
             } 
             // fall through
           case 173: break;
           case 66: 
-            { return CHAR;
+            { return types.CHAR;
             } 
             // fall through
           case 174: break;
           case 67: 
-            { return FOR;
+            { return types.FOR;
             } 
             // fall through
           case 175: break;
           case 68: 
-            { return FUN;
+            { return types.FUN;
             } 
             // fall through
           case 176: break;
           case 69: 
-            { return DOTDOTDOT;
+            { return types.DOTDOTDOT;
             } 
             // fall through
           case 177: break;
           case 70: 
-            { return END;
+            { return types.END;
             } 
             // fall through
           case 178: break;
           case 71: 
-            { return TRY;
+            { return types.TRY;
             } 
             // fall through
           case 179: break;
           case 72: 
-            { return REF;
+            { return types.REF;
             } 
             // fall through
           case 180: break;
           case 73: 
-            { return REC;
+            { return types.REC;
             } 
             // fall through
           case 181: break;
           case 74: 
-            { return AND;
+            { return types.AND;
             } 
             // fall through
           case 182: break;
           case 75: 
-            { return LET;
+            { return types.LET;
             } 
             // fall through
           case 183: break;
           case 76: 
-            { return SIG;
+            { return types.SIG;
             } 
             // fall through
           case 184: break;
           case 77: 
-            { return VAL;
+            { return types.VAL;
             } 
             // fall through
           case 185: break;
           case 78: 
-            { return EQEQEQ;
+            { return types.EQEQEQ;
             } 
             // fall through
           case 186: break;
           case 79: 
-            { return NOT_EQEQ;
+            { return types.NOT_EQEQ;
             } 
             // fall through
           case 187: break;
           case 80: 
-            { return OPEN;
+            { return types.OPEN;
             } 
             // fall through
           case 188: break;
           case 81: 
-            { return ELSE;
+            { return types.ELSE;
             } 
             // fall through
           case 189: break;
           case 82: 
-            { return TRUE;
+            { return types.TRUE;
             } 
             // fall through
           case 190: break;
           case 83: 
-            { return TYPE;
+            { return types.TYPE;
             } 
             // fall through
           case 191: break;
           case 84: 
-            { return THEN;
+            { return types.THEN;
             } 
             // fall through
           case 192: break;
           case 85: 
-            { return UNIT;
+            { return types.UNIT;
             } 
             // fall through
           case 193: break;
           case 86: 
-            { return LAZY;
+            { return types.LAZY;
             } 
             // fall through
           case 194: break;
           case 87: 
-            { return LIST;
+            { return types.LIST;
             } 
             // fall through
           case 195: break;
           case 88: 
-            { return DONE;
+            { return types.DONE;
             } 
             // fall through
           case 196: break;
           case 89: 
-            { return WITH;
+            { return types.WITH;
             } 
             // fall through
           case 197: break;
           case 90: 
-            { return WHEN;
+            { return types.WHEN;
             } 
             // fall through
           case 198: break;
           case 91: 
-            { return NONE;
+            { return types.NONE;
             } 
             // fall through
           case 199: break;
           case 92: 
-            { return SOME;
+            { return types.SOME;
             } 
             // fall through
           case 200: break;
           case 93: 
-            { return FALSE;
+            { return types.FALSE;
             } 
             // fall through
           case 201: break;
           case 94: 
-            { return BEGIN;
+            { return types.BEGIN;
             } 
             // fall through
           case 202: break;
           case 95: 
-            { return RAISE;
+            { return types.RAISE;
             } 
             // fall through
           case 203: break;
           case 96: 
-            { return MATCH;
+            { return types.MATCH;
             } 
             // fall through
           case 204: break;
           case 97: 
-            { return WHILE;
+            { return types.WHILE;
             } 
             // fall through
           case 205: break;
           case 98: 
-            { return OBJECT;
+            { return types.OBJECT;
             } 
             // fall through
           case 206: break;
           case 99: 
-            { return OPTION;
+            { return types.OPTION;
             } 
             // fall through
           case 207: break;
           case 100: 
-            { return MODULE;
+            { return types.MODULE;
             } 
             // fall through
           case 208: break;
           case 101: 
-            { return ASSERT;
+            { return types.ASSERT;
             } 
             // fall through
           case 209: break;
           case 102: 
-            { return STRUCT;
+            { return types.STRUCT;
             } 
             // fall through
           case 210: break;
           case 103: 
-            { return SWITCH;
+            { return types.SWITCH;
             } 
             // fall through
           case 211: break;
           case 104: 
-            { return MUTABLE;
+            { return types.MUTABLE;
             } 
             // fall through
           case 212: break;
           case 105: 
-            { return INCLUDE;
+            { return types.INCLUDE;
             } 
             // fall through
           case 213: break;
           case 106: 
-            { return FUNCTION;
+            { return types.FUNCTION;
             } 
             // fall through
           case 214: break;
           case 107: 
-            { return EXTERNAL;
+            { return types.EXTERNAL;
             } 
             // fall through
           case 215: break;
           case 108: 
-            { return EXCEPTION;
+            { return types.EXCEPTION;
             } 
             // fall through
           case 216: break;

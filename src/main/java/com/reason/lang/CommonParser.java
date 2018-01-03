@@ -1,9 +1,6 @@
 package com.reason.lang;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,9 +10,16 @@ import java.util.Stack;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.file;
 import static com.reason.lang.ParserScopeType.*;
-import static com.reason.lang.RmlTypes.FILE_MODULE;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
+
+    private IElementType m_fileModuleType;
+    protected MlTypes m_types;
+
+    protected CommonParser(Language language, MlTypes types) {
+        m_fileModuleType = new IElementType("FILE_MODULE", language);
+        m_types = types;
+    }
 
     @Override
     @NotNull
@@ -31,7 +35,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
         Stack<ParserScope> scopes = new Stack<>();
-        ParserScope fileScope = new ParserScope(file, FILE_MODULE, null);
+        ParserScope fileScope = new ParserScope(file, m_fileModuleType, null);
 
         parseFile(builder, scopes, fileScope);
 
@@ -52,7 +56,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     protected abstract void parseFile(PsiBuilder builder, Stack<ParserScope> scopes, ParserScope fileScope);
 
     @Nullable
-    ParserScope endUntilScopeExpression(Stack<ParserScope> scopes, IElementType scopeElementType) {
+    protected ParserScope endUntilScopeExpression(Stack<ParserScope> scopes, IElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!scopes.empty()) {
@@ -82,7 +86,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     @Nullable
-    ParserScope endUntilStart(Stack<ParserScope> scopes) {
+    protected ParserScope endUntilStart(Stack<ParserScope> scopes) {
         ParserScope scope = null;
 
         if (!scopes.empty()) {
@@ -97,7 +101,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     @Nullable
-    ParserScope endUntilStartForced(Stack<ParserScope> scopes) {
+    protected ParserScope endUntilStartForced(Stack<ParserScope> scopes) {
         ParserScope scope = null;
 
         if (!scopes.empty()) {
@@ -112,42 +116,42 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     @Nullable
-    ParserScope getLatestScope(Stack<ParserScope> scopes) {
+    protected ParserScope getLatestScope(Stack<ParserScope> scopes) {
         return scopes.empty() ? null : scopes.peek();
     }
 
-    ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
+    private ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
         ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
         scope.scopeType = any;
         scopes.push(scope);
         return scope;
     }
 
-    ParserScope markComplete(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
+    protected ParserScope markComplete(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
         ParserScope scope = mark(builder, scopes, resolution, tokenType);
         scope.complete = true;
         return scope;
     }
 
-    ParserScope markScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
+    protected ParserScope markScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
         ParserScope scope = mark(builder, scopes, resolution, tokenType);
         scope.scopeType = scopeType;
         scope.scopeElementType = scopeElementType;
         return scope;
     }
 
-    ParserScope markCompleteScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
-        ParserScope scope = markScope(builder, scopes, resolution, tokenType, scopeType, scopeElementType);
-        scope.complete = true;
-        return scope;
-    }
+    //ParserScope markCompleteScope(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
+    //    ParserScope scope = markScope(builder, scopes, resolution, tokenType, scopeType, scopeElementType);
+    //    scope.complete = true;
+    //    return scope;
+    //}
 
-    boolean advance(PsiBuilder builder) {
+    protected boolean advance(PsiBuilder builder) {
         builder.advanceLexer();
         return true;
     }
 
-    boolean advance(PsiBuilder builder, IElementType elementType) {
+    protected boolean advance(PsiBuilder builder, IElementType elementType) {
         PsiBuilder.Marker mark = builder.mark();
         advance(builder);
         mark.done(elementType);

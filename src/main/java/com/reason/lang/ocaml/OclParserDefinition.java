@@ -1,4 +1,4 @@
-package com.reason.lang;
+package com.reason.lang.ocaml;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -13,19 +13,21 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.OclFile;
+import com.reason.lang.LexerAdapter;
+import com.reason.lang.PsiElementFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class OclParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.COMMENT);
-    private static final TokenSet STRINGS = TokenSet.create(RmlTypes.STRING);
+    private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.COMMENT);
+    private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING);
 
     private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclLanguage.class));
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new RmlLexerAdapter();
+        return new LexerAdapter(OclTypes.INSTANCE);
     }
 
     @NotNull
@@ -63,6 +65,6 @@ public class OclParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        return PsiElementFactory.createElement(node);
+        return PsiElementFactory.createElement(OclTypes.INSTANCE, node);
     }
 }

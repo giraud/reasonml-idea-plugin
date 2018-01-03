@@ -1,29 +1,29 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiInclude;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-import static com.reason.lang.RmlTypes.MODULE_PATH;
+public class PsiIncludeImpl extends MlASTWrapperPsiElement implements PsiInclude {
 
-public class PsiIncludeImpl extends ASTWrapperPsiElement implements PsiInclude {
-
-    public PsiIncludeImpl(@NotNull ASTNode node) {
-        super(node);
+    //region Constructors
+    public PsiIncludeImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
+    //endregion
 
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(MODULE_PATH);
+        return findChildByType(m_types.MODULE_PATH);
     }
 
     @Override

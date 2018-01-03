@@ -1,11 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.reason.icons.Icons;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiStructuredElement;
@@ -14,19 +14,17 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-import static com.reason.lang.RmlTypes.MODULE_PATH;
-
-public class PsiOpenImpl extends ASTWrapperPsiElement implements PsiOpen, PsiStructuredElement {
+public class PsiOpenImpl extends MlASTWrapperPsiElement implements PsiOpen, PsiStructuredElement {
 
     //region Constructors
-    public PsiOpenImpl(@NotNull ASTNode node) {
-        super(node);
+    public PsiOpenImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
     //endregion
 
     @Nullable
     public PsiElement getNameIdentifier() {
-        return findChildByType(MODULE_PATH);
+        return findChildByType(m_types.MODULE_PATH);
     }
 
     @Override

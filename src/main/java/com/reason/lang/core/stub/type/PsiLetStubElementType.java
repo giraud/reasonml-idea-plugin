@@ -6,6 +6,7 @@ import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
 import com.reason.lang.core.stub.PsiLetStub;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
     }
 
     public PsiLetImpl createPsi(@NotNull final PsiLetStub stub) {
-        return new PsiLetImpl(stub, this);
+        return new PsiLetImpl(RmlTypes.INSTANCE, stub, this);
     }
 
     @NotNull

@@ -4,11 +4,15 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
 
-import static com.reason.lang.RmlTypes.*;
 import static com.intellij.psi.TokenType.*;
 %%
 
 %{
+  public ReasonMLLexer(MlTypes types) {
+    this.types = types;
+  }
+
+  private MlTypes types;
   private int tokenStartIndex;
   private CharSequence quotedStringId;
   private int commentDepth;
@@ -85,123 +89,123 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 <INITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
 
-    "mutable"    { return MUTABLE;}
-    "module"     { return MODULE;}
-    "open"       { return OPEN; }
-    "include"    { return INCLUDE; }
-    "type"       { return TYPE; }
-    "let"        { return LET; }
-    "fun"        { return FUN; }
-    "external"   { return EXTERNAL; }
-    "unit"       { return UNIT; }
-    "if"         { return IF; }
-    "else"       { return ELSE; }
-    "switch"     { return SWITCH; }
-    "as"         { return AS; }
-    "rec"        { return REC; }
-    "ref"        { return REF; }
-    "try"        { return TRY; }
-    "raise"      { return RAISE; }
-    "for"        { return FOR; }
-    "in"         { return IN; }
-    "exception"  { return EXCEPTION; }
-    "when"       { return WHEN; }
-    "and"        { return AND; }
-    "while"      { return WHILE; }
+    "mutable"    { return types.MUTABLE;}
+    "module"     { return types.MODULE;}
+    "open"       { return types.OPEN; }
+    "include"    { return types.INCLUDE; }
+    "type"       { return types.TYPE; }
+    "let"        { return types.LET; }
+    "fun"        { return types.FUN; }
+    "external"   { return types.EXTERNAL; }
+    "unit"       { return types.UNIT; }
+    "if"         { return types.IF; }
+    "else"       { return types.ELSE; }
+    "switch"     { return types.SWITCH; }
+    "as"         { return types.AS; }
+    "rec"        { return types.REC; }
+    "ref"        { return types.REF; }
+    "try"        { return types.TRY; }
+    "raise"      { return types.RAISE; }
+    "for"        { return types.FOR; }
+    "in"         { return types.IN; }
+    "exception"  { return types.EXCEPTION; }
+    "when"       { return types.WHEN; }
+    "and"        { return types.AND; }
+    "while"      { return types.WHILE; }
 
     // OCaml
-    "of"         { return OF; }
-    "to"         { return TO; }
-    "do"         { return DO; }
-    "done"       { return DONE; }
-    "object"     { return OBJECT; }
-    "begin"      { return BEGIN; }
-    "end"        { return END; }
-    "assert"     { return ASSERT; }
-    "lazy"       { return LAZY; }
-    "match"      { return MATCH; }
-    "with"       { return WITH; }
-    "then"       { return THEN; }
-    "function"   { return FUNCTION; }
-    "sig"        { return SIG; }
-    "struct"     { return STRUCT; }
-    "val"        { return VAL; }
+    "of"         { return types.OF; }
+    "to"         { return types.TO; }
+    "do"         { return types.DO; }
+    "done"       { return types.DONE; }
+    "object"     { return types.OBJECT; }
+    "begin"      { return types.BEGIN; }
+    "end"        { return types.END; }
+    "assert"     { return types.ASSERT; }
+    "lazy"       { return types.LAZY; }
+    "match"      { return types.MATCH; }
+    "with"       { return types.WITH; }
+    "then"       { return types.THEN; }
+    "function"   { return types.FUNCTION; }
+    "sig"        { return types.SIG; }
+    "struct"     { return types.STRUCT; }
+    "val"        { return types.VAL; }
     //
 
-    "option"    { return OPTION; }
-    "None"      { return NONE; }
-    "Some"      { return SOME; }
+    "option"    { return types.OPTION; }
+    "None"      { return types.NONE; }
+    "Some"      { return types.SOME; }
 
-    "list"      { return LIST; }
+    "list"      { return types.LIST; }
 
-    "false"     { return FALSE; }
-    "true"      { return TRUE; }
+    "false"     { return types.FALSE; }
+    "true"      { return types.TRUE; }
 
-    "'" ( {ESCAPE_CHAR} | . ) "'"    { return CHAR; }
-    {LOWERCASE}{IDENTCHAR}*          { return LIDENT; }
-    {UPPERCASE}{IDENTCHAR}*          { return UIDENT; }
-    {INT_LITERAL}{LITERAL_MODIFIER}? { return INT; }
-    ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return FLOAT; }
-    "'"{LOWERCASE}{IDENTCHAR}*       { return TYPE_ARGUMENT; }
-    "`"{UPPERCASE}{IDENTCHAR}*       { return POLY_VARIANT; }
+    "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR; }
+    {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
+    {UPPERCASE}{IDENTCHAR}*          { return types.UIDENT; }
+    {INT_LITERAL}{LITERAL_MODIFIER}? { return types.INT; }
+    ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return types.FLOAT; }
+    "'"{LOWERCASE}{IDENTCHAR}*       { return types.TYPE_ARGUMENT; }
+    "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }
     "(*" { yybegin(IN_OCL_COMMENT); commentDepth = 1; tokenStart(); }
 
-    "&&"   { return ANDAND; }
-    "::"   { return SHORTCUT; }
-    "=>"   { return ARROW; }
-    "->"   { return SIMPLE_ARROW; }
-    "|>"   { return PIPE_FORWARD; }
-    "/>"   { return TAG_AUTO_CLOSE; }
-    "[|"   { return LARRAY; }
-    "|]"   { return RARRAY; }
+    "&&"   { return types.ANDAND; }
+    "::"   { return types.SHORTCUT; }
+    "=>"   { return types.ARROW; }
+    "->"   { return types.SIMPLE_ARROW; }
+    "|>"   { return types.PIPE_FORWARD; }
+    "/>"   { return types.TAG_AUTO_CLOSE; }
+    "[|"   { return types.LARRAY; }
+    "|]"   { return types.RARRAY; }
 
-    "===" { return EQEQEQ; }
-    "=="  { return EQEQ; }
-    "="   { return EQ; }
-    "!==" { return NOT_EQEQ; }
-    "!="  { return NOT_EQ; }
-    "<>"  { return DIFF; }
-    ","   { return COMMA; }
-    ":"   { return COLON; }
-    ";"   { return SEMI; }
-    "'"   { return QUOTE; }
-    "..." { return DOTDOTDOT; }
-    "."   { return DOT; }
-    "|"   { return PIPE; }
-    "("   { return LPAREN; }
-    ")"   { return RPAREN; }
-    "{"   { return LBRACE; }
-    "}"   { return RBRACE; }
-    "["   { return LBRACKET; }
-    "]"   { return RBRACKET; }
-    "@"   { return ARROBASE; }
-    "#"   { return SHARP; }
-    "?"   { return QUESTION_MARK; }
-    "!"   { return EXCLAMATION_MARK; }
-    "$"   { return DOLLAR; }
-    "`"   { return BACKTICK; }
-    "~"   { return TILDE; }
+    "===" { return types.EQEQEQ; }
+    "=="  { return types.EQEQ; }
+    "="   { return types.EQ; }
+    "!==" { return types.NOT_EQEQ; }
+    "!="  { return types.NOT_EQ; }
+    "<>"  { return types.DIFF; }
+    ","   { return types.COMMA; }
+    ":"   { return types.COLON; }
+    ";"   { return types.SEMI; }
+    "'"   { return types.QUOTE; }
+    "..." { return types.DOTDOTDOT; }
+    "."   { return types.DOT; }
+    "|"   { return types.PIPE; }
+    "("   { return types.LPAREN; }
+    ")"   { return types.RPAREN; }
+    "{"   { return types.LBRACE; }
+    "}"   { return types.RBRACE; }
+    "["   { return types.LBRACKET; }
+    "]"   { return types.RBRACKET; }
+    "@"   { return types.ARROBASE; }
+    "#"   { return types.SHARP; }
+    "?"   { return types.QUESTION_MARK; }
+    "!"   { return types.EXCLAMATION_MARK; }
+    "$"   { return types.DOLLAR; }
+    "`"   { return types.BACKTICK; }
+    "~"   { return types.TILDE; }
 
-    "<"  { return LT; }
-    ">"  { return GT; }
+    "<"  { return types.LT; }
+    ">"  { return types.GT; }
 
-    "\^"  { return CARRET; }
-    "+."  { return PLUSDOT; }
-    "-."  { return MINUSDOT; }
-    "/."  { return SLASHDOT; }
-    "*."  { return STARDOT; }
-    "+"   { return PLUS; }
-    "-"   { return MINUS; }
-    "/"   { return SLASH; }
-    "*"   { return STAR; }
-    "%"   { return PERCENT; }
+    "\^"  { return types.CARRET; }
+    "+."  { return types.PLUSDOT; }
+    "-."  { return types.MINUSDOT; }
+    "/."  { return types.SLASHDOT; }
+    "*."  { return types.STARDOT; }
+    "+"   { return types.PLUS; }
+    "-"   { return types.MINUS; }
+    "/"   { return types.SLASH; }
+    "*"   { return types.STAR; }
+    "%"   { return types.PERCENT; }
 }
 
 <IN_STRING> {
-    "\"" { yybegin(INITIAL); tokenEnd(); return STRING; }
+    "\"" { yybegin(INITIAL); tokenEnd(); return types.STRING; }
     "\\" { NEWLINE } ([ \t] *) { }
     "\\" [\\\'\"ntbr ] { }
     "\\" [0-9] [0-9] [0-9] { }
@@ -210,21 +214,21 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "\\" . { }
     { NEWLINE } { }
     . { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return STRING; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING; }
 }
 
 <IN_RML_COMMENT> {
     "/*" { commentDepth += 1; }
-    "*/" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return COMMENT; } }
+    "*/" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return COMMENT; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
 }
 
 <IN_OCL_COMMENT> {
     "(*" { commentDepth += 1; }
-    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return COMMENT; } }
+    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
     . | {NEWLINE} { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return COMMENT; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

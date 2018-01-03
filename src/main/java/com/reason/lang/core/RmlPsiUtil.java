@@ -126,6 +126,10 @@ public class RmlPsiUtil {
     @NotNull
     private static TextRange rangeInParent(@NotNull TextRange parent, @NotNull TextRange child) {
         int start = child.getStartOffset() - parent.getStartOffset();
+        if (start < 0) {
+            return TextRange.EMPTY_RANGE;
+        }
+
         return TextRange.create(start, start + child.getLength());
     }
 }

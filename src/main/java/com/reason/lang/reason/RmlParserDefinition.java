@@ -1,4 +1,4 @@
-package com.reason.lang;
+package com.reason.lang.reason;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
@@ -12,18 +12,20 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.RmlFile;
+import com.reason.lang.LexerAdapter;
+import com.reason.lang.PsiElementFactory;
 import com.reason.lang.core.stub.type.RmlFileStubElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.COMMENT);
-    private static final TokenSet STRINGS = TokenSet.create(RmlTypes.STRING);
+    private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.INSTANCE.COMMENT);
+    private static final TokenSet STRINGS = TokenSet.create(RmlTypes.INSTANCE.STRING);
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new RmlLexerAdapter();
+        return new LexerAdapter(RmlTypes.INSTANCE);
     }
 
     @NotNull
@@ -61,6 +63,6 @@ public class RmlParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        return PsiElementFactory.createElement(node);
+        return PsiElementFactory.createElement(RmlTypes.INSTANCE, node);
     }
 }
