@@ -1,4 +1,4 @@
-package com.reason.ide;
+package com.reason.ide.match;
 
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;

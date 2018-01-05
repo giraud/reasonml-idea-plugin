@@ -117,8 +117,8 @@
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.RmlCommenter"/>
         <lang.commenter language="Ocaml" implementationClass="com.reason.ide.OclCommenter"/>
 
-        <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
-        <lang.braceMatcher language="Ocaml" implementationClass="com.reason.ide.RmlPairedBraceMatcher"/>
+        <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
+        <lang.braceMatcher language="Ocaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
 
         <!--
          | Doc
