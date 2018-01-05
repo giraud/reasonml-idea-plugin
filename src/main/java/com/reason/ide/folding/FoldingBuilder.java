@@ -8,15 +8,16 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.MlTypes;
+import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.reason.lang.reason.RmlTypes.*;
 
 public class FoldingBuilder extends FoldingBuilderEx {
     @NotNull
@@ -26,13 +27,14 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
         PsiTreeUtil.processElements(root, element -> {
             IElementType elementType = element.getNode().getElementType();
-            if (RmlTypes.INSTANCE.COMMENT.equals(elementType)) {
+            MlTypes types = elementType.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+            if (types.COMMENT == elementType) {
                 descriptors.add(fold(element));
-            } else if (RmlTypes.INSTANCE.TYPE_EXPRESSION.equals(elementType)) {
+            } else if (types.TYPE_EXPRESSION == elementType) {
                 foldType(descriptors, (PsiType) element);
-            } else if (RmlTypes.INSTANCE.LET_EXPRESSION.equals(elementType)) {
+            } else if (types.LET_EXPRESSION == elementType) {
                 foldLet(descriptors, (PsiLet) element);
-            } else if (RmlTypes.INSTANCE.MODULE_EXPRESSION.equals(elementType)) {
+            } else if (types.MODULE_EXPRESSION == elementType) {
                 foldModule(descriptors, (PsiModule) element);
             }
             return true;
@@ -79,9 +81,13 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
-        if (node.getElementType().equals(RmlTypes.INSTANCE.COMMENT)) {
+        IElementType elementType = node.getElementType();
+        if (elementType == RmlTypes.INSTANCE.COMMENT) {
             return "/*...*/";
+        } else if (elementType == OclTypes.INSTANCE.COMMENT) {
+            return "(*...*)";
         }
+
         return "{...}";
     }
 
