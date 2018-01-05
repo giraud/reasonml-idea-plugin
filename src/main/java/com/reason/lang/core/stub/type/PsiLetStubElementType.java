@@ -47,6 +47,6 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
 
     @NotNull
     public String getExternalId() {
-        return "reason." + super.toString();
+        return getLanguage() + "." + super.toString();
     }
 }

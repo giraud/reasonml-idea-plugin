@@ -161,19 +161,6 @@ public class OclParser extends CommonParser {
             }
 
             //
-            //            else if (tokenType == ARROW) {
-            //                builder.advanceLexer();
-            //                dontMove = true;
-            //            }
-
-            //
-            //            else if (tokenType == PIPE) {
-            //                //    if (currentScope.resolution == typeNamedEq) {
-            //                //        currentScope = markScope(builder, scopes, typeNamedEqPatternMatch, PATTERN_MATCH_EXPR, scopeExpression);
-            //                //    }
-            //            }
-
-            //
             else if (tokenType == m_types.LIDENT) {
                 if (currentScope.resolution == type) {
                     builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
@@ -191,12 +178,6 @@ public class OclParser extends CommonParser {
                     builder.remapCurrentToken(m_types.VALUE_NAME);
                     currentScope.resolution = valNamed;
                     currentScope.complete = true;
-                    //                } else if (currentScope.resolution == startTag) {
-                    //                    // This is a property
-                    //                    end(scopes);
-                    //                    builder.remapCurrentToken(PROPERTY_NAME);
-                    //                    currentScope = markScope(builder, scopes, tagProperty, TAG_PROPERTY, groupExpression, LIDENT);
-                    //                    currentScope.complete = true;
                 }
             } else if (tokenType == m_types.UIDENT) {
                 if (currentScope.resolution == open) {
@@ -237,49 +218,6 @@ public class OclParser extends CommonParser {
                     end(scopes);
                     currentScope = markScope(builder, scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT);
                 }
-            }
-
-            //
-            else if (tokenType == m_types.LT) {
-                //                // Can be a symbol or a JSX tag
-                //                IElementType nextTokenType = builder.rawLookup(1);
-                //                if (nextTokenType == LIDENT || nextTokenType == UIDENT) {
-                //                    // Surely a tag
-                //                    builder.remapCurrentToken(TAG_LT);
-                //                    currentScope = markScope(builder, scopes, startTag, TAG_START, groupExpression, TAG_LT);
-                //                    currentScope.complete = true;
-                //
-                //                    builder.advanceLexer();
-                //                    dontMove = true;
-                //                    builder.remapCurrentToken(TAG_NAME);
-                //                } else if (nextTokenType == SLASH) {
-                //                    builder.remapCurrentToken(TAG_LT);
-                //                    currentScope = markScope(builder, scopes, closeTag, TAG_CLOSE, any, TAG_LT);
-                //                    currentScope.complete = true;
-                //                }
-            } else if (tokenType == m_types.GT || tokenType == m_types.TAG_AUTO_CLOSE) {
-                //                if (currentScope.tokenType == TAG_PROPERTY) {
-                //                    currentScope.end();
-                //                    scopes.pop();
-                //                    currentScope = scopes.empty() ? fileScope : scopes.peek();
-                //                }
-                //
-                //                if (currentScope.resolution == startTag || currentScope.resolution == closeTag) {
-                //                    builder.remapCurrentToken(TAG_GT);
-                //                    builder.advanceLexer();
-                //                    dontMove = true;
-                //
-                //                    currentScope.end();
-                //                    scopes.pop();
-                //
-                //                    currentScope = scopes.empty() ? fileScope : scopes.peek();
-                //                }
-            } else if (tokenType == m_types.ARROBASE) {
-                //                if (currentScope.resolution == annotation) {
-                //                    currentScope.complete = true;
-                //                    currentScope = mark(builder, scopes, annotationName, ANNOTATION_NAME, any);
-                //                    currentScope.complete = true;
-                //                }
             }
 
             // Starts an open

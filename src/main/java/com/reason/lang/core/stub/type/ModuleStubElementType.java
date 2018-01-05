@@ -60,6 +60,6 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
 
     @NotNull
     public String getExternalId() {
-        return "reason." + super.toString();
+        return getLanguage() + "." + super.toString();
     }
 }
