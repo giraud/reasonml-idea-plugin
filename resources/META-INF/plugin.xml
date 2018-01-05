@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.32</version>
+    <version>0.33</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -9,6 +9,18 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
+      <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
+
+      <p>Changes:</p>
+
+      <b>version 0.33</b>
+
+      <ul>
+         <li>Fixes #22</li>
+         <li>Fixes #21</li>
+      </ul>
+
       <b>version 0.32</b>
 
       <ul>
@@ -38,15 +50,6 @@
       <ul>
         <li>Redesigned the reason parser</li>
       </ul>
-
-     <b>version 0.28</b>
-
-      <ul>
-        <li>Reformat action is working on ocaml source (refmt3)</li>
-      </ul>
-
-      <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
-      <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
     ]]>
     </change-notes>
 
