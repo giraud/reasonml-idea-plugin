@@ -1,6 +1,7 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.MlTypes;
+import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.stub.type.ModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
 import com.reason.lang.core.stub.type.PsiTypeElementType;
@@ -15,15 +16,15 @@ public class RmlTypes extends MlTypes {
         EXCEPTION_EXPRESSION = new RmlElementType("EXCEPTION_EXPRESSION");
         EXCEPTION_NAME = new RmlElementType("EXCEPTION_NAME");
         INCLUDE_EXPRESSION = new RmlElementType("INCLUDE_EXPRESSION");
-        LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION");
+        LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION", RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
         MACRO_EXPRESSION = new RmlElementType("MACRO_EXPRESSION");
         MACRO_NAME = new RmlElementType("MACRO_NAME");
-        MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION");
+        MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION", RmlLanguage.INSTANCE);
         MODULE_NAME = new RmlElementType("MODULE_NAME");
         MODULE_PATH = new RmlElementType("MODULE_PATH");
         OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
-        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION");
-        VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION");
+        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
+        VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION", RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
 
         LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
         LET_BINDING = new RmlElementType("LET_BINDING");

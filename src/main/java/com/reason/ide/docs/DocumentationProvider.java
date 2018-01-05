@@ -16,7 +16,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             PsiElement previousElement = element == null ? null : PsiTreeUtil.prevVisibleLeaf(element);
             if (previousElement instanceof PsiComment) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(((PsiComment) previousElement).getText());
+                sb.append(previousElement.getText());
                 return sb.toString();
             }
         }

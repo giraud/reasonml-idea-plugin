@@ -1,9 +1,9 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
@@ -14,8 +14,8 @@ import java.io.IOException;
 
 public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModule> {
 
-    public ModuleStubElementType(String name) {
-        super(name, RmlLanguage.INSTANCE);
+    public ModuleStubElementType(String name, Language language) {
+        super(name, language);
     }
 
     public PsiModuleImpl createPsi(@NotNull final ModuleStub stub) {

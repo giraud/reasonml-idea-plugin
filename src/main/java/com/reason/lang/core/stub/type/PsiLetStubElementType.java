@@ -1,24 +1,27 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.RmlLanguage;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
 import com.reason.lang.core.stub.PsiLetStub;
-import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> {
 
-    public PsiLetStubElementType(String name) {
-        super(name, RmlLanguage.INSTANCE);
+    private final MlTypes m_types;
+
+    public PsiLetStubElementType(String name, Language language, MlTypes types) {
+        super(name, language);
+        m_types = types;
     }
 
     public PsiLetImpl createPsi(@NotNull final PsiLetStub stub) {
-        return new PsiLetImpl(RmlTypes.INSTANCE, stub, this);
+        return new PsiLetImpl(m_types, stub, this);
     }
 
     @NotNull
