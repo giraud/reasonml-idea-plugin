@@ -15,7 +15,7 @@ import static com.reason.lang.ParserScopeType.*;
 public class OclParser extends CommonParser {
 
     OclParser() {
-        super(OclLanguage.INSTANCE, OclTypes.INSTANCE);
+        super(OclTypes.INSTANCE);
     }
 
     @Override
@@ -204,20 +204,30 @@ public class OclParser extends CommonParser {
                 }
             }
 
+            //else if (tokenType == m_types.MATCH) {
+            //    currentScope = markScope(builder, scopes, match, m_types.PATTERN_MATCH_EXPR, startExpression, m_types.MATCH);
+            //    currentScope.complete = true;
+            //}
+            //
+            //else if (tokenType == m_types.WITH) {
+            //    currentScope = markScope(builder, scopes, matchWith, m_types.SCOPED_EXPR, scopeExpression, m_types.WITH);
+            //}
+
             // module signature
             else if (tokenType == m_types.SIG) {
                 if (currentScope.resolution == moduleNamedEq || currentScope.resolution == moduleNamedColon) {
                     end(scopes);
+                    currentScope.resolution = moduleNamedSignature;
                     currentScope = markScope(builder, scopes, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG);
                 }
             }
 
             // module body
             else if (tokenType == m_types.STRUCT) {
-                if (currentScope.resolution == moduleNamedEq) {
+                if (currentScope.resolution == moduleNamedEq || currentScope.resolution == moduleNamedSignature) {
                     end(scopes);
-                    currentScope = markScope(builder, scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT);
                 }
+                currentScope = markScope(builder, scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT);
             }
 
             // Starts an open
@@ -256,7 +266,7 @@ public class OclParser extends CommonParser {
 
             // Starts a let
             else if (tokenType == m_types.LET) {
-                if (previousTokenType != m_types.EQ) {
+                if (previousTokenType != m_types.EQ && previousTokenType != m_types.IN) {
                     endLikeSemi(previousTokenType, scopes, fileScope);
                 }
                 currentScope = markScope(builder, scopes, let, m_types.LET_EXPRESSION, startExpression, m_types.LET);

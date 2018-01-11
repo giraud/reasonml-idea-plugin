@@ -20,6 +20,7 @@ public enum ParserScopeEnum {
     moduleNamed,
     moduleNamedEq,
     moduleNamedColon,
+    moduleNamedSignature,
     moduleSignature,
     moduleBinding,
 
@@ -53,4 +54,7 @@ public enum ParserScopeEnum {
 
     exception,
     exceptionNamed,
+
+    match,
+    matchWith,
 }

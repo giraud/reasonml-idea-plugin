@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.tree.IElementType;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.stub.type.ModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
@@ -10,6 +11,8 @@ public class OclTypes extends MlTypes {
     public static final OclTypes INSTANCE = new OclTypes();
 
     private OclTypes() {
+        FILE_MODULE = new IElementType("FILE_MODULE", OclLanguage.INSTANCE);
+
         ANNOTATION_EXPRESSION = new OclElementType("ANNOTATION_EXPRESSION");
         EXTERNAL_EXPRESSION = new OclElementType("EXTERNAL_EXPRESSION");
         EXCEPTION_EXPRESSION = new OclElementType("EXCEPTION_EXPRESSION");

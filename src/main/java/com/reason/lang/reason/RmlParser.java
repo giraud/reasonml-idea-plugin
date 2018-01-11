@@ -4,7 +4,6 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
-import com.reason.lang.RmlLanguage;
 
 import java.util.Stack;
 
@@ -16,7 +15,7 @@ import static com.reason.lang.ParserScopeType.*;
 public class RmlParser extends CommonParser {
 
     RmlParser() {
-        super(RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
+        super(RmlTypes.INSTANCE);
     }
 
     @Override

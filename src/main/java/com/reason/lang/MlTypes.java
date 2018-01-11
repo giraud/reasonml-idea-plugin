@@ -4,6 +4,8 @@ import com.intellij.psi.tree.IElementType;
 
 public abstract class MlTypes {
 
+    public IElementType FILE_MODULE;
+
     public IElementType ANNOTATION_EXPRESSION;
     public IElementType EXTERNAL_EXPRESSION;
     public IElementType EXCEPTION_EXPRESSION;

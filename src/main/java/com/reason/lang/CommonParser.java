@@ -1,6 +1,9 @@
 package com.reason.lang;
 
-import com.intellij.lang.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.lang.LightPsiParser;
+import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,11 +16,9 @@ import static com.reason.lang.ParserScopeType.*;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
 
-    private IElementType m_fileModuleType;
     protected MlTypes m_types;
 
-    protected CommonParser(Language language, MlTypes types) {
-        m_fileModuleType = new IElementType("FILE_MODULE", language);
+    protected CommonParser(MlTypes types) {
         m_types = types;
     }
 
@@ -35,7 +36,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
         Stack<ParserScope> scopes = new Stack<>();
-        ParserScope fileScope = new ParserScope(file, m_fileModuleType, null);
+        ParserScope fileScope = new ParserScope(file, m_types.FILE_MODULE, null);
 
         parseFile(builder, scopes, fileScope);
 

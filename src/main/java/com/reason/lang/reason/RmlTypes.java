@@ -1,5 +1,6 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.tree.IElementType;
 import com.reason.lang.MlTypes;
 import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.stub.type.ModuleStubElementType;
@@ -11,6 +12,8 @@ public class RmlTypes extends MlTypes {
     public static final RmlTypes INSTANCE = new RmlTypes();
 
     private RmlTypes() {
+        FILE_MODULE = new IElementType("FILE_MODULE", RmlLanguage.INSTANCE);
+
         ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
         EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
         EXCEPTION_EXPRESSION = new RmlElementType("EXCEPTION_EXPRESSION");
