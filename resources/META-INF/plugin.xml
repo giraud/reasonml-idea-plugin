@@ -106,7 +106,7 @@
         <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Ocaml"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
-
+        <!-- OcamlP4 -->
         <lang.parserDefinition language="OcamlP4" implementationClass="com.reason.lang.ocaml.OclP4ParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OcamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
