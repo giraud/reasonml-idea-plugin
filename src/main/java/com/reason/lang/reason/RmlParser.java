@@ -36,7 +36,7 @@ public class RmlParser extends CommonParser {
                     scope.end();
                 }
 
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parserState.updateCurrentScope();
             }
 
             // =
@@ -77,7 +77,7 @@ public class RmlParser extends CommonParser {
                     }
                 }
 
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parserState.updateCurrentScope();
             }
 
             // { ... }
@@ -103,7 +103,7 @@ public class RmlParser extends CommonParser {
                     parserState.scopes.pop().end();
                 }
 
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parserState.updateCurrentScope();
             }
 
             // [ ... ]
@@ -129,7 +129,7 @@ public class RmlParser extends CommonParser {
                     parserState.scopes.pop().end();
                 }
 
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parserState.updateCurrentScope();
             }
 
             //

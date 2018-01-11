@@ -29,251 +29,60 @@ public class OclParser extends CommonParser {
                 break;
             }
 
-            // ;
             if (tokenType == m_types.SEMI) {
-                // A SEMI operator ends the start expression, not the group or scope
-                ParserScope scope = parserState.end();
-                if (scope != null && scope.scopeType == startExpression) {
-                    parserState.scopes.pop();
-                    scope.end();
-                }
-
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parseSemi(parserState);
+            } else if (tokenType == m_types.IN) {
+                parseIn(parserState);
+            } else if (tokenType == m_types.END) { // end (like a })
+                parseEnd(builder, parserState);
+            } else if (tokenType == m_types.EQ) {
+                parseEq(builder, parserState);
+            } else if (tokenType == m_types.COLON) {
+                parseColon(parserState);
+            } else if (tokenType == m_types.LIDENT) {
+                parseLIdent(builder, parserState);
+            } else if (tokenType == m_types.UIDENT) {
+                parseUIdent(builder, parserState);
+            } else if (tokenType == m_types.SIG) {
+                parseSig(builder, parserState);
+            } else if (tokenType == m_types.STRUCT) {
+                parseStruct(builder, parserState);
             }
-
-            // in
-            else if (tokenType == m_types.IN) {
-                // End current start-expression scope
-                ParserScope scope = parserState.endUntilStart();
-                if (scope != null && scope.scopeType == startExpression) {
-                    parserState.scopes.pop();
-                    scope.end();
-                }
-
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
-            }
-
-            // end (like a })
-            else if (tokenType == m_types.END) {
-                ParserScope scope = parserState.endUntilScopeExpression(null);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    scope.complete = true;
-                    parserState.scopes.pop().end();
-                }
-
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
-            }
-
-            // =
-            else if (tokenType == m_types.EQ) {
-                if (parserState.currentScope.resolution == typeNamed) {
-                    parserState.currentScope.resolution = typeNamedEq;
-                } else if (parserState.currentScope.resolution == letNamed) {
-                    parserState.currentScope.resolution = letNamedEq;
-                    builder.advanceLexer();
-                    parserState.dontMove = true;
-                    parserState.currentScope = markScope(builder, parserState.scopes, letNamedEq, m_types.LET_BINDING, groupExpression, m_types.EQ);
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == tagProperty) {
-                    parserState.currentScope.resolution = tagPropertyEq;
-                } else if (parserState.currentScope.resolution == moduleNamed) {
-                    parserState.currentScope.resolution = moduleNamedEq;
-                    parserState.currentScope.complete = true;
-                }
-            }
-
-            // :
-            else if (tokenType == m_types.COLON) {
-                if (parserState.currentScope.resolution == moduleNamed) {
-                    parserState.currentScope.resolution = moduleNamedColon;
-                    parserState.currentScope.complete = true;
-                }
-            }
-
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
-                parserState.end();
-                parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+                parseLParen(builder, parserState);
             } else if (tokenType == m_types.RPAREN) {
-                ParserScope scope = parserState.endUntilScopeExpression(m_types.LPAREN);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    scope.complete = true;
-                    parserState.scopes.pop().end();
-                    parserState.getLatestScope();
-                }
-
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parseRParen(builder, parserState);
             }
-
             // { ... }
             else if (tokenType == m_types.LBRACE) {
-                parserState.end();
-                parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
+                parseLBrace(builder, parserState);
             } else if (tokenType == m_types.RBRACE) {
-                ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    scope.complete = true;
-                    parserState.scopes.pop().end();
-                }
-
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parseRBrace(builder, parserState);
             }
-
             // [ ... ]
             else if (tokenType == m_types.LBRACKET) {
-                IElementType nextTokenType = builder.rawLookup(1);
-                if (nextTokenType == m_types.ARROBASE) {
-                    // This is an annotation
-                    parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
-                } else {
-                    parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
-                }
+                parseLBracket(builder, parserState);
             } else if (tokenType == m_types.RBRACKET) {
-                ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACKET);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    if (scope.resolution != annotation) {
-                        scope.complete = true;
-                    }
-                    parserState.scopes.pop().end();
-                }
-
-                parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+                parseRBracket(builder, parserState);
             }
-
-            //
-            else if (tokenType == m_types.LIDENT) {
-                if (parserState.currentScope.resolution == type) {
-                    builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
-                    parserState.currentScope.resolution = typeNamed;
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == external) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope.resolution = externalNamed;
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == let) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope.resolution = letNamed;
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == val) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope.resolution = valNamed;
-                    parserState.currentScope.complete = true;
-                }
-            }
-
-            //
-            else if (tokenType == m_types.UIDENT) {
-                if (parserState.currentScope.resolution == open) {
-                    // It is a module name/path
-                    parserState.currentScope.complete = true;
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
-                    parserState.dontMove = advance(builder, m_types.MODULE_NAME);
-                } else if (parserState.currentScope.resolution == include) {
-                    // It is a module name/path
-                    parserState.currentScope.complete = true;
-                    builder.remapCurrentToken(m_types.MODULE_NAME);
-                    parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
-                } else if (parserState.currentScope.resolution == exception) {
-                    parserState.currentScope.complete = true;
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.dontMove = advance(builder, m_types.EXCEPTION_NAME);
-                    parserState.currentScope.resolution = exceptionNamed;
-                } else if (parserState.currentScope.resolution == module) {
-                    // Module definition
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.dontMove = advance(builder, m_types.MODULE_NAME);
-                    parserState.currentScope.resolution = moduleNamed;
-                }
-            }
-
-            //else if (tokenType == m_types.MATCH) {
-            //    currentScope = markScope(builder, scopes, match, m_types.PATTERN_MATCH_EXPR, startExpression, m_types.MATCH);
-            //    currentScope.complete = true;
-            //}
-            //
-            //else if (tokenType == m_types.WITH) {
-            //    currentScope = markScope(builder, scopes, matchWith, m_types.SCOPED_EXPR, scopeExpression, m_types.WITH);
-            //}
-
-            // module signature
-            else if (tokenType == m_types.SIG) {
-                if (parserState.currentScope.resolution == moduleNamedEq || parserState.currentScope.resolution == moduleNamedColon) {
-                    parserState.end();
-                    parserState.currentScope.resolution = moduleNamedSignature;
-                    parserState.currentScope = markScope(builder, parserState.scopes, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG);
-                }
-            }
-
-            // module body
-            else if (tokenType == m_types.STRUCT) {
-                if (parserState.currentScope.resolution == moduleNamedEq || parserState.currentScope.resolution == moduleNamedSignature) {
-                    parserState.end();
-                }
-                parserState.currentScope = markScope(builder, parserState.scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT);
-            }
-
-            // Starts an open
+            // Starts expression
             else if (tokenType == m_types.OPEN) {
-                endLikeSemi(parserState);
-                parserState.currentScope = markScope(builder, parserState.scopes, open, m_types.OPEN_EXPRESSION, startExpression, m_types.OPEN);
-            }
-
-            // Starts an include
-            else if (tokenType == m_types.INCLUDE) {
-                endLikeSemi(parserState);
-                parserState.currentScope = markScope(builder, parserState.scopes, include, m_types.INCLUDE_EXPRESSION, startExpression, m_types.INCLUDE);
-            }
-
-            // Starts an external
-            else if (tokenType == m_types.EXTERNAL) {
-                endLikeSemi(parserState);
-                parserState.currentScope = markScope(builder, parserState.scopes, external, m_types.EXTERNAL_EXPRESSION, startExpression, m_types.EXTERNAL);
-            }
-
-            // Starts a type
-            else if (tokenType == m_types.TYPE) {
-                if (parserState.currentScope.resolution != module) {
-                    endLikeSemi(parserState);
-                    parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
-                }
-            }
-
-            // Starts a module
-            else if (tokenType == m_types.MODULE) {
+                parseOpen(builder, parserState);
+            } else if (tokenType == m_types.INCLUDE) {
+                parseInclude(builder, parserState);
+            } else if (tokenType == m_types.EXTERNAL) {
+                parseExternal(builder, parserState);
+            } else if (tokenType == m_types.TYPE) {
+                parseType(builder, parserState);
+            } else if (tokenType == m_types.MODULE) {
                 parseModule(builder, parserState);
-            }
-
-            // Starts a let
-            else if (tokenType == m_types.LET) {
+            } else if (tokenType == m_types.LET) {
                 parseLet(builder, parserState);
-            }
-
-            // Starts a val
-            else if (tokenType == m_types.VAL) {
+            } else if (tokenType == m_types.VAL) {
                 parseVal(builder, parserState);
-            }
-
-            // Starts an exception
-            else if (tokenType == m_types.EXCEPTION) {
-                endLikeSemi(parserState);
-                parserState.currentScope = markScope(builder, parserState.scopes, exception, m_types.EXCEPTION_EXPRESSION, startExpression, m_types.EXCEPTION);
+            } else if (tokenType == m_types.EXCEPTION) {
+                parseException(builder, parserState);
             }
 
             if (parserState.dontMove) {
@@ -282,12 +91,224 @@ public class OclParser extends CommonParser {
                 builder.advanceLexer();
             }
 
-            if (!empty_element_parsed_guard_(builder, "reasonFile", c)) {
+            if (!empty_element_parsed_guard_(builder, "oclFile", c)) {
                 break;
             }
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parseStruct(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(moduleNamedEq) || parserState.isCurrentResolution(moduleNamedSignature)) {
+            parserState.end();
+        }
+        parserState.currentScope = markScope(builder, parserState.scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT);
+    }
+
+    private void parseSig(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(moduleNamedEq) || parserState.isCurrentResolution(moduleNamedColon)) {
+            parserState.end();
+            parserState.currentScope.resolution = moduleNamedSignature;
+            parserState.currentScope = markScope(builder, parserState.scopes, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG);
+        }
+    }
+
+    private void parseSemi(ParserState parserState) {
+        // A SEMI operator ends the start expression, not the group or scope
+        ParserScope scope = parserState.end();
+        if (scope != null && scope.scopeType == startExpression) {
+            parserState.scopes.pop();
+            scope.end();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseIn(ParserState parserState) {
+        // End current start-expression scope
+        ParserScope scope = parserState.endUntilStart();
+        if (scope != null && scope.scopeType == startExpression) {
+            parserState.scopes.pop();
+            scope.end();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseEnd(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(null);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseColon(ParserState parserState) {
+        if (parserState.currentScope.resolution == moduleNamed) {
+            parserState.currentScope.resolution = moduleNamedColon;
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseEq(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(typeNamed)) {
+            parserState.currentScope.resolution = typeNamedEq;
+        } else if (parserState.isCurrentResolution(letNamed)) {
+            parserState.currentScope.resolution = letNamedEq;
+            builder.advanceLexer();
+            parserState.dontMove = true;
+            parserState.currentScope = markScope(builder, parserState.scopes, letNamedEq, m_types.LET_BINDING, groupExpression, m_types.EQ);
+            parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(tagProperty)) {
+            parserState.currentScope.resolution = tagPropertyEq;
+        } else if (parserState.isCurrentResolution(moduleNamed)) {
+            parserState.currentScope.resolution = moduleNamedEq;
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseRParen(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LPAREN);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+            parserState.getLatestScope();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseLParen(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+    }
+
+    private void parseRBrace(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseLBrace(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
+    }
+
+    private void parseRBracket(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACKET);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            if (scope.resolution != annotation) {
+                scope.complete = true;
+            }
+            parserState.scopes.pop().end();
+        }
+
+        parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+    }
+
+    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.ARROBASE) {
+            // This is an annotation
+            parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
+        } else {
+            parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
+        }
+    }
+
+    private void parseLIdent(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(type)) {
+            builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
+            parserState.currentScope.resolution = typeNamed;
+            parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(external)) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope.resolution = externalNamed;
+            parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope.resolution = letNamed;
+            parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(val)) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope.resolution = valNamed;
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseUIdent(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(open)) {
+            // It is a module name/path
+            parserState.currentScope.complete = true;
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
+            parserState.dontMove = advance(builder, m_types.MODULE_NAME);
+        } else if (parserState.isCurrentResolution(include)) {
+            // It is a module name/path
+            parserState.currentScope.complete = true;
+            builder.remapCurrentToken(m_types.MODULE_NAME);
+            parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
+        } else if (parserState.isCurrentResolution(exception)) {
+            parserState.currentScope.complete = true;
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.dontMove = advance(builder, m_types.EXCEPTION_NAME);
+            parserState.currentScope.resolution = exceptionNamed;
+        } else if (parserState.isCurrentResolution(module)) {
+            // Module definition
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.dontMove = advance(builder, m_types.MODULE_NAME);
+            parserState.currentScope.resolution = moduleNamed;
+        }
+    }
+
+    private void parseOpen(PsiBuilder builder, ParserState parserState) {
+        endLikeSemi(parserState);
+        parserState.currentScope = markScope(builder, parserState.scopes, open, m_types.OPEN_EXPRESSION, startExpression, m_types.OPEN);
+    }
+
+    private void parseInclude(PsiBuilder builder, ParserState parserState) {
+        endLikeSemi(parserState);
+        parserState.currentScope = markScope(builder, parserState.scopes, include, m_types.INCLUDE_EXPRESSION, startExpression, m_types.INCLUDE);
+    }
+
+    private void parseExternal(PsiBuilder builder, ParserState parserState) {
+        endLikeSemi(parserState);
+        parserState.currentScope = markScope(builder, parserState.scopes, external, m_types.EXTERNAL_EXPRESSION, startExpression, m_types.EXTERNAL);
+    }
+
+    private void parseType(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution != module) {
+            endLikeSemi(parserState);
+            parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
+        }
+    }
+
+    private void parseException(PsiBuilder builder, ParserState parserState) {
+        endLikeSemi(parserState);
+        parserState.currentScope = markScope(builder, parserState.scopes, exception, m_types.EXCEPTION_EXPRESSION, startExpression, m_types.EXCEPTION);
     }
 
     private void parseVal(PsiBuilder builder, ParserState parserState) {
@@ -309,7 +330,7 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private ParserScope endLikeSemi(ParserState parserState) {
+    private void endLikeSemi(ParserState parserState) {
         ParserScope scope;
         if (parserState.previousTokenType != m_types.IN && parserState.previousTokenType != m_types.SIG && parserState.previousTokenType != m_types.STRUCT) {
             // force completion of scoped expressions
@@ -326,6 +347,6 @@ public class OclParser extends CommonParser {
             }
         }
 
-        return parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+        parserState.updateCurrentScope();
     }
 }

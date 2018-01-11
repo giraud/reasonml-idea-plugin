@@ -85,4 +85,12 @@ public class ParserState {
     public ParserScope getLatestScope() {
         return scopes.empty() ? null : scopes.peek();
     }
+
+    public void updateCurrentScope() {
+        currentScope = scopes.empty() ? fileScope : scopes.peek();
+    }
+
+    public boolean isCurrentResolution(ParserScopeEnum scope) {
+        return currentScope.resolution == scope;
+    }
 }
