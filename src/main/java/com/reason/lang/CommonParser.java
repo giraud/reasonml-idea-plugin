@@ -6,13 +6,12 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Stack;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.file;
-import static com.reason.lang.ParserScopeType.*;
+import static com.reason.lang.ParserScopeType.any;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
 
@@ -35,91 +34,25 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
-        Stack<ParserScope> scopes = new Stack<>();
-        ParserScope fileScope = new ParserScope(file, m_types.FILE_MODULE, null);
 
-        parseFile(builder, scopes, fileScope);
+        ParserState parserState = new ParserState(new ParserScope(file, m_types.FILE_MODULE, null));
+        parseFile(builder, parserState);
 
         // if we have a scope at last position in file, without SEMI, we need to handle it here
-        if (!scopes.empty()) {
-            ParserScope scope = scopes.pop();
+        if (!parserState.scopes.empty()) {
+            ParserScope scope = parserState.scopes.pop();
             while (scope != null) {
                 scope.end();
-                scope = scopes.empty() ? null : scopes.pop();
+                scope = parserState.scopes.empty() ? null : parserState.scopes.pop();
             }
         }
 
-        fileScope.end();
+        new ParserScope(file, m_types.FILE_MODULE, null).end();
 
         exit_section_(builder, 0, m, elementType, true, true, TRUE_CONDITION);
     }
 
-    protected abstract void parseFile(PsiBuilder builder, Stack<ParserScope> scopes, ParserScope fileScope);
-
-    @Nullable
-    protected ParserScope endUntilScopeExpression(Stack<ParserScope> scopes, IElementType scopeElementType) {
-        ParserScope scope = null;
-
-        if (!scopes.empty()) {
-            scope = scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeElementType != scopeElementType)) {
-                scopes.pop().end();
-                scope = getLatestScope(scopes);
-            }
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    protected ParserScope end(Stack<ParserScope> scopes) {
-        ParserScope scope = null;
-
-        if (!scopes.empty()) {
-            scope = scopes.peek();
-            while (scope != null && scope.scopeType == any) {
-                scopes.pop().end();
-                scope = getLatestScope(scopes);
-            }
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    protected ParserScope endUntilStart(Stack<ParserScope> scopes) {
-        ParserScope scope = null;
-
-        if (!scopes.empty()) {
-            scope = scopes.peek();
-            while (scope != null && scope.scopeType != startExpression && scope.scopeType != scopeExpression) {
-                scopes.pop().end();
-                scope = getLatestScope(scopes);
-            }
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    protected ParserScope endUntilStartForced(Stack<ParserScope> scopes) {
-        ParserScope scope = null;
-
-        if (!scopes.empty()) {
-            scope = scopes.peek();
-            while (scope != null && scope.scopeType != startExpression) {
-                scopes.pop().end();
-                scope = getLatestScope(scopes);
-            }
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    protected ParserScope getLatestScope(Stack<ParserScope> scopes) {
-        return scopes.empty() ? null : scopes.peek();
-    }
+    protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
     private ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
         ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
