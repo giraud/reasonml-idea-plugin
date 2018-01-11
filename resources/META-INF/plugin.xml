@@ -178,8 +178,6 @@
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
-
-        <iconProvider implementation="com.reason.icons.IconProvider"/>
     </extensions>
 
     <actions>

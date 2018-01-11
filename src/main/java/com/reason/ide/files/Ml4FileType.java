@@ -36,6 +36,6 @@ public class Ml4FileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.OCL_FILE;
+        return Icons.OCL_GREEN_FILE;
     }
 }

@@ -1,7 +1,5 @@
 package com.reason.icons;
 
-import com.intellij.openapi.util.IconLoader;
-
 import javax.swing.*;
 
 import static com.intellij.openapi.util.IconLoader.getIcon;
@@ -15,6 +13,7 @@ public class Icons {
 
     public static final Icon OCL_FILE = getIcon("/icons/ocaml-file.png");
     public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocaml-file-blue.png");
+    public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocaml-file-green.png");
 
     // From jetbrains ide
     public static final Icon MODULE = getIcon("/nodes/method.png");
