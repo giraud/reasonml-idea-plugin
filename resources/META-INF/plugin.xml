@@ -91,6 +91,8 @@
         <!-- Ocaml -->
         <fileTypeFactory implementation="com.reason.ide.files.OclInterfaceFileTypeFactory"/>
         <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
+        <!-- OcamlP4 -->
+        <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
 
         <!--
          | Parsers
@@ -103,6 +105,10 @@
         <!-- Ocaml -->
         <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Ocaml"
+                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+
+        <lang.parserDefinition language="OcamlP4" implementationClass="com.reason.lang.ocaml.OclP4ParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="OcamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
 
         <!--
