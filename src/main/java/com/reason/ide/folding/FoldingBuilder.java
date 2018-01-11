@@ -29,7 +29,10 @@ public class FoldingBuilder extends FoldingBuilderEx {
             IElementType elementType = element.getNode().getElementType();
             MlTypes types = elementType.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
             if (types.COMMENT == elementType) {
-                descriptors.add(fold(element));
+                FoldingDescriptor fold = fold(element);
+                if (fold != null) {
+                    descriptors.add(fold);
+                }
             } else if (types.TYPE_EXPRESSION == elementType) {
                 foldType(descriptors, (PsiType) element);
             } else if (types.LET_EXPRESSION == elementType) {
@@ -95,15 +98,6 @@ public class FoldingBuilder extends FoldingBuilderEx {
     public boolean isCollapsedByDefault(@NotNull ASTNode node) {
         return false;
     }
-
-    // @Nullable
-    // private FoldingDescriptor foldBetween(PsiElement element, PsiElement left, PsiElement right, int minWidth) {
-    //     if (right.getTextOffset() - left.getTextOffset() < minWidth) {
-    //         return null;
-    //     }
-    //     TextRange range = new TextRange(left.getTextOffset() + 1, right.getTextOffset());
-    //     return new FoldingDescriptor(element, range);
-    // }
 
     @Nullable
     private FoldingDescriptor fold(@Nullable PsiElement element) {
