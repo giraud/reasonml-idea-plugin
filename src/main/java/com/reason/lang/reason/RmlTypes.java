@@ -79,6 +79,7 @@ public class RmlTypes extends MlTypes {
         TYPE_ARGUMENT = new RmlTokenType("TYPE_ARGUMENT");
         GT = new RmlTokenType("GT");
         IF = new RmlTokenType("IF");
+        BIN_CONDITION = new RmlTokenType("BIN_CONDITION");
         IN = new RmlElementType("IN");
         LAZY = new RmlElementType("LAZY");
         INCLUDE = new RmlTokenType("INCLUDE");
@@ -138,7 +139,7 @@ public class RmlTypes extends MlTypes {
         TAG_GT = new RmlTokenType("TAG_GT");
         TILDE = new RmlElementType("TILDE");
         TO = new RmlElementType("TO");
-        THEN = new RmlTokenType("TRUE");
+        THEN = new RmlTokenType("THEN");
         TRUE = new RmlTokenType("TRUE");
         TRY = new RmlTokenType("TRY");
         TYPE = new RmlTokenType("TYPE");

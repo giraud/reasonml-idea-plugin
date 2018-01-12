@@ -7,7 +7,7 @@ public class ParserScope {
     public ParserScopeEnum resolution;
     public IElementType tokenType;
     public ParserScopeType scopeType = ParserScopeType.any;
-    IElementType scopeElementType;
+    public IElementType scopeElementType;
     public boolean complete = false;
 
     private PsiBuilder.Marker mark;

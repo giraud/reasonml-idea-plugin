@@ -71,6 +71,7 @@ public abstract class MlTypes {
     public IElementType TYPE_ARGUMENT;
     public IElementType GT;
     public IElementType IF;
+    public IElementType BIN_CONDITION;
     public IElementType IN;
     public IElementType LAZY;
     public IElementType INCLUDE;

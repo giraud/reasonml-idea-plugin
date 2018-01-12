@@ -78,6 +78,7 @@ public class OclTypes extends MlTypes {
         TYPE_ARGUMENT = new OclTokenType("TYPE_ARGUMENT");
         GT = new OclTokenType("GT");
         IF = new OclTokenType("IF");
+        BIN_CONDITION = new OclTokenType("BIN_CONDITION");
         IN = new OclElementType("IN");
         LAZY = new OclElementType("LAZY");
         INCLUDE = new OclTokenType("INCLUDE");
@@ -137,7 +138,7 @@ public class OclTypes extends MlTypes {
         TAG_GT = new OclTokenType("TAG_GT");
         TILDE = new OclElementType("TILDE");
         TO = new OclElementType("TO");
-        THEN = new OclTokenType("TRUE");
+        THEN = new OclTokenType("THEN");
         TRUE = new OclTokenType("TRUE");
         TRY = new OclTokenType("TRY");
         TYPE = new OclTokenType("TYPE");

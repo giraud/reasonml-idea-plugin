@@ -35,6 +35,8 @@ public class OclParser extends CommonParser {
                 parseIn(parserState);
             } else if (tokenType == m_types.END) { // end (like a })
                 parseEnd(builder, parserState);
+            } else if (tokenType == m_types.PIPE) {
+                parsePipe(builder, parserState);
             } else if (tokenType == m_types.EQ) {
                 parseEq(builder, parserState);
             } else if (tokenType == m_types.COLON) {
@@ -47,6 +49,16 @@ public class OclParser extends CommonParser {
                 parseSig(builder, parserState);
             } else if (tokenType == m_types.STRUCT) {
                 parseStruct(builder, parserState);
+            } else if (tokenType == m_types.IF) {
+                parseIf(builder, parserState);
+            } else if (tokenType == m_types.THEN) {
+                parseThen(builder, parserState);
+            } else if (tokenType == m_types.MATCH) {
+                parseMatch(builder, parserState);
+            } else if (tokenType == m_types.TRY) {
+                parseTry(builder, parserState);
+            } else if (tokenType == m_types.WITH) {
+                parseWith(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -97,6 +109,38 @@ public class OclParser extends CommonParser {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parsePipe(PsiBuilder builder, ParserState parserState) {
+        parserState.endUntilScopeExpression(m_types.WITH);
+    }
+
+    private void parseMatch(PsiBuilder builder, ParserState parserState) {
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, match, m_types.MATCH, groupExpression, m_types.MATCH);
+        parserState.dontMove = advance(builder);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, matchBinaryCondition, m_types.BIN_CONDITION, groupExpression, null);
+    }
+
+    private void parseTry(PsiBuilder builder, ParserState parserState) {
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, _try, m_types.TRY, groupExpression, m_types.TRY);
+        parserState.dontMove = advance(builder);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, null);
+    }
+
+    private void parseWith(PsiBuilder builder, ParserState parserState) {
+        parserState.endUntilScopeExpression(parserState.currentScope.resolution == matchBinaryCondition ? m_types.MATCH : m_types.TRY);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH);
+    }
+
+    private void parseIf(PsiBuilder builder, ParserState parserState) {
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, _if, m_types.IF, groupExpression, m_types.IF);
+        parserState.dontMove = advance(builder);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, binaryCondition, m_types.BIN_CONDITION, groupExpression, null);
+    }
+
+    private void parseThen(PsiBuilder builder, ParserState parserState) {
+        parserState.endUntilScopeExpression(m_types.IF);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN);
     }
 
     private void parseStruct(PsiBuilder builder, ParserState parserState) {
