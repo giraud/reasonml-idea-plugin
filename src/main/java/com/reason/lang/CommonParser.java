@@ -11,7 +11,6 @@ import java.util.Stack;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.file;
-import static com.reason.lang.ParserScopeType.any;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
 
@@ -56,7 +55,6 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     private ParserScope mark(PsiBuilder builder, Stack<ParserScope> scopes, ParserScopeEnum resolution, IElementType tokenType) {
         ParserScope scope = new ParserScope(resolution, tokenType, builder.mark());
-        scope.scopeType = any;
         scopes.push(scope);
         return scope;
     }

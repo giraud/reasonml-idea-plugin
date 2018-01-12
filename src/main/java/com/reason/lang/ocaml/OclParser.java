@@ -122,7 +122,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseTry(PsiBuilder builder, ParserState parserState) {
-        parserState.currentScope = markCompleteScope(builder, parserState.scopes, _try, m_types.TRY, groupExpression, m_types.TRY);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, try_, m_types.TRY, groupExpression, m_types.TRY);
         parserState.dontMove = advance(builder);
         parserState.currentScope = markCompleteScope(builder, parserState.scopes, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, null);
     }
@@ -133,7 +133,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseIf(PsiBuilder builder, ParserState parserState) {
-        parserState.currentScope = markCompleteScope(builder, parserState.scopes, _if, m_types.IF, groupExpression, m_types.IF);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, if_, m_types.IF, groupExpression, m_types.IF);
         parserState.dontMove = advance(builder);
         parserState.currentScope = markCompleteScope(builder, parserState.scopes, binaryCondition, m_types.BIN_CONDITION, groupExpression, null);
     }

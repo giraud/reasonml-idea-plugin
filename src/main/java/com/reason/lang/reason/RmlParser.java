@@ -19,9 +19,12 @@ public class RmlParser extends CommonParser {
 
     @Override
     protected void parseFile(PsiBuilder builder, ParserState parserState) {
+        IElementType tokenType = null;
+
         int c = current_position_(builder);
         while (true) {
-            IElementType tokenType = builder.getTokenType();
+            parserState.previousTokenType = tokenType;
+            tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
             }
@@ -89,7 +92,11 @@ public class RmlParser extends CommonParser {
                 } else if (parserState.currentScope.resolution == letNamedEqParameters) {
                     parserState.currentScope = markScope(builder, parserState.scopes, letFunBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE);
                 } else {
-                    parserState.end();
+                    if (parserState.isCurrentResolution(switchBinaryCondition)) {
+                        parserState.endUntilScopeExpression(m_types.SWITCH);
+                    } else {
+                        parserState.end();
+                    }
                     parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
                 }
             } else if (tokenType == m_types.RBRACE) {
@@ -134,15 +141,11 @@ public class RmlParser extends CommonParser {
 
             //
             else if (tokenType == m_types.ARROW) {
-                builder.advanceLexer();
-                parserState.dontMove = true;
-            }
-
-            //
-            else if (tokenType == m_types.PIPE) {
-                //    if (currentScope.resolution == typeNamedEq) {
-                //        currentScope = markScope(builder, scopes, typeNamedEqPatternMatch, PATTERN_MATCH_EXPR, scopeExpression);
-                //    }
+                parseArrow(builder, parserState);
+            } else if (tokenType == m_types.TRY) {
+                parseTry(builder, parserState);
+            } else if (tokenType == m_types.SWITCH) {
+                parseSwitch(builder, parserState);
             }
 
             //
@@ -169,31 +172,8 @@ public class RmlParser extends CommonParser {
                     parserState.currentScope = markScope(builder, parserState.scopes, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT);
                     parserState.currentScope.complete = true;
                 }
-            }
-
-            //
-            else if (tokenType == m_types.UIDENT) {
-                if (parserState.currentScope.resolution == open) {
-                    // It is a module name/path
-                    parserState.currentScope.complete = true;
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
-                    PsiBuilder.Marker mark = builder.mark();
-                    parserState.dontMove = advance(builder);
-                    mark.done(m_types.MODULE_NAME);
-                } else if (parserState.currentScope.resolution == module) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    ParserScope scope = markComplete(builder, parserState.scopes, moduleNamed, m_types.MODULE_NAME);
-                    parserState.dontMove = advance(builder);
-                    scope.end();
-                    parserState.currentScope.resolution = moduleNamed;
-                } else {
-                    // !! variant
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    ParserScope scope = markComplete(builder, parserState.scopes, moduleNamed, m_types.MODULE_NAME);
-                    parserState.dontMove = advance(builder);
-                    scope.end();
-                }
+            } else if (tokenType == m_types.UIDENT) {
+                parseUIdent(builder, parserState);
             }
 
             // < ... >
@@ -293,6 +273,55 @@ public class RmlParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseUIdent(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution == open) {
+            // It is a module name/path
+            parserState.currentScope.complete = true;
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
+            PsiBuilder.Marker mark = builder.mark();
+            parserState.dontMove = advance(builder);
+            mark.done(m_types.MODULE_NAME);
+        } else if (parserState.currentScope.resolution == module) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            ParserScope scope = markComplete(builder, parserState.scopes, moduleNamed, m_types.MODULE_NAME);
+            parserState.dontMove = advance(builder);
+            scope.end();
+            parserState.currentScope.resolution = moduleNamed;
+        } else {
+            if (parserState.previousTokenType == m_types.PIPE) {
+                builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
+            } else {
+                builder.remapCurrentToken(m_types.VALUE_NAME);
+                ParserScope scope = markComplete(builder, parserState.scopes, moduleNamed, m_types.MODULE_NAME);
+                parserState.dontMove = advance(builder);
+                scope.end();
+            }
+        }
+    }
+
+    private void parseSwitch(PsiBuilder builder, ParserState parserState) {
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, switch_, m_types.SWITCH, groupExpression, m_types.SWITCH);
+        parserState.dontMove = advance(builder);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, switchBinaryCondition, m_types.BIN_CONDITION, groupExpression, null);
+    }
+
+    private void parseTry(PsiBuilder builder, ParserState parserState) {
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, try_, m_types.TRY, groupExpression, m_types.TRY);
+        parserState.dontMove = advance(builder);
+        parserState.currentScope = markCompleteScope(builder, parserState.scopes, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, null);
+    }
+
+    private void parseArrow(PsiBuilder builder, ParserState parserState) {
+        parserState.dontMove = advance(builder);
+        IElementType nextTokenType = builder.getTokenType();
+
+        if (nextTokenType != m_types.LBRACE && parserState.isCurrentResolution(letNamedEqParameters)) {
+            // let x = ($ANY) => <EXPR>
+            parserState.currentScope = markCompleteScope(builder, parserState.scopes, letFunBody, m_types.LET_BINDING, scopeExpression, null);
         }
     }
 

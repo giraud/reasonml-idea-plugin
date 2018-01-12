@@ -55,13 +55,15 @@ public enum ParserScopeEnum {
     exception,
     exceptionNamed,
 
-    _if,
+    if_,
     binaryCondition,
     ifThenStatement,
     match,
     matchBinaryCondition,
     matchWith,
-    _try,
+    switch_,
+    switchBinaryCondition,
+    try_,
     tryBinaryCondition,
     tryWith,
 }
