@@ -5,11 +5,11 @@ import com.intellij.lang.ASTNode;
 import com.reason.lang.MlTypes;
 import org.jetbrains.annotations.NotNull;
 
-abstract class MlASTWrapperPsiElement extends ASTWrapperPsiElement {
+abstract class MlAstWrapperPsiElement extends ASTWrapperPsiElement {
 
     protected final MlTypes m_types;
 
-    MlASTWrapperPsiElement(@NotNull MlTypes types, @NotNull ASTNode node) {
+    MlAstWrapperPsiElement(@NotNull MlTypes types, @NotNull ASTNode node) {
         super(node);
         m_types = types;
     }

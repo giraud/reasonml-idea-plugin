@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiExternalImpl extends MlASTWrapperPsiElement implements PsiExternal {
+public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExternal {
 
     //region Constructors
     public PsiExternalImpl(MlTypes types, ASTNode node) {

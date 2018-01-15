@@ -193,6 +193,7 @@ public class RmlParser extends CommonParser {
             parserState.currentScope.complete = true;
         } else if (parserState.currentScope.resolution == let) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
             parserState.currentScope.resolution = letNamed;
             parserState.currentScope.complete = true;
         } else if (parserState.currentScope.resolution == startTag) {

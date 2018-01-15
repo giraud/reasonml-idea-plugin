@@ -44,14 +44,16 @@ public class PsiElementFactory {
             return new PsiMacroName(node);
         } else if (type == types.SCOPED_EXPR || type == types.OBJECT_EXPR || type == types.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
-        } else if (type == types.TAG_START) {
-            return new PsiTagStart(node);
         } else if (type == types.SIG_SCOPE) {
             return new PsiSignatureImpl(node);
+        } else if (type == types.TAG_START) {
+            return new PsiTagStart(node);
         } else if (type == types.TAG_PROPERTY) {
             return new PsiTagPropertyImpl(types, node);
         } else if (type == types.TAG_CLOSE) {
             return new PsiTagClose(node);
+        } else if (type == types.VAR_NAME) {
+            return new PsiVarNameImpl(types, node);
         }
 
         return new PsiToken(node);

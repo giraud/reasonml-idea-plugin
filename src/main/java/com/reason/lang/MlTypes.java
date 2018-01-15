@@ -138,6 +138,7 @@ public abstract class MlTypes {
     public IElementType UIDENT;
     public IElementType UNIT;
     public IElementType VAL;
+    public IElementType VAR_NAME;
     public IElementType WHEN;
     public IElementType WHILE;
     public IElementType WITH;

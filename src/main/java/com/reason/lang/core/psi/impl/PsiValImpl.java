@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiValImpl extends MlASTWrapperPsiElement implements PsiVal {
+public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
 
     //region Constructors
     public PsiValImpl(@NotNull MlTypes types, @NotNull ASTNode node) {

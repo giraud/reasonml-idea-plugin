@@ -9,7 +9,7 @@ import com.reason.lang.core.psi.PsiTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiTypeNameImpl extends MlASTWrapperPsiElement implements PsiTypeName {
+public class PsiTypeNameImpl extends MlAstWrapperPsiElement implements PsiTypeName {
 
     //region Constructors
     public PsiTypeNameImpl(@NotNull MlTypes types, @NotNull ASTNode node) {

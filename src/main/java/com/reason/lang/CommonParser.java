@@ -83,7 +83,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return true;
     }
 
-    protected boolean advance(PsiBuilder builder, IElementType elementType) {
+    protected boolean wrapWith(IElementType elementType, PsiBuilder builder) {
         PsiBuilder.Marker mark = builder.mark();
         advance(builder);
         mark.done(elementType);

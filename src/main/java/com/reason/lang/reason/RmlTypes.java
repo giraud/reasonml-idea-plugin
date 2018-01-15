@@ -146,6 +146,7 @@ public class RmlTypes extends MlTypes {
         UIDENT = new RmlTokenType("UIDENT");
         UNIT = new RmlTokenType("UNIT");
         VAL = new RmlTokenType("VAL");
+        VAR_NAME = new RmlTokenType("VAR_NAME");
         WHEN = new RmlTokenType("WHEN");
         WHILE = new RmlTokenType("WHILE");
         WITH = new RmlTokenType("WITH");

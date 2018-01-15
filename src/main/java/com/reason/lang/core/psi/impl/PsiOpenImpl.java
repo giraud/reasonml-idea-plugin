@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiOpenImpl extends MlASTWrapperPsiElement implements PsiOpen, PsiStructuredElement {
+public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiStructuredElement {
 
     //region Constructors
     public PsiOpenImpl(@NotNull MlTypes types, @NotNull ASTNode node) {

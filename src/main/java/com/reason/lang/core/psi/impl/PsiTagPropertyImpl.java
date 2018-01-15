@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.PsiTagProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiTagPropertyImpl extends MlASTWrapperPsiElement implements PsiTagProperty {
+public class PsiTagPropertyImpl extends MlAstWrapperPsiElement implements PsiTagProperty {
 
     //region Constructors
     public PsiTagPropertyImpl(@NotNull MlTypes types, @NotNull ASTNode node) {

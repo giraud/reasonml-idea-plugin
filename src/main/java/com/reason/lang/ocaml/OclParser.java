@@ -309,7 +309,7 @@ public class OclParser extends CommonParser {
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.VALUE_NAME);
             parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
-            parserState.dontMove = advance(builder, m_types.MODULE_NAME);
+            parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
         } else if (parserState.isCurrentResolution(include)) {
             // It is a module name/path
             parserState.currentScope.complete = true;
@@ -318,12 +318,12 @@ public class OclParser extends CommonParser {
         } else if (parserState.isCurrentResolution(exception)) {
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = advance(builder, m_types.EXCEPTION_NAME);
+            parserState.dontMove = wrapWith(m_types.EXCEPTION_NAME, builder);
             parserState.currentScope.resolution = exceptionNamed;
         } else if (parserState.isCurrentResolution(module)) {
             // Module definition
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = advance(builder, m_types.MODULE_NAME);
+            parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
             parserState.currentScope.resolution = moduleNamed;
         }
     }
