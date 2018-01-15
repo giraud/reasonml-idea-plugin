@@ -105,6 +105,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
             Collections.reverse(parents);
             m_modulePath = new ModulePath(parents);
         }
+
         return m_modulePath;
     }
 

@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
@@ -49,19 +50,27 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
             return null;
         }
 
+        Project project = myElement.getProject();
+
         // In open expression, name resolve to a file
         if (parent instanceof PsiOpen) {
-            PsiFile file = RmlPsiUtil.findFileModule(myElement.getProject(), m_referenceName);
+            PsiFile file = RmlPsiUtil.findFileModule(project, m_referenceName);
             if (file != null) {
                 return file;
             }
         }
 
-        // Try to find the expression in current file (this is WIP)
+        // No parent found, try to find the expression in current file
         PsiFile containingFile = myElement.getContainingFile();
         PsiModule module = ((FileBase) containingFile).getModule(m_referenceName);
         if (module != null) {
             return module.getNameIdentifier();
+        }
+
+        // No parent found, find the corresponding file
+        PsiFile fileModule = RmlPsiUtil.findFileModule(project, m_referenceName);
+        if (fileModule != null) {
+            return fileModule;
         }
 
         return null;
