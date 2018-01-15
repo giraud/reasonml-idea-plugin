@@ -30,236 +30,59 @@ public class RmlParser extends CommonParser {
             }
 
             if (tokenType == m_types.SEMI) {
-                // End current start-expression scope
-                ParserScope scope = parserState.endUntilStart();
-                if (scope != null && scope.scopeType == startExpression) {
-                    builder.advanceLexer();
-                    parserState.dontMove = true;
-                    parserState.scopes.pop();
-                    scope.end();
-                }
-
-                parserState.updateCurrentScope();
-            }
-
-            // =
-            else if (tokenType == m_types.EQ) {
-                if (parserState.currentScope.resolution == typeNamed) {
-                    parserState.currentScope.resolution = typeNamedEq;
-                } else if (parserState.currentScope.resolution == letNamed) {
-                    parserState.currentScope.resolution = letNamedEq;
-                } else if (parserState.currentScope.resolution == tagProperty) {
-                    parserState.currentScope.resolution = tagPropertyEq;
-                } else if (parserState.currentScope.resolution == moduleNamed) {
-                    parserState.currentScope.resolution = moduleNamedEq;
-                    parserState.currentScope.complete = true;
-                }
-            }
-
-            // ( ... )
-            else if (tokenType == m_types.LPAREN) {
-                parserState.end();
-                if (parserState.currentScope.resolution == letNamedEq) {
-                    // function parameters
-                    parserState.currentScope = markScope(builder, parserState.scopes, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN);
-                } else {
-                    parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
-                }
-            } else if (tokenType == m_types.RPAREN) {
-                ParserScope scope = parserState.endUntilScopeExpression(m_types.LPAREN);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    scope.complete = true;
-                    parserState.scopes.pop().end();
-                    scope = parserState.getLatestScope();
-                    if (scope != null && scope.resolution == letNamedEq) {
-                        scope.resolution = letNamedEqParameters;
-                    }
-                }
-
-                parserState.updateCurrentScope();
-            }
-
-            // { ... }
-            else if (tokenType == m_types.LBRACE) {
-                if (parserState.currentScope.resolution == typeNamedEq) {
-                    parserState.currentScope = markScope(builder, parserState.scopes, objectBinding, m_types.OBJECT_EXPR, scopeExpression, m_types.LBRACE);
-                } else if (parserState.currentScope.resolution == moduleNamedEq) {
-                    parserState.currentScope = markScope(builder, parserState.scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
-                } else if (parserState.currentScope.resolution == letNamedEqParameters) {
-                    parserState.currentScope = markScope(builder, parserState.scopes, letFunBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE);
-                } else {
-                    if (parserState.isCurrentResolution(switchBinaryCondition)) {
-                        parserState.endUntilScopeExpression(m_types.SWITCH);
-                    } else {
-                        parserState.end();
-                    }
-                    parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
-                }
-            } else if (tokenType == m_types.RBRACE) {
-                ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    scope.complete = true;
-                    parserState.scopes.pop().end();
-                }
-
-                parserState.updateCurrentScope();
-            }
-
-            // [ ... ]
-            else if (tokenType == m_types.LBRACKET) {
-                IElementType nextTokenType = builder.rawLookup(1);
-                if (nextTokenType == m_types.ARROBASE) {
-                    parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
-                } else if (nextTokenType == m_types.PERCENT) {
-                    parserState.currentScope = markScope(builder, parserState.scopes, macro, m_types.MACRO_EXPRESSION, scopeExpression, m_types.LBRACKET);
-                } else {
-                    parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
-                }
-            } else if (tokenType == m_types.RBRACKET) {
-                ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACKET);
-
-                builder.advanceLexer();
-                parserState.dontMove = true;
-
-                if (scope != null) {
-                    if (scope.resolution != annotation) {
-                        scope.complete = true;
-                    }
-                    parserState.scopes.pop().end();
-                }
-
-                parserState.updateCurrentScope();
-            }
-
-            //
-            else if (tokenType == m_types.ARROW) {
+                parseSemi(builder, parserState);
+            } else if (tokenType == m_types.EQ) {
+                parseEq(parserState);
+            } else if (tokenType == m_types.ARROW) {
                 parseArrow(builder, parserState);
             } else if (tokenType == m_types.TRY) {
                 parseTry(builder, parserState);
             } else if (tokenType == m_types.SWITCH) {
                 parseSwitch(builder, parserState);
-            }
-
-            //
-            else if (tokenType == m_types.LIDENT) {
-                if (parserState.currentScope.resolution == type) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    ParserScope scope = markComplete(builder, parserState.scopes, typeNamed, m_types.TYPE_CONSTR_NAME);
-                    parserState.dontMove = advance(builder);
-                    scope.end();
-                    parserState.currentScope.resolution = typeNamed;
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == external) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope.resolution = externalNamed;
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == let) {
-                    builder.remapCurrentToken(m_types.VALUE_NAME);
-                    parserState.currentScope.resolution = letNamed;
-                    parserState.currentScope.complete = true;
-                } else if (parserState.currentScope.resolution == startTag) {
-                    // This is a property
-                    parserState.end();
-                    builder.remapCurrentToken(m_types.PROPERTY_NAME);
-                    parserState.currentScope = markScope(builder, parserState.scopes, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT);
-                    parserState.currentScope.complete = true;
-                }
+            } else if (tokenType == m_types.LIDENT) {
+                parseLIdent(builder, parserState);
             } else if (tokenType == m_types.UIDENT) {
                 parseUIdent(builder, parserState);
+            } else if (tokenType == m_types.ARROBASE) {
+                parseArrobase(builder, parserState);
+            } else if (tokenType == m_types.PERCENT) {
+                parsePercent(builder, parserState);
             }
-
+            // ( ... )
+            else if (tokenType == m_types.LPAREN) {
+                parseLParen(builder, parserState);
+            } else if (tokenType == m_types.RPAREN) {
+                parseRParen(builder, parserState);
+            }
+            // { ... }
+            else if (tokenType == m_types.LBRACE) {
+                parseLBrace(builder, parserState);
+            } else if (tokenType == m_types.RBRACE) {
+                parseRBrace(builder, parserState);
+            }
+            // [ ... ]
+            else if (tokenType == m_types.LBRACKET) {
+                parseLBracket(builder, parserState);
+            } else if (tokenType == m_types.RBRACKET) {
+                parseRBracket(builder, parserState);
+            }
             // < ... >
             else if (tokenType == m_types.LT) {
-                // Can be a symbol or a JSX tag
-                IElementType nextTokenType = builder.rawLookup(1);
-                if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
-                    // Surely a tag
-                    builder.remapCurrentToken(m_types.TAG_LT);
-                    parserState.currentScope = markScope(builder, parserState.scopes, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT);
-                    parserState.currentScope.complete = true;
-
-                    builder.advanceLexer();
-                    parserState.dontMove = true;
-                    builder.remapCurrentToken(m_types.TAG_NAME);
-                } else if (nextTokenType == m_types.SLASH) {
-                    builder.remapCurrentToken(m_types.TAG_LT);
-                    parserState.currentScope = markScope(builder, parserState.scopes, closeTag, m_types.TAG_CLOSE, any, m_types.TAG_LT);
-                    parserState.currentScope.complete = true;
-                }
+                parseLt(builder, parserState);
             } else if (tokenType == m_types.GT || tokenType == m_types.TAG_AUTO_CLOSE) {
-                if (parserState.currentScope.tokenType == m_types.TAG_PROPERTY) {
-                    parserState.currentScope.end();
-                    parserState.scopes.pop();
-                    parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
-                }
-
-                if (parserState.currentScope.resolution == startTag || parserState.currentScope.resolution == closeTag) {
-                    builder.remapCurrentToken(m_types.TAG_GT);
-                    builder.advanceLexer();
-                    parserState.dontMove = true;
-
-                    parserState.currentScope.end();
-                    parserState.scopes.pop();
-
-                    parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
-                }
+                parseGtAutoClose(builder, parserState);
             }
-
-            //
-            else if (tokenType == m_types.ARROBASE) {
-                if (parserState.currentScope.resolution == annotation) {
-                    parserState.currentScope.complete = true;
-                    parserState.currentScope = markComplete(builder, parserState.scopes, annotationName, m_types.MACRO_NAME);
-                }
-            }
-
-            //
-            else if (tokenType == m_types.PERCENT) {
-                if (parserState.currentScope.resolution == macro) {
-                    parserState.currentScope.complete = true;
-                    parserState.currentScope = markComplete(builder, parserState.scopes, macroName, m_types.MACRO_NAME);
-                    parserState.currentScope.complete = true;
-                }
-            }
-
-            // Starts an open
+            // Starts an expression
             else if (tokenType == m_types.OPEN) {
-                parserState.end();
-                parserState.currentScope = markScope(builder, parserState.scopes, open, m_types.OPEN_EXPRESSION, startExpression, m_types.OPEN);
-            }
-
-            // Starts an external
-            else if (tokenType == m_types.EXTERNAL) {
-                parserState.end();
-                parserState.currentScope = markScope(builder, parserState.scopes, external, m_types.EXTERNAL_EXPRESSION, startExpression, m_types.EXTERNAL);
-            }
-
-            // Starts a type
-            else if (tokenType == m_types.TYPE) {
-                parserState.end();
-                parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
-            }
-
-            // Starts a module
-            else if (tokenType == m_types.MODULE) {
-                if (parserState.currentScope.resolution != annotationName) {
-                    parserState.end();
-                    parserState.currentScope = markScope(builder, parserState.scopes, module, m_types.MODULE_EXPRESSION, startExpression, m_types.MODULE);
-                }
-            }
-
-            // Starts a let
-            else if (tokenType == m_types.LET) {
-                parserState.end();
-                parserState.currentScope = markScope(builder, parserState.scopes, let, m_types.LET_EXPRESSION, startExpression, m_types.LET);
+                parseOpen(builder, parserState);
+            } else if (tokenType == m_types.EXTERNAL) {
+                parseExternal(builder, parserState);
+            } else if (tokenType == m_types.TYPE) {
+                parseType(builder, parserState);
+            } else if (tokenType == m_types.MODULE) {
+                parseModule(builder, parserState);
+            } else if (tokenType == m_types.LET) {
+                parseLet(builder, parserState);
             }
 
             if (parserState.dontMove) {
@@ -274,6 +97,223 @@ public class RmlParser extends CommonParser {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parseLet(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, let, m_types.LET_EXPRESSION, startExpression, m_types.LET);
+    }
+
+    private void parseModule(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution != annotationName) {
+            parserState.end();
+            parserState.currentScope = markScope(builder, parserState.scopes, module, m_types.MODULE_EXPRESSION, startExpression, m_types.MODULE);
+        }
+    }
+
+    private void parseType(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
+    }
+
+    private void parseExternal(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, external, m_types.EXTERNAL_EXPRESSION, startExpression, m_types.EXTERNAL);
+    }
+
+    private void parseOpen(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, open, m_types.OPEN_EXPRESSION, startExpression, m_types.OPEN);
+    }
+
+    private void parsePercent(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution == macro) {
+            parserState.currentScope.complete = true;
+            parserState.currentScope = markComplete(builder, parserState.scopes, macroName, m_types.MACRO_NAME);
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseArrobase(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution == annotation) {
+            parserState.currentScope.complete = true;
+            parserState.currentScope = markComplete(builder, parserState.scopes, annotationName, m_types.MACRO_NAME);
+        }
+    }
+
+    private void parseGtAutoClose(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.tokenType == m_types.TAG_PROPERTY) {
+            parserState.currentScope.end();
+            parserState.scopes.pop();
+            parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+        }
+
+        if (parserState.currentScope.resolution == startTag || parserState.currentScope.resolution == closeTag) {
+            builder.remapCurrentToken(m_types.TAG_GT);
+            builder.advanceLexer();
+            parserState.dontMove = true;
+
+            parserState.currentScope.end();
+            parserState.scopes.pop();
+
+            parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+        }
+    }
+
+    private void parseLt(PsiBuilder builder, ParserState parserState) {
+        // Can be a symbol or a JSX tag
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
+            // Surely a tag
+            builder.remapCurrentToken(m_types.TAG_LT);
+            parserState.currentScope = markScope(builder, parserState.scopes, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT);
+            parserState.currentScope.complete = true;
+
+            builder.advanceLexer();
+            parserState.dontMove = true;
+            builder.remapCurrentToken(m_types.TAG_NAME);
+        } else if (nextTokenType == m_types.SLASH) {
+            builder.remapCurrentToken(m_types.TAG_LT);
+            parserState.currentScope = markScope(builder, parserState.scopes, closeTag, m_types.TAG_CLOSE, any, m_types.TAG_LT);
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseLIdent(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution == type) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            ParserScope scope = markComplete(builder, parserState.scopes, typeNamed, m_types.TYPE_CONSTR_NAME);
+            parserState.dontMove = advance(builder);
+            scope.end();
+            parserState.currentScope.resolution = typeNamed;
+            parserState.currentScope.complete = true;
+        } else if (parserState.currentScope.resolution == external) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope.resolution = externalNamed;
+            parserState.currentScope.complete = true;
+        } else if (parserState.currentScope.resolution == let) {
+            builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.currentScope.resolution = letNamed;
+            parserState.currentScope.complete = true;
+        } else if (parserState.currentScope.resolution == startTag) {
+            // This is a property
+            parserState.end();
+            builder.remapCurrentToken(m_types.PROPERTY_NAME);
+            parserState.currentScope = markScope(builder, parserState.scopes, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT);
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseRBracket(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACKET);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            if (scope.resolution != annotation) {
+                scope.complete = true;
+            }
+            parserState.scopes.pop().end();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.ARROBASE) {
+            parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
+        } else if (nextTokenType == m_types.PERCENT) {
+            parserState.currentScope = markScope(builder, parserState.scopes, macro, m_types.MACRO_EXPRESSION, scopeExpression, m_types.LBRACKET);
+        } else {
+            parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
+        }
+    }
+
+    private void parseRBrace(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseLBrace(PsiBuilder builder, ParserState parserState) {
+        if (parserState.currentScope.resolution == typeNamedEq) {
+            parserState.currentScope = markScope(builder, parserState.scopes, objectBinding, m_types.OBJECT_EXPR, scopeExpression, m_types.LBRACE);
+        } else if (parserState.currentScope.resolution == moduleNamedEq) {
+            parserState.currentScope = markScope(builder, parserState.scopes, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
+        } else if (parserState.currentScope.resolution == letNamedEqParameters) {
+            parserState.currentScope = markScope(builder, parserState.scopes, letFunBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE);
+        } else {
+            if (parserState.isCurrentResolution(switchBinaryCondition)) {
+                parserState.endUntilScopeExpression(m_types.SWITCH);
+            } else {
+                parserState.end();
+            }
+            parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
+        }
+    }
+
+    private void parseRParen(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LPAREN);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+            scope = parserState.getLatestScope();
+            if (scope != null && scope.resolution == letNamedEq) {
+                scope.resolution = letNamedEqParameters;
+            }
+        }
+
+        parserState.updateCurrentScope();
+    }
+
+    private void parseLParen(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        if (parserState.currentScope.resolution == letNamedEq) {
+            // function parameters
+            parserState.currentScope = markScope(builder, parserState.scopes, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN);
+        } else {
+            parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+        }
+    }
+
+    private void parseEq(ParserState parserState) {
+        if (parserState.currentScope.resolution == typeNamed) {
+            parserState.currentScope.resolution = typeNamedEq;
+        } else if (parserState.currentScope.resolution == letNamed) {
+            parserState.currentScope.resolution = letNamedEq;
+        } else if (parserState.currentScope.resolution == tagProperty) {
+            parserState.currentScope.resolution = tagPropertyEq;
+        } else if (parserState.currentScope.resolution == moduleNamed) {
+            parserState.currentScope.resolution = moduleNamedEq;
+            parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseSemi(PsiBuilder builder, ParserState parserState) {
+        // End current start-expression scope
+        ParserScope scope = parserState.endUntilStart();
+        if (scope != null && scope.scopeType == startExpression) {
+            builder.advanceLexer();
+            parserState.dontMove = true;
+            parserState.scopes.pop();
+            scope.end();
+        }
+
+        parserState.updateCurrentScope();
     }
 
     private void parseUIdent(PsiBuilder builder, ParserState parserState) {
