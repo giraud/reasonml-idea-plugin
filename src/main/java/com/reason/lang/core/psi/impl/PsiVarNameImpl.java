@@ -2,6 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiVarName;
@@ -31,9 +32,14 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this; // Use PsiTypeReference.handleElementRename()
+        return this;
     }
     //endregion
+
+    @Override
+    public PsiReference getReference() {
+        return new PsiVarNameReference(this);
+    }
 
     @Override
     public String toString() {

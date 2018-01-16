@@ -93,4 +93,12 @@ public class ParserState {
     public boolean isCurrentResolution(ParserScopeEnum scope) {
         return currentScope.resolution == scope;
     }
+
+    public boolean notCurrentResolution(ParserScopeEnum scope) {
+        return currentScope.resolution != scope;
+    }
+
+    public void complete() {
+        currentScope.complete = true;
+    }
 }

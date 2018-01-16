@@ -79,6 +79,6 @@ public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];
+        return EMPTY_ARRAY;
     }
 }

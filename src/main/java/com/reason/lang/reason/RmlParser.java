@@ -182,9 +182,7 @@ public class RmlParser extends CommonParser {
     private void parseLIdent(PsiBuilder builder, ParserState parserState) {
         if (parserState.currentScope.resolution == type) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            ParserScope scope = markComplete(builder, parserState.scopes, typeNamed, m_types.TYPE_CONSTR_NAME);
-            parserState.dontMove = advance(builder);
-            scope.end();
+            parserState.dontMove = wrapWith(m_types.TYPE_CONSTR_NAME, builder);
             parserState.currentScope.resolution = typeNamed;
             parserState.currentScope.complete = true;
         } else if (parserState.currentScope.resolution == external) {
@@ -202,6 +200,22 @@ public class RmlParser extends CommonParser {
             builder.remapCurrentToken(m_types.PROPERTY_NAME);
             parserState.currentScope = markScope(builder, parserState.scopes, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT);
             parserState.currentScope.complete = true;
+        } else {
+            if (parserState.notCurrentResolution(annotationName)) {
+                builder.remapCurrentToken(m_types.VALUE_NAME);
+                parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
+            }
+        }
+    }
+
+    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.ARROBASE) {
+            parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
+        } else if (nextTokenType == m_types.PERCENT) {
+            parserState.currentScope = markScope(builder, parserState.scopes, macro, m_types.MACRO_EXPRESSION, scopeExpression, m_types.LBRACKET);
+        } else {
+            parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
         }
     }
 
@@ -219,17 +233,6 @@ public class RmlParser extends CommonParser {
         }
 
         parserState.updateCurrentScope();
-    }
-
-    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
-        IElementType nextTokenType = builder.rawLookup(1);
-        if (nextTokenType == m_types.ARROBASE) {
-            parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
-        } else if (nextTokenType == m_types.PERCENT) {
-            parserState.currentScope = markScope(builder, parserState.scopes, macro, m_types.MACRO_EXPRESSION, scopeExpression, m_types.LBRACKET);
-        } else {
-            parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
-        }
     }
 
     private void parseRBrace(PsiBuilder builder, ParserState parserState) {

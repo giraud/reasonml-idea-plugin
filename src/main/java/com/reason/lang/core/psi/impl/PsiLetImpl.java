@@ -12,6 +12,7 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiFunBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiVarName;
 import com.reason.lang.core.stub.PsiLetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.VALUE_NAME);
+        return findChildByClass(PsiVarName.class);
     }
 
     @Override

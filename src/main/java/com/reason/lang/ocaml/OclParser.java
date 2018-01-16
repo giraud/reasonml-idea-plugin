@@ -59,6 +59,10 @@ public class OclParser extends CommonParser {
                 parseTry(builder, parserState);
             } else if (tokenType == m_types.WITH) {
                 parseWith(builder, parserState);
+            } else if (tokenType == m_types.ARROBASE) {
+                parseArrobase(builder, parserState);
+            } else if (tokenType == m_types.STRING) {
+                parseString(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -111,8 +115,14 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parsePipe(PsiBuilder builder, ParserState parserState) {
-        parserState.endUntilScopeExpression(m_types.WITH);
+    private void parseString(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(annotationName)) {
+            state.end();
+        }
+    }
+
+    private void parsePipe(PsiBuilder builder, ParserState state) {
+        state.endUntilScopeExpression(m_types.WITH);
     }
 
     private void parseMatch(PsiBuilder builder, ParserState parserState) {
@@ -218,6 +228,18 @@ public class OclParser extends CommonParser {
         }
     }
 
+    private void parseArrobase(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(annotation)) {
+            parserState.complete();
+            parserState.currentScope = markComplete(builder, parserState.scopes, annotationName, m_types.MACRO_NAME);
+        }
+    }
+
+    private void parseLParen(PsiBuilder builder, ParserState parserState) {
+        parserState.end();
+        parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+    }
+
     private void parseRParen(PsiBuilder builder, ParserState parserState) {
         ParserScope scope = parserState.endUntilScopeExpression(m_types.LPAREN);
 
@@ -233,9 +255,9 @@ public class OclParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseLParen(PsiBuilder builder, ParserState parserState) {
+    private void parseLBrace(PsiBuilder builder, ParserState parserState) {
         parserState.end();
-        parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+        parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
     }
 
     private void parseRBrace(PsiBuilder builder, ParserState parserState) {
@@ -252,9 +274,14 @@ public class OclParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseLBrace(PsiBuilder builder, ParserState parserState) {
-        parserState.end();
-        parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
+    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.ARROBASE) {
+            // This is an annotation
+            parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
+        } else {
+            parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
+        }
     }
 
     private void parseRBracket(PsiBuilder builder, ParserState parserState) {
@@ -273,16 +300,6 @@ public class OclParser extends CommonParser {
         parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
     }
 
-    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
-        IElementType nextTokenType = builder.rawLookup(1);
-        if (nextTokenType == m_types.ARROBASE) {
-            // This is an annotation
-            parserState.currentScope = markScope(builder, parserState.scopes, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET);
-        } else {
-            parserState.currentScope = markScope(builder, parserState.scopes, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET);
-        }
-    }
-
     private void parseLIdent(PsiBuilder builder, ParserState parserState) {
         if (parserState.isCurrentResolution(type)) {
             builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
@@ -294,12 +311,18 @@ public class OclParser extends CommonParser {
             parserState.currentScope.complete = true;
         } else if (parserState.isCurrentResolution(let)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
+            parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
             parserState.currentScope.resolution = letNamed;
             parserState.currentScope.complete = true;
         } else if (parserState.isCurrentResolution(val)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
             parserState.currentScope.resolution = valNamed;
             parserState.currentScope.complete = true;
+        } else {
+            if (parserState.notCurrentResolution(annotationName)) {
+                builder.remapCurrentToken(m_types.VALUE_NAME);
+                parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
+            }
         }
     }
 
