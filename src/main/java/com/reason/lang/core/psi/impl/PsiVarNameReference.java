@@ -2,12 +2,17 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiVarName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
 
@@ -25,11 +30,15 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
 
         // If name is used in a let definition, it's already the reference
         if (parent instanceof PsiLet && ((PsiLet) parent).getNameIdentifier() == myElement) {
-            return null;
+            return myElement;
         }
 
         // Find the name in the index
-
+        Collection<PsiLet> elements = StubIndex.getElements(IndexKeys.LETS, m_referenceName, myElement.getProject(), GlobalSearchScope.allScope(myElement.getProject()), PsiLet.class);
+        if (!elements.isEmpty()) {
+            PsiLet let = elements.iterator().next();
+            return let.getNameIdentifier();
+        }
 
         return null;
     }

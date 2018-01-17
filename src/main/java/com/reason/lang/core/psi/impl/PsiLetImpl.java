@@ -8,7 +8,6 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiFunBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
@@ -22,17 +21,14 @@ import javax.swing.*;
 public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements PsiLet {
 
     private String m_inferredType = "";
-    private MlTypes m_types;
 
     //region Constructors
-    public PsiLetImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiLetImpl(@NotNull ASTNode node) {
         super(node);
-        m_types = types;
     }
 
-    public PsiLetImpl(@NotNull MlTypes types, PsiLetStub stub, IStubElementType nodeType) {
+    public PsiLetImpl(@NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);
-        m_types = types;
     }
     //endregion
 

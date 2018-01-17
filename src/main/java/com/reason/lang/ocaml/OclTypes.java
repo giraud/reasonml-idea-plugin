@@ -18,7 +18,7 @@ public class OclTypes extends MlTypes {
         EXCEPTION_EXPRESSION = new OclElementType("EXCEPTION_EXPRESSION");
         EXCEPTION_NAME = new OclElementType("EXCEPTION_NAME");
         INCLUDE_EXPRESSION = new OclElementType("INCLUDE_EXPRESSION");
-        LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION", OclLanguage.INSTANCE, OclTypes.INSTANCE);
+        LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION", OclLanguage.INSTANCE);
         MACRO_EXPRESSION = new OclElementType("MACRO_EXPRESSION");
         MACRO_NAME = new OclElementType("MACRO_NAME");
         MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION", OclLanguage.INSTANCE);
@@ -26,7 +26,7 @@ public class OclTypes extends MlTypes {
         MODULE_PATH = new OclElementType("MODULE_PATH");
         OPEN_EXPRESSION = new OclElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE, OclTypes.INSTANCE);
-        VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE, OclTypes.INSTANCE);
+        VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE);
 
         LET_FUN_PARAMS = new OclElementType("LET_FUN_PARAMS");
         LET_BINDING = new OclElementType("LET_BINDING");

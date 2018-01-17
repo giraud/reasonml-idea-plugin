@@ -10,6 +10,7 @@ import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiTypeName;
+import com.reason.lang.core.psi.PsiVarName;
 import org.jetbrains.annotations.NotNull;
 
 public class DescriptionProvider implements ElementDescriptionProvider {
@@ -31,6 +32,8 @@ public class DescriptionProvider implements ElementDescriptionProvider {
                 return "module";
             } else if (element instanceof PsiTypeName) {
                 return "type";
+            } else if (element instanceof PsiVarName) {
+                return "let";
             }
         }
 

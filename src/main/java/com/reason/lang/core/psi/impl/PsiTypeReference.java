@@ -2,12 +2,9 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.files.RmlFile;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeName;
@@ -43,8 +40,8 @@ public class PsiTypeReference extends PsiReferenceBase<PsiTypeName> {
     @Override
     public PsiElement resolve() {
         // From the definition of a module
-        PsiType module = PsiTreeUtil.getParentOfType(myElement, PsiType.class);
-        if (module != null && module.getNameIdentifier() == myElement) {
+        PsiType parent = PsiTreeUtil.getParentOfType(myElement, PsiType.class);
+        if (parent != null && parent.getNameIdentifier() == myElement) {
             return myElement;
         }
 
@@ -54,6 +51,6 @@ public class PsiTypeReference extends PsiReferenceBase<PsiTypeName> {
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];
+        return EMPTY_ARRAY;
     }
 }
