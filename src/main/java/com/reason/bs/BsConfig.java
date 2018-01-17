@@ -14,8 +14,10 @@ class BsConfig {
 
     private final String[] m_deps;
 
-    BsConfig(String[] deps) {
-        m_deps = deps;
+    private BsConfig(String[] deps) {
+        m_deps = new String[deps.length + 1];
+        System.arraycopy(deps, 0, m_deps, 0, deps.length);
+        m_deps[deps.length] = "bs-platform/lib/ocaml/js.ml"; // all files but the ones with _ ?
     }
 
     @NotNull

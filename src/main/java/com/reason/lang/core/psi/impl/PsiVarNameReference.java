@@ -36,6 +36,7 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
         // Find the name in the index
         Collection<PsiLet> elements = StubIndex.getElements(IndexKeys.LETS, m_referenceName, myElement.getProject(), GlobalSearchScope.allScope(myElement.getProject()), PsiLet.class);
         if (!elements.isEmpty()) {
+            // TODO: only let with correct QN
             PsiLet let = elements.iterator().next();
             return let.getNameIdentifier();
         }
