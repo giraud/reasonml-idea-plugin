@@ -15,8 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
 
@@ -104,22 +106,21 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @NotNull
     @Override
     public ModulePath getQPath() {
-        //if (m_modulePath == null) {
-        //    List<PsiElement> parents = new ArrayList<>();
-        //
-        //    PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
-        //    while (parent != null) {
-        //        parents.add(parent);
-        //        parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
-        //    }
-        //
-        //    parents.add(getContainingFile());
-        //    Collections.reverse(parents);
-        //    m_modulePath = new ModulePath(parents);
-        //}
-        //
-        //return m_modulePath;
-        return new ModulePath(new String[]{"M"});
+        if (m_modulePath == null) {
+            List<PsiElement> parents = new ArrayList<>();
+
+            PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+            while (parent != null) {
+                parents.add(parent);
+                parent = PsiTreeUtil.getParentOfType(parent, PsiModule.class);
+            }
+
+            parents.add(getContainingFile());
+            Collections.reverse(parents);
+            m_modulePath = new ModulePath(parents);
+        }
+
+        return m_modulePath;
     }
 
     @Override
