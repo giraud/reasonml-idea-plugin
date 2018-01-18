@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.34</version>
+    <version>0.35</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -14,10 +14,17 @@
 
       <p></p>
 
+      <b>version 0.35</b>
+
+      <ul>
+         <li>Fix an infinite loop in PsiModule</li>
+         <li>Improve parsers</li>
+      </ul>
+
       <b>version 0.34</b>
 
       <ul>
-         <li>Fix a NPE with the folding code when comments are too small</li>
+         <li>Fix a NPE with the folding code when comments are too small</li>
          <li>Fix #28, maybe</li>
          <li>Fix #25, minimal support for .ml4 files</li>
       </ul>
@@ -44,13 +51,6 @@
         <li>Exceptions are displayed in the structure view</li>
         <li>Incorrect handling of characters in parser</li>
         <li>Improve OCaml parser</li>
-      </ul>
-
-      <b>version 0.30</b>
-
-      <ul>
-        <li>Renaming and indexing modules (in simple cases)</li>
-        <li>Fix compatibility with Idea 15</li>
       </ul>
     ]]>
     </change-notes>

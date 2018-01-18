@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.35
+
+* :bug: Fix an infinite loop in PsiModule
+* :house: Improve parsers 
+
 ## 0.34
 
 * :bug: Fix a NPE in the folder code when comments are too small
