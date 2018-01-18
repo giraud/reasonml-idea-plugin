@@ -23,13 +23,21 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
+        //builder.setDebugMode(true);
+
+        //System.out.println("start parsing");
+        //long start = System.currentTimeMillis();
+
         parseLight(elementType, builder);
-        return builder.getTreeBuilt();
+        ASTNode treeBuilt = builder.getTreeBuilt();
+
+        //long end = System.currentTimeMillis();
+        //System.out.println("end parsing in " + (end - start) + "ms");
+        return treeBuilt;
     }
 
     @Override
     public void parseLight(IElementType elementType, PsiBuilder builder) {
-        //builder.setDebugMode(true);
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 

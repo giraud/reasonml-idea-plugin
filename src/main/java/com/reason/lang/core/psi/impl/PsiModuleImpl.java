@@ -15,10 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
 
@@ -63,8 +61,22 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return findChildByClass(PsiSignature.class);
     }
 
+    @Override
     public Collection<PsiLet> getLetExpressions() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiLet.class);
+        PsiScopedExpr body = getBody();
+        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiLet.class);
+    }
+
+    @Override
+    public Collection<PsiType> getTypeExpressions() {
+        PsiScopedExpr body = getBody();
+        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiType.class);
+    }
+
+    @Override
+    public Collection<PsiNamedElement> getExpressions() {
+        PsiScopedExpr body = getBody();
+        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class);
     }
 
     public ItemPresentation getPresentation() {
@@ -92,21 +104,22 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @NotNull
     @Override
     public ModulePath getQPath() {
-        if (m_modulePath == null) {
-            List<PsiElement> parents = new ArrayList<>();
-
-            PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
-            while (parent != null) {
-                parents.add(parent);
-                parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
-            }
-
-            parents.add(getContainingFile());
-            Collections.reverse(parents);
-            m_modulePath = new ModulePath(parents);
-        }
-
-        return m_modulePath;
+        //if (m_modulePath == null) {
+        //    List<PsiElement> parents = new ArrayList<>();
+        //
+        //    PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        //    while (parent != null) {
+        //        parents.add(parent);
+        //        parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        //    }
+        //
+        //    parents.add(getContainingFile());
+        //    Collections.reverse(parents);
+        //    m_modulePath = new ModulePath(parents);
+        //}
+        //
+        //return m_modulePath;
+        return new ModulePath(new String[]{"M"});
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementPresentation;
 import com.intellij.codeInsight.lookup.LookupElementRenderer;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.PsiIconUtil;
 import com.reason.Platform;
 import com.reason.icons.Icons;
 import com.reason.ide.files.OclFileType;
@@ -35,7 +36,7 @@ class ModuleNameCompletion {
                             public void renderElement(LookupElement element, LookupElementPresentation presentation) {
                                 presentation.setItemText(moduleName);
                                 presentation.setItemTextBold(true);
-                                presentation.setIcon(Icons.MODULE);
+                                presentation.setIcon(PsiIconUtil.getProvidersIcon(module, 0));
                             }
                         });
                 resultSet.addElement(lookupModule);

@@ -7,12 +7,20 @@ import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+
 public interface PsiModule extends PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<ModuleStub> {
+    @Nullable
+    PsiSignature getSignature();
+
     @Nullable
     PsiScopedExpr getBody();
 
-    @Nullable
-    PsiSignature getSignature();
+    Collection<PsiLet> getLetExpressions();
+
+    Collection<PsiType> getTypeExpressions();
+
+    Collection<PsiNamedElement> getExpressions();
 
     @NotNull
     ModulePath getQPath();
