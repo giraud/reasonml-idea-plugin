@@ -57,6 +57,11 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     }
 
     @Override
+    public String getTypeInfo() {
+        return getName();
+    }
+
+    @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Override

@@ -7,7 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.PsiIconUtil;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiInferredTypeUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiNamedElement;
@@ -25,11 +25,11 @@ class ModuleDotCompletionProvider {
                 Collection<PsiNamedElement> expressions = module.getExpressions();
 
                 for (PsiNamedElement expression : expressions) {
-                    String inferredType = expression instanceof PsiLet ? ((PsiLet) expression).getInferredType() : null;
                     resultSet.addElement(
                             LookupElementBuilder.create(expression).
                                     withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
-                                    withTypeText(inferredType == null ? "unknown type" : inferredType));
+                                    withTypeText(PsiInferredTypeUtil.getTypeInfo(expression))
+                    );
                 }
             }
         }

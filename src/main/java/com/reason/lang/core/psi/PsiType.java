@@ -9,4 +9,6 @@ import org.jetbrains.annotations.Nullable;
 public interface PsiType extends PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
     @Nullable
     PsiElement getScopedExpression();
+
+    String getTypeInfo();
 }
