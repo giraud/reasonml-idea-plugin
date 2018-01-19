@@ -19,10 +19,10 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
     private final String m_referenceName;
     private final String m_qname;
 
-    public PsiVarNameReference(PsiVarName element) {
+    PsiVarNameReference(PsiVarName element, String qname) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
-        m_qname = element.getQualifiedName();
+        m_qname = qname;
     }
 
     @Nullable
@@ -31,7 +31,7 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
         PsiElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class);
 
         // If name is used in a let definition, it's already the reference
-        if (parent instanceof PsiLet && ((PsiLet) parent).getNameIdentifier() == myElement) {
+        if (parent != null && ((PsiLet) parent).getNameIdentifier() == myElement) {
             return myElement;
         }
 
@@ -39,7 +39,7 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
         Collection<PsiLet> elements = StubIndex.getElements(IndexKeys.LETS, m_referenceName, myElement.getProject(), GlobalSearchScope.allScope(myElement.getProject()), PsiLet.class);
         if (!elements.isEmpty()) {
             for (PsiLet let : elements) {
-                if (let.getQualifiedName().equals(m_qname)) {
+                if (m_qname.equals(let.getQualifiedName())) {
                     return let.getNameIdentifier();
                 }
             }
