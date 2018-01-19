@@ -2,6 +2,7 @@ package com.reason.bs;
 
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,10 +15,14 @@ class BsConfig {
 
     private final String[] m_deps;
 
-    private BsConfig(String[] deps) {
-        m_deps = new String[deps.length + 1];
-        System.arraycopy(deps, 0, m_deps, 0, deps.length);
-        m_deps[deps.length] = "bs-platform/lib/ocaml/js.ml"; // all files but the ones with _ ?
+    private BsConfig(@Nullable String[] deps) {
+        if (deps == null) {
+            m_deps = new String[0];
+        } else {
+            m_deps = new String[deps.length + 1];
+            System.arraycopy(deps, 0, m_deps, 0, deps.length);
+            m_deps[deps.length] = "bs-platform/lib/ocaml/js.ml"; // all files but the ones with _ ?
+        }
     }
 
     @NotNull
