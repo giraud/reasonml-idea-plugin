@@ -1,15 +1,14 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.stub.ModuleStub;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface PsiModule extends PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<ModuleStub> {
+public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<ModuleStub> {
     @Nullable
     PsiSignature getSignature();
 
@@ -21,7 +20,4 @@ public interface PsiModule extends PsiNamedElement, NavigatablePsiElement, PsiSt
     Collection<PsiType> getTypeExpressions();
 
     Collection<PsiNamedElement> getExpressions();
-
-    @NotNull
-    ModulePath getQPath();
 }

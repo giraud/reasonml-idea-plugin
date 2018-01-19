@@ -4,7 +4,6 @@ import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
 import com.reason.lang.core.stub.ModuleStub;
@@ -24,31 +23,21 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
 
     @NotNull
     public ModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new ModuleStub(parentStub, this, psi.getName(), psi.getQPath());
+        return new ModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName());
     }
 
     public void serialize(@NotNull final ModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        String[] moduleQN = stub.getModulePath().getNames();
-        dataStream.writeInt(moduleQN.length);
-        for (String name : moduleQN) {
-            dataStream.writeUTFFast(name);
-        }
-
+        String qname = stub.getQualifiedName();
+        dataStream.writeUTFFast(qname);
     }
 
     @NotNull
     public ModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
-        int moduleQNLength = dataStream.readInt();
-        String[] moduleQN = new String[moduleQNLength];
-        for (int i = 0; i < moduleQNLength; i++) {
-            moduleQN[i] = dataStream.readUTFFast();
+        String qname = dataStream.readUTFFast();
 
-        }
-        ModulePath modulePath = new ModulePath(moduleQN);
-
-        return new ModuleStub(parentStub, this, moduleName, modulePath);
+        return new ModuleStub(parentStub, this, moduleName, qname);
     }
 
     public void indexStub(@NotNull final ModuleStub stub, @NotNull final IndexSink sink) {

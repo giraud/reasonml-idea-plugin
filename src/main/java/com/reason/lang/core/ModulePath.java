@@ -5,6 +5,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.reason.Joiner;
 import com.reason.ide.files.FileBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,11 +21,15 @@ public class ModulePath {
         m_names = names; // fragile, should copy names
     }
 
-    public ModulePath(@NotNull ModulePath modulePath, @NotNull String name) {
-        String[] names = modulePath.getNames();
-        m_names = new String[names.length + 1];
-        System.arraycopy(names, 0, m_names, 0, names.length);
-        m_names[m_names.length - 1] = name;
+    public ModulePath(@NotNull ModulePath modulePath, @Nullable String name) {
+        if (name == null) {
+            m_names = modulePath.getNames();
+        } else {
+            String[] names = modulePath.getNames();
+            m_names = new String[names.length + 1];
+            System.arraycopy(names, 0, m_names, 0, names.length);
+            m_names[m_names.length - 1] = name;
+        }
     }
 
     public ModulePath(@NotNull PsiElement element) {

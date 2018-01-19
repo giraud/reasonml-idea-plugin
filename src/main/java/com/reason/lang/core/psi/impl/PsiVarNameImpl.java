@@ -2,10 +2,13 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.ModulePath;
+import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiVarName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,9 +45,35 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
         return new PsiVarNameReference(this);
     }
 
+    @Nullable
     @Override
-    public ModulePath getPath() {
-        return new ModulePath(getContainingFile());
+    public String getQualifiedName() {
+        String path = null;
+
+        PsiElement parent = getParent();
+        if (parent instanceof PsiQualifiedNamedElement) {
+            path = ((PsiQualifiedNamedElement) parent).getQualifiedName();
+        } else {
+            PsiElement prevSibling = getPrevSibling();
+            if (prevSibling.getNode().getElementType() == m_types.DOT) {
+                System.out.println("DOT");
+                PsiElement dotPrevSibling = getPrevSibling();
+                if (dotPrevSibling instanceof PsiQualifiedNamedElement) {
+                    path = ((PsiQualifiedNamedElement) dotPrevSibling).getQualifiedName();
+                }
+            } else {
+                PsiModule module = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+                if (module != null) {
+                    path = module.getQualifiedName();
+                }
+            }
+        }
+
+        if (path == null) {
+            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
+        }
+
+        return path + "." + getName();
     }
 
     @Override

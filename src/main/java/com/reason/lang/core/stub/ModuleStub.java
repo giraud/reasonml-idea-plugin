@@ -1,27 +1,26 @@
 package com.reason.lang.core.stub;
 
-import com.reason.lang.core.ModulePath;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 import com.reason.lang.core.psi.PsiModule;
+import org.jetbrains.annotations.NotNull;
 
 public class ModuleStub extends NamedStubBase<PsiModule> {
-    private ModulePath m_modulePath;
+    private String m_qname;
 
-    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name, ModulePath modulePath) {
+    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname) {
         super(parent, elementType, name);
-        m_modulePath = modulePath;
+        m_qname = qname;
     }
 
-    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, ModulePath modulePath) {
+    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname) {
         super(parent, elementType, name);
-        m_modulePath = modulePath;
+        m_qname = qname;
     }
 
-    public ModulePath getModulePath() {
-        return m_modulePath;
+    public String getQualifiedName() {
+        return m_qname;
     }
 }

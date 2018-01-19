@@ -104,7 +104,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     }
 
     @NotNull
-    @Override
     public ModulePath getQPath() {
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
@@ -121,6 +120,12 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         }
 
         return m_modulePath;
+    }
+
+    @Nullable
+    @Override
+    public String getQualifiedName() {
+        return getQPath() + "." + getName();
     }
 
     @Override

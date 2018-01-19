@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.ModulePath;
+import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
 import org.jetbrains.annotations.NotNull;
@@ -94,16 +94,19 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
     }
     //endregion
 
-
-    @NotNull
+    @Nullable
     @Override
-    public ModulePath getPath() {
-        PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+    public String getQualifiedName() {
+        String path;
+
+        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
         if (parent != null) {
-            return parent.getQPath();
+            path = ((PsiModule) parent).getQualifiedName();
+        } else {
+            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
         }
 
-        return new ModulePath(getContainingFile());
+        return path + "." + getName();
     }
 
     @Nullable

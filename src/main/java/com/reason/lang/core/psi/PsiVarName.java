@@ -1,7 +1,6 @@
 package com.reason.lang.core.psi;
 
-import com.reason.lang.core.ModulePath;
+import com.intellij.psi.PsiQualifiedNamedElement;
 
-public interface PsiVarName extends PsiNamedElement {
-    ModulePath getPath();
+public interface PsiVarName extends PsiQualifiedNamedElement, PsiNamedElement {
 }
