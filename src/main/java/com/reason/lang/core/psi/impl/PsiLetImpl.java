@@ -6,12 +6,11 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.psi.PsiFunBody;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiVarName;
+import com.reason.lang.core.ModulePath;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,6 +93,18 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return m_inferredType != null && !m_inferredType.isEmpty();
     }
     //endregion
+
+
+    @NotNull
+    @Override
+    public ModulePath getPath() {
+        PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        if (parent != null) {
+            return parent.getQPath();
+        }
+
+        return new ModulePath(getContainingFile());
+    }
 
     @Nullable
     @Override

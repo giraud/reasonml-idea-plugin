@@ -6,6 +6,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.IndexKeys;
+import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiVarName;
@@ -17,10 +18,12 @@ import java.util.Collection;
 public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
 
     private final String m_referenceName;
+    private final ModulePath m_path;
 
     public PsiVarNameReference(PsiVarName element) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
+        m_path = element.getPath();
     }
 
     @Nullable
@@ -36,8 +39,8 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiVarName> {
         // Find the name in the index
         Collection<PsiLet> elements = StubIndex.getElements(IndexKeys.LETS, m_referenceName, myElement.getProject(), GlobalSearchScope.allScope(myElement.getProject()), PsiLet.class);
         if (!elements.isEmpty()) {
-            // TODO: only let with correct QN
             PsiLet let = elements.iterator().next();
+            // TODO: only let with correct QN
             return let.getNameIdentifier();
         }
 

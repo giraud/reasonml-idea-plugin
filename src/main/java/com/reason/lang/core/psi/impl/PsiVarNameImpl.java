@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiVarName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,11 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
     @Override
     public PsiReference getReference() {
         return new PsiVarNameReference(this);
+    }
+
+    @Override
+    public ModulePath getPath() {
+        return new ModulePath(getContainingFile());
     }
 
     @Override
