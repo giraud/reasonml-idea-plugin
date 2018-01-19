@@ -5,6 +5,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +40,23 @@ public class PsiModuleNameImpl extends MlAstWrapperPsiElement implements PsiModu
 
     @Override
     public PsiReference getReference() {
-        return new PsiModuleReference(this);
+        return new PsiModuleReference(this, getQualifiedName());
+    }
+
+    @NotNull
+    public String getQualifiedName() {
+        String path = null;
+
+        PsiElement parent = getParent();
+        if (parent instanceof PsiModule) {
+            path = ((PsiModule) parent).getQualifiedName();
+        }
+
+        if (path == null) {
+            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
+        }
+
+        return path + "." + getName();
     }
 
     @Override

@@ -42,10 +42,12 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
 
     @Override
     public PsiReference getReference() {
-        return new PsiVarNameReference(this, computeQualifiedName());
+        return new PsiVarNameReference(this, getQualifiedName());
     }
 
-    private String computeQualifiedName() {
+    @Nullable
+    @Override
+    public String getQualifiedName() {
         String path = null;
 
         PsiElement parent = getParent();
@@ -54,7 +56,7 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
         } else {
             PsiElement prevSibling = getPrevSibling();
             if (prevSibling.getNode().getElementType() == m_types.DOT) {
-                PsiElement dotPrevSibling = getPrevSibling();
+                PsiElement dotPrevSibling = prevSibling.getPrevSibling();
                 if (dotPrevSibling instanceof PsiQualifiedNamedElement) {
                     path = ((PsiQualifiedNamedElement) dotPrevSibling).getQualifiedName();
                 }

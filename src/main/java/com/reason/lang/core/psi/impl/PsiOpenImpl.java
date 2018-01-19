@@ -39,7 +39,7 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
         if (nameIdentifier != null) {
             PsiElement firstChild = nameIdentifier.getFirstChild(); // only first module name, not path yet
             if (firstChild instanceof PsiModuleName) {
-                return new PsiModuleReference((PsiModuleName) firstChild);
+                return new PsiModuleReference((PsiModuleName) firstChild, ((PsiModuleName) firstChild).getQualifiedName());
             }
         }
         return null;

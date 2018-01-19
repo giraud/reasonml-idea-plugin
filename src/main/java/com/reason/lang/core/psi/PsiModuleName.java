@@ -1,4 +1,6 @@
 package com.reason.lang.core.psi;
 
-public interface PsiModuleName extends PsiNamedElement {
+import com.intellij.psi.PsiQualifiedNamedElement;
+
+public interface PsiModuleName extends PsiNamedElement, PsiQualifiedNamedElement {
 }

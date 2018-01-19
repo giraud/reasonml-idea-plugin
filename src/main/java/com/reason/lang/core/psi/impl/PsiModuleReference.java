@@ -17,11 +17,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
 
-    private final String m_referenceName;
+    @Nullable private final String m_referenceName;
+    @NotNull private final String m_qname;
 
-    PsiModuleReference(PsiModuleName element) {
+    PsiModuleReference(@NotNull PsiModuleName element, @NotNull String qname) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
+        m_qname = qname;
     }
 
     @Override
