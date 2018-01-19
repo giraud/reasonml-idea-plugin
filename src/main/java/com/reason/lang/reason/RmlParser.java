@@ -112,8 +112,10 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseType(PsiBuilder builder, ParserState parserState) {
-        parserState.end();
-        parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
+        if (parserState.notCurrentResolution(module)) {
+            parserState.end();
+            parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
+        }
     }
 
     private void parseExternal(PsiBuilder builder, ParserState parserState) {
