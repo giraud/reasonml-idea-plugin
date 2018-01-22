@@ -7,6 +7,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +39,13 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
         return this;
     }
     //endregion
+
+    @NotNull
+    @Override
+    public String getSignature() {
+        PsiSignature signature = findChildByClass(PsiSignature.class);
+        return signature == null ? "" : signature.getText();
+    }
 
     @Override
     public ItemPresentation getPresentation() {

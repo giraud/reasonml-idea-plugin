@@ -44,7 +44,8 @@ class ModuleDotCompletionProvider {
             for (PsiNamedElement expression : expressions) {
                 resultSet.addElement(
                         LookupElementBuilder.create(expression).
-                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
+                                withTypeText(PsiInferredTypeUtil.getTypeInfo(expression))
                 );
             }
         }

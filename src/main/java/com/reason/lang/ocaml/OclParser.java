@@ -40,7 +40,7 @@ public class OclParser extends CommonParser {
             } else if (tokenType == m_types.EQ) {
                 parseEq(builder, parserState);
             } else if (tokenType == m_types.COLON) {
-                parseColon(parserState);
+                parseColon(builder, parserState);
             } else if (tokenType == m_types.LIDENT) {
                 parseLIdent(builder, parserState);
             } else if (tokenType == m_types.UIDENT) {
@@ -204,14 +204,17 @@ public class OclParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseColon(ParserState parserState) {
-        if (parserState.currentScope.resolution == moduleNamed) {
+    private void parseColon(PsiBuilder builder, ParserState parserState) { // :
+        if (parserState.isCurrentResolution(moduleNamed)) {
             parserState.currentScope.resolution = moduleNamedColon;
             parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(externalNamed)) {
+            parserState.dontMove = advance(builder);
+            parserState.currentScope = markScope(builder, parserState.scopes, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG);
         }
     }
 
-    private void parseEq(PsiBuilder builder, ParserState parserState) {
+    private void parseEq(PsiBuilder builder, ParserState parserState) { // =
         if (parserState.isCurrentResolution(typeNamed)) {
             parserState.currentScope.resolution = typeNamedEq;
         } else if (parserState.isCurrentResolution(letNamed)) {
@@ -225,6 +228,10 @@ public class OclParser extends CommonParser {
         } else if (parserState.isCurrentResolution(moduleNamed)) {
             parserState.currentScope.resolution = moduleNamedEq;
             parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(externalNamedSignature)) {
+            parserState.currentScope.complete = true;
+            parserState.endUntilStart();
+            parserState.updateCurrentScope();
         }
     }
 

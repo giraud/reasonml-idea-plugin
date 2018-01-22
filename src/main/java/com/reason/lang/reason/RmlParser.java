@@ -47,6 +47,8 @@ public class RmlParser extends CommonParser {
                 parseArrobase(builder, parserState);
             } else if (tokenType == m_types.PERCENT) {
                 parsePercent(builder, parserState);
+            } else if (tokenType == m_types.COLON) {
+                parseColon(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -133,6 +135,13 @@ public class RmlParser extends CommonParser {
             parserState.currentScope.complete = true;
             parserState.currentScope = markComplete(builder, parserState.scopes, macroName, m_types.MACRO_NAME);
             parserState.currentScope.complete = true;
+        }
+    }
+
+    private void parseColon(PsiBuilder builder, ParserState parserState) {
+        if (parserState.isCurrentResolution(externalNamed)) {
+            parserState.dontMove = advance(builder);
+            parserState.currentScope = markScope(builder, parserState.scopes, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG);
         }
     }
 
@@ -297,15 +306,19 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseEq(ParserState parserState) {
-        if (parserState.currentScope.resolution == typeNamed) {
+        if (parserState.isCurrentResolution(typeNamed)) {
             parserState.currentScope.resolution = typeNamedEq;
-        } else if (parserState.currentScope.resolution == letNamed) {
+        } else if (parserState.isCurrentResolution(letNamed)) {
             parserState.currentScope.resolution = letNamedEq;
-        } else if (parserState.currentScope.resolution == tagProperty) {
+        } else if (parserState.isCurrentResolution(tagProperty)) {
             parserState.currentScope.resolution = tagPropertyEq;
-        } else if (parserState.currentScope.resolution == moduleNamed) {
+        } else if (parserState.isCurrentResolution(moduleNamed)) {
             parserState.currentScope.resolution = moduleNamedEq;
             parserState.currentScope.complete = true;
+        } else if (parserState.isCurrentResolution(externalNamedSignature)) {
+            parserState.currentScope.complete = true;
+            parserState.endUntilStart();
+            parserState.updateCurrentScope();
         }
     }
 

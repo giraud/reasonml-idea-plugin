@@ -6,6 +6,8 @@ public class PsiInferredTypeUtil {
             return ((PsiLet) expression).getInferredType();
         } else if (expression instanceof PsiType) {
             return ((PsiType) expression).getTypeInfo();
+        } else if (expression instanceof PsiExternal) {
+            return ((PsiExternal) expression).getSignature();
         }
 
         return "";
