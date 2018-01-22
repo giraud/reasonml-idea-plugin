@@ -3,10 +3,13 @@ package com.reason.ide.insight;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.PsiIconUtil;
+import com.reason.ide.files.PsiModuleFile;
 import com.reason.ide.search.IndexKeys;
+import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiInferredTypeUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
@@ -18,7 +21,8 @@ import java.util.Collection;
 class ModuleDotCompletionProvider {
     static void complete(Project project, PsiModuleName name, @NotNull CompletionResultSet resultSet) {
         // Get the correct module
-        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name.getName(), project, GlobalSearchScope.allScope(project), PsiModule.class);
+        String name1 = name.getName();
+        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name1, project, GlobalSearchScope.allScope(project), PsiModule.class);
 
         if (!modules.isEmpty()) {
             for (PsiModule module : modules) {
@@ -31,6 +35,17 @@ class ModuleDotCompletionProvider {
                                     withTypeText(PsiInferredTypeUtil.getTypeInfo(expression))
                     );
                 }
+            }
+        }
+
+        PsiFile fileModule = RmlPsiUtil.findFileModule(project, name1);
+        if (fileModule != null) {
+            Collection<PsiNamedElement> expressions = ((PsiModuleFile) fileModule).getExpressions();
+            for (PsiNamedElement expression : expressions) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(expression).
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                );
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.reason.icons;
 
 import com.intellij.psi.PsiElement;
+import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
@@ -19,6 +20,8 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             return Icons.TYPE;
         } else if (element instanceof PsiLet) {
             return Icons.LET;
+        } else if (element instanceof PsiExternal) {
+            return Icons.EXTERNAL;
         }
         return null;
     }

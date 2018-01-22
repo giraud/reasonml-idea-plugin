@@ -20,5 +20,4 @@ public class RmlFile extends FileBase {
     public String toString() {
         return "Reason File";
     }
-
 }

@@ -5,15 +5,24 @@ import com.intellij.lang.Language;
 import com.intellij.psi.FileViewProvider;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class FileBase extends PsiFileBase {
+import java.util.Arrays;
+import java.util.Collection;
+
+public abstract class FileBase extends PsiFileBase implements PsiModuleFile {
 
     private final String m_moduleName;
 
     FileBase(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
         super(viewProvider, language);
         m_moduleName = RmlPsiUtil.fileNameToModuleName(getName());
+    }
+
+    @Override
+    public Collection<PsiNamedElement> getExpressions() {
+        return Arrays.asList(findChildrenByClass(PsiNamedElement.class));
     }
 
     public PsiModule[] getModules() {
