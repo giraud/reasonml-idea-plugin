@@ -20,6 +20,7 @@ public abstract class FileBase extends PsiFileBase implements PsiModuleFile {
         m_moduleName = RmlPsiUtil.fileNameToModuleName(getName());
     }
 
+    @NotNull
     @Override
     public Collection<PsiNamedElement> getExpressions() {
         return Arrays.asList(findChildrenByClass(PsiNamedElement.class));

@@ -170,7 +170,9 @@
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
         <elementDescriptionProvider implementation="com.reason.ide.search.DescriptionProvider"/>
 
-        <completion.contributor language="ReasonML" implementationClass="com.reason.ide.insight.CompletionContributor"/>
+        <completion.contributor language="ReasonML"
+                                implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
+        <completion.contributor language="Ocaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
 
         <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>

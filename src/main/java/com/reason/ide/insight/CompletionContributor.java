@@ -8,25 +8,26 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.ProcessingContext;
+import com.reason.ide.files.FileBase;
+import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiModuleName;
-import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.instanceOf;
 
-public class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
+abstract class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
-    public CompletionContributor() {
-        RmlTypes types = RmlTypes.INSTANCE;
+    CompletionContributor(@NotNull MlTypes types) {
         //MerlinService merlinService = ApplicationManager.getApplication().getComponent(MerlinService.class);
         //boolean useMerlin = merlinService != null && merlinService.hasVersion();
         //if (useMerlin) {
         //    extend(CompletionType.BASIC, psiElement(), new MerlinCompletionProvider());
         //} else {
 
-        extend(CompletionType.BASIC, psiElement().inFile(instanceOf(RmlFile.class)), new CompletionProvider<CompletionParameters>() {
+        extend(CompletionType.BASIC, psiElement().inFile(instanceOf(FileBase.class)), new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                 PsiElement position = parameters.getPosition();
@@ -36,8 +37,12 @@ public class CompletionContributor extends com.intellij.codeInsight.completion.C
                 PsiElement originalPosition = parameters.getOriginalPosition();
                 PsiElement originalPrevSibling = originalPosition == null ? null : originalPosition.getPrevSibling();
 
-                if (grandPa instanceof RmlFile) {
-                    // We are completing a top level expression
+                if (originalPosition == null) {
+                    // We are completing a top level expression, there is no previous expression
+                    FileCompletionProvider.complete(file.getProject(), (FileBase) parameters.getOriginalFile(), result);
+                }
+
+                if (grandPa instanceof RmlFile || grandPa instanceof OclFile) {
 
                     PsiElement parentPrevSibling = parent.getPrevSibling();
                     if (originalPosition == null) {
@@ -72,7 +77,6 @@ public class CompletionContributor extends com.intellij.codeInsight.completion.C
                         }
                     }
                 }
-
             }
         });
     }
