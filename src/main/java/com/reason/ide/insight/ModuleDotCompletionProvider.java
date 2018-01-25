@@ -3,13 +3,10 @@ package com.reason.ide.insight;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.PsiIconUtil;
-import com.reason.ide.files.PsiModuleFile;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiInferredTypeUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
@@ -35,18 +32,6 @@ class ModuleDotCompletionProvider {
                                     withTypeText(PsiInferredTypeUtil.getTypeInfo(expression))
                     );
                 }
-            }
-        }
-
-        PsiFile fileModule = RmlPsiUtil.findFileModule(project, name1);
-        if (fileModule != null) {
-            Collection<PsiNamedElement> expressions = ((PsiModuleFile) fileModule).getExpressions();
-            for (PsiNamedElement expression : expressions) {
-                resultSet.addElement(
-                        LookupElementBuilder.create(expression).
-                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
-                                withTypeText(PsiInferredTypeUtil.getTypeInfo(expression))
-                );
             }
         }
     }

@@ -42,6 +42,7 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
         return findChildByType(m_types.TYPE_CONSTR_NAME);
     }
 
+    @NotNull
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
@@ -59,9 +60,10 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
         return findChildByClass(PsiScopedExpr.class);
     }
 
+    @NotNull
     @Override
     public String getTypeInfo() {
-        return getName();
+        return "";
     }
 
     @Nullable

@@ -56,6 +56,6 @@ public abstract class FileBase extends PsiFileBase implements PsiModuleFile {
     }
 
     public PsiModule asModule() {
-        return (PsiModule) getFirstChild();
+        return findChildByClass(PsiModule.class);
     }
 }
