@@ -42,7 +42,10 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
 
-        ParserState parserState = new ParserState(new ParserScope(file, m_types.FILE_MODULE, null));
+        ParserScope fileScope = new ParserScope(file, m_types.FILE_MODULE, builder.mark());
+        fileScope.complete = true;
+
+        ParserState parserState = new ParserState(fileScope);
         parseFile(builder, parserState);
 
         // if we have a scope at last position in file, without SEMI, we need to handle it here
@@ -54,7 +57,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
             }
         }
 
-        new ParserScope(file, m_types.FILE_MODULE, null).end();
+        fileScope.end();
 
         exit_section_(builder, 0, m, elementType, true, true, TRUE_CONDITION);
     }

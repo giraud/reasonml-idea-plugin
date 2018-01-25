@@ -10,7 +10,9 @@ public class PsiElementFactory {
     public static PsiElement createElement(MlTypes types, ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == types.EXTERNAL_EXPRESSION) {
+        if (type == types.FILE_MODULE) {
+            return new PsiFileModuleImpl(node);
+        } else if (type == types.EXTERNAL_EXPRESSION) {
             return new PsiExternalImpl(types, node);
         } else if (type == types.EXCEPTION_EXPRESSION) {
             return new PsiExceptionImpl(node);

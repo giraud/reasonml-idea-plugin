@@ -8,8 +8,7 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
-import com.reason.ide.files.OclFile;
-import com.reason.ide.files.RmlFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import org.jetbrains.annotations.NotNull;
@@ -71,10 +70,10 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (m_element instanceof RmlFile || m_element instanceof OclFile) {
+        if (m_element instanceof FileBase) {
             List<TreeElement> treeElements = new ArrayList<>();
 
-            m_element.acceptChildren(new PsiElementVisitor() {
+            m_element.getFirstChild().acceptChildren(new PsiElementVisitor() {
                 @Override
                 public void visitElement(PsiElement element) {
                     if (element instanceof PsiStructuredElement) {
