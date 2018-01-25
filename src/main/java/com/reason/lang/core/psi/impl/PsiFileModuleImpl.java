@@ -3,6 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class PsiFileModuleImpl extends PsiModuleImpl {
     public PsiFileModuleImpl(@NotNull ModuleStub stub, @NotNull IStubElementType nodeType) {
@@ -34,19 +34,10 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
         return null;
     }
 
-    @Override
-    public Collection<PsiLet> getLetExpressions() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Collection<PsiType> getTypeExpressions() {
-        return Collections.emptyList();
-    }
-
+    @NotNull
     @Override
     public Collection<PsiNamedElement> getExpressions() {
-        return Collections.emptyList();
+        return PsiTreeUtil.findChildrenOfAnyType(this, PsiType.class, PsiModule.class, PsiLet.class);
     }
 
     @Nullable

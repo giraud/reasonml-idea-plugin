@@ -16,11 +16,11 @@ import java.util.Collection;
 public class FileCompletionProvider {
     public static void complete(@NotNull Project project, @NotNull FileBase file, @NotNull CompletionResultSet resultSet) {
         // Add all file expressions (local or from include)
-        Collection<PsiNamedElement> fileExpressions = file.getExpressions();
+        Collection<PsiNamedElement> fileExpressions = file.asModule().getExpressions();
         addExpressionsToResult(resultSet, fileExpressions);
 
         // Add all expressions from pervasives (only RmlFile ?)
-        //PsiFile[] pervasives = FilenameIndex.getFilesByName(project, "pervasives.ml", GlobalSearchScope.allScope(project));
+        //PsiFile[]-- pervasives = FilenameIndex.getFilesByName(project, "pervasives.ml", GlobalSearchScope.allScope(project));
         //if (0 < pervasives.length) {
         //    for (PsiFile pervasive : pervasives) {
         //        if (pervasive.getVirtualFile().getCanonicalPath().endsWith("bs-platform/lib/ocaml/pervasives.ml")) {
