@@ -4,8 +4,10 @@ import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.psi.FileViewProvider;
 import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiOpen;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -23,7 +25,11 @@ public abstract class FileBase extends PsiFileBase implements PsiModuleFile {
     @NotNull
     @Override
     public Collection<PsiNamedElement> getExpressions() {
-        return Arrays.asList(findChildrenByClass(PsiNamedElement.class));
+        PsiNamedElement[] localElements = findChildrenByClass(PsiNamedElement.class);
+
+        PsiInclude[] includes = findChildrenByClass(PsiInclude.class);
+
+        return Arrays.asList(localElements);
     }
 
     public PsiModule[] getModules() {
@@ -43,5 +49,9 @@ public abstract class FileBase extends PsiFileBase implements PsiModuleFile {
     @NotNull
     public String asModuleName() {
         return m_moduleName;
+    }
+
+    public PsiOpen[] getOpenExpressions() {
+        return findChildrenByClass(PsiOpen.class);
     }
 }

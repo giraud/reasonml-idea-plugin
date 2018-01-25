@@ -19,9 +19,10 @@ class BsConfig {
         if (deps == null) {
             m_deps = new String[0];
         } else {
-            m_deps = new String[deps.length + 1];
+            m_deps = new String[deps.length + 2];
             System.arraycopy(deps, 0, m_deps, 0, deps.length);
             m_deps[deps.length] = "bs-platform/lib/ocaml/js.ml"; // all files but the ones with _ ?
+            m_deps[deps.length + 1] = "bs-platform/lib/ocaml/pervasives.ml";
         }
     }
 
