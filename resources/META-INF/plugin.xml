@@ -172,7 +172,12 @@
 
         <completion.contributor language="ReasonML"
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
+        <completion.contributor language="ReasonML"
+                                implementationClass="com.reason.ide.insight.KeywordCompletionContributor"/>
+
         <completion.contributor language="Ocaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
+        <completion.contributor language="Ocaml"
+                                implementationClass="com.reason.ide.insight.KeywordCompletionContributor"/>
 
         <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>

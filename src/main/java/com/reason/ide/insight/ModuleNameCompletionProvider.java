@@ -5,9 +5,9 @@ import com.intellij.openapi.project.Project;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
-class ModuleNameCompletion {
+class ModuleNameCompletionProvider {
 
-    static void complete(Project project, PsiModule currentModule, String modulePrefix, @NotNull CompletionResultSet resultSet) {
+    static void complete(Project project, PsiModule currentModule, String moduleQname, @NotNull CompletionResultSet resultSet) {
         // First find all potential modules of current file
         //PsiModule[] currentModules = currentModule.getModules();
         //for (PsiModule module : currentModules) {

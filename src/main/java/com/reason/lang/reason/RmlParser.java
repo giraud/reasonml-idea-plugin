@@ -115,7 +115,7 @@ public class RmlParser extends CommonParser {
 
     private void parseType(PsiBuilder builder, ParserState parserState) {
         if (parserState.notCurrentResolution(module)) {
-            parserState.end();
+            parserState.endUntilScopeExpression(null);
             parserState.currentScope = markScope(builder, parserState.scopes, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE);
         }
     }
@@ -341,9 +341,7 @@ public class RmlParser extends CommonParser {
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.VALUE_NAME);
             parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
-            PsiBuilder.Marker mark = builder.mark();
-            parserState.dontMove = advance(builder);
-            mark.done(m_types.MODULE_NAME);
+            parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
         } else if (parserState.currentScope.resolution == module) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
             ParserScope scope = markComplete(builder, parserState.scopes, moduleNamed, m_types.MODULE_NAME);
