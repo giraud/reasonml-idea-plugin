@@ -340,7 +340,7 @@ public class RmlParser extends CommonParser {
             // It is a module name/path
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
+            //parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
             parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
         } else if (parserState.currentScope.resolution == module) {
             builder.remapCurrentToken(m_types.VALUE_NAME);

@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiModuleName;
@@ -24,13 +25,24 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
 
     @Nullable
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.MODULE_PATH);
+        return PsiTreeUtil.getChildOfType(this, PsiModuleName.class);
     }
 
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        if (nameIdentifier == null) {
+            return "";
+        }
+
+        StringBuilder sbName = new StringBuilder(nameIdentifier.getText());
+        PsiModuleName nextSibling = PsiTreeUtil.getNextSiblingOfType(nameIdentifier, PsiModuleName.class);
+        while (nextSibling != null) {
+            sbName.append(".").append(nextSibling.getText());
+            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, PsiModuleName.class);
+        }
+
+        return sbName.toString();
     }
 
     @Override

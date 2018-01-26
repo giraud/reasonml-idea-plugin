@@ -1,7 +1,14 @@
 package com.reason.ide.insight;
 
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.patterns.PsiElementPattern;
+import com.intellij.psi.PsiElement;
+import com.reason.ide.insight.provider.ModuleCompletionProvider;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.PsiOpen;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 abstract class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
@@ -12,7 +19,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
         //    extend(CompletionType.BASIC, psiElement(), new MerlinCompletionProvider());
         //} else {
 
-        //extend(CompletionType.BASIC, psiElement().inside(PsiOpen.class), new CompletionProvider<CompletionParameters>() {
+        extend(CompletionType.BASIC, openPattern(), new ModuleCompletionProvider(types));
         //    @Override
         //    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
         //        System.out.println("»» add completions for open");
@@ -116,4 +123,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
         //});
     }
 
+    private static PsiElementPattern.Capture<PsiElement> openPattern() {
+        return psiElement().inside(PsiOpen.class);
+    }
 }
