@@ -73,7 +73,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         if (m_element instanceof FileBase) {
             List<TreeElement> treeElements = new ArrayList<>();
 
-            m_element.getFirstChild().acceptChildren(new PsiElementVisitor() {
+            ((FileBase) m_element).asModule().acceptChildren(new PsiElementVisitor() {
                 @Override
                 public void visitElement(PsiElement element) {
                     if (element instanceof PsiStructuredElement) {
