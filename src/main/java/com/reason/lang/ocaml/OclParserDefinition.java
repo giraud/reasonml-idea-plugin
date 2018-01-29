@@ -15,6 +15,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.OclFile;
 import com.reason.lang.LexerAdapter;
 import com.reason.lang.PsiElementFactory;
+import com.reason.lang.core.stub.type.OclFileStubElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class OclParserDefinition implements ParserDefinition {
@@ -52,7 +53,7 @@ public class OclParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return FILE;
+        return OclFileStubElementType.INSTANCE;
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
