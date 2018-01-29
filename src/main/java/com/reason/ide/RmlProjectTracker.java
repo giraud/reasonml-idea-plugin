@@ -28,6 +28,9 @@ public class RmlProjectTracker extends AbstractProjectComponent {
 
         m_vfListener = new VirtualFileListener(myProject);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
+
+        // ??? aliases
+        //GistManager.getInstance().newPsiFileGist();
     }
 
     @Override

@@ -28,6 +28,9 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
     }
 
     public void serialize(@NotNull final ModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
+        if (stub.isFileModule()) {
+            System.out.println("serializing " + stub.getName() + " " + stub.getQualifiedName());
+        }
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFileModule());

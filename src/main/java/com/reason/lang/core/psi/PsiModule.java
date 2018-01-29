@@ -4,6 +4,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.stub.ModuleStub;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -18,6 +19,9 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     Collection<PsiLet> getLetExpressions();
 
     Collection<PsiType> getTypeExpressions();
+
+    @NotNull
+    Collection<PsiModule> getModules();
 
     Collection<PsiNamedElement> getExpressions();
 }

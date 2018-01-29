@@ -1,11 +1,19 @@
 package com.reason;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class Joiner {
 
-    public static String join(String separator, Iterable<String> items) {
+    @NotNull
+    public static String join(@NotNull String separator, @Nullable Iterable<? extends Object> items) {
+        if (items == null) {
+            return "<null>";
+        }
+
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (String item : items) {
+        for (Object item : items) {
             if (!first) {
                 sb.append(separator);
             }
@@ -15,7 +23,12 @@ public class Joiner {
         return sb.toString();
     }
 
-    public static String join(String separator, String[] items) {
+    @NotNull
+    public static String join(@NotNull String separator, @Nullable String[] items) {
+        if (items == null) {
+            return "<null>";
+        }
+
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (String item : items) {
