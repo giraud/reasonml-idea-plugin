@@ -11,9 +11,12 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
+import com.reason.Platform;
 import com.reason.icons.Icons;
+import com.reason.ide.files.OclFile;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiModuleName;
 import org.jetbrains.annotations.NotNull;
@@ -63,12 +66,13 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         Collections.reverse(path);
 
         if (path.isEmpty()) {
-            Collection<String> moduleKeys = StubIndex.getInstance().getAllKeys(IndexKeys.MODULES, project);
-            if (!moduleKeys.isEmpty()) {
-                for (String moduleKey : moduleKeys) {
+            List<PsiModule> modules = RmlPsiUtil.findFileModules(project);
+            if (!modules.isEmpty()) {
+                for (PsiModule module : modules) {
                     resultSet.addElement(
-                            LookupElementBuilder.create(moduleKey).
-                                    withIcon(Icons.MODULE)
+                            LookupElementBuilder.create(module).
+                                    withTypeText(Platform.removeProjectDir(project, module.getContainingFile().getVirtualFile())).
+                                    withIcon(module.getContainingFile() instanceof OclFile ? Icons.OCL_FILE : Icons.RML_FILE)
                     );
                 }
             }
@@ -77,13 +81,16 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, latestModuleName.getName(), project, GlobalSearchScope.allScope(project), PsiModule.class);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
-                    Collection<PsiModule> expressions = module.getModules();
-
-                    for (PsiModule expression : expressions)
-                        resultSet.addElement(
-                                LookupElementBuilder.create(expression).
-                                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                        );
+                    for (PsiModule expression : module.getModules()) {
+                        String modulePath = expression.getPath().toString();
+                        System.out.println(expression.getQualifiedName() + " ? " + modulePath);
+                        if (qname.equals(modulePath)) {
+                            resultSet.addElement(
+                                    LookupElementBuilder.create(expression).
+                                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                            );
+                        }
+                    }
                 }
             }
         }

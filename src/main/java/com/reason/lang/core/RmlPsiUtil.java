@@ -19,7 +19,10 @@ import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 public class RmlPsiUtil {
 
@@ -102,15 +105,34 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<PsiModule> findModules(@NotNull Project project) {
+    public static List<PsiModule> findFileModules(@NotNull Project project) {
         ArrayList<PsiModule> result = new ArrayList<>();
 
-        Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
-        for (VirtualFile virtualFile : virtualFiles) {
-            PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(file, PsiModule.class);
-            if (modules != null) {
-                result.addAll(Arrays.asList(modules));
+        Collection<VirtualFile> rmlFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
+        for (VirtualFile virtualFile : rmlFiles) {
+            String canonicalPath = virtualFile.getCanonicalPath();
+            if (canonicalPath != null && !canonicalPath.contains("bs-platform/vendor/")) { // in bs-con
+                PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                if (file instanceof FileBase) {
+                    PsiModule module = ((FileBase) file).asModule();
+                    if (module != null) {
+                        result.add(module);
+                    }
+                }
+            }
+        }
+
+        Collection<VirtualFile> oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
+        for (VirtualFile virtualFile : oclFiles) {
+            String canonicalPath = virtualFile.getCanonicalPath();
+            if (canonicalPath != null && !canonicalPath.contains("bs-platform/vendor/")) {
+                PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                if (file instanceof FileBase) {
+                    PsiModule module = ((FileBase) file).asModule();
+                    if (module != null) {
+                        result.add(module);
+                    }
+                }
             }
         }
 

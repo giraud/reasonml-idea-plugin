@@ -111,7 +111,8 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     }
 
     @NotNull
-    public ModulePath getQPath() {
+    @Override
+    public ModulePath getPath() {
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
 
@@ -121,7 +122,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
                 parent = PsiTreeUtil.getParentOfType(parent, PsiModule.class);
             }
 
-            parents.add(getContainingFile());
             Collections.reverse(parents);
             m_modulePath = new ModulePath(parents);
         }
@@ -132,7 +132,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @Nullable
     @Override
     public String getQualifiedName() {
-        return getQPath() + "." + getName();
+        return getPath() + "." + getName();
     }
 
     @Override

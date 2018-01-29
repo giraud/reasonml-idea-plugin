@@ -26,7 +26,7 @@ public class RmlTypes extends MlTypes {
         MODULE_PATH = new RmlElementType("MODULE_PATH");
         OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
-        VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION", RmlLanguage.INSTANCE);
+        VAL_EXPRESSION = new RmlElementType("VAL_EXPRESSION");
 
         LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
         LET_BINDING = new RmlElementType("LET_BINDING");

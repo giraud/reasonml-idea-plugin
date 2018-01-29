@@ -108,7 +108,7 @@ public class RmlParser extends CommonParser {
 
     private void parseModule(PsiBuilder builder, ParserState parserState) {
         if (parserState.currentScope.resolution != annotationName) {
-            parserState.end();
+            parserState.endUntilScopeExpression(null);
             parserState.currentScope = markScope(builder, parserState.scopes, module, m_types.MODULE_EXPRESSION, startExpression, m_types.MODULE);
         }
     }

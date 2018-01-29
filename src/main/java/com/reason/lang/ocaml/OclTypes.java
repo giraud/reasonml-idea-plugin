@@ -25,7 +25,7 @@ public class OclTypes extends MlTypes {
         MODULE_PATH = new OclElementType("MODULE_PATH");
         OPEN_EXPRESSION = new OclElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE, OclTypes.INSTANCE);
-        VAL_EXPRESSION = new PsiLetStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE);
+        VAL_EXPRESSION = new OclElementType("VAL_EXPRESSION");
 
         LET_FUN_PARAMS = new OclElementType("LET_FUN_PARAMS");
         LET_BINDING = new OclElementType("LET_BINDING");
