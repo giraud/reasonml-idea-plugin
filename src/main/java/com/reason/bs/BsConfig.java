@@ -19,10 +19,9 @@ class BsConfig {
         if (deps == null) {
             m_deps = new String[0];
         } else {
-            m_deps = new String[deps.length + 2];
+            m_deps = new String[deps.length + 1];
             System.arraycopy(deps, 0, m_deps, 0, deps.length);
             m_deps[deps.length] = "bs-platform/lib/ocaml/js.ml"; // all files but the ones with _ ?
-            m_deps[deps.length + 1] = "bs-platform/lib/ocaml/pervasives.ml";
         }
     }
 
@@ -53,7 +52,11 @@ class BsConfig {
         }
     }
 
-    boolean accept(String canonicalPath) {
+    boolean accept(@Nullable String canonicalPath) {
+        if (canonicalPath == null) {
+            return false;
+        }
+
         if (canonicalPath.contains("node_modules") && m_deps != null) {
             for (String dep : m_deps) {
                 if (canonicalPath.contains(dep)) {

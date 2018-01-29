@@ -108,10 +108,12 @@ public class RmlPsiUtil {
     public static List<PsiModule> findFileModules(@NotNull Project project) {
         ArrayList<PsiModule> result = new ArrayList<>();
 
+        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+
         Collection<VirtualFile> rmlFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
         for (VirtualFile virtualFile : rmlFiles) {
             String canonicalPath = virtualFile.getCanonicalPath();
-            if (canonicalPath != null && !canonicalPath.contains("bs-platform/vendor/")) { // in bs-con
+            if (bucklescript.isDependency(canonicalPath)) {
                 PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
                 if (file instanceof FileBase) {
                     PsiModule module = ((FileBase) file).asModule();
@@ -125,7 +127,7 @@ public class RmlPsiUtil {
         Collection<VirtualFile> oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
         for (VirtualFile virtualFile : oclFiles) {
             String canonicalPath = virtualFile.getCanonicalPath();
-            if (canonicalPath != null && !canonicalPath.contains("bs-platform/vendor/")) {
+            if (bucklescript.isDependency(canonicalPath)) {
                 PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
                 if (file instanceof FileBase) {
                     PsiModule module = ((FileBase) file).asModule();

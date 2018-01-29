@@ -160,7 +160,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
     }
 
     @Override
-    public boolean isDependency(String path) {
+    public boolean isDependency(@Nullable String path) {
         return m_config == null || m_config.accept(path);
     }
 
