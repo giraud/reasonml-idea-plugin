@@ -1,11 +1,11 @@
 package com.reason.ide.insight.provider;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.PrioritizedLookupElement;
+import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.text.CaseInsensitiveStringHashingStrategy;
+import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 
 import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
@@ -13,6 +13,10 @@ import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     private final String[] m_keywords;
+
+    private static final THashSet<String> KEYWORD_WITH_POPUP = ContainerUtil.newTroveSet(CaseInsensitiveStringHashingStrategy.INSTANCE, "open", "include");
+    private static final AddSpaceInsertHandler INSERT_SPACE_POPUP = new AddSpaceInsertHandler(true);
+    private static final AddSpaceInsertHandler INSERT_SPACE = new AddSpaceInsertHandler(false);
 
     public KeywordCompletionProvider(String... keywords) {
         m_keywords = keywords;
@@ -22,7 +26,7 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
         for (String keyword : m_keywords) {
             LookupElementBuilder builder = LookupElementBuilder.create(keyword).
-                    withInsertHandler(null).
+                    withInsertHandler(KEYWORD_WITH_POPUP.contains(keyword) ? INSERT_SPACE_POPUP : INSERT_SPACE).
                     bold();
 
             result.addElement(PrioritizedLookupElement.withPriority(builder, KEYWORD_PRIORITY));
