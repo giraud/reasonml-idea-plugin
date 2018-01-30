@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.35</version>
+    <version>0.36</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -13,6 +13,15 @@
       <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
 
       <p></p>
+
+      <b>version 0.36</b>
+
+      <ul>
+         <li>Fix #29</li>
+         <li>Improve parsers</li>
+         <li>add keyword completion (start expression)</li>
+         <li>add module completion for open expression</li>
+      </ul>
 
       <b>version 0.35</b>
 
@@ -44,14 +53,6 @@
          <li>Implements 'go to' for Open expression (simple case)</li>
       </ul>
 
-      <b>version 0.31</b>
-
-      <ul>
-        <li>val expressions (OCaml) are displayed in the structure view</li>
-        <li>Exceptions are displayed in the structure view</li>
-        <li>Incorrect handling of characters in parser</li>
-        <li>Improve OCaml parser</li>
-      </ul>
     ]]>
     </change-notes>
 

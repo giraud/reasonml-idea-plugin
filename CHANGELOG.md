@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.36
+
+* :bug: Fix #29
+* :house: Improve parsers
+* :rocket: add keyword completion (start expression)
+* :rocket: add module completion for open expression
+
 ## 0.35
 
 * :bug: Fix an infinite loop in PsiModule
