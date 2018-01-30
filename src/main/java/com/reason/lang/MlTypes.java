@@ -111,7 +111,6 @@ public abstract class MlTypes {
     public IElementType RPAREN;
     public IElementType SEMI;
     public IElementType SIG;
-    public IElementType SIMPLE_ARROW;
     public IElementType SHARP;
     public IElementType SHORTCUT;
     public IElementType SLASH;
@@ -143,4 +142,40 @@ public abstract class MlTypes {
     public IElementType WHILE;
     public IElementType WITH;
 
+    public IElementType ASR;
+    public IElementType CLASS;
+    public IElementType CONSTRAINT;
+    public IElementType DOWNTO;
+    public IElementType FUNCTOR;
+    public IElementType INHERIT;
+    public IElementType INITIALIZER;
+    public IElementType LAND;
+    public IElementType LOR;
+    public IElementType LSL;
+    public IElementType LSR;
+    public IElementType LXOR;
+    public IElementType METHOD;
+    public IElementType MOD;
+    public IElementType NEW;
+    public IElementType NONREC;
+    public IElementType OR;
+    public IElementType PRIVATE;
+    public IElementType VIRTUAL;
+
+    public IElementType COLON_EQ;
+    public IElementType COLON_GT;
+    public IElementType DOTDOT;
+    public IElementType SEMISEMI;
+    public IElementType GT_BRACKET;
+    public IElementType GT_BRACE;
+    public IElementType LEFT_ARROW;
+    public IElementType RIGHT_ARROW;
+
+    public IElementType AMPERSAND;
+    public IElementType BRACKET_GT;
+    public IElementType BRACKET_LT;
+    public IElementType BRACE_LT;
+
+    public IElementType ML_STRING_OPEN;
+    public IElementType ML_STRING_CLOSE;
 }

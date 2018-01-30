@@ -66,5 +66,5 @@ public enum ParserScopeEnum {
     switchBinaryCondition,
     try_,
     tryBinaryCondition,
-    tryWith,
+    tryWith, mlOpen,
 }

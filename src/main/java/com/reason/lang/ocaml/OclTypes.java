@@ -117,7 +117,6 @@ public class OclTypes extends MlTypes {
         RPAREN = new OclTokenType("RPAREN");
         SEMI = new OclTokenType("SEMI");
         SIG = new OclTokenType("SIG");
-        SIMPLE_ARROW = new OclTokenType("SIMPLE_ARROW");
         SHARP = new OclTokenType("SHARP");
         SHORTCUT = new OclTokenType("SHORTCUT");
         SLASH = new OclTokenType("SLASH");
@@ -148,6 +147,43 @@ public class OclTypes extends MlTypes {
         WHEN = new OclTokenType("WHEN");
         WHILE = new OclTokenType("WHILE");
         WITH = new OclTokenType("WITH");
+
+        ASR = new OclTokenType("ASR");
+        CLASS = new OclTokenType("CLASS");
+        CONSTRAINT = new OclTokenType("CONSTRAINT");
+        DOWNTO = new OclTokenType("DOWNTO");
+        FUNCTOR = new OclTokenType("FUNCTOR");
+        INHERIT = new OclTokenType("INHERIT");
+        INITIALIZER = new OclTokenType("INITIALIZER");
+        LAND = new OclTokenType("LAND");
+        LOR = new OclTokenType("LOR");
+        LSL = new OclTokenType("LSL");
+        LSR = new OclTokenType("LSR");
+        LXOR = new OclTokenType("LXOR");
+        METHOD = new OclTokenType("METHOD");
+        MOD = new OclTokenType("MOD");
+        NEW = new OclTokenType("NEW");
+        NONREC = new OclTokenType("NONREC");
+        OR = new OclTokenType("OR");
+        PRIVATE = new OclTokenType("PRIVATE");
+        VIRTUAL = new OclTokenType("VIRTUAL");
+
+        COLON_EQ = new OclTokenType("COLON_EQ");
+        COLON_GT = new OclTokenType("COLON_GT");
+        DOTDOT = new OclTokenType("DOTDOT");
+        SEMISEMI = new OclTokenType("SEMISEMI");
+        GT_BRACKET = new OclTokenType("GT_BRACKET");
+        GT_BRACE = new OclTokenType("GT_BRACE");
+        LEFT_ARROW = new OclTokenType("LEFT_ARROW");
+        RIGHT_ARROW = new OclTokenType("RIGHT_ARROW");
+
+        AMPERSAND = new OclTokenType("AMPERSAND");
+        BRACKET_GT = new OclTokenType("BRACKET_GT");
+        BRACKET_LT = new OclTokenType("BRACKET_LT");
+        BRACE_LT = new OclTokenType("BRACE_LT");
+
+        ML_STRING_OPEN = new OclTokenType("ML_STRING_OPEN");
+        ML_STRING_CLOSE = new OclTokenType("ML_STRING_CLOSE");
     }
 
 }

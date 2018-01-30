@@ -89,29 +89,51 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 <INITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
 
-    "mutable"    { return types.MUTABLE;}
-    "module"     { return types.MODULE;}
-    "open"       { return types.OPEN; }
-    "include"    { return types.INCLUDE; }
-    "type"       { return types.TYPE; }
-    "let"        { return types.LET; }
-    "fun"        { return types.FUN; }
-    "external"   { return types.EXTERNAL; }
-    "unit"       { return types.UNIT; }
-    "if"         { return types.IF; }
-    "else"       { return types.ELSE; }
-    "switch"     { return types.SWITCH; }
-    "as"         { return types.AS; }
-    "rec"        { return types.REC; }
-    "ref"        { return types.REF; }
-    "try"        { return types.TRY; }
-    "raise"      { return types.RAISE; }
-    "for"        { return types.FOR; }
-    "in"         { return types.IN; }
-    "exception"  { return types.EXCEPTION; }
-    "when"       { return types.WHEN; }
-    "and"        { return types.AND; }
-    "while"      { return types.WHILE; }
+    "mutable"     { return types.MUTABLE;}
+    "module"      { return types.MODULE;}
+    "open"        { return types.OPEN; }
+    "include"     { return types.INCLUDE; }
+    "type"        { return types.TYPE; }
+    "let"         { return types.LET; }
+    "fun"         { return types.FUN; }
+    "external"    { return types.EXTERNAL; }
+    "unit"        { return types.UNIT; }
+    "if"          { return types.IF; }
+    "else"        { return types.ELSE; }
+    "switch"      { return types.SWITCH; }
+    "as"          { return types.AS; }
+    "rec"         { return types.REC; }
+    "ref"         { return types.REF; }
+    "try"         { return types.TRY; }
+    "raise"       { return types.RAISE; }
+    "for"         { return types.FOR; }
+    "in"          { return types.IN; }
+    "exception"   { return types.EXCEPTION; }
+    "when"        { return types.WHEN; }
+    "and"         { return types.AND; }
+    "while"       { return types.WHILE; }
+    "as"          { return types.AS; }
+    "asr"         { return types.ASR; }
+    "class"       { return types.CLASS; }
+    "constraint"  { return types.CONSTRAINT; }
+    "downto"      { return types.DOWNTO; }
+    "functor"     { return types.FUNCTOR; }
+    "inherit"     { return types.INHERIT; }
+    "initializer" { return types.INITIALIZER; }
+    "land"        { return types.LAND; }
+    "lor"         { return types.LOR; }
+    "lsl"         { return types.LSL; }
+    "lsr"         { return types.LSR; }
+    "lxor"        { return types.LXOR; }
+    "method"      { return types.METHOD; }
+    "mod"         { return types.MOD; }
+    "mutable"     { return types.MUTABLE; }
+    "new"         { return types.NEW; }
+    "nonrec"      { return types.NONREC; }
+    "of"          { return types.OF; }
+    "or"          { return types.OR; }
+    "private"     { return types.PRIVATE; }
+    "virtual"     { return types.VIRTUAL; }
 
     // OCaml
     "of"         { return types.OF; }
@@ -153,26 +175,39 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }
     "(*" { yybegin(IN_OCL_COMMENT); commentDepth = 1; tokenStart(); }
 
-    "&&"   { return types.ANDAND; }
-    "::"   { return types.SHORTCUT; }
-    "=>"   { return types.ARROW; }
-    "->"   { return types.SIMPLE_ARROW; }
-    "|>"   { return types.PIPE_FORWARD; }
-    "/>"   { return types.TAG_AUTO_CLOSE; }
-    "[|"   { return types.LARRAY; }
-    "|]"   { return types.RARRAY; }
+    "&&"  { return types.ANDAND; }
+    "::"  { return types.SHORTCUT; }
+    "=>"  { return types.ARROW; }
+    "->"  { return types.RIGHT_ARROW; }
+    "<-"  { return types.LEFT_ARROW; }
+    "|>"  { return types.PIPE_FORWARD; }
+    "/>"  { return types.TAG_AUTO_CLOSE; }
+    "[|"  { return types.LARRAY; }
+    "|]"  { return types.RARRAY; }
+    ">]"  { return types.GT_BRACKET; }
+    ">}"  { return types.GT_BRACE; }
+    "{<"  { return types.BRACE_LT; }
+    "[<"  { return types.BRACKET_LT; }
+    "[>"  { return types.BRACKET_GT; }
+    "{|"  { return types.ML_STRING_OPEN; /*bs MultiLine*/ }
+    "|}"  { return types.ML_STRING_CLOSE; /*bs MultiLine*/ }
 
     "===" { return types.EQEQEQ; }
     "=="  { return types.EQEQ; }
     "="   { return types.EQ; }
     "!==" { return types.NOT_EQEQ; }
     "!="  { return types.NOT_EQ; }
+    ":="  { return types.COLON_EQ; }
+    ":>"  { return types.COLON_GT; }
     "<>"  { return types.DIFF; }
+    ";;"  { return types.SEMISEMI; }
+
     ","   { return types.COMMA; }
     ":"   { return types.COLON; }
     ";"   { return types.SEMI; }
     "'"   { return types.QUOTE; }
     "..." { return types.DOTDOTDOT; }
+    ".."  { return types.DOTDOT; }
     "."   { return types.DOT; }
     "|"   { return types.PIPE; }
     "("   { return types.LPAREN; }
@@ -188,6 +223,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "$"   { return types.DOLLAR; }
     "`"   { return types.BACKTICK; }
     "~"   { return types.TILDE; }
+    "&"   { return types.AMPERSAND; }
+    "_"   { return types.UNDERSCORE; }
 
     "<"  { return types.LT; }
     ">"  { return types.GT; }

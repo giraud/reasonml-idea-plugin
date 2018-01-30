@@ -118,7 +118,6 @@ public class RmlTypes extends MlTypes {
         RPAREN = new RmlTokenType("RPAREN");
         SEMI = new RmlTokenType("SEMI");
         SIG = new RmlTokenType("SIG");
-        SIMPLE_ARROW = new RmlTokenType("SIMPLE_ARROW");
         SHARP = new RmlTokenType("SHARP");
         SHORTCUT = new RmlTokenType("SHORTCUT");
         SLASH = new RmlTokenType("SLASH");
@@ -149,5 +148,42 @@ public class RmlTypes extends MlTypes {
         WHEN = new RmlTokenType("WHEN");
         WHILE = new RmlTokenType("WHILE");
         WITH = new RmlTokenType("WITH");
+
+        ASR = new RmlTokenType("ASR");
+        CLASS = new RmlTokenType("CLASS");
+        CONSTRAINT = new RmlTokenType("CONSTRAINT");
+        DOWNTO = new RmlTokenType("DOWNTO");
+        FUNCTOR = new RmlTokenType("FUNCTOR");
+        INHERIT = new RmlTokenType("INHERIT");
+        INITIALIZER = new RmlTokenType("INITIALIZER");
+        LAND = new RmlTokenType("LAND");
+        LOR = new RmlTokenType("LOR");
+        LSL = new RmlTokenType("LSL");
+        LSR = new RmlTokenType("LSR");
+        LXOR = new RmlTokenType("LXOR");
+        METHOD = new RmlTokenType("METHOD");
+        MOD = new RmlTokenType("MOD");
+        NEW = new RmlTokenType("NEW");
+        NONREC = new RmlTokenType("NONREC");
+        OR = new RmlTokenType("OR");
+        PRIVATE = new RmlTokenType("PRIVATE");
+        VIRTUAL = new RmlTokenType("VIRTUAL");
+
+        COLON_EQ = new RmlTokenType("COLON_EQ");
+        COLON_GT = new RmlTokenType("COLON_GT");
+        DOTDOT = new RmlTokenType("DOTDOT");
+        SEMISEMI = new RmlTokenType("SEMISEMI");
+        GT_BRACKET = new RmlTokenType("GT_BRACKET");
+        GT_BRACE = new RmlTokenType("GT_BRACE");
+        LEFT_ARROW = new RmlTokenType("LEFT_ARROW");
+        RIGHT_ARROW = new RmlTokenType("RIGHT_ARROW");
+
+        AMPERSAND = new RmlTokenType("AMPERSAND");
+        BRACKET_GT = new RmlTokenType("BRACKET_GT");
+        BRACKET_LT = new RmlTokenType("BRACKET_LT");
+        BRACE_LT = new RmlTokenType("BRACE_LT");
+
+        ML_STRING_OPEN = new RmlTokenType("ML_STRING_OPEN");
+        ML_STRING_CLOSE = new RmlTokenType("ML_STRING_CLOSE");
     }
 }

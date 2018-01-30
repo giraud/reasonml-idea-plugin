@@ -49,6 +49,8 @@ public class RmlParser extends CommonParser {
                 parsePercent(builder, parserState);
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, parserState);
+            } else if (tokenType == m_types.STRING) {
+                parseString(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -73,6 +75,12 @@ public class RmlParser extends CommonParser {
                 parseLt(builder, parserState);
             } else if (tokenType == m_types.GT || tokenType == m_types.TAG_AUTO_CLOSE) {
                 parseGtAutoClose(builder, parserState);
+            }
+            // {| ... |}
+            else if (tokenType == m_types.ML_STRING_OPEN) {
+                parseMlStringOpen(builder, parserState);
+            } else if (tokenType == m_types.ML_STRING_CLOSE) {
+                parseMlStringClose(builder, parserState);
             }
             // Starts an expression
             else if (tokenType == m_types.OPEN) {
@@ -99,6 +107,32 @@ public class RmlParser extends CommonParser {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parseString(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) {
+            state.end();
+        }
+    }
+
+    private void parseMlStringOpen(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) {
+            state.end();
+        }
+
+        state.currentScope = markScope(builder, state.scopes, mlOpen, m_types.SCOPED_EXPR, scopeExpression, m_types.ML_STRING_OPEN);
+    }
+
+    private void parseMlStringClose(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.ML_STRING_CLOSE);
+        parserState.dontMove = advance(builder);
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+        }
+
+        parserState.updateCurrentScope();
     }
 
     private void parseLet(PsiBuilder builder, ParserState parserState) {
@@ -246,20 +280,6 @@ public class RmlParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseRBrace(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
-
-        builder.advanceLexer();
-        parserState.dontMove = true;
-
-        if (scope != null) {
-            scope.complete = true;
-            parserState.scopes.pop().end();
-        }
-
-        parserState.updateCurrentScope();
-    }
-
     private void parseLBrace(PsiBuilder builder, ParserState parserState) {
         if (parserState.currentScope.resolution == typeNamedEq) {
             parserState.currentScope = markScope(builder, parserState.scopes, objectBinding, m_types.OBJECT_EXPR, scopeExpression, m_types.LBRACE);
@@ -275,6 +295,20 @@ public class RmlParser extends CommonParser {
             }
             parserState.currentScope = markScope(builder, parserState.scopes, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE);
         }
+    }
+
+    private void parseRBrace(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
+
+        builder.advanceLexer();
+        parserState.dontMove = true;
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.scopes.pop().end();
+        }
+
+        parserState.updateCurrentScope();
     }
 
     private void parseRParen(PsiBuilder builder, ParserState parserState) {
