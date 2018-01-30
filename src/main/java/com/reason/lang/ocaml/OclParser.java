@@ -338,13 +338,11 @@ public class OclParser extends CommonParser {
             // It is a module name/path
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
             parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
         } else if (parserState.isCurrentResolution(include)) {
             // It is a module name/path
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.MODULE_NAME);
-            parserState.currentScope = markComplete(builder, parserState.scopes, openModulePath, m_types.MODULE_PATH);
         } else if (parserState.isCurrentResolution(exception)) {
             parserState.currentScope.complete = true;
             builder.remapCurrentToken(m_types.VALUE_NAME);

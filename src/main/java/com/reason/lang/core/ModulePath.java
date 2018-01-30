@@ -7,6 +7,7 @@ import com.reason.ide.files.FileBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class ModulePath {
         this(Collections.singletonList(element));
     }
 
-    public ModulePath(@NotNull List<PsiElement> elements) {
+    public ModulePath(@NotNull List<? extends PsiElement> elements) {
         m_names = new String[elements.size()];
         for (int i = 0; i < elements.size(); i++) {
             PsiElement element = elements.get(i);
@@ -51,5 +52,33 @@ public class ModulePath {
     @Override
     public String toString() {
         return Joiner.join(".", m_names);
+    }
+
+    public boolean isEmpty() {
+        return m_names.length == 0;
+    }
+
+    @NotNull
+    public String getLatest() {
+        return isEmpty() ? "" : m_names[m_names.length - 1];
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ModulePath that = (ModulePath) o;
+
+        return Arrays.equals(m_names, that.m_names);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(m_names);
     }
 }

@@ -1,5 +1,6 @@
 package com.reason.lang.core;
 
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
@@ -8,12 +9,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StubIndex;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
+import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
@@ -70,16 +73,20 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<PsiModule> findModules(@NotNull Project project, @NotNull String name) {
+    public static Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
         ArrayList<PsiModule> result = new ArrayList<>();
 
-        Collection<VirtualFile> virtualFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
-        for (VirtualFile virtualFile : virtualFiles) {
-            PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-            PsiModule[] modules = PsiTreeUtil.getChildrenOfType(file, PsiModule.class);
-            if (modules != null) {
-                for (PsiModule module : modules) {
-                    if (name.equals(module.getName())) {
+        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+
+        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
+        if (!modules.isEmpty()) {
+            for (PsiModule module : modules) {
+                VirtualFile virtualFile = module.getContainingFile().getVirtualFile();
+                FileType moduleFileType = virtualFile.getFileType();
+                boolean keepFile = (fileType == MlFileType.implementationOnly && (moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType));
+                if (keepFile) {
+                    String canonicalPath = virtualFile.getCanonicalPath();
+                    if (bucklescript.isDependency(canonicalPath)) {
                         result.add(module);
                     }
                 }
