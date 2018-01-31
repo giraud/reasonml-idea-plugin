@@ -97,6 +97,16 @@ public class RmlPsiUtil {
     }
 
     @Nullable
+    public static PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        Collection<PsiModule> modules = findModules(project, name, fileType);
+        if (!modules.isEmpty()) {
+            return modules.iterator().next();
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static PsiFile findFileModule(Project project, String name) {
         List<PsiFile> rmlModules = findFileModules(project, RmlFileType.INSTANCE.getDefaultExtension(), name, true);
         if (rmlModules.size() == 1) {

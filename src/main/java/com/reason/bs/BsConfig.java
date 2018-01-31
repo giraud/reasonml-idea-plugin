@@ -59,7 +59,7 @@ class BsConfig {
 
         if (canonicalPath.contains("node_modules") && m_deps != null) {
             for (String dep : m_deps) {
-                if (canonicalPath.contains(dep)) {
+                if (canonicalPath.contains(dep) || canonicalPath.contains("bs-platform/lib/ocaml/pervasives.ml")) {
                     return true;
                 }
             }
