@@ -13,9 +13,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.RmlFileType;
+import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
@@ -81,9 +79,29 @@ public class RmlPsiUtil {
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
         if (!modules.isEmpty()) {
             for (PsiModule module : modules) {
-                VirtualFile virtualFile = module.getContainingFile().getVirtualFile();
+                boolean keepFile;
+
+                FileBase containingFile = (FileBase) module.getContainingFile();
+                VirtualFile virtualFile = containingFile.getVirtualFile();
                 FileType moduleFileType = virtualFile.getFileType();
-                boolean keepFile = (fileType == MlFileType.implementationOnly && (moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType));
+
+                if (fileType == MlFileType.implementationOnly) {
+                    keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
+                } else if (fileType == MlFileType.interfaceOnly) {
+                    keepFile = moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType;
+                } else {
+                    // use interface if there is one, implementation otherwise ... always the case ????
+                    // we need a better way (cache through VirtualFileListener ?) to find that info
+                    if (moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType) {
+                        keepFile = true;
+                    } else {
+                        String nameWithoutExtension = virtualFile.getNameWithoutExtension();
+                        String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() : OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                        Collection<VirtualFile> interfaceFiles = FilenameIndex.getVirtualFilesByName(project, nameWithoutExtension + "." + extension, GlobalSearchScope.allScope(project));
+                        keepFile = interfaceFiles.isEmpty();
+                    }
+                }
+
                 if (keepFile) {
                     String canonicalPath = virtualFile.getCanonicalPath();
                     if (bucklescript.isDependency(canonicalPath)) {
@@ -108,12 +126,17 @@ public class RmlPsiUtil {
 
     @Nullable
     public static PsiFile findFileModule(Project project, String name) {
-        List<PsiFile> rmlModules = findFileModules(project, RmlFileType.INSTANCE.getDefaultExtension(), name, true);
+        return findFileModule(project, name, false);
+    }
+
+    @Nullable
+    public static PsiFile findFileModule(Project project, String name, boolean isInterface) {
+        List<PsiFile> rmlModules = findFileModules(project, isInterface ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() : RmlFileType.INSTANCE.getDefaultExtension(), name, true);
         if (rmlModules.size() == 1) {
             return rmlModules.get(0);
         }
 
-        List<PsiFile> oclModules = findFileModules(project, OclFileType.INSTANCE.getDefaultExtension(), name, true);
+        List<PsiFile> oclModules = findFileModules(project, isInterface ? OclInterfaceFileType.INSTANCE.getDefaultExtension() : OclFileType.INSTANCE.getDefaultExtension(), name, true);
         if (oclModules.size() == 1) {
             return oclModules.get(0);
         }

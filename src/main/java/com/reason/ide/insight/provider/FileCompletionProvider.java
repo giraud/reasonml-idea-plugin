@@ -30,7 +30,7 @@ public class FileCompletionProvider extends CompletionProvider<CompletionParamet
         addExpressionsToResult(resultSet, fileExpressions);
 
         // Add all expressions from pervasives (only RmlFile ?)
-        PsiModule pervasives = RmlPsiUtil.findModule(project, "Pervasives", MlFileType.implementationOnly);
+        PsiModule pervasives = RmlPsiUtil.findModule(project, "Pervasives", MlFileType.interfaceOnly);
         if (pervasives != null) {
             addExpressionsToResult(resultSet, pervasives.getExpressions());
         }

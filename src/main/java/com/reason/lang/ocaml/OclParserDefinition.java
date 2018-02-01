@@ -1,7 +1,6 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -13,6 +12,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.OclFile;
+import com.reason.ide.files.OclInterfaceFile;
+import com.reason.ide.files.OclInterfaceFileType;
 import com.reason.lang.LexerAdapter;
 import com.reason.lang.PsiElementFactory;
 import com.reason.lang.core.stub.type.OclFileStubElementType;
@@ -22,8 +23,6 @@ public class OclParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING);
-
-    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclLanguage.class));
 
     @NotNull
     @Override
@@ -57,7 +56,7 @@ public class OclParserDefinition implements ParserDefinition {
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
-        return new OclFile(viewProvider);
+        return viewProvider.getFileType() instanceof OclInterfaceFileType ? new OclInterfaceFile(viewProvider) : new OclFile(viewProvider);
     }
 
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {

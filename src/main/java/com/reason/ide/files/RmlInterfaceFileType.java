@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class RmlInterfaceFileType extends LanguageFileType {
-    static final RmlInterfaceFileType INSTANCE = new RmlInterfaceFileType();
+    public static final RmlInterfaceFileType INSTANCE = new RmlInterfaceFileType();
 
     private RmlInterfaceFileType() {
         super(RmlLanguage.INSTANCE);

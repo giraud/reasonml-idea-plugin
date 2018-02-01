@@ -12,6 +12,8 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.RmlFile;
+import com.reason.ide.files.RmlInterfaceFile;
+import com.reason.ide.files.RmlInterfaceFileType;
 import com.reason.lang.LexerAdapter;
 import com.reason.lang.PsiElementFactory;
 import com.reason.lang.core.stub.type.RmlFileStubElementType;
@@ -54,7 +56,7 @@ public class RmlParserDefinition implements ParserDefinition {
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
-        return new RmlFile(viewProvider);
+        return viewProvider.getFileType() instanceof RmlInterfaceFileType ? new RmlInterfaceFile(viewProvider) : new RmlFile(viewProvider);
     }
 
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
