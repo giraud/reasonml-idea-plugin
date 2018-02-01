@@ -50,7 +50,7 @@ public class RmlParser extends CommonParser {
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, parserState);
             } else if (tokenType == m_types.STRING) {
-                parseString(builder, parserState);
+                parseString(parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -109,7 +109,7 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseString(PsiBuilder builder, ParserState state) {
+    private void parseString(ParserState state) {
         if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) {
             state.end();
         }
@@ -120,7 +120,7 @@ public class RmlParser extends CommonParser {
             state.end();
         }
 
-        state.currentScope = markScope(builder, state.scopes, mlOpen, m_types.SCOPED_EXPR, scopeExpression, m_types.ML_STRING_OPEN);
+        state.currentScope = markScope(builder, state.scopes, multilineStart, m_types.SCOPED_EXPR, scopeExpression, m_types.ML_STRING_OPEN);
     }
 
     private void parseMlStringClose(PsiBuilder builder, ParserState parserState) {

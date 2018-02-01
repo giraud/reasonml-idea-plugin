@@ -4,7 +4,6 @@ public enum ParserScopeEnum {
     file,
 
     open,
-    openModulePath,
 
     include,
 
@@ -15,7 +14,6 @@ public enum ParserScopeEnum {
     type,
     typeNamed,
     typeNamedEq,
-    typeNamedEqPatternMatch,
 
     module,
     moduleNamed,
@@ -31,11 +29,10 @@ public enum ParserScopeEnum {
     letNamedEqParameters,
     letParameters,
     letFunBody,
-    letBody,
-    funBody,
 
     val,
     valNamed,
+    valNamedSignature,
 
     startTag,
     closeTag,
@@ -66,5 +63,6 @@ public enum ParserScopeEnum {
     switchBinaryCondition,
     try_,
     tryBinaryCondition,
-    tryWith, mlOpen,
+
+    multilineStart,
 }

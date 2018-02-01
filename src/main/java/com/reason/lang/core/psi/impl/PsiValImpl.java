@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,13 +40,20 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
     }
     //endregion
 
+    @NotNull
+    @Override
+    public String getSignature() {
+        PsiSignature signature = findChildByClass(PsiSignature.class);
+        return signature == null ? "" : signature.getText();
+    }
+
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
             @Override
             public String getPresentableText() {
-                return getName();
+                return getName() + ": " + getSignature();
             }
 
             @Nullable

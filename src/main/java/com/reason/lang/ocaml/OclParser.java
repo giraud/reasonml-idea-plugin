@@ -36,7 +36,7 @@ public class OclParser extends CommonParser {
             } else if (tokenType == m_types.END) { // end (like a })
                 parseEnd(builder, parserState);
             } else if (tokenType == m_types.PIPE) {
-                parsePipe(builder, parserState);
+                parsePipe(parserState);
             } else if (tokenType == m_types.EQ) {
                 parseEq(builder, parserState);
             } else if (tokenType == m_types.COLON) {
@@ -62,7 +62,7 @@ public class OclParser extends CommonParser {
             } else if (tokenType == m_types.ARROBASE) {
                 parseArrobase(builder, parserState);
             } else if (tokenType == m_types.STRING) {
-                parseString(builder, parserState);
+                parseString(parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -115,13 +115,13 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseString(PsiBuilder builder, ParserState state) {
+    private void parseString(ParserState state) {
         if (state.isCurrentResolution(annotationName)) {
             state.end();
         }
     }
 
-    private void parsePipe(PsiBuilder builder, ParserState state) {
+    private void parsePipe(ParserState state) {
         state.endUntilScopeExpression(m_types.WITH);
     }
 
@@ -204,13 +204,16 @@ public class OclParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseColon(PsiBuilder builder, ParserState parserState) { // :
-        if (parserState.isCurrentResolution(moduleNamed)) {
-            parserState.currentScope.resolution = moduleNamedColon;
-            parserState.currentScope.complete = true;
-        } else if (parserState.isCurrentResolution(externalNamed)) {
-            parserState.dontMove = advance(builder);
-            parserState.currentScope = markScope(builder, parserState.scopes, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG);
+    private void parseColon(PsiBuilder builder, ParserState state) { // :
+        if (state.isCurrentResolution(moduleNamed)) {
+            state.currentScope.resolution = moduleNamedColon;
+            state.currentScope.complete = true;
+        } else if (state.isCurrentResolution(externalNamed)) {
+            state.dontMove = advance(builder);
+            state.currentScope = markScope(builder, state.scopes, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG);
+        } else if (state.isCurrentResolution(valNamed)) {
+            state.dontMove = advance(builder);
+            state.currentScope = markCompleteScope(builder, state.scopes, valNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG);
         }
     }
 

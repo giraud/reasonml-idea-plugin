@@ -8,6 +8,8 @@ public class PsiInferredTypeUtil {
             return ((PsiType) expression).getTypeInfo();
         } else if (expression instanceof PsiExternal) {
             return ((PsiExternal) expression).getSignature();
+        } else if (expression instanceof PsiVal) {
+            return ((PsiVal) expression).getSignature();
         }
 
         return "";

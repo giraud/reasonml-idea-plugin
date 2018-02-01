@@ -132,7 +132,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
             @Nullable
             @Override
             public String getLocationString() {
-                return null;
+                return getQualifiedName();
             }
 
             @Nullable

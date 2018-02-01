@@ -57,7 +57,7 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
 
         PsiElement element = getFirstChild();
         while (element != null) {
-            if (element instanceof PsiType || element instanceof PsiModule || element instanceof PsiLet || element instanceof PsiExternal) {
+            if (element instanceof PsiType || element instanceof PsiModule || element instanceof PsiLet || element instanceof PsiExternal || element instanceof PsiVal) {
                 result.add((PsiNamedElement) element);
             }
             element = element.getNextSibling();
