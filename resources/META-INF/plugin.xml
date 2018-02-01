@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.36</version>
+    <version>0.37</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -14,13 +14,22 @@
 
       <p></p>
 
+      <b>version 0.37</b>
+
+      <ul>
+         <li>Fix #30</li>
+         <li>Add completion when starting typing</li>
+         <li>Display types for val/external (completion popup)</li>
+         <li>Use mli file when present (pervasives)</li>
+      </ul>
+
       <b>version 0.36</b>
 
       <ul>
          <li>Fix #29</li>
          <li>Improve parsers</li>
-         <li>add keyword completion (start expression)</li>
-         <li>add module completion for open expression</li>
+         <li>Add keyword completion (start expression)</li>
+         <li>Add module completion for open expression</li>
       </ul>
 
       <b>version 0.35</b>
@@ -43,14 +52,6 @@
       <ul>
          <li>Fix #22</li>
          <li>Fix #21</li>
-      </ul>
-
-      <b>version 0.32</b>
-
-      <ul>
-         <li>Updated notification message when bsb not found</li>
-         <li>Improve lexer</li>
-         <li>Implements 'go to' for Open expression (simple case)</li>
       </ul>
 
     ]]>

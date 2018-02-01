@@ -10,6 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+
+## 0.37
+
+* :bug: Fix #30
+* :rocket: add completion when starting typing
+* :house: Display types for val/external (completion popup)
+* :house: Use mli file when present (pervasives)
+
 ## 0.36
 
 * :bug: Fix #29
