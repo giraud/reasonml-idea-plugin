@@ -11,22 +11,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.merlin.MerlinService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class InferredTypes {
-
-    private static boolean m_useMerlin;
-
-    public InferredTypes() {
-        MerlinService merlin = ApplicationManager.getApplication().getComponent(MerlinService.class);
-        m_useMerlin = merlin != null && merlin.hasVersion();
-    }
 
     public static void queryForSelectedTextEditor(Project project) {
         try {
@@ -37,19 +27,8 @@ public class InferredTypes {
                 if (psiFile != null) {
                     Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
 
-                    if (m_useMerlin) {
-                        List<LogicalPosition> positions = letExpressions.stream().
-                                map(letExpressionToLogicalPosition(selectedTextEditor)).
-                                collect(Collectors.toList());
-
-                        if (!positions.isEmpty()) {
-                            MerlinQueryTypesTask inferredTypesTask = new MerlinQueryTypesTask(psiFile, letExpressions, positions);
-                            ApplicationManager.getApplication().executeOnPooledThread(inferredTypesTask);
-                        }
-                    } else {
-                        BscInferredTypesTask inferredTypesTask = new BscInferredTypesTask(psiFile, letExpressions);
-                        ApplicationManager.getApplication().executeOnPooledThread(inferredTypesTask);
-                    }
+                    BscInferredTypesTask inferredTypesTask = new BscInferredTypesTask(psiFile, letExpressions);
+                    ApplicationManager.getApplication().executeOnPooledThread(inferredTypesTask);
                 }
             }
         } catch (Error e) {

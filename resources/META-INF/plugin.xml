@@ -66,10 +66,6 @@
 
     <application-components>
         <component>
-            <interface-class>com.reason.merlin.MerlinService</interface-class>
-            <implementation-class>com.reason.merlin.MerlinServiceComponent</implementation-class>
-        </component>
-        <component>
             <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
         </component>
     </application-components>
@@ -165,7 +161,6 @@
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlAnnotator"/>
         <annotator language="Ocaml" implementationClass="com.reason.ide.highlight.OclAnnotator"/>
 
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.ide.highlight.MerlinErrorAnnotator"/>
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
         <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
@@ -186,9 +181,6 @@
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
         <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
-
-        <!--<projectService serviceInterface="com.reason.merlin.MerlinService"-->
-        <!--serviceImplementation="com.reason.merlin.MerlinServiceComponent"/>-->
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->

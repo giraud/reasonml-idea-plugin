@@ -17,7 +17,6 @@ import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.xdebugger.ui.DebuggerColors;
 import com.reason.ide.LineNumbering;
-import com.reason.merlin.types.MerlinPosition;
 import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,8 +48,8 @@ public class RmlEditorLinePainter extends EditorLinePainter {
             int letOffset = letStatement.getTextOffset();
             // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
             // but I would prefer to use runReadAction method.
-            MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset);
-//            LogicalPosition letPosition = new LogicalPosition;
+            LineNumbering.Position letPosition = lineNumbering.offsetToPosition(letOffset);
+            //            LogicalPosition letPosition = new LogicalPosition;
 //            letPosition[0] = selectedTextEditor.offsetToLogicalPosition(letOffset);
             if (letPosition.line - 1 == lineNumber) {
                 inferredType = letStatement.getInferredType();
