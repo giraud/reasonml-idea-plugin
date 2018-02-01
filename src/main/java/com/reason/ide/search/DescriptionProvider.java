@@ -12,9 +12,12 @@ import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiTypeName;
 import com.reason.lang.core.psi.PsiVarName;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DescriptionProvider implements ElementDescriptionProvider {
 
+
+    @Nullable
     @Override
     public String getElementDescription(@NotNull PsiElement element, @NotNull ElementDescriptionLocation location) {
         if (location == UsageViewNodeTextLocation.INSTANCE && element instanceof PsiNamedElement) {
@@ -37,6 +40,6 @@ public class DescriptionProvider implements ElementDescriptionProvider {
             }
         }
 
-        return element.toString();
+        return null;
     }
 }

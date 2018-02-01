@@ -138,6 +138,7 @@
 
         <lang.documentationProvider language="ReasonML"
                                     implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+        <lang.documentationProvider language="Ocaml" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
 
         <!--
          | Search
