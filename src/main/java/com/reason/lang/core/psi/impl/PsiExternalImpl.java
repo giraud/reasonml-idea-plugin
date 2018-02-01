@@ -7,6 +7,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,13 +26,27 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findNotNullChildByType(m_types.VALUE_NAME);
+        PsiScopedExpr operatorOverride = findChildByClass(PsiScopedExpr.class);
+        if (operatorOverride != null) {
+            return operatorOverride;
+        }
+
+        return findChildByType(m_types.VALUE_NAME);
     }
 
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        if (nameIdentifier == null) {
+            return "unknown";
+        }
+
+        if (nameIdentifier instanceof PsiScopedExpr) {
+            String text = nameIdentifier.getText();
+            return text.substring(1, text.length() - 2).trim();
+        }
+
+        return nameIdentifier.getText();
     }
 
     @Override

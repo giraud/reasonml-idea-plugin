@@ -329,13 +329,20 @@ public class RmlParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseLParen(PsiBuilder builder, ParserState parserState) {
-        parserState.end();
-        if (parserState.currentScope.resolution == letNamedEq) {
+    private void parseLParen(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(external)) {
+            // overloading an operator
+            state.currentScope.resolution = externalNamed;
+            state.currentScope.complete = true;
+        }
+
+        state.end();
+
+        if (state.currentScope.resolution == letNamedEq) {
             // function parameters
-            parserState.currentScope = markScope(builder, parserState.scopes, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN);
+            state.currentScope = markScope(builder, state.scopes, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN);
         } else {
-            parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+            state.currentScope = markScope(builder, state.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
         }
     }
 

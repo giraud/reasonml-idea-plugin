@@ -242,9 +242,15 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseLParen(PsiBuilder builder, ParserState parserState) {
-        parserState.end();
-        parserState.currentScope = markScope(builder, parserState.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
+    private void parseLParen(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(external)) {
+            // overloading an operator
+            state.currentScope.resolution = externalNamed;
+            state.currentScope.complete = true;
+        }
+
+        state.end();
+        state.currentScope = markScope(builder, state.scopes, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN);
     }
 
     private void parseRParen(PsiBuilder builder, ParserState parserState) {
@@ -256,7 +262,6 @@ public class OclParser extends CommonParser {
         if (scope != null) {
             scope.complete = true;
             parserState.scopes.pop().end();
-            parserState.getLatestScope();
         }
 
         parserState.updateCurrentScope();
