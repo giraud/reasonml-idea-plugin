@@ -62,22 +62,33 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
         return signature == null ? "" : signature.getText();
     }
 
+    private String getRealName() {
+        PsiElement name = findChildByType(m_types.STRING);
+        return name == null ? "" : name.getText();
+    }
+
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
             @Override
             public String getPresentableText() {
-                //                ReasonMLExternalAlias externalAlias = external.getExternalAlias();
-                String externalName = getName();
-                //                if (externalAlias.getTextLength() == 2) {
-                //                    return externalName;
-                //                }
+                String aliasName = getName();
 
-                //                String externalAliasText = externalAlias.getText();
-                //                String externalAliasName = externalAliasText.substring(1, externalAliasText.length() - 1);
-                //                return externalName + (externalAliasName.equals(externalName) ? "" : " ⇐ " + externalAliasName);
-                return externalName;
+                String realName = getRealName();
+                if (!realName.isEmpty()) {
+                    String realNameText = realName.substring(1, realName.length() - 1);
+                    if (!aliasName.equals(realNameText)) {
+                        aliasName += " (" + realNameText + ")";
+                    }
+                }
+
+                String signature = getSignature();
+                if (!signature.isEmpty()) {
+                    aliasName += " :  " + signature;
+                }
+
+                return aliasName;
             }
 
             @Nullable

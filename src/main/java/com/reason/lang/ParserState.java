@@ -9,12 +9,12 @@ import static com.reason.lang.ParserScopeType.*;
 
 public class ParserState {
 
-    public ParserScope currentScope;
     public boolean dontMove = false;
     public IElementType previousTokenType;
 
-    private final ParserScope fileScope;
     private Stack<ParserScope> scopes;
+    private final ParserScope fileScope;
+    public ParserScope currentScope;
 
     ParserState(ParserScope fileScope) {
         this.fileScope = fileScope;
