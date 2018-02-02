@@ -31,6 +31,7 @@ public class ParserState {
                 scopes.pop().end();
                 scope = getLatestScope();
             }
+            updateCurrentScope();
         }
 
         return scope;
@@ -90,15 +91,52 @@ public class ParserState {
         currentScope = scopes.empty() ? fileScope : scopes.peek();
     }
 
-    public boolean isCurrentResolution(ParserScopeEnum scope) {
+    public boolean isResolution(ParserScopeEnum scope) {
         return currentScope.resolution == scope;
     }
 
-    public boolean notCurrentResolution(ParserScopeEnum scope) {
+    public boolean notResolution(ParserScopeEnum scope) {
         return currentScope.resolution != scope;
     }
 
     public void complete() {
         currentScope.complete = true;
+    }
+
+    public void add(ParserScope scope) {
+        scopes.add(scope);
+        currentScope = scope;
+    }
+
+    public boolean empty() {
+        return scopes.empty();
+    }
+
+    public void clear() {
+        ParserScope scope = scopes.pop();
+        while (scope != null) {
+            scope.end();
+            scope = scopes.empty() ? null : scopes.pop();
+        }
+        currentScope = fileScope;
+    }
+
+    @Nullable
+    public ParserScope pop() {
+        ParserScope scope = scopes.pop();
+        updateCurrentScope();
+        return scope;
+    }
+
+    public void setComplete() {
+        currentScope.complete = true;
+    }
+
+    public boolean isCurrentTokenType(IElementType elementType) {
+        return currentScope.tokenType == elementType;
+    }
+
+    public void setResolution(ParserScopeEnum resolution) {
+        currentScope.resolution = resolution;
     }
 }
