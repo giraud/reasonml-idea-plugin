@@ -7,6 +7,6 @@ List of todos
 - [ ] syntax highlight of tag property name
 - [ ] ReactDOMRe.re incorrect parsing (renderToElementWithId)
 - [ ] ReasonReact.rei incorrect parsing
-
+- [ ] ReactDOMRe.re incorrect external name
 
 - [x] reason file: external in structure => no type
