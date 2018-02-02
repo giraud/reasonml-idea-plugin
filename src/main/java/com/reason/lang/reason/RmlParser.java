@@ -129,7 +129,7 @@ public class RmlParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
         parserState.updateCurrentScope();
@@ -189,8 +189,8 @@ public class RmlParser extends CommonParser {
     private void parseGtAutoClose(PsiBuilder builder, ParserState parserState) {
         if (parserState.currentScope.tokenType == m_types.TAG_PROPERTY) {
             parserState.currentScope.end();
-            parserState.scopes.pop();
-            parserState.add(parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek());
+            parserState.pop();
+            parserState.updateCurrentScope();
         }
 
         if (parserState.currentScope.resolution == startTag || parserState.currentScope.resolution == closeTag) {
@@ -199,9 +199,9 @@ public class RmlParser extends CommonParser {
             parserState.dontMove = true;
 
             parserState.currentScope.end();
-            parserState.scopes.pop();
+            parserState.pop();
 
-            parserState.add(parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek());
+            parserState.updateCurrentScope();
         }
     }
 
@@ -274,7 +274,7 @@ public class RmlParser extends CommonParser {
             if (scope.resolution != annotation) {
                 scope.complete = true;
             }
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
         parserState.updateCurrentScope();
@@ -305,7 +305,7 @@ public class RmlParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
         parserState.updateCurrentScope();
@@ -319,7 +319,7 @@ public class RmlParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.scopes.pop().end();
+            parserState.pop().end();
             scope = parserState.getLatestScope();
             if (scope != null && scope.resolution == letNamedEq) {
                 scope.resolution = letNamedEqParameters;
@@ -369,7 +369,7 @@ public class RmlParser extends CommonParser {
         if (scope != null && scope.scopeType == startExpression) {
             builder.advanceLexer();
             parserState.dontMove = true;
-            parserState.scopes.pop();
+            parserState.pop();
             scope.end();
         }
 

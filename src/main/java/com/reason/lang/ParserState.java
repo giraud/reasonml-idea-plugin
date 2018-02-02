@@ -8,18 +8,19 @@ import java.util.Stack;
 import static com.reason.lang.ParserScopeType.*;
 
 public class ParserState {
-    public final ParserScope fileScope;
+
     public ParserScope currentScope;
     public boolean dontMove = false;
-    public Stack<ParserScope> scopes;
     public IElementType previousTokenType;
+
+    private final ParserScope fileScope;
+    private Stack<ParserScope> scopes;
 
     ParserState(ParserScope fileScope) {
         this.fileScope = fileScope;
         currentScope = fileScope;
         scopes = new Stack<>();
     }
-
 
     @Nullable
     public ParserScope end() {

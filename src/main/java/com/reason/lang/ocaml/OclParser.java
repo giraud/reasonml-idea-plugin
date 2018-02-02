@@ -172,7 +172,7 @@ public class OclParser extends CommonParser {
         // A SEMI operator ends the start expression, not the group or scope
         ParserScope scope = parserState.end();
         if (scope != null && scope.scopeType == startExpression) {
-            parserState.scopes.pop();
+            parserState.pop();
             scope.end();
         }
 
@@ -183,7 +183,7 @@ public class OclParser extends CommonParser {
         // End current start-expression scope
         ParserScope scope = parserState.endUntilStart();
         if (scope != null && scope.scopeType == startExpression) {
-            parserState.scopes.pop();
+            parserState.pop();
             scope.end();
         }
 
@@ -198,7 +198,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
         parserState.updateCurrentScope();
@@ -264,7 +264,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
         parserState.updateCurrentScope();
@@ -283,7 +283,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
         parserState.updateCurrentScope();
@@ -309,10 +309,10 @@ public class OclParser extends CommonParser {
             if (scope.resolution != annotation) {
                 scope.complete = true;
             }
-            parserState.scopes.pop().end();
+            parserState.pop().end();
         }
 
-        parserState.currentScope = parserState.scopes.empty() ? parserState.fileScope : parserState.scopes.peek();
+        parserState.updateCurrentScope();
     }
 
     private void parseLIdent(PsiBuilder builder, ParserState parserState) {
@@ -422,7 +422,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             if (scope.scopeType == startExpression) {
-                parserState.scopes.pop();
+                parserState.pop();
                 scope.end();
             }
         }
