@@ -6,7 +6,7 @@ ReasonML language plugin for idea
 ## Status
 
 :exclamation: This is a **work in progress**, the language has very basic - and partially implemented - functionalities.
-You can look at the [todo list](TODO.md).
+You can look at the [project board](https://github.com/reasonml-editor/reasonml-idea-plugin/projects/1).
 
 This code might change quite a lot or break in the future.
 
