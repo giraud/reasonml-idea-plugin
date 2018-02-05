@@ -1,6 +1,11 @@
 package com.reason.bs;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
+import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.fileTypes.FileType;
@@ -20,11 +25,6 @@ import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.Collection;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -73,6 +73,13 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
     public void projectOpened() {
         VirtualFile baseDir = Platform.findBaseRoot(m_project);
         VirtualFile bsconfig = baseDir.findChild("bsconfig.json");
+
+        boolean disabled = Boolean.getBoolean("reasonBsbDisabled");
+        if (disabled) {
+            // But you should NEVER do that
+            Notifications.Bus.notify(new RmlNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
+            return;
+        }
 
         if (bsconfig != null) {
             m_config = BsConfig.read(bsconfig);

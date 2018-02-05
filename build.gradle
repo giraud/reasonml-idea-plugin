@@ -26,6 +26,7 @@ allprojects {
         pluginName 'reasonml-plugin-idea'
         version ideaVersion
         updateSinceUntilBuild = false
+        //systemProperty "reasonBsbDisabled", "true"
     }
 }
 
