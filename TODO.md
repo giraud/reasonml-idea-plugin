@@ -8,5 +8,6 @@ List of todos
 - [ ] ReactDOMRe.re incorrect parsing (renderToElementWithId)
 - [ ] ReasonReact.rei incorrect parsing
 - [ ] ReactDOMRe.re incorrect external name
+- [ ] Automatic stack trace reporting to github, see https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000406190-Answer-Automatic-error-reporting-to-GitHub-issues
 
 - [x] reason file: external in structure => no type
