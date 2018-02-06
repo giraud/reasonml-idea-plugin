@@ -129,7 +129,10 @@ public class RmlParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.pop().end();
+            scope = parserState.pop();
+            if (scope != null) {
+                scope.end();
+            }
         }
 
         parserState.updateCurrentScope();
@@ -193,20 +196,13 @@ public class RmlParser extends CommonParser {
 
     private void parseGtAutoClose(PsiBuilder builder, ParserState parserState) {
         if (parserState.isCurrentTokenType(m_types.TAG_PROPERTY)) {
-            parserState.currentScope.end();
-            parserState.pop();
-            parserState.updateCurrentScope();
+            parserState.popEnd();
         }
 
         if (parserState.isResolution(startTag) || parserState.isResolution(closeTag)) {
             builder.remapCurrentToken(m_types.TAG_GT);
-            builder.advanceLexer();
-            parserState.dontMove = true;
-
-            parserState.currentScope.end();
-            parserState.pop();
-
-            parserState.updateCurrentScope();
+            parserState.dontMove = advance(builder);
+            parserState.popEnd();
         }
     }
 
@@ -231,6 +227,7 @@ public class RmlParser extends CommonParser {
 
     private void parseLIdent(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(type)) {
+            // TYPE LIDENT ...
             builder.remapCurrentToken(m_types.VALUE_NAME);
             parserState.dontMove = wrapWith(m_types.TYPE_CONSTR_NAME, builder);
             parserState.setResolution(typeNamed);
@@ -248,8 +245,13 @@ public class RmlParser extends CommonParser {
             // This is a property
             parserState.end();
             builder.remapCurrentToken(m_types.PROPERTY_NAME);
-            parserState.add(markScope(builder, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT));
-            parserState.setComplete();
+            parserState.add(markCompleteScope(builder, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT));
+            builder.setWhitespaceSkippedCallback((type, start, end) -> {
+                if (parserState.isResolution(tagPropertyEq)) {
+                    parserState.popEnd();
+                    builder.setWhitespaceSkippedCallback(null);
+                }
+            });
         } else {
             if (parserState.notResolution(annotationName)) {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
@@ -279,7 +281,11 @@ public class RmlParser extends CommonParser {
             if (scope.resolution != annotation) {
                 scope.complete = true;
             }
-            parserState.pop().end();
+
+            scope = parserState.pop();
+            if (scope != null) {
+                scope.end();
+            }
         }
 
         parserState.updateCurrentScope();
@@ -310,7 +316,10 @@ public class RmlParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.pop().end();
+            scope = parserState.pop();
+            if (scope != null) {
+                scope.end();
+            }
         }
 
         parserState.updateCurrentScope();
@@ -324,7 +333,10 @@ public class RmlParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.pop().end();
+            ParserScope poppedScope = parserState.pop();
+            if (poppedScope != null) {
+                poppedScope.end();
+            }
             scope = parserState.getLatestScope();
             if (scope != null && scope.resolution == letNamedEq) {
                 scope.resolution = letNamedEqParameters;

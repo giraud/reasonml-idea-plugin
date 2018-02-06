@@ -12,24 +12,23 @@ public class ParserState {
     public boolean dontMove = false;
     public IElementType previousTokenType;
 
-    private Stack<ParserScope> scopes;
-    private final ParserScope fileScope;
-    public ParserScope currentScope;
+    private ParserScope currentScope;
+    private final ParserScope m_rootScope;
+    private final Stack<ParserScope> m_scopes = new Stack<>();
 
-    ParserState(ParserScope fileScope) {
-        this.fileScope = fileScope;
-        currentScope = fileScope;
-        scopes = new Stack<>();
+    ParserState(ParserScope rootScope) {
+        m_rootScope = rootScope;
+        currentScope = rootScope;
     }
 
     @Nullable
     public ParserScope end() {
         ParserScope scope = null;
 
-        if (!scopes.empty()) {
-            scope = scopes.peek();
+        if (!m_scopes.empty()) {
+            scope = m_scopes.peek();
             while (scope != null && scope.scopeType == any) {
-                scopes.pop().end();
+                m_scopes.pop().end();
                 scope = getLatestScope();
             }
             updateCurrentScope();
@@ -42,10 +41,10 @@ public class ParserState {
     public ParserScope endUntilStartForced() {
         ParserScope scope = null;
 
-        if (!scopes.empty()) {
-            scope = scopes.peek();
+        if (!m_scopes.empty()) {
+            scope = m_scopes.peek();
             while (scope != null && scope.scopeType != startExpression) {
-                scopes.pop().end();
+                m_scopes.pop().end();
                 scope = getLatestScope();
             }
         }
@@ -57,10 +56,10 @@ public class ParserState {
     public ParserScope endUntilStart() {
         ParserScope scope = null;
 
-        if (!scopes.empty()) {
-            scope = scopes.peek();
+        if (!m_scopes.empty()) {
+            scope = m_scopes.peek();
             while (scope != null && scope.scopeType != startExpression) {
-                scopes.pop().end();
+                m_scopes.pop().end();
                 scope = getLatestScope();
             }
         }
@@ -74,10 +73,10 @@ public class ParserState {
     public ParserScope endUntilScopeExpression(IElementType scopeElementType) {
         ParserScope scope = null;
 
-        if (!scopes.empty()) {
-            scope = scopes.peek();
+        if (!m_scopes.empty()) {
+            scope = m_scopes.peek();
             while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeElementType != scopeElementType)) {
-                scopes.pop().end();
+                m_scopes.pop().end();
                 scope = getLatestScope();
             }
         }
@@ -87,11 +86,11 @@ public class ParserState {
 
     @Nullable
     public ParserScope getLatestScope() {
-        return scopes.empty() ? null : scopes.peek();
+        return m_scopes.empty() ? null : m_scopes.peek();
     }
 
     public void updateCurrentScope() {
-        currentScope = scopes.empty() ? fileScope : scopes.peek();
+        currentScope = m_scopes.empty() ? m_rootScope : m_scopes.peek();
     }
 
     public boolean isResolution(ParserScopeEnum scope) {
@@ -107,28 +106,35 @@ public class ParserState {
     }
 
     public void add(ParserScope scope) {
-        scopes.add(scope);
+        m_scopes.add(scope);
         currentScope = scope;
     }
 
     public boolean empty() {
-        return scopes.empty();
+        return m_scopes.empty();
     }
 
     public void clear() {
-        ParserScope scope = scopes.pop();
+        ParserScope scope = m_scopes.pop();
         while (scope != null) {
             scope.end();
-            scope = scopes.empty() ? null : scopes.pop();
+            scope = m_scopes.empty() ? null : m_scopes.pop();
         }
-        currentScope = fileScope;
+        currentScope = m_rootScope;
     }
 
     @Nullable
     public ParserScope pop() {
-        ParserScope scope = scopes.pop();
+        ParserScope scope = m_scopes.pop();
         updateCurrentScope();
         return scope;
+    }
+
+    public void popEnd() {
+        ParserScope scope = pop();
+        if (scope != null) {
+            scope.end();
+        }
     }
 
     public void setComplete() {

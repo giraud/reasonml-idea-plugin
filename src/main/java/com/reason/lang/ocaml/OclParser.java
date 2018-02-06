@@ -198,7 +198,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.pop().end();
+            parserState.popEnd();
         }
 
         parserState.updateCurrentScope();
@@ -264,7 +264,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.pop().end();
+            parserState.popEnd();
         }
 
         parserState.updateCurrentScope();
@@ -283,7 +283,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             scope.complete = true;
-            parserState.pop().end();
+            parserState.popEnd();
         }
 
         parserState.updateCurrentScope();
@@ -309,7 +309,7 @@ public class OclParser extends CommonParser {
             if (scope.resolution != annotation) {
                 scope.complete = true;
             }
-            parserState.pop().end();
+            parserState.popEnd();
         }
 
         parserState.updateCurrentScope();

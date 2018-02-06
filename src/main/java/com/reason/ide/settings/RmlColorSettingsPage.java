@@ -25,6 +25,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Module name", MlSyntaxHighlighter.MODULE_NAME_),
             new AttributesDescriptor("Option", MlSyntaxHighlighter.OPTION_),
             new AttributesDescriptor("Markup tag", MlSyntaxHighlighter.MARKUP_TAG_),
+            new AttributesDescriptor("Markup attribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_),
             new AttributesDescriptor("Keyword", MlSyntaxHighlighter.KEYWORD_),
             new AttributesDescriptor("Operation", MlSyntaxHighlighter.OPERATION_SIGN_),
             new AttributesDescriptor("String", MlSyntaxHighlighter.STRING_),
@@ -52,7 +53,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        InputStream colorsStream = getClass().getResourceAsStream("/ColorsExemple.re");
+        InputStream colorsStream = getClass().getResourceAsStream("/ColorsExample.re");
 
         String exempleSourceCode;
         try {
