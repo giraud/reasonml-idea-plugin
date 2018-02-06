@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.37</version>
+    <version>0.38</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -13,6 +13,14 @@
       <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
 
       <p></p>
+
+      <b>version 0.38</b>
+
+      <ul>
+         <li>Better JSX parsing/highlighting</li>
+         <li>Fix inferred type annotations</li>
+         <li>Improved reason parser</li>
+      </ul>
 
       <b>version 0.37</b>
 
@@ -45,13 +53,6 @@
          <li>Fix a NPE with the folding code when comments are too small</li>
          <li>Fix #28, maybe</li>
          <li>Fix #25, minimal support for .ml4 files</li>
-      </ul>
-
-      <b>version 0.33</b>
-
-      <ul>
-         <li>Fix #22</li>
-         <li>Fix #21</li>
       </ul>
 
     ]]>

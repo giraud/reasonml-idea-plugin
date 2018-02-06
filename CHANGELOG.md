@@ -11,6 +11,12 @@
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
 
+## 0.38
+
+* :house: Better JSX parsing/highlighting
+* :house: Fix inferred type annotations
+* :house: Improved reason parser
+
 ## 0.37
 
 * :bug: Fix #30
