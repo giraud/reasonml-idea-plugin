@@ -127,6 +127,7 @@ public abstract class MlTypes {
     public IElementType TAG_NAME;
     public IElementType TAG_PROPERTY;
     public IElementType TAG_LT;
+    public IElementType TAG_LT_SLASH;
     public IElementType TAG_GT;
     public IElementType TILDE;
     public IElementType TO;

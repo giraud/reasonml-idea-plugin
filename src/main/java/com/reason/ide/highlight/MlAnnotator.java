@@ -33,7 +33,7 @@ public abstract class MlAnnotator implements Annotator {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.ANNOTATION_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
-        } else if (elementType == m_types.TAG_NAME) {
+        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_GT) {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.MARKUP_TAG_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         } else if (elementType == m_types.PROPERTY_NAME) {

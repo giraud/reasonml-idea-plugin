@@ -73,6 +73,8 @@ public class RmlParser extends CommonParser {
             // < ... >
             else if (tokenType == m_types.LT) {
                 parseLt(builder, parserState);
+            } else if (tokenType == m_types.TAG_LT_SLASH) {
+                parseLtSlash(builder, parserState);
             } else if (tokenType == m_types.GT || tokenType == m_types.TAG_AUTO_CLOSE) {
                 parseGtAutoClose(builder, parserState);
             }
@@ -194,6 +196,29 @@ public class RmlParser extends CommonParser {
         }
     }
 
+    private void parseLt(PsiBuilder builder, ParserState parserState) {
+        // Can be a symbol or a JSX tag
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
+            // Surely a tag
+            builder.remapCurrentToken(m_types.TAG_LT);
+            parserState.add(markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT));
+            parserState.dontMove = advance(builder);
+            builder.remapCurrentToken(m_types.TAG_NAME);
+        }
+    }
+
+    private void parseLtSlash(PsiBuilder builder, ParserState state) {
+        IElementType nextTokenType = builder.rawLookup(1);
+        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
+            // A closing tag
+            builder.remapCurrentToken(m_types.TAG_LT);
+            state.add(markCompleteScope(builder, closeTag, m_types.TAG_CLOSE, groupExpression, m_types.TAG_LT));
+            state.dontMove = advance(builder);
+            builder.remapCurrentToken(m_types.TAG_NAME);
+        }
+    }
+
     private void parseGtAutoClose(PsiBuilder builder, ParserState parserState) {
         if (parserState.isCurrentTokenType(m_types.TAG_PROPERTY)) {
             parserState.popEnd();
@@ -205,26 +230,6 @@ public class RmlParser extends CommonParser {
             parserState.popEnd();
         }
     }
-
-    private void parseLt(PsiBuilder builder, ParserState parserState) {
-        // Can be a symbol or a JSX tag
-        IElementType nextTokenType = builder.rawLookup(1);
-        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
-            // Surely a tag
-            builder.remapCurrentToken(m_types.TAG_LT);
-            parserState.add(markScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT));
-            parserState.setComplete();
-
-            builder.advanceLexer();
-            parserState.dontMove = true;
-            builder.remapCurrentToken(m_types.TAG_NAME);
-        } else if (nextTokenType == m_types.SLASH) {
-            builder.remapCurrentToken(m_types.TAG_LT);
-            parserState.add(markScope(builder, closeTag, m_types.TAG_CLOSE, any, m_types.TAG_LT));
-            parserState.setComplete();
-        }
-    }
-
     private void parseLIdent(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(type)) {
             // TYPE LIDENT ...

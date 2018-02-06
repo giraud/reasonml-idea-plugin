@@ -133,6 +133,7 @@ public class OclTypes extends MlTypes {
         TAG_NAME = new OclTokenType("TAG_NAME");
         TAG_PROPERTY = new OclTokenType("TAG_PROPERTY");
         TAG_LT = new OclTokenType("TAG_LT");
+        TAG_LT_SLASH = new OclTokenType("TAG_LT_SLASH");
         TAG_GT = new OclTokenType("TAG_GT");
         TILDE = new OclElementType("TILDE");
         TO = new OclElementType("TO");

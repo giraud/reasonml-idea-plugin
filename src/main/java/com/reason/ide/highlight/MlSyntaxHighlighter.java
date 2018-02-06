@@ -156,8 +156,6 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             return SEMICOLON_KEYS;
         } else if (m_types.STRING.equals(tokenType) || m_types.CHAR.equals(tokenType)) {
             return STRING_KEYS;
-        } else if (BAD_CHARACTER.equals(tokenType)) {
-            return BAD_CHAR_KEYS;
         } else if (m_types == RmlTypes.INSTANCE) {
             if (RML_KEYWORD_TYPES.contains(tokenType)) {
                 return KEYWORD_KEYS;
@@ -174,6 +172,8 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             } else if (OCL_OPTIONS_TYPES.contains(tokenType)) {
                 return OPTION_KEYS;
             }
+        } else if (BAD_CHARACTER.equals(tokenType)) {
+            return BAD_CHAR_KEYS;
         }
 
         return EMPTY_KEYS;

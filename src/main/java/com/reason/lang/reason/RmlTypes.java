@@ -134,6 +134,7 @@ public class RmlTypes extends MlTypes {
         TAG_NAME = new RmlTokenType("TAG_NAME");
         TAG_PROPERTY = new RmlTokenType("TAG_PROPERTY");
         TAG_LT = new RmlTokenType("TAG_LT");
+        TAG_LT_SLASH = new RmlTokenType("TAG_LT_SLASH");
         TAG_GT = new RmlTokenType("TAG_GT");
         TILDE = new RmlElementType("TILDE");
         TO = new RmlElementType("TO");
