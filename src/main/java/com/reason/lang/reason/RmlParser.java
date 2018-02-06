@@ -176,6 +176,11 @@ public class RmlParser extends CommonParser {
         if (parserState.isResolution(externalNamed)) {
             parserState.dontMove = advance(builder);
             parserState.add(markScope(builder, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
+        } else if (parserState.isResolution(moduleNamed)) {
+            // Module signature
+            //   MODULE UIDENT COLON ...
+            parserState.setResolution(moduleNamedSignature);
+            parserState.setComplete();
         }
     }
 
@@ -283,7 +288,7 @@ public class RmlParser extends CommonParser {
     private void parseLBrace(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(typeNamedEq)) {
             parserState.add(markScope(builder, objectBinding, m_types.OBJECT_EXPR, scopeExpression, m_types.LBRACE));
-        } else if (parserState.isResolution(moduleNamedEq)) {
+        } else if (parserState.isResolution(moduleNamedEq) || parserState.isResolution(moduleNamedSignature)) {
             parserState.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else if (parserState.isResolution(letNamedEqParameters)) {
             parserState.add(markScope(builder, letFunBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE));
@@ -366,14 +371,12 @@ public class RmlParser extends CommonParser {
     private void parseSemi(PsiBuilder builder, ParserState parserState) {
         // End current start-expression scope
         ParserScope scope = parserState.endUntilStart();
-        if (scope != null && scope.scopeType == startExpression) {
+        if (scope != null && (scope.scopeType == startExpression || scope.tokenType == m_types.LET_BINDING)) {
             builder.advanceLexer();
             parserState.dontMove = true;
             parserState.pop();
             scope.end();
         }
-
-        parserState.updateCurrentScope();
     }
 
     private void parseUIdent(PsiBuilder builder, ParserState parserState) {

@@ -59,11 +59,13 @@ public class ParserState {
 
         if (!scopes.empty()) {
             scope = scopes.peek();
-            while (scope != null && scope.scopeType != startExpression && scope.scopeType != scopeExpression) {
+            while (scope != null && scope.scopeType != startExpression) {
                 scopes.pop().end();
                 scope = getLatestScope();
             }
         }
+
+        updateCurrentScope();
 
         return scope;
     }
