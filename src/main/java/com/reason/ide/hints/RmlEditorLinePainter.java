@@ -1,9 +1,7 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorLinePainter;
-import com.intellij.openapi.editor.LineExtensionInfo;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -16,7 +14,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.Gray;
 import com.intellij.ui.JBColor;
 import com.intellij.xdebugger.ui.DebuggerColors;
-import com.reason.ide.LineNumbering;
 import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +25,7 @@ public class RmlEditorLinePainter extends EditorLinePainter {
 
     @Override
     public Collection<LineExtensionInfo> getLineExtensions(@NotNull Project project, @NotNull VirtualFile file, int lineNumber) {
-        final Document document = FileDocumentManager.getInstance().getDocument(file);
+        Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document == null) {
             return null;
         }
@@ -38,52 +35,32 @@ public class RmlEditorLinePainter extends EditorLinePainter {
             return null;
         }
 
-        PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-        LineNumbering lineNumbering = new LineNumbering(document.getCharsSequence());
+        PsiFile psiFile = PsiDocumentManager.getInstance(project).getCachedPsiFile(document);
+
+        //int lineStartOffset = document.getLineStartOffset(lineNumber - 1);
+        //PsiLet elementOfClassAtOffset = PsiTreeUtil.findElementOfClassAtOffset(psiFile, lineStartOffset, PsiLet.class, false);
+        //System.out.println("line: " + lineNumber + " (" + lineStartOffset + ") " + elementOfClassAtOffset);
 
         Collection<PsiLet> letStatements = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
 
-        String inferredType = null;
+        final String[] inferredType = {null};
         for (PsiLet letStatement : letStatements) {
             int letOffset = letStatement.getTextOffset();
-            // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
-            // but I would prefer to use runReadAction method.
-            LineNumbering.Position letPosition = lineNumbering.offsetToPosition(letOffset);
-            //            LogicalPosition letPosition = new LogicalPosition;
-//            letPosition[0] = selectedTextEditor.offsetToLogicalPosition(letOffset);
-            if (letPosition.line - 1 == lineNumber) {
-                inferredType = letStatement.getInferredType();
-                break;
-            }
+            ApplicationManager.getApplication().runReadAction(() -> {
+                LogicalPosition letLogicalPosition = selectedTextEditor.offsetToLogicalPosition(letOffset);
+                if (letLogicalPosition.line == lineNumber) {
+                    inferredType[0] = letStatement.getInferredType();
+                }
+            });
         }
 
-/*
-        Function<PsiLet, String> findInferredType = letStatement -> {
-            // Found a let statement, try to get its type if in correct line number
-            final int[] letOffset = new int[]{-1};
-//            ApplicationManager.getApplication().runReadAction(() -> { // Freezing pb ?
-                letOffset[0] = letStatement.getTextOffset();
-//            });
-            // TODO: I'm using the LineNumbering class to avoid frequent exceptions about read access,
-            // but I would prefer to use runReadAction method.
-            MerlinPosition letPosition = lineNumbering.offsetToPosition(letOffset[0]);
-//            LogicalPosition letPosition = new LogicalPosition;
-//            ApplicationManager.getApplication().runReadAction(() -> {
-//                letPosition[0] = selectedTextEditor.offsetToLogicalPosition(letOffset);
-//            });
-            return letPosition.line - 1 == lineNumber ? letStatement.getInferredType() : null;
-        };
 
-
-        String inferredType;
-        inferredType = letStatements.parallelStream().map(findInferredType).filter(Objects::nonNull).findFirst().orElse(null);
-*/
-        if (inferredType == null) {
+        if (inferredType[0] == null) {
             return null;
         }
 
         final TextAttributes attributes = getNormalAttributes();
-        LineExtensionInfo info = new LineExtensionInfo("  " + inferredType, attributes);
+        LineExtensionInfo info = new LineExtensionInfo("  " + inferredType[0], attributes);
         return Collections.singletonList(info);
     }
 

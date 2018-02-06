@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.reason.bs.BucklescriptProjectComponent;
-import com.reason.ide.LineNumbering;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
