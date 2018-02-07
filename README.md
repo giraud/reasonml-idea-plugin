@@ -58,6 +58,8 @@ or via the menu `help > Edit Custom VM Options`.
 
 The plugin will find and use the binaries found in the `node_modules/bs-platform` directory.
 
+> *Tip*: if you can, prefer a local installation... you won't have to configure anything else
+
 ### Global installation
 
 - Install bucklescript globally
