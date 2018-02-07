@@ -46,6 +46,8 @@ public class PsiElementFactory {
             return new PsiMacroName(node);
         } else if (type == types.SCOPED_EXPR || type == types.OBJECT_EXPR || type == types.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
+        } else if (type == types.INTERPOLATION) {
+            return new PsiInterpolation(node);
         } else if (type == types.SIG_SCOPE) {
             return new PsiSignatureImpl(node);
         } else if (type == types.TAG_START) {

@@ -192,6 +192,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "[>"  { return types.BRACKET_GT; }
     "{|"  { return types.ML_STRING_OPEN; /*bs MultiLine*/ }
     "|}"  { return types.ML_STRING_CLOSE; /*bs MultiLine*/ }
+    "{j|"  { return types.JS_STRING_OPEN; /*js interpolation*/ }
+    "|j}"  { return types.JS_STRING_CLOSE; /*js interpolation*/ }
 
     "===" { return types.EQEQEQ; }
     "=="  { return types.EQEQ; }

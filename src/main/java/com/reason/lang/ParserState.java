@@ -148,4 +148,8 @@ public class ParserState {
     public void setResolution(ParserScopeEnum resolution) {
         currentScope.resolution = resolution;
     }
+
+    public boolean notInScopeExpression() {
+        return currentScope.scopeType != ParserScopeType.scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
+    }
 }

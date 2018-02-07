@@ -65,4 +65,6 @@ public enum ParserScopeEnum {
     tryBinaryCondition,
 
     multilineStart,
+    interpolationStart,
+    interpolationString,
 }

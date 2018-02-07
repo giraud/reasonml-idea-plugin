@@ -179,4 +179,8 @@ public abstract class MlTypes {
 
     public IElementType ML_STRING_OPEN;
     public IElementType ML_STRING_CLOSE;
+
+    public IElementType JS_STRING_OPEN;
+    public IElementType JS_STRING_CLOSE;
+    public IElementType INTERPOLATION;
 }

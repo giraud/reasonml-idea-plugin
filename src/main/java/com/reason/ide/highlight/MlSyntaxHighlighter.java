@@ -138,7 +138,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMENT_KEYS;
         } else if (tokenType.equals(m_types.LBRACE) || tokenType.equals(m_types.RBRACE)) {
             return BRACE_KEYS;
-        } else if (tokenType.equals(m_types.LBRACKET) || tokenType.equals(m_types.RBRACKET) || tokenType.equals(m_types.LARRAY) || tokenType.equals(m_types.RARRAY) || tokenType.equals(m_types.ML_STRING_OPEN) || tokenType.equals(m_types.ML_STRING_CLOSE)) {
+        } else if (tokenType.equals(m_types.LBRACKET) || tokenType.equals(m_types.RBRACKET) || tokenType.equals(m_types.LARRAY) || tokenType.equals(m_types.RARRAY) || tokenType.equals(m_types.ML_STRING_OPEN) || tokenType.equals(m_types.ML_STRING_CLOSE) || tokenType.equals(m_types.JS_STRING_OPEN) || tokenType.equals(m_types.JS_STRING_CLOSE)) {
             return BRACKET_KEYS;
         } else if (tokenType.equals(m_types.LPAREN) || tokenType.equals(m_types.RPAREN)) {
             return PAREN_KEYS;

@@ -2,9 +2,9 @@ package com.reason.ide.highlight;
 
 import com.reason.lang.reason.RmlTypes;
 
-public class RmlAnnotator extends MlAnnotator {
+public class RmlSyntaxAnnotator extends MlSyntaxAnnotator {
 
-    public RmlAnnotator() {
+    public RmlSyntaxAnnotator() {
         super(RmlTypes.INSTANCE);
     }
 

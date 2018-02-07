@@ -9,13 +9,14 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.PsiInterpolation;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class MlAnnotator implements Annotator {
+public abstract class MlSyntaxAnnotator implements Annotator {
 
     private MlTypes m_types;
 
-    MlAnnotator(MlTypes types) {
+    MlSyntaxAnnotator(MlTypes types) {
         m_types = types;
     }
 
@@ -39,6 +40,9 @@ public abstract class MlAnnotator implements Annotator {
         } else if (elementType == m_types.PROPERTY_NAME) {
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(MlSyntaxHighlighter.MARKUP_ATTRIBUTE_));
+        } else if (element instanceof PsiInterpolation) {
+            TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.STRING_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         }
     }
 }

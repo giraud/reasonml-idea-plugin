@@ -185,6 +185,9 @@ public class OclTypes extends MlTypes {
 
         ML_STRING_OPEN = new OclTokenType("ML_STRING_OPEN");
         ML_STRING_CLOSE = new OclTokenType("ML_STRING_CLOSE");
+        JS_STRING_OPEN = new OclTokenType("JS_STRING_OPEN");
+        JS_STRING_CLOSE = new OclTokenType("JS_STRING_CLOSE");
+        INTERPOLATION = new OclTokenType("INTERPOLATION");
     }
 
 }

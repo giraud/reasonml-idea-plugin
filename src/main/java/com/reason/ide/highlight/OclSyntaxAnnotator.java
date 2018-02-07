@@ -2,9 +2,9 @@ package com.reason.ide.highlight;
 
 import com.reason.lang.ocaml.OclTypes;
 
-public class OclAnnotator extends MlAnnotator {
+public class OclSyntaxAnnotator extends MlSyntaxAnnotator {
 
-    public OclAnnotator() {
+    public OclSyntaxAnnotator() {
         super(OclTypes.INSTANCE);
     }
 

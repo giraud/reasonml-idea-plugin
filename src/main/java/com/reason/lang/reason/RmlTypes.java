@@ -186,5 +186,8 @@ public class RmlTypes extends MlTypes {
 
         ML_STRING_OPEN = new RmlTokenType("ML_STRING_OPEN");
         ML_STRING_CLOSE = new RmlTokenType("ML_STRING_CLOSE");
+        JS_STRING_OPEN = new RmlTokenType("JS_STRING_OPEN");
+        JS_STRING_CLOSE = new RmlTokenType("JS_STRING_CLOSE");
+        INTERPOLATION = new RmlTokenType("INTERPOLATION");
     }
 }

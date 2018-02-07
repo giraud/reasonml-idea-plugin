@@ -84,6 +84,12 @@ public class RmlParser extends CommonParser {
             } else if (tokenType == m_types.ML_STRING_CLOSE) {
                 parseMlStringClose(builder, parserState);
             }
+            // {j| ... |j}
+            else if (tokenType == m_types.JS_STRING_OPEN) {
+                parseJsStringOpen(builder, parserState);
+            } else if (tokenType == m_types.JS_STRING_CLOSE) {
+                parseJsStringClose(builder, parserState);
+            }
             // Starts an expression
             else if (tokenType == m_types.OPEN) {
                 parseOpen(builder, parserState);
@@ -126,7 +132,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseMlStringClose(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.ML_STRING_CLOSE);
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.ML_STRING_OPEN);
         parserState.dontMove = advance(builder);
 
         if (scope != null) {
@@ -138,6 +144,26 @@ public class RmlParser extends CommonParser {
         }
 
         parserState.updateCurrentScope();
+    }
+
+    private void parseJsStringOpen(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(annotationName) || state.isResolution(macroName)) { // use space notifier like in tag ?
+            state.end();
+        }
+
+        state.add(markScope(builder, interpolationStart, m_types.SCOPED_EXPR, scopeExpression, m_types.JS_STRING_OPEN));
+        state.dontMove = advance(builder);
+        state.add(markComplete(builder, interpolationString, m_types.INTERPOLATION));
+    }
+
+    private void parseJsStringClose(PsiBuilder builder, ParserState parserState) {
+        ParserScope scope = parserState.endUntilScopeExpression(m_types.JS_STRING_OPEN);
+        parserState.dontMove = advance(builder);
+
+        if (scope != null) {
+            scope.complete = true;
+            parserState.popEnd();
+        }
     }
 
     private void parseLet(PsiBuilder builder, ParserState parserState) {
@@ -230,37 +256,38 @@ public class RmlParser extends CommonParser {
             parserState.popEnd();
         }
     }
-    private void parseLIdent(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(type)) {
+
+    private void parseLIdent(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(type)) {
             // TYPE LIDENT ...
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.TYPE_CONSTR_NAME, builder);
-            parserState.setResolution(typeNamed);
-            parserState.setComplete();
-        } else if (parserState.isResolution(external)) {
+            state.dontMove = wrapWith(m_types.TYPE_CONSTR_NAME, builder);
+            state.setResolution(typeNamed);
+            state.setComplete();
+        } else if (state.isResolution(external)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.setResolution(externalNamed);
-            parserState.setComplete();
-        } else if (parserState.isResolution(let)) {
+            state.setResolution(externalNamed);
+            state.setComplete();
+        } else if (state.isResolution(let)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
-            parserState.setResolution(letNamed);
-            parserState.setComplete();
-        } else if (parserState.isResolution(startTag)) {
+            state.dontMove = wrapWith(m_types.VAR_NAME, builder);
+            state.setResolution(letNamed);
+            state.setComplete();
+        } else if (state.isResolution(startTag)) {
             // This is a property
-            parserState.end();
+            state.end();
             builder.remapCurrentToken(m_types.PROPERTY_NAME);
-            parserState.add(markCompleteScope(builder, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT));
+            state.add(markCompleteScope(builder, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT));
             builder.setWhitespaceSkippedCallback((type, start, end) -> {
-                if (parserState.isResolution(tagPropertyEq)) {
-                    parserState.popEnd();
+                if (state.isResolution(tagPropertyEq) && state.notInScopeExpression()) {
+                    state.popEnd();
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
         } else {
-            if (parserState.notResolution(annotationName)) {
+            if (state.notResolution(annotationName)) {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
-                parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
+                state.dontMove = wrapWith(m_types.VAR_NAME, builder);
             }
         }
     }
