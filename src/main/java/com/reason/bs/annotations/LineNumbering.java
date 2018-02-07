@@ -21,7 +21,8 @@ class LineNumbering {
     }
 
     Integer positionToOffset(int line, int col) {
-        return this.lineIndex.get(line) + col;
+        int size = this.lineIndex.size();
+        return this.lineIndex.get((size <= line) ? size - 1 : line) + col;
     }
 
 }
