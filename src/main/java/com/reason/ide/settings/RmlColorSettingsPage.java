@@ -55,20 +55,23 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     public String getDemoText() {
         InputStream colorsStream = getClass().getResourceAsStream("/ColorsExample.re");
 
-        String exempleSourceCode;
+        String exampleSourceCode;
         try {
-            exempleSourceCode = loadTextAndClose(colorsStream);
+            exampleSourceCode = loadTextAndClose(colorsStream);
         } catch (IOException e) {
-            exempleSourceCode = "Error when loading the demo text";
+            exampleSourceCode = "Error when loading the demo text";
         }
 
-        return exempleSourceCode;
+        return exampleSourceCode;
     }
 
-    static Map<String, TextAttributesKey> additionalTags = new HashMap<>();
+    private static Map<String, TextAttributesKey> additionalTags = new HashMap<>();
 
     static {
-        additionalTags.put("ANNOTATION_NAME", MlSyntaxHighlighter.ANNOTATION_);
+        additionalTags.put("csModuleName", MlSyntaxHighlighter.MODULE_NAME_);
+        additionalTags.put("csMarkupTag", MlSyntaxHighlighter.MARKUP_TAG_);
+        additionalTags.put("csMarkupAttribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_);
+        additionalTags.put("csAnnotation", MlSyntaxHighlighter.ANNOTATION_);
     }
 
     @Nullable

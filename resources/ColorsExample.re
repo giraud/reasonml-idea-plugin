@@ -1,12 +1,12 @@
 /* This is a comment */
 
-module ModuleName = {
+module <csModuleName>ModuleName</csModuleName> = {
   type t = { key: int };
   type tree 'a =
   | Node (tree 'a) (tree 'a)
   | Leaf;
 
-  [@bs.deriving {accessors: accessors}]
+  [<csAnnotation>@bs.deriving</csAnnotation> {accessors: accessors}]
   type t = [`Up | `Down | `Left | `Right];
 
   let add = (x y) => x + y;
@@ -19,4 +19,4 @@ module ModuleName = {
   let numericConstant = 123;
 };
 
-React.createElement <div prop=value/> <Button> (ReactElement.toString "ok") </Button>;
+React.createElement <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>/></csMarkupTag> <csMarkupTag><Button></csMarkupTag> (ReactElement.toString "ok") <csMarkupTag></Button></csMarkupTag>;
