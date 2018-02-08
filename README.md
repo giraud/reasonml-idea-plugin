@@ -98,6 +98,7 @@ Now, they have incompatible implementations, and different goals.
 
 - Give this project some love, star it or star the plugin page in [intellij repository](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin)
 - Fill the github repo with specific issues
+- Send me a mac ;), I don't have one and I can't debug/run the plugin on mac
 - Be patient
 
 ## Development
