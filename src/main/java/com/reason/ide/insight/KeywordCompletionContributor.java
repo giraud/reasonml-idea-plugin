@@ -9,6 +9,7 @@ abstract class KeywordCompletionContributor extends com.intellij.codeInsight.com
 
     KeywordCompletionContributor(@NotNull CompletionPatterns patterns) {
         extend(CompletionType.BASIC, patterns.declaration(), new KeywordCompletionProvider("module", "open", "include", "type", "let"));
+        extend(CompletionType.BASIC, patterns.keyword(), new KeywordCompletionProvider("module", "open", "include", "type", "let", "match"));
     }
 
 }

@@ -1,9 +1,10 @@
 package com.reason.ide.insight;
 
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.PsiElementPattern;
+import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.ocaml.OclTypes;
+
+import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class OclCompletionContributor extends CompletionContributor {
 
@@ -16,13 +17,18 @@ public class OclCompletionContributor extends CompletionContributor {
     private static class OclCompletionPatterns implements CompletionPatterns {
 
         @Override
-        public PsiElementPattern.Capture<PsiElement> declaration() {
-            return PlatformPatterns.psiElement();
+        public ElementPattern<? extends PsiElement> declaration() {
+            return psiElement();
         }
 
         @Override
-        public PsiElementPattern.Capture<PsiElement> open() {
-            return PlatformPatterns.psiElement();
+        public ElementPattern<? extends PsiElement> open() {
+            return psiElement();
+        }
+
+        @Override
+        public ElementPattern<? extends PsiElement> keyword() {
+            return psiElement();
         }
     }
 }

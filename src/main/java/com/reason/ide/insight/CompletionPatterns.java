@@ -1,11 +1,13 @@
 package com.reason.ide.insight;
 
-import com.intellij.patterns.PsiElementPattern;
+import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 
 interface CompletionPatterns {
 
-    PsiElementPattern.Capture<PsiElement> declaration();
+    ElementPattern<? extends PsiElement> declaration();
 
-    PsiElementPattern.Capture<PsiElement> open();
+    ElementPattern<? extends PsiElement> open();
+
+    ElementPattern<? extends PsiElement> keyword();
 }
