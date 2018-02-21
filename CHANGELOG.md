@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.39
+
+* :house: Better JSX parsing/highlighting
+* :rocket: Code lens style is customisable
+* :bug: Fix #33
+* :rocket: Completion contributor for Ocaml files (wip)
 
 ## 0.38
 
