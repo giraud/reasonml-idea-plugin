@@ -3,6 +3,7 @@ package com.reason.ide.hints;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -11,13 +12,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ui.Gray;
-import com.intellij.ui.JBColor;
-import com.intellij.xdebugger.ui.DebuggerColors;
+import com.reason.ide.highlight.MlSyntaxHighlighter;
 import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -54,22 +52,26 @@ public class RmlEditorLinePainter extends EditorLinePainter {
             });
         }
 
-
         if (inferredType[0] == null) {
             return null;
         }
 
-        final TextAttributes attributes = getNormalAttributes();
-        LineExtensionInfo info = new LineExtensionInfo("  " + inferredType[0], attributes);
+        EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
+        //TextAttributes attributes = getNormalAttributes();
+        TextAttributes codeLens = globalScheme.getAttributes(MlSyntaxHighlighter.CODE_LENS_);
+        LineExtensionInfo info = new LineExtensionInfo("  " + inferredType[0], codeLens);
         return Collections.singletonList(info);
     }
 
-    private static TextAttributes getNormalAttributes() {
-        TextAttributes attributes = EditorColorsManager.getInstance().getGlobalScheme().getAttributes(DebuggerColors.INLINED_VALUES);
-        if (attributes == null || attributes.getForegroundColor() == null) {
-            return new TextAttributes(new JBColor(Gray._135, new Color(0x3d8065)), null, null, null, Font.ITALIC);
-        }
-        return attributes;
-    }
+    //private static TextAttributes getNormalAttributes() {
+    //    EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
+    //    TextAttributes attributes = globalScheme.getAttributes(DebuggerColors.INLINED_VALUES);
+    //    TextAttributes codeLens = globalScheme.getAttributes(MlSyntaxHighlighter.CODE_LENS_);
+    //
+    //    if (attributes == null || attributes.getForegroundColor() == null) {
+    //        return new TextAttributes(codeLens.getForegroundColor(), codeLens, null, null, Font.ITALIC);
+    //    }
+    //    return attributes;
+    //}
 
 }

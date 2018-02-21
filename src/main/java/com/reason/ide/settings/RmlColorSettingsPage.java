@@ -22,6 +22,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Annotation", MlSyntaxHighlighter.ANNOTATION_),
             new AttributesDescriptor("Comment", MlSyntaxHighlighter.RML_COMMENT_),
+            new AttributesDescriptor("Code lens", MlSyntaxHighlighter.CODE_LENS_),
             new AttributesDescriptor("Module name", MlSyntaxHighlighter.MODULE_NAME_),
             new AttributesDescriptor("Option", MlSyntaxHighlighter.OPTION_),
             new AttributesDescriptor("Markup tag", MlSyntaxHighlighter.MARKUP_TAG_),
@@ -72,6 +73,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
         additionalTags.put("csMarkupTag", MlSyntaxHighlighter.MARKUP_TAG_);
         additionalTags.put("csMarkupAttribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_);
         additionalTags.put("csAnnotation", MlSyntaxHighlighter.ANNOTATION_);
+        additionalTags.put("csCodeLens", MlSyntaxHighlighter.CODE_LENS_);
     }
 
     @Nullable
