@@ -72,7 +72,7 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
                 BucklescriptProjectComponent.getInstance(file.getProject()).associatePsiElement(file.getVirtualFile(), elementAtOffset);
             } else {
                 int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
-                int endOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_endOffset);
+                int endOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_endOffset) + 1;
                 holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.m_message);
             }
         }

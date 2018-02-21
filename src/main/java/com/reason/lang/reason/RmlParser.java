@@ -277,9 +277,9 @@ public class RmlParser extends CommonParser {
             // This is a property
             state.end();
             builder.remapCurrentToken(m_types.PROPERTY_NAME);
-            state.add(markCompleteScope(builder, tagProperty, m_types.TAG_PROPERTY, groupExpression, m_types.LIDENT));
+            state.add(markComplete(builder, tagProperty, m_types.TAG_PROPERTY));
             builder.setWhitespaceSkippedCallback((type, start, end) -> {
-                if (state.isResolution(tagPropertyEq) && state.notInScopeExpression()) {
+                if (state.isResolution(tagProperty) || (state.isResolution(tagPropertyEq) && state.notInScopeExpression())) {
                     state.popEnd();
                     builder.setWhitespaceSkippedCallback(null);
                 }
@@ -423,26 +423,28 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseUIdent(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(open)) {
+    private void parseUIdent(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(open)) {
             // It is a module name/path
-            parserState.setComplete();
+            state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            //parserState.add(markComplete(builder, openModulePath, m_types.MODULE_PATH);
-            parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
-        } else if (parserState.isResolution(module)) {
+            state.dontMove = wrapWith(m_types.MODULE_NAME, builder);
+        } else if (state.isResolution(module)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
             ParserScope scope = markComplete(builder, moduleNamed, m_types.MODULE_NAME);
-            parserState.dontMove = advance(builder);
+            state.dontMove = advance(builder);
             scope.end();
-            parserState.setResolution(moduleNamed);
+            state.setResolution(moduleNamed);
+        } else if (state.isResolution(startTag) && state.previousTokenType == m_types.DOT) {
+            // a namespaced custom component
+            builder.remapCurrentToken(m_types.TAG_NAME);
         } else {
-            if (parserState.previousTokenType == m_types.PIPE) {
+            if (state.previousTokenType == m_types.PIPE) {
                 builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
             } else {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
                 ParserScope scope = markComplete(builder, moduleNamed, m_types.MODULE_NAME);
-                parserState.dontMove = advance(builder);
+                state.dontMove = advance(builder);
                 scope.end();
             }
         }
