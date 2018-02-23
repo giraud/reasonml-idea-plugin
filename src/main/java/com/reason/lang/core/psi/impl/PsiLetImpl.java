@@ -35,7 +35,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiVarName.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override

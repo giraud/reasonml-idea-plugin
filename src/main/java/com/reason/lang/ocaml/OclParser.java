@@ -326,7 +326,7 @@ public class OclParser extends CommonParser {
             parserState.setComplete();
         } else if (parserState.isResolution(let)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
+            parserState.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
             parserState.setResolution(letNamed);
             parserState.setComplete();
         } else if (parserState.isResolution(val)) {
@@ -336,7 +336,7 @@ public class OclParser extends CommonParser {
         } else {
             if (parserState.notResolution(annotationName)) {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
-                parserState.dontMove = wrapWith(m_types.VAR_NAME, builder);
+                parserState.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
             }
         }
     }

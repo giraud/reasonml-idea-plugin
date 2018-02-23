@@ -6,14 +6,14 @@ import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.RmlPsiUtil;
-import com.reason.lang.core.psi.PsiVarName;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName {
+public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLowerSymbol {
 
     //region Constructors
-    public PsiVarNameImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiLowerSymbolImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion
@@ -28,7 +28,7 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.VALUE_NAME);
+        return getFirstChild();
     }
 
     @Override
@@ -74,6 +74,6 @@ public class PsiVarNameImpl extends MlAstWrapperPsiElement implements PsiVarName
 
     @Override
     public String toString() {
-        return "Name(" + getName() + ")";
+        return "Lower symbol " + getName();
     }
 }

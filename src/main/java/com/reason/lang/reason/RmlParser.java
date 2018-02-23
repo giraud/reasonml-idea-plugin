@@ -262,8 +262,7 @@ public class RmlParser extends CommonParser {
     private void parseLIdent(PsiBuilder builder, ParserState state) {
         if (state.isResolution(type)) {
             // TYPE LIDENT ...
-            builder.remapCurrentToken(m_types.VALUE_NAME);
-            state.dontMove = wrapWith(m_types.TYPE_CONSTR_NAME, builder);
+            builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
             state.setResolution(typeNamed);
             state.setComplete();
         } else if (state.isResolution(external)) {
@@ -272,7 +271,6 @@ public class RmlParser extends CommonParser {
             state.setComplete();
         } else if (state.isResolution(let)) {
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            state.dontMove = wrapWith(m_types.VAR_NAME, builder);
             state.setResolution(letNamed);
             state.setComplete();
         } else if (state.isResolution(startTag)) {
@@ -289,9 +287,10 @@ public class RmlParser extends CommonParser {
         } else {
             if (state.notResolution(annotationName)) {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
-                state.dontMove = wrapWith(m_types.VAR_NAME, builder);
             }
         }
+
+        state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
     }
 
     private void parseLBracket(PsiBuilder builder, ParserState parserState) {

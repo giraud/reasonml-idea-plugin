@@ -13,9 +13,9 @@ import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.LexerAdapter;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiTypeName;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVarName;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +48,7 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiUpperSymbol || element instanceof PsiTypeName || element instanceof PsiVarName;
+        return element instanceof PsiUpperSymbol || element instanceof PsiTypeName || element instanceof PsiLowerSymbol;
     }
 
     @Nullable
