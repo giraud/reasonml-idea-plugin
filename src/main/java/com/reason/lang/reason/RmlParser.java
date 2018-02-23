@@ -222,15 +222,17 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseLt(PsiBuilder builder, ParserState parserState) {
+    private void parseLt(PsiBuilder builder, ParserState state) {
         // Can be a symbol or a JSX tag
         IElementType nextTokenType = builder.rawLookup(1);
         if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
             // Surely a tag
             builder.remapCurrentToken(m_types.TAG_LT);
-            parserState.add(markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT));
-            parserState.dontMove = advance(builder);
+            state.add(markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT));
+            state.dontMove = advance(builder);
+
             builder.remapCurrentToken(m_types.TAG_NAME);
+            state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
         }
     }
 

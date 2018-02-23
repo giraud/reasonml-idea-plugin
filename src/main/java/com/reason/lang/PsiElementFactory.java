@@ -28,8 +28,6 @@ public class PsiElementFactory {
             return new PsiTypeNameImpl(types, node);
         } else if (type == types.MODULE_EXPRESSION) {
             return new PsiModuleImpl(node);
-        } else if (type == types.UPPER_SYMBOL) {
-            return new PsiUpperSymbolImpl(types, node);
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.LET_EXPRESSION) {
@@ -56,6 +54,8 @@ public class PsiElementFactory {
             return new PsiTagPropertyImpl(types, node);
         } else if (type == types.TAG_CLOSE) {
             return new PsiTagClose(node);
+        } else if (type == types.UPPER_SYMBOL) {
+            return new PsiUpperSymbolImpl(types, node);
         } else if (type == types.VAR_NAME) {
             return new PsiVarNameImpl(types, node);
         }
