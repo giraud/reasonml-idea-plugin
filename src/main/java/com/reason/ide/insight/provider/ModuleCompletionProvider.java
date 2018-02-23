@@ -17,8 +17,8 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -55,13 +55,13 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         }
 
         // Compute module path (all module names before the last dot)
-        List<PsiModuleName> moduleNames = new ArrayList<>();
+        List<PsiUpperSymbol> moduleNames = new ArrayList<>();
         PsiElement previousSibling = cursorElement == null ? null : cursorElement.getPrevSibling();
         if (previousSibling != null) {
             IElementType previousElementType = previousSibling.getNode().getElementType();
-            while (previousElementType == m_types.DOT || previousElementType == m_types.MODULE_NAME) {
-                if (previousSibling instanceof PsiModuleName) {
-                    moduleNames.add((PsiModuleName) previousSibling);
+            while (previousElementType == m_types.DOT || previousElementType == m_types.UPPER_SYMBOL) {
+                if (previousSibling instanceof PsiUpperSymbol) {
+                    moduleNames.add((PsiUpperSymbol) previousSibling);
                 }
                 previousSibling = previousSibling.getPrevSibling();
                 previousElementType = previousSibling == null ? null : previousSibling.getNode().getElementType();

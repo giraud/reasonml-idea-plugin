@@ -428,13 +428,9 @@ public class RmlParser extends CommonParser {
             // It is a module name/path
             state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            state.dontMove = wrapWith(m_types.MODULE_NAME, builder);
         } else if (state.isResolution(module)) {
-            builder.remapCurrentToken(m_types.VALUE_NAME);
-            ParserScope scope = markComplete(builder, moduleNamed, m_types.MODULE_NAME);
-            state.dontMove = advance(builder);
-            scope.end();
             state.setResolution(moduleNamed);
+            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(startTag) && state.previousTokenType == m_types.DOT) {
             // a namespaced custom component
             builder.remapCurrentToken(m_types.TAG_NAME);
@@ -443,11 +439,10 @@ public class RmlParser extends CommonParser {
                 builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
             } else {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
-                ParserScope scope = markComplete(builder, moduleNamed, m_types.MODULE_NAME);
-                state.dontMove = advance(builder);
-                scope.end();
             }
         }
+
+        state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
     }
 
     private void parseSwitch(PsiBuilder builder, ParserState parserState) {

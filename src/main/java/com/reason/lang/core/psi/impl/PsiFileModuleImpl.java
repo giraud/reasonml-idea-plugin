@@ -80,6 +80,11 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
     @Nullable
     @Override
     public String getQualifiedName() {
+        ModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
         return RmlPsiUtil.fileNameToModuleName(getContainingFile());
     }
 

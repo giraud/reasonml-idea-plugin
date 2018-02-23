@@ -21,7 +21,7 @@ public class OclTypes extends MlTypes {
         MACRO_EXPRESSION = new OclElementType("MACRO_EXPRESSION");
         MACRO_NAME = new OclElementType("MACRO_NAME");
         MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION", OclLanguage.INSTANCE);
-        MODULE_NAME = new OclElementType("MODULE_NAME");
+        UPPER_SYMBOL = new OclElementType("UPPER_SYMBOL");
         MODULE_PATH = new OclElementType("MODULE_PATH");
         OPEN_EXPRESSION = new OclElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE, OclTypes.INSTANCE);

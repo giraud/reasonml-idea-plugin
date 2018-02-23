@@ -10,17 +10,17 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiModuleReference extends PsiReferenceBase<PsiModuleName> {
+public class PsiModuleReference extends PsiReferenceBase<PsiUpperSymbol> {
 
     @Nullable private final String m_referenceName;
     @NotNull private final String m_qname;
 
-    PsiModuleReference(@NotNull PsiModuleName element, @NotNull String qname) {
+    PsiModuleReference(@NotNull PsiUpperSymbol element, @NotNull String qname) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_qname = qname;

@@ -7,9 +7,9 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,7 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
 
     @Nullable
     public PsiElement getNameIdentifier() {
-        return PsiTreeUtil.getChildOfType(this, PsiModuleName.class);
+        return PsiTreeUtil.getChildOfType(this, PsiUpperSymbol.class);
     }
 
     @Override
@@ -36,10 +36,10 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
         }
 
         StringBuilder sbName = new StringBuilder(nameIdentifier.getText());
-        PsiModuleName nextSibling = PsiTreeUtil.getNextSiblingOfType(nameIdentifier, PsiModuleName.class);
+        PsiUpperSymbol nextSibling = PsiTreeUtil.getNextSiblingOfType(nameIdentifier, PsiUpperSymbol.class);
         while (nextSibling != null) {
             sbName.append(".").append(nextSibling.getText());
-            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, PsiModuleName.class);
+            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, PsiUpperSymbol.class);
         }
 
         return sbName.toString();
@@ -50,8 +50,8 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
         PsiElement nameIdentifier = this.getNameIdentifier();
         if (nameIdentifier != null) {
             PsiElement firstChild = nameIdentifier.getFirstChild(); // only first module name, not path yet
-            if (firstChild instanceof PsiModuleName) {
-                return new PsiModuleReference((PsiModuleName) firstChild, ((PsiModuleName) firstChild).getQualifiedName());
+            if (firstChild instanceof PsiUpperSymbol) {
+                return new PsiModuleReference((PsiUpperSymbol) firstChild, ((PsiUpperSymbol) firstChild).getQualifiedName());
             }
         }
         return null;

@@ -346,11 +346,11 @@ public class OclParser extends CommonParser {
             // It is a module name/path
             parserState.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
+            parserState.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
         } else if (parserState.isResolution(include)) {
             // It is a module name/path
             parserState.setComplete();
-            builder.remapCurrentToken(m_types.MODULE_NAME);
+            builder.remapCurrentToken(m_types.UPPER_SYMBOL);
         } else if (parserState.isResolution(exception)) {
             parserState.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
@@ -359,7 +359,7 @@ public class OclParser extends CommonParser {
         } else if (parserState.isResolution(module)) {
             // Module definition
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.MODULE_NAME, builder);
+            parserState.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
             parserState.setResolution(moduleNamed);
         }
     }

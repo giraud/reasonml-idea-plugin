@@ -7,9 +7,9 @@ import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewShortNameLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
-import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiTypeName;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVarName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public class DescriptionProvider implements ElementDescriptionProvider {
         }
 
         if (location == UsageViewTypeLocation.INSTANCE) {
-            if (element instanceof PsiModuleName) {
+            if (element instanceof PsiUpperSymbol) {
                 return "module";
             } else if (element instanceof PsiTypeName) {
                 return "type";

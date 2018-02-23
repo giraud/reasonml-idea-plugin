@@ -24,7 +24,7 @@ public abstract class MlSyntaxAnnotator implements Annotator {
         EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
         IElementType elementType = element.getNode().getElementType();
 
-        if (elementType == m_types.MODULE_NAME) {
+        if (elementType == m_types.UPPER_SYMBOL) {
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(globalScheme.getAttributes(MlSyntaxHighlighter.MODULE_NAME_));
         } else if (elementType == m_types.TYPE_CONSTR_NAME) {

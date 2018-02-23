@@ -44,7 +44,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiModuleName.class);
+        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @Override
@@ -132,6 +132,11 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @Nullable
     @Override
     public String getQualifiedName() {
+        ModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
         return getPath() + "." + getName();
     }
 

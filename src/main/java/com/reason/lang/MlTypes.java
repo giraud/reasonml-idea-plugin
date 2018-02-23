@@ -15,7 +15,7 @@ public abstract class MlTypes {
     public IElementType MACRO_EXPRESSION;
     public IElementType MACRO_NAME;
     public IElementType MODULE_EXPRESSION;
-    public IElementType MODULE_NAME;
+    public IElementType UPPER_SYMBOL;
     public IElementType MODULE_PATH;
     public IElementType OPEN_EXPRESSION;
     public IElementType TYPE_EXPRESSION;

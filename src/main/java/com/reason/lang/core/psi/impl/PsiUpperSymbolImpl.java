@@ -7,14 +7,14 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiModuleName;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiModuleNameImpl extends MlAstWrapperPsiElement implements PsiModuleName {
+public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpperSymbol {
 
     //region Constructors
-    public PsiModuleNameImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiUpperSymbolImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion
@@ -29,7 +29,7 @@ public class PsiModuleNameImpl extends MlAstWrapperPsiElement implements PsiModu
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.VALUE_NAME);
+        return getFirstChild();
     }
 
     @Override
@@ -45,6 +45,7 @@ public class PsiModuleNameImpl extends MlAstWrapperPsiElement implements PsiModu
 
     @NotNull
     public String getQualifiedName() {
+        // use a stub ?
         String path = null;
 
         PsiElement parent = getParent();
@@ -61,6 +62,6 @@ public class PsiModuleNameImpl extends MlAstWrapperPsiElement implements PsiModu
 
     @Override
     public String toString() {
-        return "Module.name(" + getName() + ")";
+        return "Upper symbol " + getName();
     }
 }

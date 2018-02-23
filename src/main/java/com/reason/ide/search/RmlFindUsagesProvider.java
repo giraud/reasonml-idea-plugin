@@ -13,8 +13,8 @@ import com.intellij.usageView.UsageViewLongNameLocation;
 import com.intellij.usageView.UsageViewNodeTextLocation;
 import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.LexerAdapter;
-import com.reason.lang.core.psi.PsiModuleName;
 import com.reason.lang.core.psi.PsiTypeName;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVarName;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
             IElementType tokenType;
             while ((tokenType = lexer.getTokenType()) != null) {
                 //TODO process occurrences in string literals and comments
-                if (tokenType == types.LIDENT || tokenType == types.UIDENT || tokenType == types.MODULE_NAME || tokenType == types.VALUE_NAME) {
+                if (tokenType == types.LIDENT || tokenType == types.UIDENT || tokenType == types.UPPER_SYMBOL || tokenType == types.VALUE_NAME) {
                     int tokenStart = lexer.getTokenStart();
                     for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                         int start = tokenStart + wordRange.getStartOffset();
@@ -48,7 +48,7 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiModuleName || element instanceof PsiTypeName || element instanceof PsiVarName;
+        return element instanceof PsiUpperSymbol || element instanceof PsiTypeName || element instanceof PsiVarName;
     }
 
     @Nullable

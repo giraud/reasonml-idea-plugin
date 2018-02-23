@@ -28,8 +28,8 @@ public class PsiElementFactory {
             return new PsiTypeNameImpl(types, node);
         } else if (type == types.MODULE_EXPRESSION) {
             return new PsiModuleImpl(node);
-        } else if (type == types.MODULE_NAME) {
-            return new PsiModuleNameImpl(types, node);
+        } else if (type == types.UPPER_SYMBOL) {
+            return new PsiUpperSymbolImpl(types, node);
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.LET_EXPRESSION) {

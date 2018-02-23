@@ -22,7 +22,7 @@ public class RmlTypes extends MlTypes {
         MACRO_EXPRESSION = new RmlElementType("MACRO_EXPRESSION");
         MACRO_NAME = new RmlElementType("MACRO_NAME");
         MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION", RmlLanguage.INSTANCE);
-        MODULE_NAME = new RmlElementType("MODULE_NAME");
+        UPPER_SYMBOL = new RmlElementType("UPPER_SYMBOL");
         MODULE_PATH = new RmlElementType("MODULE_PATH");
         OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
