@@ -16,16 +16,12 @@ public class PsiElementFactory {
             return new PsiExternalImpl(types, node);
         } else if (type == types.EXCEPTION_EXPRESSION) {
             return new PsiExceptionImpl(node);
-        } else if (type == types.EXCEPTION_NAME) {
-            return new PsiExceptionNameImpl(node);
         } else if (type == types.OPEN_EXPRESSION) {
             return new PsiOpenImpl(types, node);
         } else if (type == types.INCLUDE_EXPRESSION) {
             return new PsiIncludeImpl(types, node);
         } else if (type == types.TYPE_EXPRESSION) {
             return new PsiTypeImpl(types, node);
-        } else if (type == types.TYPE_CONSTR_NAME) {
-            return new PsiTypeNameImpl(types, node);
         } else if (type == types.MODULE_EXPRESSION) {
             return new PsiModuleImpl(node);
         } else if (type == types.MODULE_PATH) {

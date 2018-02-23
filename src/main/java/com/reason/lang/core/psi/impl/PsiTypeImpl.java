@@ -10,6 +10,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiType;
@@ -39,7 +40,7 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.TYPE_CONSTR_NAME);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @NotNull

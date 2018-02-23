@@ -7,6 +7,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +24,7 @@ public class PsiIncludeImpl extends MlAstWrapperPsiElement implements PsiInclude
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.MODULE_PATH);
+        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @Override

@@ -315,53 +315,52 @@ public class OclParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseLIdent(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(type)) {
+    private void parseLIdent(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(type)) {
+            state.setResolution(typeNamed);
+            state.setComplete();
             builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
-            parserState.setResolution(typeNamed);
-            parserState.setComplete();
-        } else if (parserState.isResolution(external)) {
+        } else if (state.isResolution(external)) {
+            state.setResolution(externalNamed);
+            state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.setResolution(externalNamed);
-            parserState.setComplete();
-        } else if (parserState.isResolution(let)) {
+        } else if (state.isResolution(let)) {
+            state.setResolution(letNamed);
+            state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
-            parserState.setResolution(letNamed);
-            parserState.setComplete();
-        } else if (parserState.isResolution(val)) {
+        } else if (state.isResolution(val)) {
+            state.setResolution(valNamed);
+            state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.setResolution(valNamed);
-            parserState.setComplete();
         } else {
-            if (parserState.notResolution(annotationName)) {
+            if (state.notResolution(annotationName)) {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
-                parserState.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
             }
         }
+
+        state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
     }
 
-    private void parseUIdent(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(open)) {
+    private void parseUIdent(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(open)) {
             // It is a module name/path
-            parserState.setComplete();
+            state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
-        } else if (parserState.isResolution(include)) {
+        } else if (state.isResolution(include)) {
             // It is a module name/path
-            parserState.setComplete();
-            builder.remapCurrentToken(m_types.UPPER_SYMBOL);
-        } else if (parserState.isResolution(exception)) {
-            parserState.setComplete();
+            state.setComplete();
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.EXCEPTION_NAME, builder);
-            parserState.setResolution(exceptionNamed);
-        } else if (parserState.isResolution(module)) {
+        } else if (state.isResolution(exception)) {
+            state.setComplete();
+            state.setResolution(exceptionNamed);
+            builder.remapCurrentToken(m_types.EXCEPTION_NAME);
+        } else if (state.isResolution(module)) {
             // Module definition
             builder.remapCurrentToken(m_types.VALUE_NAME);
-            parserState.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
-            parserState.setResolution(moduleNamed);
+            state.setResolution(moduleNamed);
         }
+
+        state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
     }
 
     private void parseOpen(PsiBuilder builder, ParserState parserState) {

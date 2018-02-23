@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByType(m_types.VALUE_NAME);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override

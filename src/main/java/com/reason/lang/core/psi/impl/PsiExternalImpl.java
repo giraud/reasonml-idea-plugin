@@ -7,6 +7,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,7 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
             return operatorOverride;
         }
 
-        return findChildByType(m_types.VALUE_NAME);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override

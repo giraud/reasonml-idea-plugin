@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +22,7 @@ public class PsiExceptionImpl extends ASTWrapperPsiElement implements PsiExcepti
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiExceptionNameImpl.class);
+        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @Override

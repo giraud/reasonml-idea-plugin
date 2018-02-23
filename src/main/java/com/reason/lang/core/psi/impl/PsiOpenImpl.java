@@ -25,7 +25,7 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
 
     @Nullable
     public PsiElement getNameIdentifier() {
-        return PsiTreeUtil.getChildOfType(this, PsiUpperSymbol.class);
+        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @Override
