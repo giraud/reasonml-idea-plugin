@@ -365,6 +365,12 @@ public class OclParser extends CommonParser {
             // Module definition
             builder.remapCurrentToken(m_types.VALUE_NAME);
             state.setResolution(moduleNamed);
+        } else {
+            if (state.previousTokenType == m_types.PIPE) {
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
+            } else {
+                builder.remapCurrentToken(m_types.VALUE_NAME);
+            }
         }
 
         state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);

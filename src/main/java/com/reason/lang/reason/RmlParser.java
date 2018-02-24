@@ -447,7 +447,7 @@ public class RmlParser extends CommonParser {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else {
             if (state.previousTokenType == m_types.PIPE) {
-                builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
             } else {
                 builder.remapCurrentToken(m_types.VALUE_NAME);
             }

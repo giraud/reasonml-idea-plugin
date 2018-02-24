@@ -39,6 +39,11 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
     //endregion
 
     @Override
+    public boolean isVariant() {
+        return getFirstChild().getNode().getElementType() == m_types.VARIANT_NAME;
+    }
+
+    @Override
     public PsiReference getReference() {
         return new PsiModuleReference(this, getQualifiedName());
     }

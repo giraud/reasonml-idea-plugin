@@ -36,7 +36,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Brackets", MlSyntaxHighlighter.BRACKETS_),
             new AttributesDescriptor("Parenthesis", MlSyntaxHighlighter.PARENS_),
             new AttributesDescriptor("Type argument", MlSyntaxHighlighter.TYPE_ARGUMENT_),
-            new AttributesDescriptor("Polymorphic variants", MlSyntaxHighlighter.POLY_VARIANT_),
+            new AttributesDescriptor("Variant name", MlSyntaxHighlighter.VARIANT_NAME_),
     };
 
     @Nullable
@@ -69,11 +69,12 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     private static Map<String, TextAttributesKey> additionalTags = new HashMap<>();
 
     static {
-        additionalTags.put("csModuleName", MlSyntaxHighlighter.MODULE_NAME_);
-        additionalTags.put("csMarkupTag", MlSyntaxHighlighter.MARKUP_TAG_);
-        additionalTags.put("csMarkupAttribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_);
         additionalTags.put("csAnnotation", MlSyntaxHighlighter.ANNOTATION_);
         additionalTags.put("csCodeLens", MlSyntaxHighlighter.CODE_LENS_);
+        additionalTags.put("csMarkupAttribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_);
+        additionalTags.put("csMarkupTag", MlSyntaxHighlighter.MARKUP_TAG_);
+        additionalTags.put("csModuleName", MlSyntaxHighlighter.MODULE_NAME_);
+        additionalTags.put("csVariantName", MlSyntaxHighlighter.VARIANT_NAME_);
     }
 
     @Nullable

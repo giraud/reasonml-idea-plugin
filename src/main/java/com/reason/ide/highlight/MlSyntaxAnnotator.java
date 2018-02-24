@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiInterpolation;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class MlSyntaxAnnotator implements Annotator {
@@ -25,8 +26,10 @@ public abstract class MlSyntaxAnnotator implements Annotator {
         IElementType elementType = element.getNode().getElementType();
 
         if (elementType == m_types.UPPER_SYMBOL) {
+            PsiUpperSymbol symbol = (PsiUpperSymbol) element;
+            TextAttributes colorAttribute = globalScheme.getAttributes(symbol.isVariant() ? MlSyntaxHighlighter.VARIANT_NAME_ : MlSyntaxHighlighter.MODULE_NAME_);
             Annotation annotation = holder.createInfoAnnotation(element, null);
-            annotation.setEnforcedTextAttributes(globalScheme.getAttributes(MlSyntaxHighlighter.MODULE_NAME_));
+            annotation.setEnforcedTextAttributes(colorAttribute);
         } else if (elementType == m_types.TYPE_CONSTR_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.TYPE_ARGUMENT_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);

@@ -3,8 +3,8 @@
 module <csModuleName>ModuleName</csModuleName> = {
   type t = { key: int };
   type tree 'a =
-  | Node (tree 'a) (tree 'a)
-  | Leaf;
+  | <csVariantName>Node</csVariantName> (tree 'a) (tree 'a)
+  | <csVariantName>Leaf</csVariantName>;
 
   [<csAnnotation>@bs.deriving</csAnnotation> {accessors: accessors}]
   type t = [`Up | `Down | `Left | `Right];
