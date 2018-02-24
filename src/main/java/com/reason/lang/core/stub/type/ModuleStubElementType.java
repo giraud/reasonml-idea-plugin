@@ -24,13 +24,14 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
 
     @NotNull
     public ModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new ModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi instanceof PsiFileModuleImpl);
+        return new ModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi instanceof PsiFileModuleImpl, psi.isComponent());
     }
 
     public void serialize(@NotNull final ModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFileModule());
+        dataStream.writeBoolean(stub.isComponent());
     }
 
     @NotNull
@@ -38,8 +39,9 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
         StringRef moduleName = dataStream.readName();
         String qname = dataStream.readUTFFast();
         boolean isFileModule = dataStream.readBoolean();
+        boolean isComponent = dataStream.readBoolean();
 
-        return new ModuleStub(parentStub, this, moduleName, qname, isFileModule);
+        return new ModuleStub(parentStub, this, moduleName, qname, isFileModule, isComponent);
     }
 
     public void indexStub(@NotNull final ModuleStub stub, @NotNull final IndexSink sink) {

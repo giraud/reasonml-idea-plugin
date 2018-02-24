@@ -17,15 +17,14 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     @Nullable
     PsiScopedExpr getBody();
 
-    Collection<PsiLet> getLetExpressions();
-
-    Collection<PsiType> getTypeExpressions();
-
     @NotNull
     Collection<PsiModule> getModules();
 
+    @NotNull
     Collection<PsiNamedElement> getExpressions();
 
     @NotNull
     ModulePath getPath();
+
+    boolean isComponent();
 }

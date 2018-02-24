@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
 public class ModuleIndex extends StringStubIndexExtension<PsiModule> {
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
 
     @Override
     public int getVersion() {

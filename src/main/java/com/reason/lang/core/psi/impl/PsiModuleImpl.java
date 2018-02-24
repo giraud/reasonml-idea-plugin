@@ -63,18 +63,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return findChildByClass(PsiSignature.class);
     }
 
-    @Override
-    public Collection<PsiLet> getLetExpressions() {
-        PsiScopedExpr body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiLet.class);
-    }
-
-    @Override
-    public Collection<PsiType> getTypeExpressions() {
-        PsiScopedExpr body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiType.class);
-    }
-
     @NotNull
     @Override
     public Collection<PsiModule> getModules() {
@@ -82,6 +70,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiModule.class);
     }
 
+    @NotNull
     @Override
     public Collection<PsiNamedElement> getExpressions() {
         PsiScopedExpr body = getBody();
@@ -113,6 +102,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @NotNull
     @Override
     public ModulePath getPath() {
+        // TODO: use stub
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
 
@@ -129,6 +119,11 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return m_modulePath;
     }
 
+    @Override
+    public boolean isComponent() {
+        return false;
+    }
+
     @Nullable
     @Override
     public String getQualifiedName() {
@@ -142,6 +137,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
 
     @Override
     public String toString() {
-        return "Module(" + getName() + ")";
+        return "Module " + getName();
     }
 }

@@ -94,6 +94,11 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
     }
 
     @Override
+    public boolean isComponent() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "FileModule(" + getQualifiedName() + ")";
     }
