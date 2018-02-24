@@ -32,7 +32,7 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
             IElementType tokenType;
             while ((tokenType = lexer.getTokenType()) != null) {
                 //TODO process occurrences in string literals and comments
-                if (tokenType == types.LIDENT || tokenType == types.UIDENT || tokenType == types.UPPER_SYMBOL || tokenType == types.VALUE_NAME) {
+                if (tokenType == types.LIDENT || tokenType == types.UIDENT) {
                     int tokenStart = lexer.getTokenStart();
                     for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
                         int start = tokenStart + wordRange.getStartOffset();

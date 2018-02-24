@@ -277,11 +277,9 @@ public class RmlParser extends CommonParser {
             state.setResolution(typeNamed);
             state.setComplete();
         } else if (state.isResolution(external)) {
-            builder.remapCurrentToken(m_types.VALUE_NAME);
             state.setResolution(externalNamed);
             state.setComplete();
         } else if (state.isResolution(let)) {
-            builder.remapCurrentToken(m_types.VALUE_NAME);
             state.setResolution(letNamed);
             state.setComplete();
         } else if (state.isResolution(startTag)) {
@@ -295,10 +293,6 @@ public class RmlParser extends CommonParser {
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
-        } else {
-            if (state.notResolution(annotationName)) {
-                builder.remapCurrentToken(m_types.VALUE_NAME);
-            }
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
@@ -438,19 +432,13 @@ public class RmlParser extends CommonParser {
         if (state.isResolution(open)) {
             // It is a module name/path
             state.setComplete();
-            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(module)) {
             state.setResolution(moduleNamed);
-            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(startTag) && state.previousTokenType == m_types.DOT) {
             // a namespaced custom component
             builder.remapCurrentToken(m_types.TAG_NAME);
-        } else {
-            if (state.previousTokenType == m_types.PIPE) {
-                builder.remapCurrentToken(m_types.VARIANT_NAME);
-            } else {
-                builder.remapCurrentToken(m_types.VALUE_NAME);
-            }
+        } else if (state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) {
+            builder.remapCurrentToken(m_types.VARIANT_NAME);
         }
 
         state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);

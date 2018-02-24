@@ -35,7 +35,6 @@ public class RmlTypes extends MlTypes {
         OBJECT_EXPR = new RmlElementType("OBJECT_EXPR");
         SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
         SIG_SCOPE = new RmlElementType("SIG_SCOPE");
-        VALUE_NAME = new RmlElementType("VALUE_NAME");
         PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
         FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
 

@@ -330,19 +330,12 @@ public class OclParser extends CommonParser {
         } else if (state.isResolution(external)) {
             state.setResolution(externalNamed);
             state.setComplete();
-            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(let)) {
             state.setResolution(letNamed);
             state.setComplete();
-            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(val)) {
             state.setResolution(valNamed);
             state.setComplete();
-            builder.remapCurrentToken(m_types.VALUE_NAME);
-        } else {
-            if (state.notResolution(annotationName)) {
-                builder.remapCurrentToken(m_types.VALUE_NAME);
-            }
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
@@ -352,24 +345,19 @@ public class OclParser extends CommonParser {
         if (state.isResolution(open)) {
             // It is a module name/path
             state.setComplete();
-            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(include)) {
             // It is a module name/path
             state.setComplete();
-            builder.remapCurrentToken(m_types.VALUE_NAME);
         } else if (state.isResolution(exception)) {
             state.setComplete();
             state.setResolution(exceptionNamed);
             builder.remapCurrentToken(m_types.EXCEPTION_NAME);
         } else if (state.isResolution(module)) {
             // Module definition
-            builder.remapCurrentToken(m_types.VALUE_NAME);
             state.setResolution(moduleNamed);
         } else {
             if (state.previousTokenType == m_types.PIPE) {
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
-            } else {
-                builder.remapCurrentToken(m_types.VALUE_NAME);
             }
         }
 

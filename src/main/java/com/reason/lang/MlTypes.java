@@ -28,7 +28,6 @@ public abstract class MlTypes {
     public IElementType OBJECT_EXPR;
     public IElementType SCOPED_EXPR;
     public IElementType SIG_SCOPE;
-    public IElementType VALUE_NAME;
     public IElementType PROPERTY_NAME;
     public IElementType FUNCTOR_PARAMS;
 

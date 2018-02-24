@@ -49,8 +49,8 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
                 cursorElement = prevSibling.getLastChild();
             }
         }
-        // from VALUE_NAME to PsiName
-        else if (originalPosition != null && originalPosition.getNode().getElementType() == m_types.VALUE_NAME) {
+        // from UIDENT node to PsiSymbolName
+        else if (originalPosition != null && originalPosition.getNode().getElementType() == m_types.UIDENT) {
             cursorElement = originalPosition.getParent();
         }
 

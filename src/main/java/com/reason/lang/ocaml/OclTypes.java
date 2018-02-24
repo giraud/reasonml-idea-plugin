@@ -34,7 +34,6 @@ public class OclTypes extends MlTypes {
         OBJECT_EXPR = new OclElementType("OBJECT_EXPR");
         SCOPED_EXPR = new OclElementType("SCOPED_EXPR");
         SIG_SCOPE = new OclElementType("SIG_SCOPE");
-        VALUE_NAME = new OclElementType("VALUE_NAME");
         PROPERTY_NAME = new OclElementType("PROPERTY_NAME");
         FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");
 
