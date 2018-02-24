@@ -361,7 +361,7 @@ public class OclParser extends CommonParser {
             // Module definition
             state.setResolution(moduleNamed);
         } else {
-            if (state.previousTokenType == m_types.PIPE) {
+            if ((state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) || state.isResolution(typeNamedEq)) {
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
             }
         }
