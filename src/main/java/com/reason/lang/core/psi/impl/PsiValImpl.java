@@ -3,10 +3,10 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,15 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+        PsiElement element = getFirstChild();
+        if (element != null) {
+            element = element.getNextSibling();
+            while (element instanceof PsiWhiteSpace) {
+                element = element.getNextSibling();
+            }
+        }
+
+        return element;
     }
 
     @Override
