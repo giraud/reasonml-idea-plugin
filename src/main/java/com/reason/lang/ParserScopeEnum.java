@@ -14,6 +14,7 @@ public enum ParserScopeEnum {
     type,
     typeNamed,
     typeNamedEq,
+    typeNamedEqVariant,
 
     module,
     moduleNamed,

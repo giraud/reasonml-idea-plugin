@@ -22,7 +22,7 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope end() {
+    public ParserScope endAny() {
         ParserScope scope = null;
 
         if (!m_scopes.empty()) {
@@ -32,21 +32,6 @@ public class ParserState {
                 scope = getLatestScope();
             }
             updateCurrentScope();
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    public ParserScope endUntilStartForced() {
-        ParserScope scope = null;
-
-        if (!m_scopes.empty()) {
-            scope = m_scopes.peek();
-            while (scope != null && scope.scopeType != startExpression) {
-                m_scopes.pop().end();
-                scope = getLatestScope();
-            }
         }
 
         return scope;

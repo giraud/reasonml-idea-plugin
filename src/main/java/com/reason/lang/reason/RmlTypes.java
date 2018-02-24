@@ -102,6 +102,7 @@ public class RmlTypes extends MlTypes {
         OPEN = new RmlTokenType("OPEN");
         OPTION = new RmlTokenType("OPTION");
         POLY_VARIANT = new RmlTokenType("POLY_VARIANT");
+        VARIANT = new RmlTokenType("VARIANT");
         PIPE = new RmlTokenType("PIPE");
         PIPE_FORWARD = new RmlTokenType("PIPE_FORWARD");
         PLUS = new RmlTokenType("PLUS");

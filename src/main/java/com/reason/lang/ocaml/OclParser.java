@@ -36,7 +36,7 @@ public class OclParser extends CommonParser {
             } else if (tokenType == m_types.END) { // end (like a })
                 parseEnd(builder, parserState);
             } else if (tokenType == m_types.PIPE) {
-                parsePipe(parserState);
+                parsePipe(builder, parserState);
             } else if (tokenType == m_types.EQ) {
                 parseEq(builder, parserState);
             } else if (tokenType == m_types.COLON) {
@@ -117,12 +117,19 @@ public class OclParser extends CommonParser {
 
     private void parseString(ParserState state) {
         if (state.isResolution(annotationName)) {
-            state.end();
+            state.endAny();
         }
     }
 
-    private void parsePipe(ParserState state) {
-        state.endUntilScopeExpression(m_types.WITH);
+    private void parsePipe(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(typeNamedEq)) {
+            state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT, groupExpression, m_types.PIPE));
+        } else if (state.isResolution(typeNamedEqVariant)) {
+            state.popEnd();
+            state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT, groupExpression, m_types.PIPE));
+        } else {
+            state.endUntilScopeExpression(m_types.WITH);
+        }
     }
 
     private void parseMatch(PsiBuilder builder, ParserState parserState) {
@@ -155,14 +162,14 @@ public class OclParser extends CommonParser {
 
     private void parseStruct(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(moduleNamedEq) || parserState.isResolution(moduleNamedSignature)) {
-            parserState.end();
+            parserState.endAny();
         }
         parserState.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT));
     }
 
     private void parseSig(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(moduleNamedEq) || parserState.isResolution(moduleNamedColon)) {
-            parserState.end();
+            parserState.endAny();
             parserState.setResolution(moduleNamedSignature);
             parserState.add(markScope(builder, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG));
         }
@@ -170,7 +177,7 @@ public class OclParser extends CommonParser {
 
     private void parseSemi(ParserState parserState) {
         // A SEMI operator ends the start expression, not the group or scope
-        ParserScope scope = parserState.end();
+        ParserScope scope = parserState.endAny();
         if (scope != null && scope.scopeType == startExpression) {
             parserState.pop();
             scope.end();
@@ -252,7 +259,7 @@ public class OclParser extends CommonParser {
             state.setComplete();
         }
 
-        state.end();
+        state.endAny();
         state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
     }
 
@@ -271,7 +278,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLBrace(PsiBuilder builder, ParserState parserState) {
-        parserState.end();
+        parserState.endAny();
         parserState.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
     }
 
@@ -413,7 +420,7 @@ public class OclParser extends CommonParser {
         ParserScope scope;
         if (parserState.previousTokenType != m_types.IN && parserState.previousTokenType != m_types.SIG && parserState.previousTokenType != m_types.STRUCT) {
             // force completion of scoped expressions
-            scope = parserState.endUntilStartForced();
+            scope = parserState.endAny();
         } else {
             // End current start-expression scope
             scope = parserState.endUntilStart();

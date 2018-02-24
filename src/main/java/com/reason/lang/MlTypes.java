@@ -95,6 +95,7 @@ public abstract class MlTypes {
     public IElementType OPEN;
     public IElementType OPTION;
     public IElementType POLY_VARIANT;
+    public IElementType VARIANT;
     public IElementType PIPE;
     public IElementType PIPE_FORWARD;
     public IElementType PLUS;

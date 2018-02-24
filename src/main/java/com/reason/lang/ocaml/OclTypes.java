@@ -101,6 +101,7 @@ public class OclTypes extends MlTypes {
         OPEN = new OclTokenType("OPEN");
         OPTION = new OclTokenType("OPTION");
         POLY_VARIANT = new OclTokenType("POLY_VARIANT");
+        VARIANT = new OclTokenType("VARIANT");
         PIPE = new OclTokenType("PIPE");
         PIPE_FORWARD = new OclTokenType("PIPE_FORWARD");
         PLUS = new OclTokenType("PLUS");
