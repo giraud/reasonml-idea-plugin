@@ -3,6 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PsiFileModuleImpl extends PsiModuleImpl {
     public PsiFileModuleImpl(@NotNull ModuleStub stub, @NotNull IStubElementType nodeType) {
@@ -95,11 +97,31 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
 
     @Override
     public boolean isComponent() {
-        return false;
+        ModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isComponent();
+        }
+
+        // naive detection
+
+        List<PsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiLet.class);
+        PsiLet componentDef = null;
+        PsiLet makeDef = null;
+        for (PsiLet let : expressions) {
+            if (componentDef == null && "component".equals(let.getName())) {
+                componentDef = let;
+            } else if (makeDef == null && "make".equals(let.getName())) {
+                makeDef = let;
+            } else if (componentDef != null && makeDef != null) {
+                break;
+            }
+        }
+
+        return componentDef != null && makeDef != null;
     }
 
     @Override
     public String toString() {
-        return "FileModule(" + getQualifiedName() + ")";
+        return "FModule " + getQualifiedName();
     }
 }
