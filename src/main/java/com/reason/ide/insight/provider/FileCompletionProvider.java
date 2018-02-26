@@ -22,6 +22,8 @@ public class FileCompletionProvider extends CompletionProvider<CompletionParamet
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
+        //System.out.println("»» File completion");
+
         FileBase file = (FileBase) parameters.getOriginalFile();
         Project project = file.getProject();
 

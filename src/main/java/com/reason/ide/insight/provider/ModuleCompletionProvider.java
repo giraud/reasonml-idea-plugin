@@ -37,6 +37,8 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
+        //System.out.println("»» Module completion");
+
         Project project = parameters.getOriginalFile().getProject();
         PsiElement originalPosition = parameters.getOriginalPosition();
 

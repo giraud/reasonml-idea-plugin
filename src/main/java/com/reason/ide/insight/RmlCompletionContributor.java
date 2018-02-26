@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlTypes;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
@@ -22,19 +23,23 @@ public class RmlCompletionContributor extends CompletionContributor {
             return baseDeclarationPattern()/*.and(statementBeginningPattern())*/;
         }
 
+        @NotNull
         @Override
         public ElementPattern<? extends PsiElement> open() {
             return psiElement().inside(PsiOpen.class);
         }
 
+        @NotNull
         @Override
         public ElementPattern<? extends PsiElement> keyword() {
-            return psiElement();
+            return psiElement().andNot(jsxName());
         }
 
-        //private static PsiElementPattern.Capture<PsiElement> statementBeginningPattern() {
-        //    return null;
-        //}
+        @NotNull
+        @Override
+        public ElementPattern<? extends PsiElement> jsxName() {
+            return psiElement(RmlTypes.INSTANCE.TAG_NAME);
+        }
 
         private static ElementPattern<? extends PsiElement> baseDeclarationPattern() {
             return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));

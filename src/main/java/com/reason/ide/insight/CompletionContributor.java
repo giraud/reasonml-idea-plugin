@@ -7,6 +7,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.insight.provider.FileCompletionProvider;
+import com.reason.ide.insight.provider.JsxNameCompletionProvider;
 import com.reason.ide.insight.provider.ModuleCompletionProvider;
 import com.reason.lang.MlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
         extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types));
         extend(CompletionType.BASIC, patterns.declaration(), new FileCompletionProvider());
+        extend(CompletionType.BASIC, patterns.jsxName(), new JsxNameCompletionProvider());
     }
 
     static class DebugCompletionProvider extends CompletionProvider<CompletionParameters> {

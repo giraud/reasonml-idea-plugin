@@ -25,6 +25,7 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
         //System.out.println("»» keyword completion");
+
         for (String keyword : m_keywords) {
             LookupElementBuilder builder = LookupElementBuilder.create(keyword).
                     withInsertHandler(KEYWORD_WITH_POPUP.contains(keyword) ? INSERT_SPACE_POPUP : INSERT_SPACE).
