@@ -17,6 +17,7 @@ public class Icons {
     public static final Icon TYPE = getIcon("/icons/type.png");
 
     // From jetbrains ide
+    public static final Icon ATTRIBUTE = getIcon("/css/property.png");
     public static final Icon MODULE = getIcon("/nodes/method.png");
     public static final Icon LET = getIcon("/nodes/field.png");
     public static final Icon VAL = getIcon("/nodes/variable.png");

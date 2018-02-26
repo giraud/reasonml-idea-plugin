@@ -41,5 +41,11 @@ public class OclCompletionContributor extends CompletionContributor {
         public ElementPattern<? extends PsiElement> jsxName() {
             return alwaysFalse();
         }
+
+        @NotNull
+        @Override
+        public ElementPattern<? extends PsiElement> jsxAttribute() {
+            return alwaysFalse();
+        }
     }
 }

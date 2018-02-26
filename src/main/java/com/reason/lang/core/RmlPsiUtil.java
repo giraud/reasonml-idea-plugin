@@ -37,6 +37,7 @@ public class RmlPsiUtil {
         //return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault()) + nameWithoutExtension.substring(1);
     }
 
+    @NotNull
     public static String fileNameToModuleName(String filename) {
         String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(filename);
         if (nameWithoutExtension.isEmpty()) {

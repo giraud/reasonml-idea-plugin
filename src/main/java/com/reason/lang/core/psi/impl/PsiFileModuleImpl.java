@@ -68,6 +68,22 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
         return result;
     }
 
+    @NotNull
+    @Override
+    public Collection<PsiLet> getLetExpressions() {
+        Collection<PsiLet> result = new ArrayList<>();
+
+        PsiElement element = getFirstChild();
+        while (element != null) {
+            if (element instanceof PsiLet) {
+                result.add((PsiLet) element);
+            }
+            element = element.getNextSibling();
+        }
+
+        return result;
+    }
+
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {

@@ -4,8 +4,8 @@ import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
@@ -31,29 +31,26 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         // Find all files that are components
         List<PsiModule> modules = RmlPsiUtil.findFileModules(project);
         for (PsiModule module : modules) {
-            if (!module.getName().equals(fileModuleName) && module.isComponent()) {
+            String moduleName = module.getName();
+            if (!fileModuleName.equals(moduleName) && module.isComponent()) {
                 resultSet.addElement(LookupElementBuilder.create(module).
                         withIcon(getProvidersIcon(module, 0)).
-                        withInsertHandler((context, item) -> {
-                            char completionChar = context.getCompletionChar();
-                            if (completionChar == ' ') {
-                                context.setAddCompletionChar(false);
-                            }
-
-                            Editor editor = context.getEditor();
-                            EditorModificationUtil.insertStringAtCaret(editor, " >");
-                            editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 1);
-
-                            AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, null);
-                        })
+                        withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
                 );
             }
         }
     }
 
-    private static boolean isCharAtSpace(Editor editor) {
-        final int startOffset = editor.getCaretModel().getOffset();
-        final Document document = editor.getDocument();
-        return document.getTextLength() > startOffset && document.getCharsSequence().charAt(startOffset) == ' ';
+    private static void insertTagNameHandler(Project project, InsertionContext context, String tagName) {
+        char completionChar = context.getCompletionChar();
+        if (completionChar == ' ') {
+            context.setAddCompletionChar(false);
+        }
+
+        Editor editor = context.getEditor();
+        EditorModificationUtil.insertStringAtCaret(editor, " ></" + tagName + ">");
+        editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 4 - tagName.length());
+
+        AutoPopupController.getInstance(project).autoPopupMemberLookup(editor, null);
     }
 }

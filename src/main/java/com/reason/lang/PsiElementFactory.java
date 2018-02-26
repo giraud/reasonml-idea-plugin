@@ -36,6 +36,8 @@ public class PsiElementFactory {
             return new PsiFunBody(node);
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
+        } else if (type == types.LET_FUN_PARAMS) {
+            return new PsiParametersImpl(types, node);
         } else if (type == types.MACRO_NAME) {
             return new PsiMacroName(node);
         } else if (type == types.SCOPED_EXPR || type == types.OBJECT_EXPR || type == types.PATTERN_MATCH_EXPR) {
@@ -45,7 +47,7 @@ public class PsiElementFactory {
         } else if (type == types.SIG_SCOPE) {
             return new PsiSignatureImpl(node);
         } else if (type == types.TAG_START) {
-            return new PsiTagStart(node);
+            return new PsiTagStartImpl(node);
         } else if (type == types.TAG_PROPERTY) {
             return new PsiTagPropertyImpl(types, node);
         } else if (type == types.TAG_CLOSE) {

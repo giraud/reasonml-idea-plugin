@@ -12,19 +12,21 @@ import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
 
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
 
+    private final String m_debugName;
     private final String[] m_keywords;
 
     private static final THashSet<String> KEYWORD_WITH_POPUP = ContainerUtil.newTroveSet(CaseInsensitiveStringHashingStrategy.INSTANCE, "open", "include");
     private static final AddSpaceInsertHandler INSERT_SPACE_POPUP = new AddSpaceInsertHandler(true);
     private static final AddSpaceInsertHandler INSERT_SPACE = new AddSpaceInsertHandler(false);
 
-    public KeywordCompletionProvider(String... keywords) {
+    public KeywordCompletionProvider(String debugName, String... keywords) {
+        m_debugName = debugName;
         m_keywords = keywords;
     }
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
-        //System.out.println("»» keyword completion");
+        //System.out.println("»» " + m_debugName + " completion");
 
         for (String keyword : m_keywords) {
             LookupElementBuilder builder = LookupElementBuilder.create(keyword).

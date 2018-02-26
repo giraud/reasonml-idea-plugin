@@ -15,6 +15,7 @@ import java.util.Collection;
 
 public abstract class FileBase extends PsiFileBase implements PsiModuleFile {
 
+    @NotNull
     private final String m_moduleName;
 
     FileBase(@NotNull FileViewProvider viewProvider, @NotNull Language language) {

@@ -17,4 +17,7 @@ interface CompletionPatterns {
 
     @NotNull
     ElementPattern<? extends PsiElement> jsxName();
+
+    @NotNull
+    ElementPattern<? extends PsiElement> jsxAttribute();
 }

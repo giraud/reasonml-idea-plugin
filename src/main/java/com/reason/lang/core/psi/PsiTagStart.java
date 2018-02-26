@@ -1,11 +1,9 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
 
-public class PsiTagStart extends ASTWrapperPsiElement {
-    public PsiTagStart(@NotNull ASTNode node) {
-        super(node);
-    }
+import java.util.Map;
+
+public interface PsiTagStart extends PsiElement {
+    Map<String, String> getAttributes(); // Map is not a good API
 }

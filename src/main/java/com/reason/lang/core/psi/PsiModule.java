@@ -24,6 +24,9 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     Collection<PsiNamedElement> getExpressions();
 
     @NotNull
+    Collection<PsiLet> getLetExpressions();
+
+    @NotNull
     ModulePath getPath();
 
     boolean isComponent();
