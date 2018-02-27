@@ -84,6 +84,27 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiLet.class);
     }
 
+    @Nullable
+    @Override
+    public PsiExternal getExternalExpression(@NotNull String name) {
+        PsiExternal result = null;
+
+        PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
+        if (body != null) {
+            List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class);
+            if (!externals.isEmpty()) {
+                for (PsiExternal external : externals) {
+                    if (name.equals(external.getName())) {
+                        result = external;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
