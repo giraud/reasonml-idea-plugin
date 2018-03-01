@@ -134,6 +134,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "or"          { return types.OR; }
     "private"     { return types.PRIVATE; }
     "virtual"     { return types.VIRTUAL; }
+    "val"         { return types.VAL; }
+    "pub"         { return types.PUB; }
 
     // OCaml
     "of"         { return types.OF; }
@@ -151,7 +153,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "function"   { return types.FUNCTION; }
     "sig"        { return types.SIG; }
     "struct"     { return types.STRUCT; }
-    "val"        { return types.VAL; }
     //
 
     "option"    { return types.OPTION; }

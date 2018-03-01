@@ -139,6 +139,7 @@ public abstract class MlTypes {
     public IElementType UIDENT;
     public IElementType UNIT;
     public IElementType VAL;
+    public IElementType PUB;
     public IElementType LOWER_SYMBOL;
     public IElementType WHEN;
     public IElementType WHILE;

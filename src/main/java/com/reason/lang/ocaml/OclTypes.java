@@ -145,6 +145,7 @@ public class OclTypes extends MlTypes {
         UIDENT = new OclTokenType("UIDENT");
         UNIT = new OclTokenType("UNIT");
         VAL = new OclTokenType("VAL");
+        PUB = new OclTokenType("PUB");
         LOWER_SYMBOL = new OclTokenType("LOWER_SYMBOL");
         WHEN = new OclTokenType("WHEN");
         WHILE = new OclTokenType("WHILE");

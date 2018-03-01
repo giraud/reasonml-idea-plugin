@@ -53,6 +53,8 @@ public class RmlParser extends CommonParser {
                 parseString(parserState);
             } else if (tokenType == m_types.PIPE) {
                 parsePipe(builder, parserState);
+            } else if (tokenType == m_types.TILDE) {
+                parseTilde(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -103,6 +105,8 @@ public class RmlParser extends CommonParser {
                 parseModule(builder, parserState);
             } else if (tokenType == m_types.LET) {
                 parseLet(builder, parserState);
+            } else if (tokenType == m_types.VAL) {
+                parseVal(builder, parserState);
             }
 
             if (parserState.dontMove) {
@@ -117,6 +121,10 @@ public class RmlParser extends CommonParser {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parseTilde(PsiBuilder builder, ParserState state) {
+        IElementType netToken = builder.rawLookup(1);
     }
 
     private void parsePipe(PsiBuilder builder, ParserState state) {
@@ -180,6 +188,11 @@ public class RmlParser extends CommonParser {
     private void parseLet(PsiBuilder builder, ParserState parserState) {
         parserState.endAny();
         parserState.add(markScope(builder, let, m_types.LET_EXPRESSION, startExpression, m_types.LET));
+    }
+
+    private void parseVal(PsiBuilder builder, ParserState parserState) {
+        parserState.endAny();
+        parserState.add(markScope(builder, let, m_types.LET_EXPRESSION, startExpression, m_types.VAL));
     }
 
     private void parseModule(PsiBuilder builder, ParserState parserState) {
