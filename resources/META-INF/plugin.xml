@@ -14,6 +14,14 @@
 
       <p></p>
 
+      <b>version 0.40</b>
+
+      <ul>
+         <li>JSX completion (tag/attribute)</li>
+         <li>Improved parsers</li>
+         <li>Variant names can be highlighted</li>
+      </ul>
+
       <b>version 0.39</b>
 
       <ul>
