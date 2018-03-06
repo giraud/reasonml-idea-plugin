@@ -27,10 +27,9 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
         //System.out.println("»» JSX attribute completion");
 
         PsiElement originalPosition = parameters.getOriginalPosition();
-        PsiElement parent = originalPosition == null ? null : originalPosition.getParent();
 
-        if (parent instanceof PsiTagStart) {
-            PsiTagStart tag = (PsiTagStart) parent;
+        PsiTagStart tag = PsiTreeUtil.getParentOfType(originalPosition, PsiTagStart.class);
+        if (tag != null) {
             Map<String, String> attributes = tag.getAttributes();
 
             // TODO: additional attributes for UpperSymbol => only key and ref
