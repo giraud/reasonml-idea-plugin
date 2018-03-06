@@ -21,6 +21,7 @@ public class PsiTagPropertyImpl extends MlAstWrapperPsiElement implements PsiTag
         return findChildByClass(PsiLowerSymbol.class);
     }
 
+    @NotNull
     @Override
     public String getName() {
         PsiElement nameElement = getNameElement();

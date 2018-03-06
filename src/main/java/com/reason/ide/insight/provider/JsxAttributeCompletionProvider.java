@@ -39,7 +39,7 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
 
             // Attributes already used
             Collection<PsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
-            List<String> usedNames = usedAttributes.stream().map(PsiElement::getText).collect(toList());
+            List<String> usedNames = usedAttributes.stream().map(PsiTagProperty::getName).collect(toList());
 
             // Now populate the dialog
             for (Map.Entry<String, String> attributeEntry : attributes.entrySet()) {
