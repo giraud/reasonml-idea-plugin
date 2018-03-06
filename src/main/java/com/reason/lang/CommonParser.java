@@ -57,7 +57,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    private ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType) {
+    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType) {
         return new ParserScope(resolution, tokenType, builder.mark());
     }
 

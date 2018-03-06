@@ -7,15 +7,12 @@ import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.reason.icons.Icons;
-import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiTagProperty;
+import com.reason.lang.core.psi.PsiTagStart;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -29,25 +26,12 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
         //System.out.println("»» JSX attribute completion");
 
-        Project project = parameters.getOriginalFile().getProject();
-        PsiElement parent = parameters.getOriginalPosition().getParent();
+        PsiElement originalPosition = parameters.getOriginalPosition();
+        PsiElement parent = originalPosition == null ? null : originalPosition.getParent();
 
         if (parent instanceof PsiTagStart) {
             PsiTagStart tag = (PsiTagStart) parent;
             Map<String, String> attributes = tag.getAttributes();
-
-            // TODO: attributes for LowerSymbol tag : external props in ReactDOMRe  => PsiExternal(name=props) => PsiSignature => all named elements
-            Collection<PsiModule> reactModules = StubIndex.getElements(IndexKeys.MODULES, "ReactDOMRe", project, GlobalSearchScope.allScope(project), PsiModule.class);
-            if (!reactModules.isEmpty()) {
-                PsiModule reactDomRe = reactModules.iterator().next();
-                PsiExternal props = reactDomRe.getExternalExpression("props");
-                if (props != null) {
-                    PsiSignature signature = PsiTreeUtil.getStubChildOfType(props, PsiSignature.class);
-                    if (signature != null) {
-                        System.out.println(signature);
-                    }
-                }
-            }
 
             // TODO: additional attributes for UpperSymbol => only key and ref
             attributes.put("key", "string=?");

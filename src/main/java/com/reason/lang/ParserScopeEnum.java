@@ -68,4 +68,7 @@ public enum ParserScopeEnum {
     multilineStart,
     interpolationStart,
     interpolationString,
+
+    namedSymbol,
+    namedSymbolSignature
 }

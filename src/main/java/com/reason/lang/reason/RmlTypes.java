@@ -37,6 +37,7 @@ public class RmlTypes extends MlTypes {
         SIG_SCOPE = new RmlElementType("SIG_SCOPE");
         PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
         FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
+        NAMED_SYMBOL = new RmlElementType("NAMED_SYMBOL");
 
         AND = new RmlTokenType("AND");
         ANDAND = new RmlTokenType("ANDAND");

@@ -56,6 +56,8 @@ public class PsiElementFactory {
             return new PsiUpperSymbolImpl(types, node);
         } else if (type == types.LOWER_SYMBOL) {
             return new PsiLowerSymbolImpl(types, node);
+        } else if (type == types.NAMED_SYMBOL) {
+            return new PsiNamedSymbol(node);
         }
 
         return new PsiToken(node);

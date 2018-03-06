@@ -36,6 +36,7 @@ public class OclTypes extends MlTypes {
         SIG_SCOPE = new OclElementType("SIG_SCOPE");
         PROPERTY_NAME = new OclElementType("PROPERTY_NAME");
         FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");
+        NAMED_SYMBOL = new OclElementType("NAMED_SYMBOL");
 
         AND = new OclTokenType("AND");
         ANDAND = new OclTokenType("ANDAND");

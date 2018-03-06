@@ -91,7 +91,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
 
         PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
         if (body != null) {
-            List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class);
+            List<PsiExternal> externals = PsiTreeUtil.getChildrenOfTypeAsList(body, PsiExternal.class);
             if (!externals.isEmpty()) {
                 for (PsiExternal external : externals) {
                     if (name.equals(external.getName())) {

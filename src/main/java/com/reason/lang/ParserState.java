@@ -86,7 +86,7 @@ public class ParserState {
         return currentScope.resolution != scope;
     }
 
-    public void complete() {
+    public void setComplete() {
         currentScope.complete = true;
     }
 
@@ -95,11 +95,11 @@ public class ParserState {
         currentScope = scope;
     }
 
-    public boolean empty() {
+    boolean empty() {
         return m_scopes.empty();
     }
 
-    public void clear() {
+    void clear() {
         ParserScope scope = m_scopes.pop();
         while (scope != null) {
             scope.end();
@@ -120,10 +120,6 @@ public class ParserState {
         if (scope != null) {
             scope.end();
         }
-    }
-
-    public void setComplete() {
-        currentScope.complete = true;
     }
 
     public boolean isCurrentTokenType(IElementType elementType) {

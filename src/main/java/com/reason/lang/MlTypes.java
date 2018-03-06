@@ -30,6 +30,7 @@ public abstract class MlTypes {
     public IElementType SIG_SCOPE;
     public IElementType PROPERTY_NAME;
     public IElementType FUNCTOR_PARAMS;
+    public IElementType NAMED_SYMBOL;
 
     public IElementType AND;
     public IElementType ANDAND;

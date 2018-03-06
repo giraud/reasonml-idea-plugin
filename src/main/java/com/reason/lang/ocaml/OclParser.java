@@ -247,7 +247,7 @@ public class OclParser extends CommonParser {
 
     private void parseArrobase(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(annotation)) {
-            parserState.complete();
+            parserState.setComplete();
             parserState.add(markComplete(builder, annotationName, m_types.MACRO_NAME));
         }
     }
