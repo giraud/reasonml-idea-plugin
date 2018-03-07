@@ -33,8 +33,8 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
             Map<String, String> attributes = tag.getAttributes();
 
             // TODO: additional attributes for UpperSymbol => only key and ref
-            attributes.put("key", "string=?");
-            attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
+            //attributes.put("key", "string=?");
+            //attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
 
             // Attributes already used
             Collection<PsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
