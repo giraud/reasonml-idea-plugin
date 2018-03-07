@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.40
+
+* :rocket: JSX completion (tag/attribute)
+* :rocket: Variant names can be highlighted
+* :house: Improved parsers
+         
 ## 0.39
 
 * :house: Better JSX parsing/highlighting

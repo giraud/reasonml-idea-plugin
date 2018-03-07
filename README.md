@@ -20,6 +20,7 @@ Known limitations:
 - Line commenting with ctrl-alt-l
 - code folding
 - pair braces matcher
+- JSX completion
 - bucklescript compiler integration
 - reformat (by default, action is also mapped to `crtl alt shift R`)
 - Type annotation (* bs)
