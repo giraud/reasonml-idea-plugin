@@ -73,15 +73,19 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             if (1 < modules.size()) {
                 // TODO: find modulePath of current element
                 // for now, only test if there is a dot before the element
-                PsiElement prevSibling = myElement.getPrevSibling();
-                boolean inPath = prevSibling != null && m_types.DOT == prevSibling.getNode().getElementType();
+                //PsiElement prevSibling = myElement.getPrevSibling();
+                //boolean inPath = prevSibling != null && m_types.DOT == prevSibling.getNode().getElementType();
                 filteredModules = modules.stream().
-                        filter(psiModule -> inPath != psiModule instanceof PsiFileModuleImpl).
+                        //filter(psiModule -> inPath != psiModule instanceof PsiFileModuleImpl).
                         filter(psiModule -> {
                             PsiFile file = psiModule.getContainingFile();
                             return file instanceof RmlFile || file instanceof OclFile;
                         }).
                         collect(Collectors.toList());
+            }
+
+            if (filteredModules.isEmpty()) {
+                return null;
             }
 
             PsiModule moduleReference = filteredModules.iterator().next();
