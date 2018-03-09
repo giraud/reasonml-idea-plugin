@@ -167,6 +167,8 @@
         <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
 
         <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
+        <lang.findUsagesProvider language="Ocaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
+
         <lang.refactoringSupport language="ReasonML"
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
         <elementDescriptionProvider implementation="com.reason.ide.search.DescriptionProvider"/>

@@ -3,7 +3,6 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
@@ -43,18 +42,6 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
         }
 
         return sbName.toString();
-    }
-
-    @Override
-    public PsiReference getReference() {
-        PsiElement nameIdentifier = this.getNameIdentifier();
-        if (nameIdentifier != null) {
-            PsiElement firstChild = nameIdentifier.getFirstChild(); // only first module name, not path yet
-            if (firstChild instanceof PsiUpperSymbol) {
-                return new PsiModuleReference((PsiUpperSymbol) firstChild, ((PsiUpperSymbol) firstChild).getQualifiedName());
-            }
-        }
-        return null;
     }
 
     @Override

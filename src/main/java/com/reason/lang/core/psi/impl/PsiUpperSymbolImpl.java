@@ -5,8 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.RmlPsiUtil;
-import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +32,7 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
 
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this; // Use PsiModuleReference.handleElementRename()
+        return this; // Use PsiUpperSymbolReference.handleElementRename()
     }
     //endregion
 
@@ -45,24 +43,27 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
 
     @Override
     public PsiReference getReference() {
-        return new PsiModuleReference(this, getQualifiedName());
+        return new PsiUpperSymbolReference(this, m_types);
     }
 
     @NotNull
     public String getQualifiedName() {
-        // use a stub ?
-        String path = null;
+        return "";
 
-        PsiElement parent = getParent();
-        if (parent instanceof PsiModule) {
-            path = ((PsiModule) parent).getQualifiedName();
-        }
-
-        if (path == null) {
-            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
-        }
-
-        return path + "." + getName();
+        //// use a stub ?
+        //String path = null;
+        //
+        //PsiElement parent = getParent();
+        //if (parent instanceof PsiModule) {
+        //    path = ((PsiModule) parent).getQualifiedName();
+        //}
+        //
+        //if (path == null) {
+        //    path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
+        //}
+        //
+        //System.out.println(" » qn uppersymbol: " + path + "." + getName());
+        //return path + "." + getName();
     }
 
     @Override

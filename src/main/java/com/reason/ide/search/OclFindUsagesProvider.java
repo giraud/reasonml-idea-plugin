@@ -13,15 +13,15 @@ import com.reason.lang.LexerAdapter;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiTypeName;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
+public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindUsagesProvider {
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new LexerAdapter(RmlTypes.INSTANCE), TokenSet.create(RmlTypes.INSTANCE.UIDENT, RmlTypes.INSTANCE.LIDENT), TokenSet.EMPTY, TokenSet.EMPTY);
+        return new DefaultWordsScanner(new LexerAdapter(OclTypes.INSTANCE), TokenSet.create(OclTypes.INSTANCE.UIDENT, OclTypes.INSTANCE.LIDENT), TokenSet.EMPTY, TokenSet.EMPTY);
     }
 
     @Override
