@@ -2,6 +2,7 @@ package com.reason.ide.insight;
 
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,6 +47,11 @@ public class OclCompletionContributor extends CompletionContributor {
         @Override
         public ElementPattern<? extends PsiElement> jsxAttribute() {
             return alwaysFalse();
+        }
+
+        @Override
+        public ElementPattern<? extends PsiElement> upperSymbol() {
+            return psiElement().inside(PsiUpperSymbol.class);
         }
     }
 }

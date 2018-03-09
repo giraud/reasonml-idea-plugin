@@ -30,9 +30,11 @@ import static com.reason.lang.core.MlFileType.implementationOnly;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
     private final MlTypes m_types;
+    private final boolean m_moduleOnly;
 
-    public ModuleCompletionProvider(MlTypes types) {
+    public ModuleCompletionProvider(MlTypes types, boolean moduleOnly) {
         m_types = types;
+        m_moduleOnly = moduleOnly;
     }
 
     @Override

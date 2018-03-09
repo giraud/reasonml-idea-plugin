@@ -5,10 +5,12 @@ import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.or;
 
@@ -57,5 +59,9 @@ public class RmlCompletionContributor extends CompletionContributor {
             return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
         }
 
+        @Override
+        public ElementPattern<? extends PsiElement> upperSymbol() {
+            return psiElement().inside(PsiUpperSymbol.class).withoutText(DUMMY_IDENTIFIER_TRIMMED);
+        }
     }
 }
