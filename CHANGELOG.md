@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.41
+
+* :house: Much improved performances for code lens
+
 ## 0.40
 
 * :rocket: JSX completion (tag/attribute)
