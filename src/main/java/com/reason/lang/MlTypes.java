@@ -34,6 +34,7 @@ public abstract class MlTypes {
 
     public IElementType AND;
     public IElementType ANDAND;
+    public IElementType SHARPSHARP;
     public IElementType ARROBASE;
     public IElementType ARROW;
     public IElementType ASSERT;

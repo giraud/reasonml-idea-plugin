@@ -36,7 +36,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> keyword() {
-            return psiElement().andNot(psiElement().andOr(psiElement().inside(PsiTagStart.class), jsxName()));
+            return psiElement().andNot(psiElement().andOr(psiElement().inside(PsiTagStart.class), jsxName(), expression()));
         }
 
         @NotNull
@@ -64,6 +64,12 @@ public class RmlCompletionContributor extends CompletionContributor {
         @Override
         public ElementPattern<? extends PsiElement> expression() {
             return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.DOT));
+        }
+
+        @NotNull
+        @Override
+        public ElementPattern<? extends PsiElement> jsObject() {
+            return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.SHARPSHARP));
         }
 
         private static ElementPattern<? extends PsiElement> baseDeclarationPattern() {

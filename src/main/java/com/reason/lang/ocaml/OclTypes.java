@@ -120,6 +120,7 @@ public class OclTypes extends MlTypes {
         SEMI = new OclTokenType("SEMI");
         SIG = new OclTokenType("SIG");
         SHARP = new OclTokenType("SHARP");
+        SHARPSHARP = new OclTokenType("SHARPSHARP");
         SHORTCUT = new OclTokenType("SHORTCUT");
         SLASH = new OclTokenType("SLASH");
         SLASHDOT = new OclTokenType("SLASHDOT");

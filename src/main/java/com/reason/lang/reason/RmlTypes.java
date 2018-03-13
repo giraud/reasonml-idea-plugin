@@ -121,6 +121,7 @@ public class RmlTypes extends MlTypes {
         SEMI = new RmlTokenType("SEMI");
         SIG = new RmlTokenType("SIG");
         SHARP = new RmlTokenType("SHARP");
+        SHARPSHARP = new RmlTokenType("SHARPSHARP");
         SHORTCUT = new RmlTokenType("SHORTCUT");
         SLASH = new RmlTokenType("SLASH");
         SLASHDOT = new RmlTokenType("SLASHDOT");

@@ -60,5 +60,11 @@ public class OclCompletionContributor extends CompletionContributor {
         public ElementPattern<? extends PsiElement> expression() {
             return alwaysFalse();
         }
+
+        @NotNull
+        @Override
+        public ElementPattern<? extends PsiElement> jsObject() {
+            return alwaysFalse();
+        }
     }
 }

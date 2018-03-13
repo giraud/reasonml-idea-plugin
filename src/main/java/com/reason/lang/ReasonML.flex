@@ -177,6 +177,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "(*" { yybegin(IN_OCL_COMMENT); commentDepth = 1; tokenStart(); }
 
     "&&"  { return types.ANDAND; }
+    "##"  { return types.SHARPSHARP; }
     "::"  { return types.SHORTCUT; }
     "=>"  { return types.ARROW; }
     "->"  { return types.RIGHT_ARROW; }

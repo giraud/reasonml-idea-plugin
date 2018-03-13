@@ -26,4 +26,7 @@ interface CompletionPatterns {
 
     @NotNull
     ElementPattern<? extends PsiElement> expression();
+
+    @NotNull
+    ElementPattern<? extends PsiElement> jsObject();
 }
