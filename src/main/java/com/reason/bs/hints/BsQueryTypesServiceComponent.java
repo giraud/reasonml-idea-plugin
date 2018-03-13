@@ -50,7 +50,7 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
                         StringBuilder msgBuffer = new StringBuilder();
                         if (errReader.ready()) {
                             errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                            Notifications.Bus.notify(new RmlNotification("Reformat", msgBuffer.toString(), NotificationType.ERROR));
+                            Notifications.Bus.notify(new RmlNotification("Code lens", msgBuffer.toString(), NotificationType.ERROR));
                         } else {
                             reader.lines().forEach(line -> {
                                 //System.out.println("»" + line + "«");

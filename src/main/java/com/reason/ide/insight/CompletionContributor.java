@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 abstract class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
     CompletionContributor(@NotNull MlTypes types, @NotNull CompletionPatterns patterns) {
-        extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new DebugCompletionProvider());
+        //extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new DebugCompletionProvider());
 
         extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types, true));
         extend(CompletionType.BASIC, patterns.upperSymbol(), new ModuleCompletionProvider(types, false));

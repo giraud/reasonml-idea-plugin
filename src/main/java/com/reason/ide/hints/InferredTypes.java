@@ -26,8 +26,7 @@ public class InferredTypes {
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
                     Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
-
-                    BscInferredTypesTask inferredTypesTask = new BscInferredTypesTask(psiFile, letExpressions);
+                    BscInferredTypesTask inferredTypesTask = new BscInferredTypesTask(psiFile, selectedTextEditor, letExpressions, document.getModificationStamp());
                     ApplicationManager.getApplication().executeOnPooledThread(inferredTypesTask);
                 }
             }
