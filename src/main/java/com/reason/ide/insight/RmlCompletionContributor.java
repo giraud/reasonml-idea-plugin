@@ -10,7 +10,6 @@ import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.or;
 
@@ -55,13 +54,20 @@ public class RmlCompletionContributor extends CompletionContributor {
             );
         }
 
-        private static ElementPattern<? extends PsiElement> baseDeclarationPattern() {
-            return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
-        }
-
+        @NotNull
         @Override
         public ElementPattern<? extends PsiElement> upperSymbol() {
-            return psiElement().inside(PsiUpperSymbol.class).withoutText(DUMMY_IDENTIFIER_TRIMMED);
+            return psiElement().inside(PsiUpperSymbol.class);
+        }
+
+        @NotNull
+        @Override
+        public ElementPattern<? extends PsiElement> expression() {
+            return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.DOT));
+        }
+
+        private static ElementPattern<? extends PsiElement> baseDeclarationPattern() {
+            return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
         }
     }
 }

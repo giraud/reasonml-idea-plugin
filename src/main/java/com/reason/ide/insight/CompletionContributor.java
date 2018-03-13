@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
+import com.reason.ide.insight.provider.ExpressionCompletionProvider;
 import com.reason.ide.insight.provider.JsxAttributeCompletionProvider;
 import com.reason.ide.insight.provider.JsxNameCompletionProvider;
 import com.reason.ide.insight.provider.ModuleCompletionProvider;
@@ -19,6 +20,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
         extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types, true));
         extend(CompletionType.BASIC, patterns.upperSymbol(), new ModuleCompletionProvider(types, false));
+        extend(CompletionType.BASIC, patterns.expression(), new ExpressionCompletionProvider(types));
         //extend(CompletionType.BASIC, patterns.declaration(), new FileCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxName(), new JsxNameCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxAttribute(), new JsxAttributeCompletionProvider());

@@ -21,5 +21,9 @@ interface CompletionPatterns {
     @NotNull
     ElementPattern<? extends PsiElement> jsxAttribute();
 
+    @NotNull
     ElementPattern<? extends PsiElement> upperSymbol();
+
+    @NotNull
+    ElementPattern<? extends PsiElement> expression();
 }

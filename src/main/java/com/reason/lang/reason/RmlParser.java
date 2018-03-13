@@ -6,6 +6,7 @@ import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
 
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
@@ -460,6 +461,10 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseUIdent(PsiBuilder builder, ParserState state) {
+        if (DUMMY_IDENTIFIER_TRIMMED.equals(builder.getTokenText())) {
+            return;
+        }
+
         if (state.isResolution(open)) {
             // It is a module name/path
             state.setComplete();

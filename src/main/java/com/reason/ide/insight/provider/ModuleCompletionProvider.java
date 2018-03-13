@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
@@ -17,7 +16,6 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,14 +45,15 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         PsiElement cursorElement = originalPosition;
 
         // PsiWhite after a DOT
-        if (originalPosition instanceof PsiWhiteSpace) {
-            PsiElement prevSibling = originalPosition.getPrevSibling();
-            if (prevSibling instanceof PsiOpen) {
-                cursorElement = prevSibling.getLastChild();
-            }
-        }
+        //if (originalPosition instanceof PsiWhiteSpace) {
+        //    PsiElement prevSibling = originalPosition.getPrevSibling();
+        //    if (prevSibling instanceof PsiOpen) {
+        //        cursorElement = prevSibling.getLastChild();
+        //    }
+        //}
         // from UIDENT node to PsiSymbolName
-        else if (originalPosition != null && originalPosition.getNode().getElementType() == m_types.UIDENT) {
+        //else if (originalPosition != null && originalPosition.getNode().getElementType() == m_types.UIDENT) {
+        if (originalPosition != null) {
             cursorElement = originalPosition.getParent();
         }
 
