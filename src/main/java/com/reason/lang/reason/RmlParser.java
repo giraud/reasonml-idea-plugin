@@ -51,7 +51,7 @@ public class RmlParser extends CommonParser {
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, parserState);
             } else if (tokenType == m_types.STRING) {
-                parseString(parserState);
+                parseString(builder, parserState);
             } else if (tokenType == m_types.PIPE) {
                 parsePipe(builder, parserState);
             } else if (tokenType == m_types.TILDE) {
@@ -149,9 +149,21 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseString(ParserState state) {
+    private void parseString(PsiBuilder builder, ParserState state) {
         if (state.isResolution(annotationName) || state.isResolution(macroName)) {
             state.endAny();
+        } else if (state.isResolution(brace)) {
+            IElementType nextToken = builder.lookAhead(1);
+            if (m_types.COLON.equals(nextToken)) {
+                state.setResolution(jsObject);
+                state.setTokenType(m_types.OBJECT);
+                state.dontMove = wrapWith(m_types.OBJECT_FIELD, builder);
+            }
+        } else if (state.isResolution(jsObject)) {
+            IElementType nextToken = builder.lookAhead(1);
+            if (m_types.COLON.equals(nextToken)) {
+                state.dontMove = wrapWith(m_types.OBJECT_FIELD, builder);
+            }
         }
     }
 
@@ -363,7 +375,7 @@ public class RmlParser extends CommonParser {
 
     private void parseLBrace(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(typeNamedEq)) {
-            parserState.add(markScope(builder, objectBinding, m_types.OBJECT_EXPR, scopeExpression, m_types.LBRACE));
+            parserState.add(markScope(builder, objectBinding, m_types.OBJECT, scopeExpression, m_types.LBRACE));
         } else if (parserState.isResolution(moduleNamedEq) || parserState.isResolution(moduleNamedSignature)) {
             parserState.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else if (parserState.isResolution(letNamedEqParameters)) {

@@ -24,6 +24,7 @@ public class Icons {
     public static final Icon FUNCTION = getIcon("/nodes/function.png");
     public static final Icon EXCEPTION = getIcon("/nodes/exceptionClass.png");
     public static final Icon EXTERNAL = getIcon("/nodes/enum.png");
+    public static final Icon OBJECT = getIcon("/json/object.png");
 
     public static final Icon SIGNATURE = getIcon("/nodes/static.png");
     public static final Icon INCLUDE = getIcon("/nodes/javaModule.png");

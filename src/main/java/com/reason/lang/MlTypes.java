@@ -25,7 +25,6 @@ public abstract class MlTypes {
     public IElementType LET_BINDING;
     public IElementType TYPE_CONSTR_NAME;
     public IElementType PATTERN_MATCH_EXPR;
-    public IElementType OBJECT_EXPR;
     public IElementType SCOPED_EXPR;
     public IElementType SIG_SCOPE;
     public IElementType PROPERTY_NAME;
@@ -91,7 +90,6 @@ public abstract class MlTypes {
     public IElementType MODULE;
     public IElementType MUTABLE;
     public IElementType NONE;
-    public IElementType OBJECT;
     public IElementType OF;
     public IElementType OPEN;
     public IElementType OPTION;
@@ -175,6 +173,9 @@ public abstract class MlTypes {
     public IElementType GT_BRACE;
     public IElementType LEFT_ARROW;
     public IElementType RIGHT_ARROW;
+
+    public IElementType OBJECT;
+    public IElementType OBJECT_FIELD;
 
     public IElementType AMPERSAND;
     public IElementType BRACKET_GT;

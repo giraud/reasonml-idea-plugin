@@ -16,7 +16,8 @@ public class IconProvider extends com.intellij.ide.IconProvider {
         } else if (element instanceof PsiType) {
             return Icons.TYPE;
         } else if (element instanceof PsiLet) {
-            return Icons.LET;
+            PsiLet let = (PsiLet) element;
+            return let.isObject() ? Icons.OBJECT : Icons.LET;
         } else if (element instanceof PsiExternal) {
             return Icons.EXTERNAL;
         } else if (element instanceof PsiVal) {

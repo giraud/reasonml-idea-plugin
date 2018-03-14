@@ -32,7 +32,6 @@ public class RmlTypes extends MlTypes {
         LET_BINDING = new RmlElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
         PATTERN_MATCH_EXPR = new RmlElementType("PATTERN_MATCH_EXPR");
-        OBJECT_EXPR = new RmlElementType("OBJECT_EXPR");
         SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
         SIG_SCOPE = new RmlElementType("SIG_SCOPE");
         PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
@@ -97,7 +96,6 @@ public class RmlTypes extends MlTypes {
         MODULE = new RmlTokenType("MODULE");
         MUTABLE = new RmlTokenType("MUTABLE");
         NONE = new RmlTokenType("NONE");
-        OBJECT = new RmlElementType("OBJECT");
         OF = new RmlElementType("OF");
         OPEN = new RmlTokenType("OPEN");
         OPTION = new RmlTokenType("OPTION");
@@ -182,6 +180,9 @@ public class RmlTypes extends MlTypes {
         GT_BRACE = new RmlTokenType("GT_BRACE");
         LEFT_ARROW = new RmlTokenType("LEFT_ARROW");
         RIGHT_ARROW = new RmlTokenType("RIGHT_ARROW");
+
+        OBJECT = new RmlElementType("OBJECT");
+        OBJECT_FIELD = new RmlElementType("OBJECT_FIELD");
 
         AMPERSAND = new RmlTokenType("AMPERSAND");
         BRACKET_GT = new RmlTokenType("BRACKET_GT");

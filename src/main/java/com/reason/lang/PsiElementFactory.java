@@ -40,8 +40,12 @@ public class PsiElementFactory {
             return new PsiParametersImpl(types, node);
         } else if (type == types.MACRO_NAME) {
             return new PsiMacroName(node);
-        } else if (type == types.SCOPED_EXPR || type == types.OBJECT_EXPR || type == types.PATTERN_MATCH_EXPR) {
+        } else if (type == types.SCOPED_EXPR || type == types.PATTERN_MATCH_EXPR) {
             return new PsiScopedExpr(node);
+        } else if (type == types.OBJECT) {
+            return new PsiObject(node);
+        } else if (type == types.OBJECT_FIELD) {
+            return new PsiObjectField(node);
         } else if (type == types.INTERPOLATION) {
             return new PsiInterpolation(node);
         } else if (type == types.SIG_SCOPE) {

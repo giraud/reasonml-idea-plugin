@@ -133,4 +133,8 @@ public class ParserState {
     public boolean notInScopeExpression() {
         return currentScope.scopeType != ParserScopeType.scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
     }
+
+    public void setTokenType(IElementType tokenType) {
+        currentScope.tokenType = tokenType;
+    }
 }

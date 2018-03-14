@@ -31,7 +31,6 @@ public class OclTypes extends MlTypes {
         LET_BINDING = new OclElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new OclElementType("TYPE_CONSTR_NAME");
         PATTERN_MATCH_EXPR = new OclElementType("PATTERN_MATCH_EXPR");
-        OBJECT_EXPR = new OclElementType("OBJECT_EXPR");
         SCOPED_EXPR = new OclElementType("SCOPED_EXPR");
         SIG_SCOPE = new OclElementType("SIG_SCOPE");
         PROPERTY_NAME = new OclElementType("PROPERTY_NAME");
@@ -96,7 +95,6 @@ public class OclTypes extends MlTypes {
         MODULE = new OclTokenType("MODULE");
         MUTABLE = new OclTokenType("MUTABLE");
         NONE = new OclTokenType("NONE");
-        OBJECT = new OclElementType("OBJECT");
         OF = new OclElementType("OF");
         OPEN = new OclTokenType("OPEN");
         OPTION = new OclTokenType("OPTION");
@@ -181,6 +179,9 @@ public class OclTypes extends MlTypes {
         GT_BRACE = new OclTokenType("GT_BRACE");
         LEFT_ARROW = new OclTokenType("LEFT_ARROW");
         RIGHT_ARROW = new OclTokenType("RIGHT_ARROW");
+
+        OBJECT = new OclElementType("OBJECT");
+        OBJECT_FIELD = new OclElementType("OBJECT_FIELD");
 
         AMPERSAND = new OclTokenType("AMPERSAND");
         BRACKET_GT = new OclTokenType("BRACKET_GT");

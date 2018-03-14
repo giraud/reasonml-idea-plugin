@@ -86,6 +86,16 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return result;
     }
 
+    @Override
+    public boolean isObject() {
+        return findChildByClass(PsiObject.class) != null;
+    }
+
+    @Override
+    public Collection<PsiObjectField> getObjectFields() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiObjectField.class);
+    }
+
     private boolean isFunction() {
         return findChildByClass(PsiFunBody.class) != null;
     }
@@ -170,6 +180,6 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @Override
     public String toString() {
-        return "Let(" + getName() + ")";
+        return "Let " + getName();
     }
 }
