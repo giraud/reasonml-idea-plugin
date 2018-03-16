@@ -6,12 +6,12 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.MlFileType;
+import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -26,11 +26,11 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        System.out.println("»» Expression completion");
+        //System.out.println("»» Expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
-        PsiElement cursorElement = parameters.getOriginalPosition();
-        PsiElement previousElement = cursorElement == null ? null : cursorElement.getPrevSibling();
+        PsiElement cursorElement = parameters.getPosition();
+        PsiElement previousElement = cursorElement.getPrevSibling();
         previousElement = previousElement == null ? null : previousElement.getPrevSibling();
 
         // Find the expression path
@@ -39,22 +39,22 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
             // Expression of module
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
-                PsiModule module = null;
+                Collection<PsiModule> modules = RmlPsiUtil.findModules(project, upperName, MlFileType.interfaceOrImplementation);
+                // TODO: Find the correct module path, and filter the result
+                Collection<PsiModule> resolvedModules = modules;
 
-                Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, upperName, project, GlobalSearchScope.allScope(project), PsiModule.class);
-                if (!modules.isEmpty()) {
-                    // TODO: Find the correct module path
-                    module = modules.iterator().next();
-                }
-
-                if (module != null) {
-                    Collection<PsiNamedElement> expressions = module.getExpressions();
-                    for (PsiNamedElement expression : expressions) {
-                        resultSet.addElement(
-                                LookupElementBuilder.
-                                        create(expression).
-                                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                        );
+                for (PsiModule resolvedModule : resolvedModules) {
+                    if (resolvedModule != null) {
+                        Collection<PsiNamedElement> expressions = resolvedModule.getExpressions();
+                        for (PsiNamedElement expression : expressions) {
+                            resultSet.addElement(
+                                    LookupElementBuilder.
+                                            create(expression).
+                                            // TODO Use a type provider
+                                                    withTypeText(expression instanceof PsiExternal ? ((PsiExternal) expression).getSignature() : null).
+                                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                            );
+                        }
                     }
                 }
             }
