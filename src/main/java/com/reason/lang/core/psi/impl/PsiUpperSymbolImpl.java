@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +39,8 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
 
     @Override
     public boolean isVariant() {
-        return getFirstChild().getNode().getElementType() == m_types.VARIANT_NAME;
+        PsiElement firstChild = getFirstChild();
+        return firstChild != null && firstChild.getNode().getElementType() == m_types.VARIANT_NAME;
     }
 
     @Override
@@ -68,6 +70,7 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
 
     @Override
     public String toString() {
-        return "Upper symbol " + getName();
+        String name = getName();
+        return "Upper symbol " + (name == null || name.isEmpty() ? "<" + ((FileBase) getContainingFile()).asModuleName() + ">" : name);
     }
 }

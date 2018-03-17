@@ -27,11 +27,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-public class RmlPsiUtil {
+import static com.reason.lang.core.MlScope.all;
+import static com.reason.lang.core.MlScope.inBsconfig;
 
-    public static String fileNameToModuleName(VirtualFile file) {
-        return fileNameToModuleName(file.getName());
-    }
+public class RmlPsiUtil {
 
     public static String fileNameToModuleName(PsiFile file) {
         return fileNameToModuleName(file.getName());
@@ -49,33 +48,11 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<PsiFile> findFileModules(@NotNull Project project, String extension, @NotNull String name, boolean exact) {
-        ArrayList<PsiFile> result = new ArrayList<>();
+    public static Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        ArrayList<PsiModule> inConfig = new ArrayList<>();
+        ArrayList<PsiModule> other = new ArrayList<>();
 
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
-        PsiManager psiManager = PsiManager.getInstance(project);
-
-        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, extension);
-        for (VirtualFile vFile : files) {
-            String canonicalPath = vFile.getCanonicalPath();
-            if (bucklescript.isDependency(canonicalPath)) {
-                FileBase file = (FileBase) psiManager.findFile(vFile);
-                if (file != null) {
-                    String fileModuleName = file.asModuleName();
-                    boolean found = exact ? fileModuleName.equals(name) : fileModuleName.startsWith(name);
-                    if (found) {
-                        result.add(file);
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    @NotNull
-    public static Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, boolean useConfig) {
-        ArrayList<PsiModule> result = new ArrayList<>();
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
         if (!modules.isEmpty()) {
@@ -104,25 +81,25 @@ public class RmlPsiUtil {
                 }
 
                 if (keepFile) {
-                    String canonicalPath = virtualFile.getCanonicalPath();
-                    if (useConfig) {
-                        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
-                        if (bucklescript.isDependency(canonicalPath)) {
-                            result.add(module);
-                        }
+                    if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                        inConfig.add(module);
                     } else {
-                        result.add(module);
+                        other.add(module);
                     }
                 }
             }
         }
 
-        return result;
+        if (scope == all) {
+            inConfig.addAll(other);
+        }
+
+        return inConfig;
     }
 
     @Nullable
-    public static PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, boolean useConfig) {
-        Collection<PsiModule> modules = findModules(project, name, fileType, useConfig);
+    public static PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Collection<PsiModule> modules = findModules(project, name, fileType, scope);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
         }
@@ -132,7 +109,7 @@ public class RmlPsiUtil {
 
     @Nullable
     public static PsiModule findFileModule(Project project, String name) {
-        PsiModule module = findModule(project, name, MlFileType.interfaceOrImplementation, true);
+        PsiModule module = findModule(project, name, MlFileType.interfaceOrImplementation, inBsconfig);
         if (module instanceof PsiFileModuleImpl) {
             return module;
         }

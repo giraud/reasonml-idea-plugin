@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.MlFileType;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiModule;
@@ -18,6 +17,9 @@ import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+
+import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class ExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
     public ExpressionCompletionProvider(MlTypes types) {
@@ -39,7 +41,7 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
             // Expression of module
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
-                Collection<PsiModule> modules = RmlPsiUtil.findModules(project, upperName, MlFileType.interfaceOrImplementation, true);
+                Collection<PsiModule> modules = RmlPsiUtil.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
                 // TODO: Find the correct module path, and filter the result
                 Collection<PsiModule> resolvedModules = modules;
 
@@ -51,7 +53,7 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
                                     LookupElementBuilder.
                                             create(expression).
                                             // TODO Use a type provider
-                                            withTypeText(expression instanceof PsiExternal ? ((PsiExternal) expression).getSignature() : null).
+                                                    withTypeText(expression instanceof PsiExternal ? ((PsiExternal) expression).getSignature() : null).
                                             withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                             );
                         }

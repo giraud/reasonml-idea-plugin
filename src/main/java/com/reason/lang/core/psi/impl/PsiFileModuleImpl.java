@@ -88,7 +88,8 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return null;
+        PsiElement firstChild = getFirstChild();
+        return firstChild instanceof PsiUpperSymbol ? firstChild : null;
     }
 
     @Override

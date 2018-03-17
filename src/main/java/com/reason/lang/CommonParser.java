@@ -27,6 +27,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         //long start = System.currentTimeMillis();
 
         parseLight(elementType, builder);
+        //noinspection UnnecessaryLocalVariable
         ASTNode treeBuilt = builder.getTreeBuilt();
 
         //long end = System.currentTimeMillis();
@@ -41,6 +42,10 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
         ParserScope fileScope = new ParserScope(file, m_types.FILE_MODULE, builder.mark());
         fileScope.complete = true;
+
+        // Creates an empty UpperSymbol to be used as a reference name in FileModule
+        PsiBuilder.Marker moduleName = builder.mark();
+        moduleName.done(m_types.UPPER_SYMBOL);
 
         ParserState parserState = new ParserState(fileScope);
         parseFile(builder, parserState);

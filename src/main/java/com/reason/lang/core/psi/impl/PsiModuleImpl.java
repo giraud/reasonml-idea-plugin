@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.MlFileType;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
@@ -23,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.MlScope.all;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
 
@@ -85,8 +87,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiModule moduleAlias = RmlPsiUtil.findModule(getProject(), alias, MlFileType.interfaceOrImplementation, false);
-            System.out.println(alias +" "+moduleAlias);
+            PsiModule moduleAlias = RmlPsiUtil.findModule(getProject(), alias, interfaceOrImplementation, all);
             if (moduleAlias != null) {
                 result = moduleAlias.getExpressions();
             }

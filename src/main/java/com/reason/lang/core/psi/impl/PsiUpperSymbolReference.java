@@ -3,13 +3,9 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.files.OclFile;
-import com.reason.ide.files.RmlFile;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
@@ -18,15 +14,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.reason.ide.search.IndexKeys.MODULES;
+import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.MlScope.all;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
-    @Nullable private final String m_referenceName;
-    @NotNull private final MlTypes m_types;
+    @Nullable
+    private final String m_referenceName;
+    @NotNull
+    private final MlTypes m_types;
 
     PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
         super(element, RmlPsiUtil.getTextRangeForReference(element));
@@ -66,23 +63,16 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         }
 
         Project project = myElement.getProject();
-        Collection<PsiModule> modules = StubIndex.getElements(MODULES, m_referenceName, project, allScope(project), PsiModule.class);
+        Collection<PsiModule> modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, all);
 
         if (!modules.isEmpty()) {
             Collection<PsiModule> filteredModules = modules;
-            if (1 < modules.size()) {
-                // TODO: find modulePath of current element
-                // for now, only test if there is a dot before the element
-                //PsiElement prevSibling = myElement.getPrevSibling();
-                //boolean inPath = prevSibling != null && m_types.DOT == prevSibling.getNode().getElementType();
-                filteredModules = modules.stream().
-                        //filter(psiModule -> inPath != psiModule instanceof PsiFileModuleImpl).
-                        filter(psiModule -> {
-                            PsiFile file = psiModule.getContainingFile();
-                            return file instanceof RmlFile || file instanceof OclFile;
-                        }).
-                        collect(Collectors.toList());
-            }
+            //if (1 < modules.size()) {
+            // TODO: find modulePath of current element
+            //filteredModules = modules.stream().
+            //filter(psiModule -> inPath != psiModule instanceof PsiFileModuleImpl).
+            //collect(Collectors.toList());
+            //}
 
             if (filteredModules.isEmpty()) {
                 return null;
