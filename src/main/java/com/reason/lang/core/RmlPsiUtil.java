@@ -15,6 +15,7 @@ import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
@@ -137,6 +138,21 @@ public class RmlPsiUtil {
         }
 
         return null;
+    }
+
+    public static Collection<PsiLet> findLets(Project project, String lowerName) {
+        ArrayList<PsiLet> result = new ArrayList<>();
+
+        Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, lowerName, project, GlobalSearchScope.allScope(project), PsiLet.class);
+        for (PsiLet let : lets) {
+            String canonicalPath = let.getContainingFile().getVirtualFile().getCanonicalPath();
+            Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+            if (bucklescript.isDependency(canonicalPath)) {
+                result.add(let);
+            }
+        }
+
+        return result;
     }
 
     @NotNull

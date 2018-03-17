@@ -6,12 +6,10 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiNamedElement;
@@ -30,8 +28,8 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
         //System.out.println("» ObjectCompletionProvider");
 
         Project project = parameters.getOriginalFile().getProject();
-        PsiElement cursorElement = parameters.getOriginalPosition();
-        PsiElement sharpsharpElement = cursorElement == null ? null : cursorElement.getPrevSibling();
+        PsiElement cursorElement = parameters.getPosition();
+        PsiElement sharpsharpElement = cursorElement.getPrevSibling();
         PsiElement previousElement = sharpsharpElement == null ? null : sharpsharpElement.getPrevSibling();
 
         if (previousElement instanceof PsiLowerSymbol) {
@@ -41,9 +39,13 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
             if (lowerName != null) {
                 PsiLet let = null;
 
-                Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, lowerName, project, GlobalSearchScope.allScope(project), PsiLet.class);
+                Collection<PsiLet> lets = RmlPsiUtil.findLets(project, lowerName);
+                //Collection<PsiLet> filteredLets = lets;
                 if (!lets.isEmpty()) {
                     // TODO: Find the correct module path...
+//                    for (PsiLet filteredLet : filteredLets) {
+//                        System.out.println(" " + filteredLet.getContainingFile().getVirtualFile().getCanonicalPath());
+//                    }
                     let = lets.iterator().next();
                 }
 
