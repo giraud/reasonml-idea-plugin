@@ -11,12 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.intellij.openapi.util.io.FileUtil.loadTextAndClose;
 
 public class RmlColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
@@ -54,16 +50,29 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        InputStream colorsStream = getClass().getResourceAsStream("/ColorsExample.re");
+        return "" +
+                "/* This is a comment */\n\n" +
 
-        String exampleSourceCode;
-        try {
-            exampleSourceCode = loadTextAndClose(colorsStream);
-        } catch (IOException e) {
-            exampleSourceCode = "Error when loading the demo text";
-        }
+                "module <csModuleName>ModuleName</csModuleName> = {\n" +
+                "  type t = { key: int };\n" +
+                "  type tree 'a =\n" +
+                "    | <csVariantName>Node</csVariantName> (tree 'a) (tree 'a)\n" +
+                "    | <csVariantName>Leaf</csVariantName>;\n\n" +
 
-        return exampleSourceCode;
+                "  [<csAnnotation>@bs.deriving</csAnnotation> {accessors: accessors}]\n" +
+                "  type t = [`Up | `Down | `Left | `Right];\n\n" +
+
+                "  let add = (x y) => x + y;  <csCodeLens>int -> int</csCodeLens>\n" +
+                "  let myList = [ 1.0, 2.0, 3. ];\n" +
+                "  let array = [| 1, 2, 3 |];\n" +
+                "  let choice x = switch (myOption)\n" +
+                "    | None => \"nok\"\n" +
+                "    | Some(value) => \"ok\";\n" +
+                "  let constant = \"My constant\";  <csCodeLens>string</csCodeLens>\n" +
+                "  let numericConstant = 123;  <csCodeLens>int</csCodeLens>\n" +
+                "};\n\n" +
+
+                "React.createElement <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>/></csMarkupTag> <csMarkupTag><Button></csMarkupTag> (ReasonReact.stringToElement(\"ok\") <csMarkupTag></Button></csMarkupTag>;";
     }
 
     private static Map<String, TextAttributesKey> additionalTags = new HashMap<>();
