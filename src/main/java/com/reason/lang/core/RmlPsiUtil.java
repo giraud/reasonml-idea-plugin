@@ -17,6 +17,7 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -129,20 +130,10 @@ public class RmlPsiUtil {
     }
 
     @Nullable
-    public static PsiFile findFileModule(Project project, String name) {
-        return findFileModule(project, name, false);
-    }
-
-    @Nullable
-    public static PsiFile findFileModule(Project project, String name, boolean isInterface) {
-        List<PsiFile> rmlModules = findFileModules(project, isInterface ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() : RmlFileType.INSTANCE.getDefaultExtension(), name, true);
-        if (rmlModules.size() == 1) {
-            return rmlModules.get(0);
-        }
-
-        List<PsiFile> oclModules = findFileModules(project, isInterface ? OclInterfaceFileType.INSTANCE.getDefaultExtension() : OclFileType.INSTANCE.getDefaultExtension(), name, true);
-        if (oclModules.size() == 1) {
-            return oclModules.get(0);
+    public static PsiModule findFileModule(Project project, String name) {
+        PsiModule module = findModule(project, name, MlFileType.interfaceOrImplementation, true);
+        if (module instanceof PsiFileModuleImpl) {
+            return module;
         }
 
         return null;

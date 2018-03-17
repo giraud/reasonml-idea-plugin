@@ -57,9 +57,10 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                 }
             }
         } else {
-            PsiFile fileModule = RmlPsiUtil.findFileModule(project, tagName.getText());
-            if (fileModule != null) {
-                Collection<PsiLet> expressions = ((RmlFile) fileModule).asModule().getLetExpressions();
+            // The tag is a custom component
+            PsiModule module = RmlPsiUtil.findFileModule(project, tagName.getText());
+            if (module != null) {
+                Collection<PsiLet> expressions = module.getLetExpressions();
                 for (PsiLet expression : expressions) {
                     if ("make".equals(expression.getName())) {
                         return expression.getParameters();
