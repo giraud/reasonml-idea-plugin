@@ -87,7 +87,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             }
         } else {
             String latestModuleName = modulePath.getLatest();
-            Collection<PsiModule> modules = RmlPsiUtil.findModules(project, latestModuleName, implementationOnly);
+            Collection<PsiModule> modules = RmlPsiUtil.findModules(project, latestModuleName, implementationOnly, true);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     for (PsiModule expression : module.getModules()) {

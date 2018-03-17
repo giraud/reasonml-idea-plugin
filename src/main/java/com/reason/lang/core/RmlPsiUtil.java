@@ -72,10 +72,8 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public static Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, boolean useConfig) {
         ArrayList<PsiModule> result = new ArrayList<>();
-
-        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
         if (!modules.isEmpty()) {
@@ -105,7 +103,12 @@ public class RmlPsiUtil {
 
                 if (keepFile) {
                     String canonicalPath = virtualFile.getCanonicalPath();
-                    if (bucklescript.isDependency(canonicalPath)) {
+                    if (useConfig) {
+                        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+                        if (bucklescript.isDependency(canonicalPath)) {
+                            result.add(module);
+                        }
+                    } else {
                         result.add(module);
                     }
                 }
@@ -116,8 +119,8 @@ public class RmlPsiUtil {
     }
 
     @Nullable
-    public static PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
-        Collection<PsiModule> modules = findModules(project, name, fileType);
+    public static PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, boolean useConfig) {
+        Collection<PsiModule> modules = findModules(project, name, fileType, useConfig);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
         }

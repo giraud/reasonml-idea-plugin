@@ -11,7 +11,7 @@ public class PsiElementFactory {
         IElementType type = node.getElementType();
 
         if (type == types.FILE_MODULE) {
-            return new PsiFileModuleImpl(node);
+            return new PsiFileModuleImpl(node, types);
         } else if (type == types.EXTERNAL_EXPRESSION) {
             return new PsiExternalImpl(types, node);
         } else if (type == types.EXCEPTION_EXPRESSION) {
@@ -23,7 +23,7 @@ public class PsiElementFactory {
         } else if (type == types.TYPE_EXPRESSION) {
             return new PsiTypeImpl(types, node);
         } else if (type == types.MODULE_EXPRESSION) {
-            return new PsiModuleImpl(node);
+            return new PsiModuleImpl(node, types);
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.LET_EXPRESSION) {

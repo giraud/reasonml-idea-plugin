@@ -4,10 +4,14 @@ import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
+import com.reason.lang.MlTypes;
+import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
 import com.reason.lang.core.stub.ModuleStub;
+import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -19,7 +23,8 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
     }
 
     public PsiModuleImpl createPsi(@NotNull final ModuleStub stub) {
-        return stub.isFileModule() ? new PsiFileModuleImpl(stub, this) : new PsiModuleImpl(stub, this);
+        MlTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        return stub.isFileModule() ? new PsiFileModuleImpl(stub, this, types) : new PsiModuleImpl(stub, this, types);
     }
 
     @NotNull

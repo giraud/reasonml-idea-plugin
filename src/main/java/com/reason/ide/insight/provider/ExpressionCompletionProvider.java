@@ -39,7 +39,7 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
             // Expression of module
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
-                Collection<PsiModule> modules = RmlPsiUtil.findModules(project, upperName, MlFileType.interfaceOrImplementation);
+                Collection<PsiModule> modules = RmlPsiUtil.findModules(project, upperName, MlFileType.interfaceOrImplementation, true);
                 // TODO: Find the correct module path, and filter the result
                 Collection<PsiModule> resolvedModules = modules;
 
@@ -51,7 +51,7 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
                                     LookupElementBuilder.
                                             create(expression).
                                             // TODO Use a type provider
-                                                    withTypeText(expression instanceof PsiExternal ? ((PsiExternal) expression).getSignature() : null).
+                                            withTypeText(expression instanceof PsiExternal ? ((PsiExternal) expression).getSignature() : null).
                                             withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                             );
                         }

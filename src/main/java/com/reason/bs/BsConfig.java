@@ -12,6 +12,10 @@ import java.util.regex.Pattern;
 
 class BsConfig {
     private static Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
+    private static String[] PERVASIVES = new String[]{
+            // all files but the ones with _ ?
+            "bs-platform/lib/ocaml/js.ml",
+    };
 
     private final String[] m_deps;
 
@@ -19,9 +23,9 @@ class BsConfig {
         if (deps == null) {
             m_deps = new String[0];
         } else {
-            m_deps = new String[deps.length + 1];
+            m_deps = new String[deps.length + PERVASIVES.length];
             System.arraycopy(deps, 0, m_deps, 0, deps.length);
-            m_deps[deps.length] = "bs-platform/lib/ocaml/js.ml"; // all files but the ones with _ ?
+            System.arraycopy(PERVASIVES, 0, m_deps, deps.length, PERVASIVES.length);
         }
     }
 

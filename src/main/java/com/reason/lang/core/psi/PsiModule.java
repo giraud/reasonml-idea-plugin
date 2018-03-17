@@ -33,4 +33,7 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     ModulePath getPath();
 
     boolean isComponent();
+
+    @Nullable
+    String getAlias();
 }

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.ModuleStub;
@@ -16,12 +17,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class PsiFileModuleImpl extends PsiModuleImpl {
-    public PsiFileModuleImpl(@NotNull ModuleStub stub, @NotNull IStubElementType nodeType) {
-        super(stub, nodeType);
+    public PsiFileModuleImpl(@NotNull ModuleStub stub, @NotNull IStubElementType nodeType, MlTypes types) {
+        super(stub, nodeType, types);
     }
 
-    public PsiFileModuleImpl(@NotNull ASTNode node) {
-        super(node);
+    public PsiFileModuleImpl(@NotNull ASTNode node, MlTypes types) {
+        super(node, types);
     }
 
     @Nullable

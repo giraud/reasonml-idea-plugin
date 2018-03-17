@@ -4,11 +4,15 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.MlTypes;
+import com.reason.lang.core.MlFileType;
 import com.reason.lang.core.ModulePath;
+import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
@@ -23,14 +27,17 @@ import java.util.List;
 public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
 
     private ModulePath m_modulePath;
+    private MlTypes m_types;
 
     //region Constructors
-    public PsiModuleImpl(ASTNode node) {
+    public PsiModuleImpl(ASTNode node, MlTypes types) {
         super(node);
+        m_types = types;
     }
 
-    public PsiModuleImpl(ModuleStub stub, IStubElementType nodeType) {
+    public PsiModuleImpl(ModuleStub stub, IStubElementType nodeType, MlTypes types) {
         super(stub, nodeType);
+        m_types = types;
     }
     //endregion
 
@@ -73,8 +80,24 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @NotNull
     @Override
     public Collection<PsiNamedElement> getExpressions() {
-        PsiScopedExpr body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class);
+        Collection<PsiNamedElement> result = Collections.emptyList();
+
+        String alias = getAlias();
+        if (alias != null) {
+            // Open alias and getExpressions on alias
+            PsiModule moduleAlias = RmlPsiUtil.findModule(getProject(), alias, MlFileType.interfaceOrImplementation, false);
+            System.out.println(alias +" "+moduleAlias);
+            if (moduleAlias != null) {
+                result = moduleAlias.getExpressions();
+            }
+        } else {
+            PsiScopedExpr body = getBody();
+            if (body != null) {
+                result = PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class);
+            }
+        }
+
+        return result;
     }
 
     @NotNull
@@ -150,6 +173,29 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @Override
     public boolean isComponent() {
         return false;
+    }
+
+    @Override
+    @Nullable
+    public String getAlias() {
+        ModuleStub stub = getGreenStub();
+        if (stub != null) {
+            //    return stub.isAlias();
+        }
+
+        PsiElement eq = findChildByType(m_types.EQ);
+        if (eq != null) {
+            PsiElement nextSibling = eq.getNextSibling();
+            if (nextSibling instanceof PsiWhiteSpace) {
+                nextSibling = nextSibling.getNextSibling();
+            }
+
+            if (nextSibling instanceof PsiUpperSymbol) {
+                return ((PsiUpperSymbol) nextSibling).getName();
+            }
+        }
+
+        return null;
     }
 
     @Nullable
