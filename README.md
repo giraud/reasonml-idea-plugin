@@ -50,7 +50,9 @@ Advanced features, like syntax error highlighting or type annotations require th
 Bucklescript has an excellent support of Windows. 
 
 Note: To edit your `idea[64].vmoptions` you can do it from the console, 
-or via the menu `help > Edit Custom VM Options`. 
+or via the menu `help > Edit Custom VM Options`.
+
+Note: Make sure `namespace: false` is set in `bsconfig.json` to enable inferred types hints in editor.
 
 ### Local installation
 
