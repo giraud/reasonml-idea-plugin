@@ -23,7 +23,7 @@ Known limitations:
 - pair braces matcher
 - JSX completion
 - bucklescript compiler integration
-- reformat (action is mapped to `crtl alt shift R` / `⌘ ⎇ shift R` on mac)
+- reformat (press `crtl alt shift R` or `⌘⎇⇧R` on Mac)
 - Type annotation (* bs)
 
 _(*) See integration_
