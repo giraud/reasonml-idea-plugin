@@ -33,7 +33,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     );
 
     private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
-            RmlTypes.INSTANCE.ANDAND, RmlTypes.INSTANCE.SHORTCUT, RmlTypes.INSTANCE.ARROW, RmlTypes.INSTANCE.PIPE_FORWARD,
+            RmlTypes.INSTANCE.ANDAND, RmlTypes.INSTANCE.SHORTCUT, RmlTypes.INSTANCE.ARROW, RmlTypes.INSTANCE.PIPE_FORWARD, RmlTypes.INSTANCE.PIPE_FIRST,
             RmlTypes.INSTANCE.EQEQEQ, RmlTypes.INSTANCE.EQEQ, RmlTypes.INSTANCE.EQ, RmlTypes.INSTANCE.NOT_EQEQ, RmlTypes.INSTANCE.NOT_EQ,
             RmlTypes.INSTANCE.DIFF, RmlTypes.INSTANCE.COLON, RmlTypes.INSTANCE.QUOTE, RmlTypes.INSTANCE.CARRET, RmlTypes.INSTANCE.PLUSDOT,
             RmlTypes.INSTANCE.MINUSDOT, RmlTypes.INSTANCE.SLASHDOT, RmlTypes.INSTANCE.STARDOT, RmlTypes.INSTANCE.PLUS, RmlTypes.INSTANCE.MINUS,
@@ -65,7 +65,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     );
 
     private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES = of(
-            OclTypes.INSTANCE.ANDAND, OclTypes.INSTANCE.SHORTCUT, OclTypes.INSTANCE.ARROW, OclTypes.INSTANCE.PIPE_FORWARD,
+            OclTypes.INSTANCE.ANDAND, OclTypes.INSTANCE.SHORTCUT, OclTypes.INSTANCE.ARROW, OclTypes.INSTANCE.PIPE_FORWARD, OclTypes.INSTANCE.PIPE_FIRST,
             OclTypes.INSTANCE.EQEQEQ, OclTypes.INSTANCE.EQEQ, OclTypes.INSTANCE.EQ, OclTypes.INSTANCE.NOT_EQEQ, OclTypes.INSTANCE.NOT_EQ,
             OclTypes.INSTANCE.DIFF, OclTypes.INSTANCE.COLON, OclTypes.INSTANCE.QUOTE, OclTypes.INSTANCE.CARRET, OclTypes.INSTANCE.PLUSDOT,
             OclTypes.INSTANCE.MINUSDOT, OclTypes.INSTANCE.SLASHDOT, OclTypes.INSTANCE.STARDOT, OclTypes.INSTANCE.PLUS, OclTypes.INSTANCE.MINUS,

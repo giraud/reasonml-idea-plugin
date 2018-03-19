@@ -98,6 +98,7 @@ public abstract class MlTypes {
     public IElementType VARIANT_NAME;
     public IElementType PIPE;
     public IElementType PIPE_FORWARD;
+    public IElementType PIPE_FIRST;
     public IElementType PLUS;
     public IElementType PERCENT;
     public IElementType PLUSDOT;

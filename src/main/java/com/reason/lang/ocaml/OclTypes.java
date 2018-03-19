@@ -103,6 +103,7 @@ public class OclTypes extends MlTypes {
         VARIANT_NAME = new OclTokenType("VARIANT_NAME");
         PIPE = new OclTokenType("PIPE");
         PIPE_FORWARD = new OclTokenType("PIPE_FORWARD");
+        PIPE_FIRST = new OclTokenType("PIPE_FIRST");
         PLUS = new OclTokenType("PLUS");
         PERCENT = new OclTokenType("PERCENT");
         PLUSDOT = new OclTokenType("PLUSDOT");
