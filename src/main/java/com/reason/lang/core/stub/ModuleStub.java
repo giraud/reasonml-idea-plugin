@@ -11,19 +11,22 @@ public class ModuleStub extends NamedStubBase<PsiModule> {
     private final String m_qname;
     private final boolean m_isFileModule;
     private final boolean m_isComponent;
+    private final String m_alias;
 
-    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname, boolean isFileModule, boolean isComponent) {
+    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname, String alias, boolean isFileModule, boolean isComponent) {
         super(parent, elementType, name);
         m_qname = qname;
         m_isFileModule = isFileModule;
         m_isComponent = isComponent;
+        m_alias = alias;
     }
 
-    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, boolean isFileModule, boolean isComponent) {
+    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, String alias, boolean isFileModule, boolean isComponent) {
         super(parent, elementType, name);
         m_qname = qname;
         m_isFileModule = isFileModule;
         m_isComponent = isComponent;
+        m_alias = alias;
     }
 
     public String getQualifiedName() {
@@ -35,4 +38,8 @@ public class ModuleStub extends NamedStubBase<PsiModule> {
     }
 
     public boolean isComponent() { return m_isComponent; }
+
+    public String getAlias() {
+        return m_alias;
+    }
 }

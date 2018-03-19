@@ -12,6 +12,7 @@ This code might change quite a lot or break in the future.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
+- no reformat on save
 
 ## Features
 
@@ -50,7 +51,9 @@ Advanced features, like syntax error highlighting or type annotations require th
 Bucklescript has an excellent support of Windows. 
 
 Note: To edit your `idea[64].vmoptions` you can do it from the console, 
-or via the menu `help > Edit Custom VM Options`. 
+or via the menu `help > Edit Custom VM Options`.
+
+Note: Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in editor.
 
 ### Local installation
 

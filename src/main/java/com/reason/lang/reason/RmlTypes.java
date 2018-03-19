@@ -104,6 +104,7 @@ public class RmlTypes extends MlTypes {
         VARIANT_NAME = new RmlTokenType("VARIANT_NAME");
         PIPE = new RmlTokenType("PIPE");
         PIPE_FORWARD = new RmlTokenType("PIPE_FORWARD");
+        PIPE_FIRST = new RmlTokenType("PIPE_FIRST");
         PLUS = new RmlTokenType("PLUS");
         PERCENT = new RmlTokenType("PERCENT");
         PLUSDOT = new RmlTokenType("PLUSDOT");

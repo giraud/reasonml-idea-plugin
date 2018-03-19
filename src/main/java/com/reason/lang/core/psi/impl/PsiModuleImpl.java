@@ -181,7 +181,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     public String getAlias() {
         ModuleStub stub = getGreenStub();
         if (stub != null) {
-            //    return stub.isAlias();
+            return stub.getAlias();
         }
 
         PsiElement eq = findChildByType(m_types.EQ);

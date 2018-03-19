@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.41</version>
+    <version>0.42</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -13,6 +13,15 @@
       <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
 
       <p></p>
+
+      <b>version 0.42</b>
+
+      <ul>
+        <li>Add |. operator</li>
+        <li>goto action on file module is working</li>
+        <li>Improve completion on expressions</li>
+        <li>Color settings no more bloked on loading spinner</li>
+      </ul>
 
       <b>version 0.41</b>
 
@@ -43,15 +52,6 @@
          <li>Better JSX parsing/highlighting</li>
          <li>Fix inferred type annotations</li>
          <li>Improved reason parser</li>
-      </ul>
-
-      <b>version 0.37</b>
-
-      <ul>
-         <li>Fix #30</li>
-         <li>Add completion when starting typing</li>
-         <li>Display types for val/external (completion popup)</li>
-         <li>Use mli file when present (pervasives)</li>
       </ul>
 
     ]]>
