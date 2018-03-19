@@ -14,14 +14,15 @@ class BsConfig {
     private static Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
     private static String[] PERVASIVES = new String[]{
             // all files but the ones with _ ?
-            "bs-platform/lib/ocaml/js.ml",
+            "bs-platform/lib/ocaml/js.mli",
     };
 
     private final String[] m_deps;
 
     private BsConfig(@Nullable String[] deps) {
         if (deps == null) {
-            m_deps = new String[0];
+            m_deps = new String[PERVASIVES.length];
+            System.arraycopy(PERVASIVES, 0, m_deps, 0, PERVASIVES.length);
         } else {
             m_deps = new String[deps.length + PERVASIVES.length];
             System.arraycopy(deps, 0, m_deps, 0, deps.length);
