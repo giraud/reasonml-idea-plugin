@@ -12,6 +12,7 @@ This code might change quite a lot or break in the future.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
+- no reformat on save
 
 ## Features
 
@@ -22,7 +23,7 @@ Known limitations:
 - pair braces matcher
 - JSX completion
 - bucklescript compiler integration
-- reformat (by default, action is also mapped to `crtl alt shift R`)
+- reformat (action is mapped to `crtl alt shift R` / `⌘ ⎇ shift R` on mac)
 - Type annotation (* bs)
 
 _(*) See integration_
@@ -52,7 +53,7 @@ Bucklescript has an excellent support of Windows.
 Note: To edit your `idea[64].vmoptions` you can do it from the console, 
 or via the menu `help > Edit Custom VM Options`.
 
-Note: Make sure `namespace: false` is set in `bsconfig.json` to enable inferred types hints in editor.
+Note: Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in editor.
 
 ### Local installation
 
