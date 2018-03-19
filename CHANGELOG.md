@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.42
+
+* :rocket: Add |. operator
+* :rocket: goto action on file module is working
+* :house: Improve completion on expressions
+* :bug: Color settings no more bloked on loading spinner
+
 ## 0.41
 
 * :house: Much improved performances for code lens
