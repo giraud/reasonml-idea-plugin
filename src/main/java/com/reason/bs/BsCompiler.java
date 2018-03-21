@@ -11,6 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.Charset;
+
 public class BsCompiler {
 
     private KillableColoredProcessHandler m_bsb;
@@ -18,8 +20,10 @@ public class BsCompiler {
     private ProcessListener m_outputListener;
 
     BsCompiler(VirtualFile baseDir, String bsbPath) {
-        m_commandLine = new GeneralCommandLine(bsbPath, "-no-color", "-make-world");
-        m_commandLine.setWorkDirectory(baseDir.getCanonicalPath());
+        m_commandLine = new GeneralCommandLine(bsbPath, "-make-world").
+                withWorkDirectory(baseDir.getCanonicalPath()).
+                withInputRedirect(ProcessBuilder.Redirect.INHERIT).
+                withCharset(Charset.forName("US-ASCII"));
         recreate();
     }
 
