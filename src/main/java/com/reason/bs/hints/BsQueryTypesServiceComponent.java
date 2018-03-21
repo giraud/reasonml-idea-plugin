@@ -6,8 +6,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.Streams;
+import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.ide.RmlNotification;
 
+import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -25,15 +27,17 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
         m_bsbPath = bsbPath;
     }
 
+    @Nullable
     @Override
     public InferredTypes types(VirtualFile file) {
-        InferredTypesImplementation result = new InferredTypesImplementation();
+        InferredTypesImplementation result = null;
 
         // Find corresponding cmi file... wip
         String filePath = file.getCanonicalPath();
         if (filePath != null) {
-            String replace = Platform.removeProjectDir(m_project, filePath).replace(file.getPresentableName(), file.getNameWithoutExtension() + ".cmi");
-            VirtualFile cmiFile = m_baseDir.findFileByRelativePath("lib/bs" + replace);
+            String namespace = BucklescriptProjectComponent.getInstance(m_project).getNamespace();
+            String cmiFilename = Platform.removeProjectDir(m_project, filePath).replace(file.getPresentableName(), file.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
+            VirtualFile cmiFile = m_baseDir.findFileByRelativePath("lib/bs" + cmiFilename);
             if (cmiFile != null) {
                 ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(m_bsbPath, cmiFile.getCanonicalPath());
                 String basePath = m_baseDir.getCanonicalPath();
@@ -62,6 +66,8 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
 
                             String newText = msgBuffer.toString();
                             //System.out.println("---\n" + newText + "\n---");
+
+                            result = new InferredTypesImplementation();
 
                             String[] types = newText.split("\n");
                             for (String type : types) {

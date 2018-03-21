@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.bs.hints.BsQueryTypesService;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -30,4 +31,7 @@ public interface Bucklescript {
     void setError(String path, BsErrorsManager.BsbError error);
 
     void associatePsiElement(VirtualFile file, PsiElement element);
+
+    @NotNull
+    String getNamespace();
 }

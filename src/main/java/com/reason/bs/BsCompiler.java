@@ -20,7 +20,7 @@ public class BsCompiler {
     private ProcessListener m_outputListener;
 
     BsCompiler(VirtualFile baseDir, String bsbPath) {
-        m_commandLine = new GeneralCommandLine(bsbPath, "-make-world").
+        m_commandLine = new GeneralCommandLine(bsbPath, "-color", "-make-world").
                 withWorkDirectory(baseDir.getCanonicalPath()).
                 withInputRedirect(ProcessBuilder.Redirect.INHERIT).
                 withCharset(Charset.forName("US-ASCII"));

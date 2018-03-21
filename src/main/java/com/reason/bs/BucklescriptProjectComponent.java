@@ -155,6 +155,12 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
         }
     }
 
+    @NotNull
+    @Override
+    public String getNamespace() {
+        return m_config == null ? "" : m_config.getNamespace();
+    }
+
     @Override
     public void run(FileType fileType) {
         if (m_compiler != null && (fileType instanceof RmlFileType || fileType instanceof OclFileType)) {
