@@ -21,9 +21,7 @@ public class BsCompiler {
 
     BsCompiler(VirtualFile baseDir, String bsbPath) {
         m_commandLine = new GeneralCommandLine(bsbPath, "-color", "-make-world").
-                withWorkDirectory(baseDir.getCanonicalPath()).
-                withInputRedirect(ProcessBuilder.Redirect.INHERIT).
-                withCharset(Charset.forName("US-ASCII"));
+                withWorkDirectory(baseDir.getCanonicalPath());
         recreate();
     }
 

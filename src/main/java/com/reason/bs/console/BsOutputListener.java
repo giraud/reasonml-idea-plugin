@@ -97,7 +97,7 @@ public class BsOutputListener implements ProcessListener {
                 }
             }
 
-            if (4 < m_failedLine) {
+            if (4 < m_failedLine && 2 < text.length()) {
                 char c = text.charAt(2);
                 if ('\n' != c && (c < '0' || '9' < c)) {
                     m_bsbError.message += text;
