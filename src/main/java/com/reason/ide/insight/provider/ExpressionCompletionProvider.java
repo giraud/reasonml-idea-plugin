@@ -6,9 +6,9 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiModule;
@@ -22,9 +22,6 @@ import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class ExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
-    public ExpressionCompletionProvider(MlTypes types) {
-
-    }
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
@@ -32,8 +29,8 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
 
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getPosition();
-        PsiElement previousElement = cursorElement.getPrevSibling();
-        previousElement = previousElement == null ? null : previousElement.getPrevSibling();
+        PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(cursorElement);
+        PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
         // Find the expression path
 

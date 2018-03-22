@@ -17,20 +17,20 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
         extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types, true));
         extend(CompletionType.BASIC, patterns.upperSymbol(), new ModuleCompletionProvider(types, false));
-        extend(CompletionType.BASIC, patterns.expression(), new ExpressionCompletionProvider(types));
+        extend(CompletionType.BASIC, patterns.expression(), new ExpressionCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsObject(), new ObjectCompletionProvider(types));
-        //extend(CompletionType.BASIC, patterns.declaration(), new FileCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxName(), new JsxNameCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxAttribute(), new JsxAttributeCompletionProvider());
     }
 
+    @SuppressWarnings("unused")
     static class DebugCompletionProvider extends CompletionProvider<CompletionParameters> {
         @Override
         protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
             PsiElement position = parameters.getPosition();
             PsiElement originalPosition = parameters.getOriginalPosition();
             System.out.println("»» Completion: position=" + position + ", original=" + originalPosition);
-            System.out.println("               inside=" + originalPosition.getParent());
+            System.out.println("               inside=" + (originalPosition == null ? null : originalPosition.getParent()));
         }
     }
 }

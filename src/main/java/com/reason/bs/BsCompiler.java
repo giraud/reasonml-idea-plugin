@@ -11,8 +11,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.charset.Charset;
-
 public class BsCompiler {
 
     private KillableColoredProcessHandler m_bsb;
