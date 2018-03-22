@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements PsiLet {
 
-    private String m_inferredType = "";
+    private HMSignature m_inferredType = HMSignature.EMPTY;
 
     //region Constructors
     public PsiLetImpl(@NotNull ASTNode node) {
@@ -119,20 +119,20 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return sibling != null && "rec".equals(sibling.getText());
     }
 
+    //region Inferred type
     @Override
-    public String getInferredType() {
+    public HMSignature getInferredType() {
         return m_inferredType;
     }
 
-    //region Inferred type
     @Override
-    public void setInferredType(String inferredType) {
-        m_inferredType = inferredType.trim();
+    public void setInferredType(HMSignature inferredType) {
+        m_inferredType = inferredType;
     }
 
     @Override
     public boolean hasInferredType() {
-        return m_inferredType != null && !m_inferredType.isEmpty();
+        return m_inferredType != HMSignature.EMPTY;
     }
     //endregion
 

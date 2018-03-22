@@ -24,6 +24,7 @@ public class HMSignature {
             String token = tokens[i].trim();
             if (isOcaml) {
                 // Transform ocaml to reason syntax
+                /*
                 String[] items = token.split(" ");
                 if (1 < items.length) {
                     token = items[0];
@@ -32,6 +33,7 @@ public class HMSignature {
                         token = item + "(" + token + ")";
                     }
                 }
+                */
             }
             m_types[i] = token;
         }

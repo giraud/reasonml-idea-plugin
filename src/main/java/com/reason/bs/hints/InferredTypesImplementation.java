@@ -1,16 +1,18 @@
 package com.reason.bs.hints;
 
+import com.reason.lang.core.HMSignature;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class InferredTypesImplementation implements BsQueryTypesService.InferredTypes {
-    private final Map<String, String> m_let = new HashMap<>();
+    private final Map<String, HMSignature> m_let = new HashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
 
     public void add(String type) {
         if (type.startsWith("val")) {
             int colonPos = type.indexOf(':');
-            m_let.put(type.substring(4, colonPos - 1), type.substring(colonPos + 1).replaceAll("\\s+", " "));
+            m_let.put(type.substring(4, colonPos - 1), new HMSignature(true, type.substring(colonPos + 1)));
         } else if (type.startsWith("module")) {
             int colonPos = type.indexOf(':');
             if (0 <= colonPos) {
@@ -26,7 +28,7 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
         }
     }
 
-    public String getLetType(String name) {
+    public HMSignature getLetType(String name) {
         return m_let.get(name);
     }
 

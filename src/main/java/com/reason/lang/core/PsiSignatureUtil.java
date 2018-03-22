@@ -18,7 +18,7 @@ public class PsiSignatureUtil {
 
     public static String getTypeInfo(PsiNamedElement expression) {
         if (expression instanceof PsiLet) {
-            return ((PsiLet) expression).getInferredType();
+            return ((PsiLet) expression).getInferredType().toString();
         } else if (expression instanceof PsiType) {
             return ((PsiType) expression).getTypeInfo();
         } else if (expression instanceof PsiExternal) {

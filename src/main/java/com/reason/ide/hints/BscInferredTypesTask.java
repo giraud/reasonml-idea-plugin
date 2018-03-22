@@ -12,6 +12,7 @@ import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
+import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
@@ -53,22 +54,22 @@ public class BscInferredTypesTask implements Runnable {
             for (PsiLet letStatement : m_letExpressions) {
                 PsiElement letParent = letStatement.getParent();
                 if (letParent instanceof PsiFileModuleImpl) {
-                    String signature = applyType(inferredTypes, letStatement);
+                    HMSignature signature = applyType(inferredTypes, letStatement);
                     if (signature != null) {
                         int letOffset = letStatement.getTextOffset();
                         LogicalPosition logicalPosition = m_selectedTextEditor.offsetToLogicalPosition(letOffset);
-                        userData.put(virtualFile, logicalPosition, signature, m_timestamp);
+                        userData.put(virtualFile, logicalPosition, signature.toString(), m_timestamp);
                     }
                 } else {
                     PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
                     if (letModule != null && inferredTypes != null) {
                         BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = inferredTypes.getModuleType(letModule.getName());
                         if (inferredModuleTypes != null) {
-                            String signature = applyType(inferredModuleTypes, letStatement);
+                            HMSignature signature = applyType(inferredModuleTypes, letStatement);
                             if (signature != null) {
                                 int letOffset = letStatement.getTextOffset();
                                 LogicalPosition logicalPosition = m_selectedTextEditor.offsetToLogicalPosition(letOffset);
-                                userData.put(virtualFile, logicalPosition, signature, m_timestamp);
+                                userData.put(virtualFile, logicalPosition, signature.toString(), m_timestamp);
                             }
                         }
                     }
@@ -77,8 +78,8 @@ public class BscInferredTypesTask implements Runnable {
         });
     }
 
-    private String applyType(@Nullable BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
-        String signature = null;
+    private HMSignature applyType(@Nullable BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
+        HMSignature signature = null;
 
         PsiElement letName = letStatement.getNameIdentifier();
         if (letName != null && inferredTypes != null) {
