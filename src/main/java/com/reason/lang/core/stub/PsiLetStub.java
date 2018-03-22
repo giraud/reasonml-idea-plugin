@@ -8,11 +8,19 @@ import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiLetStub extends NamedStubBase<PsiLet> {
-    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, String name) {
+    private boolean m_isFunction;
+
+    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, String name, boolean isFunction) {
         super(parent, elementType, name);
+        m_isFunction = isFunction;
     }
 
-    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name) {
+    public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, boolean isFunction) {
         super(parent, elementType, name);
+        m_isFunction = isFunction;
+    }
+
+    public boolean isFunction() {
+        return m_isFunction;
     }
 }

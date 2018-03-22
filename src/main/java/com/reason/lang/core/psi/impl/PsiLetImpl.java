@@ -106,7 +106,10 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @Override
     public boolean isFunction() {
-        // Stub
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isFunction();
+        }
 
         if (hasInferredType()) {
             return getInferredType().isFunctionSignature();

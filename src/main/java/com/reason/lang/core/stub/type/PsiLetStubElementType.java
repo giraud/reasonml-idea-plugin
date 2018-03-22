@@ -23,16 +23,17 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
 
     @NotNull
     public PsiLetStub createStub(@NotNull PsiLet psi, StubElement parentStub) {
-        return new PsiLetStub(parentStub, this, psi.getName());
+        return new PsiLetStub(parentStub, this, psi.getName(), psi.isFunction());
     }
 
     public void serialize(@NotNull PsiLetStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeBoolean(stub.isFunction());
     }
 
     @NotNull
     public PsiLetStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
-        return new PsiLetStub(parentStub, this, dataStream.readName());
+        return new PsiLetStub(parentStub, this, dataStream.readName(), dataStream.readBoolean());
     }
 
     public void indexStub(@NotNull PsiLetStub stub, @NotNull IndexSink sink) {
