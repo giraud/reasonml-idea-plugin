@@ -46,4 +46,8 @@ public class HMSignature {
     public String toString() {
         return m_signature;
     }
+
+    public boolean isFunctionSignature() {
+        return 1 < m_types.length;
+    }
 }

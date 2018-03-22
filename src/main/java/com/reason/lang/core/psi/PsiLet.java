@@ -27,5 +27,7 @@ public interface PsiLet extends PsiInferredType, PsiQualifiedNamedElement, PsiNa
 
     boolean isObject();
 
+    boolean isFunction();
+
     Collection<PsiObjectField> getObjectFields();
 }

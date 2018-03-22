@@ -104,7 +104,19 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return PsiTreeUtil.findChildrenOfType(this, PsiObjectField.class);
     }
 
-    private boolean isFunction() {
+    @Override
+    public boolean isFunction() {
+        // Stub
+
+        if (hasInferredType()) {
+            return getInferredType().isFunctionSignature();
+        } else {
+            HMSignature signature = getSignature();
+            if (signature != HMSignature.EMPTY) {
+                return signature.isFunctionSignature();
+            }
+        }
+
         return findChildByClass(PsiFunBody.class) != null;
     }
 
@@ -163,12 +175,15 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
                     return "_";
                 }
 
+                HMSignature signature = hasInferredType() ? getInferredType() : getSignature();
+                String signatureText = (signature == HMSignature.EMPTY ? "" : ":   " + signature);
+
                 String letName = letValueName.getText();
                 if (isFunction()) {
-                    return letName + "(..)" + (isRecursive() ? ": rec" : "");
+                    return letName + (isRecursive() ? " rec" : "") + signatureText;
                 }
 
-                return letName + (hasInferredType() ? ": " + getInferredType() : "");
+                return letName + signatureText;
             }
 
             @Nullable
