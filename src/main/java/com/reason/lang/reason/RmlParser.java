@@ -256,6 +256,9 @@ public class RmlParser extends CommonParser {
         if (state.isResolution(externalNamed)) {
             state.dontMove = advance(builder);
             state.add(markScope(builder, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
+        } else if (state.isResolution(letNamed)) {
+            state.dontMove = advance(builder);
+            state.add(markCompleteScope(builder, letNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
         } else if (state.isResolution(moduleNamed)) {
             // Module signature
             //   MODULE UIDENT COLON ...

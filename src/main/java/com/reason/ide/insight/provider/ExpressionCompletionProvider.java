@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.lang.core.RmlPsiUtil;
-import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -49,8 +48,7 @@ public class ExpressionCompletionProvider extends CompletionProvider<CompletionP
                             resultSet.addElement(
                                     LookupElementBuilder.
                                             create(expression).
-                                            // TODO Use a type provider
-                                                    withTypeText(expression instanceof PsiExternal ? ((PsiExternal) expression).getSignature() : null).
+                                            withTypeText(PsiSignatureUtil.getProvidersType(expression)).
                                             withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                             );
                         }

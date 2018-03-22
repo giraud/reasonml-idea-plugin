@@ -68,6 +68,14 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @NotNull
     @Override
+    public String getSignature() {
+        PsiSignature signature = findChildByClass(PsiSignature.class);
+        return signature == null ? "" : signature.getText();
+    }
+
+
+    @NotNull
+    @Override
     public Map<String, String> getParameters() {
         PsiParameters parameters = findChildByClass(PsiParameters.class);
         Collection<PsiLowerSymbol> symbols = PsiTreeUtil.findChildrenOfType(parameters, PsiLowerSymbol.class);
@@ -111,15 +119,15 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return sibling != null && "rec".equals(sibling.getText());
     }
 
+    @Override
+    public String getInferredType() {
+        return m_inferredType;
+    }
+
     //region Inferred type
     @Override
     public void setInferredType(String inferredType) {
         m_inferredType = inferredType.trim();
-    }
-
-    @Override
-    public String getInferredType() {
-        return m_inferredType;
     }
 
     @Override

@@ -19,6 +19,9 @@ public interface PsiLet extends PsiInferredType, PsiQualifiedNamedElement, PsiNa
     PsiLetBinding getLetBinding();
 
     @NotNull
+    String getSignature();
+
+    @NotNull
     Map<String, String> getParameters();
 
     boolean isObject();
