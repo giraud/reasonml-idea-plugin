@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.files.RmlFile;
+import com.reason.lang.core.PsiSignatureUtil;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
             if (!fileModuleName.equals(moduleName) && module.isComponent()) {
                 resultSet.addElement(LookupElementBuilder.create(module).
                         withIcon(getProvidersIcon(module, 0)).
+                        withTypeText(PsiSignatureUtil.getProvidersType(module.getLetExpression("make"))).
                         withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
                 );
             }

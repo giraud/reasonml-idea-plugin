@@ -10,21 +10,9 @@ public class PsiSignatureUtil {
         if (element instanceof PsiExternal) {
             return ((PsiExternal) element).getSignature().toString();
         } else if (element instanceof PsiLet) {
-            return ((PsiLet) element).getSignature().toString();
-        }
-
-        return "";
-    }
-
-    public static String getTypeInfo(PsiNamedElement expression) {
-        if (expression instanceof PsiLet) {
-            return ((PsiLet) expression).getInferredType().toString();
-        } else if (expression instanceof PsiType) {
-            return ((PsiType) expression).getTypeInfo();
-        } else if (expression instanceof PsiExternal) {
-            return ((PsiExternal) expression).getSignature().toString();
-        } else if (expression instanceof PsiVal) {
-            return ((PsiVal) expression).getSignature();
+            PsiLet let = (PsiLet) element;
+            HMSignature signature = let.hasInferredType() ? let.getInferredType() : let.getSignature();
+            return signature.toString();
         }
 
         return "";

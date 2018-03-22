@@ -129,6 +129,27 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return result;
     }
 
+    @Nullable
+    @Override
+    public PsiLet getLetExpression(@NotNull String name) {
+        PsiLet result = null;
+
+        PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
+        if (body != null) {
+            List<PsiLet> expressions = PsiTreeUtil.getChildrenOfTypeAsList(body, PsiLet.class);
+            if (!expressions.isEmpty()) {
+                for (PsiLet expression : expressions) {
+                    if (name.equals(expression.getName())) {
+                        result = expression;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable

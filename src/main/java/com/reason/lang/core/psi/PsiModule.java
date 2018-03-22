@@ -29,6 +29,9 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     @Nullable
     PsiExternal getExternalExpression(@NotNull String name);
 
+    @Nullable
+    PsiNamedElement getLetExpression(@NotNull String make);
+
     @NotNull
     ModulePath getPath();
 

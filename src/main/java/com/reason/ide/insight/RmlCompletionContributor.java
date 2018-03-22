@@ -57,7 +57,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> upperSymbol() {
-            return psiElement().inside(PsiUpperSymbol.class);
+            return psiElement().inside(PsiUpperSymbol.class).andNot(jsxName());
         }
 
         @NotNull
