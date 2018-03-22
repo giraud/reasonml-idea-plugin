@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Objects;
 
 public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExternal {
 
@@ -58,9 +60,9 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
 
     @NotNull
     @Override
-    public String getSignature() {
+    public HMSignature getSignature() {
         PsiSignature signature = findChildByClass(PsiSignature.class);
-        return signature == null ? "" : signature.getText();
+        return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 
     private String getRealName() {
@@ -79,12 +81,12 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
                 String realName = getRealName();
                 if (!realName.isEmpty()) {
                     String realNameText = realName.substring(1, realName.length() - 1);
-                    if (!aliasName.equals(realNameText)) {
+                    if (!Objects.equals(aliasName, realNameText)) {
                         aliasName += " (" + realNameText + ")";
                     }
                 }
 
-                String signature = getSignature();
+                String signature = getSignature().toString();
                 if (!signature.isEmpty()) {
                     aliasName += " :  " + signature;
                 }

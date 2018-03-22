@@ -9,6 +9,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
@@ -68,11 +69,10 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @NotNull
     @Override
-    public String getSignature() {
+    public HMSignature getSignature() {
         PsiSignature signature = findChildByClass(PsiSignature.class);
-        return signature == null ? "" : signature.getText();
+        return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
-
 
     @NotNull
     @Override
