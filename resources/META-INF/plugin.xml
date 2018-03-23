@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.42</version>
+    <version>0.43</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -13,6 +13,13 @@
       <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
 
       <p></p>
+
+      <b>version 0.43</b>
+
+      <ul>
+        <li>Fix 'Type annotations not working with bs namespace' (#35)</li>
+        <li>Improve completion on expressions</li>
+      </ul>
 
       <b>version 0.42</b>
 
