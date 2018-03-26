@@ -14,12 +14,15 @@ import org.jetbrains.annotations.Nullable;
 public class BsCompiler {
 
     private KillableColoredProcessHandler m_bsb;
-    private GeneralCommandLine m_commandLine;
+    private GeneralCommandLine m_fullCommandLine;
+    private GeneralCommandLine m_standardCommandLine;
     private ProcessListener m_outputListener;
+    private boolean m_firstRun = true;
 
     BsCompiler(VirtualFile baseDir, String bsbPath) {
-        m_commandLine = new GeneralCommandLine(bsbPath, "-color", "-make-world").
-                withWorkDirectory(baseDir.getCanonicalPath());
+        String canonicalPath = baseDir.getCanonicalPath();
+        m_fullCommandLine = new GeneralCommandLine(bsbPath, "-clean-world", "-make-world").withWorkDirectory(canonicalPath);
+        m_standardCommandLine = new GeneralCommandLine(bsbPath).withWorkDirectory(canonicalPath);
         recreate();
     }
 
@@ -43,10 +46,11 @@ public class BsCompiler {
     public ProcessHandler recreate() {
         try {
             killIt();
-            m_bsb = new KillableColoredProcessHandler(m_commandLine);
+            m_bsb = new KillableColoredProcessHandler(m_firstRun ? m_fullCommandLine : m_standardCommandLine);
             if (m_outputListener != null) {
                 m_bsb.addProcessListener(m_outputListener);
             }
+            m_firstRun = false;
             return m_bsb;
         } catch (ExecutionException e) {
             Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
