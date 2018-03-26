@@ -17,13 +17,12 @@ public class BsCompiler {
     private GeneralCommandLine m_fullCommandLine;
     private GeneralCommandLine m_standardCommandLine;
     private ProcessListener m_outputListener;
-    private boolean m_firstRun = true;
 
     BsCompiler(VirtualFile baseDir, String bsbPath) {
         String canonicalPath = baseDir.getCanonicalPath();
         m_fullCommandLine = new GeneralCommandLine(bsbPath, "-clean-world", "-make-world").withWorkDirectory(canonicalPath);
         m_standardCommandLine = new GeneralCommandLine(bsbPath).withWorkDirectory(canonicalPath);
-        recreate();
+        recreate(CliType.cleanMake);
     }
 
     @Nullable
@@ -43,14 +42,13 @@ public class BsCompiler {
     }
 
     @Nullable
-    public ProcessHandler recreate() {
+    public ProcessHandler recreate(CliType cliType) {
         try {
             killIt();
-            m_bsb = new KillableColoredProcessHandler(m_firstRun ? m_fullCommandLine : m_standardCommandLine);
+            m_bsb = new KillableColoredProcessHandler(cliType == CliType.cleanMake ? m_fullCommandLine : m_standardCommandLine);
             if (m_outputListener != null) {
                 m_bsb.addProcessListener(m_outputListener);
             }
-            m_firstRun = false;
             return m_bsb;
         } catch (ExecutionException e) {
             Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));

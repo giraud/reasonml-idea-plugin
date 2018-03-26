@@ -18,7 +18,7 @@ public class BsConsole extends ConsoleViewImpl {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(this.getEditor()));
         group.add(new ClearLogAction(this));
-        group.add(new StartAction(this, getProject()));
+        group.add(new MakeWorldAction(this, getProject()));
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(this.getComponent());

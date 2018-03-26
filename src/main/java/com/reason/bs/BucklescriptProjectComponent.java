@@ -1,9 +1,5 @@
 package com.reason.bs;
 
-import java.util.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -25,6 +21,11 @@ import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.Collection;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -164,7 +165,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
     @Override
     public void run(FileType fileType) {
         if (m_compiler != null && (fileType instanceof RmlFileType || fileType instanceof OclFileType)) {
-            ProcessHandler recreate = m_compiler.recreate();
+            ProcessHandler recreate = m_compiler.recreate(CliType.standard);
             if (recreate != null) {
                 getBsbConsole().attachToProcess(recreate);
                 m_compiler.startNotify();
