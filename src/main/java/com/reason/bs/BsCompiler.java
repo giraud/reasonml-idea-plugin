@@ -9,20 +9,21 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.RmlNotification;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BsCompiler {
 
+    private final String m_canonicalPath;
+    private final String m_bsbPath;
+
     private KillableColoredProcessHandler m_bsb;
-    private GeneralCommandLine m_fullCommandLine;
-    private GeneralCommandLine m_standardCommandLine;
     private ProcessListener m_outputListener;
 
     BsCompiler(VirtualFile baseDir, String bsbPath) {
-        String canonicalPath = baseDir.getCanonicalPath();
-        m_fullCommandLine = new GeneralCommandLine(bsbPath, "-clean-world", "-make-world").withWorkDirectory(canonicalPath);
-        m_standardCommandLine = new GeneralCommandLine(bsbPath).withWorkDirectory(canonicalPath);
-        recreate(CliType.cleanMake);
+        m_canonicalPath = baseDir.getCanonicalPath();
+        m_bsbPath = bsbPath;
+        recreate(CliType.make);
     }
 
     @Nullable
@@ -45,7 +46,7 @@ public class BsCompiler {
     public ProcessHandler recreate(CliType cliType) {
         try {
             killIt();
-            m_bsb = new KillableColoredProcessHandler(cliType == CliType.cleanMake ? m_fullCommandLine : m_standardCommandLine);
+            m_bsb = new KillableColoredProcessHandler(getGeneralCommandLine(cliType));
             if (m_outputListener != null) {
                 m_bsb.addProcessListener(m_outputListener);
             }
@@ -69,5 +70,23 @@ public class BsCompiler {
         if (m_bsb != null) {
             m_bsb.addProcessListener(outputListener);
         }
+    }
+
+    @NotNull
+    private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
+        GeneralCommandLine cli;
+        switch (cliType) {
+            case make:
+                cli = new GeneralCommandLine(m_bsbPath, "-make-world");
+                break;
+            case cleanMake:
+                cli = new GeneralCommandLine(m_bsbPath, "-clean-world", "-make-world");
+                break;
+            default:
+                cli = new GeneralCommandLine(m_bsbPath);
+
+        }
+        cli.withWorkDirectory(m_canonicalPath);
+        return cli;
     }
 }

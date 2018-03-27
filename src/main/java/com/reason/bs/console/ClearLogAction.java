@@ -11,7 +11,7 @@ class ClearLogAction extends DumbAwareAction {
     private ConsoleView m_console;
 
     ClearLogAction(ConsoleView console) {
-        super("Clear All", "Clear the contents of the Event Log", AllIcons.Actions.GC);
+        super("Clear All", "Clear the contents of the bucklescript logs", AllIcons.Actions.GC);
         m_console = console;
     }
 
