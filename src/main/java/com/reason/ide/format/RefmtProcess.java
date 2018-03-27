@@ -13,21 +13,27 @@ import java.io.*;
 
 class RefmtProcess {
 
+    private final String BS_PATH = "node_modules/bs-platform";
+
     private final String m_refmtBin;
     private final Logger m_log;
 
     RefmtProcess() {
-        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", "node_modules/bs-platform/lib/refmt3.exe");
+        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", BS_PATH + "/lib/refmt.exe");
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 
     String run(Project project, String format, String code) {
         String refmtPath = Platform.getBinaryPath(project, m_refmtBin);
         if (refmtPath == null) {
-            refmtPath = Platform.getBinaryPath(project, "node_modules/bs-platform/bin/refmt3.exe");
+            // Test old versions
+            refmtPath = Platform.getBinaryPath(project, BS_PATH + "/lib/refmt3.exe");
             if (refmtPath == null) {
-                // Use a watcher ?
-                return code;
+                refmtPath = Platform.getBinaryPath(project, BS_PATH + "/bin/refmt3.exe");
+                if (refmtPath == null) {
+                    // Use a watcher ?
+                    return code;
+                }
             }
         }
 
