@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.reason.lang.core.MlFileType.implementationOnly;
+import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -76,7 +77,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
 
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            List<PsiModule> modules = RmlPsiUtil.findFileModules(project);
+            List<PsiModule> modules = RmlPsiUtil.findFileModules(project, interfaceOrImplementation);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     resultSet.addElement(

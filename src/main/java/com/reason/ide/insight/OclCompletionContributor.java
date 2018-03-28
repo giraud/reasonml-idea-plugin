@@ -51,13 +51,13 @@ public class OclCompletionContributor extends CompletionContributor {
 
         @NotNull
         @Override
-        public ElementPattern<? extends PsiElement> upperSymbol() {
+        public ElementPattern<? extends PsiElement> freeExpression() {
             return psiElement().inside(PsiUpperSymbol.class);
         }
 
         @NotNull
         @Override
-        public ElementPattern<? extends PsiElement> expression() {
+        public ElementPattern<? extends PsiElement> dotExpression() {
             return alwaysFalse();
         }
 

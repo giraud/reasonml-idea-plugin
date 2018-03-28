@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiTagStart;
-import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +35,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> keyword() {
-            return psiElement().andNot(psiElement().andOr(psiElement().inside(PsiTagStart.class), jsxName(), expression(), jsObject()));
+            return psiElement().andNot(psiElement().andOr(psiElement().inside(PsiTagStart.class), jsxName(), dotExpression(), jsObject()));
         }
 
         @NotNull
@@ -56,13 +55,13 @@ public class RmlCompletionContributor extends CompletionContributor {
 
         @NotNull
         @Override
-        public ElementPattern<? extends PsiElement> upperSymbol() {
-            return psiElement().inside(PsiUpperSymbol.class).andNot(jsxName());
+        public ElementPattern<? extends PsiElement> freeExpression() {
+            return psiElement().andNot(psiElement().andOr(jsxName(), jsObject(), jsxAttribute(), dotExpression()));
         }
 
         @NotNull
         @Override
-        public ElementPattern<? extends PsiElement> expression() {
+        public ElementPattern<? extends PsiElement> dotExpression() {
             return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.DOT));
         }
 

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
+import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
     @Override
@@ -29,8 +30,8 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         String fileModuleName = originalFile.asModuleName();
         Project project = originalFile.getProject();
 
-        // Find all files that are components
-        List<PsiModule> modules = RmlPsiUtil.findFileModules(project);
+        // Find all files that are components ! TODO: components can be sub modules
+        List<PsiModule> modules = RmlPsiUtil.findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : modules) {
             String moduleName = module.getName();
             if (!fileModuleName.equals(moduleName) && module.isComponent()) {

@@ -20,6 +20,9 @@ class BsConfig {
     private static String[] PERVASIVES = new String[]{
             // all files but the ones with _ ?
             "bs-platform/lib/ocaml/js.mli",
+            "bs-platform/lib/ocaml/js.ml",
+            "bs-platform/lib/ocaml/belt.mli",
+            "bs-platform/lib/ocaml/belt.ml",
     };
 
     private final String m_namespace;

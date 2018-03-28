@@ -22,10 +22,10 @@ interface CompletionPatterns {
     ElementPattern<? extends PsiElement> jsxAttribute();
 
     @NotNull
-    ElementPattern<? extends PsiElement> upperSymbol();
+    ElementPattern<? extends PsiElement> freeExpression();
 
     @NotNull
-    ElementPattern<? extends PsiElement> expression();
+    ElementPattern<? extends PsiElement> dotExpression();
 
     @NotNull
     ElementPattern<? extends PsiElement> jsObject();

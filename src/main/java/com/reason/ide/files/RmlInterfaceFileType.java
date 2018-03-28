@@ -36,5 +36,5 @@ public class RmlInterfaceFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.INTERFACE_FILE;
+        return Icons.RML_INTERFACE_FILE;
     }}

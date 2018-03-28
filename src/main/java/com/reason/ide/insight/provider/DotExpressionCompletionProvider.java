@@ -21,11 +21,11 @@ import java.util.Collection;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.inBsconfig;
 
-public class ExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class DotExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        //System.out.println("»» Expression completion");
+        //System.out.println("»» DOT expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getPosition();

@@ -19,13 +19,11 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
+import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static com.reason.lang.core.MlScope.all;
 import static com.reason.lang.core.MlScope.inBsconfig;
@@ -133,34 +131,97 @@ public class RmlPsiUtil {
     }
 
     @NotNull
-    public static List<PsiModule> findFileModules(@NotNull Project project) {
-        ArrayList<PsiModule> result = new ArrayList<>();
-
+    public static List<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
+        List<PsiModule> result = new ArrayList<>();
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
 
-        Collection<VirtualFile> rmlFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
-        for (VirtualFile virtualFile : rmlFiles) {
-            String canonicalPath = virtualFile.getCanonicalPath();
-            if (bucklescript.isDependency(canonicalPath)) {
-                PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                if (file instanceof FileBase) {
-                    PsiModule module = ((FileBase) file).asModule();
-                    if (module != null) {
-                        result.add(module);
+        Map<String, PsiModule> files = new THashMap<>();
+        Collection<VirtualFile> rmiFiles;
+        Collection<VirtualFile> rmlFiles;
+        Collection<VirtualFile> ociFiles;
+        Collection<VirtualFile> oclFiles;
+
+        if (fileType != MlFileType.implementationOnly) {
+            rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension());
+            ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension());
+
+            for (VirtualFile virtualFile : rmiFiles) {
+                String canonicalPath = virtualFile.getCanonicalPath();
+                if (bucklescript.isDependency(canonicalPath)) {
+                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                    if (file != null) {
+                        PsiModule module = ((FileBase) file).asModule();
+                        if (module != null) {
+                            files.put(canonicalPath, module);
+                        }
                     }
                 }
             }
+
+            for (VirtualFile virtualFile : ociFiles) {
+                String canonicalPath = virtualFile.getCanonicalPath();
+                if (bucklescript.isDependency(canonicalPath)) {
+                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                    if (file != null) {
+                        PsiModule module = ((FileBase) file).asModule();
+                        if (module != null) {
+                            files.put(canonicalPath, module);
+                        }
+                    }
+                }
+            }
+
+            result.addAll(files.values());
         }
 
-        Collection<VirtualFile> oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
-        for (VirtualFile virtualFile : oclFiles) {
-            String canonicalPath = virtualFile.getCanonicalPath();
-            if (bucklescript.isDependency(canonicalPath)) {
-                PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                if (file instanceof FileBase) {
-                    PsiModule module = ((FileBase) file).asModule();
-                    if (module != null) {
-                        result.add(module);
+        if (fileType != MlFileType.interfaceOnly) {
+            rmlFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
+            oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
+
+            for (VirtualFile virtualFile : rmlFiles) {
+                String canonicalPath = virtualFile.getCanonicalPath();
+                if (canonicalPath != null && bucklescript.isDependency(canonicalPath)) {
+                    boolean keep = true;
+                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+
+                    if (fileType != MlFileType.implementationOnly) {
+                        String canonicalInterface = canonicalPath.replace("." + RmlFileType.INSTANCE.getDefaultExtension(), "." + RmlInterfaceFileType.INSTANCE.getDefaultExtension());
+                        if (files.containsKey(canonicalInterface)) {
+                            keep = false;
+                        }
+                    }
+
+                    if (keep) {
+                        if (file instanceof FileBase) {
+                            PsiModule module = ((FileBase) file).asModule();
+                            if (module != null) {
+                                result.add(module);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (VirtualFile virtualFile : oclFiles) {
+                String canonicalPath = virtualFile.getCanonicalPath();
+                if (canonicalPath != null && bucklescript.isDependency(canonicalPath)) {
+                    boolean keep = true;
+                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+
+                    if (fileType != MlFileType.implementationOnly) {
+                        String canonicalInterface = canonicalPath.replace("." + OclFileType.INSTANCE.getDefaultExtension(), "." + OclInterfaceFileType.INSTANCE.getDefaultExtension());
+                        if (files.containsKey(canonicalInterface)) {
+                            keep = false;
+                        }
+                    }
+
+                    if (keep) {
+                        if (file instanceof FileBase) {
+                            PsiModule module = ((FileBase) file).asModule();
+                            if (module != null) {
+                                result.add(module);
+                            }
+                        }
                     }
                 }
             }
