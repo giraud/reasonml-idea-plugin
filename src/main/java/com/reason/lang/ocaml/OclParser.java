@@ -63,6 +63,8 @@ public class OclParser extends CommonParser {
                 parseArrobase(builder, parserState);
             } else if (tokenType == m_types.STRING) {
                 parseString(parserState);
+            } else if (tokenType == m_types.AND) {
+                parseAnd(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -112,6 +114,18 @@ public class OclParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseAnd(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(typeNamed) || state.isResolution(typeNamedEq)) {
+            endLikeSemi(state);
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE));
+        } else if (state.isResolution(letNamedEq)) {
+            endLikeSemi(state);
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, let, m_types.LET_EXPRESSION, startExpression, m_types.LET));
         }
     }
 
@@ -257,8 +271,7 @@ public class OclParser extends CommonParser {
             // overloading an operator
             state.setResolution(externalNamed);
             state.setComplete();
-        }
-        else if (state.isResolution(val)) {
+        } else if (state.isResolution(val)) {
             // overloading an operator
             state.setResolution(valNamed);
             state.setComplete();

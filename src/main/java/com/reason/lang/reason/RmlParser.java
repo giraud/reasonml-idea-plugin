@@ -58,6 +58,8 @@ public class RmlParser extends CommonParser {
                 parseTilde(builder, parserState);
             } else if (tokenType == m_types.COMMA) {
                 parseComma(builder, parserState);
+            } else if (tokenType == m_types.AND) {
+                parseAnd(builder, parserState);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -123,6 +125,18 @@ public class RmlParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseAnd(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(typeNamed) || state.isResolution(typeNamedEq)) {
+            state.endUntilScopeExpression(null);
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, type, m_types.TYPE_EXPRESSION, startExpression, m_types.TYPE));
+        } else if (state.isResolution(letNamedEq)) {
+            state.endUntilScopeExpression(null);
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, let, m_types.LET_EXPRESSION, startExpression, m_types.LET));
         }
     }
 
