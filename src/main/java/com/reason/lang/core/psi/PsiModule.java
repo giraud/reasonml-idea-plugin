@@ -18,6 +18,12 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     PsiScopedExpr getBody();
 
     @NotNull
+    Collection<PsiOpen> getOpenExpressions();
+
+    @NotNull
+    Collection<PsiInclude> getIncludeExpressions();
+
+    @NotNull
     Collection<PsiModule> getModules();
 
     @NotNull
