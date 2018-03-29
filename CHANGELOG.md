@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.44
+
+* :bug: Fix #40
+* :house: Improve completion on expressions
+
 ## 0.43
 
 * :bug: Fix 'Type annotations not working with bs namespace' (#35)
