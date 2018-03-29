@@ -60,14 +60,6 @@
          <li>Completion contributor for Ocaml files (wip)</li>
       </ul>
 
-      <b>version 0.38</b>
-
-      <ul>
-         <li>Better JSX parsing/highlighting</li>
-         <li>Fix inferred type annotations</li>
-         <li>Improved reason parser</li>
-      </ul>
-
     ]]>
     </change-notes>
 
