@@ -6,6 +6,7 @@ import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
+import com.reason.lang.reason.RmlModulePathFinder;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +18,7 @@ public class RmlCompletionContributor extends CompletionContributor {
     static CompletionPatterns PATTERNS = new RmlCompletionPatterns();
 
     RmlCompletionContributor() {
-        super(RmlTypes.INSTANCE, PATTERNS);
+        super(RmlTypes.INSTANCE, new RmlModulePathFinder(), PATTERNS);
     }
 
     private static class RmlCompletionPatterns implements CompletionPatterns {

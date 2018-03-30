@@ -22,6 +22,9 @@ public class DescriptionProvider implements ElementDescriptionProvider {
         }
 
         if (location == UsageViewShortNameLocation.INSTANCE || location == UsageViewLongNameLocation.INSTANCE) {
+            if (element instanceof PsiUpperSymbol) {
+                return ((PsiUpperSymbol) element).getName();
+            }
             if (element instanceof PsiNamedElement) {
                 return ((PsiNamedElement) element).getName();
             }
@@ -30,9 +33,11 @@ public class DescriptionProvider implements ElementDescriptionProvider {
         if (location == UsageViewTypeLocation.INSTANCE) {
             if (element instanceof PsiUpperSymbol || element instanceof PsiModule) {
                 return "module";
-            } else if (element instanceof PsiTypeName) {
+            }
+            if (element instanceof PsiTypeName) {
                 return "type";
-            } else if (element instanceof PsiLowerSymbol) {
+            }
+            if (element instanceof PsiLowerSymbol) {
                 return "let";
             }
         }

@@ -7,16 +7,23 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
+import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.ocaml.OclModulePathFinder;
+import com.reason.lang.reason.RmlModulePathFinder;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
+import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
@@ -62,17 +69,43 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             return myElement;
         }
 
+        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
+        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement);
+        //System.out.println("  potential paths:");
+        //for (String string : strings) {
+        //    System.out.println("    " + string + "." + m_referenceName);
+        //}
+
+        Collection<PsiModule> modules;
         Project project = myElement.getProject();
-        Collection<PsiModule> modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, all);
+        if (potentialPaths.isEmpty()) {
+            modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, inBsconfig);
+        } else {
+            modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, all);
+        }
+
+        //System.out.println("  modules: " + modules.size());
+        //for (PsiModule module : modules) {
+        //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
+        //}
 
         if (!modules.isEmpty()) {
             Collection<PsiModule> filteredModules = modules;
-            //if (1 < modules.size()) {
-            // TODO: find modulePath of current element
-            //filteredModules = modules.stream().
-            //filter(psiModule -> inPath != psiModule instanceof PsiFileModuleImpl).
-            //collect(Collectors.toList());
-            //}
+            if (1 < modules.size()) {
+                // Find potential paths of current element
+                if (!potentialPaths.isEmpty()) {
+                    // Take the first for now
+                    final String inPath = potentialPaths.get(0) + "." + m_referenceName;
+                    filteredModules = modules.stream().
+                            filter(module -> inPath.equals(module.getQualifiedName())).
+                            collect(Collectors.toList());
+                }
+
+                //System.out.println("  filetered modules: " + filteredModules.size());
+                //for (PsiModule module : filteredModules) {
+                //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
+                //}
+            }
 
             if (filteredModules.isEmpty()) {
                 return null;

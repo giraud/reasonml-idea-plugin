@@ -3,6 +3,7 @@ package com.reason.ide.insight;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.ocaml.OclModulePathFinder;
 import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +15,7 @@ public class OclCompletionContributor extends CompletionContributor {
     static CompletionPatterns PATTERNS = new OclCompletionPatterns();
 
     OclCompletionContributor() {
-        super(OclTypes.INSTANCE, PATTERNS);
+        super(OclTypes.INSTANCE, new OclModulePathFinder(), PATTERNS);
     }
 
     private static class OclCompletionPatterns implements CompletionPatterns {
