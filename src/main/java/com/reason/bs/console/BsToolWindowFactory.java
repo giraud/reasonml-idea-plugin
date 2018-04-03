@@ -11,6 +11,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.reason.bs.BsCompiler;
 import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
@@ -18,7 +19,7 @@ import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
 public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
 
     @Override
-    public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow toolWindow) {
+    public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow bucklescriptWindow) {
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
 
         BsConsole console = new BsConsole(project);
@@ -28,7 +29,9 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         panel.setToolbar(toolbar.getComponent());
 
         Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
-        toolWindow.getContentManager().addContent(content);
+
+        bucklescriptWindow.getContentManager().addContent(content);
+        bucklescriptWindow.setIcon(Icons.BUCKLESCRIPT);
 
         // Start compiler
         BsCompiler bsc = BucklescriptProjectComponent.getInstance(project).getCompiler();
