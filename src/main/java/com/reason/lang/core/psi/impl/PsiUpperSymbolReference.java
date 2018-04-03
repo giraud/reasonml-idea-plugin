@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
-import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
@@ -70,19 +69,13 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         }
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement);
         //System.out.println("  potential paths:");
         //for (String string : strings) {
         //    System.out.println("    " + string + "." + m_referenceName);
         //}
 
-        Collection<PsiModule> modules;
         Project project = myElement.getProject();
-        if (potentialPaths.isEmpty()) {
-            modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, inBsconfig);
-        } else {
-            modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, all);
-        }
+        Collection<PsiModule> modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, all);
 
         //System.out.println("  modules: " + modules.size());
         //for (PsiModule module : modules) {
@@ -93,6 +86,8 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             Collection<PsiModule> filteredModules = modules;
             if (1 < modules.size()) {
                 // Find potential paths of current element
+                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement);
+
                 if (!potentialPaths.isEmpty()) {
                     // Take the first for now
                     final String inPath = potentialPaths.get(0) + "." + m_referenceName;
