@@ -7,6 +7,7 @@ import com.reason.ide.files.OclFile;
 import com.reason.ide.files.OclInterfaceFile;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiSignature;
+import org.jetbrains.annotations.NotNull;
 
 public class PsiSignatureImpl extends ASTWrapperPsiElement implements PsiSignature {
 
@@ -14,6 +15,7 @@ public class PsiSignatureImpl extends ASTWrapperPsiElement implements PsiSignatu
         super(node);
     }
 
+    @NotNull
     @Override
     public HMSignature asHMSignature() {
         PsiFile containingFile = getContainingFile();
