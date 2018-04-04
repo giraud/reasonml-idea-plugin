@@ -26,7 +26,7 @@ public class MakeWorldAction extends DumbAwareAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(m_project);
-        BsCompiler bsc = bucklescript.getCompiler();
+        BsCompiler bsc = bucklescript.getOrCreateCompiler();
         if (bsc != null) {
             ProcessHandler bscProcess = bsc.recreate(cleanMake);
             if (bscProcess != null) {
