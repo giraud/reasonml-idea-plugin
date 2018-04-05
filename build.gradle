@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
     apply plugin: 'java'
-    sourceCompatibility = 1.8
+    sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
@@ -27,6 +27,24 @@ allprojects {
         version ideaVersion
         updateSinceUntilBuild = false
         //systemProperty "reasonBsbDisabled", "true"
+    }
+
+    test {
+//        useJUnit {
+//            exclude compilationPackages
+//        }
+        testLogging {
+            exceptionFormat = 'full'
+        }
+    }
+
+    task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
+//        useJUnit {
+//            include compilationPackages
+//        }
+        testLogging {
+            exceptionFormat = 'full'
+        }
     }
 }
 
