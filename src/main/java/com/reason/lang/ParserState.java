@@ -5,7 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Stack;
 
-import static com.reason.lang.ParserScopeType.*;
+import static com.reason.lang.ParserScopeType.any;
+import static com.reason.lang.ParserScopeType.scopeExpression;
 
 public class ParserState {
 
@@ -43,13 +44,11 @@ public class ParserState {
 
         if (!m_scopes.empty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope.scopeType != startExpression) {
-                m_scopes.pop().end();
+            while (scope != null && !scope.isStart && scope.scopeType != any) {
+                popEnd();
                 scope = getLatestScope();
             }
         }
-
-        updateCurrentScope();
 
         return scope;
     }
