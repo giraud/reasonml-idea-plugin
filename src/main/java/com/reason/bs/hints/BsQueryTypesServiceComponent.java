@@ -2,6 +2,7 @@ package com.reason.bs.hints;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
@@ -17,11 +18,13 @@ import java.io.InputStreamReader;
 // WARNING... THIS IS A BIG WIP...
 public class BsQueryTypesServiceComponent implements BsQueryTypesService {
 
+    private final Logger m_log;
     private final Project m_project;
     private final VirtualFile m_baseDir;
     private final String m_bsbPath;
 
     public BsQueryTypesServiceComponent(Project project, VirtualFile baseDir, String bsbPath) {
+        m_log = Logger.getInstance("ReasonML.types");
         m_project = project;
         m_baseDir = baseDir;
         m_bsbPath = bsbPath;
@@ -38,7 +41,9 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
             String namespace = BucklescriptProjectComponent.getInstance(m_project).getNamespace();
             String cmiFilename = Platform.removeProjectDir(m_project, filePath).replace(file.getPresentableName(), file.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
             VirtualFile cmiFile = m_baseDir.findFileByRelativePath("lib/bs" + cmiFilename);
-            if (cmiFile != null) {
+            if (cmiFile == null) {
+                m_log.warn("can't read types for " + filePath + ", cmi not found: " + cmiFilename);
+            } else {
                 ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(m_bsbPath, cmiFile.getCanonicalPath());
                 String basePath = m_baseDir.getCanonicalPath();
                 if (basePath != null) {
@@ -75,7 +80,7 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace(); // no ! nothing in fact
+                        m_log.error("An error occurred when reading types", e);
                     } finally {
                         if (bsc != null) {
                             bsc.destroy();
