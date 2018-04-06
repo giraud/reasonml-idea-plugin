@@ -65,6 +65,7 @@ public enum ParserScopeEnum {
     matchWith,
     switch_,
     switchBinaryCondition,
+    switchPattern,
     try_,
     tryBinaryCondition,
 
@@ -73,5 +74,5 @@ public enum ParserScopeEnum {
     interpolationString,
 
     namedSymbol,
-    namedSymbolSignature
+    genericExpression, namedSymbolSignature
 }

@@ -126,12 +126,20 @@ public class ParserState {
         return currentScope.tokenType == elementType;
     }
 
+    public boolean isScopeElementType(IElementType scopeElementType) {
+        return currentScope.scopeElementType == scopeElementType;
+    }
+
     public void setResolution(ParserScopeEnum resolution) {
         currentScope.resolution = resolution;
     }
 
     public boolean notInScopeExpression() {
         return currentScope.scopeType != ParserScopeType.scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
+    }
+
+    public boolean isInScopeExpression() {
+        return currentScope.scopeType == ParserScopeType.scopeExpression || currentScope.scopeType == ParserScopeType.groupExpression;
     }
 
     public void setTokenType(IElementType tokenType) {
