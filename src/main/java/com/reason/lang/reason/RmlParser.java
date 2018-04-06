@@ -423,7 +423,7 @@ public class RmlParser extends CommonParser {
             } else {
                 scope = state.endAny();
             }
-            state.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, scope.resolution == switch_ ? m_types.SWITCH : m_types.LBRACE));
+            state.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, scope != null && scope.resolution == switch_ ? m_types.SWITCH : m_types.LBRACE));
         }
     }
 
