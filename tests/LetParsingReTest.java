@@ -1,8 +1,8 @@
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.reason.RmlParserDefinition;
 
-public class LetParsingTest extends BaseParsingTestCase {
-    public LetParsingTest() {
+public class LetParsingReTest extends BaseParsingTestCase {
+    public LetParsingReTest() {
         super("", "re", new RmlParserDefinition());
     }
 

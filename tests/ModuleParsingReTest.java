@@ -4,8 +4,8 @@ import com.reason.lang.reason.RmlParserDefinition;
 import java.io.IOException;
 import java.util.Collection;
 
-public class ModuleParsingTest extends BaseParsingTestCase {
-    public ModuleParsingTest() {
+public class ModuleParsingReTest extends BaseParsingTestCase {
+    public ModuleParsingReTest() {
         super("module", "re", new RmlParserDefinition());
     }
 
