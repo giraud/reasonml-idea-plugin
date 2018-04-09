@@ -4,6 +4,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
+import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
@@ -19,93 +20,95 @@ public class OclParser extends CommonParser {
     }
 
     @Override
-    protected void parseFile(PsiBuilder builder, ParserState parserState) {
+    protected void parseFile(PsiBuilder builder, ParserState state) {
         IElementType tokenType = null;
 
         int c = current_position_(builder);
         while (true) {
-            parserState.previousTokenType = tokenType;
+            state.previousTokenType = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
             }
 
             if (tokenType == m_types.SEMI) {
-                parseSemi(parserState);
+                parseSemi(state);
             } else if (tokenType == m_types.IN) {
-                parseIn(parserState);
+                parseIn(state);
             } else if (tokenType == m_types.END) { // end (like a })
-                parseEnd(builder, parserState);
+                parseEnd(builder, state);
             } else if (tokenType == m_types.PIPE) {
-                parsePipe(builder, parserState);
+                parsePipe(builder, state);
             } else if (tokenType == m_types.EQ) {
-                parseEq(builder, parserState);
+                parseEq(builder, state);
             } else if (tokenType == m_types.COLON) {
-                parseColon(builder, parserState);
+                parseColon(builder, state);
             } else if (tokenType == m_types.LIDENT) {
-                parseLIdent(builder, parserState);
+                parseLIdent(builder, state);
             } else if (tokenType == m_types.UIDENT) {
-                parseUIdent(builder, parserState);
+                parseUIdent(builder, state);
             } else if (tokenType == m_types.SIG) {
-                parseSig(builder, parserState);
+                parseSig(builder, state);
             } else if (tokenType == m_types.STRUCT) {
-                parseStruct(builder, parserState);
+                parseStruct(builder, state);
             } else if (tokenType == m_types.IF) {
-                parseIf(builder, parserState);
+                parseIf(builder, state);
             } else if (tokenType == m_types.THEN) {
-                parseThen(builder, parserState);
+                parseThen(builder, state);
             } else if (tokenType == m_types.MATCH) {
-                parseMatch(builder, parserState);
+                parseMatch(builder, state);
             } else if (tokenType == m_types.TRY) {
-                parseTry(builder, parserState);
+                parseTry(builder, state);
             } else if (tokenType == m_types.WITH) {
-                parseWith(builder, parserState);
+                parseWith(builder, state);
             } else if (tokenType == m_types.ARROBASE) {
-                parseArrobase(builder, parserState);
+                parseArrobase(builder, state);
             } else if (tokenType == m_types.STRING) {
-                parseString(parserState);
+                parseString(state);
             } else if (tokenType == m_types.AND) {
-                parseAnd(builder, parserState);
+                parseAnd(builder, state);
+            } else if (tokenType == m_types.FUNCTION) {
+                parseFun(builder, state);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
-                parseLParen(builder, parserState);
+                parseLParen(builder, state);
             } else if (tokenType == m_types.RPAREN) {
-                parseRParen(builder, parserState);
+                parseRParen(builder, state);
             }
             // { ... }
             else if (tokenType == m_types.LBRACE) {
-                parseLBrace(builder, parserState);
+                parseLBrace(builder, state);
             } else if (tokenType == m_types.RBRACE) {
-                parseRBrace(builder, parserState);
+                parseRBrace(builder, state);
             }
             // [ ... ]
             else if (tokenType == m_types.LBRACKET) {
-                parseLBracket(builder, parserState);
+                parseLBracket(builder, state);
             } else if (tokenType == m_types.RBRACKET) {
-                parseRBracket(builder, parserState);
+                parseRBracket(builder, state);
             }
             // Starts expression
             else if (tokenType == m_types.OPEN) {
-                parseOpen(builder, parserState);
+                parseOpen(builder, state);
             } else if (tokenType == m_types.INCLUDE) {
-                parseInclude(builder, parserState);
+                parseInclude(builder, state);
             } else if (tokenType == m_types.EXTERNAL) {
-                parseExternal(builder, parserState);
+                parseExternal(builder, state);
             } else if (tokenType == m_types.TYPE) {
-                parseType(builder, parserState);
+                parseType(builder, state);
             } else if (tokenType == m_types.MODULE) {
-                parseModule(builder, parserState);
+                parseModule(builder, state);
             } else if (tokenType == m_types.LET) {
-                parseLet(builder, parserState);
+                parseLet(builder, state);
             } else if (tokenType == m_types.VAL) {
-                parseVal(builder, parserState);
+                parseVal(builder, state);
             } else if (tokenType == m_types.EXCEPTION) {
-                parseException(builder, parserState);
+                parseException(builder, state);
             }
 
-            if (parserState.dontMove) {
-                parserState.dontMove = false;
+            if (state.dontMove) {
+                state.dontMove = false;
             } else {
                 builder.advanceLexer();
             }
@@ -143,7 +146,14 @@ public class OclParser extends CommonParser {
             state.popEnd();
             state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT, groupExpression, m_types.PIPE));
         } else {
-            state.endUntilScopeExpression(m_types.WITH);
+            // By default, a pattern match
+            if (state.isResolution(patternMatchBody)) {
+                state.popEnd();
+            }
+            if (state.isResolution(patternMatch)) {
+                state.popEnd();
+            }
+            state.add(markCompleteScope(builder, patternMatch, m_types.PATTERN_MATCH_EXPR, groupExpression, null));
         }
     }
 
@@ -233,24 +243,33 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseEq(PsiBuilder builder, ParserState parserState) { // =
-        if (parserState.isResolution(typeNamed)) {
-            parserState.setResolution(typeNamedEq);
-        } else if (parserState.isResolution(letNamed)) {
-            parserState.setResolution(letNamedEq);
-            builder.advanceLexer();
-            parserState.dontMove = true;
-            parserState.add(markScope(builder, letNamedEq, m_types.LET_BINDING, groupExpression, m_types.EQ));
-            parserState.setComplete();
-        } else if (parserState.isResolution(tagProperty)) {
-            parserState.setResolution(tagPropertyEq);
-        } else if (parserState.isResolution(moduleNamed)) {
-            parserState.setResolution(moduleNamedEq);
-            parserState.setComplete();
-        } else if (parserState.isResolution(externalNamedSignature)) {
-            parserState.setComplete();
-            parserState.endUntilStart();
-            parserState.updateCurrentScope();
+    private void parseFun(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(letNamedEq)) {
+            state.add(markScope(builder, letFunBody, m_types.LET_BINDING, groupExpression, m_types.FUN));
+        }
+    }
+
+    private void parseEq(PsiBuilder builder, ParserState state) { // =
+        if (state.isResolution(typeNamed)) {
+            state.setResolution(typeNamedEq);
+        } else if (state.isResolution(letNamed) || state.isResolution(letParameters)) {
+            ParserScopeEnum resolution = state.isResolution(letNamed) ? letNamedEq : letNamedParametersEq;
+            if (resolution == letNamedParametersEq) {
+                state.popEnd();
+            }
+            state.setResolution(resolution);
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, resolution, m_types.LET_BINDING, groupExpression, m_types.EQ));
+            state.setComplete();
+        } else if (state.isResolution(tagProperty)) {
+            state.setResolution(tagPropertyEq);
+        } else if (state.isResolution(moduleNamed)) {
+            state.setResolution(moduleNamedEq);
+            state.setComplete();
+        } else if (state.isResolution(externalNamedSignature)) {
+            state.setComplete();
+            state.endUntilStart();
+            state.updateCurrentScope();
         }
     }
 
@@ -352,6 +371,14 @@ public class OclParser extends CommonParser {
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+
+        if (state.isResolution(letNamed)) {
+            IElementType tokenType = builder.getTokenType();
+            if (tokenType != m_types.EQ) {
+                // function parameters
+                state.add(markCompleteScope(builder, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN));
+            }
+        }
     }
 
     private void parseUIdent(PsiBuilder builder, ParserState state) {

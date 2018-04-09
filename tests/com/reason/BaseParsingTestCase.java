@@ -1,8 +1,10 @@
+package com.reason;
+
 import com.intellij.lang.ParserDefinition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.ParsingTestCase;
-import com.reason.ide.files.RmlFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public abstract class BaseParsingTestCase extends ParsingTestCase {
-    BaseParsingTestCase(@NotNull String dataPath, @NotNull String fileExt, @NotNull ParserDefinition... definitions) {
+    protected BaseParsingTestCase(@NotNull String dataPath, @NotNull String fileExt, @NotNull ParserDefinition... definitions) {
         super(dataPath, fileExt, definitions);
     }
 
@@ -19,26 +21,26 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return "testData";
     }
 
-    <T> T first(Collection<T> collection) {
+    protected <T> T first(Collection<T> collection) {
         return collection.iterator().next();
     }
 
-    PsiFileModuleImpl parseCode(String code) {
+    protected PsiFileModuleImpl parseCode(String code) {
         return parseCode(code, false);
     }
 
     PsiFileModuleImpl parseCode(String code, boolean print) {
         myFile = createPsiFile("dummy", code);
-        RmlFile file = (RmlFile) myFile;
+        FileBase file = (FileBase) myFile;
         if (print) {
             System.out.println(DebugUtil.psiToString(file, false, true));
         }
         return (PsiFileModuleImpl) file.asModule();
     }
 
-    PsiModule doRmlTest() {
+    protected PsiModule doMlTest() {
         doTest(false);
-        return ((RmlFile) myFile).asModule();
+        return ((FileBase) myFile).asModule();
     }
 
     @SuppressWarnings("unused")

@@ -426,7 +426,7 @@ public class RmlParser extends CommonParser {
             state.add(markScope(builder, objectBinding, m_types.OBJECT, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
             state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
-        } else if (state.isResolution(letNamedEqParameters)) {
+        } else if (state.isResolution(letNamedParametersEq)) {
             state.add(markScope(builder, letFunBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE));
         } else {
             ParserScope scope;
@@ -462,7 +462,7 @@ public class RmlParser extends CommonParser {
             state.popEnd();
             scope = state.getLatestScope();
             if (scope != null && scope.resolution == letNamedEq) {
-                scope.resolution = letNamedEqParameters;
+                scope.resolution = letNamedParametersEq;
             }
         }
     }
@@ -556,7 +556,7 @@ public class RmlParser extends CommonParser {
         if (nextTokenType != m_types.LBRACE) {
             if (state.isResolution(patternMatch)) {
                 state.add(markScope(builder, patternMatchBody, m_types.SCOPED_EXPR, groupExpression, null));
-            } else if (state.isResolution(letNamedEqParameters)) { // let x = ($ANY) => <EXPR>
+            } else if (state.isResolution(letNamedParametersEq)) { // let x = ($ANY) => <EXPR>
                 state.add(markCompleteScope(builder, letFunBody, m_types.LET_BINDING, scopeExpression, null));
             }
         }

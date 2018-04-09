@@ -1,4 +1,7 @@
+package com.reason.reason;
+
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiPatternMatch;
 import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;

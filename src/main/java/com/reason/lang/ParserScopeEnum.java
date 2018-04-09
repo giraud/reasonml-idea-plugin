@@ -27,7 +27,7 @@ public enum ParserScopeEnum {
     let,
     letNamed,
     letNamedEq,
-    letNamedEqParameters,
+    letNamedParametersEq,
     letNamedSignature,
     letParameters,
     letFunBody,

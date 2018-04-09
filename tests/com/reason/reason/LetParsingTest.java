@@ -1,39 +1,43 @@
+package com.reason.reason;
+
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.reason.RmlParserDefinition;
+import junit.framework.Assert;
 
-public class LetParsingReTest extends BaseParsingTestCase {
-    public LetParsingReTest() {
+public class LetParsingTest extends BaseParsingTestCase {
+    public LetParsingTest() {
         super("", "re", new RmlParserDefinition());
     }
 
     public void testConstant() {
         PsiLet let = first(parseCode("let x = 1;").getLetExpressions());
-        assertEquals("x", let.getName());
+        Assert.assertEquals("x", let.getName());
     }
 
     public void testFunction() {
         PsiLet let = first(parseCode("let add = (x,y) => x + y;").getLetExpressions());
 
         PsiParameters params = first(PsiTreeUtil.findChildrenOfType(let, PsiParameters.class));
-        assertEquals(2, params.getArgumentsCount());
+        Assert.assertEquals(2, params.getArgumentsCount());
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
+        Assert.assertNotNull(binding);
     }
 
     public void testScopeWithSome() {
         PsiLet let = first(parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };").getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
+        Assert.assertNotNull(binding);
     }
 
     public void testScopeWithLIdent() {
         PsiLet let = first(parseCode("let l = (p) => { Js.log(p); returnObj; };").getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
+        Assert.assertNotNull(binding);
     }
 }

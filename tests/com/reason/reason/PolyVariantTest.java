@@ -1,4 +1,7 @@
+package com.reason.reason;
+
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiPatternMatch;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
@@ -6,8 +9,8 @@ import com.reason.lang.reason.RmlParserDefinition;
 
 import java.util.Collection;
 
-public class PolyVariantReTest extends BaseParsingTestCase {
-    public PolyVariantReTest() {
+public class PolyVariantTest extends BaseParsingTestCase {
+    public PolyVariantTest() {
         super("", "re", new RmlParserDefinition());
     }
 
