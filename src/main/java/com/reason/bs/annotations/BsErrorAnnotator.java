@@ -73,7 +73,9 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
             } else {
                 int startOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_startOffset);
                 int endOffset = lineNumbering.positionToOffset(annotation.m_line, annotation.m_endOffset) + 1;
-                holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.m_message);
+                if (startOffset < 0 || endOffset < 0 || endOffset <= startOffset) {
+                    holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.m_message);
+                }
             }
         }
     }
