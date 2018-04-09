@@ -18,7 +18,7 @@ public class MakeWorldAction extends DumbAwareAction {
     private final Project m_project;
 
     MakeWorldAction(ConsoleView console, Project project) {
-        super("Clean and make world", "Clean and make world", AllIcons.General.Web/*AllIcons.Actions.Refresh*/);
+        super("Clean and make world", "Clean and make world", AllIcons.General.Web);
         m_project = project;
         m_console = console;
     }
