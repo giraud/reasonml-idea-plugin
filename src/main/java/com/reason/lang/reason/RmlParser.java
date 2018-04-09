@@ -64,7 +64,7 @@ public class RmlParser extends CommonParser {
             } else if (tokenType == m_types.TILDE) {
                 parseTilde(builder, state);
             } else if (tokenType == m_types.COMMA) {
-                parseComma(builder, state);
+                parseComma(state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUN) {
@@ -123,7 +123,7 @@ public class RmlParser extends CommonParser {
                 parseVal(builder, state);
             } else {
                 // if local scope, starts a new expression
-                if (state.isInScopeExpression() && state.isScopeElementType(m_types.LBRACE)) {
+                if (shouldStartExpression(state)) {
                     state.addStart(markScope(builder, genericExpression, tokenType, groupExpression, tokenType));
                 }
             }
@@ -160,7 +160,7 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseComma(PsiBuilder builder, ParserState state) {
+    private void parseComma(ParserState state) {
         if (state.isResolution(namedSymbolSignature)) {
             state.setComplete();
             state.popEnd();
@@ -383,6 +383,8 @@ public class RmlParser extends CommonParser {
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
+        } else if (shouldStartExpression(state)) {
+            state.addStart(mark(builder, genericExpression, builder.getTokenType()));
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
@@ -526,6 +528,8 @@ public class RmlParser extends CommonParser {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
+        } else if (shouldStartExpression(state)) {
+            state.addStart(mark(builder, genericExpression, builder.getTokenType()));
         }
 
         state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
@@ -556,5 +560,9 @@ public class RmlParser extends CommonParser {
                 state.add(markCompleteScope(builder, letFunBody, m_types.LET_BINDING, scopeExpression, null));
             }
         }
+    }
+
+    private boolean shouldStartExpression(ParserState state) {
+        return state.isInScopeExpression() && state.isScopeElementType(m_types.LBRACE);
     }
 }

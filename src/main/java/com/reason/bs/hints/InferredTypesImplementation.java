@@ -10,21 +10,30 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
     private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
 
     public void add(String type) {
-        if (type.startsWith("val")) {
-            int colonPos = type.indexOf(':');
-            m_let.put(type.substring(4, colonPos - 1), new HMSignature(true, type.substring(colonPos + 1)));
-        } else if (type.startsWith("module")) {
-            int colonPos = type.indexOf(':');
-            if (0 <= colonPos) {
-                int sigPos = type.indexOf("sig");
-                InferredTypesImplementation moduleTypes = new InferredTypesImplementation();
-                m_modules.put(type.substring(7, colonPos - 1), moduleTypes);
-                String sigTypes = type.substring(sigPos + 3, type.length() - 3);
-                String[] moduleSigTypes = sigTypes.trim().split("(?=module|val|type)");
-                for (String moduleSigType : moduleSigTypes) {
-                    moduleTypes.add(moduleSigType);
+        try {
+            if (type.startsWith("val")) {
+                int colonPos = type.indexOf(':');
+                if (colonPos < type.length()) {
+                    m_let.put(type.substring(4, colonPos - 1), new HMSignature(true, type.substring(colonPos + 1)));
+                } else {
+                    System.out.println("TYPE ERR: " + type + " " + colonPos);
+                }
+            } else if (type.startsWith("module")) {
+                int colonPos = type.indexOf(':');
+                if (0 <= colonPos) {
+                    int sigPos = type.indexOf("sig");
+                    InferredTypesImplementation moduleTypes = new InferredTypesImplementation();
+                    m_modules.put(type.substring(7, colonPos - 1), moduleTypes);
+                    String sigTypes = type.substring(sigPos + 3, type.length() - 3);
+                    String[] moduleSigTypes = sigTypes.trim().split("(?=module|val|type)");
+                    for (String moduleSigType : moduleSigTypes) {
+                        moduleTypes.add(moduleSigType);
+                    }
                 }
             }
+        } catch (Error e) {
+            System.out.println(e);
+            System.out.println("type: " + type);
         }
     }
 
