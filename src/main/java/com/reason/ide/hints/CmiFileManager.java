@@ -9,17 +9,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
-class CmiFileManager {
+class CmiFileManager { // Transform to a project aware component
 
     @NotNull
-    static String toRelativeSourceName(@NotNull Path relativeCmi) {
-        return relativeCmi.toString().replace(".cmi", ".re");
+    static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativeCmi) {
+        String cmiName = relativeCmi.toString();
+        String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
+        if (!namespace.isEmpty()) {
+            cmiName = cmiName.replace("-" + namespace, "");
+        }
+        return cmiName.replace(".cmi", ".re");
     }
 
     @Nullable
     static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
         /* ml if re not found ?? */
-        String relativeSource = toRelativeSourceName(relativeCmi);
+        String relativeSource = toRelativeSourceName(project, relativeCmi);
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
     }
 

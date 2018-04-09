@@ -127,14 +127,19 @@ class BsConfig {
 
         String[] tokens = result.split("[-@/]");
         if (1 < tokens.length) {
-            result = tokens[0];
+            result = upperCaseFirst(tokens[0]);
             for (int i = 1; i < tokens.length; i++) {
-                String token = tokens[i];
-                result += token.substring(0, 1).toUpperCase(Locale.getDefault());
-                result += token.substring(1);
+                result += upperCaseFirst(tokens[i]);
             }
         }
 
+        return result;
+    }
+
+    @NotNull
+    private static String upperCaseFirst(String value) {
+        String result = value.substring(0, 1).toUpperCase(Locale.getDefault());
+        result += value.substring(1);
         return result;
     }
 }
