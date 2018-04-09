@@ -23,4 +23,11 @@ public class LetParsingReTest extends BaseParsingTestCase {
         assertNotNull(binding);
     }
 
+    public void testScope() {
+        PsiLet let = first(parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };").getLetExpressions());
+
+        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
+        assertNotNull(binding);
+    }
+
 }

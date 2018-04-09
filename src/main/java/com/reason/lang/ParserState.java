@@ -17,7 +17,6 @@ public class ParserState {
     private final Stack<ParserScope> m_scopes = new Stack<>();
 
     private ParserScope currentScope;
-    private ParserScope startScope = null;
 
     ParserState(ParserScope rootScope) {
         m_rootScope = rootScope;
@@ -31,7 +30,7 @@ public class ParserState {
 
         if (!m_scopes.empty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope != startScope && scope.scopeType == any) {
+            while (scope != null && !scope.start && scope.scopeType == any) {
                 m_scopes.pop().end();
                 scope = getLatestScope();
             }
@@ -47,7 +46,7 @@ public class ParserState {
 
         if (!m_scopes.empty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope != startScope && scope.scopeType != any) {
+            while (scope != null && !scope.start && scope.scopeType != any) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -99,9 +98,7 @@ public class ParserState {
 
     public void add(ParserScope scope, boolean start) {
         add(scope);
-        if (start) {
-            startScope = scope;
-        }
+        scope.start = start;
     }
 
     public void addStart(ParserScope scope) {
@@ -159,7 +156,7 @@ public class ParserState {
         currentScope.tokenType = tokenType;
     }
 
-    public boolean isStart(ParserScope scope) {
-        return startScope == scope;
+    public boolean isStart(@Nullable ParserScope scope) {
+        return scope != null && scope.start;
     }
 }

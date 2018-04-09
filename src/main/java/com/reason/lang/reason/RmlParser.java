@@ -20,12 +20,12 @@ public class RmlParser extends CommonParser {
     }
 
     @Override
-    protected void parseFile(PsiBuilder builder, ParserState parserState) {
+    protected void parseFile(PsiBuilder builder, ParserState state) {
         IElementType tokenType = null;
 
         int c = current_position_(builder);
         while (true) {
-            parserState.previousTokenType = tokenType;
+            state.previousTokenType = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
@@ -38,99 +38,98 @@ public class RmlParser extends CommonParser {
             //}
 
             if (tokenType == m_types.SEMI) {
-                parseSemi(builder, parserState);
+                parseSemi(builder, state);
             } else if (tokenType == m_types.EQ) {
-                parseEq(parserState);
+                parseEq(state);
             } else if (tokenType == m_types.ARROW) {
-                parseArrow(builder, parserState);
+                parseArrow(builder, state);
             } else if (tokenType == m_types.TRY) {
-                parseTry(builder, parserState);
+                parseTry(builder, state);
             } else if (tokenType == m_types.SWITCH) {
-                parseSwitch(builder, parserState);
+                parseSwitch(builder, state);
             } else if (tokenType == m_types.LIDENT) {
-                parseLIdent(builder, parserState);
+                parseLIdent(builder, state);
             } else if (tokenType == m_types.UIDENT) {
-                parseUIdent(builder, parserState);
+                parseUIdent(builder, state);
             } else if (tokenType == m_types.ARROBASE) {
-                parseArrobase(builder, parserState);
+                parseArrobase(builder, state);
             } else if (tokenType == m_types.PERCENT) {
-                parsePercent(builder, parserState);
+                parsePercent(builder, state);
             } else if (tokenType == m_types.COLON) {
-                parseColon(builder, parserState);
+                parseColon(builder, state);
             } else if (tokenType == m_types.STRING) {
-                parseString(builder, parserState);
+                parseString(builder, state);
             } else if (tokenType == m_types.PIPE) {
-                parsePipe(builder, parserState);
+                parsePipe(builder, state);
             } else if (tokenType == m_types.TILDE) {
-                parseTilde(builder, parserState);
+                parseTilde(builder, state);
             } else if (tokenType == m_types.COMMA) {
-                parseComma(builder, parserState);
+                parseComma(builder, state);
             } else if (tokenType == m_types.AND) {
-                parseAnd(builder, parserState);
+                parseAnd(builder, state);
             } else if (tokenType == m_types.FUN) {
-                parseFun(builder, parserState);
+                parseFun(builder, state);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
-                parseLParen(builder, parserState);
+                parseLParen(builder, state);
             } else if (tokenType == m_types.RPAREN) {
-                parseRParen(builder, parserState);
+                parseRParen(builder, state);
             }
             // { ... }
             else if (tokenType == m_types.LBRACE) {
-                parseLBrace(builder, parserState);
+                parseLBrace(builder, state);
             } else if (tokenType == m_types.RBRACE) {
-                parseRBrace(builder, parserState);
+                parseRBrace(builder, state);
             }
             // [ ... ]
             else if (tokenType == m_types.LBRACKET) {
-                parseLBracket(builder, parserState);
+                parseLBracket(builder, state);
             } else if (tokenType == m_types.RBRACKET) {
-                parseRBracket(builder, parserState);
+                parseRBracket(builder, state);
             }
             // < ... >
             else if (tokenType == m_types.LT) {
-                parseLt(builder, parserState);
+                parseLt(builder, state);
             } else if (tokenType == m_types.TAG_LT_SLASH) {
-                parseLtSlash(builder, parserState);
+                parseLtSlash(builder, state);
             } else if (tokenType == m_types.GT || tokenType == m_types.TAG_AUTO_CLOSE) {
-                parseGtAutoClose(builder, parserState);
+                parseGtAutoClose(builder, state);
             }
             // {| ... |}
             else if (tokenType == m_types.ML_STRING_OPEN) {
-                parseMlStringOpen(builder, parserState);
+                parseMlStringOpen(builder, state);
             } else if (tokenType == m_types.ML_STRING_CLOSE) {
-                parseMlStringClose(builder, parserState);
+                parseMlStringClose(builder, state);
             }
             // {j| ... |j}
             else if (tokenType == m_types.JS_STRING_OPEN) {
-                parseJsStringOpen(builder, parserState);
+                parseJsStringOpen(builder, state);
             } else if (tokenType == m_types.JS_STRING_CLOSE) {
-                parseJsStringClose(builder, parserState);
+                parseJsStringClose(builder, state);
             }
             // Starts an expression
             else if (tokenType == m_types.OPEN) {
-                parseOpen(builder, parserState);
+                parseOpen(builder, state);
             } else if (tokenType == m_types.EXTERNAL) {
-                parseExternal(builder, parserState);
+                parseExternal(builder, state);
             } else if (tokenType == m_types.TYPE) {
-                parseType(builder, parserState);
+                parseType(builder, state);
             } else if (tokenType == m_types.MODULE) {
-                parseModule(builder, parserState);
+                parseModule(builder, state);
             } else if (tokenType == m_types.LET) {
-                parseLet(builder, parserState);
+                parseLet(builder, state);
             } else if (tokenType == m_types.VAL) {
-                parseVal(builder, parserState);
+                parseVal(builder, state);
+            } else {
+                // if local scope, starts a new expression
+                if (state.isInScopeExpression() && state.isScopeElementType(m_types.LBRACE)) {
+                    state.addStart(markScope(builder, genericExpression, tokenType, groupExpression, tokenType));
+                }
             }
-            //else {
-            //     if local scope, starts a new expression
-            //if (parserState.isInScopeExpression() && parserState.isScopeElementType(m_types.LBRACE)) {
-            //    parserState.add(markScope(builder, genericExpression, tokenType, startExpression, tokenType));
-            //}
-            //}
 
-            if (parserState.dontMove) {
-                parserState.dontMove = false;
+            if (state.dontMove) {
+                state.dontMove = false;
             } else {
                 builder.advanceLexer();
             }
@@ -434,19 +433,21 @@ public class RmlParser extends CommonParser {
             } else {
                 scope = state.endAny();
             }
-            state.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, scope != null && scope.resolution == switch_ ? m_types.SWITCH : m_types.LBRACE));
+
+            boolean isSwitch = scope != null && scope.resolution == switch_;
+            state.add(markScope(builder, isSwitch ? switchBody : brace, m_types.SCOPED_EXPR, scopeExpression, isSwitch ? m_types.SWITCH : m_types.LBRACE));
         }
     }
 
-    private void parseRBrace(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
+    private void parseRBrace(PsiBuilder builder, ParserState state) {
+        ParserScope scope = state.endUntilScopeExpression(m_types.LBRACE);
 
         builder.advanceLexer();
-        parserState.dontMove = true;
+        state.dontMove = true;
 
         if (scope != null) {
             scope.complete();
-            parserState.popEnd();
+            state.popEnd();
         }
     }
 
@@ -503,7 +504,7 @@ public class RmlParser extends CommonParser {
         } else {
             // End current start-expression scope
             ParserScope scope = state.endUntilStart();
-            if (scope != null && state.isStart(scope)) {
+            if (state.isStart(scope)) {
                 state.dontMove = advance(builder);
                 state.popEnd();
             }

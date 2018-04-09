@@ -65,7 +65,9 @@ public enum ParserScopeEnum {
     matchWith,
     switch_,
     switchBinaryCondition,
+    switchBody,
     switchPattern,
+    patternMatchBody,
     try_,
     tryBinaryCondition,
 
@@ -78,5 +80,5 @@ public enum ParserScopeEnum {
     namedSymbol,
     namedSymbolSignature,
 
-    patternMatchBody, genericExpression
+    genericExpression
 }

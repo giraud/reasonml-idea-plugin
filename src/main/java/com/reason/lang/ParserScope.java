@@ -9,6 +9,7 @@ public class ParserScope {
     IElementType tokenType;
     IElementType scopeElementType;
     boolean complete = false;
+    boolean start = false;
 
     private PsiBuilder.Marker mark;
 

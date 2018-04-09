@@ -1,5 +1,10 @@
+import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.psi.PsiPatternMatch;
+import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlParserDefinition;
+
+import java.util.Collection;
 
 public class SwitchParsingReTest extends BaseParsingTestCase {
     public SwitchParsingReTest() {
@@ -8,13 +13,12 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
 
     public void testPattern() {
         PsiFileModuleImpl psiFileModule = parseCode("switch (x) { | Some(x) => x; (); | None => () };");
-        debugPsiAst(psiFileModule);
-//        PsiLet let = first(psiFileModule.getLetExpressions());
-//
-//        PsiParameters params = first(PsiTreeUtil.findChildrenOfType(let, PsiParameters.class));
-//        assertEquals(2, params.getArgumentsCount());
-//        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-//        assertNotNull(binding);
+
+        PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFileModule, PsiSwitch.class));
+        assertNotNull(switch_);
+
+        Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
+        assertEquals(2, patterns.size());
     }
 
 }
