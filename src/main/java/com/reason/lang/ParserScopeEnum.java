@@ -78,5 +78,5 @@ public enum ParserScopeEnum {
     namedSymbol,
     namedSymbolSignature,
 
-    genericExpression
+    patternMatchBody, genericExpression
 }

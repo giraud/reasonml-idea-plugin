@@ -97,9 +97,15 @@ public class ParserState {
         currentScope = scope;
     }
 
-    public void addStart(ParserScope scope) {
+    public void add(ParserScope scope, boolean start) {
         add(scope);
-        startScope = scope;
+        if (start) {
+            startScope = scope;
+        }
+    }
+
+    public void addStart(ParserScope scope) {
+        add(scope, true);
     }
 
     boolean empty() {
