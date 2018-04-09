@@ -137,7 +137,11 @@ class BsConfig {
     }
 
     @NotNull
-    private static String upperCaseFirst(String value) {
+    private static String upperCaseFirst(@Nullable String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        }
+
         String result = value.substring(0, 1).toUpperCase(Locale.getDefault());
         result += value.substring(1);
         return result;
