@@ -69,10 +69,14 @@ public enum ParserScopeEnum {
     try_,
     tryBinaryCondition,
 
+    patternMatch,
+
     multilineStart,
     interpolationStart,
     interpolationString,
 
     namedSymbol,
-    genericExpression, namedSymbolSignature
+    namedSymbolSignature,
+
+    genericExpression
 }

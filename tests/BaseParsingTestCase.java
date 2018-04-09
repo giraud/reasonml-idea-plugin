@@ -1,4 +1,5 @@
 import com.intellij.lang.ParserDefinition;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.RmlFile;
@@ -38,5 +39,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     PsiModule doRmlTest() {
         doTest(false);
         return ((RmlFile) myFile).asModule();
+    }
+
+    @SuppressWarnings("unused")
+    void debugPsiAst(PsiElement element) {
+        System.out.println(DebugUtil.psiToString(element, false, true));
     }
 }

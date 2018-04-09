@@ -122,11 +122,11 @@ public class OclParser extends CommonParser {
         if (state.isResolution(typeNamed) || state.isResolution(typeNamedEq)) {
             endLikeSemi(state);
             state.dontMove = advance(builder);
-            state.add(markStart(builder, type, m_types.TYPE_EXPRESSION));
+            state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
         } else if (state.isResolution(letNamedEq)) {
             endLikeSemi(state);
             state.dontMove = advance(builder);
-            state.add(markStart(builder, let, m_types.LET_EXPRESSION));
+            state.addStart(mark(builder, let, m_types.LET_EXPRESSION));
         }
     }
 
@@ -193,7 +193,7 @@ public class OclParser extends CommonParser {
     private void parseSemi(ParserState state) {
         // A SEMI operator ends the start expression, not the group or scope
         ParserScope scope = state.endAny();
-        if (scope != null && scope.isStart) {
+        if (scope != null && state.isStart(scope)) {
             state.popEnd();
         }
     }
@@ -201,7 +201,7 @@ public class OclParser extends CommonParser {
     private void parseIn(ParserState state) {
         // End current start-expression scope
         ParserScope scope = state.endUntilStart();
-        if (scope != null && scope.isStart) {
+        if (scope != null && state.isStart(scope)) {
             state.popEnd();
         }
     }
@@ -213,7 +213,7 @@ public class OclParser extends CommonParser {
         parserState.dontMove = true;
 
         if (scope != null) {
-            scope.complete = true;
+            scope.complete();
             parserState.popEnd();
         }
 
@@ -283,7 +283,7 @@ public class OclParser extends CommonParser {
         parserState.dontMove = true;
 
         if (scope != null) {
-            scope.complete = true;
+            scope.complete();
             parserState.popEnd();
         }
 
@@ -302,7 +302,7 @@ public class OclParser extends CommonParser {
         parserState.dontMove = true;
 
         if (scope != null) {
-            scope.complete = true;
+            scope.complete();
             parserState.popEnd();
         }
 
@@ -327,7 +327,7 @@ public class OclParser extends CommonParser {
 
         if (scope != null) {
             if (scope.resolution != annotation) {
-                scope.complete = true;
+                scope.complete();
             }
             parserState.popEnd();
         }
@@ -377,58 +377,58 @@ public class OclParser extends CommonParser {
         state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
     }
 
-    private void parseOpen(PsiBuilder builder, ParserState parserState) {
-        endLikeSemi(parserState);
-        parserState.add(markStart(builder, open, m_types.OPEN_EXPRESSION));
+    private void parseOpen(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.addStart(mark(builder, open, m_types.OPEN_EXPRESSION));
     }
 
-    private void parseInclude(PsiBuilder builder, ParserState parserState) {
-        endLikeSemi(parserState);
-        parserState.add(markStart(builder, include, m_types.INCLUDE_EXPRESSION));
+    private void parseInclude(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.addStart(mark(builder, include, m_types.INCLUDE_EXPRESSION));
     }
 
-    private void parseExternal(PsiBuilder builder, ParserState parserState) {
-        endLikeSemi(parserState);
-        parserState.add(markStart(builder, external, m_types.EXTERNAL_EXPRESSION));
+    private void parseExternal(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.addStart(mark(builder, external, m_types.EXTERNAL_EXPRESSION));
     }
 
     private void parseType(PsiBuilder builder, ParserState state) {
         if (state.notResolution(module)) {
             endLikeSemi(state);
-            state.add(markStart(builder, type, m_types.TYPE_EXPRESSION));
+            state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
         }
     }
 
-    private void parseException(PsiBuilder builder, ParserState parserState) {
-        endLikeSemi(parserState);
-        parserState.add(markStart(builder, exception, m_types.EXCEPTION_EXPRESSION));
+    private void parseException(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.addStart(mark(builder, exception, m_types.EXCEPTION_EXPRESSION));
     }
 
-    private void parseVal(PsiBuilder builder, ParserState parserState) {
-        endLikeSemi(parserState);
-        parserState.add(markStart(builder, val, m_types.VAL_EXPRESSION));
+    private void parseVal(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.addStart(mark(builder, val, m_types.VAL_EXPRESSION));
     }
 
-    private void parseLet(PsiBuilder builder, ParserState parserState) {
-        if (parserState.previousTokenType != m_types.EQ && parserState.previousTokenType != m_types.IN) {
-            endLikeSemi(parserState);
+    private void parseLet(PsiBuilder builder, ParserState state) {
+        if (state.previousTokenType != m_types.EQ && state.previousTokenType != m_types.IN) {
+            endLikeSemi(state);
         }
-        parserState.add(markStart(builder, let, m_types.LET_EXPRESSION));
+        state.addStart(mark(builder, let, m_types.LET_EXPRESSION));
     }
 
-    private void parseModule(PsiBuilder builder, ParserState parserState) {
-        if (parserState.notResolution(annotationName)) {
-            endLikeSemi(parserState);
-            parserState.add(markStart(builder, module, m_types.MODULE_EXPRESSION));
+    private void parseModule(PsiBuilder builder, ParserState state) {
+        if (state.notResolution(annotationName)) {
+            endLikeSemi(state);
+            state.addStart(mark(builder, module, m_types.MODULE_EXPRESSION));
         }
     }
 
-    private void endLikeSemi(ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(null);
-        if (scope != null && scope.isStart) {
-            parserState.popEnd();
+    private void endLikeSemi(ParserState state) {
+        ParserScope scope = state.endUntilScopeExpression(null);
+        if (scope != null && state.isStart(scope)) {
+            state.popEnd();
         }
 
-        parserState.updateCurrentScope();
+        state.updateCurrentScope();
     }
 }

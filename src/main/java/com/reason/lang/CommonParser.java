@@ -66,12 +66,6 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return new ParserScope(resolution, tokenType, builder.mark());
     }
 
-    protected ParserScope markStart(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType) {
-        ParserScope scope = mark(builder, resolution, tokenType);
-        scope.isStart = true;
-        return scope;
-    }
-
     protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType) {
         ParserScope scope = mark(builder, resolution, tokenType);
         scope.complete = true;

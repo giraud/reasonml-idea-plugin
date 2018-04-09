@@ -5,11 +5,10 @@ import com.intellij.psi.tree.IElementType;
 
 public class ParserScope {
     public ParserScopeEnum resolution;
-    public IElementType tokenType;
-    public ParserScopeType scopeType = ParserScopeType.any;
-    public boolean complete = false;
-    public boolean isStart = false;
+    ParserScopeType scopeType = ParserScopeType.any;
+    IElementType tokenType;
     IElementType scopeElementType;
+    boolean complete = false;
 
     private PsiBuilder.Marker mark;
 
@@ -43,5 +42,9 @@ public class ParserScope {
             mark.drop();
             mark = null;
         }
+    }
+
+    public void complete() {
+        complete = true;
     }
 }

@@ -47,7 +47,7 @@ class CmiFileManager { // Transform to a project aware component
         return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
     }
 
-    static String separatorsToUnix(String path) {
+    private static String separatorsToUnix(String path) {
         return path.replace('\\', '/');
     }
 }
