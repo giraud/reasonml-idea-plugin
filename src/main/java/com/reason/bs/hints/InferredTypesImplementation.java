@@ -1,6 +1,7 @@
 package com.reason.bs.hints;
 
 import com.reason.lang.core.HMSignature;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +14,10 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
         try {
             if (type.startsWith("val")) {
                 int colonPos = type.indexOf(':');
-                if (colonPos < type.length()) {
+                if (0 < colonPos && colonPos < type.length()) {
                     m_let.put(type.substring(4, colonPos - 1), new HMSignature(true, type.substring(colonPos + 1)));
                 } else {
-                    System.out.println("TYPE ERR: " + type + " " + colonPos);
+                    Logger.getLogger("ReasonML.types").error("TYPE ERR: [" + type + "] " + colonPos);
                 }
             } else if (type.startsWith("module")) {
                 int colonPos = type.indexOf(':');
