@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,9 +68,11 @@ public class Platform {
         return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
     }
 
-    public static String removeProjectDir(Project project, String path) {
-        VirtualFile baseDir = Platform.findBaseRoot(project);
-        return path.substring(baseDir.getPath().length());
+    private static String removeProjectDir(Project project, String path) {
+        VirtualFile baseRoot = Platform.findBaseRoot(project);
+        Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
+        Path relativize = basePath.relativize(new File(path).toPath());
+        return relativize.toString();
     }
 
     public static String removeProjectDir(Project project, @Nullable VirtualFile file) {

@@ -5,7 +5,7 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.hints.InferredTypes;
+import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,6 +28,6 @@ public class RmlFileEditorListener implements FileEditorManagerListener {
 
     @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
-        InferredTypes.queryForSelectedTextEditor(m_project);
+        InferredTypesService.queryForSelectedTextEditor(m_project);
     }
 }

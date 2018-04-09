@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -100,7 +101,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
                         ERROR, URL_OPENING_LISTENER));
             } else {
                 m_compiler = new BsCompiler(baseDir, bsbPath);
-                m_queryTypes = new BsQueryTypesServiceComponent(m_project, baseDir, bsbPath.replace("bsb.exe", "bsc.exe"));
+                m_queryTypes = new BsQueryTypesServiceComponent(baseDir, bsbPath.replace("bsb.exe", "bsc.exe"));
                 m_errorsManager = new BsErrorsManagerImpl();
             }
         }
@@ -121,6 +122,12 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
     @Override
     public BsCompiler getCompiler() {
         return m_compiler;
+    }
+
+    @Nullable
+    @Override
+    public BsQueryTypesService.InferredTypes queryTypes(Path path) {
+        return m_queryTypes == null ? null : m_queryTypes.types(path.toString());
     }
 
     @Nullable

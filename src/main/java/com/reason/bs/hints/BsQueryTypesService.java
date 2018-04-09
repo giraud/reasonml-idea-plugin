@@ -8,6 +8,9 @@ import javax.annotation.Nullable;
 public interface BsQueryTypesService {
 
     @Nullable
+    BsQueryTypesServiceComponent.InferredTypes types(String filepath);
+
+    @Nullable
     BsQueryTypesServiceComponent.InferredTypes types(VirtualFile filename);
 
     interface InferredTypes {

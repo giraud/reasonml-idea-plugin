@@ -16,28 +16,40 @@ public class CodeLensView {
     public static final Key<CodeLensInfo> CODE_LENS = Key.create("reasonml.codelens");
 
     public static class CodeLensInfo {
-        Map<Pair<VirtualFile, Integer>, String> m_signatures = new THashMap<>();
+        Map<VirtualFile, Map<Integer, String>> m_signatures = new THashMap<>();
         private final TObjectLongHashMap<VirtualFile> m_timestamps = new ObjectLongHashMap<>();
 
         @Nullable
         public synchronized String get(@NotNull VirtualFile file, int line, long currentTimestamp) {
             long timestamp = m_timestamps.get(file);
-            if (timestamp == -1 || timestamp < currentTimestamp) {
+            if (timestamp != -1 && timestamp < currentTimestamp) {
                 return null;
             }
 
-            return m_signatures.get(Pair.create(file, line));
+            Map<Integer, String> integerStringMap = m_signatures.get(file);
+            if (integerStringMap == null) {
+                return null;
+            }
+
+            return integerStringMap.get(line);
         }
 
         public synchronized void put(@NotNull VirtualFile file, @NotNull LogicalPosition position, @NotNull String signature/*Map of sig?*/, long timestamp) {
             m_timestamps.put(file, timestamp);
-            Pair<VirtualFile, Integer> key = Pair.create(file, position.line);
-            m_signatures.putIfAbsent(key, signature);
+            Map<Integer, String> integerStringMap = m_signatures.get(file);
+            if (integerStringMap == null) {
+                integerStringMap = new THashMap<>();
+                m_signatures.put(file, integerStringMap);
+            }
+            integerStringMap.putIfAbsent(position.line, signature);
         }
 
-        public synchronized void clearInternalData() {
-            m_timestamps.clear();
-            m_signatures.clear();
+        public synchronized void clearInternalData(@NotNull VirtualFile virtualFile) {
+            m_timestamps.remove(virtualFile);
+            Map<Integer, String> integerStringMap = m_signatures.get(virtualFile);
+            if (integerStringMap != null) {
+                integerStringMap.clear();
+            }
         }
     }
 

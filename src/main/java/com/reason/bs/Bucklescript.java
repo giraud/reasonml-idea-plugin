@@ -8,6 +8,7 @@ import com.reason.bs.hints.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 public interface Bucklescript {
@@ -19,6 +20,9 @@ public interface Bucklescript {
 
     @Nullable
     BsCompiler getCompiler();
+
+    @Nullable
+    BsQueryTypesService.InferredTypes queryTypes(Path path);
 
     @Nullable
     BsQueryTypesService.InferredTypes queryTypes(VirtualFile file);
