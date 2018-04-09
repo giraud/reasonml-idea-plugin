@@ -125,7 +125,7 @@ class BsConfig {
     private static String toNamespace(@NotNull String name) {
         String result = name.replaceAll("_", "");
 
-        String[] tokens = name.split("-");
+        String[] tokens = result.split("[-@/]");
         if (1 < tokens.length) {
             result = tokens[0];
             for (int i = 1; i < tokens.length; i++) {

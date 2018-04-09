@@ -5,7 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Stack;
 
-import static com.reason.lang.ParserScopeType.*;
+import static com.reason.lang.ParserScopeType.any;
+import static com.reason.lang.ParserScopeType.scopeExpression;
 
 public class ParserState {
 
@@ -43,13 +44,11 @@ public class ParserState {
 
         if (!m_scopes.empty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope.scopeType != startExpression) {
-                m_scopes.pop().end();
+            while (scope != null && !scope.isStart && scope.scopeType != any) {
+                popEnd();
                 scope = getLatestScope();
             }
         }
-
-        updateCurrentScope();
 
         return scope;
     }
@@ -126,12 +125,20 @@ public class ParserState {
         return currentScope.tokenType == elementType;
     }
 
+    public boolean isScopeElementType(IElementType scopeElementType) {
+        return currentScope.scopeElementType == scopeElementType;
+    }
+
     public void setResolution(ParserScopeEnum resolution) {
         currentScope.resolution = resolution;
     }
 
     public boolean notInScopeExpression() {
         return currentScope.scopeType != ParserScopeType.scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
+    }
+
+    public boolean isInScopeExpression() {
+        return currentScope.scopeType == ParserScopeType.scopeExpression || currentScope.scopeType == ParserScopeType.groupExpression;
     }
 
     public void setTokenType(IElementType tokenType) {

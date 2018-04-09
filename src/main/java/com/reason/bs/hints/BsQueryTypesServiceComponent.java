@@ -2,6 +2,7 @@ package com.reason.bs.hints;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.ide.RmlNotification;
@@ -15,10 +16,12 @@ import java.io.InputStreamReader;
 // WARNING... THIS IS A BIG WIP...
 public class BsQueryTypesServiceComponent implements BsQueryTypesService {
 
+    private final Logger m_log;
     private final VirtualFile m_baseDir;
     private final String m_bsbPath;
 
     public BsQueryTypesServiceComponent(VirtualFile baseDir, String bsbPath) {
+        m_log = Logger.getInstance("ReasonML.types");
         m_baseDir = baseDir;
         m_bsbPath = bsbPath;
     }
@@ -63,7 +66,7 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace(); // no ! nothing in fact
+            m_log.error("An error occurred when reading types", e);
         } finally {
             if (bsc != null) {
                 bsc.destroy();

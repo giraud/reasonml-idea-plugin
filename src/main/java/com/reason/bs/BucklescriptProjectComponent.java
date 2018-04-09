@@ -126,6 +126,17 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
 
     @Nullable
     @Override
+    public BsCompiler getOrCreateCompiler() {
+        if (m_compiler == null) {
+            // Try again
+            projectOpened();
+        }
+
+        return m_compiler;
+    }
+
+    @Nullable
+    @Override
     public BsQueryTypesService.InferredTypes queryTypes(Path path) {
         return m_queryTypes == null ? null : m_queryTypes.types(path.toString());
     }

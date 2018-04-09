@@ -28,6 +28,24 @@ allprojects {
         updateSinceUntilBuild = false
         //systemProperty "reasonBsbDisabled", "true"
     }
+
+    test {
+//        useJUnit {
+//            exclude compilationPackages
+//        }
+        testLogging {
+            exceptionFormat = 'full'
+        }
+    }
+
+    task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
+//        useJUnit {
+//            include compilationPackages
+//        }
+        testLogging {
+            exceptionFormat = 'full'
+        }
+    }
 }
 
 repositories {

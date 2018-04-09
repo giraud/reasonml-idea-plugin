@@ -22,6 +22,9 @@ public interface Bucklescript {
     BsCompiler getCompiler();
 
     @Nullable
+    BsCompiler getOrCreateCompiler();
+
+    @Nullable
     BsQueryTypesService.InferredTypes queryTypes(Path path);
 
     @Nullable

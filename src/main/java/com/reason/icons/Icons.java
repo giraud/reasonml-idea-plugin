@@ -5,6 +5,8 @@ import javax.swing.*;
 import static com.intellij.openapi.util.IconLoader.getIcon;
 
 public class Icons {
+    public static final Icon BUCKLESCRIPT = getIcon("/icons/bucklescript.png");
+
     public static final Icon RML_FILE = getIcon("/icons/reason-file.png");
     public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reason-file-blue.png");
     public static final Icon BLUE_FILE = getIcon("/icons/reason-file-blue.png");

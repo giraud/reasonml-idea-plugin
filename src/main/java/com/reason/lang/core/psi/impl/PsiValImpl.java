@@ -7,6 +7,7 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
+import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
@@ -51,9 +52,9 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
 
     @NotNull
     @Override
-    public String getSignature() {
+    public HMSignature getSignature() {
         PsiSignature signature = findChildByClass(PsiSignature.class);
-        return signature == null ? "" : signature.getText();
+        return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 
     @Override
