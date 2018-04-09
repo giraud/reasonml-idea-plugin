@@ -1,6 +1,7 @@
 package com.reason.ide.hints;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -37,7 +38,9 @@ public class InferredTypesService {
                 if (psiFile != null) {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     VirtualFile cmiPath = CmiFileManager.fromSource(project, sourceFile);
-                    if (cmiPath != null) {
+                    if (cmiPath == null) {
+                        Logger.getInstance("ReasonML.types").warn("can't find cmi file " + CmiFileManager.pathFromSource(project, sourceFile));
+                    } else {
                         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
                         BsQueryTypesServiceComponent.InferredTypes types = bucklescript.queryTypes(cmiPath);
                         ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile));
@@ -60,22 +63,14 @@ public class InferredTypesService {
             return;
         }
 
-        //
-        CodeLensView.CodeLensInfo userData = project.getUserData(CodeLensView.CODE_LENS);
-        if (userData == null) {
-            userData = new CodeLensView.CodeLensInfo();
-            project.putUserData(CodeLensView.CODE_LENS, userData);
-        } else {
-            userData.clearInternalData(sourceFile);
-        }
+        TextEditor selectedEditor = (TextEditor) FileEditorManager.getInstance(project).getSelectedEditor(sourceFile);
 
-        PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
-        Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
-        long timestamp = sourceFile.getTimeStamp();
-
-        FileEditorManager fem = FileEditorManager.getInstance(project);
-        TextEditor selectedEditor = (TextEditor) fem.getSelectedEditor(sourceFile);
         if (selectedEditor != null) {
+            CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
+            long timestamp = sourceFile.getTimeStamp();
+            PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
+
+            Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
             for (PsiLet letStatement : letExpressions) {
                 PsiElement letParent = letStatement.getParent();
                 if (letParent instanceof PsiFileModuleImpl) {
@@ -101,6 +96,18 @@ public class InferredTypesService {
                 }
             }
         }
+    }
+
+    @NotNull
+    private static CodeLensView.CodeLensInfo getCodeLensData(@NotNull Project project, @Nullable VirtualFile sourceFile) {
+        CodeLensView.CodeLensInfo userData = project.getUserData(CodeLensView.CODE_LENS);
+        if (userData == null) {
+            userData = new CodeLensView.CodeLensInfo();
+            project.putUserData(CodeLensView.CODE_LENS, userData);
+        } else {
+            userData.clearInternalData(sourceFile);
+        }
+        return userData;
     }
 
     private static HMSignature applyType(@Nullable BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {

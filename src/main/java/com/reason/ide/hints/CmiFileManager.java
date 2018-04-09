@@ -7,6 +7,8 @@ import com.reason.bs.BucklescriptProjectComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
 class CmiFileManager { // Transform to a project aware component
@@ -24,15 +26,28 @@ class CmiFileManager { // Transform to a project aware component
     @Nullable
     static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
         /* ml if re not found ?? */
-        String relativeSource = toRelativeSourceName(project, relativeCmi);
+        String relativeSource = separatorsToUnix(toRelativeSourceName(project, relativeCmi));
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
     }
 
     @Nullable
     static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
-        String cmiFilename = Platform.removeProjectDir(project, sourceFile).replace(sourceFile.getPresentableName(), sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
+        String relativeCmiPath = separatorsToUnix(pathFromSource(project, sourceFile).toString());
+        return Platform.findBaseRoot(project).findFileByRelativePath(relativeCmiPath);
+    }
 
-        return Platform.findBaseRoot(project).findFileByRelativePath("lib/bs/" + cmiFilename);
+    static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFile baseRoot = Platform.findBaseRoot(project);
+        Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
+        Path relativePath = basePath.relativize(new File(sourceFile.getPath()).toPath());
+
+        Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs").resolve(relativePath.getParent());
+
+        String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
+        return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
+    }
+
+    static String separatorsToUnix(String path) {
+        return path.replace('\\', '/');
     }
 }
