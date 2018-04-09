@@ -19,6 +19,7 @@ import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,6 +85,19 @@ public class InferredTypesService {
                         int letOffset = letStatement.getTextOffset();
                         LogicalPosition logicalPosition = selectedEditor.getEditor().offsetToLogicalPosition(letOffset);
                         userData.put(sourceFile, logicalPosition, signature.toString(), timestamp);
+                    }
+                } else {
+                    PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
+                    if (letModule != null) {
+                        BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = types.getModuleType(letModule.getName());
+                        if (inferredModuleTypes != null) {
+                            HMSignature signature = applyType(inferredModuleTypes, letStatement);
+                            if (signature != null) {
+                                int letOffset = letStatement.getTextOffset();
+                                LogicalPosition logicalPosition = selectedEditor.getEditor().offsetToLogicalPosition(letOffset);
+                                userData.put(sourceFile, logicalPosition, signature.toString(), timestamp);
+                            }
+                        }
                     }
                 }
             }
