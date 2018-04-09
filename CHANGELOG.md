@@ -10,6 +10,15 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.45 
+
+* :nail_care: Bucklescript window has an icon
+* :nail_care: File icons updated
+* :bug: Goto action use the same path resolution than completion
+* :rocket: Display signature for 'val' in completion popup
+* :house: Parsers improvement
+* :house: Reworked how to get the types from cmi files
+
 ## 0.44
 
 * :bug: Fix #40

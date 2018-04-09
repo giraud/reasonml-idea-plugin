@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.44</version>
+    <version>0.45</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -13,6 +13,17 @@
       <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
 
       <p></p>
+
+      <b>version 0.45</b>
+
+      <ul>
+        <li>Bucklescript window has an icon</li>
+        <li>File icons updated</li>
+        <li>Goto action use the same path resolution than completion</li>
+        <li>Parsers improvement</li>
+        <li>Display signature for 'val' in completion popup</li>
+        <li>Reworked how to get the types from cmi files</li>
+      </ul>
 
       <b>version 0.44</b>
 
@@ -49,15 +60,6 @@
          <li>JSX completion (tag/attribute)</li>
          <li>Improved parsers</li>
          <li>Variant names can be highlighted</li>
-      </ul>
-
-      <b>version 0.39</b>
-
-      <ul>
-         <li>Better JSX parsing/highlighting</li>
-         <li>Code lens style is customisable</li>
-         <li>Fix #33</li>
-         <li>Completion contributor for Ocaml files (wip)</li>
       </ul>
 
     ]]>
