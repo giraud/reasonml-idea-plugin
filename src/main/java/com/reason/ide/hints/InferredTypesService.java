@@ -57,7 +57,6 @@ public class InferredTypesService {
 
     private static void annotatePsiExpressions(@NotNull Project project, @Nullable BsQueryTypesService.InferredTypes types, @Nullable VirtualFile sourceFile) {
         if (types == null || sourceFile == null) {
-            System.out.println("types: " + types + ", source: " + sourceFile);
             return;
         }
 
