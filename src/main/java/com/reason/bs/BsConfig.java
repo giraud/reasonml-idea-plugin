@@ -122,6 +122,7 @@ class BsConfig {
         return result;
     }
 
+    @NotNull
     private static String toNamespace(@NotNull String name) {
         String result = name.replaceAll("_", "");
 
