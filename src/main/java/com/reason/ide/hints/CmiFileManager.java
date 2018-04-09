@@ -12,15 +12,14 @@ import java.nio.file.Path;
 class CmiFileManager {
 
     @NotNull
-    static String toRelativeSource(@NotNull Path basePath, @NotNull Path pathToConvert) {
-        String relativeCmi = basePath.relativize(pathToConvert).toString();
-        return relativeCmi.replace(".cmi", ".re");
+    static String toRelativeSourceName(@NotNull Path relativeCmi) {
+        return relativeCmi.toString().replace(".cmi", ".re");
     }
 
     @Nullable
     static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
         /* ml if re not found ?? */
-        String relativeSource = relativeCmi.toString().replace(".cmi", ".re");
+        String relativeSource = toRelativeSourceName(relativeCmi);
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
     }
 

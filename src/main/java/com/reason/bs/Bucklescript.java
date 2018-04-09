@@ -25,10 +25,10 @@ public interface Bucklescript {
     BsCompiler getOrCreateCompiler();
 
     @Nullable
-    BsQueryTypesService.InferredTypes queryTypes(Path path);
+    BsQueryTypesService.InferredTypes queryTypes(@NotNull Path path);
 
     @Nullable
-    BsQueryTypesService.InferredTypes queryTypes(VirtualFile file);
+    BsQueryTypesService.InferredTypes queryTypes(@NotNull VirtualFile file);
 
     @Nullable
     Collection<BsErrorsManager.BsbError> getErrors(String path);

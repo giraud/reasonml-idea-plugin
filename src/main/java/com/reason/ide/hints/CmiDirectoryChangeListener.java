@@ -39,7 +39,7 @@ class CmiDirectoryChangeListener implements DirectoryChangeListener {
 
             VirtualFile sourceFile = CmiFileManager.toSource(m_project, relativeCmi);
             if (sourceFile == null) {
-                m_log.info("can't convert " + relativeCmi + " to " + CmiFileManager.toRelativeSource(path, relativeCmi));
+                m_log.info("can't convert " + relativeCmi + " to " + CmiFileManager.toRelativeSourceName(relativeCmi));
                 return;
             }
 

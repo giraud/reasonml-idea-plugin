@@ -1,6 +1,5 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -35,16 +34,13 @@ public class InferredTypesService {
                 Document document = selectedTextEditor.getDocument();
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
-                    Application application = ApplicationManager.getApplication();
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     VirtualFile cmiPath = CmiFileManager.fromSource(project, sourceFile);
-
-                    Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
-                    BsQueryTypesServiceComponent.InferredTypes types = bucklescript.queryTypes(cmiPath);
-
-                    application.runReadAction(() -> {
-                        annotatePsiExpressions(project, types, sourceFile);
-                    });
+                    if (cmiPath != null) {
+                        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+                        BsQueryTypesServiceComponent.InferredTypes types = bucklescript.queryTypes(cmiPath);
+                        ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile));
+                    }
                 }
             }
         } catch (Error e) {

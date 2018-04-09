@@ -137,13 +137,13 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
 
     @Nullable
     @Override
-    public BsQueryTypesService.InferredTypes queryTypes(Path path) {
+    public BsQueryTypesService.InferredTypes queryTypes(@NotNull Path path) {
         return m_queryTypes == null ? null : m_queryTypes.types(path.toString());
     }
 
     @Nullable
     @Override
-    public BsQueryTypesService.InferredTypes queryTypes(VirtualFile file) {
+    public BsQueryTypesService.InferredTypes queryTypes(@NotNull VirtualFile file) {
         return m_queryTypes == null ? null : m_queryTypes.types(file);
     }
 
