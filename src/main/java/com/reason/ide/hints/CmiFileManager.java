@@ -38,10 +38,14 @@ class CmiFileManager { // Transform to a project aware component
 
     static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
+        Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
+
         Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
         Path relativePath = basePath.relativize(new File(sourceFile.getPath()).toPath());
-
-        Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs").resolve(relativePath.getParent());
+        Path relativeParent = relativePath.getParent();
+        if (relativeParent != null) {
+            relativeRoot = relativeRoot.resolve(relativeParent);
+        }
 
         String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
         return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
