@@ -1,6 +1,7 @@
 package com.reason.ide;
 
 import com.intellij.json.JsonFileType;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
@@ -21,6 +22,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
 
     @Override
     public void propertyChanged(@NotNull VirtualFilePropertyEvent event) {
+        Logger.getInstance("ReasonML.vfs").info("property changed for " + event.getFile());
 
     }
 
@@ -28,6 +30,9 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
     public void contentsChanged(@NotNull VirtualFileEvent event) {
         VirtualFile file = event.getFile();
         FileType fileType = file.getFileType();
+//        if (file.getCanonicalPath().endsWith(".cmi")) {
+            Logger.getInstance("ReasonML.vfs").info("content changed for " + file);
+//        }
 
         if (fileType instanceof JsonFileType) {
             if (file.getName().equals("bsconfig.json")) {
