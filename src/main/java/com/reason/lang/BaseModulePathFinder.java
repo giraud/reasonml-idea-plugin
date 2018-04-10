@@ -22,7 +22,7 @@ public abstract class BaseModulePathFinder implements ModulePathFinder {
                 prevSibling = prevSibling.getPrevSibling();
             }
 
-            while (prevSibling.getNode().getElementType() == RmlTypes.INSTANCE.DOT) {
+            while (prevSibling != null && prevSibling.getNode().getElementType() == RmlTypes.INSTANCE.DOT) {
                 prevSibling = prevSibling.getPrevSibling();
                 if (prevSibling instanceof PsiNamedElement) {
                     path = ((PsiNamedElement) prevSibling).getName() + "." + path;
