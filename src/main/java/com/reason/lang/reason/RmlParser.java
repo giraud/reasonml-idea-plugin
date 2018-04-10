@@ -23,8 +23,16 @@ public class RmlParser extends CommonParser {
     protected void parseFile(PsiBuilder builder, ParserState state) {
         IElementType tokenType = null;
 
+        //long parseStart = System.currentTimeMillis();
+
         int c = current_position_(builder);
         while (true) {
+            //long parseTime = System.currentTimeMillis();
+            //if (5 < parseTime - parseStart) {
+            // Protection: abort the parsing if too much time spent
+            //break;
+            //}
+
             state.previousTokenType = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {

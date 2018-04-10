@@ -47,23 +47,25 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         // Add all local expressions
         PsiModule currentFileModule = ((FileBase) parameters.getOriginalFile()).asModule();
-        for (PsiNamedElement expression : currentFileModule.getExpressions()) {
-            resultSet.addElement(
-                    LookupElementBuilder.create(expression).
-                            withTypeText(PsiSignatureUtil.getProvidersType(expression)).
-                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-            );
-        }
+        if (currentFileModule != null) {
+            for (PsiNamedElement expression : currentFileModule.getExpressions()) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(expression).
+                                withTypeText(PsiSignatureUtil.getProvidersType(expression)).
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                );
+            }
 
-        // Add open and includes
-        Collection<PsiOpen> openExpressions = currentFileModule.getOpenExpressions();
-        for (PsiOpen openExpression : openExpressions) {
-            // todo
-        }
+            // Add open and includes
+            Collection<PsiOpen> openExpressions = currentFileModule.getOpenExpressions();
+            for (PsiOpen openExpression : openExpressions) {
+                // todo
+            }
 
-        Collection<PsiInclude> includeExpressions = currentFileModule.getIncludeExpressions();
-        for (PsiInclude includeExpression : includeExpressions) {
-            // todo
+            Collection<PsiInclude> includeExpressions = currentFileModule.getIncludeExpressions();
+            for (PsiInclude includeExpression : includeExpressions) {
+                // todo
+            }
         }
     }
 

@@ -3,16 +3,10 @@ package com.reason.ide.search;
 import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
-import com.intellij.psi.ElementDescriptionUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.usageView.UsageViewLongNameLocation;
-import com.intellij.usageView.UsageViewNodeTextLocation;
-import com.intellij.usageView.UsageViewTypeLocation;
 import com.reason.lang.LexerAdapter;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiTypeName;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,18 +32,38 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewTypeLocation.INSTANCE);
+        if (element instanceof PsiUpperSymbol || element instanceof PsiModule) {
+            return "module";
+        }
+        if (element instanceof PsiTypeName) {
+            return "type";
+        }
+        if (element instanceof PsiLowerSymbol) {
+            return "let";
+        }
+
+        return "unknown type";
     }
 
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull PsiElement element) {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewLongNameLocation.INSTANCE);
+        if (element instanceof PsiNamedElement) {
+            String name = ((PsiNamedElement) element).getName();
+            return name == null ? "" : name;
+        }
+
+        return "desc name of element ";
     }
 
     @NotNull
     @Override
     public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
-        return ElementDescriptionUtil.getElementDescription(element, UsageViewNodeTextLocation.INSTANCE);
+        if (element instanceof PsiNamedElement) {
+            String name = ((PsiNamedElement) element).getName();
+            return name == null ? "" : name;
+        }
+
+        return "";
     }
 }

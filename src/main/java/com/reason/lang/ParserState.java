@@ -1,9 +1,8 @@
 package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.Stack;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Stack;
 
 import static com.reason.lang.ParserScopeType.any;
 import static com.reason.lang.ParserScopeType.scopeExpression;
@@ -28,7 +27,7 @@ public class ParserState {
     public ParserScope endAny() {
         ParserScope scope = null;
 
-        if (!m_scopes.empty()) {
+        if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && !scope.start && scope.scopeType == any) {
                 m_scopes.pop().end();
@@ -44,7 +43,7 @@ public class ParserState {
     public ParserScope endUntilStart() {
         ParserScope scope = null;
 
-        if (!m_scopes.empty()) {
+        if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && !scope.start && scope.scopeType != any) {
                 popEnd();
@@ -59,7 +58,7 @@ public class ParserState {
     public ParserScope endUntilScopeExpression(IElementType scopeElementType) {
         ParserScope scope = null;
 
-        if (!m_scopes.empty()) {
+        if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeElementType != scopeElementType)) {
                 m_scopes.pop().end();
@@ -72,11 +71,11 @@ public class ParserState {
 
     @Nullable
     public ParserScope getLatestScope() {
-        return m_scopes.empty() ? null : m_scopes.peek();
+        return m_scopes.isEmpty() ? null : m_scopes.peek();
     }
 
     public void updateCurrentScope() {
-        currentScope = m_scopes.empty() ? m_rootScope : m_scopes.peek();
+        currentScope = m_scopes.isEmpty() ? m_rootScope : m_scopes.peek();
     }
 
     public boolean isResolution(ParserScopeEnum scope) {
@@ -106,14 +105,14 @@ public class ParserState {
     }
 
     boolean empty() {
-        return m_scopes.empty();
+        return m_scopes.isEmpty();
     }
 
     void clear() {
         ParserScope scope = m_scopes.pop();
         while (scope != null) {
             scope.end();
-            scope = m_scopes.empty() ? null : m_scopes.pop();
+            scope = m_scopes.isEmpty() ? null : m_scopes.pop();
         }
         currentScope = m_rootScope;
     }

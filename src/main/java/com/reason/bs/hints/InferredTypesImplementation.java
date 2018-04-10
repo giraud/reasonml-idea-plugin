@@ -16,8 +16,6 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
                 int colonPos = type.indexOf(':');
                 if (0 < colonPos && colonPos < type.length()) {
                     m_let.put(type.substring(4, colonPos - 1), new HMSignature(true, type.substring(colonPos + 1)));
-                } else {
-                    Logger.getLogger("ReasonML.types").error("TYPE ERR: [" + type + "] " + colonPos);
                 }
             } else if (type.startsWith("module")) {
                 int colonPos = type.indexOf(':');
@@ -33,8 +31,7 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
                 }
             }
         } catch (Error e) {
-            System.out.println(e);
-            System.out.println("type: " + type);
+            Logger.getLogger("ReasonML.types").error(e);
         }
     }
 

@@ -6,6 +6,7 @@ import com.intellij.psi.FileViewProvider;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class FileBase extends PsiFileBase {
 
@@ -22,6 +23,7 @@ public abstract class FileBase extends PsiFileBase {
         return m_moduleName;
     }
 
+    @Nullable
     public PsiModule asModule() {
         return findChildByClass(PsiModule.class);
     }

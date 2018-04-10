@@ -176,7 +176,6 @@
 
         <lang.refactoringSupport language="ReasonML"
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
-        <elementDescriptionProvider implementation="com.reason.ide.search.DescriptionProvider"/>
 
         <completion.contributor language="ReasonML"
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
