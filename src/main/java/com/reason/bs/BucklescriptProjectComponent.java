@@ -167,13 +167,6 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
         }
     }
 
-    @Override
-    public void associatePsiElement(VirtualFile file, PsiElement element) {
-        if (m_errorsManager != null) {
-            m_errorsManager.associatePsiElement(file, element);
-        }
-    }
-
     @NotNull
     @Override
     public String getNamespace() {

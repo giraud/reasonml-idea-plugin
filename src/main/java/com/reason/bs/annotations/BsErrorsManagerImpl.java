@@ -2,11 +2,9 @@ package com.reason.bs.annotations;
 
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.util.containers.ConcurrentMultiMap;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 public class BsErrorsManagerImpl extends BsErrorsManager {
 
@@ -28,15 +26,6 @@ public class BsErrorsManagerImpl extends BsErrorsManager {
     @Override
     public void clearErrors() {
         m_errorsByFile.clear();
-    }
-
-    @Override
-    public void associatePsiElement(VirtualFile virtualFile, PsiElement elementAtOffset) {
-        Iterator<BsbError> itErrors = m_errorsByFile.get(virtualFile.getCanonicalPath()).iterator();
-        if (itErrors.hasNext()) {
-            // This is not correct
-            itErrors.next().element = elementAtOffset;
-        }
     }
 
 }

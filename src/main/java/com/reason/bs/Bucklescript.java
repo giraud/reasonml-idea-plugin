@@ -37,8 +37,6 @@ public interface Bucklescript {
 
     void setError(String path, BsErrorsManager.BsbError error);
 
-    void associatePsiElement(VirtualFile file, PsiElement element);
-
     @NotNull
     String getNamespace();
 }
