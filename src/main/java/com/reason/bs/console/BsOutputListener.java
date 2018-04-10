@@ -3,8 +3,10 @@ package com.reason.bs.console;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.annotations.BsErrorsManager;
@@ -43,6 +45,9 @@ public class BsOutputListener implements ProcessListener {
         }
         DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(m_project);
         codeAnalyzer.restart();
+
+        // When build is done, we need to refresh VFS to be notified of latest modifications
+        ApplicationManager.getApplication().invokeLater(() -> VirtualFileManager.getInstance().syncRefresh());
     }
 
     @Override

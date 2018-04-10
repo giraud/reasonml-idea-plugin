@@ -52,8 +52,8 @@ public class InferredTypesService {
         }
     }
 
-    static void annotateFile(Project project, BsQueryTypesServiceComponent.InferredTypes types, VirtualFile sourceFile) {
-        ApplicationManager.getApplication().runReadAction(() -> {
+    public static void annotateFile(Project project, BsQueryTypesServiceComponent.InferredTypes types, VirtualFile sourceFile) {
+        ApplicationManager.getApplication().runWriteAction(() -> {
             annotatePsiExpressions(project, types, sourceFile);
         });
     }

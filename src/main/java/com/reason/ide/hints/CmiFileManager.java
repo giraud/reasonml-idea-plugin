@@ -11,10 +11,10 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-class CmiFileManager { // Transform to a project aware component
+public class CmiFileManager {
 
     @NotNull
-    static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativeCmi) {
+    public static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativeCmi) {
         String cmiName = relativeCmi.toString();
         String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
         if (!namespace.isEmpty()) {
@@ -24,7 +24,7 @@ class CmiFileManager { // Transform to a project aware component
     }
 
     @Nullable
-    static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
+    public static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
         /* ml if re not found ?? */
         String relativeSource = separatorsToUnix(toRelativeSourceName(project, relativeCmi));
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);

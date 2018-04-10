@@ -1,12 +1,13 @@
 package com.reason.ide;
 
 import com.intellij.json.JsonFileType;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.ide.files.CmiFileType;
+import com.reason.ide.hints.CmiFileListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,29 +16,28 @@ import org.jetbrains.annotations.NotNull;
 class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListener {
 
     private final Bucklescript m_bucklescript;
+    private final CmiFileListener m_cmiFileListener;
 
     VirtualFileListener(Project project) {
         m_bucklescript = BucklescriptProjectComponent.getInstance(project);
+        m_cmiFileListener = CmiFileListener.getInstance(project);
     }
 
     @Override
     public void propertyChanged(@NotNull VirtualFilePropertyEvent event) {
-        Logger.getInstance("ReasonML.vfs").info("property changed for " + event.getFile());
-
     }
 
     @Override
     public void contentsChanged(@NotNull VirtualFileEvent event) {
         VirtualFile file = event.getFile();
         FileType fileType = file.getFileType();
-//        if (file.getCanonicalPath().endsWith(".cmi")) {
-            Logger.getInstance("ReasonML.vfs").info("content changed for " + file);
-//        }
 
         if (fileType instanceof JsonFileType) {
             if (file.getName().equals("bsconfig.json")) {
                 m_bucklescript.refresh();
             }
+        } else if (fileType instanceof CmiFileType) {
+            m_cmiFileListener.onChange(file);
         } else if (event.isFromSave()) {
             m_bucklescript.run(fileType);
         }

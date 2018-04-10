@@ -88,6 +88,9 @@
             <interface-class>com.reason.bs.Bucklescript</interface-class>
             <implementation-class>com.reason.bs.BucklescriptProjectComponent</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.reason.ide.hints.CmiFileListener</implementation-class>
+        </component>
     </project-components>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -103,6 +106,8 @@
         <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
         <!-- OcamlP4 -->
         <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
+
+        <fileTypeFactory implementation="com.reason.ide.files.CmiFileTypeFactory"/>
 
         <!--
          | Parsers
