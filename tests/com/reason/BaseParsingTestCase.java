@@ -29,7 +29,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return parseCode(code, false);
     }
 
-    PsiFileModuleImpl parseCode(String code, boolean print) {
+    protected PsiFileModuleImpl parseCode(String code, boolean print) {
         myFile = createPsiFile("dummy", code);
         FileBase file = (FileBase) myFile;
         if (print) {

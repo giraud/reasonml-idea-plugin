@@ -7,6 +7,7 @@ import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.file;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
@@ -37,8 +38,8 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     @Override
     public void parseLight(IElementType elementType, PsiBuilder builder) {
-        //builder = adapt_builder_(elementType, builder, this, null);
-        //PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
+        builder = adapt_builder_(elementType, builder, this, null);
+        PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
         ParserScope fileScope = new ParserScope(file, m_types.FILE_MODULE, builder.mark());
         fileScope.complete = true;
@@ -56,6 +57,8 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         }
 
         fileScope.end();
+
+        exit_section_(builder, 0, m, elementType, true, true, TRUE_CONDITION);
     }
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
