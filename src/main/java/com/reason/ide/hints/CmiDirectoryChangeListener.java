@@ -44,8 +44,7 @@ class CmiDirectoryChangeListener implements DirectoryChangeListener {
             }
 
             BsQueryTypesServiceComponent.InferredTypes inferredTypes = m_bucklescript.queryTypes(path);
-            m_log.info("should annotate file");
-            //InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile);
+            InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile);
         }
     }
 
