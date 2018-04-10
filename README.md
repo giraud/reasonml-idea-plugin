@@ -88,7 +88,7 @@ abbrevation: `jsp`, description: `create a jsProps in wrapReasonForJs`
 
 abbreviation: `style`, description: `create a style module`
 ```
-module Style = {
+module Styles = {
     open Css;
     let $VAR$ = style([
         $END$
