@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.45.1</version>
+    <version>0.45.2</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -14,7 +14,7 @@
 
       <p></p>
 
-      <b>version 0.45.1</b>
+      <b>version 0.45.2</b>
 
       Deactivated the types annotations that could make idea hang until it's fixed
 
