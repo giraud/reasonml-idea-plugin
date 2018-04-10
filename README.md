@@ -75,7 +75,42 @@ The plugin will find and use the binaries found in the `node_modules/bs-platform
 ```
 - Start idea
 
-The plugin will use the binaries defined in the properties.
+The plugin will use the binaries defined in the properties (they might be bundled with plugin in the future).
+
+## Some live templates
+
+List of templates that may help development.
+
+abbrevation: `jsp`, description: `create a jsProps in wrapReasonForJs`
+```
+~$NAME$=jsProps##$NAME$,$END$
+```
+
+abbreviation: `style`, description: `create a style module`
+```
+module Style = {
+    open Css;
+    let $VAR$ = style([
+        $END$
+    ]);
+};
+```
+
+abbreviation: `comp`, description: `create a reason component`
+```
+let component = ReasonReact.statelessComponent("$NAME$");
+
+let make = (~$PROP$, _children) => {...component, render: _self => <div />};
+$END$
+/*
+ JS interop
+ expose an helper for js - can be deleted when no more used by javascript code
+ */
+let jsComponent =
+  ReasonReact.wrapReasonForJs(~component, jsProps =>
+    make(~$PROP$=jsProps##$PROP$, [||])
+  );
+```
 
 ## What?
 
