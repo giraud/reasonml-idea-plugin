@@ -1,7 +1,7 @@
 package com.reason.bs.hints;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.reason.lang.core.HMSignature;
-import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,15 +23,19 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
                     int sigPos = type.indexOf("sig");
                     InferredTypesImplementation moduleTypes = new InferredTypesImplementation();
                     m_modules.put(type.substring(7, colonPos - 1), moduleTypes);
-                    String sigTypes = type.substring(sigPos + 3, type.length() - 3);
-                    String[] moduleSigTypes = sigTypes.trim().split("(?=module|val|type)");
-                    for (String moduleSigType : moduleSigTypes) {
-                        moduleTypes.add(moduleSigType);
+                    int beginIndex = sigPos + 3;
+                    int endIndex = type.length() - 3;
+                    if (beginIndex < endIndex) {
+                        String sigTypes = type.substring(beginIndex, endIndex);
+                        String[] moduleSigTypes = sigTypes.trim().split("(?=module|val|type)");
+                        for (String moduleSigType : moduleSigTypes) {
+                            moduleTypes.add(moduleSigType);
+                        }
                     }
                 }
             }
-        } catch (Error e) {
-            Logger.getLogger("ReasonML.types").error(e);
+        } catch (RuntimeException e) {
+            Logger.getInstance("ReasonML.types").error("Error while decoding type [" + type + "]", e);
         }
     }
 
