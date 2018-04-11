@@ -108,7 +108,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         } else {
             PsiScopedExpr body = getBody();
             if (body != null) {
-                result = PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class);
+                result = PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class, PsiExternal.class);
             }
         }
 

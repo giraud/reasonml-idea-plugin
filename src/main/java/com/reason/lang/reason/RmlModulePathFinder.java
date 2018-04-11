@@ -1,6 +1,7 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,11 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
     public List<String> extractPotentialPaths(@NotNull PsiElement element) {
         List<String> qualifiedNames = new ArrayList<>();
 
-        extractQualifiedName(element, qualifiedNames);
+        String path = extractPathName(element);
+        if (!path.isEmpty()) {
+            qualifiedNames.add(path);
+            qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
+        }
 
         // Find local opens
 

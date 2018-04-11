@@ -1,9 +1,10 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.RmlLanguage;
 import com.reason.icons.Icons;
-import org.jetbrains.annotations.*;
+import com.reason.lang.RmlLanguage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -36,5 +37,10 @@ public class RmlFileType extends LanguageFileType {
     @Override
     public Icon getIcon() {
         return Icons.RML_FILE;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

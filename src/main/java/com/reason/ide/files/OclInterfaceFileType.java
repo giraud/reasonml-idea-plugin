@@ -38,4 +38,9 @@ public class OclInterfaceFileType extends LanguageFileType {
     public Icon getIcon() {
         return Icons.OCL_BLUE_FILE;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

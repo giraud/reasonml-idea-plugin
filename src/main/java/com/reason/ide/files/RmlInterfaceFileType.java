@@ -37,4 +37,10 @@ public class RmlInterfaceFileType extends LanguageFileType {
     @Override
     public Icon getIcon() {
         return Icons.RML_INTERFACE_FILE;
-    }}
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+}
