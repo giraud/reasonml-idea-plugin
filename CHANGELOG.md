@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.46
+
+* :bug: Fix version 0.45
+* :feature: Better error annotation (includes warnings)
+        
 ## 0.45 
 
 * :nail_care: Bucklescript window has an icon
