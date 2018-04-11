@@ -14,6 +14,12 @@
 
       <p></p>
 
+      <b>version 0.xx</b>
+
+      <ul>
+        <li>Better error extraction</li>
+      </ul>
+
       <b>version 0.46</b>
 
       <ul>
@@ -46,15 +52,6 @@
       <ul>
         <li>Fix 'Type annotations not working with bs namespace' (#35)</li>
         <li>Improve completion on expressions</li>
-      </ul>
-
-      <b>version 0.42</b>
-
-      <ul>
-        <li>Add |. operator</li>
-        <li>goto action on file module is working</li>
-        <li>Improve completion on expressions</li>
-        <li>Color settings no more bloked on loading spinner</li>
       </ul>
 
     ]]>
