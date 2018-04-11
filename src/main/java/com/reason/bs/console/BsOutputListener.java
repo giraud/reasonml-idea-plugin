@@ -67,8 +67,8 @@ public class BsOutputListener implements ProcessListener {
 
         // When build is done, we need to refresh VFS to be notified of latest modifications
         ApplicationManager.getApplication().invokeLater(() -> {
-            VirtualFileManager.getInstance().syncRefresh();
             DaemonCodeAnalyzer.getInstance(m_project).restart();
+            VirtualFileManager.getInstance().syncRefresh();
         });
     }
 
@@ -190,7 +190,7 @@ public class BsOutputListener implements ProcessListener {
         info.colStart = parseInt(colStart);
         info.lineEnd = info.lineStart;
         info.colEnd = parseInt(colEnd);
-        if (info.colEnd == info.colStart) {
+        if (info.colEnd == info.colStart && info.lineStart == info.lineEnd) {
             info.colEnd += 1;
         }
         m_bsbInfo.add(info);

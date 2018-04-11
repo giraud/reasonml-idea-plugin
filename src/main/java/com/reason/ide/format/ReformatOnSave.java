@@ -26,8 +26,6 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
     public void beforeDocumentSaving(@NotNull Document document) {
         PsiFile file = PsiDocumentManager.getInstance(m_project).getPsiFile(document);
         String format = file instanceof OclFile ? "ml" : "re";
-        WriteCommandAction.writeCommandAction(m_project).run(() -> {
-            RefmtManager.getInstance().refmt(m_project, format, document);
-        });
+        WriteCommandAction.writeCommandAction(m_project).run(() -> RefmtManager.getInstance().refmt(m_project, format, document));
     }
 }
