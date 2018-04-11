@@ -23,7 +23,7 @@ import static java.lang.Integer.parseInt;
 
 public class BsOutputListener implements ProcessListener {
 
-    Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
+    private static final Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
 
     enum BuildStatus {
         fine,
@@ -65,11 +65,11 @@ public class BsOutputListener implements ProcessListener {
         reset();
         m_bsbInfo.clear();
 
-        DaemonCodeAnalyzer codeAnalyzer = DaemonCodeAnalyzer.getInstance(m_project);
-        codeAnalyzer.restart();
-
         // When build is done, we need to refresh VFS to be notified of latest modifications
-        ApplicationManager.getApplication().invokeLater(() -> VirtualFileManager.getInstance().syncRefresh());
+        ApplicationManager.getApplication().invokeLater(() -> {
+            VirtualFileManager.getInstance().syncRefresh();
+            DaemonCodeAnalyzer.getInstance(m_project).restart();
+        });
     }
 
     @Override
@@ -142,18 +142,20 @@ public class BsOutputListener implements ProcessListener {
         m_previousText = text;
     }
 
+    // ...path/src/Source.re 111:21-112:22
+    // ...path/src/Source.re 111:21-22
     @Nullable
     private BsErrorsManager.BsbInfo extractFilePositions(@Nullable String text) {
         if (text != null) {
             String[] tokens = text.trim().split(" ");
             if (tokens.length == 2) {
                 String path = tokens[0];
-                String[] positions = tokens[1].split(":");
+                String[] positions = tokens[1].split("-");
                 if (positions.length == 2) {
-                    String line = positions[0];
-                    String[] columns = positions[1].split("-");
+                    String[] start = positions[0].split(":");
+                    String[] end = positions[1].split(":");
                     // If everything went ok, creates a new error
-                    return addInfo(path, line, columns);
+                    return addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
                 }
             }
         }
@@ -161,9 +163,9 @@ public class BsOutputListener implements ProcessListener {
         return null;
     }
 
+    // File "...path/src/Source.re", line 111, characters 0-3:
     @Nullable
     private BsErrorsManager.BsbInfo extractExtendedFilePositions(@Nullable String text) {
-        // File "...path\src\Canvas.re", line 125, characters 0-3:
         if (text != null) {
             Matcher matcher = FILE_LOCATION.matcher(text);
             if (matcher.matches()) {
@@ -181,19 +183,21 @@ public class BsOutputListener implements ProcessListener {
     private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
         BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
         info.path = path;
-        info.line = parseInt(line);
+        info.lineStart = parseInt(line);
         info.colStart = parseInt(colStart) + 1; // ?
+        info.lineEnd = info.lineStart;
         info.colEnd = parseInt(colEnd);
         m_bsbInfo.add(info);
         return info;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String[] columns) {
+    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @NotNull String lineEnd, @NotNull String colEnd) {
         BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
         info.path = path;
-        info.line = parseInt(line);
-        info.colStart = parseInt(columns[0]);
-        info.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]);
+        info.lineStart = parseInt(lineStart);
+        info.colStart = parseInt(colStart);
+        info.lineEnd = parseInt(lineEnd);
+        info.colEnd = parseInt(colEnd);
         m_bsbInfo.add(info);
         return info;
     }

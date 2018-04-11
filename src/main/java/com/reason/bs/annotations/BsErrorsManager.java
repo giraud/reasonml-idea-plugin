@@ -13,8 +13,9 @@ public abstract class BsErrorsManager {
 
     public static class BsbInfo {
         public boolean isError = true;
-        public int line;
+        public int lineStart;
         public int colStart;
+        public int lineEnd;
         public int colEnd;
         public String message = "";
         public String path = "";
@@ -23,8 +24,8 @@ public abstract class BsErrorsManager {
         public String toString() {
             return "BsbInfo{" +
                     (isError ? "error" : "warning") +
-                    ": L" + line + " " + colStart + ":" + colEnd +
-                    ", " + message + '}';
+                    ", " + lineStart + ":" + colStart + "-" + lineEnd + ":" + colEnd +
+                    (message.isEmpty() ? "" : ", " + message + '}');
         }
     }
 

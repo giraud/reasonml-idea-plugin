@@ -34,7 +34,7 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
         Collection<BsbErrorAnnotation> result = new ArrayList<>();
 
         for (BsErrorsManager.BsbInfo info : collectedInfo) {
-            result.add(new BsbErrorAnnotation(info.line - 1, info.colStart - 1, info.colEnd, info.message, info.isError));
+            result.add(new BsbErrorAnnotation(info.lineStart - 1, info.colStart - 1, info.lineEnd - 1, info.colEnd, info.message, info.isError));
         }
 
         return result;
@@ -69,9 +69,9 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
         String message;
         boolean isError;
 
-        BsbErrorAnnotation(int line, int startOffset, int endOffset, String rawMessage, boolean isError) {
-            start = new LogicalPosition(line, startOffset);
-            end = new LogicalPosition(line, endOffset);
+        BsbErrorAnnotation(int lineStart, int startOffset, int lineEnd, int endOffset, String rawMessage, boolean isError) {
+            start = new LogicalPosition(lineStart, startOffset);
+            end = new LogicalPosition(lineEnd, endOffset);
             message = rawMessage.replace('\n', ' ').replaceAll("\\s+", " ").trim();
             this.isError = isError;
         }
