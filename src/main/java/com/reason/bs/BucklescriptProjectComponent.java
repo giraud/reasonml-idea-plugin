@@ -10,7 +10,6 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.bs.annotations.BsErrorsManager;
@@ -149,7 +148,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
 
     @Nullable
     @Override
-    public Collection<BsErrorsManager.BsbError> getErrors(String path) {
+    public Collection<BsErrorsManager.BsbInfo> getErrors(String path) {
         return m_errorsManager == null ? null : m_errorsManager.getErrors(path);
     }
 
@@ -161,9 +160,16 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
     }
 
     @Override
-    public void setError(String path, BsErrorsManager.BsbError error) {
+    public void setError(String path, BsErrorsManager.BsbInfo error) {
         if (m_errorsManager != null) {
             m_errorsManager.setError(path, error);
+        }
+    }
+
+    @Override
+    public void addAllInfo(@NotNull String fileProcessed, @NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo) {
+        for (BsErrorsManager.BsbInfo info : bsbInfo) {
+            m_errorsManager.setError(fileProcessed, info);
         }
     }
 

@@ -4,14 +4,14 @@ import java.util.Collection;
 
 public abstract class BsErrorsManager {
 
-    abstract public void setError(String file, BsbError error);
+    abstract public void setError(String file, BsbInfo error);
 
-    abstract public Collection<BsbError> getErrors(String filePath);
+    abstract public Collection<BsbInfo> getErrors(String filePath);
 
     abstract public void clearErrors();
 
-    public static class BsbError {
-        String errorType;
+    public static class BsbInfo {
+        public boolean isError = true;
         public int line;
         public int colStart;
         public int colEnd;
@@ -19,8 +19,8 @@ public abstract class BsErrorsManager {
 
         @Override
         public String toString() {
-            return "BsbError{" +
-                    errorType +
+            return "BsbInfo{" +
+                    (isError ? "error" : "warning") +
                     ": L" + line + " " + colStart + ":" + colEnd +
                     ", " + message + '}';
         }

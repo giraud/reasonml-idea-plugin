@@ -16,11 +16,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManager.BsbError>, Collection<BsErrorAnnotator.BsbErrorAnnotation>> {
+public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManager.BsbInfo>, Collection<BsErrorAnnotator.BsbErrorAnnotation>> {
 
     @Nullable
     @Override
-    public Collection<BsErrorsManager.BsbError> collectInformation(@NotNull PsiFile file) {
+    public Collection<BsErrorsManager.BsbInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath == null) {
             return null;
@@ -31,11 +31,11 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
 
     @Nullable
     @Override
-    public Collection<BsbErrorAnnotation> doAnnotate(Collection<BsErrorsManager.BsbError> collectedInfo) {
+    public Collection<BsbErrorAnnotation> doAnnotate(Collection<BsErrorsManager.BsbInfo> collectedInfo) {
         Collection<BsbErrorAnnotation> result = new ArrayList<>();
 
-        for (BsErrorsManager.BsbError bsbError : collectedInfo) {
-            result.add(new BsbErrorAnnotation(bsbError.line - 1, bsbError.colStart - 1, bsbError.colEnd, bsbError.message));
+        for (BsErrorsManager.BsbInfo info : collectedInfo) {
+            result.add(new BsbErrorAnnotation(info.line - 1, info.colStart - 1, info.colEnd, info.message, info.isError));
         }
 
         return result;
@@ -53,7 +53,12 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
                 int endOffset = editor.logicalPositionToOffset(annotation.end);
                 if (0 <= startOffset && 0 <= endOffset && startOffset < endOffset) {
                     log.info("annotate " + startOffset + ":" + endOffset + " '" + annotation.message + "'");
-                    holder.createErrorAnnotation(new TextRangeInterval(startOffset, endOffset), annotation.message);
+                    TextRangeInterval range = new TextRangeInterval(startOffset, endOffset);
+                    if (annotation.isError) {
+                        holder.createErrorAnnotation(range, annotation.message);
+                    } else {
+                        holder.createWarningAnnotation(range, annotation.message);
+                    }
                 }
             }
         }
@@ -63,11 +68,13 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
         LogicalPosition start;
         LogicalPosition end;
         String message;
+        boolean isError;
 
-        BsbErrorAnnotation(int line, int startOffset, int endOffset, String rawMessage) {
+        BsbErrorAnnotation(int line, int startOffset, int endOffset, String rawMessage, boolean isError) {
             start = new LogicalPosition(line, startOffset);
             end = new LogicalPosition(line, endOffset);
             message = rawMessage.replace('\n', ' ').replaceAll("\\s+", " ").trim();
+            this.isError = isError;
         }
     }
 }

@@ -2,7 +2,6 @@ package com.reason.bs;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
 import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.bs.hints.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +30,14 @@ public interface Bucklescript {
     BsQueryTypesService.InferredTypes queryTypes(@NotNull VirtualFile file);
 
     @Nullable
-    Collection<BsErrorsManager.BsbError> getErrors(String path);
+    Collection<BsErrorsManager.BsbInfo> getErrors(String path);
 
     void clearErrors();
 
-    void setError(String path, BsErrorsManager.BsbError error);
+    void setError(String path, BsErrorsManager.BsbInfo error);
 
     @NotNull
     String getNamespace();
+
+    void addAllInfo(@NotNull String fileProcessed, @NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo);
 }

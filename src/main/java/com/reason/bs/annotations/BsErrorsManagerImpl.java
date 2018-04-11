@@ -8,10 +8,10 @@ import java.util.Collection;
 
 public class BsErrorsManagerImpl extends BsErrorsManager {
 
-    private ConcurrentMultiMap<String, BsbError> m_errorsByFile = new ConcurrentMultiMap<>();
+    private ConcurrentMultiMap<String, BsbInfo> m_errorsByFile = new ConcurrentMultiMap<>();
 
     @Override
-    public void setError(String filePath, BsbError error) {
+    public void setError(String filePath, BsbInfo error) {
         VirtualFile fileByUrl = VirtualFileManager.getInstance().findFileByUrl("file://" + filePath);
         if (fileByUrl != null) {
             m_errorsByFile.putValue(fileByUrl.getCanonicalPath(), error);
@@ -19,7 +19,7 @@ public class BsErrorsManagerImpl extends BsErrorsManager {
     }
 
     @Override
-    public Collection<BsbError> getErrors(String filePath) {
+    public Collection<BsbInfo> getErrors(String filePath) {
         return m_errorsByFile.get(filePath);
     }
 
