@@ -144,6 +144,7 @@ public class BsOutputListener implements ProcessListener {
 
     // ...path/src/Source.re 111:21-112:22
     // ...path/src/Source.re 111:21-22
+    // ...path/src/Source.re 111:21   <- must add 1 to colEnd
     @Nullable
     private BsErrorsManager.BsbInfo extractFilePositions(@Nullable String text) {
         if (text != null) {
@@ -151,10 +152,12 @@ public class BsOutputListener implements ProcessListener {
             if (tokens.length == 2) {
                 String path = tokens[0];
                 String[] positions = tokens[1].split("-");
-                if (positions.length == 2) {
+                if (positions.length == 1) {
+                    String[] start = positions[0].split(":");
+                    return addInfo(path, start[0], start[1], null, null);
+                } else if (positions.length == 2) {
                     String[] start = positions[0].split(":");
                     String[] end = positions[1].split(":");
-                    // If everything went ok, creates a new error
                     return addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
                 }
             }
@@ -191,13 +194,13 @@ public class BsOutputListener implements ProcessListener {
         return info;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @NotNull String lineEnd, @NotNull String colEnd) {
+    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
         BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
         info.path = path;
         info.lineStart = parseInt(lineStart);
         info.colStart = parseInt(colStart);
-        info.lineEnd = parseInt(lineEnd);
-        info.colEnd = parseInt(colEnd);
+        info.lineEnd = lineEnd == null ? info.lineStart : parseInt(lineEnd);
+        info.colEnd = colEnd == null ? info.colStart + 1 : parseInt(colEnd);
         m_bsbInfo.add(info);
         return info;
     }

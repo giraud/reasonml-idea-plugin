@@ -22,10 +22,10 @@ public abstract class BsErrorsManager {
 
         @Override
         public String toString() {
-            return "BsbInfo{" +
-                    (isError ? "error" : "warning") +
-                    ", " + lineStart + ":" + colStart + "-" + lineEnd + ":" + colEnd +
-                    (message.isEmpty() ? "" : ", " + message + '}');
+            return "BsbInfo." +
+                    (isError ? "ERR" : "WARN") +
+                    " -> " + lineStart + ":" + colStart + "-" + lineEnd + ":" + colEnd +
+                    (message.isEmpty() ? "" : " / " + message);
         }
     }
 
