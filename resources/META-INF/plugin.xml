@@ -187,7 +187,7 @@
         <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
-        <toolWindow id="Bucklescript" anchor="bottom" factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
+        <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png" factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
