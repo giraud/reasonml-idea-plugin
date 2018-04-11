@@ -17,10 +17,9 @@ public class Platform {
 
     private static Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
-    @NotNull
-    public static String getBinary(String envVar, String propVar, @NotNull String defaultBinary) {
+    @Nullable
+    public static String getBinary(String envVar, String propVar) {
         Logger log = Logger.getInstance("ReasonML");
-        log.info("Identifying '" + defaultBinary + "' binary");
 
         String binary = System.getProperty(propVar);
         if (binary != null) {
@@ -32,6 +31,19 @@ public class Platform {
         binary = System.getenv(envVar);
         if (binary != null) {
             log.info("Found '" + binary + "' in the environment variable '" + envVar + "'");
+            return binary;
+        }
+
+        return null;
+    }
+
+    @NotNull
+    public static String getBinary(String envVar, String propVar, @NotNull String defaultBinary) {
+        Logger log = Logger.getInstance("ReasonML");
+        log.info("Identifying '" + defaultBinary + "' binary");
+
+        String binary = getBinary(envVar, propVar);
+        if (binary != null) {
             return binary;
         }
 
@@ -53,7 +65,7 @@ public class Platform {
     }
 
     @Nullable
-    public static String getBinaryPath(Project project, String binary) {
+    public static String getBinaryPath(@NotNull Project project, @Nullable String binary) {
         if (binary == null) {
             return null;
         }

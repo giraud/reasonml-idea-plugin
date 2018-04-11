@@ -5,36 +5,27 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.reason.Platform;
 import com.reason.Streams;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
 class RefmtProcess {
 
-    private final String BS_PATH = "node_modules/bs-platform";
-
-    private final String m_refmtBin;
     private final Logger m_log;
+    private String m_refmtBin;
+    private String m_columns = "80"; // need to configure it
 
     RefmtProcess() {
-        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt", BS_PATH + "/lib/refmt.exe");
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 
     String run(Project project, String format, String code) {
-        String refmtPath = Platform.getBinaryPath(project, m_refmtBin);
+        String refmtPath = getRefmtBin(project);
         if (refmtPath == null) {
-            // Test old versions
-            refmtPath = Platform.getBinaryPath(project, BS_PATH + "/lib/refmt3.exe");
-            if (refmtPath == null) {
-                refmtPath = Platform.getBinaryPath(project, BS_PATH + "/bin/refmt3.exe");
-                if (refmtPath == null) {
-                    // Use a watcher ?
-                    return code;
-                }
-            }
+            return code;
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format);
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format, "-w", m_columns);
 
         Process refmt = null;
         try {
@@ -61,12 +52,37 @@ class RefmtProcess {
         } catch (IOException | RuntimeException e) {
             m_log.error(e.getMessage());
         } finally {
-            if (refmt != null && refmt.isAlive()) {
-                refmt.destroy();
+            if (refmt != null) {
+                refmt.destroyForcibly();
             }
         }
 
         // Something bad happened, do nothing
         return code;
+    }
+
+    private String getRefmtBin(Project project) {
+        if (m_refmtBin != null) {
+            return m_refmtBin;
+        }
+
+        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt");
+        if (m_refmtBin == null) {
+            m_refmtBin = getRefmtBin(project, "/lib");
+            if (m_refmtBin == null) {
+                m_refmtBin = getRefmtBin(project, "/bin");
+            }
+        }
+
+        return m_refmtBin;
+    }
+
+    private String getRefmtBin(Project project, @NotNull String root) {
+        String BS_PATH = "node_modules/bs-platform";
+        String binary = Platform.getBinaryPath(project, BS_PATH + root + "/refmt3.exe");
+        if (binary == null) {
+            binary = Platform.getBinaryPath(project, BS_PATH + root + "/refmt.exe");
+        }
+        return binary;
     }
 }
