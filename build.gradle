@@ -26,7 +26,6 @@ allprojects {
         pluginName 'reasonml-plugin-idea'
         version ideaVersion
         updateSinceUntilBuild = false
-        //systemProperty "reasonBsbDisabled", "true"
     }
 
     test {
@@ -36,6 +35,11 @@ allprojects {
         testLogging {
             exceptionFormat = 'full'
         }
+    }
+
+    runIde {
+        //systemProperty "reasonBsbDisabled", "true"
+        systemProperty "reasonReformatOnSave", "true"
     }
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {

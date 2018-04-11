@@ -65,14 +65,14 @@
     <depends>com.intellij.modules.lang</depends>
 
     <application-components>
-        <component>
-            <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
-        </component>
     </application-components>
 
     <project-components>
         <component>
             <implementation-class>com.reason.ide.RmlProjectTracker</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
         </component>
         <component>
             <interface-class>com.reason.bs.Bucklescript</interface-class>

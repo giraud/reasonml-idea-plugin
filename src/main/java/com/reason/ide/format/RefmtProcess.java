@@ -1,13 +1,10 @@
 package com.reason.ide.format;
 
 
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.reason.Platform;
 import com.reason.Streams;
-import com.reason.ide.RmlNotification;
 
 import java.io.*;
 
@@ -53,7 +50,7 @@ class RefmtProcess {
             StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {
                 errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                Notifications.Bus.notify(new RmlNotification("Reformat", msgBuffer.toString(), NotificationType.ERROR));
+                m_log.warn(msgBuffer.toString());
             } else {
                 reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
                 String newText = msgBuffer.toString();

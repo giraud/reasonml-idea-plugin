@@ -187,9 +187,12 @@ public class BsOutputListener implements ProcessListener {
         BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
         info.path = path;
         info.lineStart = parseInt(line);
-        info.colStart = parseInt(colStart) + 1; // ?
+        info.colStart = parseInt(colStart);
         info.lineEnd = info.lineStart;
         info.colEnd = parseInt(colEnd);
+        if (info.colEnd == info.colStart) {
+            info.colEnd += 1;
+        }
         m_bsbInfo.add(info);
         return info;
     }
