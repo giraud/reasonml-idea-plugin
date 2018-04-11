@@ -31,7 +31,6 @@ public class BsOutputListener implements ProcessListener {
     private final Project m_project;
     private final List<BsErrorsManager.BsbInfo> m_bsbInfo = new ArrayList<>();
 
-    private String m_fileProcessed = "";
     private BuildStatus m_status;
     private int m_failedLine;
     private BsErrorsManager.BsbInfo m_latestInfo = null;
@@ -54,7 +53,7 @@ public class BsOutputListener implements ProcessListener {
     @Override
     public void processTerminated(ProcessEvent event) {
         if (!m_bsbInfo.isEmpty()) {
-            m_bucklescript.addAllInfo(m_fileProcessed, m_bsbInfo);
+            m_bucklescript.addAllInfo(m_bsbInfo);
         }
 
         reset();
@@ -72,39 +71,27 @@ public class BsOutputListener implements ProcessListener {
         String text = event.getText();
 
         if (m_status == error) {
-            if (text.startsWith("File")) {
+            if (m_failedLine == 1) {
                 // Extract file path and error position
-                String[] tokens = text.trim().split(", ");
-                if (tokens.length == 3) {
-                    m_fileProcessed = tokens[0].substring(6, tokens[0].length() - 1);
-                    String line = tokens[1].substring(5);
-                    String position = tokens[2].substring(11, tokens[2].length() - 1);
-                    String[] columns = position.split("-");
-                    // If everything went ok, creates a new error
-                    m_latestInfo = addInfo(line, columns);
-                }
-                return;
+                m_latestInfo = extractFilePositions(text);
             }
 
-            if (text.startsWith("Error:")) {
+            if (text.startsWith("Error:") && m_latestInfo != null) {
                 m_latestInfo.message = text;
             }
 
             if (text.charAt(0) != '\n' && text.charAt(0) != ' ' && m_failedLine > 0) {
-                if (m_bsbInfo != null) {
-                    m_bucklescript.setError(m_fileProcessed, m_latestInfo); // ?
-                }
                 reset();
                 return;
             }
 
             // The third line contains file information, I hope it won't change
-            if (m_failedLine == 3) {
-                // Extract file path and error position
-                m_latestInfo = extractFilePositions(text);
-            }
+            //if (m_failedLine == 3) {
+            // Extract file path and error position
+            //m_latestInfo = extractFilePositions(text);
+            //}
 
-            if (4 < m_failedLine && 2 < text.length()) {
+            if (2 < m_failedLine && 2 < text.length()) {
                 char c = text.charAt(2);
                 if ('\n' != c && (c < '0' || '9' < c) && m_latestInfo != null) {
                     m_latestInfo.message += text;
@@ -139,10 +126,9 @@ public class BsOutputListener implements ProcessListener {
         } else if (text.contains("Warning")) {
             m_status = warning;
             m_failedLine = 1;
-            m_fileProcessed = "";
-        } else if (text.startsWith("FAILED")) {
+        } else if (text.contains("We've found a bug")) {
             m_status = error;
-            m_failedLine = 0;
+            m_failedLine = 1;
         }
     }
 
@@ -151,13 +137,13 @@ public class BsOutputListener implements ProcessListener {
         if (text != null) {
             String[] tokens = text.trim().split(" ");
             if (tokens.length == 2) {
-                m_fileProcessed = tokens[0];
+                String path = tokens[0];
                 String[] positions = tokens[1].split(":");
                 if (positions.length == 2) {
                     String line = positions[0];
                     String[] columns = positions[1].split("-");
                     // If everything went ok, creates a new error
-                    return addInfo(line, columns);
+                    return addInfo(path, line, columns);
                 }
             }
         }
@@ -165,8 +151,9 @@ public class BsOutputListener implements ProcessListener {
         return null;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String line, @NotNull String[] columns) {
+    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String[] columns) {
         BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
+        info.path = path;
         info.line = parseInt(line);
         info.colStart = parseInt(columns[0]);
         info.colEnd = parseInt(columns.length == 1 ? columns[0] : columns[1]);
@@ -177,7 +164,6 @@ public class BsOutputListener implements ProcessListener {
     private void reset() {
         m_status = fine;
         m_failedLine = -1;
-        m_fileProcessed = "";
         m_latestInfo = null;
     }
 }

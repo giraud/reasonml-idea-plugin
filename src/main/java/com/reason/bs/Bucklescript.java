@@ -34,10 +34,8 @@ public interface Bucklescript {
 
     void clearErrors();
 
-    void setError(String path, BsErrorsManager.BsbInfo error);
+    void addAllInfo(@NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo);
 
     @NotNull
     String getNamespace();
-
-    void addAllInfo(@NotNull String fileProcessed, @NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo);
 }

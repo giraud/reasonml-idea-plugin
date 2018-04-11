@@ -160,16 +160,11 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
     }
 
     @Override
-    public void setError(String path, BsErrorsManager.BsbInfo error) {
+    public void addAllInfo(@NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo) {
         if (m_errorsManager != null) {
-            m_errorsManager.setError(path, error);
-        }
-    }
-
-    @Override
-    public void addAllInfo(@NotNull String fileProcessed, @NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo) {
-        for (BsErrorsManager.BsbInfo info : bsbInfo) {
-            m_errorsManager.setError(fileProcessed, info);
+            for (BsErrorsManager.BsbInfo info : bsbInfo) {
+                m_errorsManager.put(info);
+            }
         }
     }
 

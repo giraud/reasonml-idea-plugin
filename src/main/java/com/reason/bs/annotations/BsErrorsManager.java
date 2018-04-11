@@ -1,10 +1,11 @@
 package com.reason.bs.annotations;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public abstract class BsErrorsManager {
 
-    abstract public void setError(String file, BsbInfo error);
+    abstract public void put(@Nullable BsbInfo error);
 
     abstract public Collection<BsbInfo> getErrors(String filePath);
 
@@ -16,6 +17,7 @@ public abstract class BsErrorsManager {
         public int colStart;
         public int colEnd;
         public String message = "";
+        public String path = "";
 
         @Override
         public String toString() {

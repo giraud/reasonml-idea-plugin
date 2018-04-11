@@ -22,11 +22,10 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
     @Override
     public Collection<BsErrorsManager.BsbInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
-        if (filePath == null) {
-            return null;
+        if (filePath != null) {
+            return BucklescriptProjectComponent.getInstance(file.getProject()).getErrors(filePath);
         }
-
-        return BucklescriptProjectComponent.getInstance(file.getProject()).getErrors(filePath);
+        return null;
     }
 
     @Nullable
