@@ -1,18 +1,22 @@
 package com.reason.ide.settings;
 
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import org.jetbrains.annotations.Nullable;
 
 @State(
         name = "ReasonOptions",
         storages = {
-                @Storage(file = StoragePathMacros.APP_CONFIG + "/reason.xml")}
+                @Storage("reason.xml")}
 )
 public class ReasonSettings implements PersistentStateComponent<ReasonOptions> {
     private ReasonOptions m_state = new ReasonOptions();
+
+    public static ReasonSettings getInstance() {
+        return ServiceManager.getService(ReasonSettings.class);
+    }
 
     @Nullable
     @Override

@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.reason.Platform;
 import com.reason.Streams;
+import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -13,7 +14,6 @@ class RefmtProcess {
 
     private final Logger m_log;
     private String m_refmtBin;
-    private String m_columns = "80"; // need to configure it
 
     RefmtProcess() {
         m_log = Logger.getInstance("ReasonML.refmt");
@@ -25,7 +25,8 @@ class RefmtProcess {
             return code;
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format, "-w", m_columns);
+        String columnsWidth = ReasonSettings.getInstance().getRefmtWidth();
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format, "-w", columnsWidth);
 
         Process refmt = null;
         try {
