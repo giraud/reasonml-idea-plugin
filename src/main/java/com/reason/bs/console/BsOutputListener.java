@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -31,8 +32,9 @@ public class BsOutputListener implements ProcessListener {
         error
     }
 
-    private final Bucklescript m_bucklescript;
     private final Project m_project;
+    private final Bucklescript m_bucklescript;
+    private final Logger m_log;
     private final List<BsErrorsManager.BsbInfo> m_bsbInfo = new ArrayList<>();
 
     private BuildStatus m_status;
@@ -43,6 +45,7 @@ public class BsOutputListener implements ProcessListener {
     BsOutputListener(Project project) {
         m_project = project;
         m_bucklescript = BucklescriptProjectComponent.getInstance(project);
+        m_log = Logger.getInstance("ReasonML.bsb");
     }
 
     @Override
@@ -158,7 +161,12 @@ public class BsOutputListener implements ProcessListener {
                 } else if (positions.length == 2) {
                     String[] start = positions[0].split(":");
                     String[] end = positions[1].split(":");
-                    return addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
+                    BsErrorsManager.BsbInfo info = addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
+                    if (info.colStart < 0 || info.colEnd < 0) {
+                        m_log.error("Can't decode columns for [" + text + "]");
+                        return null;
+                    }
+                    return info;
                 }
             }
         }
@@ -176,7 +184,12 @@ public class BsOutputListener implements ProcessListener {
                 String line = matcher.group(2);
                 String colStart = matcher.group(3);
                 String colEnd = matcher.group(4);
-                return addInfo(path, line, colStart, colEnd);
+                BsErrorsManager.BsbInfo info = addInfo(path, line, colStart, colEnd);
+                if (info.colStart < 0 || info.colEnd < 0) {
+                    m_log.error("Can't decode columns for [" + text + "]");
+                    return null;
+                }
+                return info;
             }
         }
 
