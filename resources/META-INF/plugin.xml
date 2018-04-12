@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.47-beta02</version>
+    <version>0.47-beta03</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -14,11 +14,12 @@
 
       <p></p>
 
-      <b>version 0.47-beta02</b>
+      <b>version 0.47-beta03</b>
 
       <ul>
         <li>Better error extraction</li>
-        <li>ReformatOnSave is reactivated (disabled by default)</li>
+        <li>ReformatOnSave is activated by default (see doc to deactivate it)</li>
+        <li>Reason settings to change reformat column width</li>
       </ul>
 
       <b>version 0.46</b>
@@ -187,10 +188,21 @@
         <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
-        <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png" factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
-
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
+
+        <!--
+         | UI
+         -->
+
+        <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
+                    factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
+
+        <applicationService serviceInterface="com.reason.ide.settings.ReasonSettings"
+                            serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
+        <applicationConfigurable id="settings.reason" groupId="language" displayName="Reason"
+                                 instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
+
     </extensions>
 
     <actions>
