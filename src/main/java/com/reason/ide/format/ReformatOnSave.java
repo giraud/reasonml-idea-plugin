@@ -1,5 +1,6 @@
 package com.reason.ide.format;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
@@ -28,7 +29,7 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
         if (file != null) {
             String format = getFormat(file);
             if (format != null) {
-                Runnable refmt = () -> RefmtManager.getInstance().refmt(m_project, format, document);
+                Runnable refmt = () -> ApplicationManager.getApplication().runWriteAction(() -> RefmtManager.getInstance().refmt(m_project, format, document));
                 CommandProcessor.getInstance().executeCommand(m_project, refmt, "reason.refmt", "CodeFormatGroup");
             }
         }
