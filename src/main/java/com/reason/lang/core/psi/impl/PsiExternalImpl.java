@@ -46,7 +46,8 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
 
         if (nameIdentifier instanceof PsiScopedExpr) {
             String text = nameIdentifier.getText();
-            return text.substring(1, text.length() - 2).trim();
+            int endIndex = text.length() - 2;
+            return endIndex <= 1 ? "" : text.substring(1, endIndex).trim();
         }
 
         return nameIdentifier.getText();

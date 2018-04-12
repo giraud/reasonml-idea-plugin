@@ -70,8 +70,8 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
         boolean isError;
 
         BsbErrorAnnotation(int lineStart, int startOffset, int lineEnd, int endOffset, String rawMessage, boolean isError) {
-            start = new LogicalPosition(lineStart, startOffset);
-            end = new LogicalPosition(lineEnd, endOffset);
+            start = new LogicalPosition(lineStart < 0 ? 0 : lineStart, startOffset < 0 ? 0 : startOffset);
+            end = new LogicalPosition(lineEnd < 0 ? 0 : lineEnd, endOffset < 0 ? 0 : endOffset);
             message = rawMessage.replace('\n', ' ').replaceAll("\\s+", " ").trim();
             this.isError = isError;
         }
