@@ -9,12 +9,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.ide.format.ReformatOnSave;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ReasonDocumentManager extends AbstractProjectComponent {
 
+    @Nullable
     private MessageBusConnection m_busConnection;
 
-    protected ReasonDocumentManager(Project project) {
+    protected ReasonDocumentManager(@NotNull Project project) {
         super(project);
     }
 
@@ -36,6 +38,8 @@ public class ReasonDocumentManager extends AbstractProjectComponent {
 
     @Override
     public void projectClosed() {
-        m_busConnection.disconnect();
+        if (m_busConnection != null) {
+            m_busConnection.disconnect();
+        }
     }
 }
