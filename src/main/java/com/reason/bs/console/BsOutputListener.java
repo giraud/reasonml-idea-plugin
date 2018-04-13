@@ -5,9 +5,9 @@ import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.annotations.BsErrorsManager;
@@ -68,10 +68,10 @@ public class BsOutputListener implements ProcessListener {
         reset();
         m_bsbInfo.clear();
 
-        // When build is done, we need to refresh VFS to be notified of latest modifications
         ApplicationManager.getApplication().invokeLater(() -> {
+            // When build is done, we need to refresh editors to be notified of latest modifications
+            EditorFactory.getInstance().refreshAllEditors();
             DaemonCodeAnalyzer.getInstance(m_project).restart();
-            VirtualFileManager.getInstance().syncRefresh();
         });
     }
 
