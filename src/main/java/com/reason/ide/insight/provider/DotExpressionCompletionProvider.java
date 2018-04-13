@@ -12,8 +12,8 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
-import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -50,7 +50,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
                 m_debug.debug("  symbol", upperName);
-                Collection<PsiModule> modules = RmlPsiUtil.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
+                Collection<PsiModule> modules = PsiFinder.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
                 m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
 
                 // Find the potential module paths, and filter the result

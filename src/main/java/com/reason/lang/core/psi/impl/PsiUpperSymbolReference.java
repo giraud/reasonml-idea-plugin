@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -75,7 +76,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         //}
 
         Project project = myElement.getProject();
-        Collection<PsiModule> modules = RmlPsiUtil.findModules(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiModule> modules = PsiFinder.findModules(project, m_referenceName, interfaceOrImplementation, all);
 
         //System.out.println("  modules: " + modules.size());
         //for (PsiModule module : modules) {

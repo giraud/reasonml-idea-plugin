@@ -11,7 +11,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +101,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiModule moduleAlias = RmlPsiUtil.findModule(getProject(), alias, interfaceOrImplementation, all);
+            PsiModule moduleAlias = PsiFinder.findModule(getProject(), alias, interfaceOrImplementation, all);
             if (moduleAlias != null) {
                 result = moduleAlias.getExpressions();
             }

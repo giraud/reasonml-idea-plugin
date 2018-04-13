@@ -3,13 +3,11 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.files.RmlFile;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +56,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
             }
         } else {
             // The tag is a custom component
-            PsiModule module = RmlPsiUtil.findFileModule(project, tagName.getText());
+            PsiModule module = PsiFinder.findFileModule(project, tagName.getText());
             if (module != null) {
                 Collection<PsiLet> expressions = module.getLetExpressions();
                 for (PsiLet expression : expressions) {

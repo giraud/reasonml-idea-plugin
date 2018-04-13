@@ -14,7 +14,7 @@ import com.reason.icons.Icons;
 import com.reason.ide.files.OclFile;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
@@ -77,7 +77,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
 
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            List<PsiModule> modules = RmlPsiUtil.findFileModules(project, interfaceOrImplementation);
+            List<PsiModule> modules = PsiFinder.findFileModules(project, interfaceOrImplementation);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     resultSet.addElement(
@@ -89,7 +89,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             }
         } else {
             String latestModuleName = modulePath.getLatest();
-            Collection<PsiModule> modules = RmlPsiUtil.findModules(project, latestModuleName, implementationOnly, inBsconfig);
+            Collection<PsiModule> modules = PsiFinder.findModules(project, latestModuleName, implementationOnly, inBsconfig);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     for (PsiModule expression : module.getModules()) {

@@ -11,8 +11,8 @@ import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.files.RmlFile;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
-import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         Project project = originalFile.getProject();
 
         // Find all files that are components ! TODO: components can be sub modules
-        List<PsiModule> modules = RmlPsiUtil.findFileModules(project, interfaceOrImplementation);
+        List<PsiModule> modules = PsiFinder.findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : modules) {
             String moduleName = module.getName();
             if (!fileModuleName.equals(moduleName) && module.isComponent()) {

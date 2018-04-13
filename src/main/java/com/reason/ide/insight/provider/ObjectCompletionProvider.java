@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiNamedElement;
@@ -39,7 +39,7 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
             if (lowerName != null) {
                 PsiLet let = null;
 
-                Collection<PsiLet> lets = RmlPsiUtil.findLets(project, lowerName);
+                Collection<PsiLet> lets = PsiFinder.findLets(project, lowerName);
                 //Collection<PsiLet> filteredLets = lets;
                 if (!lets.isEmpty()) {
                     // TODO: Find the correct module path...

@@ -9,8 +9,8 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
-import com.reason.lang.core.RmlPsiUtil;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
@@ -34,7 +34,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         // todo
 
         // Add file modules
-        List<PsiModule> fileModules = RmlPsiUtil.findFileModules(project, interfaceOrImplementation);
+        List<PsiModule> fileModules = PsiFinder.findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : fileModules) {
             if (!module.isComponent()) {
                 resultSet.addElement(
