@@ -1,8 +1,11 @@
 package com.reason.ide.format;
 
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
+
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
 public class RefmtManager {
     private static RefmtManager instance;
@@ -31,7 +34,7 @@ public class RefmtManager {
         String oldText = document.getText();
         String newText = m_refmtProcess.run(project, format, oldText);
         if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
-            document.setText(newText);
+            getApplication().runWriteAction(() -> CommandProcessor.getInstance().executeCommand(project, () -> RefmtManager.getInstance().refmt(project, format, document), "reason.refmt", "CodeFormatGroup"));
         }
     }
 }

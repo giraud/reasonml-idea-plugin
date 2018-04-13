@@ -2,7 +2,6 @@ package com.reason.ide.format;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
@@ -21,8 +20,7 @@ public class RefmtAction extends AnAction {
             String format = file instanceof OclFile ? "ml" : "re";
             Document document = PsiDocumentManager.getInstance(project).getDocument(file);
             if (document != null) {
-                Runnable refmt = () -> RefmtManager.getInstance().refmt(project, format, document);
-                CommandProcessor.getInstance().executeCommand(project, refmt, "reason.refmt", "CodeFormatGroup");
+                RefmtManager.getInstance().refmt(project, format, document);
             }
         }
     }
