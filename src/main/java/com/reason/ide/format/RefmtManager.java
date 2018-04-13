@@ -33,8 +33,8 @@ public class RefmtManager {
     void refmt(Project project, String format, Document document) {
         String oldText = document.getText();
         String newText = m_refmtProcess.run(project, format, oldText);
-        if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
-            getApplication().runWriteAction(() -> CommandProcessor.getInstance().executeCommand(project, () -> RefmtManager.getInstance().refmt(project, format, document), "reason.refmt", "CodeFormatGroup"));
+        if (!oldText.isEmpty() && !newText.isEmpty() && !oldText.equals(newText)) { // additional protection
+            getApplication().runWriteAction(() -> CommandProcessor.getInstance().executeCommand(project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
         }
     }
 }

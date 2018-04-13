@@ -18,7 +18,7 @@ public class RefmtAction extends AnAction {
         Project project = e.getProject();
         if (project != null && (file instanceof OclFile || file instanceof RmlFile)) {
             String format = file instanceof OclFile ? "ml" : "re";
-            Document document = PsiDocumentManager.getInstance(project).getDocument(file);
+            Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
             if (document != null) {
                 RefmtManager.getInstance().refmt(project, format, document);
             }
