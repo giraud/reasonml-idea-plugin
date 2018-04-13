@@ -1,0 +1,63 @@
+package com.reason.ide;
+
+import com.intellij.openapi.diagnostic.Logger;
+import com.reason.Joiner;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
+public class Debug {
+
+    private static final String SEP = ": ";
+    private final Logger m_log;
+
+    public Debug(Logger log) {
+        m_log = log;
+    }
+
+    public boolean isDebugEnabled() {
+        return m_log.isDebugEnabled();
+    }
+
+    public void debug(String comment) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment);
+        }
+    }
+
+    public void debug(String comment, int t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t);
+        }
+    }
+
+    public void debug(String comment, String t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t);
+        }
+    }
+
+    public void debug(String comment, int t, String t1) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t + " " + t1);
+        }
+    }
+
+    public void debug(String comment, String t, String t1) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t + " " + t1);
+        }
+    }
+
+    public void debug(String comment, boolean t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + Boolean.toString(t));
+        }
+    }
+
+    public void debug(String comment, @Nullable List<String> t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
+        }
+    }
+}
