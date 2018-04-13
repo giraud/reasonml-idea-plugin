@@ -11,6 +11,7 @@ import com.intellij.openapi.util.Key;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
 import com.reason.bs.annotations.BsErrorsManager;
+import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,8 +71,9 @@ public class BsOutputListener implements ProcessListener {
 
         ApplicationManager.getApplication().invokeLater(() -> {
             // When build is done, we need to refresh editors to be notified of latest modifications
-            EditorFactory.getInstance().refreshAllEditors();
             DaemonCodeAnalyzer.getInstance(m_project).restart();
+            EditorFactory.getInstance().refreshAllEditors();
+            InferredTypesService.queryForSelectedTextEditor(m_project);
         });
     }
 
