@@ -12,10 +12,10 @@ This code might change quite a lot or break in the future.
 
 Known limitations:
 - idea project must be created at sources root directory (you can't have sources in `somewhere/app/` and project files in `somewhere/project/`)
-- no reformat on save
 
 ## Features
 
+- Reason syntax, OCaml syntax (limited support)
 - Structured view
 - Syntax highlighting
 - Line commenting with ctrl-alt-l
@@ -24,6 +24,7 @@ Known limitations:
 - JSX completion
 - bucklescript compiler integration
 - reformat (press `crtl alt shift R` or `⌘⎇⇧R` on Mac)
+- reformat on save (use -DreasonReformatOnSave=true in idea[64].vmoptions)
 - Type annotation (* bs)
 
 _(*) See integration_

@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.47
+
+:house: Better error extraction
+:internal: Reformat on save can be activated (see doc)
+:rocket: Reason settings to change reformat column width
+:bug: Fix #45 (classes have been deleted)
+
 ## 0.46
 
 * :bug: Fix version 0.45
