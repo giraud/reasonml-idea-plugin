@@ -50,7 +50,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
                 m_debug.debug("  symbol", upperName);
-                Collection<PsiModule> modules = PsiFinder.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
+                Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, upperName, interfaceOrImplementation, inBsconfig);
                 m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
 
                 // Find the potential module paths, and filter the result

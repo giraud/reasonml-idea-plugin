@@ -2,6 +2,7 @@ package com.reason.ide;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Joiner;
+import com.reason.lang.core.psi.PsiModule;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -58,6 +59,12 @@ public class Debug {
     public void debug(String comment, @Nullable List<String> t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
+        }
+    }
+
+    public void debug(String comment, PsiModule module) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + module.getQualifiedName() + " (" + module.getContainingFile().getVirtualFile().getPath() + ")");
         }
     }
 }

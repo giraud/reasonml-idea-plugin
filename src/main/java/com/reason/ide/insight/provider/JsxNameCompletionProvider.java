@@ -31,7 +31,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         Project project = originalFile.getProject();
 
         // Find all files that are components ! TODO: components can be sub modules
-        List<PsiModule> modules = PsiFinder.findFileModules(project, interfaceOrImplementation);
+        List<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : modules) {
             String moduleName = module.getName();
             if (!fileModuleName.equals(moduleName) && module.isComponent()) {

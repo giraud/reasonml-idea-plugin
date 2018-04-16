@@ -101,7 +101,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiModule moduleAlias = PsiFinder.findModule(getProject(), alias, interfaceOrImplementation, all);
+            PsiModule moduleAlias = PsiFinder.getInstance().findModule(getProject(), alias, interfaceOrImplementation, all);
             if (moduleAlias != null) {
                 result = moduleAlias.getExpressions();
             }
@@ -178,7 +178,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
                 return null;
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return Icons.MODULE;

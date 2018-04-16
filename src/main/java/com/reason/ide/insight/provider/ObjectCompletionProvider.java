@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
@@ -19,10 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class ObjectCompletionProvider extends CompletionProvider<CompletionParameters> {
-    public ObjectCompletionProvider(MlTypes types) {
-
-    }
-
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
         //System.out.println("» ObjectCompletionProvider");
@@ -39,7 +34,7 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
             if (lowerName != null) {
                 PsiLet let = null;
 
-                Collection<PsiLet> lets = PsiFinder.findLets(project, lowerName);
+                Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, lowerName);
                 //Collection<PsiLet> filteredLets = lets;
                 if (!lets.isEmpty()) {
                     // TODO: Find the correct module path...
@@ -52,11 +47,13 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
                 if (let != null && let.isObject()) {
                     Collection<PsiObjectField> fields = let.getObjectFields();
                     for (PsiObjectField field : fields) {
-                        resultSet.addElement(
-                                LookupElementBuilder.
-                                        create(field.getName()).
-                                        withIcon(PsiIconUtil.getProvidersIcon(field, 0))
-                        );
+                        String name = field.getName();
+                        if (name != null)
+                            resultSet.addElement(
+                                    LookupElementBuilder.
+                                            create(name).
+                                            withIcon(PsiIconUtil.getProvidersIcon(field, 0))
+                            );
                     }
                 }
             }

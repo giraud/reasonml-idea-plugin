@@ -11,13 +11,10 @@ import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
-import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiOpen;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
@@ -34,7 +31,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         // todo
 
         // Add file modules
-        List<PsiModule> fileModules = PsiFinder.findFileModules(project, interfaceOrImplementation);
+        List<PsiModule> fileModules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : fileModules) {
             if (!module.isComponent()) {
                 resultSet.addElement(
@@ -57,15 +54,15 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             }
 
             // Add open and includes
-            Collection<PsiOpen> openExpressions = currentFileModule.getOpenExpressions();
-            for (PsiOpen openExpression : openExpressions) {
-                // todo
-            }
+            //Collection<PsiOpen> openExpressions = currentFileModule.getOpenExpressions();
+            //for (PsiOpen openExpression : openExpressions) {
+            // todo
+            //}
 
-            Collection<PsiInclude> includeExpressions = currentFileModule.getIncludeExpressions();
-            for (PsiInclude includeExpression : includeExpressions) {
-                // todo
-            }
+            //Collection<PsiInclude> includeExpressions = currentFileModule.getIncludeExpressions();
+            //for (PsiInclude includeExpression : includeExpressions) {
+            // todo
+            //}
         }
     }
 

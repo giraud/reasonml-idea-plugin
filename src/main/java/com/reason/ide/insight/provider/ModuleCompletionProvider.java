@@ -30,11 +30,9 @@ import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
     private final MlTypes m_types;
-    private final boolean m_moduleOnly;
 
-    public ModuleCompletionProvider(MlTypes types, boolean moduleOnly) {
+    public ModuleCompletionProvider(MlTypes types) {
         m_types = types;
-        m_moduleOnly = moduleOnly;
     }
 
     @Override
@@ -68,7 +66,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
                 if (previousSibling instanceof PsiUpperSymbol) {
                     moduleNames.add((PsiUpperSymbol) previousSibling);
                 }
-                previousSibling = previousSibling.getPrevSibling();
+                previousSibling = previousSibling == null ? null : previousSibling.getPrevSibling();
                 previousElementType = previousSibling == null ? null : previousSibling.getNode().getElementType();
             }
         }
@@ -77,7 +75,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
 
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            List<PsiModule> modules = PsiFinder.findFileModules(project, interfaceOrImplementation);
+            List<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     resultSet.addElement(
@@ -89,7 +87,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             }
         } else {
             String latestModuleName = modulePath.getLatest();
-            Collection<PsiModule> modules = PsiFinder.findModules(project, latestModuleName, implementationOnly, inBsconfig);
+            Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, latestModuleName, implementationOnly, inBsconfig);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     for (PsiModule expression : module.getModules()) {

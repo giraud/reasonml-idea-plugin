@@ -41,14 +41,16 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @Override
     public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createModuleName(myElement.getProject(), newName);
-        ASTNode newNameNode = newNameIdentifier.getFirstChild().getNode();
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
 
-        PsiElement nameIdentifier = myElement.getNameIdentifier();
-        if (nameIdentifier == null) {
-            myElement.getNode().addChild(newNameNode);
-        } else {
-            ASTNode oldNameNode = nameIdentifier.getNode();
-            myElement.getNode().replaceChild(oldNameNode, newNameNode);
+        if (newNameNode != null) {
+            PsiElement nameIdentifier = myElement.getNameIdentifier();
+            if (nameIdentifier == null) {
+                myElement.getNode().addChild(newNameNode);
+            } else {
+                ASTNode oldNameNode = nameIdentifier.getNode();
+                myElement.getNode().replaceChild(oldNameNode, newNameNode);
+            }
         }
 
         return myElement;
@@ -76,7 +78,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         //}
 
         Project project = myElement.getProject();
-        Collection<PsiModule> modules = PsiFinder.findModules(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, m_referenceName, interfaceOrImplementation, all);
 
         //System.out.println("  modules: " + modules.size());
         //for (PsiModule module : modules) {

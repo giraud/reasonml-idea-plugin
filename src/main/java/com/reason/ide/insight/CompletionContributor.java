@@ -16,11 +16,10 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
     CompletionContributor(@NotNull MlTypes types, @NotNull ModulePathFinder modulePathFinder, @NotNull CompletionPatterns patterns) {
         //extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new DebugCompletionProvider());
 
-        extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types, true));
-        //extend(CompletionType.BASIC, patterns.upperSymbol(), new ModuleCompletionProvider(types, false));
+        extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types));
         extend(CompletionType.BASIC, patterns.freeExpression(), new FreeExpressionCompletionProvider());
         extend(CompletionType.BASIC, patterns.dotExpression(), new DotExpressionCompletionProvider(modulePathFinder));
-        extend(CompletionType.BASIC, patterns.jsObject(), new ObjectCompletionProvider(types));
+        extend(CompletionType.BASIC, patterns.jsObject(), new ObjectCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxName(), new JsxNameCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxAttribute(), new JsxAttributeCompletionProvider());
     }

@@ -1,5 +1,6 @@
 package com.reason.lang.core;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -10,6 +11,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
@@ -27,17 +29,31 @@ import java.util.Map;
 import static com.reason.lang.core.MlScope.all;
 import static com.reason.lang.core.MlScope.inBsconfig;
 
-public class PsiFinder {
+public final class PsiFinder {
+
+    private static PsiFinder INSTANCE = new PsiFinder();
+
+    private Debug m_log = new Debug(Logger.getInstance("ReasonML.finder"));
+
+    public static PsiFinder getInstance() {
+        return INSTANCE;
+    }
 
     @NotNull
-    public static Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        m_log.debug("Find modules, name", name, scope.name());
+
         ArrayList<PsiModule> inConfig = new ArrayList<>();
         ArrayList<PsiModule> other = new ArrayList<>();
 
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
-        if (!modules.isEmpty()) {
+        if (modules.isEmpty()) {
+            m_log.debug("  No modules found");
+        }
+        else {
+            m_log.debug("  modules found", modules.size());
             for (PsiModule module : modules) {
                 boolean keepFile;
 
@@ -64,8 +80,10 @@ public class PsiFinder {
 
                 if (keepFile) {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                        m_log.debug("    kepp (in config)", module);
                         inConfig.add(module);
                     } else {
+                        m_log.debug("    keep (not in config)", module);
                         other.add(module);
                     }
                 }
@@ -80,7 +98,7 @@ public class PsiFinder {
     }
 
     @Nullable
-    public static PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+    public PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
         Collection<PsiModule> modules = findModules(project, name, fileType, scope);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
@@ -90,7 +108,7 @@ public class PsiFinder {
     }
 
     @Nullable
-    public static PsiModule findFileModule(Project project, String name) {
+    public PsiModule findFileModule(Project project, String name) {
         PsiModule module = findModule(project, name, MlFileType.interfaceOrImplementation, inBsconfig);
         if (module instanceof PsiFileModuleImpl) {
             return module;
@@ -99,7 +117,7 @@ public class PsiFinder {
         return null;
     }
 
-    public static Collection<PsiLet> findLets(Project project, String lowerName) {
+    public Collection<PsiLet> findLets(Project project, String lowerName) {
         ArrayList<PsiLet> result = new ArrayList<>();
 
         Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, lowerName, project, GlobalSearchScope.allScope(project), PsiLet.class);
@@ -115,7 +133,7 @@ public class PsiFinder {
     }
 
     @NotNull
-    public static List<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
+    public List<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
         List<PsiModule> result = new ArrayList<>();
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
 
