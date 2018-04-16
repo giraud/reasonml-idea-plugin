@@ -18,7 +18,7 @@
 
       <ul>
         <li>Better error extraction</li>
-        <li>ReformatOnSave is activated by default (see doc to deactivate it)</li>
+        <li>Reformat on save can be activated (see doc)</li>
         <li>Reason settings to change reformat column width</li>
       </ul>
 
