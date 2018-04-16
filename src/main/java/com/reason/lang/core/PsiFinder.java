@@ -80,7 +80,7 @@ public final class PsiFinder {
 
                 if (keepFile) {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                        m_log.debug("    kepp (in config)", module);
+                        m_log.debug("    keep (in config)", module);
                         inConfig.add(module);
                     } else {
                         m_log.debug("    keep (not in config)", module);
