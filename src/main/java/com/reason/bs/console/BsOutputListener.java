@@ -159,7 +159,9 @@ public class BsOutputListener implements ProcessListener {
                 String[] positions = tokens[1].split("-");
                 if (positions.length == 1) {
                     String[] start = positions[0].split(":");
-                    return addInfo(path, start[0], start[1], null, null);
+                    if (2 == start.length) {
+                        return addInfo(path, start[0], start[1], null, null);
+                    }
                 } else if (positions.length == 2) {
                     String[] start = positions[0].split(":");
                     String[] end = positions[1].split(":");
