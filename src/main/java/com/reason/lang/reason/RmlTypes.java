@@ -1,7 +1,6 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.MlTypes;
-import com.reason.lang.RmlLanguage;
 import com.reason.lang.core.stub.type.ModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
 import com.reason.lang.core.stub.type.PsiTypeElementType;

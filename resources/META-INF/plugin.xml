@@ -98,6 +98,8 @@
         <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
         <!-- OcamlP4 -->
         <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
+        <!-- Dune -->
+        <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
 
         <fileTypeFactory implementation="com.reason.ide.files.CmiFileTypeFactory"/>
 

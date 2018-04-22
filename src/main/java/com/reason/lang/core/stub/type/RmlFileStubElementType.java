@@ -8,7 +8,7 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.reason.ide.files.RmlFile;
-import com.reason.lang.RmlLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.stub.RmlFileStub;
 import org.jetbrains.annotations.NotNull;
 

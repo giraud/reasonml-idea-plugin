@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.MlTypes;
-import com.reason.lang.RmlLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlTypes;

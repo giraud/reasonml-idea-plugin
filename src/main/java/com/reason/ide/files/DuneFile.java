@@ -2,22 +2,22 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.lang.reason.RmlLanguage;
+import com.reason.lang.dune.DuneLanguage;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlFile extends FileBase {
-    public RmlFile(@NotNull FileViewProvider viewProvider) {
-        super(viewProvider, RmlLanguage.INSTANCE);
+public class DuneFile extends FileBase {
+    public DuneFile(@NotNull FileViewProvider viewProvider) {
+        super(viewProvider, DuneLanguage.INSTANCE);
     }
 
     @NotNull
     @Override
     public FileType getFileType() {
-        return RmlFileType.INSTANCE;
+        return DuneFileType.INSTANCE;
     }
 
     @Override
     public String toString() {
-        return "Reason File";
+        return DuneFileType.INSTANCE.getDescription();
     }
 }

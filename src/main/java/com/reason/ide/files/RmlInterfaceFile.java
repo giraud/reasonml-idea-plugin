@@ -2,7 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.lang.RmlLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlInterfaceFile extends FileBase {

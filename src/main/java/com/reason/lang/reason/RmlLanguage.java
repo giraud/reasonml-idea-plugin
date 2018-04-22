@@ -1,4 +1,4 @@
-package com.reason.lang;
+package com.reason.lang.reason;
 
 import com.intellij.lang.Language;
 

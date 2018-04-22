@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.RmlLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;

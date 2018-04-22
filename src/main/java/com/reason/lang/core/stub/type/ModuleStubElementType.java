@@ -5,7 +5,7 @@ import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
-import com.reason.lang.RmlLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
