@@ -20,13 +20,13 @@ public class DuneFileType  implements FileType {
     @NotNull
     @Override
     public String getDescription() {
-        return "Dune (jbuilder) configuration file";
+        return "Dune configuration file (jbuilder)";
     }
 
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "";
+        return "jbuild";
     }
 
     @Nullable
