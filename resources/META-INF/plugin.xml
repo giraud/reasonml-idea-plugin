@@ -119,6 +119,10 @@
         <lang.parserDefinition language="OcamlP4" implementationClass="com.reason.lang.ocaml.OclP4ParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OcamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+        <!-- Dune -->
+        <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Dune"
+                                       implementationClass="com.reason.ide.highlight.DuneSyntaxHighlighterFactory"/>
 
         <!--
          | Structure / folding / comments
