@@ -48,12 +48,12 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         PsiBuilder.Marker moduleName = builder.mark();
         moduleName.done(m_types.UPPER_SYMBOL);
 
-        ParserState parserState = new ParserState(fileScope);
-        parseFile(builder, parserState);
+        ParserState state = new ParserState(fileScope);
+        parseFile(builder, state);
 
         // if we have a scope at last position in file, without SEMI, we need to handle it here
-        if (!parserState.empty()) {
-            parserState.clear();
+        if (!state.empty()) {
+            state.clear();
         }
 
         fileScope.end();

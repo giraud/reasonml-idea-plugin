@@ -30,10 +30,9 @@ public class ParserState {
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && !scope.start && scope.scopeType == any) {
-                m_scopes.pop().end();
+                popEnd();
                 scope = getLatestScope();
             }
-            updateCurrentScope();
         }
 
         return scope;
@@ -61,7 +60,7 @@ public class ParserState {
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeElementType != scopeElementType)) {
-                m_scopes.pop().end();
+                popEnd();
                 scope = getLatestScope();
             }
         }
@@ -109,17 +108,17 @@ public class ParserState {
     }
 
     void clear() {
-        ParserScope scope = m_scopes.pop();
+        ParserScope scope = m_scopes.tryPop();
         while (scope != null) {
             scope.end();
-            scope = m_scopes.isEmpty() ? null : m_scopes.pop();
+            scope = m_scopes.tryPop();
         }
         currentScope = m_rootScope;
     }
 
     @Nullable
-    public ParserScope pop() {
-        ParserScope scope = m_scopes.pop();
+    private ParserScope pop() {
+        ParserScope scope = m_scopes.tryPop();
         updateCurrentScope();
         return scope;
     }
@@ -144,11 +143,11 @@ public class ParserState {
     }
 
     public boolean notInScopeExpression() {
-        return currentScope.scopeType != ParserScopeType.scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
+        return currentScope.scopeType != scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
     }
 
     public boolean isInScopeExpression() {
-        return currentScope.scopeType == ParserScopeType.scopeExpression || currentScope.scopeType == ParserScopeType.groupExpression;
+        return currentScope.scopeType == scopeExpression || currentScope.scopeType == ParserScopeType.groupExpression;
     }
 
     public void setTokenType(IElementType tokenType) {
