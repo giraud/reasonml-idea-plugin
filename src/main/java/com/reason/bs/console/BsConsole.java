@@ -8,13 +8,13 @@ import com.intellij.openapi.editor.actions.ScrollToTheEndToolbarAction;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
-public class BsConsole extends ConsoleViewImpl {
+class BsConsole extends ConsoleViewImpl {
 
-    public BsConsole(@NotNull Project project) {
+    BsConsole(@NotNull Project project) {
         super(project, true);
     }
 
-    public ActionToolbar createToolbar() {
+    ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(this.getEditor()));
         group.add(new ClearLogAction(this));
