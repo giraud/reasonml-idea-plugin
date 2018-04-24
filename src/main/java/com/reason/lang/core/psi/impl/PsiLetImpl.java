@@ -57,7 +57,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @Override
     @Nullable
-    public PsiLetBinding getLetBinding() {
+    public PsiLetBinding getBinding() {
         return findChildByClass(PsiLetBinding.class);
     }
 

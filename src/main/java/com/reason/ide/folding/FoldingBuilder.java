@@ -10,7 +10,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.ocaml.OclTypes;
@@ -32,6 +31,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
         PsiTreeUtil.processElements(root, element -> {
             if (element instanceof PsiLet) {
                 foldLet(descriptors, (PsiLet) element);
+            } else if (element instanceof PsiType) {
+                foldType(descriptors, (PsiType) element);
             }
 
             IElementType elementType = element.getNode().getElementType();
@@ -40,8 +41,6 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 if (fold != null) {
                     descriptors.add(fold);
                 }
-            } else if (types.TYPE_EXPRESSION == elementType) {
-                foldType(descriptors, (PsiType) element);
             } else if (types.MODULE_EXPRESSION == elementType) {
                 foldModule(descriptors, (PsiModule) element);
             }
@@ -52,16 +51,15 @@ public class FoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[0]);
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
-        FoldingDescriptor fold = fold(typeExpression.getScopedExpression());
+    private void foldLet(List<FoldingDescriptor> descriptors, PsiLet letExpression) {
+        FoldingDescriptor fold = fold(letExpression.getBinding());
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldLet(List<FoldingDescriptor> descriptors, PsiLet letExpression) {
-        PsiLetBinding letBinding = letExpression.getLetBinding();
-        FoldingDescriptor fold = fold(letBinding);
+    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
+        FoldingDescriptor fold = fold(typeExpression.getBinding());
         if (fold != null) {
             descriptors.add(fold);
         }

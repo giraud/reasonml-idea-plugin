@@ -14,7 +14,7 @@ import java.util.Map;
 public interface PsiLet extends PsiInferredType, PsiQualifiedNamedElement, PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
 
     @Nullable
-    PsiLetBinding getLetBinding();
+    PsiLetBinding getBinding();
 
     @NotNull
     HMSignature getSignature();

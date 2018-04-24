@@ -11,8 +11,8 @@ import com.reason.icons.Icons;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeBinding;
 import com.reason.lang.core.stub.PsiTypeStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,15 +51,10 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     }
     //endregion
 
-    @Nullable
-    public PsiScopedExpr getScopedExpression() {
-        return findChildByClass(PsiScopedExpr.class);
-    }
-
-    @NotNull
     @Override
-    public String getTypeInfo() {
-        return "";
+    @Nullable
+    public PsiTypeBinding getBinding() {
+        return findChildByClass(PsiTypeBinding.class);
     }
 
     @Nullable
