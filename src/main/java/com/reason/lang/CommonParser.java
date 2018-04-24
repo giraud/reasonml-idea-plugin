@@ -41,12 +41,13 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
-        ParserScope fileScope = new ParserScope(file, m_types.FILE_MODULE, builder.mark());
+        ParserScope fileScope = new ParserScope(file, m_types == null ? null : m_types.FILE_MODULE, builder.mark());
         fileScope.complete = true;
 
-        // Creates an empty UpperSymbol to be used as a reference name in FileModule
-        PsiBuilder.Marker moduleName = builder.mark();
-        moduleName.done(m_types.UPPER_SYMBOL);
+        if (m_types != null) {
+            // Creates an empty UpperSymbol to be used as a reference name in FileModule
+            builder.mark().done(m_types.UPPER_SYMBOL);
+        }
 
         ParserState state = new ParserState(fileScope);
         parseFile(builder, state);
