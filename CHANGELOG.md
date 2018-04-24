@@ -10,17 +10,22 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.47.1
+
+* :bug: Fixed 2 bugs (stack and 'editor not disposed' exceptions)
+* :house: Fixed recursive type parsing problem with variants
+
 ## 0.47
 
-:house: Better error extraction
-:internal: Reformat on save can be activated (see doc)
-:rocket: Reason settings to change reformat column width
-:bug: Fix #45 (classes have been deleted)
+* :rocket: Reason settings to change reformat column width
+* :bug: Fix #45 (classes have been deleted)
+* :house: Better error extraction
+* :house: Reformat on save can be activated (see doc)
 
 ## 0.46
 
 * :bug: Fix version 0.45
-* :feature: Better error annotation (includes warnings)
+* :rocket: Better error annotation (includes warnings)
         
 ## 0.45 
 
