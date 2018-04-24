@@ -85,6 +85,22 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
         return result;
     }
 
+    @NotNull
+    @Override
+    public Collection<PsiType> getTypeExpressions() {
+        Collection<PsiType> result = new ArrayList<>();
+
+        PsiElement element = getFirstChild();
+        while (element != null) {
+            if (element instanceof PsiType) {
+                result.add((PsiType) element);
+            }
+            element = element.getNextSibling();
+        }
+
+        return result;
+    }
+
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {

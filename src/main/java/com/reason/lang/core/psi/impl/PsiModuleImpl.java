@@ -122,6 +122,13 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiLet.class);
     }
 
+    @NotNull
+    @Override
+    public Collection<PsiType> getTypeExpressions() {
+        PsiScopedExpr body = getBody();
+        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiType.class);
+    }
+
     @Nullable
     @Override
     public PsiExternal getExternalExpression(@NotNull String name) {

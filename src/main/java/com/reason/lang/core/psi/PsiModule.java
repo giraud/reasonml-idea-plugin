@@ -32,6 +32,9 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     @NotNull
     Collection<PsiLet> getLetExpressions();
 
+    @NotNull
+    Collection<PsiType> getTypeExpressions();
+
     @Nullable
     PsiExternal getExternalExpression(@NotNull String name);
 

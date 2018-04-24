@@ -30,6 +30,7 @@ public class OclTypes extends MlTypes {
         LET_FUN_PARAMS = new OclElementType("LET_FUN_PARAMS");
         LET_BINDING = new OclElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new OclElementType("TYPE_CONSTR_NAME");
+        TYPE_BINDING = new OclElementType("TYPE_BINDING");
         PATTERN_MATCH_EXPR = new OclElementType("PATTERN_MATCH_EXPR");
         SCOPED_EXPR = new OclElementType("SCOPED_EXPR");
         SIG_SCOPE = new OclElementType("SIG_SCOPE");

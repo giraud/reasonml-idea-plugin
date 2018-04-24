@@ -24,6 +24,7 @@ public abstract class MlTypes {
     public IElementType LET_FUN_PARAMS;
     public IElementType LET_BINDING;
     public IElementType TYPE_CONSTR_NAME;
+    public IElementType TYPE_BINDING;
     public IElementType PATTERN_MATCH_EXPR;
     public IElementType SCOPED_EXPR;
     public IElementType SIG_SCOPE;

@@ -22,6 +22,8 @@ public class PsiElementFactory {
             return new PsiIncludeImpl(types, node);
         } else if (type == types.TYPE_EXPRESSION) {
             return new PsiTypeImpl(node);
+        } else if (type == types.TYPE_BINDING) {
+            return new PsiTypeBinding(node);
         } else if (type == types.MODULE_EXPRESSION) {
             return new PsiModuleImpl(node, types);
         } else if (type == types.MODULE_PATH) {

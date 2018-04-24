@@ -30,6 +30,7 @@ public class RmlTypes extends MlTypes {
         LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
         LET_BINDING = new RmlElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
+        TYPE_BINDING = new RmlElementType("TYPE_BINDING");
         PATTERN_MATCH_EXPR = new RmlElementType("PATTERN_MATCH_EXPR");
         SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
         SIG_SCOPE = new RmlElementType("SIG_SCOPE");

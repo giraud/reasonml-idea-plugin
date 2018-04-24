@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
+
 public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected BaseParsingTestCase(@NotNull String dataPath, @NotNull String fileExt, @NotNull ParserDefinition... definitions) {
         super(dataPath, fileExt, definitions);
@@ -22,14 +24,18 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return "testData";
     }
 
-    protected <T> T first(Collection<T> collection) {
+    protected <T extends PsiElement> T first(Collection<T> collection) {
         return collection.iterator().next();
     }
 
-    protected <T> T second(Collection<T> collection) {
+    protected <T extends PsiElement> T second(Collection<T> collection) {
         Iterator<T> iterator = collection.iterator();
         iterator.next();
         return iterator.next();
+    }
+
+    protected <T extends PsiElement> T firstOfType(PsiElement element, Class<T> aClass) {
+        return first(findChildrenOfType(element, aClass));
     }
 
     protected PsiFileModuleImpl parseCode(String code) {

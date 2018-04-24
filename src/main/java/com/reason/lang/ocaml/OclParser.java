@@ -252,6 +252,8 @@ public class OclParser extends CommonParser {
     private void parseEq(PsiBuilder builder, ParserState state) { // =
         if (state.isResolution(typeNamed)) {
             state.setResolution(typeNamedEq);
+            state.dontMove = advance(builder);
+            state.add(markCompleteScope(builder, typeNamedEq, m_types.TYPE_BINDING, groupExpression, null));
         } else if (state.isResolution(letNamed) || state.isResolution(letParameters)) {
             ParserScopeEnum resolution = state.isResolution(letNamed) ? letNamedEq : letNamedParametersEq;
             if (resolution == letNamedParametersEq) {
