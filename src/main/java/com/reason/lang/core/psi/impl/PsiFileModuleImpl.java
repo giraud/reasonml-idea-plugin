@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.ModuleStub;
 import org.jetbrains.annotations.NotNull;
@@ -105,7 +105,7 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
             return stub.getQualifiedName();
         }
 
-        return RmlPsiUtil.fileNameToModuleName(getContainingFile());
+        return PsiUtil.fileNameToModuleName(getContainingFile());
     }
 
     @Override

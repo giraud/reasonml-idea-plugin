@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
 import org.jetbrains.annotations.NotNull;
@@ -54,12 +54,6 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return this;
     }
     //endregion
-
-    @Override
-    @Nullable
-    public PsiFunBody getFunctionBody() {
-        return findChildByClass(PsiFunBody.class);
-    }
 
     @Override
     @Nullable
@@ -120,14 +114,14 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
             }
         }
 
-        return findChildByClass(PsiFunBody.class) != null;
+        return false/*??*/;
     }
 
     private boolean isRecursive() {
         // Find first element after the LET
         PsiElement firstChild = getFirstChild();
         PsiElement sibling = firstChild.getNextSibling();
-        if (sibling != null && sibling instanceof PsiWhiteSpace) {
+        if (sibling instanceof PsiWhiteSpace) {
             sibling = sibling.getNextSibling();
         }
 
@@ -160,7 +154,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         if (parent != null) {
             path = ((PsiModule) parent).getQualifiedName();
         } else {
-            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
+            path = PsiUtil.fileNameToModuleName(getContainingFile());
         }
 
         return path + "." + getName();

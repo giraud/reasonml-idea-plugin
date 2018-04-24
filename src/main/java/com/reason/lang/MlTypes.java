@@ -66,7 +66,6 @@ public abstract class MlTypes {
     public IElementType FOR;
     public IElementType FUN;
     public IElementType FUN_PARAMS;
-    public IElementType FUN_BODY;
     public IElementType FUNCTION;
     public IElementType TYPE_ARGUMENT;
     public IElementType GT;

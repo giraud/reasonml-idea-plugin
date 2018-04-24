@@ -9,7 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.ocaml.OclModulePathFinder;
@@ -33,7 +33,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     private final MlTypes m_types;
 
     PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
-        super(element, RmlPsiUtil.getTextRangeForReference(element));
+        super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;
     }

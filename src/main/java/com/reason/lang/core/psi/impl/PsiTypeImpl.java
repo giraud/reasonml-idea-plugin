@@ -8,8 +8,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.MlTypes;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiScopedExpr;
@@ -22,17 +21,13 @@ import javax.swing.*;
 
 public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements PsiType {
 
-    private final MlTypes m_types;
-
     //region Constructors
-    public PsiTypeImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiTypeImpl(@NotNull ASTNode node) {
         super(node);
-        m_types = types;
     }
 
-    public PsiTypeImpl(@NotNull MlTypes types, PsiTypeStub stub, IStubElementType nodeType) {
+    public PsiTypeImpl(PsiTypeStub stub, IStubElementType nodeType) {
         super(stub, nodeType);
-        m_types = types;
     }
     //endregion
 
@@ -76,7 +71,7 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
         if (parent != null) {
             path = ((PsiModule) parent).getQualifiedName();
         } else {
-            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
+            path = PsiUtil.fileNameToModuleName(getContainingFile());
         }
 
         return path + "." + getName();

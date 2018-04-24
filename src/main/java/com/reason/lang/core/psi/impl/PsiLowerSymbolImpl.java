@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +66,7 @@ public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLow
         //}
 
         if (path == null) {
-            path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
+            path = PsiUtil.fileNameToModuleName(getContainingFile());
         }
 
         return path + "." + getName();

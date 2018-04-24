@@ -24,7 +24,7 @@ public class RmlTypes extends MlTypes {
         UPPER_SYMBOL = new RmlElementType("UPPER_SYMBOL");
         MODULE_PATH = new RmlElementType("MODULE_PATH");
         OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
-        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE, RmlTypes.INSTANCE);
+        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE);
         VAL_EXPRESSION = new RmlElementType("VAL_EXPRESSION");
 
         LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
@@ -71,7 +71,6 @@ public class RmlTypes extends MlTypes {
         FOR = new RmlElementType("FOR");
         FUN = new RmlTokenType("FUN");
         FUN_PARAMS = new RmlTokenType("FUN_PARAMS");
-        FUN_BODY = new RmlTokenType("FUN_BODY");
         FUNCTION = new RmlTokenType("FUNCTION");
         TYPE_ARGUMENT = new RmlTokenType("TYPE_ARGUMENT");
         GT = new RmlTokenType("GT");

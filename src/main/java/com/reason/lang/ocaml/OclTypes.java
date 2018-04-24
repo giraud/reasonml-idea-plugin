@@ -24,7 +24,7 @@ public class OclTypes extends MlTypes {
         UPPER_SYMBOL = new OclElementType("UPPER_SYMBOL");
         MODULE_PATH = new OclElementType("MODULE_PATH");
         OPEN_EXPRESSION = new OclElementType("OPEN_EXPRESSION");
-        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE, OclTypes.INSTANCE);
+        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE);
         VAL_EXPRESSION = new OclElementType("VAL_EXPRESSION");
 
         LET_FUN_PARAMS = new OclElementType("LET_FUN_PARAMS");
@@ -71,7 +71,6 @@ public class OclTypes extends MlTypes {
         FOR = new OclElementType("FOR");
         FUN = new OclTokenType("FUN");
         FUN_PARAMS = new OclTokenType("FUN_PARAMS");
-        FUN_BODY = new OclTokenType("FUN_BODY");
         FUNCTION = new OclTokenType("FUNCTION");
         TYPE_ARGUMENT = new OclTokenType("TYPE_ARGUMENT");
         GT = new OclTokenType("GT");

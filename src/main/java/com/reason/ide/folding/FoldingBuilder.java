@@ -9,9 +9,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.MlTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,10 +27,14 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
+        MlTypes types = root.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
 
         PsiTreeUtil.processElements(root, element -> {
+            if (element instanceof PsiLet) {
+                foldLet(descriptors, (PsiLet) element);
+            }
+
             IElementType elementType = element.getNode().getElementType();
-            MlTypes types = elementType.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
             if (types.COMMENT == elementType) {
                 FoldingDescriptor fold = fold(element);
                 if (fold != null) {
@@ -35,15 +42,14 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 }
             } else if (types.TYPE_EXPRESSION == elementType) {
                 foldType(descriptors, (PsiType) element);
-            } else if (types.LET_EXPRESSION == elementType) {
-                foldLet(descriptors, (PsiLet) element);
             } else if (types.MODULE_EXPRESSION == elementType) {
                 foldModule(descriptors, (PsiModule) element);
             }
+
             return true;
         });
 
-        return descriptors.toArray(new FoldingDescriptor[descriptors.size()]);
+        return descriptors.toArray(new FoldingDescriptor[0]);
     }
 
     private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
@@ -54,18 +60,10 @@ public class FoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldLet(List<FoldingDescriptor> descriptors, PsiLet letExpression) {
-        PsiFunBody functionBody = letExpression.getFunctionBody();
-        if (functionBody != null) {
-            FoldingDescriptor fold = fold(functionBody);
-            if (fold != null) {
-                descriptors.add(fold);
-            }
-        } else {
-            PsiLetBinding letBinding = letExpression.getLetBinding();
-            FoldingDescriptor fold = fold(letBinding);
-            if (fold != null) {
-                descriptors.add(fold);
-            }
+        PsiLetBinding letBinding = letExpression.getLetBinding();
+        FoldingDescriptor fold = fold(letBinding);
+        if (fold != null) {
+            descriptors.add(fold);
         }
     }
 

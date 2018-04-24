@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeName;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class PsiTypeReference extends PsiReferenceBase<PsiTypeName> {
 
-    private final String m_referenceName;
-
     PsiTypeReference(PsiTypeName element) {
-        super(element, RmlPsiUtil.getTextRangeForReference(element));
-        m_referenceName = element.getName();
+        super(element, PsiUtil.getTextRangeForReference(element));
     }
 
     @Override

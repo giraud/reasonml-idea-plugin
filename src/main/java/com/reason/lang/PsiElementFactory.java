@@ -21,7 +21,7 @@ public class PsiElementFactory {
         } else if (type == types.INCLUDE_EXPRESSION) {
             return new PsiIncludeImpl(types, node);
         } else if (type == types.TYPE_EXPRESSION) {
-            return new PsiTypeImpl(types, node);
+            return new PsiTypeImpl(node);
         } else if (type == types.MODULE_EXPRESSION) {
             return new PsiModuleImpl(node, types);
         } else if (type == types.MODULE_PATH) {
@@ -32,8 +32,6 @@ public class PsiElementFactory {
             return new PsiValImpl(types, node);
         } else if (type == types.ANNOTATION_EXPRESSION) {
             return new PsiAnnotation(node);
-        } else if (type == types.FUN_BODY) {
-            return new PsiFunBody(node);
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
         } else if (type == types.LET_FUN_PARAMS) {

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
     @Override
     public String getName() {
         PsiElement nameElement = getNameIdentifier();
-        return nameElement == null ? RmlPsiUtil.fileNameToModuleName(getContainingFile()) : nameElement.getText();
+        return nameElement == null ? PsiUtil.fileNameToModuleName(getContainingFile()) : nameElement.getText();
     }
 
     @Nullable

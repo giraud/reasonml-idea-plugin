@@ -6,7 +6,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.RmlPsiUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ public class PsiVarNameReference extends PsiReferenceBase<PsiLowerSymbol> {
     private final String m_qname;
 
     PsiVarNameReference(PsiLowerSymbol element, String qname) {
-        super(element, RmlPsiUtil.getTextRangeForReference(element));
+        super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_qname = qname;
     }

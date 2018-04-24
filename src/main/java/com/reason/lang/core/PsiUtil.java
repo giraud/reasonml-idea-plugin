@@ -4,21 +4,22 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-public class RmlPsiUtil {
+public class PsiUtil {
 
-    public static String fileNameToModuleName(PsiFile file) {
+    @NotNull
+    public static String fileNameToModuleName(@NotNull PsiFile file) {
         return fileNameToModuleName(file.getName());
-        //String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(file.getName());
-        //return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault()) + nameWithoutExtension.substring(1);
     }
 
     @NotNull
-    public static String fileNameToModuleName(String filename) {
+    public static String fileNameToModuleName(@NotNull String filename) {
         String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(filename);
         if (nameWithoutExtension.isEmpty()) {
             return "";
@@ -30,6 +31,23 @@ public class RmlPsiUtil {
     public static TextRange getTextRangeForReference(@NotNull PsiNamedElement name) {
         PsiElement nameIdentifier = name.getNameIdentifier();
         return rangeInParent(name.getTextRange(), nameIdentifier == null ? TextRange.EMPTY_RANGE : name.getTextRange());
+    }
+
+    @Nullable
+    public static PsiElement nextSiblingWithTokenType(@NotNull PsiElement root, @NotNull IElementType elementType) {
+        PsiElement found = null;
+
+        PsiElement sibling = root.getNextSibling();
+        while (sibling != null) {
+            if (sibling.getNode().getElementType() == elementType) {
+                found = sibling;
+                sibling = null;
+            } else {
+                sibling = root.getNextSibling();
+            }
+        }
+
+        return found;
     }
 
     @NotNull
