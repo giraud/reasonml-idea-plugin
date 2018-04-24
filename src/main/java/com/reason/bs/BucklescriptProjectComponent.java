@@ -1,6 +1,7 @@
 package com.reason.bs;
 
 import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
@@ -14,7 +15,6 @@ import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.bs.annotations.BsErrorsManagerImpl;
-import com.reason.bs.console.BsConsole;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.ide.RmlNotification;
@@ -198,8 +198,8 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
         }
     }
 
-    private BsConsole getBsbConsole() {
-        BsConsole console = null;
+    private ConsoleView getBsbConsole() {
+        ConsoleView console = null;
 
         ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow("Bucklescript");
         Content windowContent = window.getContentManager().getContent(0);
@@ -207,7 +207,7 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
             SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
             JComponent panelComponent = component.getComponent();
             if (panelComponent != null) {
-                console = (BsConsole) panelComponent.getComponent(0);
+                console = (ConsoleView) panelComponent.getComponent(0);
             }
         }
 
