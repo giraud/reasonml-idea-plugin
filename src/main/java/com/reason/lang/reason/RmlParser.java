@@ -427,7 +427,7 @@ public class RmlParser extends CommonParser {
             state.add(markScope(builder, objectBinding, m_types.OBJECT, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
             state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
-        } else if (state.isResolution(letNamedParametersEq)) {
+        } else if (state.isResolution(letNamedEq) || state.isResolution(letNamedParametersEq)) {
             state.add(markScope(builder, letFunBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE));
         } else {
             ParserScope scope;

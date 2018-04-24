@@ -24,20 +24,28 @@ public class LetParsingTest extends BaseParsingTestCase {
         PsiParameters params = first(PsiTreeUtil.findChildrenOfType(let, PsiParameters.class));
         Assert.assertEquals(2, params.getArgumentsCount());
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        Assert.assertNotNull(binding);
+        assertNotNull(binding);
+    }
+
+    public void testFunctionLetBinding() {
+        PsiLet let = first(parseCode("let getAttributes = node => { node; };").getLetExpressions());
+        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
+    }
+
+    public void testLetBinding() {
+        PsiLet let = first(parseCode("let x = {\"u\": \"r\", \"l\": \"lr\"};").getLetExpressions());
+        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
     public void testScopeWithSome() {
         PsiLet let = first(parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };").getLetExpressions());
-
-        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        Assert.assertNotNull(binding);
+        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
     public void testScopeWithLIdent() {
         PsiLet let = first(parseCode("let l = (p) => { Js.log(p); returnObj; };").getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        Assert.assertNotNull(binding);
+        assertNotNull(binding);
     }
 }

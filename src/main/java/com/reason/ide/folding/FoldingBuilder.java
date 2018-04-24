@@ -89,7 +89,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
             return "(*...*)";
         }
 
-        return "{...}";
+        return "...";
     }
 
     @Override
