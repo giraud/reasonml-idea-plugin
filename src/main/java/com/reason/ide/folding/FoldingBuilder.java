@@ -33,16 +33,15 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldLet(descriptors, (PsiLet) element);
             } else if (element instanceof PsiType) {
                 foldType(descriptors, (PsiType) element);
-            }
-
-            IElementType elementType = element.getNode().getElementType();
-            if (types.COMMENT == elementType) {
-                FoldingDescriptor fold = fold(element);
-                if (fold != null) {
-                    descriptors.add(fold);
-                }
-            } else if (types.MODULE_EXPRESSION == elementType) {
+            } else if (element instanceof PsiModule) {
                 foldModule(descriptors, (PsiModule) element);
+            } else {
+                if (types.COMMENT == element.getNode().getElementType()) {
+                    FoldingDescriptor fold = fold(element);
+                    if (fold != null) {
+                        descriptors.add(fold);
+                    }
+                }
             }
 
             return true;
