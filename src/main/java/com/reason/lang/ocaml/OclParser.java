@@ -122,7 +122,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseAnd(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(typeNamed) || state.isResolution(typeNamedEq)) {
+        if (isTypeResolution(state)) {
             endLikeSemi(state);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));

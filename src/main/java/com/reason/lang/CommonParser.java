@@ -8,7 +8,7 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ParserScopeEnum.file;
+import static com.reason.lang.ParserScopeEnum.*;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
 
@@ -96,6 +96,10 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         advance(builder);
         mark.done(elementType);
         return true;
+    }
+
+    protected boolean isTypeResolution(ParserState state) {
+        return state.isResolution(typeNamed) || state.isResolution(typeNamedEq) || state.isResolution(typeNamedEqVariant);
     }
 
 }

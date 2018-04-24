@@ -10,6 +10,7 @@ import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected BaseParsingTestCase(@NotNull String dataPath, @NotNull String fileExt, @NotNull ParserDefinition... definitions) {
@@ -23,6 +24,12 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     protected <T> T first(Collection<T> collection) {
         return collection.iterator().next();
+    }
+
+    protected <T> T second(Collection<T> collection) {
+        Iterator<T> iterator = collection.iterator();
+        iterator.next();
+        return iterator.next();
     }
 
     protected PsiFileModuleImpl parseCode(String code) {

@@ -157,7 +157,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseAnd(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(typeNamed) || state.isResolution(typeNamedEq)) {
+        if (isTypeResolution(state)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
