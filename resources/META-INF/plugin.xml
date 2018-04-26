@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.47.1</version>
+    <version>0.48-beta01</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
