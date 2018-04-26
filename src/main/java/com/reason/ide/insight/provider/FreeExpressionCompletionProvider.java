@@ -16,7 +16,7 @@ import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 
@@ -32,7 +32,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         // todo
 
         // Add file modules
-        List<PsiModule> fileModules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
+        Collection<PsiModule> fileModules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : fileModules) {
             if (!module.isComponent()) {
                 resultSet.addElement(

@@ -75,7 +75,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
 
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            List<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
+            Collection<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     resultSet.addElement(

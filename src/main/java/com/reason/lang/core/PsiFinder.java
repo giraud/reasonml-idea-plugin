@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import static com.reason.lang.core.MlScope.all;
@@ -51,8 +50,7 @@ public final class PsiFinder {
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
         if (modules.isEmpty()) {
             m_log.debug("  No modules found");
-        }
-        else {
+        } else {
             m_log.debug("  modules found", modules.size());
             for (PsiModule module : modules) {
                 boolean keepFile;
@@ -133,8 +131,10 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public List<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
-        List<PsiModule> result = new ArrayList<>();
+    public Collection<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
+        // All file names are unique in a project, we use the file name in the key
+        // Need a better algo to priorise the paths and not overwrite the correct resolved files
+        Map<String, PsiModule> result = new THashMap<>();
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
 
         Map<String, PsiModule> files = new THashMap<>();
@@ -143,6 +143,7 @@ public final class PsiFinder {
         Collection<VirtualFile> ociFiles;
         Collection<VirtualFile> oclFiles;
 
+        // List all interface files
         if (fileType != MlFileType.implementationOnly) {
             rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension());
             ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension());
@@ -154,7 +155,7 @@ public final class PsiFinder {
                     if (file != null) {
                         PsiModule module = ((FileBase) file).asModule();
                         if (module != null) {
-                            files.put(canonicalPath, module);
+                            files.put(virtualFile.getName(), module);
                         }
                     }
                 }
@@ -167,15 +168,16 @@ public final class PsiFinder {
                     if (file != null) {
                         PsiModule module = ((FileBase) file).asModule();
                         if (module != null) {
-                            files.put(canonicalPath, module);
+                            files.put(virtualFile.getName(), module);
                         }
                     }
                 }
             }
 
-            result.addAll(files.values());
+            result.putAll(files);
         }
 
+        // List all implementation files
         if (fileType != MlFileType.interfaceOnly) {
             rmlFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
             oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
@@ -187,8 +189,8 @@ public final class PsiFinder {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
 
                     if (fileType != MlFileType.implementationOnly) {
-                        String canonicalInterface = canonicalPath.replace("." + RmlFileType.INSTANCE.getDefaultExtension(), "." + RmlInterfaceFileType.INSTANCE.getDefaultExtension());
-                        if (files.containsKey(canonicalInterface)) {
+                        String interfaceName = virtualFile.getNameWithoutExtension() + "." + RmlInterfaceFileType.INSTANCE.getDefaultExtension();
+                        if (files.containsKey(interfaceName)) {
                             keep = false;
                         }
                     }
@@ -197,7 +199,7 @@ public final class PsiFinder {
                         if (file instanceof FileBase) {
                             PsiModule module = ((FileBase) file).asModule();
                             if (module != null) {
-                                result.add(module);
+                                result.put(virtualFile.getName(), module);
                             }
                         }
                     }
@@ -211,8 +213,8 @@ public final class PsiFinder {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
 
                     if (fileType != MlFileType.implementationOnly) {
-                        String canonicalInterface = canonicalPath.replace("." + OclFileType.INSTANCE.getDefaultExtension(), "." + OclInterfaceFileType.INSTANCE.getDefaultExtension());
-                        if (files.containsKey(canonicalInterface)) {
+                        String interfaceName = virtualFile.getNameWithoutExtension() + "." + OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                        if (files.containsKey(interfaceName)) {
                             keep = false;
                         }
                     }
@@ -221,7 +223,7 @@ public final class PsiFinder {
                         if (file instanceof FileBase) {
                             PsiModule module = ((FileBase) file).asModule();
                             if (module != null) {
-                                result.add(module);
+                                result.put(file.getName(), module);
                             }
                         }
                     }
@@ -229,6 +231,6 @@ public final class PsiFinder {
             }
         }
 
-        return result;
+        return result.values();
     }
 }

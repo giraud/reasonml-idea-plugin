@@ -16,7 +16,7 @@ import com.reason.lang.core.PsiSignatureUtil;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
 
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
@@ -31,7 +31,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         Project project = originalFile.getProject();
 
         // Find all files that are components ! TODO: components can be sub modules
-        List<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
+        Collection<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
         for (PsiModule module : modules) {
             String moduleName = module.getName();
             if (!fileModuleName.equals(moduleName) && module.isComponent()) {
