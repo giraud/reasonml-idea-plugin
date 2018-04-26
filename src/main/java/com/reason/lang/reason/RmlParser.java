@@ -334,7 +334,11 @@ public class RmlParser extends CommonParser {
         if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
             // Surely a tag
             builder.remapCurrentToken(m_types.TAG_LT);
-            state.add(markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT));
+            ParserScope tagScope = markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT);
+            state.add(tagScope);
+            if (state.isInScopeExpression()) {
+                state.addStart(tagScope);
+            }
             state.dontMove = advance(builder);
 
             builder.remapCurrentToken(m_types.TAG_NAME);
