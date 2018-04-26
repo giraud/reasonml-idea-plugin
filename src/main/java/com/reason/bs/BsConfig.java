@@ -1,9 +1,6 @@
 package com.reason.bs;
 
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,17 +21,9 @@ class BsConfig {
     private final String[] m_deps;
     private final String m_pervasives;
 
-    private BsConfig(@NotNull String name, boolean hasNamespace, @NotNull String bsDepsRelativePath, @Nullable String[] deps) {
+    private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @NotNull String[] bsPlatformDeps, @Nullable String[] deps) {
         m_namespace = hasNamespace ? toNamespace(name) : "";
-        m_pervasives = bsDepsRelativePath + "/pervasives.mli";
-
-        // all files but the ones with _ ?
-        String[] bsPlatformDeps = new String[]{
-                bsDepsRelativePath + "/js.mli",
-                bsDepsRelativePath + "/js.ml",
-                bsDepsRelativePath + "/belt.mli",
-                bsDepsRelativePath + "/belt.ml",
-        };
+        m_pervasives = locateFile(rootFile, "pervasives.mli");
 
         if (deps == null) {
             m_deps = bsPlatformDeps;
@@ -81,23 +70,31 @@ class BsConfig {
                 String[] deps = readDependencies(jsonContent);
 
                 // find location of bs dependencies, could be lib/ocaml or jscomp/runtime (depends on os)
-                String bsDepsRelativePath = "bs-platform/lib/ocaml";
                 VirtualFile rootFile = bsconfig.getParent();
-                VirtualFile jsPath = rootFile.findFileByRelativePath("node_modules/" + bsDepsRelativePath + "/js.mli");
-                if (jsPath == null) {
-                    jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/jscomp/runtime/js.mli");
-                    if (jsPath == null) {
-                        Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find location of js.mli, completion is missing bs-platform modules", NotificationType.WARNING));
-                    } else {
-                        bsDepsRelativePath = "bs-platform/jscomp/runtime";
-                    }
-                }
+                String[] bsDeps = new String[]{
+                        locateFile(rootFile, "js.mli"),
+                        locateFile(rootFile, "js.ml"),
+                        locateFile(rootFile, "belt.mli"),
+                        locateFile(rootFile, "belt.ml")
+                };
 
-                return new BsConfig(name, hasNamespace, bsDepsRelativePath, deps);
+                return new BsConfig(rootFile, name, hasNamespace, bsDeps, deps);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @NotNull
+    private static String locateFile(@NotNull VirtualFile rootFile, @NotNull String filename) {
+        VirtualFile jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/lib/ocaml/" + filename);
+        if (jsPath == null) {
+            jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/jscomp/runtime/" + filename);
+            if (jsPath != null) {
+                return "bs-platform/jscomp/runtime/" + filename;
+            }
+        }
+        return "bs-platform/lib/ocaml/" + filename;
     }
 
     @Nullable
