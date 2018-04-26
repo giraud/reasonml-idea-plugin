@@ -80,6 +80,7 @@ public class Platform {
         return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
     }
 
+    @NotNull
     private static String removeProjectDir(Project project, String path) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
@@ -87,6 +88,7 @@ public class Platform {
         return relativize.toString();
     }
 
+    @NotNull
     public static String removeProjectDir(Project project, @Nullable VirtualFile file) {
         return file == null ? "" : removeProjectDir(project, file.getPath());
     }

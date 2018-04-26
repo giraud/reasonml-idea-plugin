@@ -15,6 +15,7 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
@@ -36,7 +37,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             if (!module.isComponent()) {
                 resultSet.addElement(
                         LookupElementBuilder.create(module).
-                                withTypeText(Platform.removeProjectDir(project, module.getContainingFile().getVirtualFile())).
+                                withTypeText(Platform.removeProjectDir(project, module.getContainingFile().getVirtualFile()).replace("node_modules" + File.separator, "")).
                                 withIcon(PsiIconUtil.getProvidersIcon(module, 0))
                 );
             }

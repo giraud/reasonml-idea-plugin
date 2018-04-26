@@ -1,6 +1,9 @@
 package com.reason.bs;
 
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,27 +20,28 @@ class BsConfig {
     private static Pattern NAME_REGEXP = Pattern.compile(".*\"name\":\\s*\"([^\"]*?)\".*");
     private static Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
 
-    private static String[] PERVASIVES = new String[]{
-            // all files but the ones with _ ?
-            "bs-platform/lib/ocaml/js.mli",
-            "bs-platform/lib/ocaml/js.ml",
-            "bs-platform/lib/ocaml/belt.mli",
-            "bs-platform/lib/ocaml/belt.ml",
-    };
-
     private final String m_namespace;
     private final String[] m_deps;
+    private final String m_pervasives;
 
-    private BsConfig(String name, boolean hasNamespace, @Nullable String[] deps) {
+    private BsConfig(@NotNull String name, boolean hasNamespace, @NotNull String bsDepsRelativePath, @Nullable String[] deps) {
         m_namespace = hasNamespace ? toNamespace(name) : "";
+        m_pervasives = bsDepsRelativePath + "/pervasives.mli";
+
+        // all files but the ones with _ ?
+        String[] bsPlatformDeps = new String[]{
+                bsDepsRelativePath + "/js.mli",
+                bsDepsRelativePath + "/js.ml",
+                bsDepsRelativePath + "/belt.mli",
+                bsDepsRelativePath + "/belt.ml",
+        };
 
         if (deps == null) {
-            m_deps = new String[PERVASIVES.length];
-            System.arraycopy(PERVASIVES, 0, m_deps, 0, PERVASIVES.length);
+            m_deps = bsPlatformDeps;
         } else {
-            m_deps = new String[deps.length + PERVASIVES.length];
+            m_deps = new String[deps.length + bsPlatformDeps.length];
             System.arraycopy(deps, 0, m_deps, 0, deps.length);
-            System.arraycopy(PERVASIVES, 0, m_deps, deps.length, PERVASIVES.length);
+            System.arraycopy(bsPlatformDeps, 0, m_deps, deps.length, bsPlatformDeps.length);
         }
     }
 
@@ -53,7 +57,7 @@ class BsConfig {
 
         if (canonicalPath.contains("node_modules") && m_deps != null) {
             for (String dep : m_deps) {
-                if (canonicalPath.contains(dep) || canonicalPath.contains("bs-platform/lib/ocaml/pervasives.ml")) {
+                if (canonicalPath.contains(dep) || canonicalPath.contains(m_pervasives)) {
                     return true;
                 }
             }
@@ -76,7 +80,20 @@ class BsConfig {
                 boolean hasNamespace = readNamespace(jsonContent);
                 String[] deps = readDependencies(jsonContent);
 
-                return new BsConfig(name, hasNamespace, deps);
+                // find location of bs dependencies, could be lib/ocaml or jscomp/runtime (depends on os)
+                String bsDepsRelativePath = "bs-platform/lib/ocaml";
+                VirtualFile rootFile = bsconfig.getParent();
+                VirtualFile jsPath = rootFile.findFileByRelativePath("node_modules/" + bsDepsRelativePath + "/js.mli");
+                if (jsPath == null) {
+                    jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/jscomp/runtime/js.mli");
+                    if (jsPath == null) {
+                        Notifications.Bus.notify(new RmlNotification("Bsb", "Can't find location of js.mli, completion is missing bs-platform modules", NotificationType.WARNING));
+                    } else {
+                        bsDepsRelativePath = "bs-platform/jscomp/runtime";
+                    }
+                }
+
+                return new BsConfig(name, hasNamespace, bsDepsRelativePath, deps);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
