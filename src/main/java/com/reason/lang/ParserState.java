@@ -89,6 +89,10 @@ public class ParserState {
         currentScope.complete = true;
     }
 
+    public void setPreviousComplete() {
+        m_scopes.get(m_scopes.size() - 2).complete = true;
+    }
+
     public void add(ParserScope scope) {
         m_scopes.add(scope);
         currentScope = scope;

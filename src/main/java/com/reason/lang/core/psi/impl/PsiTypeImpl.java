@@ -9,10 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.PsiUtil;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiTypeStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +32,7 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+        return findChildByClass(PsiTypeConstrName.class);
     }
 
     @NotNull
@@ -95,6 +92,6 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
 
     @Override
     public String toString() {
-        return "Type(" + getName() + ")";
+        return "Type " + getName();
     }
 }

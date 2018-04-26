@@ -12,6 +12,7 @@ public enum ParserScopeEnum {
     externalNamedSignature,
 
     type,
+    typeConstrName,
     typeNamed,
     typeNamedEq,
     typeNamedEqVariant,
