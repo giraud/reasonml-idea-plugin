@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.48
+
+* :house: Fix folding code
+* :house: Better locate js.ml, belt.ml
+* :house: Add Pervasives to completion
+            
 ## 0.47.1
 
 * :bug: Fixed 2 bugs (stack and 'editor not disposed' exceptions)
