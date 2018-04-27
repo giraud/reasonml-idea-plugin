@@ -54,10 +54,15 @@ NEWLINE=("\r"* "\n")
 <INITIAL> {
     {WHITE_SPACE} { return WHITE_SPACE; }
 
-    "jbuild_version" { return types.VERSION; }
-
     "("   { return types.LPAREN; }
     ")"   { return types.RPAREN; }
+
+    "jbuild_version" { return types.VERSION; }
+    "library"        { return types.LIBRARY; }
+    "name"           { return types.NAME; }
+    "public_name"    { return types.PUBLIC_NAME; }
+    "synopsis"       { return types.SYNOPSIS; }
+    "executable"     { return types.EXECUTABLE; }
 }
 
 <IN_STRING> {

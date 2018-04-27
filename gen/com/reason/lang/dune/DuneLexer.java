@@ -56,10 +56,10 @@ public class DuneLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\25\1\1\1\33\1\3\1\2\22\0\1\25\1\0\1\23\5\0\1\21\1\22\6\0\4\27\4\30"+
-    "\2\26\7\0\6\32\25\0\1\24\2\0\1\12\1\0\1\32\1\5\1\32\1\11\1\14\1\32\2\0\1\7"+
-    "\1\4\1\0\1\10\1\0\1\20\1\17\2\0\1\15\1\16\1\0\1\6\1\13\1\0\1\31\14\0\1\33"+
-    "\242\0\2\33\26\0");
+    "\11\0\1\34\1\1\1\41\1\3\1\2\22\0\1\34\1\0\1\32\5\0\1\4\1\5\6\0\4\36\4\37\2"+
+    "\35\7\0\6\40\25\0\1\33\2\0\1\14\1\0\1\23\1\7\1\27\1\13\1\16\1\40\2\0\1\11"+
+    "\1\6\1\0\1\12\1\25\1\22\1\21\1\26\1\0\1\17\1\20\1\31\1\10\1\15\1\0\1\30\1"+
+    "\24\13\0\1\41\242\0\2\41\26\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -67,12 +67,13 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\4\0\1\1\1\2\1\3\1\2\1\4\1\5\1\6"+
-    "\1\2\1\7\1\6\2\0\1\6\1\0\3\6\17\0"+
-    "\1\10";
+    "\4\0\1\1\1\2\1\3\1\4\1\5\6\2\1\6"+
+    "\1\2\1\7\1\6\7\0\1\6\1\0\3\6\15\0"+
+    "\1\10\15\0\1\11\5\0\1\12\5\0\1\13\2\0"+
+    "\1\14\2\0\1\15";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[37];
+    int [] result = new int[77];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -97,14 +98,19 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\34\0\70\0\124\0\160\0\160\0\214\0\250"+
-    "\0\160\0\160\0\160\0\304\0\160\0\340\0\374\0\304"+
-    "\0\u0118\0\u0134\0\u0150\0\u016c\0\u0188\0\u01a4\0\u01c0\0\u01dc"+
-    "\0\u01f8\0\u0214\0\u0230\0\u024c\0\u0268\0\u0284\0\u02a0\0\u02bc"+
-    "\0\u02d8\0\u02f4\0\u0310\0\u032c\0\160";
+    "\0\0\0\42\0\104\0\146\0\210\0\210\0\252\0\210"+
+    "\0\210\0\314\0\356\0\u0110\0\u0132\0\u0154\0\u0176\0\210"+
+    "\0\u0198\0\210\0\u01ba\0\u01dc\0\u01fe\0\u0220\0\u0242\0\u0264"+
+    "\0\u0286\0\u0198\0\u02a8\0\u02ca\0\u02ec\0\u030e\0\u0330\0\u0352"+
+    "\0\u0374\0\u0396\0\u03b8\0\u03da\0\u03fc\0\u041e\0\u0440\0\u0462"+
+    "\0\u0484\0\u04a6\0\u04c8\0\u04ea\0\210\0\u050c\0\u052e\0\u0550"+
+    "\0\u0572\0\u0594\0\u05b6\0\u05d8\0\u05fa\0\u061c\0\u063e\0\u0660"+
+    "\0\u0682\0\u06a4\0\210\0\u06c6\0\u06e8\0\u070a\0\u072c\0\u074e"+
+    "\0\210\0\u0770\0\u0792\0\u07b4\0\u07d6\0\u07f8\0\210\0\u081a"+
+    "\0\u083c\0\210\0\u085e\0\u0880\0\210";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[37];
+    int [] result = new int[77];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -127,22 +133,32 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\34\5\35\6\3\7\1\10\14\6\1\11\1\12\2\6"+
-    "\1\7\6\6\2\13\1\14\1\6\17\13\1\15\1\16"+
-    "\6\13\1\6\35\0\3\7\21\0\1\7\13\0\1\17"+
-    "\27\0\1\13\1\20\31\0\1\13\1\21\1\22\1\0"+
-    "\13\13\1\23\6\13\3\24\1\25\1\13\7\0\1\26"+
-    "\52\0\1\21\7\0\1\21\1\22\60\0\1\27\32\0"+
-    "\3\30\10\0\1\31\3\0\1\31\2\0\1\31\11\0"+
-    "\3\31\1\0\1\31\10\0\1\32\53\0\2\33\31\0"+
-    "\3\13\10\0\1\13\3\0\1\13\2\0\1\13\11\0"+
-    "\3\13\1\0\1\13\11\0\1\34\52\0\2\13\14\0"+
-    "\1\35\34\0\1\36\34\0\1\37\34\0\1\40\34\0"+
-    "\1\41\34\0\1\42\24\0\1\43\43\0\1\44\34\0"+
-    "\1\45\13\0";
+    "\42\5\43\6\3\7\1\10\1\11\1\12\3\6\1\13"+
+    "\3\6\1\14\1\6\1\15\1\6\1\16\3\6\1\17"+
+    "\5\6\1\7\5\6\2\20\1\21\1\6\26\20\1\22"+
+    "\1\23\5\20\1\6\43\0\3\7\30\0\1\7\14\0"+
+    "\1\24\43\0\1\25\60\0\1\26\35\0\1\27\40\0"+
+    "\1\30\26\0\1\31\32\0\1\20\1\32\37\0\1\20"+
+    "\1\33\1\34\1\0\15\20\1\35\6\20\1\36\4\20"+
+    "\3\37\1\20\11\0\1\40\40\0\1\41\50\0\1\42"+
+    "\45\0\1\43\44\0\1\44\23\0\1\45\66\0\1\33"+
+    "\6\0\1\33\1\34\75\0\1\46\12\0\1\47\3\0"+
+    "\1\47\2\0\1\47\4\0\1\47\3\0\1\47\5\0"+
+    "\4\47\36\0\3\50\13\0\1\51\47\0\1\52\51\0"+
+    "\1\53\33\0\1\54\36\0\1\55\35\0\1\56\65\0"+
+    "\2\57\11\0\1\20\3\0\1\20\2\0\1\20\4\0"+
+    "\1\20\3\0\1\20\5\0\4\20\36\0\3\20\14\0"+
+    "\1\60\52\0\1\61\26\0\1\62\57\0\1\63\24\0"+
+    "\1\64\66\0\2\20\15\0\1\65\45\0\1\66\53\0"+
+    "\1\67\30\0\1\70\50\0\1\71\26\0\1\72\51\0"+
+    "\1\73\40\0\1\74\27\0\1\75\44\0\1\76\42\0"+
+    "\1\77\33\0\1\100\52\0\1\101\43\0\1\102\35\0"+
+    "\1\103\35\0\1\104\52\0\1\105\35\0\1\106\40\0"+
+    "\1\107\50\0\1\110\34\0\1\111\37\0\1\112\34\0"+
+    "\1\113\51\0\1\114\42\0\1\115\17\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[840];
+    int [] result = new int[2210];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -180,11 +196,13 @@ public class DuneLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\4\0\2\11\2\1\3\11\1\1\1\11\1\1\2\0"+
-    "\1\1\1\0\3\1\17\0\1\11";
+    "\4\0\2\11\1\1\2\11\6\1\1\11\1\1\1\11"+
+    "\1\1\7\0\1\1\1\0\3\1\15\0\1\11\15\0"+
+    "\1\11\5\0\1\11\5\0\1\11\2\0\1\11\2\0"+
+    "\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[37];
+    int [] result = new int[77];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -515,7 +533,7 @@ public class DuneLexer implements FlexLexer {
             case IN_STRING: {
               yybegin(INITIAL); tokenEnd(); return types.STRING;
             }  // fall though
-            case 38: break;
+            case 78: break;
             default:
         return null;
         }
@@ -526,42 +544,67 @@ public class DuneLexer implements FlexLexer {
             { yybegin(INITIAL); yypushback(1);
             } 
             // fall through
-          case 9: break;
+          case 14: break;
           case 2: 
             { return BAD_CHARACTER;
             } 
             // fall through
-          case 10: break;
+          case 15: break;
           case 3: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 11: break;
+          case 16: break;
           case 4: 
             { return types.LPAREN;
             } 
             // fall through
-          case 12: break;
+          case 17: break;
           case 5: 
             { return types.RPAREN;
             } 
             // fall through
-          case 13: break;
+          case 18: break;
           case 6: 
             { 
             } 
             // fall through
-          case 14: break;
+          case 19: break;
           case 7: 
             { yybegin(INITIAL); tokenEnd(); return types.STRING;
             } 
             // fall through
-          case 15: break;
+          case 20: break;
           case 8: 
+            { return types.NAME;
+            } 
+            // fall through
+          case 21: break;
+          case 9: 
+            { return types.LIBRARY;
+            } 
+            // fall through
+          case 22: break;
+          case 10: 
+            { return types.SYNOPSIS;
+            } 
+            // fall through
+          case 23: break;
+          case 11: 
+            { return types.EXECUTABLE;
+            } 
+            // fall through
+          case 24: break;
+          case 12: 
+            { return types.PUBLIC_NAME;
+            } 
+            // fall through
+          case 25: break;
+          case 13: 
             { return types.VERSION;
             } 
             // fall through
-          case 16: break;
+          case 26: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

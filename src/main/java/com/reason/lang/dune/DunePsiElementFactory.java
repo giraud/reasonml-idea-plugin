@@ -4,13 +4,17 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiDuneVersion;
+import com.reason.lang.core.psi.PsiSExpr;
 import com.reason.lang.core.psi.PsiToken;
 
 class DunePsiElementFactory {
     static PsiElement createElement(ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == DuneTypes.VERSION) {
+        if (type == DuneTypes.SEXPR) {
+            return new PsiSExpr(node);
+        }
+        else if (type == DuneTypes.VERSION) {
             return new PsiDuneVersion(node);
         }
 
