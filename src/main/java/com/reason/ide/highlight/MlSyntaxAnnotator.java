@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class MlSyntaxAnnotator implements Annotator {
 
-    private MlTypes m_types;
+    private final MlTypes m_types;
 
     MlSyntaxAnnotator(MlTypes types) {
         m_types = types;
@@ -30,15 +30,15 @@ public abstract class MlSyntaxAnnotator implements Annotator {
         if (element instanceof PsiType) {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.TYPE_ARGUMENT_);
             String name = ((PsiType) element).getName();
-            if (name != null) {
+            if (name != null && !name.isEmpty()) {
                 // find all occurrences of name
                 int nameLength = name.length();
                 String text = element.getText();
-                int startOfName = text.indexOf(name);
-                while (startOfName >= 0) {
-                    TextRange range = TextRange.from(startOfName, nameLength);
+                int namePos = text.indexOf(name);
+                while (namePos >= 0) {
+                    TextRange range = TextRange.from(namePos, nameLength);
                     holder.createInfoAnnotation(range, null).setEnforcedTextAttributes(scheme);
-                    startOfName = text.indexOf(name, startOfName + nameLength);
+                    namePos = text.indexOf(name, namePos + nameLength);
                 }
             }
         } else if (elementType == m_types.UPPER_SYMBOL) {
