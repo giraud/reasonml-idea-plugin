@@ -44,7 +44,7 @@ public class ParserState {
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && !scope.start && scope.scopeType != any) {
+            while (scope != null && !scope.start) {
                 popEnd();
                 scope = getLatestScope();
             }

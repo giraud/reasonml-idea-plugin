@@ -15,6 +15,8 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;
+
 public abstract class MlSyntaxAnnotator implements Annotator {
 
     private final MlTypes m_types;
@@ -36,8 +38,10 @@ public abstract class MlSyntaxAnnotator implements Annotator {
                 String text = element.getText();
                 int namePos = text.indexOf(name);
                 while (namePos >= 0) {
-                    TextRange range = TextRange.from(namePos, nameLength);
-                    holder.createInfoAnnotation(range, null).setEnforcedTextAttributes(scheme);
+                    TextRange range = TextRange.from(element.getTextOffset() + namePos, nameLength);
+                    Annotation infoAnnotation = holder.createInfoAnnotation(range, null);
+                    infoAnnotation.setEnforcedTextAttributes(ERASE_MARKER);
+                    infoAnnotation.setEnforcedTextAttributes(scheme);
                     namePos = text.indexOf(name, namePos + nameLength);
                 }
             }
@@ -48,13 +52,13 @@ public abstract class MlSyntaxAnnotator implements Annotator {
             annotation.setEnforcedTextAttributes(colorAttribute);
         } else if (elementType == m_types.MACRO_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.ANNOTATION_);
-            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_GT) {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.MARKUP_TAG_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         } else if (elementType == m_types.PROPERTY_NAME) {
-            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(TextAttributes.ERASE_MARKER);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(MlSyntaxHighlighter.MARKUP_ATTRIBUTE_));
         } else if (element instanceof PsiInterpolation) {
             TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.STRING_);

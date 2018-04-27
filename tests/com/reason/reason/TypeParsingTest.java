@@ -17,6 +17,11 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals("t", type.getName());
     }
 
+    public void testRecursiveType() {
+        PsiType type = first(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));").getTypeExpressions());
+        assertEquals("tree('a)", type.getName());
+    }
+
     public void testTypeBindingWithVariant() {
         assertNotNull(first(findChildrenOfType(first(parseCode("type t = | Tick;").getTypeExpressions()), PsiTypeBinding.class)));
     }
@@ -24,4 +29,5 @@ public class TypeParsingTest extends BaseParsingTestCase {
     public void testTypeBindingWithRecord() {
         assertNotNull(first(findChildrenOfType(first(parseCode("type t = {count: int};").getTypeExpressions()), PsiTypeBinding.class)));
     }
+
 }

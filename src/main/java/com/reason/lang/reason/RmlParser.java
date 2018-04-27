@@ -279,6 +279,8 @@ public class RmlParser extends CommonParser {
         if (state.notResolution(module)) {
             state.endUntilScopeExpression(null);
             state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
+            state.dontMove = advance(builder);
+            state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         }
     }
 
@@ -370,11 +372,11 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLIdent(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(type)) {
+        if (state.isResolution(typeConstrName)) {
             // TYPE LIDENT ...
-            builder.remapCurrentToken(m_types.TYPE_CONSTR_NAME);
             state.setResolution(typeNamed);
             state.setComplete();
+            state.setPreviousComplete();
         } else if (state.isResolution(external)) {
             state.setResolution(externalNamed);
             state.setComplete();
@@ -491,6 +493,7 @@ public class RmlParser extends CommonParser {
 
     private void parseEq(PsiBuilder builder, ParserState state) {
         if (state.isResolution(typeNamed)) {
+            state.popEnd();
             state.setResolution(typeNamedEq);
             state.dontMove = advance(builder);
             state.add(markCompleteScope(builder, typeNamedEq, m_types.TYPE_BINDING, groupExpression, null));

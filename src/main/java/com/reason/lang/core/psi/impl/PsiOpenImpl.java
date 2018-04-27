@@ -69,6 +69,6 @@ public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiS
 
     @Override
     public String toString() {
-        return "Open(" + getName() + ")";
+        return "Open " + getName();
     }
 }
