@@ -161,6 +161,7 @@ public class RmlParser extends CommonParser {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
+            state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         } else if (state.isResolution(letNamedEq)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
@@ -481,7 +482,9 @@ public class RmlParser extends CommonParser {
             state.setComplete();
         }
 
-        state.endAny();
+        if (!state.isResolution(typeNamed)) {
+            state.endAny();
+        }
 
         if (state.isResolution(letNamedEq)) {
             // function parameters
