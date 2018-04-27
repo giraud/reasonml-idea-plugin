@@ -4,11 +4,14 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Platform;
+import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.MlScope;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
 import com.reason.lang.core.psi.PsiModule;
@@ -21,10 +24,11 @@ import java.util.Collection;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 
 public class FreeExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
+    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.insight.dot"));
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        //System.out.println("»» FREE expression completion");
+        m_debug.debug("FREE expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
 
@@ -64,6 +68,18 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             //for (PsiInclude includeExpression : includeExpressions) {
             // todo
             //}
+        }
+
+        // Add pervasives expressions
+        PsiModule pervasives = PsiFinder.getInstance().findModule(project, "Pervasives", interfaceOrImplementation, MlScope.all);
+        if (pervasives != null) {
+            for (PsiNamedElement expression : pervasives.getExpressions()) {
+                resultSet.addElement(
+                        LookupElementBuilder.create(expression).
+                                withTypeText(PsiSignatureUtil.getProvidersType(expression)).
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                );
+            }
         }
     }
 
