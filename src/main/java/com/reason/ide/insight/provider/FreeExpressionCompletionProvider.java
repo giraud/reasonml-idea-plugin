@@ -24,7 +24,7 @@ import java.util.Collection;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 
 public class FreeExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
-    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.insight.dot"));
+    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.insight.free"));
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {

@@ -30,9 +30,9 @@ import static com.reason.lang.core.MlScope.inBsconfig;
 
 public final class PsiFinder {
 
-    private static PsiFinder INSTANCE = new PsiFinder();
+    private static final PsiFinder INSTANCE = new PsiFinder();
 
-    private Debug m_log = new Debug(Logger.getInstance("ReasonML.finder"));
+    private final Debug m_log = new Debug(Logger.getInstance("ReasonML.finder"));
 
     public static PsiFinder getInstance() {
         return INSTANCE;
@@ -42,8 +42,8 @@ public final class PsiFinder {
     public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
         m_log.debug("Find modules, name", name, scope.name());
 
-        ArrayList<PsiModule> inConfig = new ArrayList<>();
-        ArrayList<PsiModule> other = new ArrayList<>();
+        Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
+        Map<String/*qn*/, PsiModule> other = new THashMap<>();
 
         Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
 
@@ -79,20 +79,21 @@ public final class PsiFinder {
                 if (keepFile) {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
                         m_log.debug("    keep (in config)", module);
-                        inConfig.add(module);
+                        inConfig.put(module.getQualifiedName(), module);
                     } else {
                         m_log.debug("    keep (not in config)", module);
-                        other.add(module);
+                        other.put(module.getQualifiedName(), module);
                     }
                 }
             }
         }
 
         if (scope == all) {
-            inConfig.addAll(other);
+            other.putAll(inConfig);
+            inConfig = other;
         }
 
-        return inConfig;
+        return inConfig.values();
     }
 
     @Nullable
