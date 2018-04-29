@@ -40,6 +40,7 @@ WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
 NEWLINE=("\r"* "\n")
+IDENTCHAR=[A-Za-z_0-9']
 
 %state WAITING_VALUE
 %state INITIAL
@@ -52,10 +53,10 @@ NEWLINE=("\r"* "\n")
 }
 
 <INITIAL> {
-    {WHITE_SPACE} { return WHITE_SPACE; }
+    {WHITE_SPACE}    { return WHITE_SPACE; }
 
-    "("   { return types.LPAREN; }
-    ")"   { return types.RPAREN; }
+    "("              { return types.LPAREN; }
+    ")"              { return types.RPAREN; }
 
     "jbuild_version" { return types.VERSION; }
     "library"        { return types.LIBRARY; }
@@ -63,6 +64,8 @@ NEWLINE=("\r"* "\n")
     "public_name"    { return types.PUBLIC_NAME; }
     "synopsis"       { return types.SYNOPSIS; }
     "executable"     { return types.EXECUTABLE; }
+
+    {IDENTCHAR}+     { return types.IDENT; }
 }
 
 <IN_STRING> {

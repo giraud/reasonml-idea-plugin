@@ -3,10 +3,12 @@ package com.reason.lang.dune;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
+import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.reason.lang.ParserScopeEnum.library;
 import static com.reason.lang.ParserScopeEnum.sexpr;
 import static com.reason.lang.ParserScopeType.scopeExpression;
 
@@ -43,10 +45,12 @@ public class DuneParser extends CommonParser {
                     state.dontMove = advance(builder);
                     state.popEnd();
                 } else {
-                    // error
+                    builder.error("Unbalanced parenthesis");
                 }
             } else if (tokenType == DuneTypes.VERSION) {
                 wrapWith(DuneTypes.VERSION, builder);
+            } else if (tokenType == DuneTypes.LIBRARY) {
+                parseLibrary(builder, state);
             }
 
             if (state.dontMove) {
@@ -62,4 +66,22 @@ public class DuneParser extends CommonParser {
             c = builder.rawTokenIndex();
         }
     }
+
+    /*
+    (library (
+        (name <library-name>)
+        <optional-fields>
+    ))
+    */
+    private void parseLibrary(PsiBuilder builder, ParserState state) {
+        state.add(mark(builder, library, DuneTypes.LIBRARY));
+        state.dontMove = advance(builder);
+        if (builder.getTokenType() == DuneTypes.LPAREN) {
+            state.setComplete();
+        }
+        else {
+            builder.error("need a (");
+        }
+    }
+
 }
