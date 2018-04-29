@@ -81,5 +81,10 @@ public enum ParserScopeEnum {
     namedSymbol,
     namedSymbolSignature,
 
-    sexpr, library, genericExpression
+    genericExpression,
+
+    sexpr,
+    library,
+    executable,
+    name,
 }

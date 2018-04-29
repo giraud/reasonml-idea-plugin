@@ -9,11 +9,6 @@
     ]]></description>
 
     <change-notes><![CDATA[
-        <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
-        <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-
-        <p></p>
-
         <b>version 0.48</b>
 
         <ul>
@@ -22,48 +17,9 @@
             <li>Add Pervasives to completion</li>
         </ul>
 
-      <b>version 0.47.1</b>
+        <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
 
-      <ul>
-        <li>Fixed 2 bugs (stack and 'editor not disposed' exceptions)</li>
-        <li>Fixed recursive type parsing problem with variants</li>
-      </ul>
-
-      <b>version 0.47</b>
-
-      <ul>
-        <li>Better error extraction</li>
-        <li>Reformat on save can be activated (see doc)</li>
-        <li>Reason settings to change reformat column width</li>
-      </ul>
-
-      <b>version 0.46</b>
-
-      <ul>
-        <li>Fix version 0.45</li>
-        <li>Better error annotation (includes warnings)</li>
-      </ul>
-      
-      <b>version 0.45.2</b>
-
-      Deactivated the types annotations that could make idea hang until it's fixed
-
-      <ul>
-        <li>Bucklescript window has an icon</li>
-        <li>File icons updated</li>
-        <li>Goto action use the same path resolution than completion</li>
-        <li>Parsers improvement</li>
-        <li>Display signature for 'val' in completion popup</li>
-        <li>Reworked how to get the types from cmi files</li>
-      </ul>
-
-      <b>version 0.44</b>
-
-      <ul>
-        <li>Fix #40</li>
-        <li>Improve completion on expressions</li>
-      </ul>
-
+        <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
     ]]>
     </change-notes>
 

@@ -1,15 +1,14 @@
 package com.reason.lang.dune;
 
 import com.intellij.lang.PsiBuilder;
+
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
-import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScopeEnum.library;
-import static com.reason.lang.ParserScopeEnum.sexpr;
+import static com.reason.lang.ParserScopeEnum.*;
 import static com.reason.lang.ParserScopeType.scopeExpression;
 
 public class DuneParser extends CommonParser {
@@ -49,8 +48,12 @@ public class DuneParser extends CommonParser {
                 }
             } else if (tokenType == DuneTypes.VERSION) {
                 wrapWith(DuneTypes.VERSION, builder);
+            } else if (tokenType == DuneTypes.EXECUTABLE) {
+                parseExecutable(builder, state);
             } else if (tokenType == DuneTypes.LIBRARY) {
                 parseLibrary(builder, state);
+            } else if (tokenType == DuneTypes.NAME) {
+                parseName(builder, state);
             }
 
             if (state.dontMove) {
@@ -68,19 +71,45 @@ public class DuneParser extends CommonParser {
     }
 
     /*
+    (executable (
+        (name <name>)
+        <optional-fields>
+    ))
+    */
+    private void parseExecutable(PsiBuilder builder, ParserState state) {
+        state.setResolution(executable);
+        state.setTokenType(DuneTypes.EXECUTABLE);
+        state.dontMove = advance(builder);
+        if (builder.getTokenType() == DuneTypes.LPAREN) {
+            state.setComplete();
+        } else {
+            builder.error("( expected");
+        }
+    }
+
+    /*
     (library (
         (name <library-name>)
         <optional-fields>
     ))
     */
     private void parseLibrary(PsiBuilder builder, ParserState state) {
-        state.add(mark(builder, library, DuneTypes.LIBRARY));
+        state.setResolution(library);
+        state.setTokenType(DuneTypes.LIBRARY);
         state.dontMove = advance(builder);
         if (builder.getTokenType() == DuneTypes.LPAREN) {
             state.setComplete();
+        } else {
+            builder.error("( expected");
         }
-        else {
-            builder.error("need a (");
+    }
+
+    /* (name id) */
+    private void parseName(PsiBuilder builder, ParserState state) {
+        if (state.previousTokenType == DuneTypes.LPAREN) {
+            state.setResolution(name);
+            state.setTokenType(DuneTypes.NAME);
+            state.setComplete();
         }
     }
 

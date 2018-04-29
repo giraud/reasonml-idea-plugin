@@ -11,10 +11,6 @@ public class PsiSExpr extends ASTWrapperPsiElement {
 
     @Override
     public String toString() {
-        PsiElement element = getFirstChild();
-        if (element != null) {
-            element = element.getNextSibling();
-        }
-        return "(" + (element == null ? "" : element.getText());
+        return "(";
     }
 }
