@@ -126,6 +126,12 @@
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
 
         <!--
+         | Facet
+         -->
+
+        <facetType implementation="com.reason.ide.facet.OcamlFacetType" id="ocaml"/>
+
+        <!--
          | Others
          -->
 
