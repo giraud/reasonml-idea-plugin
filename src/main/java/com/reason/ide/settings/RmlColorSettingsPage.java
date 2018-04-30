@@ -75,7 +75,7 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
                 "React.createElement <csMarkupTag><div</csMarkupTag> <csMarkupAttribute>prop</csMarkupAttribute>=value<csMarkupTag>/></csMarkupTag> <csMarkupTag><Button></csMarkupTag> (ReasonReact.stringToElement(\"ok\") <csMarkupTag></Button></csMarkupTag>;";
     }
 
-    private static Map<String, TextAttributesKey> additionalTags = new HashMap<>();
+    private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();
 
     static {
         additionalTags.put("csAnnotation", MlSyntaxHighlighter.ANNOTATION_);
@@ -107,6 +107,6 @@ public class RmlColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDisplayName() {
-        return "Reason";
+        return "Reason (OCaml)";
     }
 }

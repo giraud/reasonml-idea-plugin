@@ -12,15 +12,16 @@ import static com.intellij.psi.TokenType.*;
   private int tokenStartIndex;
   private CharSequence quotedStringId;
   private int commentDepth;
+  private int parenDepth;
 
   public DuneLexer() {}
 
-  //Store the start index of a token
+  // Store the start index of a token
   private void tokenStart() {
     tokenStartIndex = zzStartRead;
   }
 
-  //Set the start index of the token to the stored index
+  // Set the start index of the token to the stored index
   private void tokenEnd() {
     zzStartRead = tokenStartIndex;
   }
@@ -40,11 +41,14 @@ WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
 NEWLINE=("\r"* "\n")
-IDENTCHAR=[A-Za-z_0-9']
+ATOM=[A-Za-z_0-9'&\^%!]
 
 %state WAITING_VALUE
 %state INITIAL
 %state IN_STRING
+%state IN_ML_COMMENT
+%state IN_SEXPR_COMMENT
+%state IN_SL_COMMENT
 
 %%
 
@@ -57,6 +61,11 @@ IDENTCHAR=[A-Za-z_0-9']
 
     "("              { return types.LPAREN; }
     ")"              { return types.RPAREN; }
+
+    "\""             { yybegin(IN_STRING); tokenStart(); }
+    "#|"             { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
+    "#;"             { yybegin(IN_SEXPR_COMMENT); parenDepth = 0; tokenStart(); }
+    ";"              { yybegin(IN_SL_COMMENT); tokenStart(); }
 
     "jbuild_version" { return types.VERSION; }
     "library"        { return types.LIBRARY; }
@@ -91,7 +100,7 @@ IDENTCHAR=[A-Za-z_0-9']
     "modules_without_implementation"  { return types.MODULES_WITHOUT_IMPLEMENTATION; }
     "allow_overlapping_dependencies"  { return types.ALLOW_OVERLAPPING_DEPENDENCIES; }
 
-    {IDENTCHAR}+     { return types.ATOM; }
+    {ATOM}+     { return types.ATOM; }
 }
 
 <IN_STRING> {
@@ -105,6 +114,25 @@ IDENTCHAR=[A-Za-z_0-9']
     { NEWLINE } { }
     . { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING; }
+}
+
+<IN_ML_COMMENT> {
+    "#|" { commentDepth += 1; }
+    "|#" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+    . | {NEWLINE} { }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+}
+
+<IN_SEXPR_COMMENT> {
+    .         {}
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+}
+
+<IN_SL_COMMENT> {
+    .         {}
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
 }
 
 [^] { return BAD_CHARACTER; }

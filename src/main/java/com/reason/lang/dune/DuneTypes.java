@@ -44,4 +44,5 @@ public class DuneTypes {
     public static final IElementType SELF_BUILD_STUBS_ARCHIVE = new DuneElementType("SELF_BUILD_STUBS_ARCHIVE");
     public static final IElementType ALLOW_OVERLAPPING_DEPENDENCIES = new DuneElementType("ALLOW_OVERLAPPING_DEPENDENCIES");
     public static final IElementType MODULES_WITHOUT_IMPLEMENTATION = new DuneElementType("MODULES_WITHOUT_IMPLEMENTATION");
+    public static final IElementType COMMENT = new DuneElementType("COMMENT");
 }

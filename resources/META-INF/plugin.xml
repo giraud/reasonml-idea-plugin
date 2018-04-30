@@ -135,6 +135,8 @@
         <iconProvider implementation="com.reason.icons.IconProvider"/>
 
         <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
+        <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
+
         <additionalTextAttributes scheme="Default" file="colorSchemes/ReasonDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
 

@@ -25,12 +25,12 @@ public class DuneCommenter implements Commenter {
     @Nullable
     @Override
     public String getCommentedBlockCommentPrefix() {
-        return null;
+        return "#|";
     }
 
     @Nullable
     @Override
     public String getCommentedBlockCommentSuffix() {
-        return null;
+        return "|#";
     }
 }

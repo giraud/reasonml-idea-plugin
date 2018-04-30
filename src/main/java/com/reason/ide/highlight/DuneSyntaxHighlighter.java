@@ -34,12 +34,18 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
             DuneTypes.ALLOW_OVERLAPPING_DEPENDENCIES, DuneTypes.MODULES_WITHOUT_IMPLEMENTATION
     );
 
-    private static final TextAttributesKey STANZAS_ = createTextAttributesKey("DUNE_STANZAS", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION);
-    private static final TextAttributesKey FIELDS_ = createTextAttributesKey("DUNE_FIELDS", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey PARENS_ = createTextAttributesKey("DUNE_PAREN", DefaultLanguageHighlighterColors.PARENTHESES);
+    public static final TextAttributesKey DUNE_COMMENT_ = createTextAttributesKey("DUNE_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+    public static final TextAttributesKey STANZAS_ = createTextAttributesKey("DUNE_STANZA", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION);
+    public static final TextAttributesKey FIELDS_ = createTextAttributesKey("DUNE_FIELD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey STRING_ = createTextAttributesKey("DUNE_STRING", DefaultLanguageHighlighterColors.STRING);
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("DUNE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
+    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{DUNE_COMMENT_};
+    private static final TextAttributesKey[] PAREN_KEYS = new TextAttributesKey[]{PARENS_};
     private static final TextAttributesKey[] STANZAS_KEYS = new TextAttributesKey[]{STANZAS_};
     private static final TextAttributesKey[] FIELDS_KEYS = new TextAttributesKey[]{FIELDS_};
+    private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
@@ -52,10 +58,16 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (STANZAS_TYPES.contains(tokenType)) {
+        if (tokenType.equals(DuneTypes.LPAREN) || tokenType.equals(DuneTypes.RPAREN)) {
+            return PAREN_KEYS;
+        } else if (tokenType.equals(DuneTypes.COMMENT)) {
+            return COMMENT_KEYS;
+        } else if (STANZAS_TYPES.contains(tokenType)) {
             return STANZAS_KEYS;
         } else if (FIELDS_TYPES.contains(tokenType)) {
             return FIELDS_KEYS;
+        } else if (tokenType.equals(DuneTypes.STRING)) {
+            return STRING_KEYS;
         } else if (BAD_CHARACTER.equals(tokenType)) {
             return BAD_CHAR_KEYS;
         }
