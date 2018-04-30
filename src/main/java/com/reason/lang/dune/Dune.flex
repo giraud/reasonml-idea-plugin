@@ -41,7 +41,7 @@ WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
 NEWLINE=("\r"* "\n")
-ATOM=[A-Za-z_0-9'&\^%!]
+ATOM=[A-Za-z_0-9'&\^%!\.-]
 
 %state WAITING_VALUE
 %state INITIAL
@@ -70,35 +70,69 @@ ATOM=[A-Za-z_0-9'&\^%!]
     "jbuild_version" { return types.VERSION; }
     "library"        { return types.LIBRARY; }
     "executable"     { return types.EXECUTABLE; }
+    "executables"    { return types.EXECUTABLES; }
+    "rule"           { return types.RULE; }
+    "ocamllex"       { return types.OCAML_LEX; }
+    "ocamlyacc"      { return types.OCAML_YACC; }
+    "menhir"         { return types.MENHIR; }
+    "alias"          { return types.ALIAS; }
+    "install"        { return types.INSTALL; }
+    "copy_files"     { return types.COPY_FILES; }
+    "copy_files#"    { return types.COPY_FILES_SHARP; }
+    "include"        { return types.INCLUDE; }
 
-    "name"                     { return types.NAME; }
-    "public_name"              { return types.PUBLIC_NAME; }
-    "synopsis"                 { return types.SYNOPSIS; }
-    "modules"                  { return types.MODULES; }
-    "libraries"                { return types.LIBRARIES; }
-    "wrapped"                  { return types.WRAPPED; }
-    "preprocess"               { return types.PREPROCESS; }
-    "preprocessor_deps"        { return types.PREPROCESSOR_DEPS; }
-    "optional"                 { return types.OPTIONAL; }
-    "c_names"                  { return types.C_NAMES; }
-    "cxx_names"                { return types.CXX_NAMES; }
-    "install_c_headers"        { return types.INSTALL_C_HEADERS; }
-    "modes"                    { return types.MODES; }
-    "no_dynlink"               { return types.NO_DYNLINK; }
-    "kind"                     { return types.KIND; }
-    "ppx_runtime_libraries"    { return types.PPX_RUNTIME_LIBRARIES; }
-    "virtual_deps"             { return types.VIRTUAL_DEPS; }
-    "js_of_ocaml"              { return types.JS_OF_OCAML; }
-    "flags"                    { return types.FLAGS; }
-    "ocamlc_flags"             { return types.OCAMLC_FLAGS; }
-    "ocamlopt_flags"           { return types.OCAMLOPT_FLAGS; }
-    "library_flags"            { return types.LIBRARY_FLAGS; }
-    "c_flags"                  { return types.C_FLAGS; }
-    "cxx_flags"                { return types.CXX_FLAGS; }
-    "c_library_flags"          { return types.C_LIBRARY_FLAGS; }
-    "self_build_stubs_archive"        { return types.SELF_BUILD_STUBS_ARCHIVE; }
-    "modules_without_implementation"  { return types.MODULES_WITHOUT_IMPLEMENTATION; }
+    "action"                          { return types.ACTION; }
     "allow_overlapping_dependencies"  { return types.ALLOW_OVERLAPPING_DEPENDENCIES; }
+    "c_flags"                         { return types.C_FLAGS; }
+    "c_library_flags"                 { return types.C_LIBRARY_FLAGS; }
+    "c_names"                         { return types.C_NAMES; }
+    "cxx_flags"                       { return types.CXX_FLAGS; }
+    "cxx_names"                       { return types.CXX_NAMES; }
+    "deps"                            { return types.DEPS; }
+    "flags"                           { return types.FLAGS; }
+    "install_c_headers"               { return types.INSTALL_C_HEADERS; }
+    "js_of_ocaml"                     { return types.JS_OF_OCAML; }
+    "kind"                            { return types.KIND; }
+    "libraries"                       { return types.LIBRARIES; }
+    "library_flags"                   { return types.LIBRARY_FLAGS; }
+    "link_flags"                      { return types.LINK_FLAGS; }
+    "locks"                           { return types.LOCKS; }
+    "mode"                            { return types.MODE; }
+    "modes"                           { return types.MODES; }
+    "modules"                         { return types.MODULES; }
+    "modules_without_implementation"  { return types.MODULES_WITHOUT_IMPLEMENTATION; }
+    "name"                            { return types.NAME; }
+    "names"                           { return types.NAMES; }
+    "no_dynlink"                      { return types.NO_DYNLINK; }
+    "ocamlc_flags"                    { return types.OCAMLC_FLAGS; }
+    "ocamlopt_flags"                  { return types.OCAMLOPT_FLAGS; }
+    "optional"                        { return types.OPTIONAL; }
+    "ppx_runtime_libraries"           { return types.PPX_RUNTIME_LIBRARIES; }
+    "preprocess"                      { return types.PREPROCESS; }
+    "preprocessor_deps"               { return types.PREPROCESSOR_DEPS; }
+    "public_name"                     { return types.PUBLIC_NAME; }
+    "public_names"                    { return types.PUBLIC_NAMES; }
+    "self_build_stubs_archive"        { return types.SELF_BUILD_STUBS_ARCHIVE; }
+    "synopsis"                        { return types.SYNOPSIS; }
+    "targets"                         { return types.TARGETS; }
+    "virtual_deps"                    { return types.VIRTUAL_DEPS; }
+    "wrapped"                         { return types.WRAPPED; }
+
+    // Compilation mode
+    "byte"                            { return types.BYTE; }
+    "native"                          { return types.NATIVE; }
+    "best"                            { return types.BEST; }
+
+    // Binary kind
+    "exe"                             { return types.EXE; }
+    "object"                          { return types.OBJECT; }
+    "shared_object"                   { return types.SHARED_OBJECT; }
+
+    // Modes
+    "standard"                        { return types.STANDARD; }
+    "fallback"                        { return types.FALLBACK; }
+    "promote"                         { return types.PROMOTE; }
+    "promote-until-clean"             { return types.PROMOTE_UNTIL_CLEAN; }
 
     {ATOM}+     { return types.ATOM; }
 }
@@ -124,8 +158,9 @@ ATOM=[A-Za-z_0-9'&\^%!]
 }
 
 <IN_SEXPR_COMMENT> {
-    .         {}
-    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    "(" { parenDepth += 1; }
+    ")" { parenDepth -= 1; if(parenDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+    . | {NEWLINE} { }
     <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
 }
 

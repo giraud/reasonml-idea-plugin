@@ -4,13 +4,13 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DunePairedBraceMatcher implements PairedBraceMatcher {
     private static final BracePair[] PAIRS = new BracePair[]{
-            new BracePair(RmlTypes.INSTANCE.LPAREN, RmlTypes.INSTANCE.RPAREN, true),
+            new BracePair(DuneTypes.LPAREN, DuneTypes.RPAREN, true),
     };
 
     @NotNull

@@ -5,20 +5,17 @@
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
-      Reason language plugin.
+      Reason (and OCaml) language plugin.
     ]]></description>
 
     <change-notes><![CDATA[
-        <b>version 0.48</b>
-
         <ul>
-            <li>Fix folding code</li>
-            <li>Better locate js.ml, belt.ml</li>
-            <li>Add Pervasives to completion</li>
+            <li>in progress...</li>
         </ul>
 
-        <p>For all the changes, go to github <a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">CHANGELOG</a></p>
+        <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
 
+        <p/>
         <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
     ]]>
     </change-notes>
