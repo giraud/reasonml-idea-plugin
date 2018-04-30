@@ -7,7 +7,7 @@ public class DuneTypes {
     public static final IElementType LPAREN = new DuneElementType("LPAREN");
     public static final IElementType RPAREN = new DuneElementType("RPAREN");
     public static final IElementType STRING = new DuneElementType("String");
-    public static final IElementType IDENT = new DuneElementType("IDENT");
+    public static final IElementType ATOM = new DuneElementType("ATOM");
 
     public static final IElementType SEXPR = new DuneElementType("s-expr");
 
@@ -19,4 +19,29 @@ public class DuneTypes {
     public static final IElementType SYNOPSIS = new DuneElementType("SYNOPSIS");
 
     public static final IElementType EXECUTABLE = new DuneElementType("EXECUTABLE");
+    public static final IElementType KIND = new DuneElementType("KIND");
+    public static final IElementType MODES = new DuneElementType("MODES");
+    public static final IElementType FLAGS = new DuneElementType("FLAGS");
+    public static final IElementType C_NAMES = new DuneElementType("C_NAMES");
+    public static final IElementType C_FLAGS = new DuneElementType("C_FLAGS");
+    public static final IElementType MODULES = new DuneElementType("MODULES");
+    public static final IElementType WRAPPED = new DuneElementType("WRAPPED");
+    public static final IElementType OPTIONAL = new DuneElementType("OPTIONAL");
+    public static final IElementType LIBRARIES = new DuneElementType("LIBRARIES");
+    public static final IElementType CXX_NAMES = new DuneElementType("CXX_NAMES");
+    public static final IElementType CXX_FLAGS = new DuneElementType("CXX_FLAGS");
+    public static final IElementType NO_DYNLINK = new DuneElementType("NO_DYNLINK");
+    public static final IElementType PREPROCESS = new DuneElementType("PREPROCESS");
+    public static final IElementType JS_OF_OCAML = new DuneElementType("JS_OF_OCAML");
+    public static final IElementType VIRTUAL_DEPS = new DuneElementType("VIRTUAL_DEPS");
+    public static final IElementType OCAMLC_FLAGS = new DuneElementType("OCAMLC_FLAGS");
+    public static final IElementType LIBRARY_FLAGS = new DuneElementType("LIBRARY_FLAGS");
+    public static final IElementType OCAMLOPT_FLAGS = new DuneElementType("OCAMLOPT_FLAGS");
+    public static final IElementType C_LIBRARY_FLAGS = new DuneElementType("C_LIBRARY_FLAGS");
+    public static final IElementType INSTALL_C_HEADERS = new DuneElementType("INSTALL_C_HEADERS");
+    public static final IElementType PREPROCESSOR_DEPS = new DuneElementType("PREPROCESSOR_DEPS");
+    public static final IElementType PPX_RUNTIME_LIBRARIES = new DuneElementType("PPX_RUNTIME_LIBRARIES");
+    public static final IElementType SELF_BUILD_STUBS_ARCHIVE = new DuneElementType("SELF_BUILD_STUBS_ARCHIVE");
+    public static final IElementType ALLOW_OVERLAPPING_DEPENDENCIES = new DuneElementType("ALLOW_OVERLAPPING_DEPENDENCIES");
+    public static final IElementType MODULES_WITHOUT_IMPLEMENTATION = new DuneElementType("MODULES_WITHOUT_IMPLEMENTATION");
 }

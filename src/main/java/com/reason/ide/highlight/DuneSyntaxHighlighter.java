@@ -25,7 +25,13 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
     );
 
     private static final Set<IElementType> FIELDS_TYPES = of(
-            DuneTypes.NAME, DuneTypes.PUBLIC_NAME
+            DuneTypes.NAME, DuneTypes.PUBLIC_NAME, DuneTypes.KIND, DuneTypes.MODES, DuneTypes.FLAGS, DuneTypes.C_NAMES,
+            DuneTypes.C_FLAGS, DuneTypes.MODULES, DuneTypes.WRAPPED, DuneTypes.OPTIONAL, DuneTypes.LIBRARIES,
+            DuneTypes.CXX_NAMES, DuneTypes.CXX_FLAGS, DuneTypes.NO_DYNLINK, DuneTypes.PREPROCESS, DuneTypes.JS_OF_OCAML,
+            DuneTypes.VIRTUAL_DEPS, DuneTypes.OCAMLC_FLAGS, DuneTypes.LIBRARY_FLAGS, DuneTypes.OCAMLOPT_FLAGS,
+            DuneTypes.C_LIBRARY_FLAGS, DuneTypes.INSTALL_C_HEADERS, DuneTypes.PREPROCESSOR_DEPS,
+            DuneTypes.PPX_RUNTIME_LIBRARIES, DuneTypes.SELF_BUILD_STUBS_ARCHIVE,
+            DuneTypes.ALLOW_OVERLAPPING_DEPENDENCIES, DuneTypes.MODULES_WITHOUT_IMPLEMENTATION
     );
 
     private static final TextAttributesKey STANZAS_ = createTextAttributesKey("DUNE_STANZAS", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION);

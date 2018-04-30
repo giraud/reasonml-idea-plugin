@@ -1,36 +1,36 @@
-package com.reason.ide;
+package com.reason.ide.comment;
 
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;
 
-public class RmlCommenter implements Commenter {
+public class DuneCommenter implements Commenter {
     @Nullable
     @Override
     public String getLineCommentPrefix() {
-        return null;
+        return ";";
     }
 
     @Nullable
     @Override
     public String getBlockCommentPrefix() {
-        return "/*";
+        return "#|";
     }
 
     @Nullable
     @Override
     public String getBlockCommentSuffix() {
-        return "*/";
+        return "|#";
     }
 
     @Nullable
     @Override
     public String getCommentedBlockCommentPrefix() {
-        return "/*";
+        return null;
     }
 
     @Nullable
     @Override
     public String getCommentedBlockCommentSuffix() {
-        return "*/";
+        return null;
     }
 }

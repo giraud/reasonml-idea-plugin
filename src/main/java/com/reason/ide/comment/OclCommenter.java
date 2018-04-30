@@ -1,4 +1,4 @@
-package com.reason.ide;
+package com.reason.ide.comment;
 
 import com.intellij.lang.Commenter;
 import com.intellij.openapi.util.Couple;
