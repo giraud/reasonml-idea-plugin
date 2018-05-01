@@ -29,7 +29,7 @@ public class OclCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> open() {
-            return psiElement();
+            return alwaysFalse();
         }
 
         @NotNull
