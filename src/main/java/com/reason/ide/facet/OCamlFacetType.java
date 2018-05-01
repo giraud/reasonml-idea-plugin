@@ -4,12 +4,15 @@ import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
+import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OcamlFacetType extends FacetType<OCamlFacet, OCamlFacetConfiguration> {
+import javax.swing.*;
 
-    public OcamlFacetType() {
+public class OCamlFacetType extends FacetType<OCamlFacet, OCamlFacetConfiguration> {
+
+    public OCamlFacetType() {
         super(OCamlFacet.TYPE_ID, "ocaml", "OCaml");
     }
 
@@ -28,4 +31,8 @@ public class OcamlFacetType extends FacetType<OCamlFacet, OCamlFacetConfiguratio
         return true;
     }
 
+    @Override
+    public Icon getIcon() {
+        return Icons.OCL_FILE;
+    }
 }

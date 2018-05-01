@@ -129,7 +129,9 @@
          | Facet
          -->
 
-        <!--<facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>-->
+        <facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>
+        <framework.detector implementation="com.reason.ide.facet.OCamlFacetDetector"/>
+
         <!--<facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>-->
 
         <!--
@@ -181,7 +183,6 @@
                             serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
         <applicationConfigurable id="settings.reason" groupId="language" displayName="Reason"
                                  instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
-
     </extensions>
 
     <actions>

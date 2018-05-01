@@ -21,15 +21,4 @@ public class OCamlFacet extends Facet<OCamlFacetConfiguration> {
         return FacetManager.getInstance(module).getFacetByType(TYPE_ID);
     }
 
-    //should only be called from write action
-    //public static void createFacet(@NotNull Module module) {
-    //    FacetManager facetManager = FacetManager.getInstance(module);
-    //    ErlangFacetType ft = FacetType.findInstance(ErlangFacetType.class);
-    //    ErlangFacet prev = facetManager.getFacetByType(ft.getId());
-    //    if (prev != null) return;
-    //    ErlangFacet facet = facetManager.createFacet(ft, ErlangFacetConstants.NAME, null);
-    //    ModifiableFacetModel facetModel = facetManager.createModifiableModel();
-    //    facetModel.addFacet(facet);
-    //    facetModel.commit();
-    //}
 }
