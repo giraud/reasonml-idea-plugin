@@ -1,7 +1,6 @@
 package com.reason.ide.facet;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.facet.FacetConfiguration;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
@@ -25,7 +24,6 @@ public class BsFacetSettings implements FacetConfiguration, PersistentStateCompo
         return new FacetEditorTab[]{new BsFacetEditor(editorContext, this)};
     }
 
-    @Nullable
     @Override
     public BsFacetSettings getState() {
         return this;
