@@ -25,7 +25,6 @@ public class OCamlFacetSettings implements FacetConfiguration, PersistentStateCo
         return new FacetEditorTab[]{new OCamlFacetEditor(editorContext, this)};
     }
 
-    @Nullable
     @Override
     public OCamlFacetSettings getState() {
         return this;
