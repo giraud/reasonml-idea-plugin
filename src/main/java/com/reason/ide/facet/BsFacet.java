@@ -11,7 +11,7 @@ public class BsFacet extends Facet<BsFacetSettings> {
 
     static final FacetTypeId<BsFacet> ID = new FacetTypeId<>("bucklescript");
 
-    public BsFacet(@NotNull FacetType facetType, @NotNull Module module, @NotNull String name, @NotNull BsFacetSettings configuration, Facet underlyingFacet) {
+    BsFacet(@NotNull FacetType facetType, @NotNull Module module, @NotNull String name, @NotNull BsFacetSettings configuration, Facet underlyingFacet) {
         super(facetType, module, name, configuration, underlyingFacet);
     }
 

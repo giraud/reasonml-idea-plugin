@@ -18,7 +18,7 @@ public class OCamlFacetEditor extends FacetEditorTab {
     private JCheckBox f_refmtOnSave;
     private JTextField f_refmtWidth;
 
-    public OCamlFacetEditor(@SuppressWarnings("UnusedParameters") FacetEditorContext editorContext, OCamlFacetSettings configuration) {
+    OCamlFacetEditor(FacetEditorContext editorContext, OCamlFacetSettings configuration) {
         m_editorContext = editorContext;
         m_configuration = configuration;
     }
