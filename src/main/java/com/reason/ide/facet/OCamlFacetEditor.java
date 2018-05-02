@@ -15,6 +15,8 @@ public class OCamlFacetEditor extends FacetEditorTab {
 
     private JPanel m_rootPanel;
     private JTextField m_locationField;
+    private JCheckBox m_refmtOnSaveField;
+    private JTextField m_refmtWidthField;
 
     public OCamlFacetEditor(@SuppressWarnings("UnusedParameters") FacetEditorContext editorContext, OCamlFacetSettings configuration) {
         m_editorContext = editorContext;
@@ -33,18 +35,24 @@ public class OCamlFacetEditor extends FacetEditorTab {
         OCamlFacetSettings state = m_configuration.getState();
         if (state != null) {
             m_locationField.setText(state.location);
+            m_refmtOnSaveField.setSelected(state.refmtOnSave);
+            m_refmtWidthField.setText(state.refmtWidth);
         }
         return m_rootPanel;
     }
 
     @Override
     public boolean isModified() {
-        return !m_locationField.getText().equals(m_configuration.location);
+        return !(m_locationField.getText().equals(m_configuration.location) &&
+                m_refmtOnSaveField.isSelected() == m_configuration.refmtOnSave &&
+                m_refmtWidthField.getText().equals(m_configuration.refmtWidth));
     }
 
     @Override
     public void apply() throws ConfigurationException {
         super.apply();
         m_configuration.location = m_locationField.getText();
+        m_configuration.refmtOnSave = m_refmtOnSaveField.isSelected();
+        m_configuration.refmtWidth = m_refmtWidthField.getText();
     }
 }

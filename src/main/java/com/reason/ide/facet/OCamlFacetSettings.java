@@ -20,6 +20,10 @@ import org.jetbrains.annotations.Nullable;
 public class OCamlFacetSettings implements FacetConfiguration, PersistentStateComponent<OCamlFacetSettings> {
     @SuppressWarnings("WeakerAccess")
     public String location = "";
+    @SuppressWarnings("WeakerAccess")
+    public boolean refmtOnSave = true;
+    @SuppressWarnings("WeakerAccess")
+    public String refmtWidth = "120";
 
     @Override
     public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
