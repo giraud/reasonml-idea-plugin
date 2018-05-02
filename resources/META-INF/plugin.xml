@@ -130,7 +130,7 @@
          -->
 
         <facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>
-        <framework.detector implementation="com.reason.ide.facet.OCamlFacetDetector"/>
+        <framework.detector implementation="com.reason.ide.facet.OCamlFrameworkDetector"/>
 
         <!--<facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>-->
 

@@ -9,16 +9,16 @@ import com.intellij.util.indexing.FileContent;
 import com.reason.ide.files.DuneFileType;
 import org.jetbrains.annotations.NotNull;
 
-public class OCamlFacetDetector extends FacetBasedFrameworkDetector {
+public class OCamlFrameworkDetector extends FacetBasedFrameworkDetector {
 
-    protected OCamlFacetDetector() {
+    protected OCamlFrameworkDetector() {
         super("ocaml");
     }
 
     @NotNull
     @Override
-    public FacetType getFacetType() {
-        return FacetType.findInstance(OCamlFacetType.class);
+    public FacetType<OCamlFacet, OCamlFacetSettings> getFacetType() {
+        return OCamlFacet.getFacetType();
     }
 
     @NotNull

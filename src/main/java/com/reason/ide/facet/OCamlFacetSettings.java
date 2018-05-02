@@ -5,11 +5,21 @@ import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OCamlFacetConfiguration implements FacetConfiguration, PersistentStateComponent<OCamlProperties> {
-    private OCamlProperties m_state = new OCamlProperties();
+@State(
+        name = "OCamlFacetSettings",
+        storages = {
+                @Storage("ocaml.xml")
+        }
+)
+public class OCamlFacetSettings implements FacetConfiguration, PersistentStateComponent<OCamlFacetSettings> {
+    @SuppressWarnings("WeakerAccess")
+    public String location = "";
 
     @Override
     public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
@@ -18,12 +28,12 @@ public class OCamlFacetConfiguration implements FacetConfiguration, PersistentSt
 
     @Nullable
     @Override
-    public OCamlProperties getState() {
-        return m_state;
+    public OCamlFacetSettings getState() {
+        return this;
     }
 
     @Override
-    public void loadState(@NotNull OCamlProperties state) {
-        m_state = state;
+    public void loadState(@NotNull OCamlFacetSettings state) {
+        XmlSerializerUtil.copyBean(state, this);
     }
 }

@@ -10,19 +10,19 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class OCamlFacetType extends FacetType<OCamlFacet, OCamlFacetConfiguration> {
+public class OCamlFacetType extends FacetType<OCamlFacet, OCamlFacetSettings> {
 
     public OCamlFacetType() {
-        super(OCamlFacet.TYPE_ID, "ocaml", "OCaml");
+        super(OCamlFacet.ID, "ocaml", "OCaml");
     }
 
     @Override
-    public OCamlFacetConfiguration createDefaultConfiguration() {
-        return new OCamlFacetConfiguration();
+    public OCamlFacetSettings createDefaultConfiguration() {
+        return new OCamlFacetSettings();
     }
 
     @Override
-    public OCamlFacet createFacet(@NotNull Module module, String name, @NotNull OCamlFacetConfiguration configuration, @Nullable Facet underlyingFacet) {
+    public OCamlFacet createFacet(@NotNull Module module, String name, @NotNull OCamlFacetSettings configuration, @Nullable Facet underlyingFacet) {
         return new OCamlFacet(this, module, name, configuration, underlyingFacet);
     }
 
