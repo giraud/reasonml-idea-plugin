@@ -1,11 +1,11 @@
 package com.reason.ide.facet;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.openapi.module.Module;
-import org.jetbrains.annotations.NotNull;
 
 class OCamlFacet extends Facet<OCamlFacetSettings> {
 
@@ -15,8 +15,8 @@ class OCamlFacet extends Facet<OCamlFacetSettings> {
         super(facetType, module, name, configuration, underlyingFacet);
     }
 
+    @NotNull
     static FacetType<OCamlFacet, OCamlFacetSettings> getFacetType() {
         return FacetTypeRegistry.getInstance().findFacetType(ID);
     }
-
 }

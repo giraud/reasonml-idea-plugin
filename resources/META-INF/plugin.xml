@@ -10,7 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Fix a NPE in OCaml (#51)</li>
+            <li>In progress..</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
@@ -132,7 +132,8 @@
         <facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>
         <framework.detector implementation="com.reason.ide.facet.OCamlFrameworkDetector"/>
 
-        <!--<facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>-->
+        <facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>
+        <framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>
 
         <!--
          | Others
