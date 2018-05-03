@@ -47,6 +47,8 @@ Bucklescript window
 
 Advanced features, like syntax error highlighting or type annotations require the installation of [Bucklescript](https://bucklescript.github.io/).
 
+See the **wiki** to see how to **configure Bucklescript**.
+
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
 ### Local installation
