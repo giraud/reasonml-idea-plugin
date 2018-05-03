@@ -1,6 +1,5 @@
 package com.reason.ide.facet;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.facet.FacetConfiguration;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
@@ -9,9 +8,10 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import org.jetbrains.annotations.NotNull;
 
-@State(name = "OCamlFacetSettings", storages = {@Storage("ocaml.xml")})
-public class OCamlFacetSettings implements FacetConfiguration, PersistentStateComponent<OCamlFacetSettings> {
+@State(name = "BsFacetConfiguration", storages = {@Storage("bucklescript.xml")})
+public class BsFacetConfiguration implements FacetConfiguration, PersistentStateComponent<BsFacetConfiguration> {
     @SuppressWarnings("WeakerAccess")
     public String location = "";
     @SuppressWarnings("WeakerAccess")
@@ -21,16 +21,16 @@ public class OCamlFacetSettings implements FacetConfiguration, PersistentStateCo
 
     @Override
     public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
-        return new FacetEditorTab[]{new OCamlFacetEditor(editorContext, this)};
+        return new FacetEditorTab[]{new BsFacetEditor(editorContext, this)};
     }
 
     @Override
-    public OCamlFacetSettings getState() {
+    public BsFacetConfiguration getState() {
         return this;
     }
 
     @Override
-    public void loadState(@NotNull OCamlFacetSettings state) {
+    public void loadState(@NotNull BsFacetConfiguration state) {
         XmlSerializerUtil.copyBean(state, this);
     }
 }

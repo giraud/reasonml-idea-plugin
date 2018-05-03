@@ -1,6 +1,5 @@
 package com.reason.ide.facet;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.facet.FacetType;
 import com.intellij.framework.detection.FacetBasedFrameworkDetector;
 import com.intellij.framework.detection.FileContentPattern;
@@ -8,6 +7,7 @@ import com.intellij.json.JsonFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.util.indexing.FileContent;
+import org.jetbrains.annotations.NotNull;
 
 public class BsFrameworkDetector extends FacetBasedFrameworkDetector {
 
@@ -17,7 +17,7 @@ public class BsFrameworkDetector extends FacetBasedFrameworkDetector {
 
     @NotNull
     @Override
-    public FacetType<BsFacet, BsFacetSettings> getFacetType() {
+    public FacetType<BsFacet, BsFacetConfiguration> getFacetType() {
         return BsFacet.getFacetType();
     }
 

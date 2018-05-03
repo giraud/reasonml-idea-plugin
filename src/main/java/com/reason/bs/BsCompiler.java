@@ -7,22 +7,28 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BsCompiler {
+import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
+import static com.intellij.notification.NotificationType.ERROR;
+
+public final class BsCompiler {
 
     private final String m_canonicalPath;
-    private final String m_bsbPath;
+    private final Module m_module;
 
     private KillableColoredProcessHandler m_bsb;
     private ProcessListener m_outputListener;
 
-    BsCompiler(VirtualFile baseDir, String bsbPath) {
+    BsCompiler(VirtualFile baseDir, Project project) {
         m_canonicalPath = baseDir.getCanonicalPath();
-        m_bsbPath = bsbPath;
+        m_module = ModuleUtil.findModuleForFile(baseDir, project);
         recreate(CliType.make);
     }
 
@@ -74,16 +80,27 @@ public class BsCompiler {
 
     @NotNull
     private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
+        String bsbPath = ModuleConfiguration.getBsbPath(m_module);
+
+        if (bsbPath == null) {
+            Notifications.Bus.notify(new RmlNotification("Bsb",
+                    "<html>Can't find bsb.\n"
+                            + "Base directory is '" + m_module.getProject().getBaseDir().getCanonicalPath() + "'.\n"
+                            + "Be sure that bsb is installed and reachable from base directory, "
+                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
+                    ERROR, URL_OPENING_LISTENER));
+        }
+
         GeneralCommandLine cli;
         switch (cliType) {
             case make:
-                cli = new GeneralCommandLine(m_bsbPath, "-make-world");
+                cli = new GeneralCommandLine(bsbPath, "-make-world");
                 break;
             case cleanMake:
-                cli = new GeneralCommandLine(m_bsbPath, "-clean-world", "-make-world");
+                cli = new GeneralCommandLine(bsbPath, "-clean-world", "-make-world");
                 break;
             default:
-                cli = new GeneralCommandLine(m_bsbPath);
+                cli = new GeneralCommandLine(bsbPath);
 
         }
         cli.withWorkDirectory(m_canonicalPath);

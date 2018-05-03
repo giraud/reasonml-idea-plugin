@@ -1,22 +1,29 @@
 package com.reason.ide.facet;
 
-import org.jetbrains.annotations.NotNull;
-import com.intellij.facet.Facet;
-import com.intellij.facet.FacetType;
-import com.intellij.facet.FacetTypeId;
-import com.intellij.facet.FacetTypeRegistry;
+import com.intellij.facet.*;
 import com.intellij.openapi.module.Module;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class BsFacet extends Facet<BsFacetSettings> {
+public class BsFacet extends Facet<BsFacetConfiguration> {
 
     static final FacetTypeId<BsFacet> ID = new FacetTypeId<>("bucklescript");
 
-    BsFacet(@NotNull FacetType facetType, @NotNull Module module, @NotNull String name, @NotNull BsFacetSettings configuration, Facet underlyingFacet) {
+    BsFacet(@NotNull FacetType facetType, @NotNull Module module, @NotNull String name, @NotNull BsFacetConfiguration configuration, Facet underlyingFacet) {
         super(facetType, module, name, configuration, underlyingFacet);
     }
 
+    @Nullable
+    public static BsFacetConfiguration getConfiguration(@NotNull Module module) {
+        BsFacet facet = FacetManager.getInstance(module).getFacetByType(BsFacet.ID);
+        if (facet != null) {
+            return facet.getConfiguration();
+        }
+        return null;
+    }
+
     @NotNull
-    static FacetType<BsFacet, BsFacetSettings> getFacetType() {
+    static FacetType<BsFacet, BsFacetConfiguration> getFacetType() {
         return FacetTypeRegistry.getInstance().findFacetType(ID);
     }
 

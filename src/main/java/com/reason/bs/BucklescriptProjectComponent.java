@@ -27,9 +27,6 @@ import javax.swing.*;
 import java.nio.file.Path;
 import java.util.Collection;
 
-import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
-import static com.intellij.notification.NotificationType.ERROR;
-
 public class BucklescriptProjectComponent implements Bucklescript, ProjectComponent {
 
     private final Project m_project;
@@ -84,25 +81,9 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
 
         if (bsconfig != null) {
             m_config = BsConfig.read(bsconfig);
-            String bsbBin = Platform.getBinary("REASON_BSB_BIN", "reasonBsb", "node_modules/bs-platform/lib/bsb.exe");
-            String bsbPath = Platform.getBinaryPath(m_project, bsbBin);
-
-            if (bsbPath == null) {
-                bsbPath = Platform.getBinaryPath(m_project, "node_modules/bs-platform/bin/bsb.exe");
-            }
-
-            if (bsbPath == null) {
-                Notifications.Bus.notify(new RmlNotification("Bsb",
-                        "<html>Can't find bsb using value '" + bsbBin + "' from property 'reasonBsb'.\n"
-                                + "Base directory is '" + baseDir.getCanonicalPath() + "'.\n"
-                                + "Be sure that bsb is installed and reachable from base directory, "
-                                + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
-                        ERROR, URL_OPENING_LISTENER));
-            } else {
-                m_compiler = new BsCompiler(baseDir, bsbPath);
-                m_queryTypes = new BsQueryTypesServiceComponent(baseDir, bsbPath.replace("bsb.exe", "bsc.exe"));
-                m_errorsManager = new BsErrorsManagerImpl();
-            }
+            m_compiler = new BsCompiler(baseDir, m_project);
+            m_queryTypes = new BsQueryTypesServiceComponent(baseDir, m_project);
+            m_errorsManager = new BsErrorsManagerImpl();
         }
     }
 

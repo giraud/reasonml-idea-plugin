@@ -17,7 +17,7 @@ public class OCamlFrameworkDetector extends FacetBasedFrameworkDetector {
 
     @NotNull
     @Override
-    public FacetType<OCamlFacet, OCamlFacetSettings> getFacetType() {
+    public FacetType<OCamlFacet, OCamlFacetConfiguration> getFacetType() {
         return OCamlFacet.getFacetType();
     }
 

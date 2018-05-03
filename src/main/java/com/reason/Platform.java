@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class Platform {
 
-    private static Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
+    private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
     @Nullable
     public static String getBinary(String envVar, String propVar) {
@@ -70,8 +70,9 @@ public class Platform {
             return null;
         }
 
-        if (new File(binary).isAbsolute()) {
-            return binary;
+        File file = new File(binary);
+        if (file.isAbsolute()) {
+            return file.exists() ? binary : null;
         }
 
         VirtualFile baseDir = Platform.findBaseRoot(project);

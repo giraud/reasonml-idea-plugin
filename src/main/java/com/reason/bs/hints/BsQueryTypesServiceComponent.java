@@ -3,8 +3,12 @@ package com.reason.bs.hints;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
+import com.reason.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,12 +22,12 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
 
     private final Logger m_log;
     private final VirtualFile m_baseDir;
-    private final String m_bsbPath;
+    private final Module m_module;
 
-    public BsQueryTypesServiceComponent(VirtualFile baseDir, String bsbPath) {
+    public BsQueryTypesServiceComponent(VirtualFile baseDir, Project project) {
         m_log = Logger.getInstance("ReasonML.types");
         m_baseDir = baseDir;
-        m_bsbPath = bsbPath;
+        m_module = ModuleUtil.findModuleForFile(baseDir, project);
     }
 
     @Nullable
@@ -32,7 +36,7 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
         InferredTypesImplementation result = null;
 
         String basePath = m_baseDir.getPath();
-        ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(m_bsbPath, cmiPath);
+        ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(ModuleConfiguration.getBsbPath(m_module).replace("bsb.exe", "bsc.exe"), cmiPath);
         m_bscProcessBuilder.directory(new File(basePath));
 
         Process bsc = null;

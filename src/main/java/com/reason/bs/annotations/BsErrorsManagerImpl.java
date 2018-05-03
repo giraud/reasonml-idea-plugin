@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class BsErrorsManagerImpl extends BsErrorsManager {
 
-    private ConcurrentMultiMap<String, BsbInfo> m_errorsByFile = new ConcurrentMultiMap<>();
+    private final ConcurrentMultiMap<String, BsbInfo> m_errorsByFile = new ConcurrentMultiMap<>();
 
     @Override
     public void put(@Nullable BsbInfo info) {
