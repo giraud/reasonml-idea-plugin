@@ -1,26 +1,25 @@
-package com.reason.ide.format;
+package com.reason.bs.refmt;
 
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
-import com.reason.Platform;
 import com.reason.Streams;
+import com.reason.bs.ModuleConfiguration;
 import com.reason.ide.settings.ReasonSettings;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
-class RefmtProcess {
+public class RefmtProcess {
 
+    private final ModuleConfiguration m_moduleConfiguration;
     private final Logger m_log;
-    private String m_refmtBin;
 
-    RefmtProcess() {
+    public RefmtProcess(ModuleConfiguration moduleConfiguration) {
+        m_moduleConfiguration = moduleConfiguration;
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 
-    String run(Project project, String format, String code) {
-        String refmtPath = getRefmtBin(project);
+    public String run(String format, String code) {
+        String refmtPath = m_moduleConfiguration.getRefmtPath();
         if (refmtPath == null) {
             return code;
         }
@@ -62,28 +61,4 @@ class RefmtProcess {
         return code;
     }
 
-    private String getRefmtBin(Project project) {
-        if (m_refmtBin != null) {
-            return m_refmtBin;
-        }
-
-        m_refmtBin = Platform.getBinary("REASON_REFMT_BIN", "reasonRefmt");
-        if (m_refmtBin == null) {
-            m_refmtBin = getRefmtBin(project, "/lib");
-            if (m_refmtBin == null) {
-                m_refmtBin = getRefmtBin(project, "/bin");
-            }
-        }
-
-        return m_refmtBin;
-    }
-
-    private String getRefmtBin(Project project, @NotNull String root) {
-        String BS_PATH = "node_modules/bs-platform";
-        String binary = Platform.getBinaryPath(project, BS_PATH + root + "/refmt3.exe");
-        if (binary == null) {
-            binary = Platform.getBinaryPath(project, BS_PATH + root + "/refmt.exe");
-        }
-        return binary;
-    }
 }

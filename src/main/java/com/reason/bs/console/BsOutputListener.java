@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class BsOutputListener implements ProcessListener {
 
     BsOutputListener(Project project) {
         m_project = project;
-        m_bucklescript = BucklescriptProjectComponent.getInstance(project);
+        m_bucklescript = BucklescriptManager.getInstance(project);
         m_log = Logger.getInstance("ReasonML.bsb");
     }
 

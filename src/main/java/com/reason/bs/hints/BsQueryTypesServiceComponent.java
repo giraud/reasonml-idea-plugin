@@ -3,9 +3,6 @@ package com.reason.bs.hints;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.bs.ModuleConfiguration;
@@ -21,13 +18,11 @@ import java.io.InputStreamReader;
 public class BsQueryTypesServiceComponent implements BsQueryTypesService {
 
     private final Logger m_log;
-    private final VirtualFile m_baseDir;
-    private final Module m_module;
+    private final ModuleConfiguration m_moduleConfiguration;
 
-    public BsQueryTypesServiceComponent(VirtualFile baseDir, Project project) {
+    public BsQueryTypesServiceComponent(ModuleConfiguration moduleConfiguration) {
+        m_moduleConfiguration = moduleConfiguration;
         m_log = Logger.getInstance("ReasonML.types");
-        m_baseDir = baseDir;
-        m_module = ModuleUtil.findModuleForFile(baseDir, project);
     }
 
     @Nullable
@@ -35,8 +30,12 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
     public InferredTypes types(String cmiPath) {
         InferredTypesImplementation result = null;
 
-        String basePath = m_baseDir.getPath();
-        ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(ModuleConfiguration.getBsbPath(m_module).replace("bsb.exe", "bsc.exe"), cmiPath);
+        String basePath = m_moduleConfiguration.getBasePath();
+        if (basePath == null) {
+            return null;
+        }
+
+        ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(m_moduleConfiguration.getBscPath(), cmiPath);
         m_bscProcessBuilder.directory(new File(basePath));
 
         Process bsc = null;

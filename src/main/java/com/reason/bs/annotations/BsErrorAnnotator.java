@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.psi.PsiFile;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,7 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
     public Collection<BsErrorsManager.BsbInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
-            return BucklescriptProjectComponent.getInstance(file.getProject()).getErrors(filePath);
+            return BucklescriptManager.getInstance(file.getProject()).getErrors(filePath);
         }
         return null;
     }

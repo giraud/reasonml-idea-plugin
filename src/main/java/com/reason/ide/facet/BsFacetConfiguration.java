@@ -17,7 +17,7 @@ public class BsFacetConfiguration implements FacetConfiguration, PersistentState
     @SuppressWarnings("WeakerAccess")
     public boolean refmtOnSave = true;
     @SuppressWarnings("WeakerAccess")
-    public String refmtWidth = "120";
+    public String refmtWidth = "";
 
     @Override
     public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {

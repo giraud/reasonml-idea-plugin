@@ -4,7 +4,9 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -15,8 +17,11 @@ import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.bs.annotations.BsErrorsManagerImpl;
+import com.reason.bs.compiler.BsCompiler;
+import com.reason.bs.compiler.CliType;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
+import com.reason.bs.refmt.RefmtProcess;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
@@ -27,19 +32,24 @@ import javax.swing.*;
 import java.nio.file.Path;
 import java.util.Collection;
 
-public class BucklescriptProjectComponent implements Bucklescript, ProjectComponent {
+import static com.intellij.openapi.application.ApplicationManager.getApplication;
+
+public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     private final Project m_project;
+
     @Nullable
     private BsConfig m_config;
     @Nullable
     private BsCompiler m_compiler;
     @Nullable
+    private RefmtProcess m_refmt;
+    @Nullable
     private BsQueryTypesServiceComponent m_queryTypes;
     @Nullable
     private BsErrorsManagerImpl m_errorsManager;
 
-    private BucklescriptProjectComponent(Project project) {
+    private BucklescriptManager(Project project) {
         m_project = project;
     }
 
@@ -81,8 +91,10 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
 
         if (bsconfig != null) {
             m_config = BsConfig.read(bsconfig);
-            m_compiler = new BsCompiler(baseDir, m_project);
-            m_queryTypes = new BsQueryTypesServiceComponent(baseDir, m_project);
+            ModuleConfiguration moduleConfiguration = new ModuleConfiguration(baseDir, m_project);
+            m_compiler = new BsCompiler(moduleConfiguration);
+            m_refmt = new RefmtProcess(moduleConfiguration);
+            m_queryTypes = new BsQueryTypesServiceComponent(moduleConfiguration);
             m_errorsManager = new BsErrorsManagerImpl();
         }
     }
@@ -176,6 +188,17 @@ public class BucklescriptProjectComponent implements Bucklescript, ProjectCompon
         VirtualFile bsconfig = Platform.findBaseRoot(m_project).findChild("bsconfig.json");
         if (bsconfig != null) {
             m_config = BsConfig.read(bsconfig);
+        }
+    }
+
+    @Override
+    public void refmt(@NotNull String format, @NotNull Document document) {
+        if (m_refmt != null) {
+            String oldText = document.getText();
+            String newText = m_refmt.run(format, oldText);
+            if (!oldText.isEmpty() && !newText.isEmpty() && !oldText.equals(newText)) { // additional protection
+                getApplication().runWriteAction(() -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+            }
         }
     }
 

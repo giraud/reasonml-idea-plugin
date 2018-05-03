@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.reason.bs.BucklescriptManager;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
 
@@ -20,7 +21,7 @@ public class RefmtAction extends AnAction {
             String format = file instanceof OclFile ? "ml" : "re";
             Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
             if (document != null) {
-                RefmtManager.getInstance().refmt(project, format, document);
+                BucklescriptManager.getInstance(project).refmt(format, document);
             }
         }
     }

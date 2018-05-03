@@ -3,7 +3,7 @@ package com.reason.ide.hints;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public class CmiFileManager {
     @NotNull
     public static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativeCmi) {
         String cmiName = relativeCmi.toString();
-        String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
+        String namespace = BucklescriptManager.getInstance(project).getNamespace();
         if (!namespace.isEmpty()) {
             cmiName = cmiName.replace("-" + namespace, "");
         }
@@ -47,7 +47,7 @@ public class CmiFileManager {
             relativeRoot = relativeRoot.resolve(relativeParent);
         }
 
-        String namespace = BucklescriptProjectComponent.getInstance(project).getNamespace();
+        String namespace = BucklescriptManager.getInstance(project).getNamespace();
         return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
     }
 

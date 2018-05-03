@@ -1,8 +1,10 @@
 package com.reason.bs;
 
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.annotations.BsErrorsManager;
+import com.reason.bs.compiler.BsCompiler;
 import com.reason.bs.hints.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,4 +40,6 @@ public interface Bucklescript {
 
     @NotNull
     String getNamespace();
+
+    void refmt(@NotNull String format, @NotNull Document document);
 }

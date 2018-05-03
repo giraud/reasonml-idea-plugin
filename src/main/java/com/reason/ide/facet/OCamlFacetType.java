@@ -5,6 +5,7 @@ import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.reason.icons.Icons;
+import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +19,10 @@ public class OCamlFacetType extends FacetType<OCamlFacet, OCamlFacetConfiguratio
 
     @Override
     public OCamlFacetConfiguration createDefaultConfiguration() {
-        return new OCamlFacetConfiguration();
+        String refmtWidth = ReasonSettings.getInstance().getRefmtWidth();
+        OCamlFacetConfiguration configuration = new OCamlFacetConfiguration();
+        configuration.refmtWidth = refmtWidth.isEmpty() ? "120" : refmtWidth;
+        return configuration;
     }
 
     @Override

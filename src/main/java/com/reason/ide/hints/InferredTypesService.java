@@ -15,7 +15,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.lang.core.HMSignature;
@@ -41,7 +41,7 @@ public class InferredTypesService {
                     if (cmiPath == null) {
                         Logger.getInstance("ReasonML.types").warn("can't find cmi file " + CmiFileManager.pathFromSource(project, sourceFile));
                     } else {
-                        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+                        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
                         BsQueryTypesServiceComponent.InferredTypes types = bucklescript.queryTypes(cmiPath);
                         ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile));
                     }

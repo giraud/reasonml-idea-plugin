@@ -10,7 +10,7 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
@@ -45,7 +45,7 @@ public final class PsiFinder {
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
         Map<String/*qn*/, PsiModule> other = new THashMap<>();
 
-        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
         if (modules.isEmpty()) {
@@ -122,7 +122,7 @@ public final class PsiFinder {
         Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, lowerName, project, GlobalSearchScope.allScope(project), PsiLet.class);
         for (PsiLet let : lets) {
             String canonicalPath = let.getContainingFile().getVirtualFile().getCanonicalPath();
-            Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+            Bucklescript bucklescript = BucklescriptManager.getInstance(project);
             if (bucklescript.isDependency(canonicalPath)) {
                 result.add(let);
             }
@@ -136,7 +136,7 @@ public final class PsiFinder {
         // All file names are unique in a project, we use the file name in the key
         // Need a better algo to priorise the paths and not overwrite the correct resolved files
         Map<String, PsiModule> result = new THashMap<>();
-        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(project);
+        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         Map<String, PsiModule> files = new THashMap<>();
         Collection<VirtualFile> rmiFiles;

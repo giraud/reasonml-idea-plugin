@@ -13,8 +13,8 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.bs.BsCompiler;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
+import com.reason.bs.compiler.BsCompiler;
 import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         Disposer.register(project, console);
 
         // Start compiler
-        BsCompiler bsc = BucklescriptProjectComponent.getInstance(project).getCompiler();
+        BsCompiler bsc = BucklescriptManager.getInstance(project).getCompiler();
         if (bsc != null) {
             bsc.addListener(new BsOutputListener(project));
             ProcessHandler handler = bsc.getHandler();

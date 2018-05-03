@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public class CmiFileListener implements ProjectComponent {
         m_log = Logger.getInstance("ReasonML.vfs");
         m_project = project;
         m_pathToWatch = getPathToWatch(project);
-        m_bucklescript = BucklescriptProjectComponent.getInstance(project);
+        m_bucklescript = BucklescriptManager.getInstance(project);
     }
 
     @Override

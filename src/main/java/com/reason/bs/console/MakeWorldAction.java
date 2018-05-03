@@ -6,11 +6,11 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
-import com.reason.bs.BsCompiler;
 import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
+import com.reason.bs.compiler.BsCompiler;
 
-import static com.reason.bs.CliType.cleanMake;
+import static com.reason.bs.compiler.CliType.cleanMake;
 
 public class MakeWorldAction extends DumbAwareAction {
 
@@ -25,7 +25,7 @@ public class MakeWorldAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Bucklescript bucklescript = BucklescriptProjectComponent.getInstance(m_project);
+        Bucklescript bucklescript = BucklescriptManager.getInstance(m_project);
         BsCompiler bsc = bucklescript.getOrCreateCompiler();
         if (bsc != null) {
             ProcessHandler bscProcess = bsc.recreate(cleanMake);

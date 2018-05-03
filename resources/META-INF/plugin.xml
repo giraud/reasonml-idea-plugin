@@ -39,7 +39,7 @@
         </component>
         <component>
             <interface-class>com.reason.bs.Bucklescript</interface-class>
-            <implementation-class>com.reason.bs.BucklescriptProjectComponent</implementation-class>
+            <implementation-class>com.reason.bs.BucklescriptManager</implementation-class>
         </component>
         <component>
             <implementation-class>com.reason.ide.hints.CmiFileListener</implementation-class>

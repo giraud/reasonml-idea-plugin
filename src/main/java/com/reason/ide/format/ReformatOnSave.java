@@ -5,6 +5,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.reason.bs.BucklescriptManager;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +28,7 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
         if (file != null) {
             String format = getFormat(file);
             if (format != null) {
-                RefmtManager.getInstance().refmt(m_project, format, document);
+                BucklescriptManager.getInstance(m_project).refmt(format, document);
             }
         }
     }

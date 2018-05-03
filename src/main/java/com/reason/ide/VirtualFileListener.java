@@ -5,7 +5,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptProjectComponent;
+import com.reason.bs.BucklescriptManager;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.hints.CmiFileListener;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
     private final CmiFileListener m_cmiFileListener;
 
     VirtualFileListener(Project project) {
-        m_bucklescript = BucklescriptProjectComponent.getInstance(project);
+        m_bucklescript = BucklescriptManager.getInstance(project);
         m_cmiFileListener = CmiFileListener.getInstance(project);
     }
 
