@@ -1,20 +1,22 @@
 package com.reason.ide;
 
+import com.intellij.AppTopics;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
+import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
 
-public class RmlProjectTracker extends AbstractProjectComponent {
+public class ReasonProjectTracker extends AbstractProjectComponent {
 
     private RmlDocumentListener m_documentListener;
     private MessageBusConnection m_messageBusConnection;
     private VirtualFileListener m_vfListener;
 
-    protected RmlProjectTracker(Project project) {
+    protected ReasonProjectTracker(Project project) {
         super(project);
     }
 
@@ -25,6 +27,7 @@ public class RmlProjectTracker extends AbstractProjectComponent {
 
         m_messageBusConnection = myProject.getMessageBus().connect();
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new RmlFileEditorListener(myProject));
+        m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(myProject));
 
         m_vfListener = new VirtualFileListener(myProject);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
@@ -34,6 +37,8 @@ public class RmlProjectTracker extends AbstractProjectComponent {
     public void projectClosed() {
         EditorFactory.getInstance().getEventMulticaster().removeDocumentListener(m_documentListener);
         VirtualFileManager.getInstance().removeVirtualFileListener(m_vfListener);
-        m_messageBusConnection.disconnect();
+        if (m_messageBusConnection != null) {
+            m_messageBusConnection.disconnect();
+        }
     }
 }

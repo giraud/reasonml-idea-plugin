@@ -42,4 +42,6 @@ public interface Bucklescript {
     String getNamespace();
 
     void refmt(@NotNull String format, @NotNull Document document);
+
+    boolean isRefmtOnSaveEnabled();
 }

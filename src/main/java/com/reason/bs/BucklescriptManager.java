@@ -202,6 +202,11 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
     }
 
+    @Override
+    public boolean isRefmtOnSaveEnabled() {
+        return m_refmt != null && m_refmt.isOnSaveEnabled();
+    }
+
     private ConsoleView getBsbConsole() {
         ConsoleView console = null;
 

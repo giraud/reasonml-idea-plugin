@@ -32,10 +32,7 @@
 
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.RmlProjectTracker</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.ide.ReasonDocumentManager</implementation-class>
+            <implementation-class>com.reason.ide.ReasonProjectTracker</implementation-class>
         </component>
         <component>
             <interface-class>com.reason.bs.Bucklescript</interface-class>
@@ -129,8 +126,8 @@
          | Facet
          -->
 
-        <facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>
-        <framework.detector implementation="com.reason.ide.facet.OCamlFrameworkDetector"/>
+        <!--<facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>-->
+        <!--<framework.detector implementation="com.reason.ide.facet.OCamlFrameworkDetector"/>-->
 
         <facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>
         <framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>

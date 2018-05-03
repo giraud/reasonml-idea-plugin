@@ -18,13 +18,17 @@ public class RefmtProcess {
         m_log = Logger.getInstance("ReasonML.refmt");
     }
 
+    public boolean isOnSaveEnabled() {
+        return m_moduleConfiguration.isOnSaveEnabled();
+    }
+
     public String run(String format, String code) {
         String refmtPath = m_moduleConfiguration.getRefmtPath();
         if (refmtPath == null) {
             return code;
         }
 
-        String columnsWidth = ReasonSettings.getInstance().getRefmtWidth();
+        String columnsWidth = m_moduleConfiguration.getRefmtWidth();
         ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format, "-w", columnsWidth);
 
         Process refmt = null;

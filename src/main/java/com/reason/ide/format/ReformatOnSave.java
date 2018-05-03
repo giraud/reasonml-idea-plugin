@@ -5,6 +5,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptManager;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
@@ -13,10 +14,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class ReformatOnSave extends FileDocumentManagerAdapter {
 
-    private final Project m_project;
+    private final PsiDocumentManager m_documentManager;
+    private final Bucklescript m_bs;
 
     public ReformatOnSave(Project project) {
-        m_project = project;
+        m_documentManager = PsiDocumentManager.getInstance(project);
+        m_bs = BucklescriptManager.getInstance(project);
     }
 
     /**
@@ -24,11 +27,13 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        PsiFile file = PsiDocumentManager.getInstance(m_project).getPsiFile(document);
-        if (file != null) {
-            String format = getFormat(file);
-            if (format != null) {
-                BucklescriptManager.getInstance(m_project).refmt(format, document);
+        if (m_bs.isRefmtOnSaveEnabled()) {
+            PsiFile file = m_documentManager.getPsiFile(document);
+            if (file != null) {
+                String format = getFormat(file);
+                if (format != null) {
+                    m_bs.refmt(format, document);
+                }
             }
         }
     }

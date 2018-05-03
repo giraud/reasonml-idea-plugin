@@ -12,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ModuleConfiguration {
 
+    private static final String LOCAL_BS_PLATFORM = "node_modules/bs-platform";
+
+    @Nullable
     private final Module m_module;
 
     ModuleConfiguration(@NotNull VirtualFile baseDir, @NotNull Project project) {
@@ -20,32 +23,60 @@ public class ModuleConfiguration {
 
     @Nullable
     public String getBsbPath() {
-        String result;
+        String result = null;
 
-        String bsLocation = getBsPlatformLocation();
-        Project project = m_module.getProject();
+        if (m_module != null) {
+            String bsLocation = getBsPlatformLocation();
+            Project project = m_module.getProject();
 
-        result = Platform.getBinaryPath(project, bsLocation + "/lib/bsb.exe");
-        if (result == null) {
-            result = Platform.getBinaryPath(project, bsLocation + "/bin/bsb.exe");
+            result = Platform.getBinaryPath(project, bsLocation + "/lib/bsb.exe");
+            if (result == null) {
+                result = Platform.getBinaryPath(project, bsLocation + "/bin/bsb.exe");
+            }
         }
 
         return result;
     }
 
     @Nullable
+    public String getBscPath() {
+        String bsbPath = getBsbPath();
+        return bsbPath == null ? null : bsbPath.replace("bsb.exe", "bsc.exe");
+    }
+
+    @Nullable
     public String getRefmtPath() {
-        String result;
+        String result = null;
 
-        String bsLocation = getBsPlatformLocation();
-        Project project = m_module.getProject();
+        if (m_module != null) {
+            String bsLocation = getBsPlatformLocation();
+            Project project = m_module.getProject();
 
-        result = getRefmtBin(project, bsLocation + "/lib");
-        if (result == null) {
-            result = getRefmtBin(project, bsLocation + "/bin");
+            result = getRefmtBin(project, bsLocation + "/lib");
+            if (result == null) {
+                result = getRefmtBin(project, bsLocation + "/bin");
+            }
         }
 
         return result;
+    }
+
+    public boolean isOnSaveEnabled() {
+        if (m_module == null) {
+            return false;
+        }
+
+        BsFacetConfiguration configuration = BsFacet.getConfiguration(m_module);
+        return configuration != null && configuration.refmtOnSave;
+    }
+
+    @Nullable
+    public String getBasePath() {
+        if (m_module == null) {
+            return null;
+        }
+
+        return m_module.getProject().getBaseDir().getCanonicalPath();
     }
 
     @Nullable
@@ -59,22 +90,24 @@ public class ModuleConfiguration {
 
     @NotNull
     private String getBsPlatformLocation() {
+        if (m_module == null) {
+            return LOCAL_BS_PLATFORM;
+        }
+
         BsFacetConfiguration configuration = BsFacet.getConfiguration(m_module);
         String bsbLocation = configuration == null ? "" : configuration.location.replace('\\', '/');
         if (bsbLocation.isEmpty()) {
-            bsbLocation = "node_modules/bs-platform";
+            bsbLocation = LOCAL_BS_PLATFORM;
         }
         return bsbLocation;
     }
 
-    @Nullable
-    public String getBasePath() {
-        return m_module.getProject().getBaseDir().getCanonicalPath();
-    }
+    public String getRefmtWidth() {
+        if (m_module == null) {
+            return "80";
+        }
 
-    @Nullable
-    public String getBscPath() {
-        String bsbPath = getBsbPath();
-        return bsbPath == null ? null : bsbPath.replace("bsb.exe", "bsc.exe");
+        BsFacetConfiguration configuration = BsFacet.getConfiguration(m_module);
+        return configuration == null ? "80" : configuration.refmtWidth;
     }
 }
