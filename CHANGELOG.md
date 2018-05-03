@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.49
+
+* :rocket: No more JVM properties 'reasonBsb' and 'reasonRefmt', configuration is done via facet (#47)
+
 ## 0.48.1
 
 * :bug: Fix a NPE in OCaml (#51)
