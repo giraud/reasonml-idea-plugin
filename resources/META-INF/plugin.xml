@@ -123,11 +123,12 @@
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
 
         <!--
-         | Facet
+         | SDK & Facet
          -->
 
         <!--<facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>-->
         <!--<framework.detector implementation="com.reason.ide.facet.OCamlFrameworkDetector"/>-->
+        <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
 
         <facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>
         <framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>
