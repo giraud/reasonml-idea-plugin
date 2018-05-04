@@ -9,7 +9,6 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.reason.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -47,9 +46,12 @@ public final class BsCompiler {
     public ProcessHandler recreate(CliType cliType) {
         try {
             killIt();
-            m_bsb = new KillableColoredProcessHandler(getGeneralCommandLine(cliType));
-            if (m_outputListener != null) {
-                m_bsb.addProcessListener(m_outputListener);
+            GeneralCommandLine cli = getGeneralCommandLine(cliType);
+            if (cli != null) {
+                m_bsb = new KillableColoredProcessHandler(cli);
+                if (m_outputListener != null) {
+                    m_bsb.addProcessListener(m_outputListener);
+                }
             }
             return m_bsb;
         } catch (ExecutionException e) {
@@ -73,7 +75,7 @@ public final class BsCompiler {
         }
     }
 
-    @NotNull
+    @Nullable
     private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
         String bsbPath = m_moduleConfiguration.getBsbPath();
 
@@ -84,6 +86,7 @@ public final class BsCompiler {
                             + "Be sure that bsb is installed and reachable from base directory, "
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
+            return null;
         }
 
         GeneralCommandLine cli;
