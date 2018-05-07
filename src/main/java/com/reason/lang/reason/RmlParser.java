@@ -59,8 +59,6 @@ public class RmlParser extends CommonParser {
                 parseLIdent(builder, state);
             } else if (tokenType == m_types.UIDENT) {
                 parseUIdent(builder, state);
-            } else if (tokenType == m_types.OPTION) {
-                parseOption(builder, state);
             } else if (tokenType == m_types.ARROBASE) {
                 parseArrobase(builder, state);
             } else if (tokenType == m_types.PERCENT) {
@@ -149,23 +147,6 @@ public class RmlParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
-        }
-    }
-
-    private void parseOption(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(startTag)) {
-            // This is a property
-/*
-            state.endAny();
-            builder.remapCurrentToken(m_types.PROPERTY_NAME);
-            state.add(markComplete(builder, tagProperty, m_types.TAG_PROPERTY));
-            builder.setWhitespaceSkippedCallback((type, start, end) -> {
-                if (state.isResolution(tagProperty) || (state.isResolution(tagPropertyEq) && state.notInScopeExpression())) {
-                    state.popEnd();
-                    builder.setWhitespaceSkippedCallback(null);
-                }
-            });
-*/
         }
     }
 
