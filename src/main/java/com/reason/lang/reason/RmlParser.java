@@ -343,6 +343,7 @@ public class RmlParser extends CommonParser {
             if (state.isInScopeExpression()) {
                 state.addStart(tagScope);
             }
+
             state.dontMove = advance(builder);
 
             builder.remapCurrentToken(m_types.TAG_NAME);
@@ -356,8 +357,11 @@ public class RmlParser extends CommonParser {
             // A closing tag
             builder.remapCurrentToken(m_types.TAG_LT);
             state.add(markCompleteScope(builder, closeTag, m_types.TAG_CLOSE, groupExpression, m_types.TAG_LT));
+
             state.dontMove = advance(builder);
+
             builder.remapCurrentToken(m_types.TAG_NAME);
+            state.dontMove = wrapWith(nextTokenType == m_types.UIDENT ? m_types.UPPER_SYMBOL : m_types.LOWER_SYMBOL, builder);
         }
     }
 
@@ -537,7 +541,7 @@ public class RmlParser extends CommonParser {
             state.setComplete();
         } else if (state.isResolution(module)) {
             state.setResolution(moduleNamed);
-        } else if (state.isResolution(startTag) && state.previousTokenType == m_types.DOT) {
+        } else if ((state.isResolution(startTag) || state.isResolution(closeTag)) && state.previousTokenType == m_types.DOT) {
             // a namespaced custom component
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) {
