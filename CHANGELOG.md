@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.50
+
+:nail_care: Sorry, no more facets: they can't be used outside Idea. Settings can be found in Project settings (#55) and they are per project
+
 ## 0.49
 
 * :rocket: No more JVM properties 'reasonBsb' and 'reasonRefmt', configuration is done via facet (#47)
