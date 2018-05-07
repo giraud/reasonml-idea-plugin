@@ -43,6 +43,14 @@
         </component>
     </project-components>
 
+    <actions>
+        <!-- Add your actions here -->
+        <action id="reason.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
+            <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
+        </action>
+    </actions>
+
     <extensions defaultExtensionNs="com.intellij">
         <!--
          | File types
@@ -128,13 +136,13 @@
 
         <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
 
-        <facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>
-        <framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>
-
         <projectService serviceInterface="com.reason.ide.settings.ReasonSettings"
                         serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
         <projectConfigurable id="settings.reason" groupId="language" displayName="Reason"
                              instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
+
+        <!--<facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>-->
+        <!--<framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>-->
 
         <!--
          | Others
@@ -182,13 +190,5 @@
                     factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
 
     </extensions>
-
-    <actions>
-        <!-- Add your actions here -->
-        <action id="reason.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
-            <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
-        </action>
-    </actions>
 
 </idea-plugin>

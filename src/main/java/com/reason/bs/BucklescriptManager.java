@@ -91,7 +91,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
         if (bsconfig != null) {
             m_config = BsConfig.read(bsconfig);
-            ModuleConfiguration moduleConfiguration = new ModuleConfiguration(baseDir, m_project);
+            ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
             m_compiler = new BsCompiler(moduleConfiguration);
             m_refmt = new RefmtProcess(moduleConfiguration);
             m_queryTypes = new BsQueryTypesServiceComponent(moduleConfiguration);
