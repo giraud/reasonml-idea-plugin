@@ -59,6 +59,8 @@ public class RmlParser extends CommonParser {
                 parseLIdent(builder, state);
             } else if (tokenType == m_types.UIDENT) {
                 parseUIdent(builder, state);
+            } else if (tokenType == m_types.OPTION) {
+                parseOption(builder, state);
             } else if (tokenType == m_types.ARROBASE) {
                 parseArrobase(builder, state);
             } else if (tokenType == m_types.PERCENT) {
@@ -147,6 +149,23 @@ public class RmlParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseOption(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(startTag)) {
+            // This is a property
+/*
+            state.endAny();
+            builder.remapCurrentToken(m_types.PROPERTY_NAME);
+            state.add(markComplete(builder, tagProperty, m_types.TAG_PROPERTY));
+            builder.setWhitespaceSkippedCallback((type, start, end) -> {
+                if (state.isResolution(tagProperty) || (state.isResolution(tagPropertyEq) && state.notInScopeExpression())) {
+                    state.popEnd();
+                    builder.setWhitespaceSkippedCallback(null);
+                }
+            });
+*/
         }
     }
 
@@ -334,8 +353,9 @@ public class RmlParser extends CommonParser {
     private void parseLt(PsiBuilder builder, ParserState state) {
         // Can be a symbol or a JSX tag
         IElementType nextTokenType = builder.rawLookup(1);
-        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT) {
+        if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
             // Surely a tag
+            // option is a ReasonML keyword but also a JSX keyword !
             builder.remapCurrentToken(m_types.TAG_LT);
             ParserScope tagScope = markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT);
             state.add(tagScope);
