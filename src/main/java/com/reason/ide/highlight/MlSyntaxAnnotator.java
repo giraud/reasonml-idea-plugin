@@ -59,6 +59,9 @@ public abstract class MlSyntaxAnnotator implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(ERASE_MARKER);
             annotation.setEnforcedTextAttributes(scheme);
+        } else if (elementType == m_types.OPTION) {
+            TextAttributes scheme = globalScheme.getAttributes(MlSyntaxHighlighter.OPTION_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         } else if (elementType == m_types.PROPERTY_NAME) {
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(MlSyntaxHighlighter.MARKUP_ATTRIBUTE_));

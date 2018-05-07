@@ -45,7 +45,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             RmlTypes.INSTANCE.BRACKET_LT, RmlTypes.INSTANCE.BRACE_LT, RmlTypes.INSTANCE.DOTDOT
     );
 
-    private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME, RmlTypes.INSTANCE.OPTION);
+    private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES = of(
             OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN, OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE,
@@ -77,7 +77,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             OclTypes.INSTANCE.BRACKET_LT, OclTypes.INSTANCE.BRACE_LT, OclTypes.INSTANCE.DOTDOT
     );
 
-    private static final Set<IElementType> OCL_OPTIONS_TYPES = of(OclTypes.INSTANCE.NONE, OclTypes.INSTANCE.SOME, OclTypes.INSTANCE.OPTION);
+    private static final Set<IElementType> OCL_OPTIONS_TYPES = of(OclTypes.INSTANCE.NONE, OclTypes.INSTANCE.SOME);
 
     private static final TextAttributesKey TYPE_ARGUMENT_KEY = TextAttributesKey.createTextAttributesKey("TYPE_ARGUMENT");
     private static final TextAttributesKey POLY_VARIANT_KEY = TextAttributesKey.createTextAttributesKey("POLY_VARIANT");
@@ -121,7 +121,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
-    private MlTypes m_types;
+    private final MlTypes m_types;
 
     public MlSyntaxHighlighter(MlTypes types) {
         m_types = types;
