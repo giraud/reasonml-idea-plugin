@@ -82,8 +82,8 @@ public final class BsCompiler {
         if (bsbPath == null) {
             Notifications.Bus.notify(new RmlNotification("Bsb",
                     "<html>Can't find bsb.\n"
-                            + "Base directory is '" + m_moduleConfiguration.getBasePath() + "'.\n"
-                            + "Be sure that bsb is installed and reachable from base directory, "
+                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir() + "'.\n"
+                            + "Be sure that bsb is installed and reachable from that directory, "
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
             return null;
@@ -101,7 +101,7 @@ public final class BsCompiler {
                 cli = new GeneralCommandLine(bsbPath);
 
         }
-        cli.withWorkDirectory(m_moduleConfiguration.getBasePath());
+        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir());
         return cli;
     }
 }

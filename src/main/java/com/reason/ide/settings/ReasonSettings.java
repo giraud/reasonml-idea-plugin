@@ -13,15 +13,21 @@ import org.jetbrains.annotations.NotNull;
         storages = {@Storage("reason.xml")}
 )
 public class ReasonSettings implements PersistentStateComponent<ReasonSettings> {
+    private Project m_project;
+
     @SuppressWarnings("WeakerAccess")
     public String location = "";
+    @SuppressWarnings("WeakerAccess")
+    public String workingDir = "";
     @SuppressWarnings("WeakerAccess")
     public boolean refmtOnSave = true;
     @SuppressWarnings("WeakerAccess")
     public String refmtWidth = "120";
 
-    public static ReasonSettings getInstance(Project project) {
-        return ServiceManager.getService(project, ReasonSettings.class);
+    public static ReasonSettings getInstance(@NotNull Project project) {
+        ReasonSettings settings = ServiceManager.getService(project, ReasonSettings.class);
+        settings.m_project = project;
+        return settings;
     }
 
     @NotNull
@@ -33,5 +39,9 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings> 
     @Override
     public void loadState(@NotNull ReasonSettings state) {
         XmlSerializerUtil.copyBean(state, this);
+    }
+
+    public Project getProject() {
+        return m_project;
     }
 }

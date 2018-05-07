@@ -53,11 +53,6 @@ public class ModuleConfiguration {
     }
 
     @Nullable
-    public String getBasePath() {
-        return m_project.getBaseDir().getCanonicalPath();
-    }
-
-    @Nullable
     private String getRefmtBin(@NotNull Project project, @NotNull String root) {
         String binary = Platform.getBinaryPath(project, root + "/refmt3.exe");
         if (binary == null) {
@@ -76,8 +71,23 @@ public class ModuleConfiguration {
         return bsbLocation;
     }
 
+    @NotNull
     public String getRefmtWidth() {
         ReasonSettings settings = ReasonSettings.getInstance(m_project);
         return settings == null ? "80" : settings.refmtWidth;
+    }
+
+    @NotNull
+    public String getWorkingDir() {
+        ReasonSettings settings = ReasonSettings.getInstance(m_project);
+        String dir = settings == null ? getBasePath() : settings.workingDir;
+        return dir != null && !dir.isEmpty() ? dir : getBasePath();
+    }
+
+    @NotNull
+    public String getBasePath() {
+        String canonicalPath = m_project.getBaseDir().getCanonicalPath();
+        assert canonicalPath != null;
+        return canonicalPath;
     }
 }

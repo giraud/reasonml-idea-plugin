@@ -1,5 +1,5 @@
 /.idea/
-/out/
+/build/
 *.iml
 gradle-wrapper*
 gradlew*

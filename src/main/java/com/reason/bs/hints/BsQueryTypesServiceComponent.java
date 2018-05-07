@@ -31,9 +31,6 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
         InferredTypesImplementation result = null;
 
         String basePath = m_moduleConfiguration.getBasePath();
-        if (basePath == null) {
-            return null;
-        }
 
         ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(m_moduleConfiguration.getBscPath(), cmiPath);
         m_bscProcessBuilder.directory(new File(basePath));
