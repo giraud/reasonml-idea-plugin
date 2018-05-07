@@ -5,7 +5,6 @@ import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.reason.icons.Icons;
-import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,10 +18,7 @@ public class BsFacetType extends FacetType<BsFacet, BsFacetConfiguration> {
 
     @Override
     public BsFacetConfiguration createDefaultConfiguration() {
-        String refmtWidth = ReasonSettings.getInstance().getRefmtWidth();
-        BsFacetConfiguration configuration = new BsFacetConfiguration();
-        configuration.refmtWidth = refmtWidth.isEmpty() ? "120" : refmtWidth;
-        return configuration;
+        return new BsFacetConfiguration();
     }
 
     @Override

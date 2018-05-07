@@ -123,15 +123,18 @@
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
 
         <!--
-         | SDK & Facet
+         | SDK & Settings
          -->
 
-        <!--<facetType implementation="com.reason.ide.facet.OCamlFacetType" id="ocaml"/>-->
-        <!--<framework.detector implementation="com.reason.ide.facet.OCamlFrameworkDetector"/>-->
         <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
 
         <facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>
         <framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>
+
+        <projectService serviceInterface="com.reason.ide.settings.ReasonSettings"
+                        serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
+        <projectConfigurable id="settings.reason" groupId="language" displayName="Reason"
+                             instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
 
         <!--
          | Others
@@ -139,7 +142,7 @@
 
         <iconProvider implementation="com.reason.icons.IconProvider"/>
 
-        <colorSettingsPage implementation="com.reason.ide.settings.RmlColorSettingsPage"/>
+        <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ReasonDefault.xml"/>
@@ -178,10 +181,6 @@
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
                     factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
 
-        <applicationService serviceInterface="com.reason.ide.settings.ReasonSettings"
-                            serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
-        <applicationConfigurable id="settings.reason" groupId="language" displayName="Reason"
-                                 instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
     </extensions>
 
     <actions>

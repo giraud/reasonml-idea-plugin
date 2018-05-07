@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RmlColorSettingsPage implements ColorSettingsPage {
+public class ReasonColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Annotation", MlSyntaxHighlighter.ANNOTATION_),
             new AttributesDescriptor("Comment", MlSyntaxHighlighter.RML_COMMENT_),

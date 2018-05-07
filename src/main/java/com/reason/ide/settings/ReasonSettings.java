@@ -4,15 +4,20 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 
 @State(
-        name = "ReasonOptions",
-        storages = {
-                @Storage("reason.xml")}
+        name = "ReasonSettings",
+        storages = {@Storage("reason.xml")}
 )
-public class ReasonSettings implements PersistentStateComponent<ReasonOptions> {
-    private ReasonOptions m_state = new ReasonOptions();
+public class ReasonSettings implements PersistentStateComponent<ReasonSettings> {
+    @SuppressWarnings("WeakerAccess")
+    public String location = "";
+    @SuppressWarnings("WeakerAccess")
+    public boolean refmtOnSave = true;
+    @SuppressWarnings("WeakerAccess")
+    public String refmtWidth = "120";
 
     public static ReasonSettings getInstance() {
         return ServiceManager.getService(ReasonSettings.class);
@@ -20,21 +25,12 @@ public class ReasonSettings implements PersistentStateComponent<ReasonOptions> {
 
     @NotNull
     @Override
-    public ReasonOptions getState() {
-        return m_state;
+    public ReasonSettings getState() {
+        return this;
     }
 
     @Override
-    public void loadState(@NotNull ReasonOptions state) {
-        m_state = state;
-    }
-
-    @NotNull
-    public String getRefmtWidth() {
-        return m_state.m_refmtWidth;
-    }
-
-    void setRefmtWidth(@NotNull String value) {
-        m_state.m_refmtWidth = value.trim();
+    public void loadState(@NotNull ReasonSettings state) {
+        XmlSerializerUtil.copyBean(state, this);
     }
 }
