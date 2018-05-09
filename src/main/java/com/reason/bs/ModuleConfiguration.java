@@ -13,7 +13,7 @@ public class ModuleConfiguration {
     @NotNull
     private final Project m_project;
 
-    ModuleConfiguration(@NotNull Project project) {
+    public ModuleConfiguration(@NotNull Project project) {
         m_project = project;
     }
 

@@ -14,10 +14,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptManager;
 import com.reason.bs.hints.BsQueryTypesService;
 import com.reason.bs.hints.BsQueryTypesServiceComponent;
+import com.reason.insight.InsightManager;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -28,6 +27,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public class InferredTypesService {
+
+    private InferredTypesService() {
+    }
 
     public static void queryForSelectedTextEditor(Project project) {
         try {
@@ -41,8 +43,8 @@ public class InferredTypesService {
                     if (cmiPath == null) {
                         Logger.getInstance("ReasonML.types").warn("can't find cmi file " + CmiFileManager.pathFromSource(project, sourceFile));
                     } else {
-                        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
-                        BsQueryTypesServiceComponent.InferredTypes types = bucklescript.queryTypes(cmiPath);
+                        InsightManager insightManager = project.getComponent(InsightManager.class);
+                        BsQueryTypesServiceComponent.InferredTypes types = insightManager.queryTypes(cmiPath);
                         ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile));
                     }
                 }
@@ -52,10 +54,8 @@ public class InferredTypesService {
         }
     }
 
-    public static void annotateFile(Project project, BsQueryTypesServiceComponent.InferredTypes types, VirtualFile sourceFile) {
-        ApplicationManager.getApplication().runWriteAction(() -> {
-            annotatePsiExpressions(project, types, sourceFile);
-        });
+    static void annotateFile(Project project, BsQueryTypesServiceComponent.InferredTypes types, VirtualFile sourceFile) {
+        ApplicationManager.getApplication().runWriteAction(() -> annotatePsiExpressions(project, types, sourceFile));
     }
 
     private static void annotatePsiExpressions(@NotNull Project project, @Nullable BsQueryTypesService.InferredTypes types, @Nullable VirtualFile sourceFile) {
@@ -104,7 +104,7 @@ public class InferredTypesService {
         if (userData == null) {
             userData = new CodeLensView.CodeLensInfo();
             project.putUserData(CodeLensView.CODE_LENS, userData);
-        } else {
+        } else if (sourceFile != null) {
             userData.clearInternalData(sourceFile);
         }
         return userData;

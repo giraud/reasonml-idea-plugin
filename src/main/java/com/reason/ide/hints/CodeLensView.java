@@ -2,7 +2,6 @@ package com.reason.ide.hints;
 
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.ObjectLongHashMap;
 import gnu.trove.THashMap;
@@ -12,8 +11,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class CodeLensView {
-    public static final Key<CodeLensInfo> CODE_LENS = Key.create("reasonml.codelens");
+class CodeLensView {
+    static final Key<CodeLensInfo> CODE_LENS = Key.create("reasonml.codelens");
+
+    private CodeLensView() {
+    }
 
     public static class CodeLensInfo {
         Map<VirtualFile, Map<Integer, String>> m_signatures = new THashMap<>();
@@ -44,7 +46,7 @@ public class CodeLensView {
             integerStringMap.putIfAbsent(position.line, signature);
         }
 
-        public synchronized void clearInternalData(@NotNull VirtualFile virtualFile) {
+        synchronized void clearInternalData(@NotNull VirtualFile virtualFile) {
             m_timestamps.remove(virtualFile);
             Map<Integer, String> integerStringMap = m_signatures.get(virtualFile);
             if (integerStringMap != null) {

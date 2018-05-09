@@ -19,8 +19,6 @@ import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.bs.annotations.BsErrorsManagerImpl;
 import com.reason.bs.compiler.BsCompiler;
 import com.reason.bs.compiler.CliType;
-import com.reason.bs.hints.BsQueryTypesService;
-import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.bs.refmt.RefmtProcess;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.OclFileType;
@@ -29,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.nio.file.Path;
 import java.util.Collection;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
@@ -44,8 +41,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     private BsCompiler m_compiler;
     @Nullable
     private RefmtProcess m_refmt;
-    @Nullable
-    private BsQueryTypesServiceComponent m_queryTypes;
     @Nullable
     private BsErrorsManagerImpl m_errorsManager;
 
@@ -90,11 +85,10 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
 
         if (bsconfig != null) {
-            m_config = BsConfig.read(bsconfig);
             ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
+            m_config = BsConfig.read(bsconfig);
             m_compiler = new BsCompiler(moduleConfiguration);
             m_refmt = new RefmtProcess(moduleConfiguration);
-            m_queryTypes = new BsQueryTypesServiceComponent(moduleConfiguration);
             m_errorsManager = new BsErrorsManagerImpl();
         }
     }
@@ -106,7 +100,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
         m_config = null;
         m_compiler = null;
-        m_queryTypes = null;
         m_errorsManager = null;
     }
 
@@ -125,18 +118,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
 
         return m_compiler;
-    }
-
-    @Nullable
-    @Override
-    public BsQueryTypesService.InferredTypes queryTypes(@NotNull Path path) {
-        return m_queryTypes == null ? null : m_queryTypes.types(path.toString());
-    }
-
-    @Nullable
-    @Override
-    public BsQueryTypesService.InferredTypes queryTypes(@NotNull VirtualFile file) {
-        return m_queryTypes == null ? null : m_queryTypes.types(file);
     }
 
     @Nullable

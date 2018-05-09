@@ -39,6 +39,10 @@
             <implementation-class>com.reason.bs.BucklescriptManager</implementation-class>
         </component>
         <component>
+            <interface-class>com.reason.insight.InsightManager</interface-class>
+            <implementation-class>com.reason.insight.InsightManagerImpl</implementation-class>
+        </component>
+        <component>
             <implementation-class>com.reason.ide.hints.CmiFileListener</implementation-class>
         </component>
     </project-components>

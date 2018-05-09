@@ -25,9 +25,16 @@ public class CmiFileManager {
 
     @Nullable
     public static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
-        /* ml if re not found ?? */
         String relativeSource = separatorsToUnix(toRelativeSourceName(project, relativeCmi));
-        return Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
+        VirtualFile sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
+
+        if (sourceFile == null) {
+            /* ml if re not found ?? */
+            relativeSource = relativeSource.replace(".re", ".ml");
+            sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
+        }
+
+        return sourceFile;
     }
 
     @Nullable

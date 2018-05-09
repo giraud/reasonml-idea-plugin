@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.*;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptManager;
 import com.reason.ide.files.CmiFileType;
+import com.reason.ide.files.DuneFileType;
 import com.reason.ide.hints.CmiFileListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,8 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
             if (file.getName().equals("bsconfig.json")) {
                 m_bucklescript.refresh();
             }
+        } else if (fileType instanceof DuneFileType) {
+            // OCaml SDK mandatory
         } else if (fileType instanceof CmiFileType) {
             m_cmiFileListener.onChange(file);
         } else if (event.isFromSave()) {
