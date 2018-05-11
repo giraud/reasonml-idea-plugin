@@ -6,7 +6,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
-import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.insight.InsightManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,8 +56,7 @@ public class CmiFileListener implements ProjectComponent {
         if (sourceFile == null) {
             m_log.warn("can't convert " + relativeCmi + " to " + CmiFileManager.toRelativeSourceName(m_project, relativeCmi));
         } else {
-            BsQueryTypesServiceComponent.InferredTypes inferredTypes = m_insightManager.queryTypes(path);
-            InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile);
+            m_insightManager.queryTypes(path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
         }
     }
 

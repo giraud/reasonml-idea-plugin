@@ -2,6 +2,7 @@ package com.reason.bs.hints;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.lang.core.HMSignature;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,5 +46,26 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
 
     public BsQueryTypesService.InferredTypes getModuleType(String name) {
         return m_modules.get(name);
+    }
+
+    public void add(@NotNull String[] tokens) {
+        if (5 <= tokens.length) {
+            if ("V".equals(tokens[0])) {
+                String path = tokens[2];
+                if (null == path || path.isEmpty()) {
+                    // value
+                    m_let.put(tokens[3], new HMSignature(true, tokens[4]));
+                } else {
+                    // value in a module
+                    InferredTypesImplementation module = m_modules.get(path);
+                    if (module == null) {
+                        module = new InferredTypesImplementation();
+                        m_modules.put(path, module);
+                    }
+
+                    module.m_let.put(tokens[3], new HMSignature(true, tokens[4]));
+                }
+            }
+        }
     }
 }

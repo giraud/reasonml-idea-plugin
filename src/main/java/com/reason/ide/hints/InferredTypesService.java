@@ -43,9 +43,7 @@ public class InferredTypesService {
                     if (cmiPath == null) {
                         Logger.getInstance("ReasonML.types").warn("can't find cmi file " + CmiFileManager.pathFromSource(project, sourceFile));
                     } else {
-                        InsightManager insightManager = project.getComponent(InsightManager.class);
-                        BsQueryTypesServiceComponent.InferredTypes types = insightManager.queryTypes(cmiPath);
-                        ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile));
+                        project.getComponent(InsightManager.class).queryTypes(cmiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }
                 }
             }
@@ -83,13 +81,17 @@ public class InferredTypesService {
                 } else {
                     PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
                     if (letModule != null) {
-                        BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = types.getModuleType(letModule.getName());
-                        if (inferredModuleTypes != null) {
-                            HMSignature signature = applyType(inferredModuleTypes, letStatement);
-                            if (signature != null) {
-                                int letOffset = letStatement.getTextOffset();
-                                LogicalPosition logicalPosition = selectedEditor.getEditor().offsetToLogicalPosition(letOffset);
-                                userData.put(sourceFile, logicalPosition, signature.toString(), timestamp);
+                        String qualifiedName = letModule.getQualifiedName();
+                        if (qualifiedName != null) {
+                            int i = qualifiedName.indexOf('.');
+                            BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = types.getModuleType(letModule.getQualifiedName().substring(i + 1));
+                            if (inferredModuleTypes != null) {
+                                HMSignature signature = applyType(inferredModuleTypes, letStatement);
+                                if (signature != null) {
+                                    int letOffset = letStatement.getTextOffset();
+                                    LogicalPosition logicalPosition = selectedEditor.getEditor().offsetToLogicalPosition(letOffset);
+                                    userData.put(sourceFile, logicalPosition, signature.toString(), timestamp);
+                                }
                             }
                         }
                     }

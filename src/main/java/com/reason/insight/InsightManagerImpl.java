@@ -5,8 +5,6 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.ModuleConfiguration;
-import com.reason.bs.hints.BsQueryTypesService;
-import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,9 +13,8 @@ import java.nio.file.Path;
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     private final Project m_project;
-
     @Nullable
-    private BsQueryTypesServiceComponent m_queryTypes;
+    private RincewindProcess m_rincewindProcess;
 
     private InsightManagerImpl(Project project) {
         m_project = project;
@@ -34,25 +31,26 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void projectOpened() {
-        ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
-        m_queryTypes = new BsQueryTypesServiceComponent(moduleConfiguration);
+        m_rincewindProcess = new RincewindProcess(new ModuleConfiguration(m_project));
     }
 
     @Override
     public void projectClosed() {
-        m_queryTypes = null;
+        m_rincewindProcess = null;
     }
 
-    @Nullable
     @Override
-    public BsQueryTypesService.InferredTypes queryTypes(@NotNull Path path) {
-        return m_queryTypes == null ? null : m_queryTypes.types(path.toString());
+    public void queryTypes(@NotNull Path path, @NotNull ProcessTerminated runAfter) {
+        if (m_rincewindProcess != null) {
+            m_rincewindProcess.types(path.toString(), runAfter);
+        }
     }
 
-    @Nullable
     @Override
-    public BsQueryTypesService.InferredTypes queryTypes(@NotNull VirtualFile file) {
-        return m_queryTypes == null ? null : m_queryTypes.types(file);
+    public void queryTypes(@NotNull VirtualFile file, @NotNull ProcessTerminated runAfter) {
+        if (m_rincewindProcess != null) {
+            m_rincewindProcess.types(file.getCanonicalPath(), runAfter);
+        }
     }
 
 }
