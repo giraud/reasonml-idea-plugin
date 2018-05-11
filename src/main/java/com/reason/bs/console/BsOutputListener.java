@@ -57,11 +57,11 @@ public class BsOutputListener implements ProcessListener {
     }
 
     @Override
-    public void processWillTerminate(ProcessEvent event, boolean willBeDestroyed) {
+    public void processWillTerminate(@NotNull ProcessEvent event, boolean willBeDestroyed) {
     }
 
     @Override
-    public void processTerminated(ProcessEvent event) {
+    public void processTerminated(@NotNull ProcessEvent event) {
         if (!m_bsbInfo.isEmpty()) {
             m_bucklescript.addAllInfo(m_bsbInfo);
         }
@@ -78,7 +78,7 @@ public class BsOutputListener implements ProcessListener {
     }
 
     @Override
-    public void onTextAvailable(ProcessEvent event, Key outputType) {
+    public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
         String text = event.getText();
 
         if (m_status == error) {
