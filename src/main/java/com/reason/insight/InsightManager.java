@@ -10,8 +10,11 @@ public interface InsightManager {
 
     @FunctionalInterface
     interface ProcessTerminated {
-        void run(BsQueryTypesService.InferredTypes types);
+    void run(BsQueryTypesService.InferredTypes types);
     }
+
+    @NotNull
+    String getRincewindFilename(@NotNull String osPrefix);
 
     void queryTypes(@NotNull Path path, @NotNull ProcessTerminated callback);
 

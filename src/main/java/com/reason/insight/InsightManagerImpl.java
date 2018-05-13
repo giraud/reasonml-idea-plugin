@@ -12,6 +12,10 @@ import java.nio.file.Path;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
+    private static final String OCAML_VERSION = "4.02";
+    private static final String RINCEWIND_VERSION = "0.2";
+    public static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
+
     private final Project m_project;
     @Nullable
     private RincewindProcess m_rincewindProcess;
@@ -37,6 +41,12 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @Override
     public void projectClosed() {
         m_rincewindProcess = null;
+    }
+
+    @NotNull
+    @Override
+    public String getRincewindFilename(@NotNull String osPrefix) {
+        return "rincewind_" + osPrefix + OCAML_VERSION + "-" + RINCEWIND_VERSION + ".exe";
     }
 
     @Override
