@@ -1,13 +1,11 @@
 package com.reason.ide;
 
 import com.intellij.AppTopics;
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -15,6 +13,7 @@ import com.intellij.util.messages.MessageBusConnection;
 import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
 import com.reason.insight.InsightManager;
+import com.reason.insight.RincewindDownloader;
 
 import java.io.File;
 
@@ -36,21 +35,14 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
             // Try to locate Rincewind
             String osPrefix = getOsPrefix();
             if (!osPrefix.isEmpty()) {
-                IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
-                if (plugin != null) {
-                    InsightManager insightManager = myProject.getComponent(InsightManager.class);
-                    String rincewindFilename = insightManager.getRincewindFilename(osPrefix);
-                    File path = plugin.getPath();
-
-                    File file = new File(path, rincewindFilename);
-                    if (file.exists()) {
-                        m_log.info("Found " + rincewindFilename);
-                    } else {
-                        m_log.info("Downloading " + rincewindFilename + "...");
-
-                    }
+                InsightManager insightManager = myProject.getComponent(InsightManager.class);
+                File rincewindFile = insightManager.getRincewindFile(osPrefix);
+                if (rincewindFile.exists()) {
+                    m_log.info("Found " + rincewindFile);
                 } else {
-                    m_log.info("Can't find plugin directory");
+                    m_log.info("Downloading " + rincewindFile.getName() + "...");
+                    RincewindDownloader downloadingTask = RincewindDownloader.getInstance(myProject, osPrefix);
+                    ProgressManager.getInstance().run(downloadingTask);
                 }
             }
         } else {

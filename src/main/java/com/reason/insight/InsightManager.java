@@ -4,6 +4,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.hints.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public interface InsightManager {
@@ -15,6 +16,9 @@ public interface InsightManager {
 
     @NotNull
     String getRincewindFilename(@NotNull String osPrefix);
+
+    @NotNull
+    File getRincewindFile(@NotNull String osPrefix);
 
     void queryTypes(@NotNull Path path, @NotNull ProcessTerminated callback);
 

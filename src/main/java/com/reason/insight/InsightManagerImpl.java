@@ -1,13 +1,17 @@
 package com.reason.insight;
 
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.ModuleConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.nio.file.Path;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
@@ -41,6 +45,18 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @Override
     public void projectClosed() {
         m_rincewindProcess = null;
+    }
+
+    @NotNull
+    @Override
+    public File getRincewindFile(@NotNull String osPrefix) {
+        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
+        if (plugin != null) {
+            String rincewindFilename = getRincewindFilename(osPrefix);
+            return new File(plugin.getPath(), rincewindFilename);
+        }
+
+        return new File(System.getProperty("java.io.tmpdir"), getRincewindFilename(osPrefix));
     }
 
     @NotNull
