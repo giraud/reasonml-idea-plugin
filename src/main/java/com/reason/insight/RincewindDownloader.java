@@ -8,16 +8,18 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.StandardCopyOption;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RincewindDownloader extends Task.Backgroundable {
 
-    public static final int BUFFER_SIZE = 1024;
-    public AtomicBoolean isDownloaded = new AtomicBoolean(false);
+    private static final int BUFFER_SIZE = 1024;
+    private static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
 
     private static RincewindDownloader INSTANCE;
     private final Logger m_log = Logger.getInstance("ReasonML");
@@ -55,7 +57,7 @@ public class RincewindDownloader extends Task.Backgroundable {
 
             FileOutputStream partFileOut = new FileOutputStream(partFile);
 
-            java.net.URL url = new URL("https://dl.bintray.com/giraud/ocaml/" + insightManager.getRincewindFilename(m_osPrefix));
+            java.net.URL url = new URL(DOWNLOAD_URL + insightManager.getRincewindFilename(m_osPrefix));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoOutput(true);
@@ -82,6 +84,8 @@ public class RincewindDownloader extends Task.Backgroundable {
             inputStream.close();
 
             java.nio.file.Files.move(partFile.toPath(), targetFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
+
+            ((InsightManagerImpl) insightManager).isDownloaded.set(true);
 
             m_log.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
         } catch (IOException e) {

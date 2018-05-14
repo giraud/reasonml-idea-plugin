@@ -8,21 +8,26 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.ModuleConfiguration;
+import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
+    public AtomicBoolean isDownloaded = new AtomicBoolean(false);
+
     private static final String OCAML_VERSION = "4.02";
     private static final String RINCEWIND_VERSION = "0.2";
-    public static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
 
     private final Project m_project;
     @Nullable
     private RincewindProcess m_rincewindProcess;
+    @Nullable
+    private BsQueryTypesServiceComponent m_queryTypes;
 
     private InsightManagerImpl(Project project) {
         m_project = project;
@@ -39,12 +44,15 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void projectOpened() {
-        m_rincewindProcess = new RincewindProcess(new ModuleConfiguration(m_project));
+        ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
+        m_rincewindProcess = new RincewindProcess(moduleConfiguration);
+        m_queryTypes = new BsQueryTypesServiceComponent(moduleConfiguration);
     }
 
     @Override
     public void projectClosed() {
         m_rincewindProcess = null;
+        m_queryTypes = null;
     }
 
     @NotNull
@@ -67,15 +75,19 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void queryTypes(@NotNull Path path, @NotNull ProcessTerminated runAfter) {
-        if (m_rincewindProcess != null) {
+        if (m_rincewindProcess != null && isDownloaded.get()) {
             m_rincewindProcess.types(path.toString(), runAfter);
+        } else if (m_queryTypes != null) {
+            m_queryTypes.types(path.toString());
         }
     }
 
     @Override
     public void queryTypes(@NotNull VirtualFile file, @NotNull ProcessTerminated runAfter) {
-        if (m_rincewindProcess != null) {
+        if (m_rincewindProcess != null && isDownloaded.get()) {
             m_rincewindProcess.types(file.getCanonicalPath(), runAfter);
+        } else if (m_queryTypes != null) {
+            m_queryTypes.types(file);
         }
     }
 

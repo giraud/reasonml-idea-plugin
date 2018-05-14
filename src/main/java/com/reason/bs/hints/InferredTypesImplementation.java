@@ -54,7 +54,7 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
                 String path = tokens[2];
                 if (null == path || path.isEmpty()) {
                     // value
-                    m_let.put(tokens[3], new HMSignature(true, tokens[4]));
+                    m_let.put(tokens[3], new HMSignature(true, "R: " + tokens[4]));
                 } else {
                     // value in a module
                     InferredTypesImplementation module = m_modules.get(path);
@@ -63,7 +63,7 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
                         m_modules.put(path, module);
                     }
 
-                    module.m_let.put(tokens[3], new HMSignature(true, tokens[4]));
+                    module.m_let.put(tokens[3], new HMSignature(true, "R: " + tokens[4]));
                 }
             }
         }

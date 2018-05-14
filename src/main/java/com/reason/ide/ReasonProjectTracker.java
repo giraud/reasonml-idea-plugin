@@ -13,6 +13,7 @@ import com.intellij.util.messages.MessageBusConnection;
 import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
 import com.reason.insight.InsightManager;
+import com.reason.insight.InsightManagerImpl;
 import com.reason.insight.RincewindDownloader;
 
 import java.io.File;
@@ -35,10 +36,11 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
             // Try to locate Rincewind
             String osPrefix = getOsPrefix();
             if (!osPrefix.isEmpty()) {
-                InsightManager insightManager = myProject.getComponent(InsightManager.class);
+                InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getComponent(InsightManager.class);
                 File rincewindFile = insightManager.getRincewindFile(osPrefix);
                 if (rincewindFile.exists()) {
                     m_log.info("Found " + rincewindFile);
+                    insightManager.isDownloaded.set(true);
                 } else {
                     m_log.info("Downloading " + rincewindFile.getName() + "...");
                     RincewindDownloader downloadingTask = RincewindDownloader.getInstance(myProject, osPrefix);
