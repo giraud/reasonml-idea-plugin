@@ -14,6 +14,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.FileManager;
 import com.reason.insight.InsightManager;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiLet;
@@ -37,9 +38,9 @@ public class InferredTypesService {
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    VirtualFile cmiPath = CmiFileManager.fromSource(project, sourceFile);
+                    VirtualFile cmiPath = FileManager.fromSource(project, sourceFile);
                     if (cmiPath == null) {
-                        Logger.getInstance("ReasonML.types").warn("can't find cmi file " + CmiFileManager.pathFromSource(project, sourceFile));
+                        Logger.getInstance("ReasonML.types").warn("can't find cmi file " + FileManager.pathFromSource(project, sourceFile));
                     } else {
                         project.getComponent(InsightManager.class).queryTypes(cmiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }

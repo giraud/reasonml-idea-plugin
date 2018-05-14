@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.FileManager;
 import com.reason.Platform;
 import com.reason.insight.InsightManager;
 import org.jetbrains.annotations.NotNull;
@@ -54,9 +55,9 @@ public class CmiFileListener implements ProjectComponent {
 
         m_log.info("Detected change on file " + relativeCmi + ", reading types");
 
-        VirtualFile sourceFile = CmiFileManager.toSource(m_project, relativeCmi);
+        VirtualFile sourceFile = FileManager.toSource(m_project, relativeCmi);
         if (sourceFile == null) {
-            m_log.warn("can't convert " + relativeCmi + " to " + CmiFileManager.toRelativeSourceName(m_project, relativeCmi));
+            m_log.warn("can't convert " + relativeCmi + " to " + FileManager.toRelativeSourceName(m_project, relativeCmi));
         } else {
             m_insightManager.queryTypes(path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
         }

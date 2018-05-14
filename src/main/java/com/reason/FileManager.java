@@ -1,8 +1,7 @@
-package com.reason.ide.hints;
+package com.reason;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Platform;
 import com.reason.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,16 +10,20 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-public class CmiFileManager {
+public class FileManager {
+
+    private FileManager() {
+    }
 
     @NotNull
-    public static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativeCmi) {
-        String cmiName = relativeCmi.toString();
+    public static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativePath) {
+        String sourcePath = relativePath.toString();
         String namespace = BucklescriptManager.getInstance(project).getNamespace();
         if (!namespace.isEmpty()) {
-            cmiName = cmiName.replace("-" + namespace, "");
+            sourcePath = sourcePath.replace("-" + namespace, "");
         }
-        return cmiName.replace(".cmi", ".re");
+        int dotPos = sourcePath.lastIndexOf(".");
+        return 0 <= dotPos ? sourcePath.substring(0, dotPos) + ".re" : sourcePath;
     }
 
     @Nullable
@@ -29,7 +32,6 @@ public class CmiFileManager {
         VirtualFile sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
 
         if (sourceFile == null) {
-            /* ml if re not found ?? */
             relativeSource = relativeSource.replace(".re", ".ml");
             sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
         }
@@ -38,12 +40,12 @@ public class CmiFileManager {
     }
 
     @Nullable
-    static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         String relativeCmiPath = separatorsToUnix(pathFromSource(project, sourceFile).toString());
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeCmiPath);
     }
 
-    static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
 
