@@ -8,7 +8,7 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.ModuleConfiguration;
-import com.reason.bs.hints.BsQueryTypesServiceComponent;
+import com.reason.bs.insight.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @Nullable
     private RincewindProcess m_rincewindProcess;
     @Nullable
-    private BsQueryTypesServiceComponent m_queryTypes;
+    private BsQueryTypesService m_queryTypes;
 
     private InsightManagerImpl(Project project) {
         m_project = project;
@@ -46,7 +46,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     public void projectOpened() {
         ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
         m_rincewindProcess = new RincewindProcess(moduleConfiguration);
-        m_queryTypes = new BsQueryTypesServiceComponent(moduleConfiguration);
+        m_queryTypes = new BsQueryTypesService(moduleConfiguration);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
         if (m_rincewindProcess != null && isDownloaded.get()) {
             m_rincewindProcess.types(path.toString(), runAfter);
         } else if (m_queryTypes != null) {
-            m_queryTypes.types(path.toString());
+            m_queryTypes.types(path.toString(), runAfter);
         }
     }
 
@@ -87,7 +87,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
         if (m_rincewindProcess != null && isDownloaded.get()) {
             m_rincewindProcess.types(file.getCanonicalPath(), runAfter);
         } else if (m_queryTypes != null) {
-            m_queryTypes.types(file);
+            m_queryTypes.types(file, runAfter);
         }
     }
 

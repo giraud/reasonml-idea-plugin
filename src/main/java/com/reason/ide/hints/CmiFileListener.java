@@ -4,6 +4,8 @@ package com.reason.ide.hints;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.insight.InsightManager;
@@ -42,13 +44,13 @@ public class CmiFileListener implements ProjectComponent {
         Path path = FileSystems.getDefault().getPath(file.getPath());
         Path relativeCmi;
 
-        //Sdk projectSDK = ProjectRootManager.getInstance(m_project).getProjectSdk();
-        //if (projectSDK != null && projectSDK.getSdkType().getName().equals("OCaml SDK")) {
-        //    Path pathToWatch = getPathToWatch(m_project, "_build/default");
-        //    relativeCmi = pathToWatch.relativize(path);
-        //} else {
-        relativeCmi = m_pathToWatch.relativize(path);
-        //}
+        Sdk projectSDK = ProjectRootManager.getInstance(m_project).getProjectSdk();
+        if (projectSDK != null && projectSDK.getSdkType().getName().equals("OCaml SDK")) {
+            Path pathToWatch = getPathToWatch(m_project, "_build/default");
+            relativeCmi = pathToWatch.relativize(path);
+        } else {
+            relativeCmi = m_pathToWatch.relativize(path);
+        }
 
         m_log.info("Detected change on file " + relativeCmi + ", reading types");
 

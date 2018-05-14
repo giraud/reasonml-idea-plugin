@@ -1,4 +1,4 @@
-package com.reason.bs.hints;
+package com.reason.ide.hints;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.lang.core.HMSignature;
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InferredTypesImplementation implements BsQueryTypesService.InferredTypes {
+public class InferredTypesImplementation implements InferredTypes {
     private final Map<String, HMSignature> m_let = new HashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
 
@@ -44,7 +44,7 @@ public class InferredTypesImplementation implements BsQueryTypesService.Inferred
         return m_let.get(name);
     }
 
-    public BsQueryTypesService.InferredTypes getModuleType(String name) {
+    public InferredTypes getModuleType(String name) {
         return m_modules.get(name);
     }
 

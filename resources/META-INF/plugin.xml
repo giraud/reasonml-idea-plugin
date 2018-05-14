@@ -180,7 +180,7 @@
         <completion.contributor language="Ocaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
-        <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
+        <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.insight.SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->

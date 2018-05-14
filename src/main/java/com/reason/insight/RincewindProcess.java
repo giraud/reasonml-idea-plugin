@@ -5,8 +5,8 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Streams;
 import com.reason.bs.ModuleConfiguration;
-import com.reason.bs.hints.InferredTypesImplementation;
 import com.reason.ide.RmlNotification;
+import com.reason.ide.hints.InferredTypesImplementation;
 
 import java.io.BufferedReader;
 import java.io.File;

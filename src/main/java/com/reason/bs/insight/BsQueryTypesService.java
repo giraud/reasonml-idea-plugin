@@ -1,4 +1,4 @@
-package com.reason.bs.hints;
+package com.reason.bs.insight;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -7,27 +7,25 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
+import com.reason.ide.hints.InferredTypesImplementation;
+import com.reason.insight.InsightManager;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
-// WARNING... THIS IS A BIG WIP...
-public class BsQueryTypesServiceComponent implements BsQueryTypesService {
+public class BsQueryTypesService {
 
     private final Logger m_log;
     private final ModuleConfiguration m_moduleConfiguration;
 
-    public BsQueryTypesServiceComponent(ModuleConfiguration moduleConfiguration) {
+    public BsQueryTypesService(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
         m_log = Logger.getInstance("ReasonML.types");
     }
 
-    @Nullable
-    @Override
-    public InferredTypes types(String cmiPath) {
+    public void types(@NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         InferredTypesImplementation result = null;
 
         String basePath = m_moduleConfiguration.getBasePath();
@@ -64,6 +62,8 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
                 for (String type : types) {
                     result.add(type);
                 }
+
+                runAfter.run(result);
             }
         } catch (Exception e) {
             m_log.error("An error occurred when reading types", e);
@@ -72,13 +72,9 @@ public class BsQueryTypesServiceComponent implements BsQueryTypesService {
                 bsc.destroy();
             }
         }
-
-        return result;
     }
 
-    @Nullable
-    @Override
-    public InferredTypes types(@NotNull VirtualFile cmiFile) {
-        return types(cmiFile.getPath());
+    public void types(@NotNull VirtualFile cmiFile, @NotNull InsightManager.ProcessTerminated runAfter) {
+        types(cmiFile.getPath(), runAfter);
     }
 }

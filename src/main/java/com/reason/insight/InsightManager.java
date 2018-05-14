@@ -1,7 +1,7 @@
 package com.reason.insight;
 
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.bs.hints.BsQueryTypesService;
+import com.reason.ide.hints.InferredTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -11,7 +11,7 @@ public interface InsightManager {
 
     @FunctionalInterface
     interface ProcessTerminated {
-    void run(BsQueryTypesService.InferredTypes types);
+        void run(InferredTypes types);
     }
 
     @NotNull

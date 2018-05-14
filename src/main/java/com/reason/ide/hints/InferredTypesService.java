@@ -14,8 +14,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.bs.hints.BsQueryTypesService;
-import com.reason.bs.hints.BsQueryTypesServiceComponent;
 import com.reason.insight.InsightManager;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiLet;
@@ -52,11 +50,11 @@ public class InferredTypesService {
         }
     }
 
-    static void annotateFile(Project project, BsQueryTypesServiceComponent.InferredTypes types, VirtualFile sourceFile) {
+    static void annotateFile(Project project, InferredTypes types, VirtualFile sourceFile) {
         ApplicationManager.getApplication().runWriteAction(() -> annotatePsiExpressions(project, types, sourceFile));
     }
 
-    private static void annotatePsiExpressions(@NotNull Project project, @Nullable BsQueryTypesService.InferredTypes types, @Nullable VirtualFile sourceFile) {
+    private static void annotatePsiExpressions(@NotNull Project project, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
         if (types == null || sourceFile == null) {
             return;
         }
@@ -84,7 +82,7 @@ public class InferredTypesService {
                         String qualifiedName = letModule.getQualifiedName();
                         if (qualifiedName != null) {
                             int i = qualifiedName.indexOf('.');
-                            BsQueryTypesServiceComponent.InferredTypes inferredModuleTypes = types.getModuleType(letModule.getQualifiedName().substring(i + 1));
+                            InferredTypes inferredModuleTypes = types.getModuleType(letModule.getQualifiedName().substring(i + 1));
                             if (inferredModuleTypes != null) {
                                 HMSignature signature = applyType(inferredModuleTypes, letStatement);
                                 if (signature != null) {
@@ -112,7 +110,7 @@ public class InferredTypesService {
         return userData;
     }
 
-    private static HMSignature applyType(@Nullable BsQueryTypesService.InferredTypes inferredTypes, PsiLet letStatement) {
+    private static HMSignature applyType(@Nullable InferredTypes inferredTypes, PsiLet letStatement) {
         HMSignature signature = null;
 
         PsiElement letName = letStatement.getNameIdentifier();
