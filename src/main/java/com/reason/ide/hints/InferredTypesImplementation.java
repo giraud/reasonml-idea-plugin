@@ -1,13 +1,16 @@
 package com.reason.ide.hints;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.reason.lang.core.HMSignature;
+import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class InferredTypesImplementation implements InferredTypes {
+    private final Map<LogicalPosition, HMSignature> m_pos = new THashMap<>();
     private final Map<String, HMSignature> m_let = new HashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
 
@@ -48,8 +51,19 @@ public class InferredTypesImplementation implements InferredTypes {
         return m_modules.get(name);
     }
 
+    @Override
+    public Map<LogicalPosition, HMSignature> listTypesByPositions() {
+        return m_pos;
+    }
+
     public void add(@NotNull String[] tokens) {
         if (5 <= tokens.length) {
+            String[] codedPos = tokens[1].split("\\.");
+            int line = Integer.parseInt(codedPos[0]);
+            int column = Integer.parseInt(codedPos[1]);
+            LogicalPosition logicalPosition = new LogicalPosition(0 < line ? line - 1 : 0, column);
+            m_pos.put(logicalPosition, new HMSignature(true, tokens[4] + " (P)"));
+
             if ("V".equals(tokens[0])) {
                 String path = tokens[2];
                 if (null == path || path.isEmpty()) {

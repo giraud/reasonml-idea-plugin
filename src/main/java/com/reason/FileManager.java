@@ -40,12 +40,12 @@ public class FileManager {
     }
 
     @Nullable
-    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        String relativeCmiPath = separatorsToUnix(pathFromSource(project, sourceFile).toString());
+    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile sourceFile, boolean useCmt) {
+        String relativeCmiPath = separatorsToUnix(pathFromSource(project, sourceFile, useCmt).toString());
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeCmiPath);
     }
 
-    public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile, boolean useCmt) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
 
@@ -57,7 +57,7 @@ public class FileManager {
         }
 
         String namespace = BucklescriptManager.getInstance(project).getNamespace();
-        return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + ".cmi");
+        return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + (useCmt ? ".cmt" : ".cmi"));
     }
 
     private static String separatorsToUnix(String path) {

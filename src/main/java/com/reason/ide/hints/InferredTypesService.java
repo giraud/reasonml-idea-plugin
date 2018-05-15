@@ -13,17 +13,14 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.FileManager;
 import com.reason.insight.InsightManager;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.Map;
 
 public class InferredTypesService {
 
@@ -37,12 +34,13 @@ public class InferredTypesService {
                 Document document = selectedTextEditor.getDocument();
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
+                    InsightManager insightManager = project.getComponent(InsightManager.class);
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    VirtualFile cmiPath = FileManager.fromSource(project, sourceFile);
-                    if (cmiPath == null) {
-                        Logger.getInstance("ReasonML.types").warn("can't find cmi file " + FileManager.pathFromSource(project, sourceFile));
+                    VirtualFile cmtiPath = FileManager.fromSource(project, sourceFile, insightManager.useCmt());
+                    if (cmtiPath == null) {
+                        Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, sourceFile, insightManager.useCmt()));
                     } else {
-                        project.getComponent(InsightManager.class).queryTypes(cmiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
+                        project.getComponent(InsightManager.class).queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }
                 }
             }
@@ -67,6 +65,10 @@ public class InferredTypesService {
             long timestamp = sourceFile.getTimeStamp();
             PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
 
+            for (Map.Entry<LogicalPosition, HMSignature> signatureEntry : types.listTypesByPositions().entrySet()) {
+                userData.put(sourceFile, signatureEntry.getKey(), signatureEntry.getValue().toString(), timestamp);
+            }
+/*
             Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
             for (PsiLet letStatement : letExpressions) {
                 PsiElement letParent = letStatement.getParent();
@@ -96,6 +98,7 @@ public class InferredTypesService {
                     }
                 }
             }
+*/
         }
     }
 
