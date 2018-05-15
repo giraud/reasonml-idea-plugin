@@ -16,6 +16,7 @@ import com.reason.insight.InsightManager;
 import com.reason.insight.InsightManagerImpl;
 import com.reason.insight.RincewindDownloader;
 
+import javax.annotation.Nullable;
 import java.io.File;
 
 import static com.reason.Platform.getOsPrefix;
@@ -24,8 +25,11 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
 
     private final Logger m_log = Logger.getInstance("ReasonML");
 
+    @Nullable
     private RmlDocumentListener m_documentListener;
+    @Nullable
     private MessageBusConnection m_messageBusConnection;
+    @Nullable
     private VirtualFileListener m_vfListener;
 
     protected ReasonProjectTracker(Project project) {
@@ -65,8 +69,12 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
 
     @Override
     public void projectClosed() {
-        EditorFactory.getInstance().getEventMulticaster().removeDocumentListener(m_documentListener);
-        VirtualFileManager.getInstance().removeVirtualFileListener(m_vfListener);
+        if (m_documentListener != null) {
+            EditorFactory.getInstance().getEventMulticaster().removeDocumentListener(m_documentListener);
+        }
+        if (m_vfListener != null) {
+            VirtualFileManager.getInstance().removeVirtualFileListener(m_vfListener);
+        }
         if (m_messageBusConnection != null) {
             m_messageBusConnection.disconnect();
         }
