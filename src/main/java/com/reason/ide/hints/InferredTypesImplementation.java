@@ -62,7 +62,7 @@ public class InferredTypesImplementation implements InferredTypes {
             int line = Integer.parseInt(codedPos[0]);
             int column = Integer.parseInt(codedPos[1]);
             LogicalPosition logicalPosition = new LogicalPosition(0 < line ? line - 1 : 0, column);
-            m_pos.put(logicalPosition, new HMSignature(true, tokens[4]));
+            m_pos.put(logicalPosition, new HMSignature(true, tokens[4] + " (P)"));
 
             if ("V".equals(tokens[0])) {
                 String path = tokens[2];

@@ -5,6 +5,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,6 +83,9 @@ public class RincewindDownloader extends Task.Backgroundable {
             inputStream.close();
 
             java.nio.file.Files.move(partFile.toPath(), targetFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
+            if (!SystemInfo.isWindows) {
+                targetFile.setExecutable(true);
+            }
 
             ((InsightManagerImpl) insightManager).isDownloaded.set(true);
 
