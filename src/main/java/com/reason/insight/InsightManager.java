@@ -14,11 +14,13 @@ public interface InsightManager {
         void run(InferredTypes types);
     }
 
-    @NotNull
-    String getRincewindFilename(@NotNull String osPrefix);
+    boolean useCmt();
 
     @NotNull
-    File getRincewindFile(@NotNull String osPrefix);
+    String getRincewindFilename();
+
+    @NotNull
+    File getRincewindFile();
 
     void queryTypes(@NotNull Path path, @NotNull ProcessTerminated callback);
 

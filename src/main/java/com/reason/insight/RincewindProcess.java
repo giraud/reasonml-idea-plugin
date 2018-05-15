@@ -7,6 +7,7 @@ import com.reason.Streams;
 import com.reason.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,15 +19,13 @@ public class RincewindProcess {
     private final ModuleConfiguration m_moduleConfiguration;
 
 
-    RincewindProcess(ModuleConfiguration moduleConfiguration) {
+    RincewindProcess(@NotNull ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
         m_log = Logger.getInstance("ReasonML.types");
     }
 
-    public void types(String cmiPath, InsightManager.ProcessTerminated runAfter) {
-        // From configuration/sdk ???
-        String command = "v:\\rincewind.exe";
-        ProcessBuilder processBuilder = new ProcessBuilder(command, cmiPath);
+    public void types(@NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+        ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
         processBuilder.directory(new File(m_moduleConfiguration.getBasePath()));
 
         Process rincewind = null;

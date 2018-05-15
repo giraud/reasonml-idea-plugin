@@ -2,6 +2,7 @@ package com.reason;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +17,23 @@ import java.util.Map;
 public class Platform {
 
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
+
+    @NotNull
+    public static String getOsPrefix() {
+        if (SystemInfo.isWindows) {
+            return "w";
+        }
+
+        if (SystemInfo.isLinux) {
+            return "l";
+        }
+
+        if (SystemInfo.isMac) {
+            return "o";
+        }
+
+        return "";
+    }
 
     @Nullable
     public static String getBinary(String envVar, String propVar) {

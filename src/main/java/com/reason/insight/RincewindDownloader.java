@@ -23,18 +23,16 @@ public class RincewindDownloader extends Task.Backgroundable {
 
     private static RincewindDownloader INSTANCE;
     private final Logger m_log = Logger.getInstance("ReasonML");
-    private final String m_osPrefix;
 
-    public static RincewindDownloader getInstance(Project project, String osPrefix) {
+    public static RincewindDownloader getInstance(@NotNull Project project) {
         if (INSTANCE == null) {
-            INSTANCE = new RincewindDownloader(project, osPrefix);
+            INSTANCE = new RincewindDownloader(project);
         }
         return INSTANCE;
     }
 
-    private RincewindDownloader(@Nullable Project project, String osPrefix) {
+    private RincewindDownloader(@Nullable Project project) {
         super(project, "Downloading rincewind binary");
-        m_osPrefix = osPrefix;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class RincewindDownloader extends Task.Backgroundable {
             InsightManager insightManager = myProject.getComponent(InsightManager.class);
 
             // some code
-            File targetFile = insightManager.getRincewindFile(m_osPrefix);
+            File targetFile = insightManager.getRincewindFile();
             File partFile = new File(targetFile.getPath() + ".part");
 
             if (partFile.exists()) {
@@ -57,7 +55,7 @@ public class RincewindDownloader extends Task.Backgroundable {
 
             FileOutputStream partFileOut = new FileOutputStream(partFile);
 
-            java.net.URL url = new URL(DOWNLOAD_URL + insightManager.getRincewindFilename(m_osPrefix));
+            java.net.URL url = new URL(DOWNLOAD_URL + insightManager.getRincewindFilename());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoOutput(true);

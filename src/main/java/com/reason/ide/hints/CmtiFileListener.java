@@ -9,24 +9,26 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.FileManager;
 import com.reason.Platform;
+import com.reason.ide.files.CmiFileType;
+import com.reason.ide.files.CmtFileType;
 import com.reason.insight.InsightManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-public class CmiFileListener implements ProjectComponent {
+public class CmtiFileListener implements ProjectComponent {
 
     private final Logger m_log;
     private final Project m_project;
     private final Path m_pathToWatch;
     private final InsightManager m_insightManager;
 
-    public static CmiFileListener getInstance(Project project) {
-        return project.getComponent(CmiFileListener.class);
+    public static CmtiFileListener getInstance(Project project) {
+        return project.getComponent(CmtiFileListener.class);
     }
 
-    private CmiFileListener(Project project) {
+    private CmtiFileListener(Project project) {
         m_log = Logger.getInstance("ReasonML.vfs");
         m_project = project;
         m_pathToWatch = getPathToWatch(project, "lib/bs");
@@ -42,22 +44,30 @@ public class CmiFileListener implements ProjectComponent {
     }
 
     public void onChange(VirtualFile file) {
+        boolean useCmt = m_insightManager.useCmt();
+        if (useCmt && file.getFileType() instanceof CmiFileType) {
+            return;
+        }
+        if (!useCmt && file.getFileType() instanceof CmtFileType) {
+            return;
+        }
+
         Path path = FileSystems.getDefault().getPath(file.getPath());
-        Path relativeCmi;
+        Path relativeCmti;
 
         Sdk projectSDK = ProjectRootManager.getInstance(m_project).getProjectSdk();
         if (projectSDK != null && projectSDK.getSdkType().getName().equals("OCaml SDK")) {
             Path pathToWatch = getPathToWatch(m_project, "_build/default");
-            relativeCmi = pathToWatch.relativize(path);
+            relativeCmti = pathToWatch.relativize(path);
         } else {
-            relativeCmi = m_pathToWatch.relativize(path);
+            relativeCmti = m_pathToWatch.relativize(path);
         }
 
-        m_log.info("Detected change on file " + relativeCmi + ", reading types");
+        m_log.info("Detected change on file " + relativeCmti + ", reading types");
 
-        VirtualFile sourceFile = FileManager.toSource(m_project, relativeCmi);
+        VirtualFile sourceFile = FileManager.toSource(m_project, relativeCmti);
         if (sourceFile == null) {
-            m_log.warn("can't convert " + relativeCmi + " to " + FileManager.toRelativeSourceName(m_project, relativeCmi));
+            m_log.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, relativeCmti));
         } else {
             m_insightManager.queryTypes(path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
         }

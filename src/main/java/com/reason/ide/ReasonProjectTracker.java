@@ -18,6 +18,8 @@ import com.reason.insight.RincewindDownloader;
 
 import java.io.File;
 
+import static com.reason.Platform.getOsPrefix;
+
 public class ReasonProjectTracker extends AbstractProjectComponent {
 
     private final Logger m_log = Logger.getInstance("ReasonML");
@@ -34,16 +36,15 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
     public void projectOpened() {
         if (SystemInfo.is64Bit) {
             // Try to locate Rincewind
-            String osPrefix = getOsPrefix();
-            if (!osPrefix.isEmpty()) {
+            if (!getOsPrefix().isEmpty()) {
                 InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getComponent(InsightManager.class);
-                File rincewindFile = insightManager.getRincewindFile(osPrefix);
+                File rincewindFile = insightManager.getRincewindFile();
                 if (rincewindFile.exists()) {
                     m_log.info("Found " + rincewindFile);
                     insightManager.isDownloaded.set(true);
                 } else {
                     m_log.info("Downloading " + rincewindFile.getName() + "...");
-                    RincewindDownloader downloadingTask = RincewindDownloader.getInstance(myProject, osPrefix);
+                    RincewindDownloader downloadingTask = RincewindDownloader.getInstance(myProject);
                     ProgressManager.getInstance().run(downloadingTask);
                 }
             }
@@ -71,23 +72,4 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
         }
     }
 
-    private String getOsPrefix() {
-        if (SystemInfo.isWindows) {
-            m_log.info("Detected windows (64bits)");
-            return "w";
-        }
-
-        if (SystemInfo.isLinux) {
-            m_log.info("Detected Linux (64bits)");
-            return "l";
-        }
-
-        if (SystemInfo.isMac) {
-            m_log.info("Detected Mac (64bits)");
-            return "o";
-        }
-
-        m_log.info("Os not detected: " + SystemInfo.getOsNameAndVersion());
-        return "";
-    }
 }

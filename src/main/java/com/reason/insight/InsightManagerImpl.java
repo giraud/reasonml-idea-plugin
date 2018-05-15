@@ -16,6 +16,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.reason.Platform.getOsPrefix;
+
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     public AtomicBoolean isDownloaded = new AtomicBoolean(false);
@@ -55,28 +57,33 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
         m_queryTypes = null;
     }
 
-    @NotNull
     @Override
-    public File getRincewindFile(@NotNull String osPrefix) {
-        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
-        if (plugin != null) {
-            String rincewindFilename = getRincewindFilename(osPrefix);
-            return new File(plugin.getPath(), rincewindFilename);
-        }
-
-        return new File(System.getProperty("java.io.tmpdir"), getRincewindFilename(osPrefix));
+    public boolean useCmt() {
+        return isDownloaded.get();
     }
 
     @NotNull
     @Override
-    public String getRincewindFilename(@NotNull String osPrefix) {
-        return "rincewind_" + osPrefix + OCAML_VERSION + "-" + RINCEWIND_VERSION + ".exe";
+    public File getRincewindFile() {
+        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
+        if (plugin != null) {
+            String rincewindFilename = getRincewindFilename();
+            return new File(plugin.getPath(), rincewindFilename);
+        }
+
+        return new File(System.getProperty("java.io.tmpdir"), getRincewindFilename());
+    }
+
+    @NotNull
+    @Override
+    public String getRincewindFilename() {
+        return "rincewind_" + getOsPrefix() + OCAML_VERSION + "-" + RINCEWIND_VERSION + ".exe";
     }
 
     @Override
     public void queryTypes(@NotNull Path path, @NotNull ProcessTerminated runAfter) {
         if (m_rincewindProcess != null && isDownloaded.get()) {
-            m_rincewindProcess.types(path.toString(), runAfter);
+            m_rincewindProcess.types(getRincewindFile().getPath(), path.toString(), runAfter);
         } else if (m_queryTypes != null) {
             m_queryTypes.types(path.toString(), runAfter);
         }
@@ -85,7 +92,10 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @Override
     public void queryTypes(@NotNull VirtualFile file, @NotNull ProcessTerminated runAfter) {
         if (m_rincewindProcess != null && isDownloaded.get()) {
-            m_rincewindProcess.types(file.getCanonicalPath(), runAfter);
+            String canonicalPath = file.getCanonicalPath();
+            if (canonicalPath != null) {
+                m_rincewindProcess.types(getRincewindFile().getPath(), canonicalPath, runAfter);
+            }
         } else if (m_queryTypes != null) {
             m_queryTypes.types(file, runAfter);
         }

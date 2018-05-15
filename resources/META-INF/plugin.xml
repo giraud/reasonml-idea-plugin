@@ -43,7 +43,7 @@
             <implementation-class>com.reason.insight.InsightManagerImpl</implementation-class>
         </component>
         <component>
-            <implementation-class>com.reason.ide.hints.CmiFileListener</implementation-class>
+            <implementation-class>com.reason.ide.hints.CmtiFileListener</implementation-class>
         </component>
     </project-components>
 
@@ -70,8 +70,9 @@
         <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
-
+        <!-- Binary -->
         <fileTypeFactory implementation="com.reason.ide.files.CmiFileTypeFactory"/>
+        <fileTypeFactory implementation="com.reason.ide.files.CmtFileTypeFactory"/>
 
         <!--
          | Parsers

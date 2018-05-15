@@ -7,8 +7,9 @@ import com.intellij.openapi.vfs.*;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptManager;
 import com.reason.ide.files.CmiFileType;
+import com.reason.ide.files.CmtFileType;
 import com.reason.ide.files.DuneFileType;
-import com.reason.ide.hints.CmiFileListener;
+import com.reason.ide.hints.CmtiFileListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,11 +18,11 @@ import org.jetbrains.annotations.NotNull;
 class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListener {
 
     private final Bucklescript m_bucklescript;
-    private final CmiFileListener m_cmiFileListener;
+    private final CmtiFileListener m_cmtiFileListener;
 
     VirtualFileListener(Project project) {
         m_bucklescript = BucklescriptManager.getInstance(project);
-        m_cmiFileListener = CmiFileListener.getInstance(project);
+        m_cmtiFileListener = CmtiFileListener.getInstance(project);
     }
 
     @Override
@@ -40,7 +41,9 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
         } else if (fileType instanceof DuneFileType) {
             // OCaml SDK mandatory
         } else if (fileType instanceof CmiFileType) {
-            m_cmiFileListener.onChange(file);
+            m_cmtiFileListener.onChange(file);
+        } else if (fileType instanceof CmtFileType) {
+            m_cmtiFileListener.onChange(file);
         } else if (event.isFromSave()) {
             m_bucklescript.run(fileType);
         }
