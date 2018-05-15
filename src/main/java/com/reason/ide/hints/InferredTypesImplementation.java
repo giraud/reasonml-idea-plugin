@@ -62,13 +62,13 @@ public class InferredTypesImplementation implements InferredTypes {
             int line = Integer.parseInt(codedPos[0]);
             int column = Integer.parseInt(codedPos[1]);
             LogicalPosition logicalPosition = new LogicalPosition(0 < line ? line - 1 : 0, column);
-            m_pos.put(logicalPosition, new HMSignature(true, tokens[4] + " (P)"));
+            m_pos.put(logicalPosition, new HMSignature(true, tokens[4]));
 
             if ("V".equals(tokens[0])) {
                 String path = tokens[2];
                 if (null == path || path.isEmpty()) {
                     // value
-                    m_let.put(tokens[3], new HMSignature(true, tokens[4] + " (R)"));
+                    m_let.put(tokens[3], new HMSignature(true, tokens[4]));
                 } else {
                     // value in a module
                     InferredTypesImplementation module = m_modules.get(path);
@@ -77,7 +77,7 @@ public class InferredTypesImplementation implements InferredTypes {
                         m_modules.put(path, module);
                     }
 
-                    module.m_let.put(tokens[3], new HMSignature(true, tokens[4] + " (R)"));
+                    module.m_let.put(tokens[3], new HMSignature(true, tokens[4]));
                 }
             }
         }
