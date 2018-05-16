@@ -7,7 +7,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-
 public class RmlDocumentListener implements DocumentListener {
 
     private final Project m_project;
@@ -27,11 +26,13 @@ public class RmlDocumentListener implements DocumentListener {
     public void documentChanged(DocumentEvent event) {
         // When document lines count change, we clear the type annotations
         Document document = event.getDocument();
-        if (document.getLineCount() != m_oldLinesCount) {
+        int newLineCount = document.getLineCount();
+        if (newLineCount != m_oldLinesCount) {
             CodeLensView.CodeLensInfo userData = m_project.getUserData(CodeLensView.CODE_LENS);
             if (userData != null) {
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                 if (file != null) {
+                    //int startLine = document.getLineNumber(event.getOffset());
                     userData.clearInternalData(file);
                 }
             }

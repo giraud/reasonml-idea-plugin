@@ -40,7 +40,7 @@ public class OCamlSDK extends SdkType {
     @Nullable
     @Override
     public String getVersionString(String sdkHome) {
-        return "4.02.3";
+        return "4.02";
     }
 
     @Override

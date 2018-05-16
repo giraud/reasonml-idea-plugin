@@ -1,4 +1,4 @@
-package com.reason.insight;
+package com.reason.hints;
 
 
 import com.intellij.openapi.diagnostic.Logger;

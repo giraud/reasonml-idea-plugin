@@ -10,11 +10,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
+import com.reason.hints.InsightManager;
+import com.reason.hints.InsightManagerImpl;
+import com.reason.hints.RincewindDownloader;
 import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
-import com.reason.insight.InsightManager;
-import com.reason.insight.InsightManagerImpl;
-import com.reason.insight.RincewindDownloader;
 
 import javax.annotation.Nullable;
 import java.io.File;

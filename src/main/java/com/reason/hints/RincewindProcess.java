@@ -1,4 +1,4 @@
-package com.reason.insight;
+package com.reason.hints;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -45,7 +45,7 @@ public class RincewindProcess {
                 reader.lines().forEach(line -> {
                     if (!line.isEmpty()) {
                         //System.out.println(line);
-                        types.add(line.split("\\|"));
+                        types.addToLines(line.split("\\|"));
                     }
                 });
 

@@ -39,8 +39,8 @@
             <implementation-class>com.reason.bs.BucklescriptManager</implementation-class>
         </component>
         <component>
-            <interface-class>com.reason.insight.InsightManager</interface-class>
-            <implementation-class>com.reason.insight.InsightManagerImpl</implementation-class>
+            <interface-class>com.reason.hints.InsightManager</interface-class>
+            <implementation-class>com.reason.hints.InsightManagerImpl</implementation-class>
         </component>
         <component>
             <implementation-class>com.reason.ide.hints.CmtiFileListener</implementation-class>
@@ -181,7 +181,7 @@
         <completion.contributor language="Ocaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
-        <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.insight.SignatureProvider"/>-->
+        <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->

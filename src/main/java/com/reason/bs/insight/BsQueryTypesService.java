@@ -6,9 +6,9 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.bs.ModuleConfiguration;
+import com.reason.hints.InsightManager;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
-import com.reason.insight.InsightManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;

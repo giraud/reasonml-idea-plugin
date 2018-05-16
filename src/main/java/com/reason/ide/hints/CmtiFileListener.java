@@ -9,9 +9,9 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.FileManager;
 import com.reason.Platform;
+import com.reason.hints.InsightManager;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
-import com.reason.insight.InsightManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.FileSystems;

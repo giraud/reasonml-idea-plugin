@@ -11,7 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.FileManager;
-import com.reason.insight.InsightManager;
+import com.reason.hints.InsightManager;
 import com.reason.lang.core.LogicalHMSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +34,7 @@ public class InferredTypesService {
                     if (cmtiPath == null) {
                         Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, sourceFile, insightManager.useCmt()));
                     } else {
-                        project.getComponent(InsightManager.class).queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
+                        insightManager.queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }
                 }
             }

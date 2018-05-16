@@ -59,7 +59,7 @@ public class InferredTypesImplementation implements InferredTypes {
         return m_pos.values();
     }
 
-    public void add(@NotNull String[] tokens) {
+    public void addToLines(@NotNull String[] tokens) {
         if (5 <= tokens.length) {
             String[] codedPos = tokens[1].split("\\.");
             int line = Integer.parseInt(codedPos[0]);
@@ -68,23 +68,6 @@ public class InferredTypesImplementation implements InferredTypes {
             LogicalHMSignature signature = m_pos.get(logicalPosition.line);
             if (signature == null || column < signature.getLogicalPosition().column) {
                 m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(true, tokens[4])));
-            }
-
-            if ("V".equals(tokens[0])) {
-                String path = tokens[2];
-                if (null == path || path.isEmpty()) {
-                    // value
-                    m_let.put(tokens[3], new HMSignature(true, tokens[4]));
-                } else {
-                    // value in a module
-                    InferredTypesImplementation module = m_modules.get(path);
-                    if (module == null) {
-                        module = new InferredTypesImplementation();
-                        m_modules.put(path, module);
-                    }
-
-                    module.m_let.put(tokens[3], new HMSignature(true, tokens[4]));
-                }
             }
         }
     }
