@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version "0.2.17"
+    id 'org.jetbrains.intellij' version "0.3.1"
 }
 
 allprojects {
@@ -21,7 +21,7 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
     intellij {
         plugins = [
-                "PsiViewer:3.28.93" // always have psi viewer installed in sandbox
+                "PsiViewer:2018.1" // always have psi viewer installed in sandbox
         ]
         pluginName 'reasonml-plugin-idea'
         version ideaVersion
@@ -39,7 +39,7 @@ allprojects {
 
     runIde {
         //systemProperty "reasonBsbDisabled", "true"
-        systemProperty "reasonReformatOnSave", "true"
+        //systemProperty "reasonReformatOnSave", "true"
         //jvmArgs = ['-agentpath:T:\\opt\\yjp-2017.02-b66\\bin\\win64\\yjpagent.dll']
     }
 
@@ -57,12 +57,12 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile project('reason-jps-plugin')
-}
-
-project(':reason-jps-plugin') {
-}
+//dependencies {
+//    compile project('reason-jps-plugin')
+//}
+//
+//project(':reason-jps-plugin') {
+//}
 
 apply plugin: 'idea'
 idea {
