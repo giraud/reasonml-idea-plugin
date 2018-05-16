@@ -46,6 +46,19 @@ class CodeLensView {
             integerStringMap.putIfAbsent(position.line, signature);
         }
 
+        synchronized void move(@NotNull VirtualFile file, int startLine, int direction, long timestamp) {
+            m_timestamps.put(file, timestamp);
+            Map<Integer, String> signaturesByLine = m_signatures.get(file);
+            if (signaturesByLine != null) {
+                Map<Integer, String> signatures = new THashMap<>();
+                for (Map.Entry<Integer, String> signatureEntry : signaturesByLine.entrySet()) {
+                    Integer line = signatureEntry.getKey();
+                    signatures.put((startLine <= line) ? line + direction : line, signatureEntry.getValue());
+                }
+                m_signatures.put(file, signatures);
+            }
+        }
+
         synchronized void clearInternalData(@NotNull VirtualFile virtualFile) {
             m_timestamps.remove(virtualFile);
             Map<Integer, String> integerStringMap = m_signatures.get(virtualFile);

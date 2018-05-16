@@ -32,8 +32,9 @@ public class RmlDocumentListener implements DocumentListener {
             if (userData != null) {
                 VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                 if (file != null) {
-                    //int startLine = document.getLineNumber(event.getOffset());
-                    userData.clearInternalData(file);
+                    int startLine = document.getLineNumber(event.getOffset());
+                    int direction = newLineCount - m_oldLinesCount;
+                    userData.move(file, startLine, direction, file.getTimeStamp());
                 }
             }
         }

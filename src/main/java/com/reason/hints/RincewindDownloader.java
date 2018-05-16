@@ -1,11 +1,14 @@
 package com.reason.hints;
 
 
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 
 public class RincewindDownloader extends Task.Backgroundable {
 
+    private static final double TOTAL_BYTES = 5_000_000.0;
     private static final int BUFFER_SIZE = 1024;
     private static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
 
@@ -40,12 +44,11 @@ public class RincewindDownloader extends Task.Backgroundable {
     public void run(@NotNull ProgressIndicator indicator) {
         indicator.setFraction(0.0);
 
-        try {
-            double totalBytes = 5_000_000.0;
-            InsightManager insightManager = myProject.getComponent(InsightManager.class);
+        InsightManager insightManager = myProject.getComponent(InsightManager.class);
+        File targetFile = insightManager.getRincewindFile();
 
+        try {
             // some code
-            File targetFile = insightManager.getRincewindFile();
             File partFile = new File(targetFile.getPath() + ".part");
 
             if (partFile.exists()) {
@@ -71,7 +74,7 @@ public class RincewindDownloader extends Task.Backgroundable {
             byte[] buffer = new byte[BUFFER_SIZE];
             int bytesRead = inputStream.read(buffer);
             while (bytesRead >= 0) {
-                indicator.setFraction(totalBytesDownloaded / totalBytes);
+                indicator.setFraction(totalBytesDownloaded / TOTAL_BYTES);
                 totalBytesDownloaded += bytesRead;
 
                 partFileOut.write(buffer, 0, bytesRead);
@@ -91,7 +94,7 @@ public class RincewindDownloader extends Task.Backgroundable {
 
             m_log.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
         } catch (IOException e) {
-            m_log.error(e);
+            Notifications.Bus.notify(new RmlNotification("Reason", "Can't download " + targetFile + "\n" + e, NotificationType.ERROR));
         }
 
         indicator.setFraction(1.0);
