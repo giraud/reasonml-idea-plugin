@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.50</version>
+    <version>0.51-beta01</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,7 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Sorry, no more facets: they can't be used outside Idea. Settings can be found in Project settings (#55) and they are per project</li>
+            <li>in progress</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
