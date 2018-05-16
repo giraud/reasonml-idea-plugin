@@ -4,23 +4,17 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.reason.FileManager;
 import com.reason.insight.InsightManager;
-import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.LogicalHMSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class InferredTypesService {
 
@@ -63,12 +57,13 @@ public class InferredTypesService {
         if (selectedEditor != null) {
             CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
             long timestamp = sourceFile.getTimeStamp();
-            PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
 
-            for (Map.Entry<LogicalPosition, HMSignature> signatureEntry : types.listTypesByPositions().entrySet()) {
-                userData.put(sourceFile, signatureEntry.getKey(), signatureEntry.getValue().toString(), timestamp);
+            for (LogicalHMSignature signatureEntry : types.listTypesByLines()) {
+                userData.put(sourceFile, signatureEntry.getLogicalPosition(), signatureEntry.getSignature().toString(), timestamp);
             }
 /*
+            PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
+
             Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
             for (PsiLet letStatement : letExpressions) {
                 PsiElement letParent = letStatement.getParent();
@@ -114,18 +109,18 @@ public class InferredTypesService {
         return userData;
     }
 
-    private static HMSignature applyType(@Nullable InferredTypes inferredTypes, PsiLet letStatement) {
-        HMSignature signature = null;
-
-        PsiElement letName = letStatement.getNameIdentifier();
-        if (letName != null && inferredTypes != null) {
-            signature = inferredTypes.getLetType(letName.getText());
-            if (signature != null) {
-                letStatement.setInferredType(signature);
-            }
-        }
-
-        return signature;
-    }
+    //private static HMSignature applyType(@Nullable InferredTypes inferredTypes, PsiLet letStatement) {
+    //    HMSignature signature = null;
+    //
+    //    PsiElement letName = letStatement.getNameIdentifier();
+    //    if (letName != null && inferredTypes != null) {
+    //        signature = inferredTypes.getLetType(letName.getText());
+    //        if (signature != null) {
+    //            letStatement.setInferredType(signature);
+    //        }
+    //    }
+    //
+    //    return signature;
+    //}
 
 }

@@ -1,14 +1,16 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.editor.LogicalPosition;
 import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.LogicalHMSignature;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.Collection;
 
 public interface InferredTypes {
     HMSignature getLetType(String name);
 
     InferredTypes getModuleType(String name);
 
-    Map<LogicalPosition, HMSignature> listTypesByPositions();
+    @NotNull
+    Collection<LogicalHMSignature> listTypesByLines();
 }
