@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static com.reason.lang.core.MlScope.all;
@@ -116,8 +117,9 @@ public final class PsiFinder {
         return null;
     }
 
-    public Collection<PsiLet> findLets(Project project, String lowerName) {
-        ArrayList<PsiLet> result = new ArrayList<>();
+    @NotNull
+    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String lowerName, @NotNull MlFileType fileType, MlScope scope) {
+        List<PsiLet> result = new ArrayList<>();
 
         Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, lowerName, project, GlobalSearchScope.allScope(project), PsiLet.class);
         for (PsiLet let : lets) {

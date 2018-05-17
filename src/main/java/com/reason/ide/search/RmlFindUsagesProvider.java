@@ -15,7 +15,8 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new LexerAdapter(RmlTypes.INSTANCE), TokenSet.create(RmlTypes.INSTANCE.UIDENT, RmlTypes.INSTANCE.LIDENT), TokenSet.EMPTY, TokenSet.EMPTY);
+        return new DefaultWordsScanner(new LexerAdapter(RmlTypes.INSTANCE),
+                TokenSet.create(RmlTypes.INSTANCE.UIDENT, RmlTypes.INSTANCE.LIDENT), TokenSet.EMPTY, TokenSet.EMPTY);
     }
 
     @Override

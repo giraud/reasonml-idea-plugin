@@ -4,10 +4,13 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
+import com.reason.ide.Debug;
+import com.reason.lang.core.MlScope;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
@@ -17,10 +20,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+
 public class ObjectCompletionProvider extends CompletionProvider<CompletionParameters> {
+
+    private final Debug m_debug;
+
+    public ObjectCompletionProvider() {
+        m_debug = new Debug(Logger.getInstance("ReasonML.insight.object"));
+    }
+
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        //System.out.println("» ObjectCompletionProvider");
+        m_debug.debug("OBJECT expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getPosition();
@@ -34,7 +46,7 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
             if (lowerName != null) {
                 PsiLet let = null;
 
-                Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, lowerName);
+                Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, lowerName, interfaceOrImplementation, MlScope.all);
                 //Collection<PsiLet> filteredLets = lets;
                 if (!lets.isEmpty()) {
                     // TODO: Find the correct module path...

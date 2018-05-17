@@ -39,7 +39,7 @@ public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLow
 
     @Override
     public PsiReference getReference() {
-        return new PsiVarNameReference(this, getQualifiedName());
+        return new PsiLowerSymbolReference(this, m_types);
     }
 
     @Nullable

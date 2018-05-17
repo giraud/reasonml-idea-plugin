@@ -15,7 +15,8 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new LexerAdapter(OclTypes.INSTANCE), TokenSet.create(OclTypes.INSTANCE.UIDENT, OclTypes.INSTANCE.LIDENT), TokenSet.EMPTY, TokenSet.EMPTY);
+        return new DefaultWordsScanner(new LexerAdapter(OclTypes.INSTANCE),
+                TokenSet.create(OclTypes.INSTANCE.UIDENT, OclTypes.INSTANCE.LIDENT), TokenSet.EMPTY, TokenSet.EMPTY);
     }
 
     @Override
