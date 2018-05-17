@@ -21,13 +21,13 @@ This code might change quite a lot or break in the future. The [project board](h
 - Bucklescript compiler integration
 - Reformat using `refmt` (press `crtl alt shift R` or `⌘⎇⇧R` on Mac)
 - Reformat on save
-- Type annotation (* bs)
+- Type annotation
 - Configuration through facet
 - Works natively on Windows
 
-_(*) See integration_
-
 This plugin offer a lightweight integration for OCaml files.
+
+> Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
 ## Screenshots
 
@@ -49,8 +49,6 @@ Advanced features, like syntax error highlighting or type annotations require th
 
 See the **wiki** to see how to **configure Bucklescript**.
 
-> Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
-
 ### Local installation
 
 - Install bucklescript locally to your project using npm or yarn
@@ -64,7 +62,7 @@ The plugin will find and use the binaries found in the `node_modules/bs-platform
 
 - Install bucklescript globally
 - Start idea
-- Set the path to `bs-platform` in the bucklescript facet
+- Set the path to `bs-platform` in the reason settings
 
 ## Some live templates
 
