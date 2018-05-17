@@ -23,7 +23,7 @@ public class PsiElementFactory {
         } else if (type == types.TYPE_EXPRESSION) {
             return new PsiTypeImpl(node);
         } else if (type == types.TYPE_CONSTR_NAME) {
-            return new PsiTypeConstrName(node);
+            return new PsiTypeConstrNameImpl(types, node);
         } else if (type == types.TYPE_BINDING) {
             return new PsiTypeBinding(node);
         } else if (type == types.MODULE_EXPRESSION) {

@@ -1,12 +1,6 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiQualifiedNamedElement;
 
-public class PsiTypeConstrName extends ASTWrapperPsiElement {
-
-    public PsiTypeConstrName(ASTNode node) {
-        super(node);
-    }
-
+public interface PsiTypeConstrName extends PsiNamedElement, PsiQualifiedNamedElement {
 }
