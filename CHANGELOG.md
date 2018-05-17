@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.51
+
+:bug: Fix problem when parsing JSX tag names (fix #52)
+:house: Type annotation is now using a native cmt extractor (Windows, Linux, OSX)
+
 ## 0.50
 
 :nail_care: Sorry, no more facets: they can't be used outside Idea. Settings can be found in Project settings (#55) and they are per project
