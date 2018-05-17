@@ -89,12 +89,13 @@ public final class PsiFinder {
             }
         }
 
+        Collection<PsiModule> result = new ArrayList<>(inConfig.values());
+
         if (scope == all) {
-            other.putAll(inConfig);
-            inConfig = other;
+            result.addAll(other.values());
         }
 
-        return inConfig.values();
+        return result;
     }
 
     @Nullable

@@ -72,10 +72,6 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         }
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        //System.out.println("  potential paths:");
-        //for (String string : strings) {
-        //    System.out.println("    " + string + "." + m_referenceName);
-        //}
 
         Project project = myElement.getProject();
         Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, m_referenceName, interfaceOrImplementation, all);
@@ -90,6 +86,10 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             if (1 < modules.size()) {
                 // Find potential paths of current element
                 List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement);
+                //System.out.println("  potential paths:");
+                //for (String path : potentialPaths) {
+                //    System.out.println("    " + path + "." + m_referenceName);
+                //}
 
                 if (!potentialPaths.isEmpty()) {
                     // Take the first for now
