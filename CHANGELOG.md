@@ -13,6 +13,7 @@
 ## 0.51
 
 :bug: Fix problem when parsing JSX tag names (fix #52)
+
 :house: Type annotation is now using a native cmt extractor (Windows, Linux, OSX)
 
 ## 0.50
