@@ -4,8 +4,8 @@ public enum ParserScopeEnum {
     file,
 
     open,
-
     include,
+    localOpen,
 
     external,
     externalNamed,
@@ -24,6 +24,8 @@ public enum ParserScopeEnum {
     moduleNamedSignature,
     moduleSignature,
     moduleBinding,
+
+    modulePath,
 
     let,
     letNamed,

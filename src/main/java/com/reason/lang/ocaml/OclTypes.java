@@ -33,6 +33,7 @@ public class OclTypes extends MlTypes {
         TYPE_BINDING = new OclElementType("TYPE_BINDING");
         PATTERN_MATCH_EXPR = new OclElementType("PATTERN_MATCH_EXPR");
         SCOPED_EXPR = new OclElementType("SCOPED_EXPR");
+        LOCAL_OPEN = new OclElementType("LOCAL_OPEN");
         SIG_SCOPE = new OclElementType("SIG_SCOPE");
         PROPERTY_NAME = new OclElementType("PROPERTY_NAME");
         FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");

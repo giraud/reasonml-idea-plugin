@@ -27,6 +27,7 @@ public abstract class MlTypes {
     public IElementType TYPE_BINDING;
     public IElementType PATTERN_MATCH_EXPR;
     public IElementType SCOPED_EXPR;
+    public IElementType LOCAL_OPEN;
     public IElementType SIG_SCOPE;
     public IElementType PROPERTY_NAME;
     public IElementType FUNCTOR_PARAMS;

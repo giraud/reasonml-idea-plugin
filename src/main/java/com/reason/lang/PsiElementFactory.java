@@ -44,6 +44,8 @@ public class PsiElementFactory {
             return new PsiMacroName(node);
         } else if (type == types.SCOPED_EXPR) {
             return new PsiScopedExpr(node);
+        } else if (type == types.LOCAL_OPEN) {
+            return new PsiLocalOpen(node);
         } else if (type == types.PATTERN_MATCH_EXPR) {
             return new PsiPatternMatch(node);
         } else if (type == types.OBJECT) {

@@ -481,21 +481,27 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(external)) {
-            // overloading an operator
-            state.setResolution(externalNamed);
-            state.setComplete();
-        }
-
-        if (!state.isResolution(typeNamed)) {
-            state.endAny();
-        }
-
-        if (state.isResolution(letNamedEq)) {
-            // function parameters
-            state.add(markScope(builder, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN));
+        if (state.isResolution(modulePath)) {
+            state.popEnd();
+            state.add(markCompleteScope(builder, paren, m_types.LOCAL_OPEN, scopeExpression, m_types.LPAREN));
         } else {
-            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
+
+            if (state.isResolution(external)) {
+                // overloading an operator
+                state.setResolution(externalNamed);
+                state.setComplete();
+            }
+
+            if (!state.isResolution(typeNamed)) {
+                state.endAny();
+            }
+
+            if (state.isResolution(letNamedEq)) {
+                // function parameters
+                state.add(markScope(builder, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN));
+            } else {
+                state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
+            }
         }
     }
 
@@ -546,8 +552,18 @@ public class RmlParser extends CommonParser {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
-        } else if (shouldStartExpression(state)) {
-            state.addStart(mark(builder, genericExpression, builder.getTokenType()));
+        } else {
+            if (shouldStartExpression(state)) {
+                state.addStart(mark(builder, genericExpression, builder.getTokenType()));
+            }
+
+            if (!state.isResolution(modulePath)) {
+                IElementType nextElementType = builder.lookAhead(1);
+                if (nextElementType == m_types.DOT) {
+                    // We are parsing a module path
+                    state.add(mark(builder, modulePath, m_types.UPPER_SYMBOL));
+                }
+            }
         }
 
         state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);

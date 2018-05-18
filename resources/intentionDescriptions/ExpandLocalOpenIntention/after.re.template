@@ -1,0 +1,4 @@
+let x = {
+    open Module;
+    localCall();
+);

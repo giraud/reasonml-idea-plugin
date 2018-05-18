@@ -33,6 +33,7 @@ public class RmlTypes extends MlTypes {
         TYPE_BINDING = new RmlElementType("TYPE_BINDING");
         PATTERN_MATCH_EXPR = new RmlElementType("PATTERN_MATCH_EXPR");
         SCOPED_EXPR = new RmlElementType("SCOPED_EXPR");
+        LOCAL_OPEN = new RmlElementType("LOCAL_OPEN");
         SIG_SCOPE = new RmlElementType("SIG_SCOPE");
         PROPERTY_NAME = new RmlElementType("PROPERTY_NAME");
         FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
