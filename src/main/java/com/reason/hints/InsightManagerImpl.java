@@ -17,15 +17,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.reason.Platform.getOsPrefix;
+import static com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     public AtomicBoolean isDownloaded = new AtomicBoolean(false);
     AtomicBoolean isDownloading = new AtomicBoolean(false);
-
-    private static final String OCAML_VERSION = "4.02";
-    private static final String RINCEWIND_VERSION = "0.1";
 
     private final Project m_project;
     @Nullable
