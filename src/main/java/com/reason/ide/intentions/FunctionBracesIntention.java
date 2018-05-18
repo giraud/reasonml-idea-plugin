@@ -3,6 +3,7 @@ package com.reason.ide.intentions;
 import com.intellij.codeInsight.FileModificationService;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
@@ -73,11 +74,13 @@ public class FunctionBracesIntention implements IntentionAction {
         PsiLet let = getLetAtCaret(editor, file);
         PsiLetBinding binding = let == null ? null : let.getBinding();
         if (binding != null) {
-            PsiLet newLet = (PsiLet) RmlElementFactory.createExpression(project, "let x = {\n    " + binding.getText() + "\n};");
+            PsiLet newLet = (PsiLet) RmlElementFactory.createExpression(project, "let x = {\n  " + binding.getText() + "\n};");
             PsiLetBinding newBinding = newLet == null ? null : newLet.getBinding();
             if (newBinding != null) {
                 ASTNode oldBindingNode = binding.getNode();
-                let.getNode().replaceChild(oldBindingNode, newBinding.getNode());
+                ApplicationManager.getApplication().runWriteAction(() -> {
+                    let.getNode().replaceChild(oldBindingNode, newBinding.getNode());
+                });
             }
         }
     }
