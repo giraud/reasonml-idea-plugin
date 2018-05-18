@@ -31,7 +31,7 @@ public class PsiElementFactory {
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.LET_EXPRESSION) {
-            return new PsiLetImpl(node);
+            return new PsiLetImpl(types, node);
         } else if (type == types.VAL_EXPRESSION) {
             return new PsiValImpl(types, node);
         } else if (type == types.ANNOTATION_EXPRESSION) {

@@ -9,10 +9,12 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.lang.MlTypes;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,15 +26,20 @@ import java.util.Map;
 
 public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements PsiLet {
 
+    @NotNull
+    private final MlTypes m_types;
+
     private HMSignature m_inferredType = HMSignature.EMPTY;
 
     //region Constructors
-    public PsiLetImpl(@NotNull ASTNode node) {
+    public PsiLetImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
         super(node);
+        m_types = types;
     }
 
-    public PsiLetImpl(@NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
+    public PsiLetImpl(@NotNull MlTypes types, @NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);
+        m_types = types;
     }
     //endregion
 
@@ -114,7 +121,12 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
             }
         }
 
-        return false/*??*/;
+        if (m_types instanceof RmlTypes) {
+            PsiElement psiElement = PsiUtil.nextSiblingWithTokenType(getFirstChild(), RmlTypes.INSTANCE.ARROW);
+            return psiElement != null;
+        }
+
+        return !getParameters().isEmpty();
     }
 
     private boolean isRecursive() {

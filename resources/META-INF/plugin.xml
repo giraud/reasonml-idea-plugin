@@ -195,6 +195,9 @@
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
                     factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
 
+        <intentionAction>
+            <className>com.reason.ide.intentions.FunctionBracesIntention</className>
+        </intentionAction>
     </extensions>
 
 </idea-plugin>

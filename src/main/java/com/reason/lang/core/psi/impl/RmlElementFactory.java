@@ -4,13 +4,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-class RmlElementFactory {
+public class RmlElementFactory {
     private RmlElementFactory() {
     }
 
@@ -26,6 +26,15 @@ class RmlElementFactory {
     static PsiElement createTypeName(Project project, String name) {
         FileBase dummyFile = createFileFromText(project, "type " + name + ";");
         return ((PsiType) dummyFile.getFirstChild()).getNameIdentifier();
+    }
+
+    @Nullable
+    public static PsiElement createExpression(Project project, String expression) {
+        PsiModule dummyModule = createFileFromText(project, expression).asModule();
+        if (dummyModule != null) {
+            return dummyModule.getFirstChild().getNextSibling();
+        }
+        return null;
     }
 
     @NotNull

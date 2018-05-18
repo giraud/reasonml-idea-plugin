@@ -43,7 +43,7 @@ public class PsiUtil {
                 found = sibling;
                 sibling = null;
             } else {
-                sibling = root.getNextSibling();
+                sibling = sibling.getNextSibling();
             }
         }
 
