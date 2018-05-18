@@ -188,16 +188,17 @@
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
 
+        <intentionAction>
+            <className>com.reason.ide.intentions.FunctionBracesIntention</className>
+            <category>Reason</category>
+        </intentionAction>
+
         <!--
          | UI
          -->
 
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
                     factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
-
-        <intentionAction>
-            <className>com.reason.ide.intentions.FunctionBracesIntention</className>
-        </intentionAction>
     </extensions>
 
 </idea-plugin>

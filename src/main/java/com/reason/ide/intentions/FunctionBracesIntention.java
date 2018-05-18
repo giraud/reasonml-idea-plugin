@@ -24,14 +24,14 @@ public class FunctionBracesIntention implements IntentionAction {
     @NotNull
     @Override
     public String getText() {
-        return "Add braces to arrow function";
+        return "Add braces to blockless function";
     }
 
     @Nls
     @NotNull
     @Override
     public String getFamilyName() {
-        return "reason";
+        return "Add braces to blockless function";
     }
 
     @Override
@@ -74,13 +74,11 @@ public class FunctionBracesIntention implements IntentionAction {
         PsiLet let = getLetAtCaret(editor, file);
         PsiLetBinding binding = let == null ? null : let.getBinding();
         if (binding != null) {
-            PsiLet newLet = (PsiLet) RmlElementFactory.createExpression(project, "let x = {\n  " + binding.getText() + "\n};");
+            PsiLet newLet = (PsiLet) RmlElementFactory.createExpression(project, "let x = {\n  " + binding.getText() + ";\n};");
             PsiLetBinding newBinding = newLet == null ? null : newLet.getBinding();
             if (newBinding != null) {
                 ASTNode oldBindingNode = binding.getNode();
-                ApplicationManager.getApplication().runWriteAction(() -> {
-                    let.getNode().replaceChild(oldBindingNode, newBinding.getNode());
-                });
+                ApplicationManager.getApplication().runWriteAction(() -> let.getNode().replaceChild(oldBindingNode, newBinding.getNode()));
             }
         }
     }
