@@ -5,6 +5,7 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.ModuleConfiguration;
@@ -20,10 +21,11 @@ import static com.reason.Platform.getOsPrefix;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
+    public AtomicBoolean isDownloading = new AtomicBoolean(false);
     public AtomicBoolean isDownloaded = new AtomicBoolean(false);
 
     private static final String OCAML_VERSION = "4.02";
-    private static final String RINCEWIND_VERSION = "0.1";
+    private static final String RINCEWIND_VERSION = "0.2-dev";
 
     private final Project m_project;
     @Nullable
@@ -33,6 +35,10 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     private InsightManagerImpl(Project project) {
         m_project = project;
+    }
+
+    public static InsightManager getInstance(Project project) {
+        return project.getComponent(InsightManager.class);
     }
 
     @Override
@@ -60,6 +66,13 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @Override
     public boolean useCmt() {
         return isDownloaded.get();
+    }
+
+    @Override
+    public void downloadRincewindIfNeeded() {
+        if (!isDownloaded.get()) {
+            ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project));
+        }
     }
 
     @NotNull

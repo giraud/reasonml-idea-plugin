@@ -11,10 +11,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.FileManager;
+import com.reason.Platform;
 import com.reason.hints.InsightManager;
 import com.reason.lang.core.LogicalHMSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.nio.file.FileSystems;
 
 public class InferredTypesService {
 
@@ -32,7 +35,7 @@ public class InferredTypesService {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     VirtualFile cmtiPath = FileManager.fromSource(project, sourceFile, insightManager.useCmt());
                     if (cmtiPath == null) {
-                        Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, sourceFile, insightManager.useCmt()));
+                        Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, sourceFile, insightManager.useCmt()) + " (root: " + FileSystems.getDefault().getPath(Platform.findBaseRoot(project).getPath()) + ")");
                     } else {
                         insightManager.queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }

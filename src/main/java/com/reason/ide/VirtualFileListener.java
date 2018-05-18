@@ -6,6 +6,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptManager;
+import com.reason.hints.InsightManager;
+import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
 import com.reason.ide.files.DuneFileType;
@@ -19,10 +21,12 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
 
     private final Bucklescript m_bucklescript;
     private final CmtiFileListener m_cmtiFileListener;
+    private final InsightManager m_insightManager;
 
     VirtualFileListener(Project project) {
         m_bucklescript = BucklescriptManager.getInstance(project);
         m_cmtiFileListener = CmtiFileListener.getInstance(project);
+        m_insightManager = InsightManagerImpl.getInstance(project);
     }
 
     @Override
@@ -37,6 +41,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
         if (fileType instanceof JsonFileType) {
             if (file.getName().equals("bsconfig.json")) {
                 m_bucklescript.refresh();
+                m_insightManager.downloadRincewindIfNeeded();
             }
         } else if (fileType instanceof DuneFileType) {
             // OCaml SDK mandatory

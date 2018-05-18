@@ -16,6 +16,8 @@ public interface InsightManager {
 
     boolean useCmt();
 
+    void downloadRincewindIfNeeded();
+
     @NotNull
     String getRincewindFilename();
 

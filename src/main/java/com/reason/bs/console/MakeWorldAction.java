@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptManager;
 import com.reason.bs.compiler.BsCompiler;
+import com.reason.hints.InsightManagerImpl;
 
 import static com.reason.bs.compiler.CliType.cleanMake;
 
@@ -32,6 +33,7 @@ public class MakeWorldAction extends DumbAwareAction {
             if (bscProcess != null) {
                 m_console.attachToProcess(bscProcess);
                 bsc.startNotify();
+                InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
             }
         }
     }

@@ -5,14 +5,12 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightManagerImpl;
-import com.reason.hints.RincewindDownloader;
 import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
 
@@ -41,15 +39,13 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
         if (SystemInfo.is64Bit) {
             // Try to locate Rincewind
             if (!getOsPrefix().isEmpty()) {
-                InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getComponent(InsightManager.class);
+                InsightManagerImpl insightManager = (InsightManagerImpl) InsightManagerImpl.getInstance(myProject);
                 File rincewindFile = insightManager.getRincewindFile();
                 if (rincewindFile.exists()) {
                     m_log.info("Found " + rincewindFile);
                     insightManager.isDownloaded.set(true);
                 } else {
-                    m_log.info("Downloading " + rincewindFile.getName() + "...");
-                    RincewindDownloader downloadingTask = RincewindDownloader.getInstance(myProject);
-                    ProgressManager.getInstance().run(downloadingTask);
+                    insightManager.downloadRincewindIfNeeded();
                 }
             }
         } else {
