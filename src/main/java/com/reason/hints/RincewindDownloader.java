@@ -3,6 +3,7 @@ package com.reason.hints;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -105,9 +106,10 @@ public class RincewindDownloader extends Task.Backgroundable {
                 insightManager.isDownloaded.set(true);
                 m_log.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
 
-                ApplicationManager.getApplication().runWriteAction(() -> {
+                Application application = ApplicationManager.getApplication();
+                application.invokeLater(() -> application.runWriteAction(() -> {
                     VirtualFileManager.getInstance().syncRefresh();
-                });
+                }));
             } catch (IOException e) {
                 Notifications.Bus.notify(new RmlNotification("Reason", "Can't download " + targetFile + "\n" + e, NotificationType.ERROR));
             }

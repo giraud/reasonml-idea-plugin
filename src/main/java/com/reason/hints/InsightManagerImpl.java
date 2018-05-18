@@ -21,11 +21,11 @@ import static com.reason.Platform.getOsPrefix;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
-    public AtomicBoolean isDownloading = new AtomicBoolean(false);
     public AtomicBoolean isDownloaded = new AtomicBoolean(false);
+    AtomicBoolean isDownloading = new AtomicBoolean(false);
 
     private static final String OCAML_VERSION = "4.02";
-    private static final String RINCEWIND_VERSION = "0.2-dev";
+    private static final String RINCEWIND_VERSION = "0.1";
 
     private final Project m_project;
     @Nullable
