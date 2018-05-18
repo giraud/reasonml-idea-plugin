@@ -474,16 +474,22 @@ public class RmlParser extends CommonParser {
             scope.complete();
             state.popEnd();
             scope = state.getLatestScope();
-            if (scope != null && scope.resolution == letNamedEq) {
-                scope.resolution = letNamedParametersEq;
+            if (scope != null) {
+                if (scope.resolution == letNamedEq) {
+                    scope.resolution = letNamedParametersEq;
+                } else if (scope.resolution == localOpen) {
+                    state.popEnd();
+                }
             }
         }
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isResolution(modulePath)) {
-            state.popEnd();
-            state.add(markCompleteScope(builder, paren, m_types.LOCAL_OPEN, scopeExpression, m_types.LPAREN));
+            state.setResolution(localOpen);
+            state.setTokenType(m_types.LOCAL_OPEN);
+            state.setComplete();
+            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else {
 
             if (state.isResolution(external)) {

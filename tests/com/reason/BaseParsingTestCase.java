@@ -24,6 +24,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return "testData";
     }
 
+    protected PsiElement firstElement(PsiFileModuleImpl fileModule) {
+        return fileModule.getFirstChild().getNextSibling();
+    }
+
     protected <T extends PsiElement> T first(Collection<T> collection) {
         return collection.iterator().next();
     }
