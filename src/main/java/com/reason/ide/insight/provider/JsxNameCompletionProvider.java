@@ -6,10 +6,12 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ProcessingContext;
+import com.reason.ide.Debug;
 import com.reason.ide.files.RmlFile;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
@@ -22,9 +24,15 @@ import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
+    private final Debug m_debug;
+
+    public JsxNameCompletionProvider() {
+        m_debug = new Debug(Logger.getInstance("ReasonML.insight.jsxname"));
+    }
+
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
-        //System.out.println("JsxNameCompletionProvider.addCompletions");
+        m_debug.debug("JSX name expression completion");
 
         RmlFile originalFile = (RmlFile) parameters.getOriginalFile();
         String fileModuleName = originalFile.asModuleName();
@@ -32,8 +40,12 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
 
         // Find all files that are components ! TODO: components can be sub modules
         Collection<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
+        m_debug.debug("Modules found", modules.size());
         for (PsiModule module : modules) {
             String moduleName = module.getName();
+            if (m_debug.isDebugEnabled()) {
+                m_debug.debug(" is component", moduleName, module.isComponent());
+            }
             if (!fileModuleName.equals(moduleName) && module.isComponent()) {
                 resultSet.addElement(LookupElementBuilder.create(module).
                         withIcon(getProvidersIcon(module, 0)).
