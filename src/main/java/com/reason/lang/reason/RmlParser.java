@@ -485,7 +485,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(modulePath)) {
+        if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
             state.setResolution(localOpen);
             state.setTokenType(m_types.LOCAL_OPEN);
             state.setComplete();
