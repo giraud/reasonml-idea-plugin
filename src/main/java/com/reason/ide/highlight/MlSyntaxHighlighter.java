@@ -22,9 +22,10 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
 
     private static final Set<IElementType> RML_KEYWORD_TYPES = of(
+            RmlTypes.INSTANCE.BOOL, RmlTypes.INSTANCE.STRING, RmlTypes.INSTANCE.FLOAT, RmlTypes.INSTANCE.CHAR, RmlTypes.INSTANCE.INT,
             RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN, RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE,
             RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE, RmlTypes.INSTANCE.SWITCH,
-            RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN, RmlTypes.INSTANCE.TO, RmlTypes.INSTANCE.TRUE, RmlTypes.INSTANCE.FALSE,
+            RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN, RmlTypes.INSTANCE.TO, RmlTypes.INSTANCE.BOOL_VALUE,
             RmlTypes.INSTANCE.REF, RmlTypes.INSTANCE.EXCEPTION, RmlTypes.INSTANCE.WHEN, RmlTypes.INSTANCE.AND, RmlTypes.INSTANCE.REC, RmlTypes.INSTANCE.WHILE, RmlTypes.INSTANCE.ASR,
             RmlTypes.INSTANCE.CLASS, RmlTypes.INSTANCE.CONSTRAINT, RmlTypes.INSTANCE.DOWNTO, RmlTypes.INSTANCE.FUNCTOR, RmlTypes.INSTANCE.INHERIT,
             RmlTypes.INSTANCE.INITIALIZER, RmlTypes.INSTANCE.LAND, RmlTypes.INSTANCE.LOR, RmlTypes.INSTANCE.LSL,
@@ -48,10 +49,11 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES = of(
+            RmlTypes.INSTANCE.BOOL, RmlTypes.INSTANCE.STRING, RmlTypes.INSTANCE.FLOAT, RmlTypes.INSTANCE.CHAR, RmlTypes.INSTANCE.INT,
             OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN, OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE,
             OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL, OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.SWITCH,
             OclTypes.INSTANCE.TRY, OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN, OclTypes.INSTANCE.TO,
-            OclTypes.INSTANCE.TRUE, OclTypes.INSTANCE.FALSE, OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION, OclTypes.INSTANCE.WHEN,
+            OclTypes.INSTANCE.BOOL_VALUE, OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION, OclTypes.INSTANCE.WHEN,
             OclTypes.INSTANCE.AND, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.WHILE, OclTypes.INSTANCE.ASR, OclTypes.INSTANCE.CLASS,
             OclTypes.INSTANCE.CONSTRAINT, OclTypes.INSTANCE.DOWNTO, OclTypes.INSTANCE.FUNCTOR, OclTypes.INSTANCE.INHERIT,
             OclTypes.INSTANCE.INITIALIZER, OclTypes.INSTANCE.LAND, OclTypes.INSTANCE.LOR, OclTypes.INSTANCE.LSL, OclTypes.INSTANCE.LSR,
@@ -144,7 +146,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             return BRACKET_KEYS;
         } else if (tokenType.equals(m_types.LPAREN) || tokenType.equals(m_types.RPAREN)) {
             return PAREN_KEYS;
-        } else if (tokenType.equals(m_types.INT) || tokenType.equals(m_types.FLOAT)) {
+        } else if (tokenType.equals(m_types.INT_VALUE) || tokenType.equals(m_types.FLOAT_VALUE)) {
             return NUMBER_KEYS;
         } else if (m_types.DOT.equals(tokenType)) {
             return DOT_KEYS;
@@ -156,7 +158,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMA_KEYS;
         } else if (m_types.SEMI.equals(tokenType) || m_types.SEMISEMI.equals(tokenType)) {
             return SEMICOLON_KEYS;
-        } else if (m_types.STRING.equals(tokenType) || m_types.CHAR.equals(tokenType)) {
+        } else if (m_types.STRING_VALUE.equals(tokenType) || m_types.CHAR_VALUE.equals(tokenType)) {
             return STRING_KEYS;
         } else if (m_types == RmlTypes.INSTANCE) {
             if (RML_KEYWORD_TYPES.contains(tokenType)) {

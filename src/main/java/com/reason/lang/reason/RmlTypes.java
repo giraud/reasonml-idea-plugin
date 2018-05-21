@@ -27,6 +27,18 @@ public class RmlTypes extends MlTypes {
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE);
         VAL_EXPRESSION = new RmlElementType("VAL_EXPRESSION");
 
+        BOOL = new RmlElementType("BOOL");
+        STRING = new RmlElementType("STRING");
+        FLOAT = new RmlElementType("FLOAT");
+        CHAR = new RmlElementType("CHAR");
+        INT = new RmlElementType("INT");
+
+        BOOL_VALUE = new RmlElementType("BOOL_VALUE");
+        STRING_VALUE = new RmlElementType("STRING_VALUE");
+        FLOAT_VALUE = new RmlElementType("FLOAT_VALUE");
+        CHAR_VALUE = new RmlElementType("CHAR_VALUE");
+        INT_VALUE = new RmlElementType("INT_VALUE");
+
         LET_FUN_PARAMS = new RmlElementType("LET_FUN_PARAMS");
         LET_BINDING = new RmlElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
@@ -68,8 +80,6 @@ public class RmlTypes extends MlTypes {
         EXCLAMATION_MARK = new RmlTokenType("EXCLAMATION_MARK");
         EXTERNAL = new RmlTokenType("EXTERNAL");
         FALSE = new RmlTokenType("FALSE");
-        FLOAT = new RmlTokenType("FLOAT");
-        CHAR = new RmlElementType("CHAR");
         FOR = new RmlElementType("FOR");
         FUN = new RmlTokenType("FUN");
         FUN_PARAMS = new RmlTokenType("FUN_PARAMS");
@@ -81,7 +91,6 @@ public class RmlTypes extends MlTypes {
         IN = new RmlElementType("IN");
         LAZY = new RmlElementType("LAZY");
         INCLUDE = new RmlTokenType("INCLUDE");
-        INT = new RmlTokenType("INT");
         LARRAY = new RmlTokenType("LARRAY");
         LBRACE = new RmlTokenType("LBRACE");
         LBRACKET = new RmlTokenType("LBRACKET");
@@ -127,7 +136,6 @@ public class RmlTypes extends MlTypes {
         SOME = new RmlTokenType("SOME");
         STAR = new RmlTokenType("STAR");
         STARDOT = new RmlTokenType("STARDOT");
-        STRING = new RmlTokenType("STRING");
         STRUCT = new RmlTokenType("STRUCT");
         SWITCH = new RmlTokenType("SWITCH");
         TAG_AUTO_CLOSE = new RmlTokenType("TAG_AUTO_CLOSE");

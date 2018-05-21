@@ -159,16 +159,21 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "None"      { return types.NONE; }
     "Some"      { return types.SOME; }
 
+    "bool"      { return types.BOOL; }
+    "char"      { return types.CHAR; }
+    "string"    { return types.STRING; }
+    "int"       { return types.INT; }
+    "float"     { return types.FLOAT; }
     "list"      { return types.LIST; }
 
-    "false"     { return types.FALSE; }
-    "true"      { return types.TRUE; }
+    "false"     { return types.BOOL_VALUE; }
+    "true"      { return types.BOOL_VALUE; }
 
-    "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR; }
+    "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR_VALUE; }
     {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return types.UIDENT; }
-    {INT_LITERAL}{LITERAL_MODIFIER}? { return types.INT; }
-    ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return types.FLOAT; }
+    {INT_LITERAL}{LITERAL_MODIFIER}? { return types.INT_VALUE; }
+    ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return types.FLOAT_VALUE; }
     "'"{LOWERCASE}{IDENTCHAR}*       { return types.TYPE_ARGUMENT; }
     "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
@@ -248,7 +253,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 }
 
 <IN_STRING> {
-    "\"" { yybegin(INITIAL); tokenEnd(); return types.STRING; }
+    "\"" { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
     "\\" { NEWLINE } ([ \t] *) { }
     "\\" [\\\'\"ntbr ] { }
     "\\" [0-9] [0-9] [0-9] { }
@@ -257,7 +262,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "\\" . { }
     { NEWLINE } { }
     . { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
 }
 
 <IN_RML_COMMENT> {

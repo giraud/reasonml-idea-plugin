@@ -27,6 +27,18 @@ public class OclTypes extends MlTypes {
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE);
         VAL_EXPRESSION = new OclElementType("VAL_EXPRESSION");
 
+        BOOL = new OclTokenType("BOOL");
+        STRING = new OclTokenType("STRING");
+        FLOAT = new OclTokenType("FLOAT");
+        CHAR = new OclElementType("CHAR");
+        INT = new OclTokenType("INT");
+
+        BOOL_VALUE = new OclTokenType("BOOL_VALUE");
+        STRING_VALUE = new OclTokenType("STRING_VALUE");
+        FLOAT_VALUE = new OclTokenType("FLOAT_VALUE");
+        CHAR_VALUE = new OclElementType("CHAR_VALUE");
+        INT_VALUE = new OclTokenType("INT_VALUE");
+
         LET_FUN_PARAMS = new OclElementType("LET_FUN_PARAMS");
         LET_BINDING = new OclElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new OclElementType("TYPE_CONSTR_NAME");
@@ -68,8 +80,6 @@ public class OclTypes extends MlTypes {
         EXCLAMATION_MARK = new OclTokenType("EXCLAMATION_MARK");
         EXTERNAL = new OclTokenType("EXTERNAL");
         FALSE = new OclTokenType("FALSE");
-        FLOAT = new OclTokenType("FLOAT");
-        CHAR = new OclElementType("CHAR");
         FOR = new OclElementType("FOR");
         FUN = new OclTokenType("FUN");
         FUN_PARAMS = new OclTokenType("FUN_PARAMS");
@@ -81,7 +91,6 @@ public class OclTypes extends MlTypes {
         IN = new OclElementType("IN");
         LAZY = new OclElementType("LAZY");
         INCLUDE = new OclTokenType("INCLUDE");
-        INT = new OclTokenType("INT");
         LARRAY = new OclTokenType("LARRAY");
         LBRACE = new OclTokenType("LBRACE");
         LBRACKET = new OclTokenType("LBRACKET");
@@ -127,7 +136,6 @@ public class OclTypes extends MlTypes {
         SOME = new OclTokenType("SOME");
         STAR = new OclTokenType("STAR");
         STARDOT = new OclTokenType("STARDOT");
-        STRING = new OclTokenType("STRING");
         STRUCT = new OclTokenType("STRUCT");
         SWITCH = new OclTokenType("SWITCH");
         TAG_AUTO_CLOSE = new OclTokenType("TAG_AUTO_CLOSE");

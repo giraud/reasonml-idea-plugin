@@ -21,6 +21,18 @@ public abstract class MlTypes {
     public IElementType TYPE_EXPRESSION;
     public IElementType VAL_EXPRESSION;
 
+    public IElementType BOOL;
+    public IElementType STRING;
+    public IElementType FLOAT;
+    public IElementType CHAR;
+    public IElementType INT;
+
+    public IElementType BOOL_VALUE;
+    public IElementType STRING_VALUE;
+    public IElementType FLOAT_VALUE;
+    public IElementType CHAR_VALUE;
+    public IElementType INT_VALUE;
+
     public IElementType LET_FUN_PARAMS;
     public IElementType LET_BINDING;
     public IElementType TYPE_CONSTR_NAME;
@@ -63,8 +75,6 @@ public abstract class MlTypes {
     public IElementType EXCLAMATION_MARK;
     public IElementType EXTERNAL;
     public IElementType FALSE;
-    public IElementType FLOAT;
-    public IElementType CHAR;
     public IElementType FOR;
     public IElementType FUN;
     public IElementType FUN_PARAMS;
@@ -76,7 +86,6 @@ public abstract class MlTypes {
     public IElementType IN;
     public IElementType LAZY;
     public IElementType INCLUDE;
-    public IElementType INT;
     public IElementType LARRAY;
     public IElementType LBRACE;
     public IElementType LBRACKET;
@@ -121,7 +130,6 @@ public abstract class MlTypes {
     public IElementType SOME;
     public IElementType STAR;
     public IElementType STARDOT;
-    public IElementType STRING;
     public IElementType STRUCT;
     public IElementType SWITCH;
     public IElementType TAG_AUTO_CLOSE;
