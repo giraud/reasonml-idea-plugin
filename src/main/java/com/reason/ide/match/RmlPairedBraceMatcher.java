@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class RmlPairedBraceMatcher implements PairedBraceMatcher {
     private static BracePair[] PAIRS = new BracePair[]{
             new BracePair(RmlTypes.INSTANCE.LBRACE, RmlTypes.INSTANCE.RBRACE, true),
-            new BracePair(RmlTypes.INSTANCE.LPAREN, RmlTypes.INSTANCE.RPAREN, true),
+            new BracePair(RmlTypes.INSTANCE.LPAREN, RmlTypes.INSTANCE.RPAREN, false),
             new BracePair(RmlTypes.INSTANCE.LBRACKET, RmlTypes.INSTANCE.RBRACKET, false),
             new BracePair(RmlTypes.INSTANCE.LARRAY, RmlTypes.INSTANCE.RARRAY, false),
     };

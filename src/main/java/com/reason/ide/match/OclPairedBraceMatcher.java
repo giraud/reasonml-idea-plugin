@@ -11,7 +11,9 @@ import org.jetbrains.annotations.Nullable;
 public class OclPairedBraceMatcher implements PairedBraceMatcher {
     private static BracePair[] PAIRS = new BracePair[]{
             new BracePair(OclTypes.INSTANCE.LBRACE, OclTypes.INSTANCE.RBRACE, true),
-            new BracePair(OclTypes.INSTANCE.LPAREN, OclTypes.INSTANCE.RPAREN, true),
+            new BracePair(OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.END, true),
+            new BracePair(OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.END, true),
+            new BracePair(OclTypes.INSTANCE.LPAREN, OclTypes.INSTANCE.RPAREN, false),
             new BracePair(OclTypes.INSTANCE.LBRACKET, OclTypes.INSTANCE.RBRACKET, false),
             new BracePair(OclTypes.INSTANCE.LARRAY, OclTypes.INSTANCE.RARRAY, false),
     };
