@@ -67,4 +67,10 @@ public class Debug {
             m_log.debug(comment + SEP + module.getQualifiedName() + " (" + module.getContainingFile().getVirtualFile().getPath() + ")");
         }
     }
+
+    public void debug(String comment, String t, boolean t1) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t + " " + Boolean.toString(t1));
+        }
+    }
 }

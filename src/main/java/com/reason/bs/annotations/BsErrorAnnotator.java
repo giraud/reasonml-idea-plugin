@@ -10,6 +10,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.psi.PsiFile;
 import com.reason.bs.BucklescriptManager;
+import com.reason.ide.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManager.BsbInfo>, Collection<BsErrorAnnotator.BsbErrorAnnotation>> {
+
+    private final Debug log = new Debug(Logger.getInstance("ReasonML.build"));
 
     @Nullable
     @Override
@@ -45,13 +48,14 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
         FileEditorManager fem = FileEditorManager.getInstance(file.getProject());
         TextEditor selectedEditor = (TextEditor) fem.getSelectedEditor(file.getVirtualFile());
         if (selectedEditor != null) {
-            Logger log = Logger.getInstance("ReasonML.build");
             Editor editor = selectedEditor.getEditor();
             for (BsbErrorAnnotation annotation : annotationResult) {
                 int startOffset = editor.logicalPositionToOffset(annotation.start);
                 int endOffset = editor.logicalPositionToOffset(annotation.end);
                 if (0 <= startOffset && 0 <= endOffset && startOffset < endOffset) {
-                    log.info("annotate " + startOffset + ":" + endOffset + " '" + annotation.message + "'");
+                    if (log.isDebugEnabled()) {
+                        log.debug("annotate " + startOffset + ":" + endOffset + " '" + annotation.message + "'");
+                    }
                     TextRangeInterval range = new TextRangeInterval(startOffset, endOffset);
                     if (annotation.isError) {
                         holder.createErrorAnnotation(range, annotation.message);
