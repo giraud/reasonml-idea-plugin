@@ -126,6 +126,17 @@ public class BsOutputListener implements ProcessListener {
 
                 m_failedLine++;
             }
+        } else if (text.startsWith("Warning")) {
+            // Bsb output is not normalized and there are many form of warning/error !
+            if (m_previousText.startsWith("File")) {
+                // Special warning info
+                m_latestInfo = extractExtendedFilePositions(m_previousText);
+                if (m_latestInfo != null) {
+                    m_latestInfo.isError = false;
+                    int pos = text.indexOf(":");
+                    m_latestInfo.message = 0 <= pos ? text.substring(pos + 1).trim() : text.substring(6);
+                }
+            }
         } else if (text.contains("Warning")) {
             m_status = warning;
             m_failedLine = 1;
