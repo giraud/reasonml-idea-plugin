@@ -1,7 +1,12 @@
 package com.reason.ide.intentions;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLocalOpen;
+import com.reason.lang.core.psi.impl.RmlElementFactory;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,15 +38,19 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
 
     @Override
     void runInvoke(@NotNull Project project, @NotNull PsiLocalOpen parentElement) {
-        // Find start of the module path
-        /*
-        PsiElement grandParentElement = parentElement.getParent();
-        PsiElement newOpen = RmlElementFactory.createExpression(project, "{\n  open X;\n" + parentElement.getText() + ";\n};");
-        if (newOpen != null) {
-            ASTNode oldOpenNode = parentElement.getNode();
-            grandParentElement.getNode().replaceChild(oldOpenNode, newOpen.getNode());
+        PsiElement firstChild = parentElement.getFirstChild();
+        PsiElement psiElement = PsiUtil.nextSiblingWithTokenType(firstChild, RmlTypes.INSTANCE.SCOPED_EXPR);
+        if (psiElement != null) {
+            String text = psiElement.getText();
+            String modulePath = PsiUtil.getTextUntilTokenType(firstChild, RmlTypes.INSTANCE.SCOPED_EXPR);
+            PsiElement newOpen = RmlElementFactory.createExpression(project, "{\n  open " + modulePath.substring(0, modulePath.length() - 1) + ";\n  " + text.substring(1, text.length() - 1) + ";\n}");
+            PsiElement grandParentElement = parentElement.getParent();
+            if (newOpen != null) {
+                ASTNode oldOpenNode = parentElement.getNode();
+                grandParentElement.getNode().replaceChild(oldOpenNode, newOpen.getNode());
+            }
+
         }
-        */
     }
 
     @Override

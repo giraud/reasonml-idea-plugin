@@ -50,6 +50,22 @@ public class PsiUtil {
         return found;
     }
 
+    public static String getTextUntilTokenType(@NotNull PsiElement root, @NotNull IElementType elementType) {
+        String text = root.getText();
+
+        PsiElement sibling = root.getNextSibling();
+        while (sibling != null) {
+            if (sibling.getNode().getElementType() == elementType) {
+                sibling = null;
+            } else {
+                text += sibling.getText();
+                sibling = sibling.getNextSibling();
+            }
+        }
+
+        return text;
+    }
+
     @NotNull
     private static TextRange rangeInParent(@NotNull TextRange parent, @NotNull TextRange child) {
         int start = child.getStartOffset() - parent.getStartOffset();
