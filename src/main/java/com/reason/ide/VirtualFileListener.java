@@ -61,7 +61,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
 
     @Override
     public void fileDeleted(@NotNull VirtualFileEvent event) {
-        m_bucklescript.run(event.getFile().getFileType());
+        //m_bucklescript.run(event.getFile().getFileType());
     }
 
     @Override
