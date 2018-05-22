@@ -49,7 +49,7 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiLet> {
     void runInvoke(@NotNull Project project, @NotNull PsiLet parentElement) {
         PsiLetBinding binding = parentElement.getBinding();
         if (binding != null) {
-            PsiLet newLet = (PsiLet) RmlElementFactory.createExpression(project, "let x = {\n  " + binding.getText() + ";\n};");
+            PsiLet newLet = (PsiLet) RmlElementFactory.createExpression(project, "let x = {  " + binding.getText() + "; };");
             PsiLetBinding newBinding = newLet == null ? null : newLet.getBinding();
             if (newBinding != null) {
                 ASTNode oldBindingNode = binding.getNode();

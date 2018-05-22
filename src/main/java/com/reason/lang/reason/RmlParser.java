@@ -378,6 +378,8 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLIdent(PsiBuilder builder, ParserState state) {
+        boolean processSingleParam = false;
+
         if (state.isResolution(typeConstrName)) {
             // TYPE LIDENT ...
             state.setResolution(typeNamed);
@@ -389,6 +391,15 @@ public class RmlParser extends CommonParser {
         } else if (state.isResolution(let)) {
             state.setResolution(letNamed);
             state.setComplete();
+        } else if (state.isResolution(letNamedEq)) {
+            if (state.previousTokenType == m_types.EQ) {
+                IElementType nextElementType = builder.lookAhead(1);
+                if (nextElementType == m_types.ARROW) {
+                    // Single (paren less) function parameters
+                    state.add(markComplete(builder, letParameters, m_types.LET_FUN_PARAMS));
+                    processSingleParam = true;
+                }
+            }
         } else if (state.isResolution(startTag)) {
             // This is a property
             state.endAny();
@@ -405,6 +416,11 @@ public class RmlParser extends CommonParser {
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+
+        if (processSingleParam) {
+            state.popEnd();
+            state.setResolution(letNamedParametersEq);
+        }
     }
 
     private void parseLBracket(PsiBuilder builder, ParserState parserState) {

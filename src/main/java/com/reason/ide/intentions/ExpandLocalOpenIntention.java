@@ -43,7 +43,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
         if (psiElement != null) {
             String text = psiElement.getText();
             String modulePath = PsiUtil.getTextUntilTokenType(firstChild, RmlTypes.INSTANCE.SCOPED_EXPR);
-            PsiElement newOpen = RmlElementFactory.createExpression(project, "{\n  open " + modulePath.substring(0, modulePath.length() - 1) + ";\n  " + text.substring(1, text.length() - 1) + ";\n}");
+            PsiElement newOpen = RmlElementFactory.createExpression(project, "{ open " + modulePath.substring(0, modulePath.length() - 1) + "; " + text.substring(1, text.length() - 1) + "; }");
             PsiElement grandParentElement = parentElement.getParent();
             if (newOpen != null) {
                 ASTNode oldOpenNode = parentElement.getNode();
