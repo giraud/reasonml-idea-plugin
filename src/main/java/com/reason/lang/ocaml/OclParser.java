@@ -285,7 +285,12 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(external)) {
+        if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
+            state.setResolution(localOpen);
+            state.setTokenType(m_types.LOCAL_OPEN);
+            state.setComplete();
+            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
+        } else if (state.isResolution(external)) {
             // overloading an operator
             state.setResolution(externalNamed);
             state.setComplete();
@@ -399,9 +404,15 @@ public class OclParser extends CommonParser {
         } else if (state.isResolution(module)) {
             // Module definition
             state.setResolution(moduleNamed);
+        } else if ((state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) || state.isResolution(typeNamedEq)) {
+            builder.remapCurrentToken(m_types.VARIANT_NAME);
         } else {
-            if ((state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) || state.isResolution(typeNamedEq)) {
-                builder.remapCurrentToken(m_types.VARIANT_NAME);
+            if (!state.isResolution(modulePath)) {
+                IElementType nextElementType = builder.lookAhead(1);
+                if (nextElementType == m_types.DOT) {
+                    // We are parsing a module path
+                    state.add(mark(builder, modulePath, m_types.UPPER_SYMBOL));
+                }
             }
         }
 
