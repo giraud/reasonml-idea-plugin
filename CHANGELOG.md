@@ -12,8 +12,8 @@
 
 ## 0.52
 
-* :rocket: Pair match in OCaml: struct/end and sig/end
-* :rocket: Reason: implemented intentions (#53)
+* :rocket: ![o](resources/icons/ocaml-file.png) Pair match in OCaml: struct/end and sig/end
+* :rocket: ![r](resources/icons/reason-file.png) Implemented intentions (#53)
 * :nail_care: Add bool/char/int/float/string as keywords
 * :nail_care: Handle warning message from bsb (#64)
 * :house: Protect against concurrent run of bsb compilation process
