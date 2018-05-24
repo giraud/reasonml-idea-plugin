@@ -19,10 +19,11 @@ This code might change quite a lot or break in the future. The [project board](h
 - Pair braces matcher
 - JSX completion
 - Bucklescript compiler integration
-- Reformat using `refmt` (press `crtl alt shift R` or `⌘⎇⇧R` on Mac)
+- Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 - Reformat on save
 - Type annotation
 - Configuration through facet
+- Intentions (_ReasonML_): add braces to function, transform local open
 - Works natively on Windows
 
 This plugin offer a lightweight integration for OCaml files.

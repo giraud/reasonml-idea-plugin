@@ -1,6 +1,5 @@
 package com.reason;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,9 +16,12 @@ import java.util.Map;
 public class Platform {
 
     public static final String OCAML_VERSION = "4.02";
-    public static final String RINCEWIND_VERSION = "0.2-dev";
+    public static final String RINCEWIND_VERSION = "0.1";
 
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
+
+    private Platform() {
+    }
 
     @NotNull
     public static String getOsPrefix() {
@@ -38,39 +40,39 @@ public class Platform {
         return "";
     }
 
-    @Nullable
-    public static String getBinary(String envVar, String propVar) {
-        Logger log = Logger.getInstance("ReasonML");
+    //@Nullable
+    //private static String getBinary(String envVar, String propVar) {
+    //    Logger log = Logger.getInstance("ReasonML");
+    //
+    //    String binary = System.getProperty(propVar);
+    //    if (binary != null) {
+    //        log.info("Found '" + binary + "' in the property '" + propVar + "'");
+    //        return binary;
+    //    }
+    //
+    //    log.info("Property '" + envVar + "' not found, testing environment variable '" + propVar + "'");
+    //    binary = System.getenv(envVar);
+    //    if (binary != null) {
+    //        log.info("Found '" + binary + "' in the environment variable '" + envVar + "'");
+    //        return binary;
+    //    }
+    //
+    //    return null;
+    //}
 
-        String binary = System.getProperty(propVar);
-        if (binary != null) {
-            log.info("Found '" + binary + "' in the property '" + propVar + "'");
-            return binary;
-        }
-
-        log.info("Property '" + envVar + "' not found, testing environment variable '" + propVar + "'");
-        binary = System.getenv(envVar);
-        if (binary != null) {
-            log.info("Found '" + binary + "' in the environment variable '" + envVar + "'");
-            return binary;
-        }
-
-        return null;
-    }
-
-    @NotNull
-    public static String getBinary(String envVar, String propVar, @NotNull String defaultBinary) {
-        Logger log = Logger.getInstance("ReasonML");
-        log.info("Identifying '" + defaultBinary + "' binary");
-
-        String binary = getBinary(envVar, propVar);
-        if (binary != null) {
-            return binary;
-        }
-
-        log.warn("No '" + defaultBinary + "' found in environment or properties, use default one");
-        return defaultBinary;
-    }
+    //@NotNull
+    //public static String getBinary(String envVar, String propVar, @NotNull String defaultBinary) {
+    //    Logger log = Logger.getInstance("ReasonML");
+    //    log.info("Identifying '" + defaultBinary + "' binary");
+    //
+    //    String binary = getBinary(envVar, propVar);
+    //    if (binary != null) {
+    //        return binary;
+    //    }
+    //
+    //    log.warn("No '" + defaultBinary + "' found in environment or properties, use default one");
+    //    return defaultBinary;
+    //}
 
     public static VirtualFile findBaseRoot(Project project) {
         VirtualFile baseDir = m_baseDirs.get(project);

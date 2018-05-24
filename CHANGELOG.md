@@ -10,6 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.52
+
+* :rocket: Pair match in OCaml: struct/end and sig/end
+* :rocket: Reason: implemented intentions (#53)
+* :nail_care: Add bool/char/int/float/string as keywords
+* :nail_care: Handle warning message from bsb (#64)
+* :house: Protect against concurrent run of bsb compilation process
+            
 ## 0.51.1
 
 * :bug: Fix #61
