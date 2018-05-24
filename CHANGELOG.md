@@ -13,32 +13,32 @@
 ## 0.52
 
 * :rocket: ![o](resources/icons/ocaml-file.png) Pair match in OCaml: struct/end and sig/end
-* :rocket: ![r](resources/icons/reason-file.png) Implemented intentions (#53)
+* :rocket: ![r](resources/icons/reason-file.png) [#53](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Implemented intentions
 * :nail_care: Add bool/char/int/float/string as keywords
-* :nail_care: Handle warning message from bsb (#64)
+* :nail_care: [#64](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Handle warning message from bsb
 * :house: Protect against concurrent run of bsb compilation process
             
 ## 0.51.1
 
-* :bug: Fix #61
+* :bug: Fix [#61](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/61)
 * :house: Slightly better bootstrap for type inference
 
 ## 0.51
 
-* :bug: Fix problem when parsing JSX tag names (fix #52)
+* :bug: [#52](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/52) Fix problem when parsing JSX tag names
 * :house: Type annotation is now using a native cmt extractor (Windows, Linux, OSX)
 
 ## 0.50
 
-* :nail_care: Sorry, no more facets: they can't be used outside Idea. Settings can be found in Project settings (#55) and they are per project
+* :nail_care: [#55](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/55) Sorry, no more facets: they can't be used outside Idea. Settings can be found in Project settings and they are per project
 
 ## 0.49
 
-* :rocket: No more JVM properties 'reasonBsb' and 'reasonRefmt', configuration is done via facet (#47)
+* :rocket: [#47](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/47) No more JVM properties 'reasonBsb' and 'reasonRefmt', configuration is done via facet
 
 ## 0.48.1
 
-* :bug: Fix a NPE in OCaml (#51)
+* :bug: [#51](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/51) Fix a NPE in OCaml
 
 ## 0.48
 
