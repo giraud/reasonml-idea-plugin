@@ -5,6 +5,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiTagClose;
+import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.reason.RmlParserDefinition;
 import com.reason.lang.reason.RmlTypes;
@@ -39,4 +40,10 @@ public class JsxParsingTest extends BaseParsingTestCase {
         assertEquals(RmlTypes.INSTANCE.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
     }
 
+    public void testTagPropWithParen() {
+        PsiElement psiElement = firstElement(parseCode("<div style=(x)/>"));
+
+        PsiTagProperty tag = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class).iterator().next();
+        assertEquals("style=(x)", tag.getText());
+    }
 }

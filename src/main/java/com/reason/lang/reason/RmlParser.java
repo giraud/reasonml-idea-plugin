@@ -514,7 +514,7 @@ public class RmlParser extends CommonParser {
                 state.setComplete();
             }
 
-            if (!state.isResolution(typeNamed)) {
+            if (!state.isResolution(typeNamed) && !state.isResolution(tagPropertyEq)) { // ???
                 state.endAny();
             }
 
