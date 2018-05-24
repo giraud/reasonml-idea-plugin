@@ -151,10 +151,12 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     @Override
     public void run(FileType fileType) {
         if (m_compiler != null && (fileType instanceof RmlFileType || fileType instanceof OclFileType)) {
-            ProcessHandler recreate = m_compiler.recreate(CliType.standard);
-            if (recreate != null) {
-                getBsbConsole().attachToProcess(recreate);
-                m_compiler.startNotify();
+            if (m_compiler.start()) {
+                ProcessHandler recreate = m_compiler.recreate(CliType.standard);
+                if (recreate != null) {
+                    getBsbConsole().attachToProcess(recreate);
+                    m_compiler.startNotify();
+                }
             }
         }
     }

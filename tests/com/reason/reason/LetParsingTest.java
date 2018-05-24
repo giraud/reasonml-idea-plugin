@@ -52,10 +52,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetBindingWithJsx() {
-        // params !!
-        //PsiLet let = first(parseCode("let renderGraphic = r => <div/>;").getLetExpressions());
-        //assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
-        PsiFileModuleImpl module = parseCode("let make = (p) => { render: x => { <div/>; } }");
+        PsiFileModuleImpl module = parseCode("let make = p => { render: x => { <div/>; } }");
         PsiElement[] children = module.getChildren();
         PsiElement element = PsiTreeUtil.nextLeaf(children[1], true);
         assertNull(element);

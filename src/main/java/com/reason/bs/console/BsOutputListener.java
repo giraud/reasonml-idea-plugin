@@ -11,6 +11,7 @@ import com.intellij.openapi.util.Key;
 import com.reason.bs.Bucklescript;
 import com.reason.bs.BucklescriptManager;
 import com.reason.bs.annotations.BsErrorsManager;
+import com.reason.bs.compiler.BsCompiler;
 import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,6 +63,11 @@ public class BsOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
+        BsCompiler compiler = m_bucklescript.getCompiler();
+        if (compiler != null) {
+            compiler.terminated();
+        }
+
         if (!m_bsbInfo.isEmpty()) {
             m_bucklescript.addAllInfo(m_bsbInfo);
         }

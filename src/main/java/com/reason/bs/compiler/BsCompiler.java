@@ -11,6 +11,8 @@ import com.reason.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
@@ -20,6 +22,8 @@ public final class BsCompiler {
 
     private KillableColoredProcessHandler m_bsb;
     private ProcessListener m_outputListener;
+    private final AtomicBoolean m_started = new AtomicBoolean(false);
+    private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
     public BsCompiler(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
@@ -104,4 +108,17 @@ public final class BsCompiler {
         cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir());
         return cli;
     }
+
+    public boolean start() {
+        boolean success = m_started.compareAndSet(false, true);
+        if (!success) {
+            m_restartNeeded.compareAndSet(false, true);
+        }
+        return success;
+    }
+
+    public void terminated() {
+        m_started.set(false);
+    }
+
 }
