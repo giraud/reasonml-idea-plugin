@@ -21,7 +21,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
         extend(CompletionType.BASIC, patterns.dotExpression(), new DotExpressionCompletionProvider(modulePathFinder));
         extend(CompletionType.BASIC, patterns.jsObject(), new ObjectCompletionProvider());
         extend(CompletionType.BASIC, patterns.jsxName(), new JsxNameCompletionProvider());
-        extend(CompletionType.BASIC, patterns.jsxAttribute(), new JsxAttributeCompletionProvider());
+        extend(CompletionType.BASIC, patterns.jsxAttribute(), new JsxAttributeCompletionProvider(modulePathFinder));
     }
 
     @SuppressWarnings("unused")

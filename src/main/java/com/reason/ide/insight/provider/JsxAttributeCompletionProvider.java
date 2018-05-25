@@ -5,12 +5,15 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.reason.icons.Icons;
+import com.reason.ide.Debug;
+import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import org.jetbrains.annotations.NotNull;
@@ -22,9 +25,18 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 public class JsxAttributeCompletionProvider extends CompletionProvider<CompletionParameters> {
+
+    private final ModulePathFinder m_modulePathFinder;
+    private final Debug m_debug;
+
+    public JsxAttributeCompletionProvider(ModulePathFinder modulePathFinder) {
+        m_modulePathFinder = modulePathFinder;
+        m_debug = new Debug(Logger.getInstance("ReasonML.insight.jsxattribute"));
+    }
+
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
-        //System.out.println("»» JSX attribute completion");
+        m_debug.debug("JSX expression completion");
 
         PsiElement originalPosition = parameters.getOriginalPosition();
 

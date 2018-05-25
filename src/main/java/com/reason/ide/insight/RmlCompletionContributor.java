@@ -4,6 +4,7 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlModulePathFinder;
@@ -49,7 +50,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @Override
         public ElementPattern<? extends PsiElement> jsxAttribute() {
             return or(
-                    psiElement().inside(PsiTagStart.class),
+                    psiElement().inside(PsiTagStart.class).andNot(psiElement().inside(PsiTagProperty.class)),
                     psiElement().inside(PsiLowerSymbol.class).withParent(PsiTagStart.class)
             );
         }
@@ -57,7 +58,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> freeExpression() {
-            return psiElement().andNot(psiElement().andOr(jsxName(), jsObject(), jsxAttribute(), dotExpression()));
+            return psiElement().andNot(or(jsxName(), jsObject(), jsxAttribute(), dotExpression()));
         }
 
         @NotNull
