@@ -9,7 +9,6 @@ import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.psi.PsiFile;
-import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +25,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
     public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
-            return BucklescriptManager.getInstance(file.getProject()).getErrors(filePath);
+            return file.getProject().getComponent(ErrorsManager.class).getErrors(filePath);
         }
         return null;
     }

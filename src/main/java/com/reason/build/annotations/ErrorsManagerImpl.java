@@ -1,15 +1,25 @@
 package com.reason.build.annotations;
 
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.containers.ConcurrentMultiMap;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 
-public class ErrorsManagerImpl implements ErrorsManager {
+public class ErrorsManagerImpl implements ErrorsManager, ProjectComponent {
 
     private final ConcurrentMultiMap<String, OutputInfo> m_errorsByFile = new ConcurrentMultiMap<>();
+
+    @Override
+    public void initComponent() { // For compatibility with idea#143
+    }
+
+    @Override
+    public void disposeComponent() { // For compatibility with idea#143
+    }
 
     @Override
     public void put(@Nullable OutputInfo info) {
@@ -22,7 +32,15 @@ public class ErrorsManagerImpl implements ErrorsManager {
     }
 
     @Override
-    public Collection<OutputInfo> getErrors(String filePath) {
+    public void addAllInfo(@NotNull Iterable<OutputInfo> bsbInfo) {
+        for (OutputInfo info : bsbInfo) {
+            put(info);
+        }
+    }
+
+    @NotNull
+    @Override
+    public Collection<OutputInfo> getErrors(@NotNull String filePath) {
         return m_errorsByFile.get(filePath);
     }
 

@@ -8,9 +8,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.reason.build.annotations.ErrorsManager;
 import com.reason.build.annotations.OutputInfo;
-import com.reason.build.bs.Bucklescript;
-import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,8 @@ public class BsOutputListener implements ProcessListener {
     }
 
     private final Project m_project;
-    private final Bucklescript m_bucklescript;
+    private final ErrorsManager m_errorsManager;
+    private final BsCompiler m_compiler;
     private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
@@ -44,16 +44,17 @@ public class BsOutputListener implements ProcessListener {
     private OutputInfo m_latestInfo = null;
     private String m_previousText;
 
-    BsOutputListener(Project project) {
+    BsOutputListener(Project project, BsCompiler bsc) {
         m_project = project;
-        m_bucklescript = BucklescriptManager.getInstance(project);
+        m_errorsManager = project.getComponent(ErrorsManager.class);
+        m_compiler = bsc;
         m_log = Logger.getInstance("ReasonML.bsb");
     }
 
     @Override
-    public void startNotified(ProcessEvent event) {
+    public void startNotified(@NotNull ProcessEvent event) {
         m_bsbInfo.clear();
-        m_bucklescript.clearErrors();
+        m_errorsManager.clearErrors();
         m_previousText = "";
     }
 
@@ -63,13 +64,12 @@ public class BsOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
-        BsCompiler compiler = m_bucklescript.getCompiler();
-        if (compiler != null) {
-            compiler.terminated();
+        if (m_compiler != null) {
+            m_compiler.terminated();
         }
 
         if (!m_bsbInfo.isEmpty()) {
-            m_bucklescript.addAllInfo(m_bsbInfo);
+            m_errorsManager.addAllInfo(m_bsbInfo);
         }
 
         reset();
@@ -224,7 +224,7 @@ public class BsOutputListener implements ProcessListener {
         info.colStart = parseInt(colStart);
         info.lineEnd = info.lineStart;
         info.colEnd = parseInt(colEnd);
-        if (info.colEnd == info.colStart && info.lineStart == info.lineEnd) {
+        if (info.colEnd == info.colStart) {
             info.colEnd += 1;
         }
         m_bsbInfo.add(info);

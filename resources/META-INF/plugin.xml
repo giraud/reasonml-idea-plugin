@@ -39,6 +39,10 @@
             <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
         </component>
         <component>
+            <interface-class>com.reason.build.annotations.ErrorsManager</interface-class>
+            <implementation-class>com.reason.build.annotations.ErrorsManagerImpl</implementation-class>
+        </component>
+        <component>
             <implementation-class>com.reason.ide.ReasonProjectTracker</implementation-class>
         </component>
         <component>
@@ -172,6 +176,7 @@
         <annotator language="Ocaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
 
         <externalAnnotator language="ReasonML" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
+        <externalAnnotator language="Ocaml" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
 
         <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="Ocaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>

@@ -42,7 +42,7 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         // Start compiler
         BsCompiler bsc = BucklescriptManager.getInstance(project).getCompiler();
         if (bsc != null) {
-            bsc.addListener(new BsOutputListener(project));
+            bsc.addListener(new BsOutputListener(project, bsc));
             ProcessHandler handler = bsc.getHandler();
             if (handler == null) {
                 console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);

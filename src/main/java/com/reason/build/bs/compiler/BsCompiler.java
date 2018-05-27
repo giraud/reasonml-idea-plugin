@@ -7,6 +7,7 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class BsCompiler {
+public final class BsCompiler implements CompilerLifecycle {
 
     private final ModuleConfiguration m_moduleConfiguration;
 

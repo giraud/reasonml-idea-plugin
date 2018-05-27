@@ -15,8 +15,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
-import com.reason.build.annotations.ErrorsManagerImpl;
-import com.reason.build.annotations.OutputInfo;
 import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.build.bs.compiler.CliType;
 import com.reason.build.bs.refmt.RefmtProcess;
@@ -27,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.Collection;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
@@ -41,8 +38,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     private BsCompiler m_compiler;
     @Nullable
     private RefmtProcess m_refmt;
-    @Nullable
-    private ErrorsManagerImpl m_errorsManager;
 
     private BucklescriptManager(Project project) {
         m_project = project;
@@ -89,7 +84,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
             m_config = BsConfig.read(bsconfig);
             m_compiler = new BsCompiler(moduleConfiguration);
             m_refmt = new RefmtProcess(moduleConfiguration);
-            m_errorsManager = new ErrorsManagerImpl();
         }
     }
 
@@ -100,7 +94,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
         m_config = null;
         m_compiler = null;
-        m_errorsManager = null;
     }
 
     @Nullable
@@ -118,28 +111,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
 
         return m_compiler;
-    }
-
-    @Nullable
-    @Override
-    public Collection<OutputInfo> getErrors(String path) {
-        return m_errorsManager == null ? null : m_errorsManager.getErrors(path);
-    }
-
-    @Override
-    public void clearErrors() {
-        if (m_errorsManager != null) {
-            m_errorsManager.clearErrors();
-        }
-    }
-
-    @Override
-    public void addAllInfo(@NotNull Iterable<OutputInfo> bsbInfo) {
-        if (m_errorsManager != null) {
-            for (OutputInfo info : bsbInfo) {
-                m_errorsManager.put(info);
-            }
-        }
     }
 
     @NotNull
