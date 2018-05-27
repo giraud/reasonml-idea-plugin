@@ -5,15 +5,19 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.KillableColoredProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
-import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.build.bs.compiler.CliType;
 import com.reason.ide.RmlNotification;
+import com.reason.ide.sdk.OCamlSDK;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
+import static com.intellij.notification.NotificationType.ERROR;
 
 public final class DuneCompiler implements CompilerLifecycle {
 
@@ -60,7 +64,7 @@ public final class DuneCompiler implements CompilerLifecycle {
             }
             return m_processHangler;
         } catch (ExecutionException e) {
-            Notifications.Bus.notify(new RmlNotification("Dune", "Can't run sdk\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
         }
 
         return null;
@@ -82,31 +86,20 @@ public final class DuneCompiler implements CompilerLifecycle {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
-//        String bsbPath = m_moduleConfiguration.getBsbPath();
-
-//        if (bsbPath == null) {
-//            Notifications.Bus.notify(new RmlNotification("Dune",
-//                    "<html>Can't find sdk.\n"
-//                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir() + "'.\n"
-//                            + "Be sure that sdk is installed and reachable from that directory, "
-//                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#dune\">github</a>.</html>",
-//                    ERROR, URL_OPENING_LISTENER));
-//            return null;
-//        }
-
-        GeneralCommandLine cli;
-        switch (cliType) {
-//            case make:
-//                cli = new GeneralCommandLine(bsbPath, "-make-world");
-//                break;
-//            case cleanMake:
-//                cli = new GeneralCommandLine(bsbPath, "-clean-world", "-make-world");
-//                break;
-            default:
-                cli = new GeneralCommandLine("/home/herve/.opam/4.02.3/bin/jbuilder", "build", "rincewind.exe");
+        Sdk sdk = OCamlSDK.getSDK(m_moduleConfiguration.getProject());
+        if (sdk == null) {
+            Notifications.Bus.notify(new RmlNotification("Dune",
+                    "<html>Can't find sdk.\n"
+                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir() + "'.\n"
+                            + "Be sure that sdk is installed and reachable from that directory, "
+                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#dune\">github</a>.</html>",
+                    ERROR, URL_OPENING_LISTENER));
+            return null;
         }
 
+        GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
         cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir());
+
         return cli;
     }
 
