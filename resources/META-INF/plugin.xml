@@ -36,7 +36,7 @@
 
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.dune.DuneCompiler</implementation-class>
+            <implementation-class>com.reason.ide.dune.DuneManager</implementation-class>
         </component>
         <component>
             <implementation-class>com.reason.ide.ReasonProjectTracker</implementation-class>

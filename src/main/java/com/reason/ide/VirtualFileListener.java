@@ -9,7 +9,7 @@ import com.reason.Compiler;
 import com.reason.bs.BucklescriptManager;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightManagerImpl;
-import com.reason.ide.dune.DuneCompiler;
+import com.reason.ide.dune.DuneManager;
 import com.reason.ide.dune.OCamlSDK;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
@@ -36,7 +36,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
         if (projectSDK == null) {
             m_compiler = BucklescriptManager.getInstance(project);
         } else {
-            m_compiler = DuneCompiler.getInstance(project);
+            m_compiler = DuneManager.getInstance(project);
         }
     }
 

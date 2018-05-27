@@ -17,6 +17,11 @@ public class ModuleConfiguration {
         m_project = project;
     }
 
+    @NotNull
+    public Project getProject() {
+        return m_project;
+    }
+
     @Nullable
     public String getBsbPath() {
         String bsLocation = getBsPlatformLocation();
