@@ -1,4 +1,4 @@
-package com.reason;
+package com.reason.build;
 
 import com.intellij.openapi.fileTypes.FileType;
 

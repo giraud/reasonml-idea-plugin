@@ -1,4 +1,4 @@
-package com.reason.bs;
+package com.reason.build.bs;
 
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
@@ -15,11 +15,11 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
-import com.reason.bs.annotations.BsErrorsManager;
-import com.reason.bs.annotations.BsErrorsManagerImpl;
-import com.reason.bs.compiler.BsCompiler;
-import com.reason.bs.compiler.CliType;
-import com.reason.bs.refmt.RefmtProcess;
+import com.reason.build.annotations.ErrorsManagerImpl;
+import com.reason.build.annotations.OutputInfo;
+import com.reason.build.bs.compiler.BsCompiler;
+import com.reason.build.bs.compiler.CliType;
+import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
@@ -42,7 +42,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     @Nullable
     private RefmtProcess m_refmt;
     @Nullable
-    private BsErrorsManagerImpl m_errorsManager;
+    private ErrorsManagerImpl m_errorsManager;
 
     private BucklescriptManager(Project project) {
         m_project = project;
@@ -89,7 +89,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
             m_config = BsConfig.read(bsconfig);
             m_compiler = new BsCompiler(moduleConfiguration);
             m_refmt = new RefmtProcess(moduleConfiguration);
-            m_errorsManager = new BsErrorsManagerImpl();
+            m_errorsManager = new ErrorsManagerImpl();
         }
     }
 
@@ -122,7 +122,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Nullable
     @Override
-    public Collection<BsErrorsManager.BsbInfo> getErrors(String path) {
+    public Collection<OutputInfo> getErrors(String path) {
         return m_errorsManager == null ? null : m_errorsManager.getErrors(path);
     }
 
@@ -134,9 +134,9 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     }
 
     @Override
-    public void addAllInfo(@NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo) {
+    public void addAllInfo(@NotNull Iterable<OutputInfo> bsbInfo) {
         if (m_errorsManager != null) {
-            for (BsErrorsManager.BsbInfo info : bsbInfo) {
+            for (OutputInfo info : bsbInfo) {
                 m_errorsManager.put(info);
             }
         }

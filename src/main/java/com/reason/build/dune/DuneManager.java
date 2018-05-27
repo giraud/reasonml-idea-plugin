@@ -1,4 +1,4 @@
-package com.reason.ide.dune;
+package com.reason.build.dune;
 
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
@@ -10,10 +10,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
-import com.reason.Compiler;
 import com.reason.Platform;
-import com.reason.bs.ModuleConfiguration;
-import com.reason.bs.compiler.CliType;
+import com.reason.build.Compiler;
+import com.reason.build.bs.ModuleConfiguration;
+import com.reason.build.bs.compiler.CliType;
 import com.reason.ide.files.OclFileType;
 import com.reason.ide.files.RmlFileType;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class DuneManager implements Compiler, ProjectComponent {
         if (duneConfig != null) {
             ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
             m_compiler = new DuneCompiler(moduleConfiguration);
-            //m_errorsManager = new BsErrorsManagerImpl();
+            //m_errorsManager = new ErrorsManagerImpl();
         }
     }
 

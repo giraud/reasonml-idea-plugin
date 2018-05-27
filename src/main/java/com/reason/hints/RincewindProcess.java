@@ -4,7 +4,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Streams;
-import com.reason.bs.ModuleConfiguration;
+import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
 import org.jetbrains.annotations.NotNull;

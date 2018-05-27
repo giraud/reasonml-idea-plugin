@@ -2,7 +2,7 @@ package com.reason;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.bs.BucklescriptManager;
+import com.reason.build.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

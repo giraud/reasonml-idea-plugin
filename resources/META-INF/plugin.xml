@@ -36,14 +36,14 @@
 
     <project-components>
         <component>
-            <implementation-class>com.reason.ide.dune.DuneManager</implementation-class>
+            <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
         </component>
         <component>
             <implementation-class>com.reason.ide.ReasonProjectTracker</implementation-class>
         </component>
         <component>
-            <interface-class>com.reason.bs.Bucklescript</interface-class>
-            <implementation-class>com.reason.bs.BucklescriptManager</implementation-class>
+            <interface-class>com.reason.build.bs.Bucklescript</interface-class>
+            <implementation-class>com.reason.build.bs.BucklescriptManager</implementation-class>
         </component>
         <component>
             <interface-class>com.reason.hints.InsightManager</interface-class>
@@ -146,7 +146,7 @@
          | SDK & Settings
          -->
 
-        <sdkType implementation="com.reason.ide.dune.OCamlSDK"/>
+        <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
 
         <projectService serviceInterface="com.reason.ide.settings.ReasonSettings"
                         serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
@@ -171,7 +171,7 @@
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
         <annotator language="Ocaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
 
-        <externalAnnotator language="ReasonML" implementationClass="com.reason.bs.annotations.BsErrorAnnotator"/>
+        <externalAnnotator language="ReasonML" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
 
         <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="Ocaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
@@ -212,7 +212,7 @@
          -->
 
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
-                    factoryClass="com.reason.bs.console.BsToolWindowFactory"/>
+                    factoryClass="com.reason.build.bs.console.BsToolWindowFactory"/>
     </extensions>
 
 </idea-plugin>

@@ -1,4 +1,4 @@
-package com.reason.bs.console;
+package com.reason.build.bs.console;
 
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -13,8 +13,8 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.bs.BucklescriptManager;
-import com.reason.bs.compiler.BsCompiler;
+import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 

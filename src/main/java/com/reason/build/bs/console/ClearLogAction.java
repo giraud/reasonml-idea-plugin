@@ -1,4 +1,4 @@
-package com.reason.bs.console;
+package com.reason.build.bs.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.icons.AllIcons;

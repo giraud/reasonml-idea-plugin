@@ -8,8 +8,8 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.bs.ModuleConfiguration;
-import com.reason.bs.insight.BsQueryTypesService;
+import com.reason.build.bs.ModuleConfiguration;
+import com.reason.build.bs.insight.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

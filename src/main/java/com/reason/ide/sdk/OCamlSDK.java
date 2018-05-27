@@ -1,4 +1,4 @@
-package com.reason.ide.dune;
+package com.reason.ide.sdk;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.*;

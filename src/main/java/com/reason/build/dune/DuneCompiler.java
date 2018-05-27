@@ -1,4 +1,4 @@
-package com.reason.ide.dune;
+package com.reason.build.dune;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -7,8 +7,9 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.reason.bs.ModuleConfiguration;
-import com.reason.bs.compiler.CliType;
+import com.reason.build.CompilerLifecycle;
+import com.reason.build.bs.ModuleConfiguration;
+import com.reason.build.bs.compiler.CliType;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +60,7 @@ public final class DuneCompiler implements CompilerLifecycle {
             }
             return m_processHangler;
         } catch (ExecutionException e) {
-            Notifications.Bus.notify(new RmlNotification("Dune", "Can't run dune\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new RmlNotification("Dune", "Can't run sdk\n" + e.getMessage(), NotificationType.ERROR));
         }
 
         return null;
@@ -85,9 +86,9 @@ public final class DuneCompiler implements CompilerLifecycle {
 
 //        if (bsbPath == null) {
 //            Notifications.Bus.notify(new RmlNotification("Dune",
-//                    "<html>Can't find dune.\n"
+//                    "<html>Can't find sdk.\n"
 //                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir() + "'.\n"
-//                            + "Be sure that dune is installed and reachable from that directory, "
+//                            + "Be sure that sdk is installed and reachable from that directory, "
 //                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#dune\">github</a>.</html>",
 //                    ERROR, URL_OPENING_LISTENER));
 //            return null;

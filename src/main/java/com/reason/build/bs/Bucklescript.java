@@ -1,9 +1,9 @@
-package com.reason.bs;
+package com.reason.build.bs;
 
 import com.intellij.openapi.editor.Document;
-import com.reason.Compiler;
-import com.reason.bs.annotations.BsErrorsManager;
-import com.reason.bs.compiler.BsCompiler;
+import com.reason.build.Compiler;
+import com.reason.build.annotations.OutputInfo;
+import com.reason.build.bs.compiler.BsCompiler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,11 +19,11 @@ public interface Bucklescript extends Compiler {
     BsCompiler getOrCreateCompiler();
 
     @Nullable
-    Collection<BsErrorsManager.BsbInfo> getErrors(String path);
+    Collection<OutputInfo> getErrors(String path);
 
     void clearErrors();
 
-    void addAllInfo(@NotNull Iterable<BsErrorsManager.BsbInfo> bsbInfo);
+    void addAllInfo(@NotNull Iterable<OutputInfo> bsbInfo);
 
     @NotNull
     String getNamespace();

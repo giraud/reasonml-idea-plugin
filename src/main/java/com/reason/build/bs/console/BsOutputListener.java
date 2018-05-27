@@ -1,13 +1,18 @@
-package com.reason.ide.dune;
+package com.reason.build.bs.console;
 
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptManager;
-import com.reason.bs.annotations.BsErrorsManager;
+import com.reason.build.annotations.OutputInfo;
+import com.reason.build.bs.Bucklescript;
+import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.compiler.BsCompiler;
+import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,10 +21,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.reason.ide.dune.DuneOutputListener.BuildStatus.*;
+import static com.reason.build.bs.console.BsOutputListener.BuildStatus.*;
 import static java.lang.Integer.parseInt;
 
-public class DuneOutputListener implements ProcessListener {
+public class BsOutputListener implements ProcessListener {
 
     private static final Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
 
@@ -31,24 +36,22 @@ public class DuneOutputListener implements ProcessListener {
 
     private final Project m_project;
     private final Bucklescript m_bucklescript;
-    private final CompilerLifecycle m_compilerLifecycle;
     private final Logger m_log;
-    private final List<BsErrorsManager.BsbInfo> m_bsbInfo = new ArrayList<>();
+    private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
     private BuildStatus m_status;
     private int m_failedLine;
-    private BsErrorsManager.BsbInfo m_latestInfo = null;
+    private OutputInfo m_latestInfo = null;
     private String m_previousText;
 
-    DuneOutputListener(Project project, CompilerLifecycle compilerLifecycle) {
+    BsOutputListener(Project project) {
         m_project = project;
         m_bucklescript = BucklescriptManager.getInstance(project);
-        m_compilerLifecycle = compilerLifecycle;
         m_log = Logger.getInstance("ReasonML.bsb");
     }
 
     @Override
-    public void startNotified(@NotNull ProcessEvent event) {
+    public void startNotified(ProcessEvent event) {
         m_bsbInfo.clear();
         m_bucklescript.clearErrors();
         m_previousText = "";
@@ -60,21 +63,24 @@ public class DuneOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
-        m_compilerLifecycle.terminated();
+        BsCompiler compiler = m_bucklescript.getCompiler();
+        if (compiler != null) {
+            compiler.terminated();
+        }
 
-//        if (!m_bsbInfo.isEmpty()) {
-//            m_bucklescript.addAllInfo(m_bsbInfo);
-//        }
-//
-//        reset();
-//        m_bsbInfo.clear();
-//
-//        ApplicationManager.getApplication().invokeLater(() -> {
-//             When build is done, we need to refresh editors to be notified of latest modifications
-//            DaemonCodeAnalyzer.getInstance(m_project).restart();
-//            EditorFactory.getInstance().refreshAllEditors();
-//            InferredTypesService.queryForSelectedTextEditor(m_project);
-//        });
+        if (!m_bsbInfo.isEmpty()) {
+            m_bucklescript.addAllInfo(m_bsbInfo);
+        }
+
+        reset();
+        m_bsbInfo.clear();
+
+        ApplicationManager.getApplication().invokeLater(() -> {
+            // When build is done, we need to refresh editors to be notified of latest modifications
+            DaemonCodeAnalyzer.getInstance(m_project).restart();
+            EditorFactory.getInstance().refreshAllEditors();
+            InferredTypesService.queryForSelectedTextEditor(m_project);
+        });
     }
 
     @Override
@@ -162,7 +168,7 @@ public class DuneOutputListener implements ProcessListener {
     // ...path/src/Source.re 111:21-22
     // ...path/src/Source.re 111:21   <- must add 1 to colEnd
     @Nullable
-    private BsErrorsManager.BsbInfo extractFilePositions(@Nullable String text) {
+    private OutputInfo extractFilePositions(@Nullable String text) {
         if (text != null) {
             String[] tokens = text.trim().split(" ");
             if (tokens.length == 2) {
@@ -176,7 +182,7 @@ public class DuneOutputListener implements ProcessListener {
                 } else if (positions.length == 2) {
                     String[] start = positions[0].split(":");
                     String[] end = positions[1].split(":");
-                    BsErrorsManager.BsbInfo info = addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
+                    OutputInfo info = addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
                     if (info.colStart < 0 || info.colEnd < 0) {
                         m_log.error("Can't decode columns for [" + text + "]");
                         return null;
@@ -191,7 +197,7 @@ public class DuneOutputListener implements ProcessListener {
 
     // File "...path/src/Source.re", line 111, characters 0-3:
     @Nullable
-    private BsErrorsManager.BsbInfo extractExtendedFilePositions(@Nullable String text) {
+    private OutputInfo extractExtendedFilePositions(@Nullable String text) {
         if (text != null) {
             Matcher matcher = FILE_LOCATION.matcher(text);
             if (matcher.matches()) {
@@ -199,7 +205,7 @@ public class DuneOutputListener implements ProcessListener {
                 String line = matcher.group(2);
                 String colStart = matcher.group(3);
                 String colEnd = matcher.group(4);
-                BsErrorsManager.BsbInfo info = addInfo(path, line, colStart, colEnd);
+                OutputInfo info = addInfo(path, line, colStart, colEnd);
                 if (info.colStart < 0 || info.colEnd < 0) {
                     m_log.error("Can't decode columns for [" + text + "]");
                     return null;
@@ -211,8 +217,8 @@ public class DuneOutputListener implements ProcessListener {
         return null;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
-        BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
+    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
+        OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(line);
         info.colStart = parseInt(colStart);
@@ -225,8 +231,8 @@ public class DuneOutputListener implements ProcessListener {
         return info;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
-        BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
+    private OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
+        OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(lineStart);
         info.colStart = parseInt(colStart);

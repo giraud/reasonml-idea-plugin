@@ -1,4 +1,4 @@
-package com.reason.bs;
+package com.reason.build.bs;
 
 import com.intellij.openapi.project.Project;
 import com.reason.Platform;

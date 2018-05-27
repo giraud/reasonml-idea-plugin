@@ -1,4 +1,4 @@
-package com.reason.bs.compiler;
+package com.reason.build.bs.compiler;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -7,7 +7,7 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.reason.bs.ModuleConfiguration;
+import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.Nullable;
 

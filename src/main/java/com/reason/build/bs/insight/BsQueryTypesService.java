@@ -1,11 +1,11 @@
-package com.reason.bs.insight;
+package com.reason.build.bs.insight;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
-import com.reason.bs.ModuleConfiguration;
+import com.reason.build.bs.ModuleConfiguration;
 import com.reason.hints.InsightManager;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.hints.InferredTypesImplementation;

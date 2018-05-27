@@ -1,4 +1,4 @@
-package com.reason.bs.annotations;
+package com.reason.build.annotations;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.psi.PsiFile;
-import com.reason.bs.BucklescriptManager;
+import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,13 +17,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManager.BsbInfo>, Collection<BsErrorAnnotator.BsbErrorAnnotation>> {
+public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Collection<ErrorAnnotator.BsbErrorAnnotation>> {
 
     private final Debug log = new Debug(Logger.getInstance("ReasonML.build"));
 
     @Nullable
     @Override
-    public Collection<BsErrorsManager.BsbInfo> collectInformation(@NotNull PsiFile file) {
+    public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
             return BucklescriptManager.getInstance(file.getProject()).getErrors(filePath);
@@ -33,10 +33,10 @@ public class BsErrorAnnotator extends ExternalAnnotator<Collection<BsErrorsManag
 
     @Nullable
     @Override
-    public Collection<BsbErrorAnnotation> doAnnotate(Collection<BsErrorsManager.BsbInfo> collectedInfo) {
+    public Collection<BsbErrorAnnotation> doAnnotate(Collection<OutputInfo> collectedInfo) {
         Collection<BsbErrorAnnotation> result = new ArrayList<>();
 
-        for (BsErrorsManager.BsbInfo info : collectedInfo) {
+        for (OutputInfo info : collectedInfo) {
             result.add(new BsbErrorAnnotation(info.lineStart - 1, info.colStart - 1, info.lineEnd - 1, info.colEnd, info.message, info.isError));
         }
 

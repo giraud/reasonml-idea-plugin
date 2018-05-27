@@ -1,4 +1,4 @@
-package com.reason.bs.compiler;
+package com.reason.build.bs.compiler;
 
 public enum CliType {
     make,

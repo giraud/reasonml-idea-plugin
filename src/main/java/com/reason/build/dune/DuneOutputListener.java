@@ -1,18 +1,14 @@
-package com.reason.bs.console;
+package com.reason.build.dune;
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptManager;
-import com.reason.bs.annotations.BsErrorsManager;
-import com.reason.bs.compiler.BsCompiler;
-import com.reason.ide.hints.InferredTypesService;
+import com.reason.build.CompilerLifecycle;
+import com.reason.build.annotations.OutputInfo;
+import com.reason.build.bs.Bucklescript;
+import com.reason.build.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,10 +17,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.reason.bs.console.BsOutputListener.BuildStatus.*;
+import static com.reason.build.dune.DuneOutputListener.BuildStatus.fine;
 import static java.lang.Integer.parseInt;
 
-public class BsOutputListener implements ProcessListener {
+public class DuneOutputListener implements ProcessListener {
 
     private static final Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
 
@@ -36,22 +32,24 @@ public class BsOutputListener implements ProcessListener {
 
     private final Project m_project;
     private final Bucklescript m_bucklescript;
+    private final CompilerLifecycle m_compilerLifecycle;
     private final Logger m_log;
-    private final List<BsErrorsManager.BsbInfo> m_bsbInfo = new ArrayList<>();
+    private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
     private BuildStatus m_status;
     private int m_failedLine;
-    private BsErrorsManager.BsbInfo m_latestInfo = null;
+    private OutputInfo m_latestInfo = null;
     private String m_previousText;
 
-    BsOutputListener(Project project) {
+    DuneOutputListener(Project project, CompilerLifecycle compilerLifecycle) {
         m_project = project;
         m_bucklescript = BucklescriptManager.getInstance(project);
+        m_compilerLifecycle = compilerLifecycle;
         m_log = Logger.getInstance("ReasonML.bsb");
     }
 
     @Override
-    public void startNotified(ProcessEvent event) {
+    public void startNotified(@NotNull ProcessEvent event) {
         m_bsbInfo.clear();
         m_bucklescript.clearErrors();
         m_previousText = "";
@@ -63,30 +61,50 @@ public class BsOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
-        BsCompiler compiler = m_bucklescript.getCompiler();
-        if (compiler != null) {
-            compiler.terminated();
-        }
+        m_compilerLifecycle.terminated();
 
-        if (!m_bsbInfo.isEmpty()) {
-            m_bucklescript.addAllInfo(m_bsbInfo);
-        }
+//        if (!m_bsbInfo.isEmpty()) {
+//            m_bucklescript.addAllInfo(m_bsbInfo);
+//        }
 
         reset();
         m_bsbInfo.clear();
 
-        ApplicationManager.getApplication().invokeLater(() -> {
-            // When build is done, we need to refresh editors to be notified of latest modifications
-            DaemonCodeAnalyzer.getInstance(m_project).restart();
-            EditorFactory.getInstance().refreshAllEditors();
-            InferredTypesService.queryForSelectedTextEditor(m_project);
-        });
+//        ApplicationManager.getApplication().invokeLater(() -> {
+//             When build is done, we need to refresh editors to be notified of latest modifications
+//            DaemonCodeAnalyzer.getInstance(m_project).restart();
+//            EditorFactory.getInstance().refreshAllEditors();
+//            InferredTypesService.queryForSelectedTextEditor(m_project);
+//        });
     }
 
     @Override
     public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
         String text = event.getText();
 
+        /*
+        File "CmtExtractor.ml", line 80, characters 67-70:
+        Error: Unbound value cmt
+        Hint: Did you mean cmtx?
+        */
+        if (text.startsWith("File")) {
+            m_latestInfo = extractExtendedFilePositions(text);
+            if (m_latestInfo != null) {
+                m_latestInfo.isError = false;
+//                int pos = text.indexOf(":");
+//                m_latestInfo.message = 0 <= pos ? text.substring(pos + 1).trim() : text.substring(6);
+            }
+        } else if (text.startsWith("Error:")) {
+            if (m_latestInfo != null) {
+                m_latestInfo.isError = true;
+            }
+        } else if (text.startsWith("Hint:")) {
+            if (m_latestInfo != null) {
+                m_latestInfo.message += " " + text;
+            }
+        }
+
+        /*
         if (m_status == error) {
             if (m_failedLine == 1) {
                 // Extract file path and error position
@@ -160,6 +178,7 @@ public class BsOutputListener implements ProcessListener {
                 }
             }
         }
+        */
 
         m_previousText = text;
     }
@@ -168,7 +187,7 @@ public class BsOutputListener implements ProcessListener {
     // ...path/src/Source.re 111:21-22
     // ...path/src/Source.re 111:21   <- must add 1 to colEnd
     @Nullable
-    private BsErrorsManager.BsbInfo extractFilePositions(@Nullable String text) {
+    private OutputInfo extractFilePositions(@Nullable String text) {
         if (text != null) {
             String[] tokens = text.trim().split(" ");
             if (tokens.length == 2) {
@@ -182,7 +201,7 @@ public class BsOutputListener implements ProcessListener {
                 } else if (positions.length == 2) {
                     String[] start = positions[0].split(":");
                     String[] end = positions[1].split(":");
-                    BsErrorsManager.BsbInfo info = addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
+                    OutputInfo info = addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
                     if (info.colStart < 0 || info.colEnd < 0) {
                         m_log.error("Can't decode columns for [" + text + "]");
                         return null;
@@ -195,9 +214,9 @@ public class BsOutputListener implements ProcessListener {
         return null;
     }
 
-    // File "...path/src/Source.re", line 111, characters 0-3:
+    // File "...path/src/Source.ml", line 111, characters 0-3:
     @Nullable
-    private BsErrorsManager.BsbInfo extractExtendedFilePositions(@Nullable String text) {
+    private OutputInfo extractExtendedFilePositions(@Nullable String text) {
         if (text != null) {
             Matcher matcher = FILE_LOCATION.matcher(text);
             if (matcher.matches()) {
@@ -205,7 +224,7 @@ public class BsOutputListener implements ProcessListener {
                 String line = matcher.group(2);
                 String colStart = matcher.group(3);
                 String colEnd = matcher.group(4);
-                BsErrorsManager.BsbInfo info = addInfo(path, line, colStart, colEnd);
+                OutputInfo info = addInfo(path, line, colStart, colEnd);
                 if (info.colStart < 0 || info.colEnd < 0) {
                     m_log.error("Can't decode columns for [" + text + "]");
                     return null;
@@ -217,8 +236,8 @@ public class BsOutputListener implements ProcessListener {
         return null;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
-        BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
+    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
+        OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(line);
         info.colStart = parseInt(colStart);
@@ -231,8 +250,8 @@ public class BsOutputListener implements ProcessListener {
         return info;
     }
 
-    private BsErrorsManager.BsbInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
-        BsErrorsManager.BsbInfo info = new BsErrorsManager.BsbInfo();
+    private OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
+        OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(lineStart);
         info.colStart = parseInt(colStart);

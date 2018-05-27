@@ -1,10 +1,9 @@
-package com.reason.bs.refmt;
+package com.reason.build.bs.refmt;
 
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Streams;
-import com.reason.bs.ModuleConfiguration;
-import com.reason.ide.settings.ReasonSettings;
+import com.reason.build.bs.ModuleConfiguration;
 
 import java.io.*;
 
