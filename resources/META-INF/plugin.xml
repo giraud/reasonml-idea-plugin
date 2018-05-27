@@ -36,6 +36,9 @@
 
     <project-components>
         <component>
+            <implementation-class>com.reason.ide.dune.DuneCompiler</implementation-class>
+        </component>
+        <component>
             <implementation-class>com.reason.ide.ReasonProjectTracker</implementation-class>
         </component>
         <component>
@@ -143,7 +146,7 @@
          | SDK & Settings
          -->
 
-        <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
+        <sdkType implementation="com.reason.ide.dune.OCamlSDK"/>
 
         <projectService serviceInterface="com.reason.ide.settings.ReasonSettings"
                         serviceImplementation="com.reason.ide.settings.ReasonSettings"/>

@@ -5,11 +5,11 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
+import com.reason.ide.dune.OCamlSDK;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
 import org.jetbrains.annotations.NotNull;
@@ -55,12 +55,12 @@ public class CmtiFileListener implements ProjectComponent {
         Path path = FileSystems.getDefault().getPath(file.getPath());
         Path relativeCmti;
 
-        Sdk projectSDK = ProjectRootManager.getInstance(m_project).getProjectSdk();
-        if (projectSDK != null && projectSDK.getSdkType().getName().equals("OCaml SDK")) {
+        Sdk projectSDK = OCamlSDK.getSDK(m_project);
+        if (projectSDK == null) {
+            relativeCmti = m_pathToWatch.relativize(path);
+        } else {
             Path pathToWatch = getPathToWatch(m_project, "_build/default");
             relativeCmti = pathToWatch.relativize(path);
-        } else {
-            relativeCmti = m_pathToWatch.relativize(path);
         }
 
         m_log.info("Detected change on file " + relativeCmti + ", reading types");

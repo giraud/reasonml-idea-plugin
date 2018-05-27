@@ -1,7 +1,7 @@
 package com.reason.bs;
 
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileTypes.FileType;
+import com.reason.Compiler;
 import com.reason.bs.annotations.BsErrorsManager;
 import com.reason.bs.compiler.BsCompiler;
 import org.jetbrains.annotations.NotNull;
@@ -9,12 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface Bucklescript {
+public interface Bucklescript extends Compiler {
     boolean isDependency(String path);
-
-    void refresh();
-
-    void run(FileType fileType);
 
     @Nullable
     BsCompiler getCompiler();
