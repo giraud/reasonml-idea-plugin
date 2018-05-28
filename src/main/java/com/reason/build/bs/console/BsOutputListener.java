@@ -48,7 +48,7 @@ public class BsOutputListener implements ProcessListener {
         m_project = project;
         m_errorsManager = project.getComponent(ErrorsManager.class);
         m_compiler = bsc;
-        m_log = Logger.getInstance("ReasonML.bsb");
+        m_log = Logger.getInstance("ReasonML.build");
     }
 
     @Override
