@@ -9,7 +9,6 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
-import com.reason.build.bs.compiler.CliType;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.sdk.OCamlSDK;
 import org.jetbrains.annotations.Nullable;
@@ -24,24 +23,19 @@ public final class DuneCompiler implements CompilerLifecycle {
     private final ModuleConfiguration m_moduleConfiguration;
 
     private KillableColoredProcessHandler m_processHangler;
-    private ProcessListener m_outputListener;
+    private final ProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
-    public DuneCompiler(ModuleConfiguration moduleConfiguration) {
+    DuneCompiler(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
         m_outputListener = new DuneOutputListener(moduleConfiguration.getProject(), this);
 
-        recreate(CliType.make);
-    }
-
-    @Nullable
-    public ProcessHandler getHandler() {
-        return m_processHangler;
+        recreate();
     }
 
     // Wait for the tool window to be ready before starting the process
-    public void startNotify() {
+    void startNotify() {
         if (m_processHangler != null && !m_processHangler.isStartNotified()) {
             try {
                 m_processHangler.startNotify();
@@ -52,10 +46,10 @@ public final class DuneCompiler implements CompilerLifecycle {
     }
 
     @Nullable
-    public ProcessHandler recreate(CliType cliType) {
+    ProcessHandler recreate() {
         try {
             killIt();
-            GeneralCommandLine cli = getGeneralCommandLine(cliType);
+            GeneralCommandLine cli = getGeneralCommandLine();
             if (cli != null) {
                 m_processHangler = new KillableColoredProcessHandler(cli);
                 if (m_outputListener != null) {
@@ -70,34 +64,27 @@ public final class DuneCompiler implements CompilerLifecycle {
         return null;
     }
 
-    public void killIt() {
+    private void killIt() {
         if (m_processHangler != null) {
             m_processHangler.killProcess();
             m_processHangler = null;
         }
     }
 
-    public void addListener(ProcessListener outputListener) {
-        m_outputListener = outputListener;
-        if (m_processHangler != null) {
-            m_processHangler.addProcessListener(outputListener);
-        }
-    }
-
     @Nullable
-    private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
+    private GeneralCommandLine getGeneralCommandLine() {
         Sdk sdk = OCamlSDK.getSDK(m_moduleConfiguration.getProject());
         if (sdk == null) {
             Notifications.Bus.notify(new RmlNotification("Dune",
                     "<html>Can't find sdk.\n"
-                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir() + "'.\n"
-                            + "Be sure that sdk is installed and reachable from that directory, "
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#dune\">github</a>.</html>",
+                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
             return null;
         }
 
         GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
+        //cli.withEnvironment("PATH", sdk.getHomePath() + "/bin" + ";" + sdk.getHomePath() + "/lib");
         cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir());
 
         return cli;

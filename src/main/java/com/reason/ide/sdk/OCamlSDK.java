@@ -10,8 +10,12 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OCamlSDK extends SdkType {
+
+    private static final Pattern VERSION_REGEXP = Pattern.compile(".*(\\d\\.\\d\\d).*");
 
     public OCamlSDK() {
         super("OCaml SDK");
@@ -51,7 +55,11 @@ public class OCamlSDK extends SdkType {
     @Nullable
     @Override
     public String getVersionString(String sdkHome) {
-        return "4.02";
+        Matcher matcher = VERSION_REGEXP.matcher(sdkHome);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 
     @Override
