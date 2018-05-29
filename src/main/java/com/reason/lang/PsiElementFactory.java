@@ -38,7 +38,7 @@ public class PsiElementFactory {
             return new PsiAnnotation(node);
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
-        } else if (type == types.LET_FUN_PARAMS) {
+        } else if (type == types.FUN_PARAMS) {
             return new PsiParametersImpl(types, node);
         } else if (type == types.MACRO_NAME) {
             return new PsiMacroName(node);

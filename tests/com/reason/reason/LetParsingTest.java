@@ -18,16 +18,16 @@ public class LetParsingTest extends BaseParsingTestCase {
         PsiLet let = first(parseCode("let x = 1;").getLetExpressions());
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
+        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
     public void testFunction() {
         PsiLet let = first(parseCode("let add = (x,y) => x + y;").getLetExpressions());
 
         assertTrue(let.isFunction());
+        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
         PsiParameters params = first(PsiTreeUtil.findChildrenOfType(let, PsiParameters.class));
         assertEquals(2, params.getArgumentsCount());
-        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
     }
 
     public void testFunctionParenless() {

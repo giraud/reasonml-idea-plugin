@@ -122,7 +122,11 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         }
 
         if (m_types instanceof RmlTypes) {
-            PsiElement psiElement = PsiUtil.nextSiblingWithTokenType(getFirstChild(), RmlTypes.INSTANCE.ARROW);
+            PsiLetBinding binding = findChildByClass(PsiLetBinding.class);
+            if (binding == null) {
+                return false;
+            }
+            PsiElement psiElement = PsiUtil.nextSiblingWithTokenType(binding.getFirstChild(), RmlTypes.INSTANCE.ARROW);
             return psiElement != null;
         }
 

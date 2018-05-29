@@ -246,7 +246,7 @@ public class OclParser extends CommonParser {
 
     private void parseFun(PsiBuilder builder, ParserState state) {
         if (state.isResolution(letNamedEq)) {
-            state.add(markScope(builder, letFunBody, m_types.LET_BINDING, groupExpression, m_types.FUN));
+            state.add(markScope(builder, funBody, m_types.LET_BINDING, groupExpression, m_types.FUN));
         }
     }
 
@@ -256,7 +256,7 @@ public class OclParser extends CommonParser {
             state.setResolution(typeNamedEq);
             state.dontMove = advance(builder);
             state.add(markCompleteScope(builder, typeNamedEq, m_types.TYPE_BINDING, groupExpression, null));
-        } else if (state.isResolution(letNamed) || state.isResolution(letParameters)) {
+        } else if (state.isResolution(letNamed) || state.isResolution(parameters)) {
             ParserScopeEnum resolution = state.isResolution(letNamed) ? letNamedEq : letNamedParametersEq;
             if (resolution == letNamedParametersEq) {
                 state.popEnd();
@@ -385,7 +385,7 @@ public class OclParser extends CommonParser {
             IElementType tokenType = builder.getTokenType();
             if (tokenType != m_types.EQ) {
                 // function parameters
-                state.add(markCompleteScope(builder, letParameters, m_types.LET_FUN_PARAMS, scopeExpression, m_types.LPAREN));
+                state.add(markCompleteScope(builder, parameters, m_types.FUN_PARAMS, scopeExpression, m_types.LPAREN));
             }
         }
     }

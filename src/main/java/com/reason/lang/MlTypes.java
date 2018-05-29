@@ -33,7 +33,14 @@ public abstract class MlTypes {
     public IElementType CHAR_VALUE;
     public IElementType INT_VALUE;
 
-    public IElementType LET_FUN_PARAMS;
+    public IElementType FUN;
+    public IElementType FUNCTION;
+    public IElementType FUN_PARAMS;
+    public IElementType FUN_BODY;
+
+    public IElementType FUNCTOR;
+    public IElementType FUNCTOR_PARAMS;
+
     public IElementType LET_BINDING;
     public IElementType TYPE_CONSTR_NAME;
     public IElementType TYPE_BINDING;
@@ -42,7 +49,6 @@ public abstract class MlTypes {
     public IElementType LOCAL_OPEN;
     public IElementType SIG_SCOPE;
     public IElementType PROPERTY_NAME;
-    public IElementType FUNCTOR_PARAMS;
     public IElementType NAMED_SYMBOL;
 
     public IElementType AND;
@@ -76,9 +82,6 @@ public abstract class MlTypes {
     public IElementType EXTERNAL;
     public IElementType FALSE;
     public IElementType FOR;
-    public IElementType FUN;
-    public IElementType FUN_PARAMS;
-    public IElementType FUNCTION;
     public IElementType TYPE_ARGUMENT;
     public IElementType GT;
     public IElementType IF;
@@ -159,7 +162,6 @@ public abstract class MlTypes {
     public IElementType CLASS;
     public IElementType CONSTRAINT;
     public IElementType DOWNTO;
-    public IElementType FUNCTOR;
     public IElementType INHERIT;
     public IElementType INITIALIZER;
     public IElementType LAND;

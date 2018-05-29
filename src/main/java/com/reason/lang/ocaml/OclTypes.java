@@ -39,7 +39,14 @@ public class OclTypes extends MlTypes {
         CHAR_VALUE = new OclElementType("CHAR_VALUE");
         INT_VALUE = new OclTokenType("INT_VALUE");
 
-        LET_FUN_PARAMS = new OclElementType("LET_FUN_PARAMS");
+        FUN = new OclTokenType("FUN");
+        FUNCTION = new OclTokenType("FUNCTION");
+        FUN_PARAMS = new OclElementType("FUN_PARAMS");
+        FUN_BODY = new OclElementType("FUN_PARAMS");
+
+        FUNCTOR = new OclTokenType("FUNCTOR");
+        FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");
+
         LET_BINDING = new OclElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new OclElementType("TYPE_CONSTR_NAME");
         TYPE_BINDING = new OclElementType("TYPE_BINDING");
@@ -48,7 +55,6 @@ public class OclTypes extends MlTypes {
         LOCAL_OPEN = new OclElementType("LOCAL_OPEN");
         SIG_SCOPE = new OclElementType("SIG_SCOPE");
         PROPERTY_NAME = new OclElementType("PROPERTY_NAME");
-        FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");
         NAMED_SYMBOL = new OclElementType("NAMED_SYMBOL");
 
         AND = new OclTokenType("AND");
@@ -81,9 +87,6 @@ public class OclTypes extends MlTypes {
         EXTERNAL = new OclTokenType("EXTERNAL");
         FALSE = new OclTokenType("FALSE");
         FOR = new OclElementType("FOR");
-        FUN = new OclTokenType("FUN");
-        FUN_PARAMS = new OclTokenType("FUN_PARAMS");
-        FUNCTION = new OclTokenType("FUNCTION");
         TYPE_ARGUMENT = new OclTokenType("TYPE_ARGUMENT");
         GT = new OclTokenType("GT");
         IF = new OclTokenType("IF");
@@ -165,7 +168,6 @@ public class OclTypes extends MlTypes {
         CLASS = new OclTokenType("CLASS");
         CONSTRAINT = new OclTokenType("CONSTRAINT");
         DOWNTO = new OclTokenType("DOWNTO");
-        FUNCTOR = new OclTokenType("FUNCTOR");
         INHERIT = new OclTokenType("INHERIT");
         INITIALIZER = new OclTokenType("INITIALIZER");
         LAND = new OclTokenType("LAND");
