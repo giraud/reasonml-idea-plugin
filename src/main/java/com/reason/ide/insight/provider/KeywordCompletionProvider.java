@@ -2,9 +2,11 @@ package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.text.CaseInsensitiveStringHashingStrategy;
+import com.reason.ide.Debug;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +14,7 @@ import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
 
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
 
+    private final Debug m_debug;
     private final String m_debugName;
     private final String[] m_keywords;
 
@@ -20,13 +23,14 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
     private static final AddSpaceInsertHandler INSERT_SPACE = new AddSpaceInsertHandler(false);
 
     public KeywordCompletionProvider(String debugName, String... keywords) {
+        m_debug = new Debug(Logger.getInstance("ReasonML.insight.keyword"));
         m_debugName = debugName;
         m_keywords = keywords;
     }
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
-        //System.out.println("»» " + m_debugName + " completion");
+        m_debug.debug(m_debugName + " expression completion");
 
         for (String keyword : m_keywords) {
             LookupElementBuilder builder = LookupElementBuilder.create(keyword).

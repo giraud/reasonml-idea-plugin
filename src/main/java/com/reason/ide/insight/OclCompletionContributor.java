@@ -2,13 +2,14 @@ package com.reason.ide.insight;
 
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.ocaml.OclModulePathFinder;
 import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.StandardPatterns.alwaysFalse;
+import static com.intellij.patterns.StandardPatterns.or;
 
 public class OclCompletionContributor extends CompletionContributor {
 
@@ -23,7 +24,7 @@ public class OclCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> declaration() {
-            return psiElement();
+            return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
         }
 
         @NotNull
@@ -35,7 +36,7 @@ public class OclCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> keyword() {
-            return psiElement();
+            return psiElement().andNot(psiElement().andOr(dotExpression(), jsObject()));
         }
 
         @NotNull
@@ -53,13 +54,13 @@ public class OclCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> freeExpression() {
-            return psiElement().inside(PsiUpperSymbol.class);
+            return psiElement().andNot(or(jsxName(), jsObject(), jsxAttribute(), dotExpression()));
         }
 
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> dotExpression() {
-            return alwaysFalse();
+            return psiElement().afterLeaf(psiElement(OclTypes.INSTANCE.DOT));
         }
 
         @NotNull
@@ -67,5 +68,6 @@ public class OclCompletionContributor extends CompletionContributor {
         public ElementPattern<? extends PsiElement> jsObject() {
             return alwaysFalse();
         }
+
     }
 }

@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BaseModulePathFinder implements ModulePathFinder {
 
     @NotNull
-    protected String extractPathName(@NotNull PsiElement element) {
+    protected String extractPathName(@NotNull PsiElement element, @NotNull MlTypes types) {
         String path = "";
 
         PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
-        if (prevLeaf != null && prevLeaf.getNode().getElementType() == RmlTypes.INSTANCE.DOT) {
+        if (prevLeaf != null && prevLeaf.getNode().getElementType() == types.DOT) {
             // Extract the qualified name of current element
             PsiElement prevSibling = prevLeaf.getPrevSibling();
 
@@ -23,7 +23,7 @@ public abstract class BaseModulePathFinder implements ModulePathFinder {
                 prevSibling = prevSibling.getPrevSibling();
             }
 
-            while (prevSibling != null && prevSibling.getNode().getElementType() == RmlTypes.INSTANCE.DOT) {
+            while (prevSibling != null && prevSibling.getNode().getElementType() == types.DOT) {
                 prevSibling = prevSibling.getPrevSibling();
                 if (prevSibling instanceof PsiNamedElement) {
                     path = ((PsiNamedElement) prevSibling).getName() + "." + path;

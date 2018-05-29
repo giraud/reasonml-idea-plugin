@@ -23,9 +23,10 @@ public class RmlCompletionContributor extends CompletionContributor {
     }
 
     private static class RmlCompletionPatterns implements CompletionPatterns {
+        @NotNull
         @Override
         public ElementPattern<? extends PsiElement> declaration() {
-            return baseDeclarationPattern()/*.and(statementBeginningPattern())*/;
+            return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
         }
 
         @NotNull
@@ -71,10 +72,6 @@ public class RmlCompletionContributor extends CompletionContributor {
         @Override
         public ElementPattern<? extends PsiElement> jsObject() {
             return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.SHARPSHARP));
-        }
-
-        private static ElementPattern<? extends PsiElement> baseDeclarationPattern() {
-            return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
         }
     }
 }

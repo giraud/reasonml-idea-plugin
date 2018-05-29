@@ -16,7 +16,7 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
     public List<String> extractPotentialPaths(@NotNull PsiElement element) {
         List<String> qualifiedNames = new ArrayList<>();
 
-        String path = extractPathName(element);
+        String path = extractPathName(element, RmlTypes.INSTANCE);
         if (!path.isEmpty()) {
             qualifiedNames.add(path);
             qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);

@@ -16,7 +16,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
     public List<String> extractPotentialPaths(@NotNull PsiElement element) {
         List<String> qualifiedNames = new ArrayList<>();
 
-        String path = extractPathName(element);
+        String path = extractPathName(element, OclTypes.INSTANCE);
         if (!path.isEmpty()) {
             qualifiedNames.add(path);
             qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
