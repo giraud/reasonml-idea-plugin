@@ -126,8 +126,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
             if (binding == null) {
                 return false;
             }
-            PsiElement psiElement = PsiUtil.nextSiblingWithTokenType(binding.getFirstChild(), RmlTypes.INSTANCE.ARROW);
-            return psiElement != null;
+            return binding.getFirstChild() instanceof PsiFunction;
         }
 
         return !getParameters().isEmpty();

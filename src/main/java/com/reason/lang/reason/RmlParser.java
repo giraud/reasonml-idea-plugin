@@ -396,6 +396,7 @@ public class RmlParser extends CommonParser {
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
+                    state.add(markComplete(builder, function, m_types.FUNCTION));
                     state.add(markComplete(builder, parameters, m_types.FUN_PARAMS));
                     processSingleParam = true;
                 }
@@ -500,13 +501,12 @@ public class RmlParser extends CommonParser {
                 state.endAny();
             }
 
-            if (state.isResolution(letNamedEq)) {
-                // function parameters
-                state.add(mark(builder, genericExpression, null)); // just a marker that will be used only if it's a function
-                state.add(markScope(builder, parameters, m_types.FUN_PARAMS, scopeExpression, m_types.LPAREN));
-            } else {
-                state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
+            if (!state.isResolution(patternMatch)) {
+                // just a marker that will be used only if it's a function
+                state.add(mark(builder, genericExpression, null));
             }
+
+            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         }
     }
 
@@ -515,16 +515,31 @@ public class RmlParser extends CommonParser {
         state.dontMove = advance(builder);
 
         if (parenScope != null) {
+            // Remove the scope from the stack, we want to test its parent
+            state.pop();
+
+            IElementType nextTokenType = builder.getTokenType();
+            if (nextTokenType == m_types.ARROW && !state.isResolution(patternMatch)) {
+                parenScope.resolution = parameters;
+                parenScope.tokenType = m_types.FUN_PARAMS;
+            }
+
             parenScope.complete();
-            state.popEnd();
+            parenScope.end();
+
+            // Handle the generic scope
+            if (parenScope.resolution == parameters && nextTokenType == m_types.ARROW) {
+                // Transform the generic scope to a function scope
+                state.setResolution(function);
+                state.setTokenType(m_types.FUNCTION);
+                state.setComplete();
+            } else if (state.isResolution(genericExpression)) {
+                state.popEnd();
+            }
+
             ParserScope scope = state.getLatestScope();
-            if (scope != null) {
-                if (parenScope.resolution == parameters) {
-                    // Transform the generic scope to a function scope
-                    scope.resolution = function;
-                } else if (scope.resolution == localOpen) {
-                    state.popEnd();
-                }
+            if (scope != null && scope.resolution == localOpen) {
+                state.popEnd();
             }
         }
     }

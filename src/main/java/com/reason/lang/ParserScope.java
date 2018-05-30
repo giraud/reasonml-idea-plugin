@@ -6,7 +6,7 @@ import com.intellij.psi.tree.IElementType;
 public class ParserScope {
     public ParserScopeEnum resolution;
     ParserScopeType scopeType = ParserScopeType.any;
-    IElementType tokenType;
+    public IElementType tokenType;
     IElementType scopeElementType;
     boolean complete = false;
     boolean start = false;

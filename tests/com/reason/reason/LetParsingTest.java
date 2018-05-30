@@ -5,7 +5,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlParserDefinition;
 
@@ -19,25 +18,6 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
-    }
-
-    public void testFunction() {
-        PsiLet let = first(parseCode("let add = (x,y) => x + y;").getLetExpressions());
-
-        assertTrue(let.isFunction());
-        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
-        PsiParameters params = first(PsiTreeUtil.findChildrenOfType(let, PsiParameters.class));
-        assertEquals(2, params.getArgumentsCount());
-    }
-
-    public void testFunctionParenless() {
-        PsiLet let = first(parseCode("let add10 = x => x + 10;").getLetExpressions());
-
-        assertTrue(let.isFunction());
-        PsiParameters params = first(PsiTreeUtil.findChildrenOfType(let, PsiParameters.class));
-        assertEquals(1, params.getArgumentsCount());
-        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-        assertNotNull(binding);
     }
 
     public void testFunctionLetBinding() {

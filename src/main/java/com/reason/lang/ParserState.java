@@ -121,7 +121,7 @@ public class ParserState {
     }
 
     @Nullable
-    private ParserScope pop() {
+    public ParserScope pop() {
         ParserScope scope = m_scopes.tryPop();
         updateCurrentScope();
         return scope;

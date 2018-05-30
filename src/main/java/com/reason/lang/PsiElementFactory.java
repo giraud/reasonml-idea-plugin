@@ -70,6 +70,8 @@ public class PsiElementFactory {
             return new PsiNamedSymbol(node);
         } else if (type == types.SWITCH) {
             return new PsiSwitch(node);
+        } else if (type == types.FUNCTION) {
+            return new PsiFunction(node);
         }
 
         return new PsiToken(node);
