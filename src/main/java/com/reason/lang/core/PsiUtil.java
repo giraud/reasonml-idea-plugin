@@ -4,6 +4,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
@@ -74,5 +75,14 @@ public class PsiUtil {
         }
 
         return TextRange.create(start, start + child.getLength());
+    }
+
+    @Nullable
+    public static PsiElement nextSibling(PsiElement element) {
+        PsiElement nextSibling = element.getNextSibling();
+        while (nextSibling instanceof PsiWhiteSpace) {
+            nextSibling = nextSibling.getNextSibling();
+        }
+        return nextSibling;
     }
 }

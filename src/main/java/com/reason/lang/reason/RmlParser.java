@@ -532,6 +532,7 @@ public class RmlParser extends CommonParser {
                 // Transform the generic scope to a function scope
                 state.setResolution(function);
                 state.setTokenType(m_types.FUNCTION);
+                state.setScopeType(groupExpression);
                 state.setComplete();
             } else if (state.isResolution(genericExpression)) {
                 state.popEnd();

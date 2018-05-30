@@ -158,6 +158,10 @@ public class ParserState {
         currentScope.tokenType = tokenType;
     }
 
+    public void setScopeType(ParserScopeType scopeType) {
+        currentScope.scopeType = scopeType;
+    }
+
     public boolean isStart(@Nullable ParserScope scope) {
         return scope != null && scope.start;
     }
