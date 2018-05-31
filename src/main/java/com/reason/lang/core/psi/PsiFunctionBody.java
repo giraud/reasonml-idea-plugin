@@ -14,4 +14,8 @@ public class PsiFunctionBody extends ASTWrapperPsiElement {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "PsiFunctionBody";
+    }
 }

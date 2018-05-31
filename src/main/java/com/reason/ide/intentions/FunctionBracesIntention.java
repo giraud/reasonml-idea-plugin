@@ -2,9 +2,10 @@ package com.reason.ide.intentions;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.PsiUtil;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiFunctionBody;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.RmlElementFactory;
 import com.reason.lang.reason.RmlTypes;
@@ -34,13 +35,15 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
 
     @Override
     public boolean isAvailable(@NotNull Project project, @NotNull PsiFunction parentElement) {
-        PsiElement psiArrow = PsiUtil.nextSiblingWithTokenType(parentElement.getFirstChild(), RmlTypes.INSTANCE.ARROW);
-        if (psiArrow != null) {
-            PsiElement nextSibling = PsiUtil.nextSibling(psiArrow);
-            if (nextSibling instanceof PsiLetBinding || nextSibling instanceof PsiScopedExpr) {
-                nextSibling = nextSibling.getFirstChild();
+        PsiFunctionBody body = PsiTreeUtil.findChildOfType(parentElement, PsiFunctionBody.class);
+        if (body != null) {
+            PsiElement firstChild = body.getFirstChild();
+            if (firstChild instanceof PsiScopedExpr) {
+                firstChild = firstChild.getFirstChild();
+                return firstChild != null && firstChild.getNode().getElementType() != RmlTypes.INSTANCE.LBRACE;
+            } else {
+                return true;
             }
-            return nextSibling != null && nextSibling.getNode().getElementType() != RmlTypes.INSTANCE.LBRACE;
         }
 
         return false;
@@ -49,11 +52,13 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
     @Override
     void runInvoke(@NotNull Project project, @NotNull PsiFunction parentElement) {
         String text = parentElement.getText();
-        String[] tokens = text.split("=>");
-        PsiElement newSyntax = RmlElementFactory.createExpression(project, tokens[0] + "=> {" + tokens[1] + "; };");
+        String[] tokens = text.split("=>", 2);
+        PsiLet newSyntax = (PsiLet) RmlElementFactory.createExpression(project, "let x = " + tokens[0] + "=> {" + tokens[1] + "; };");
 
         if (newSyntax != null) {
-            parentElement.replace(newSyntax);
+            PsiFunctionBody oldBody = PsiTreeUtil.findChildOfType(parentElement, PsiFunctionBody.class);
+            PsiFunctionBody newBody = PsiTreeUtil.findChildOfType(newSyntax.getBinding(), PsiFunctionBody.class);
+            parentElement.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
         }
     }
 

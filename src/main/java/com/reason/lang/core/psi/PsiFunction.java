@@ -18,4 +18,9 @@ public class PsiFunction extends ASTWrapperPsiElement {
     public PsiFunctionBody getBody() {
         return PsiTreeUtil.findChildOfType(this, PsiFunctionBody.class);
     }
+
+    @Override
+    public String toString() {
+        return "PsiFunction";
+    }
 }
