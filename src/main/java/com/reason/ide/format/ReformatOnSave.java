@@ -7,10 +7,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
-import com.reason.ide.files.OclFile;
-import com.reason.ide.files.RmlFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ReformatOnSave extends FileDocumentManagerAdapter {
 
@@ -29,23 +26,11 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
     public void beforeDocumentSaving(@NotNull Document document) {
         if (m_bs.isRefmtOnSaveEnabled()) {
             PsiFile file = m_documentManager.getPsiFile(document);
-            if (file != null) {
-                String format = getFormat(file);
-                if (format != null) {
-                    m_bs.refmt(format, document);
-                }
+            String format = ReformatUtil.getFormat(file);
+            if (format != null) {
+                m_bs.refmt(format, document);
             }
         }
     }
 
-    @Nullable
-    private String getFormat(PsiFile file) {
-        String format = null;
-        if (file instanceof OclFile) {
-            format = "ml";
-        } else if (file instanceof RmlFile) {
-            format = "re";
-        }
-        return format;
-    }
 }

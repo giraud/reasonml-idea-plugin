@@ -60,7 +60,7 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="reason.refmt" class="com.reason.ide.format.RefmtAction" text="Reformat code (refmt)">
+        <action id="reason.refmt" class="com.reason.ide.format.ReformatAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
         </action>
