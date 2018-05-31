@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.53
+
+* :rocket: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) improve parsers
+* :rocket: ![r](resources/icons/reason-file.png) improve braces intention
+* :bug: [#65](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/65) refmt not working in .rei
+
 ## 0.52
 
 * :rocket: ![o](resources/icons/ocaml-file.png) Pair match in OCaml: struct/end and sig/end

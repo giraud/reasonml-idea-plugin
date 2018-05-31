@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.52</version>
+    <version>0.53</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,11 +10,9 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Pair match in OCaml: struct/end and sig/end</li>
-            <li>Add bool/char/int/float/string as keywords</li>
-            <li>Handle warning message from bsb (#64)</li>
-            <li>Reason: implemented intentions (#53)</li>
-            <li>Protect against concurrent run of bsb compilation process</li>
+            <li>improve parsers</li>
+            <li>improve braces intention</li>
+            <li>fix #65
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
