@@ -72,6 +72,8 @@ public class PsiElementFactory {
             return new PsiSwitch(node);
         } else if (type == types.FUNCTION) {
             return new PsiFunction(node);
+        } else if (type == types.FUN_BODY) {
+            return new PsiFunctionBody(node);
         }
 
         return new PsiToken(node);

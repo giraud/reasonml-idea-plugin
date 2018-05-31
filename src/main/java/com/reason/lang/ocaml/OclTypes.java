@@ -42,7 +42,7 @@ public class OclTypes extends MlTypes {
         FUN = new OclTokenType("FUN");
         FUNCTION = new OclTokenType("FUNCTION");
         FUN_PARAMS = new OclElementType("FUN_PARAMS");
-        FUN_BODY = new OclElementType("FUN_PARAMS");
+        FUN_BODY = new OclElementType("FUN_BODY");
 
         FUNCTOR = new OclTokenType("FUNCTOR");
         FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");

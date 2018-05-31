@@ -42,7 +42,7 @@ public class RmlTypes extends MlTypes {
         FUN = new RmlElementType("FUN");
         FUNCTION = new RmlElementType("FUNCTION");
         FUN_PARAMS = new RmlElementType("FUN_PARAMS");
-        FUN_BODY = new RmlElementType("FUN_PARAMS");
+        FUN_BODY = new RmlElementType("FUN_BODY");
 
         FUNCTOR = new RmlElementType("FUNCTOR");
         FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
