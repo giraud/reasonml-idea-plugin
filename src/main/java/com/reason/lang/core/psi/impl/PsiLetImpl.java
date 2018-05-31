@@ -129,7 +129,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
             return binding.getFirstChild() instanceof PsiFunction;
         }
 
-        return !getParameters().isEmpty();
+        return PsiTreeUtil.findChildOfType(this, PsiFunction.class) != null;
     }
 
     private boolean isRecursive() {

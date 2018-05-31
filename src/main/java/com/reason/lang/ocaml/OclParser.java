@@ -256,11 +256,8 @@ public class OclParser extends CommonParser {
             state.setResolution(typeNamedEq);
             state.dontMove = advance(builder);
             state.add(markCompleteScope(builder, typeNamedEq, m_types.TYPE_BINDING, groupExpression, null));
-        } else if (state.isResolution(letNamed) || state.isResolution(parameters)) {
-            ParserScopeEnum resolution = state.isResolution(letNamed) ? letNamedEq : letNamedParametersEq;
-            if (resolution == letNamedParametersEq) {
-                state.popEnd();
-            }
+        } else if (state.isResolution(letNamed)) {
+            ParserScopeEnum resolution = letNamedEq;
             state.setResolution(resolution);
             state.dontMove = advance(builder);
             state.add(markScope(builder, resolution, m_types.LET_BINDING, groupExpression, m_types.EQ));
@@ -274,6 +271,20 @@ public class OclParser extends CommonParser {
             state.setComplete();
             state.endUntilStart();
             state.updateCurrentScope();
+        } else if (state.isResolution(genericExpression)) {
+            ParserScope innerScope = state.pop();
+            if (innerScope != null && state.isResolution(genericExpression)) {
+                // let's say this is a function definition
+                innerScope.resolution = parameters;
+                innerScope.tokenType = m_types.FUN_PARAMS;
+                innerScope.complete();
+                innerScope.end();
+                state.setResolution(function);
+                state.setTokenType(m_types.FUNCTION);
+                state.setComplete();
+                state.dontMove = advance(builder);
+                state.add(markCompleteScope(builder, funBody, m_types.FUN_BODY, groupExpression, null));
+            }
         }
     }
 
@@ -382,10 +393,11 @@ public class OclParser extends CommonParser {
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
 
         if (state.isResolution(letNamed)) {
-            IElementType tokenType = builder.getTokenType();
-            if (tokenType != m_types.EQ) {
-                // function parameters
-                state.add(markCompleteScope(builder, parameters, m_types.FUN_PARAMS, scopeExpression, m_types.LPAREN));
+            IElementType nextTokenType = builder.getTokenType();
+            if (nextTokenType != m_types.EQ) {
+                // add a generic marker: it may be a function + parameters
+                state.add(mark(builder, genericExpression, null));
+                state.add(mark(builder, genericExpression, null));
             }
         }
     }
