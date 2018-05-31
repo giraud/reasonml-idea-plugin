@@ -628,11 +628,12 @@ public class RmlParser extends CommonParser {
         state.dontMove = advance(builder);
         IElementType nextTokenType = builder.getTokenType();
 
-        if (nextTokenType != m_types.LBRACE) {
+        if (state.isResolution(function)) {
+            // let x = ($ANY) => <EXPR>
+            state.add(markCompleteScope(builder, funBody, m_types.FUN_BODY, scopeExpression, null));
+        } else if (nextTokenType != m_types.LBRACE) {
             if (state.isResolution(patternMatch)) {
                 state.add(markScope(builder, patternMatchBody, m_types.SCOPED_EXPR, groupExpression, null));
-            } else if (state.isResolution(function)) { // let x = ($ANY) => <EXPR>
-                state.add(markCompleteScope(builder, funBody, m_types.FUN_BODY, scopeExpression, null));
             }
         }
     }

@@ -49,14 +49,14 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testInnerFunction() {
-        PsiLet e = first(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);", true).getLetExpressions());
+        PsiLet e = first(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);").getLetExpressions());
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertNotNull(function.getBody());
     }
 
     public void testInnerFunctionBraces() {
-        PsiLet e = first(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };", true).getLetExpressions());
+        PsiLet e = first(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };").getLetExpressions());
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertNotNull(function.getBody());
