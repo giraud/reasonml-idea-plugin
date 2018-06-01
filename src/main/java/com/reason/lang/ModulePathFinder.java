@@ -1,10 +1,10 @@
 package com.reason.lang;
 
-import com.intellij.psi.PsiElement;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import com.intellij.psi.PsiElement;
 
 public interface ModulePathFinder {
+    @NotNull
     List<String> extractPotentialPaths(@NotNull PsiElement element);
 }

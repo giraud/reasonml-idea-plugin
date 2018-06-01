@@ -1,11 +1,10 @@
 package com.reason.ide;
 
+import java.util.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Joiner;
 import com.reason.lang.core.psi.PsiModule;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class Debug {
 

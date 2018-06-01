@@ -1,13 +1,12 @@
 package com.reason.build.annotations;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.containers.ConcurrentMultiMap;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Collection;
 
 public class ErrorsManagerImpl implements ErrorsManager, ProjectComponent {
 
@@ -48,5 +47,4 @@ public class ErrorsManagerImpl implements ErrorsManager, ProjectComponent {
     public void clearErrors() {
         m_errorsByFile.clear();
     }
-
 }

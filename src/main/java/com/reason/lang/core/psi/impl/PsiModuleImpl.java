@@ -1,5 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -12,16 +16,17 @@ import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.stub.ModuleStub;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
@@ -91,6 +96,18 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     public Collection<PsiModule> getModules() {
         PsiScopedExpr body = getBody();
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiModule.class);
+    }
+
+    @Nullable
+    @Override
+    public PsiModule getModule(@NotNull String name) {
+        Collection<PsiModule> modules = getModules();
+        for (PsiModule module : modules) {
+            if (name.equals(module.getName())) {
+                return module;
+            }
+        }
+        return null;
     }
 
     @NotNull

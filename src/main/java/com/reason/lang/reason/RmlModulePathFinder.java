@@ -1,12 +1,12 @@
 package com.reason.lang.reason;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.reason.lang.core.psi.PsiLocalOpen;
+import com.reason.lang.core.psi.PsiOpen;
 
 public class RmlModulePathFinder extends BaseModulePathFinder {
 
@@ -22,11 +22,25 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
         }
 
-        // Find local opens
+        // Walk backward until top of the file is reached, trying to find local opens and opens/includes
+        PsiElement item = element;
+        while (item != null) {
+            if (item instanceof PsiOpen) {
+                qualifiedNames.add(0, ((PsiOpen) item).getName());
+            }
 
-        // Find opens
+            PsiElement prevItem = item.getPrevSibling();
+            if (prevItem == null) {
+                PsiElement parent = item.getParent();
+                if (parent instanceof PsiLocalOpen) {
+                    qualifiedNames.add(0, ((PsiLocalOpen) parent).getName());
+                }
+                item = parent;
+            } else {
+                item = prevItem;
+            }
+        }
 
         return qualifiedNames;
     }
-
 }

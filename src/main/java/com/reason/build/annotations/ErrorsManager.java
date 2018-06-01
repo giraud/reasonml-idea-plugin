@@ -1,9 +1,8 @@
 package com.reason.build.annotations;
 
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.Collection;
+import org.jetbrains.annotations.Nullable;
 
 public interface ErrorsManager {
 
@@ -15,5 +14,4 @@ public interface ErrorsManager {
     Collection<OutputInfo> getErrors(@NotNull String filePath);
 
     void clearErrors();
-
 }

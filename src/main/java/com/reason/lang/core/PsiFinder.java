@@ -1,5 +1,8 @@
 package com.reason.lang.core;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
@@ -12,22 +15,18 @@ import com.intellij.psi.stubs.StubIndex;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
-import com.reason.ide.files.*;
+import com.reason.ide.files.FileBase;
+import com.reason.ide.files.OclFileType;
+import com.reason.ide.files.OclInterfaceFileType;
+import com.reason.ide.files.RmlFileType;
+import com.reason.ide.files.RmlInterfaceFileType;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static com.reason.lang.core.MlScope.all;
-import static com.reason.lang.core.MlScope.inBsconfig;
+import static com.reason.lang.core.MlScope.*;
 
 public final class PsiFinder {
 
@@ -71,8 +70,10 @@ public final class PsiFinder {
                         keepFile = true;
                     } else {
                         String nameWithoutExtension = virtualFile.getNameWithoutExtension();
-                        String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() : OclInterfaceFileType.INSTANCE.getDefaultExtension();
-                        Collection<VirtualFile> interfaceFiles = FilenameIndex.getVirtualFilesByName(project, nameWithoutExtension + "." + extension, GlobalSearchScope.allScope(project));
+                        String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
+                                OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                        Collection<VirtualFile> interfaceFiles = FilenameIndex
+                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, GlobalSearchScope.allScope(project));
                         keepFile = interfaceFiles.isEmpty();
                     }
                 }
@@ -110,8 +111,23 @@ public final class PsiFinder {
 
     @Nullable
     public PsiModule findFileModule(Project project, String name) {
-        PsiModule module = findModule(project, name, MlFileType.interfaceOrImplementation, inBsconfig);
+        // extract first token of path
+        String[] names = name.split("\\.");
+
+        PsiModule module = findModule(project, names[0], MlFileType.interfaceOrImplementation, inBsconfig);
         if (module instanceof PsiFileModuleImpl) {
+            if (1 < names.length) {
+                PsiModule currentModule = module;
+                for (int i = 1; i < names.length; i++) {
+                    String innerModuleName = names[i];
+                    currentModule = currentModule.getModule(innerModuleName);
+                    if (currentModule == null) {
+                        return null;
+                    }
+                }
+                return currentModule;
+            }
+
             return module;
         }
 

@@ -1,5 +1,7 @@
 package com.reason.ide;
 
+import java.io.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.AppTopics;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -12,9 +14,6 @@ import com.intellij.util.messages.MessageBusConnection;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
-
-import javax.annotation.Nullable;
-import java.io.File;
 
 import static com.reason.Platform.getOsPrefix;
 
@@ -74,5 +73,4 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
             m_messageBusConnection.disconnect();
         }
     }
-
 }

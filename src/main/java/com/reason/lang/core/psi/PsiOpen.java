@@ -1,6 +1,4 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiElement;
-
-public interface PsiOpen extends PsiElement, PsiStructuredElement {
+public interface PsiOpen extends PsiNamedElement, PsiStructuredElement {
 }

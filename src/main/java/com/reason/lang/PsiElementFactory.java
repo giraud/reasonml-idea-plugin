@@ -3,8 +3,39 @@ package com.reason.lang;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiFunctionBody;
+import com.reason.lang.core.psi.PsiInterpolation;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiLocalOpen;
+import com.reason.lang.core.psi.PsiMacroName;
+import com.reason.lang.core.psi.PsiModulePath;
+import com.reason.lang.core.psi.PsiNamedSymbol;
+import com.reason.lang.core.psi.PsiObject;
+import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiPatternMatch;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.PsiTagClose;
+import com.reason.lang.core.psi.PsiToken;
+import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.impl.PsiExceptionImpl;
+import com.reason.lang.core.psi.impl.PsiExternalImpl;
+import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
+import com.reason.lang.core.psi.impl.PsiIncludeImpl;
+import com.reason.lang.core.psi.impl.PsiLetImpl;
+import com.reason.lang.core.psi.impl.PsiLowerSymbolImpl;
+import com.reason.lang.core.psi.impl.PsiModuleImpl;
+import com.reason.lang.core.psi.impl.PsiOpenImpl;
+import com.reason.lang.core.psi.impl.PsiParametersImpl;
+import com.reason.lang.core.psi.impl.PsiSignatureImpl;
+import com.reason.lang.core.psi.impl.PsiTagPropertyImpl;
+import com.reason.lang.core.psi.impl.PsiTagStartImpl;
+import com.reason.lang.core.psi.impl.PsiTypeConstrNameImpl;
+import com.reason.lang.core.psi.impl.PsiTypeImpl;
+import com.reason.lang.core.psi.impl.PsiUpperSymbolImpl;
+import com.reason.lang.core.psi.impl.PsiValImpl;
 
 public class PsiElementFactory {
     public static PsiElement createElement(MlTypes types, ASTNode node) {
@@ -45,7 +76,7 @@ public class PsiElementFactory {
         } else if (type == types.SCOPED_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == types.LOCAL_OPEN) {
-            return new PsiLocalOpen(node);
+            return new PsiLocalOpen(node, types);
         } else if (type == types.PATTERN_MATCH_EXPR) {
             return new PsiPatternMatch(node);
         } else if (type == types.OBJECT) {
