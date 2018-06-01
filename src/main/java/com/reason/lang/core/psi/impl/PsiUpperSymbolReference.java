@@ -20,10 +20,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
+import static java.util.stream.Collectors.toList;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
@@ -85,21 +85,18 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             Collection<PsiModule> filteredModules = modules;
             if (1 < modules.size()) {
                 // Find potential paths of current element
-                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement);
-                //System.out.println("  potential paths:");
-                //for (String path : potentialPaths) {
-                //    System.out.println("    " + path + "." + m_referenceName);
-                //}
+                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
+                //System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
 
-                if (!potentialPaths.isEmpty()) {
-                    // Take the first for now
-                    final String inPath = potentialPaths.get(0) + "." + m_referenceName;
-                    filteredModules = modules.stream().
-                            filter(module -> inPath.equals(module.getQualifiedName())).
-                            collect(Collectors.toList());
-                }
+                // Filter the modules, keep the ones with the same qualified name
+                filteredModules = modules.stream().
+                        filter(module -> {
+                            String moduleQn = module.getQualifiedName();
+                            return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
+                        }).
+                        collect(toList());
 
-                //System.out.println("  filetered modules: " + filteredModules.size());
+                //System.out.println("  filtered modules: " + filteredModules.size());
                 //for (PsiModule module : filteredModules) {
                 //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
                 //}
@@ -110,6 +107,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             }
 
             PsiModule moduleReference = filteredModules.iterator().next();
+            //System.out.println("»» " + moduleReference.getName());
             return moduleReference.getNameIdentifier();
         }
 

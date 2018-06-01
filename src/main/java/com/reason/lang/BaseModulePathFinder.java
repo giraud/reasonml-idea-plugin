@@ -3,7 +3,6 @@ package com.reason.lang;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseModulePathFinder implements ModulePathFinder {

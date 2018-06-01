@@ -1,12 +1,14 @@
 package com.reason.lang.reason;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
 import com.reason.lang.core.psi.PsiLocalOpen;
 import com.reason.lang.core.psi.PsiOpen;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RmlModulePathFinder extends BaseModulePathFinder {
 
