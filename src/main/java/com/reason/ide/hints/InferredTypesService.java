@@ -4,6 +4,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.FileSystems;
+import java.util.Map;
 
 public class InferredTypesService {
 
@@ -61,42 +63,13 @@ public class InferredTypesService {
             CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
             long timestamp = sourceFile.getTimeStamp();
 
+            for (Map.Entry<LogicalPosition, String> openEntry : types.listOpensByLines().entrySet()) {
+                userData.put(sourceFile, openEntry.getKey(), openEntry.getValue(), timestamp);
+            }
+
             for (LogicalHMSignature signatureEntry : types.listTypesByLines()) {
                 userData.put(sourceFile, signatureEntry.getLogicalPosition(), signatureEntry.getSignature().toString(), timestamp);
             }
-/*
-            PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
-
-            Collection<PsiLet> letExpressions = PsiTreeUtil.findChildrenOfType(psiFile, PsiLet.class);
-            for (PsiLet letStatement : letExpressions) {
-                PsiElement letParent = letStatement.getParent();
-                if (letParent instanceof PsiFileModuleImpl) {
-                    HMSignature signature = applyType(types, letStatement);
-                    if (signature != null) {
-                        int letOffset = letStatement.getTextOffset();
-                        LogicalPosition logicalPosition = selectedEditor.getEditor().offsetToLogicalPosition(letOffset);
-                        userData.put(sourceFile, logicalPosition, signature.toString(), timestamp);
-                    }
-                } else {
-                    PsiModule letModule = PsiTreeUtil.getParentOfType(letStatement, PsiModule.class);
-                    if (letModule != null) {
-                        String qualifiedName = letModule.getQualifiedName();
-                        if (qualifiedName != null) {
-                            int i = qualifiedName.indexOf('.');
-                            InferredTypes inferredModuleTypes = types.getModuleType(letModule.getQualifiedName().substring(i + 1));
-                            if (inferredModuleTypes != null) {
-                                HMSignature signature = applyType(inferredModuleTypes, letStatement);
-                                if (signature != null) {
-                                    int letOffset = letStatement.getTextOffset();
-                                    LogicalPosition logicalPosition = selectedEditor.getEditor().offsetToLogicalPosition(letOffset);
-                                    userData.put(sourceFile, logicalPosition, signature.toString(), timestamp);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-*/
         }
     }
 
@@ -111,19 +84,5 @@ public class InferredTypesService {
         }
         return userData;
     }
-
-    //private static HMSignature applyType(@Nullable InferredTypes inferredTypes, PsiLet letStatement) {
-    //    HMSignature signature = null;
-    //
-    //    PsiElement letName = letStatement.getNameIdentifier();
-    //    if (letName != null && inferredTypes != null) {
-    //        signature = inferredTypes.getLetType(letName.getText());
-    //        if (signature != null) {
-    //            letStatement.setInferredType(signature);
-    //        }
-    //    }
-    //
-    //    return signature;
-    //}
 
 }

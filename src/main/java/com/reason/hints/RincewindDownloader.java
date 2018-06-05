@@ -106,6 +106,8 @@ public class RincewindDownloader extends Task.Backgroundable {
                 insightManager.isDownloaded.set(true);
                 m_log.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
 
+                Notifications.Bus.notify(new RmlNotification("Reason", "Downloaded " + targetFile, NotificationType.INFORMATION));
+
                 Application application = ApplicationManager.getApplication();
                 application.invokeLater(() -> application.runWriteAction(() -> {
                     VirtualFileManager.getInstance().syncRefresh();

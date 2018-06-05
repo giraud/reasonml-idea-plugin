@@ -13,7 +13,10 @@ import java.util.Map;
 
 public class InferredTypesImplementation implements InferredTypes {
 
+
     private final Map<Integer, LogicalHMSignature> m_pos = new THashMap<>();
+    private final Map<LogicalPosition, String> m_opens = new THashMap<>();
+
     private final Map<String, HMSignature> m_let = new HashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
 
@@ -55,20 +58,34 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     @NotNull
+    public Map<LogicalPosition, String> listOpensByLines() {
+        return new THashMap<>(m_opens);
+    }
+
+    @NotNull
     public Collection<LogicalHMSignature> listTypesByLines() {
         return m_pos.values();
     }
 
     public void addToLines(@NotNull String[] tokens) {
-        if (5 <= tokens.length) {
-            String[] codedPos = tokens[1].split("\\.");
-            int line = Integer.parseInt(codedPos[0]);
-            int column = Integer.parseInt(codedPos[1]);
-            LogicalPosition logicalPosition = new LogicalPosition(0 < line ? line - 1 : 0, column);
+        if ("O".equals(tokens[0])) {
+            if (4 <= tokens.length) {
+                LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
+                m_opens.put(logicalPosition, "exposing " + tokens[3].replaceAll(tokens[2] + ".", ""));
+            }
+        } else if (5 <= tokens.length) {
+            LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
             LogicalHMSignature signature = m_pos.get(logicalPosition.line);
-            if (signature == null || column < signature.getLogicalPosition().column) {
+            if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
                 m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(true, tokens[4])));
             }
         }
+    }
+
+    LogicalPosition extractLogicalPosition(@NotNull String encodedPos) {
+        String[] codedPos = encodedPos.split("\\.");
+        int line = Integer.parseInt(codedPos[0]);
+        int column = Integer.parseInt(codedPos[1]);
+        return new LogicalPosition(0 < line ? line - 1 : 0, column);
     }
 }
