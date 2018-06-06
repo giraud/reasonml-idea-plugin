@@ -13,7 +13,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetFunction() {
-        PsiLet e = first(parseCode("let add x y = x + y", true).getLetExpressions());
+        PsiLet e = first(parseCode("let add x y = x + y").getLetExpressions());
 
         assertTrue(e.isFunction());
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);

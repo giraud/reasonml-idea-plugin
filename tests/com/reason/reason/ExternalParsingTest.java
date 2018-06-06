@@ -12,7 +12,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     }
 
     public void testSigature() {
-        PsiExternal e = parseCode("external props : (string) => string;", true).getExternalExpression("props");
+        PsiExternal e = parseCode("external props : (string) => string;").getExternalExpression("props");
 
         PsiSignature signature = PsiTreeUtil.getStubChildOfType(e, PsiSignature.class);
         assertNotNull(signature);

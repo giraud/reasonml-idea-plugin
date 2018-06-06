@@ -380,6 +380,10 @@ public class RmlParser extends CommonParser {
     private void parseLIdent(PsiBuilder builder, ParserState state) {
         boolean processSingleParam = false;
 
+        if (state.isResolution(modulePath)) {
+            state.popEnd();
+        }
+
         if (state.isResolution(typeConstrName)) {
             // TYPE LIDENT ...
             state.setResolution(typeNamed);

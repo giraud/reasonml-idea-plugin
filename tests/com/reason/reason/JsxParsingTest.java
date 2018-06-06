@@ -50,7 +50,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropsWithDot() {
-        PsiElement psiElement = firstElement(parseCode("<a className=Styles.link href=h download=d>", true));
+        PsiElement psiElement = firstElement(parseCode("<a className=Styles.link href=h download=d>"));
 
         Collection<PsiTagProperty> props = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class);
         assertEquals(3, props.size());
