@@ -10,6 +10,8 @@ import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.reason.RmlParserDefinition;
 import com.reason.lang.reason.RmlTypes;
 
+import java.util.Collection;
+
 public class JsxParsingTest extends BaseParsingTestCase {
     public JsxParsingTest() {
         super("", "re", new RmlParserDefinition());
@@ -45,5 +47,12 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
         PsiTagProperty tag = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class).iterator().next();
         assertEquals("style=(x)", tag.getText());
+    }
+
+    public void testTagPropsWithDot() {
+        PsiElement psiElement = firstElement(parseCode("<a className=Styles.link href=h download=d>", true));
+
+        Collection<PsiTagProperty> props = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class);
+        assertEquals(3, props.size());
     }
 }

@@ -1,9 +1,7 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiElement;
-
 import java.util.Map;
 
-public interface PsiTagStart extends PsiElement {
+public interface PsiTagStart extends PsiNamedElement {
     Map<String, String> getAttributes(); // Map is not a good API
 }

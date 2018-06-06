@@ -28,6 +28,7 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
         PsiElement item = element;
         while (item != null) {
             if (item instanceof PsiOpen) {
+                // TODO: Add open value to all previous elements
                 qualifiedNames.add(0, ((PsiOpen) item).getName());
             }
 

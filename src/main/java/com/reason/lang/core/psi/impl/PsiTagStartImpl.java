@@ -6,11 +6,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,6 +22,25 @@ import java.util.Map;
 public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagStart {
     public PsiTagStartImpl(@NotNull ASTNode node) {
         super(RmlTypes.INSTANCE, node);
+    }
+
+
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return getFirstChild().getNextSibling();
+    }
+
+    @Nullable
+    @Override
+    public String getName() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? null : nameIdentifier.getText();
+    }
+
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return null;
     }
 
     @Override
@@ -69,4 +90,5 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
 
         return result;
     }
+
 }

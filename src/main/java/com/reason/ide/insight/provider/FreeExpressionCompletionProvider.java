@@ -1,18 +1,18 @@
 package com.reason.ide.insight.provider;
 
-import java.io.*;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.InsertionContext;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.Joiner;
 import com.reason.Platform;
 import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
@@ -23,6 +23,11 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 
@@ -63,7 +68,8 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                 for (PsiNamedElement expression : fileModule.getExpressions()) {
                     resultSet.addElement(LookupElementBuilder.create(expression).
                             withTypeText(PsiSignatureUtil.getProvidersType(expression)).
-                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
+                            withInsertHandler(this::insertExpression));
                 }
             }
         }
@@ -100,6 +106,19 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                 resultSet.addElement(LookupElementBuilder.create(expression).
                         withTypeText(PsiSignatureUtil.getProvidersType(expression)).
                         withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+            }
+        }
+    }
+
+    private void insertExpression(InsertionContext insertionContext, LookupElement element) {
+        PsiElement psiElement = element.getPsiElement();
+        if (psiElement instanceof PsiLet) {
+            PsiLet let = (PsiLet) psiElement;
+            if (let.isFunction()) {
+                insertionContext.setAddCompletionChar(false);
+                Editor editor = insertionContext.getEditor();
+                EditorModificationUtil.insertStringAtCaret(editor, "()");
+                editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 1);
             }
         }
     }

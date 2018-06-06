@@ -306,7 +306,7 @@ public class RmlParser extends CommonParser {
     private void parseColon(PsiBuilder builder, ParserState state) {
         if (state.isResolution(externalNamed)) {
             state.dontMove = advance(builder);
-            state.add(markScope(builder, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
+            state.add(markCompleteScope(builder, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
         } else if (state.isResolution(letNamed)) {
             state.dontMove = advance(builder);
             state.add(markCompleteScope(builder, letNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
@@ -501,8 +501,8 @@ public class RmlParser extends CommonParser {
             }
 
             if (!state.isResolution(patternMatch)) {
-                // just a marker that will be used only if it's a function
-                state.add(mark(builder, genericExpression, null));
+                // just a marker that will be used only if it's a function (duplicate the current token type)
+                state.add(mark(builder, genericExpression, state.getTokenType()));
             }
 
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
@@ -518,7 +518,7 @@ public class RmlParser extends CommonParser {
             state.pop();
 
             IElementType nextTokenType = builder.getTokenType();
-            if (nextTokenType == m_types.ARROW && !state.isResolution(patternMatch)) {
+            if (nextTokenType == m_types.ARROW && !state.isResolution(patternMatch) && !state.isCurrentTokenType(m_types.SIG_SCOPE)) {
                 parenScope.resolution = parameters;
                 parenScope.tokenType = m_types.FUN_PARAMS;
             }

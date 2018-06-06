@@ -165,4 +165,8 @@ public class ParserState {
     public boolean isStart(@Nullable ParserScope scope) {
         return scope != null && scope.start;
     }
+
+    public IElementType getTokenType() {
+        return currentScope.tokenType;
+    }
 }

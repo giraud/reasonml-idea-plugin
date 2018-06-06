@@ -18,10 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.inBsconfig;
+import static java.util.stream.Collectors.toList;
 
 public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
@@ -54,40 +54,42 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        //System.out.println("  potential paths:");
-        //List<String> paths = modulePathFinder.extractPotentialPaths(myElement);
-        //for (String string : paths) {
-        //    System.out.println("    " + string + "." + m_referenceName);
-        //}
 
         Project project = myElement.getProject();
         Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, m_referenceName, interfaceOrImplementation, inBsconfig);
 
+        //System.out.println("  lets: " + lets.size());
+        //for (PsiLet let : lets) {
+        //    System.out.println("    " + let.getContainingFile().getVirtualFile().getCanonicalPath() + " " + let.getQualifiedName());
+        //}
+
         if (!lets.isEmpty()) {
-            Collection<PsiLet> filteredlets = lets;
+            Collection<PsiLet> filteredLets = lets;
             if (1 < lets.size()) {
                 // Find potential paths of current element
-                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement);
+                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
+                //System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
 
-                if (!potentialPaths.isEmpty()) {
-                    // Take the first for now
-                    final String inPath = potentialPaths.get(0) + "." + m_referenceName;
-                    filteredlets = lets.stream().
-                            filter(let -> inPath.equals(let.getQualifiedName())).
-                            collect(Collectors.toList());
-                }
+                // Filter the modules, keep the ones with the same qualified name
+                filteredLets = lets.stream().
+                        filter(module -> {
+                            String moduleQn = module.getQualifiedName();
+                            return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
+                        }).
+                        collect(toList());
 
-                //System.out.println("  filtered lets: " + filteredlets.size());
-                //for (PsiLet let : filteredlets) {
-                //   System.out.println("    " + let.getContainingFile().getVirtualFile().getCanonicalPath() + " " + let.getQualifiedName());
+                //System.out.println("  filtered lets: " + filteredLets.size());
+                //for (PsiLet module : filteredLets) {
+                //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
                 //}
             }
 
-            if (filteredlets.isEmpty()) {
+            if (filteredLets.isEmpty()) {
                 return null;
             }
 
-            PsiLet letReference = filteredlets.iterator().next();
+            PsiLet letReference = filteredLets.iterator().next();
+            //System.out.println("»» " + letReference.getName());
             return letReference.getNameIdentifier();
         }
 

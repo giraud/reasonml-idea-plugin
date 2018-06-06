@@ -36,7 +36,7 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
-        m_debug.debug("JSX expression completion");
+        m_debug.debug("JSX attribute completion");
 
         PsiElement originalPosition = parameters.getOriginalPosition();
 
@@ -47,6 +47,9 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
             // TODO: additional attributes for UpperSymbol => only key and ref
             //attributes.put("key", "string=?");
             //attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
+            if (m_debug.isDebugEnabled()) {
+                m_debug.debug("Tag found", tag.getName());
+            }
 
             // Attributes already used
             Collection<PsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);

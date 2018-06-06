@@ -156,6 +156,6 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
 
     @Override
     public String toString() {
-        return "FModule " + getQualifiedName();
+        return "FModule " + getQualifiedName() + " (" + getContainingFile().getVirtualFile().getCanonicalPath() + ")";
     }
 }
