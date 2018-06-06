@@ -21,7 +21,6 @@ public class CmtiFileListener implements ProjectComponent {
 
     private final Logger m_log;
     private final Project m_project;
-    private final Path m_pathToWatch;
     private final InsightManager m_insightManager;
 
     public static CmtiFileListener getInstance(Project project) {
@@ -31,7 +30,6 @@ public class CmtiFileListener implements ProjectComponent {
     private CmtiFileListener(Project project) {
         m_log = Logger.getInstance("ReasonML.vfs");
         m_project = project;
-        m_pathToWatch = getPathToWatch(project, "lib/bs");
         m_insightManager = project.getComponent(InsightManager.class);
     }
 
@@ -57,9 +55,12 @@ public class CmtiFileListener implements ProjectComponent {
 
         Sdk projectSDK = OCamlSDK.getSDK(m_project);
         if (projectSDK == null) {
-            relativeCmti = m_pathToWatch.relativize(path);
+            Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
+            Path pathToWatch = getPathToWatch(m_project, relativeRoot);
+            relativeCmti = pathToWatch.relativize(path);
         } else {
-            Path pathToWatch = getPathToWatch(m_project, "_build/default");
+            Path relativeRoot = FileSystems.getDefault().getPath("_build", "default");
+            Path pathToWatch = getPathToWatch(m_project, relativeRoot);
             relativeCmti = pathToWatch.relativize(path);
         }
 
@@ -74,9 +75,9 @@ public class CmtiFileListener implements ProjectComponent {
     }
 
     @NotNull
-    private Path getPathToWatch(@NotNull Project project, String base) {
+    private Path getPathToWatch(@NotNull Project project, Path relativeRoot) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-        return basePath.resolve(base);
+        return basePath.resolve(relativeRoot);
     }
 }

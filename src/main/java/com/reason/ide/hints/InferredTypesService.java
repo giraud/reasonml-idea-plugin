@@ -14,11 +14,14 @@ import com.intellij.psi.PsiFile;
 import com.reason.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
+import com.reason.ide.sdk.OCamlSDK;
 import com.reason.lang.core.LogicalHMSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Map;
 
 public class InferredTypesService {
@@ -34,10 +37,11 @@ public class InferredTypesService {
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
                     InsightManager insightManager = project.getComponent(InsightManager.class);
+                    Path relativeRoot = getRelativeRoot(project);
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    VirtualFile cmtiPath = FileManager.fromSource(project, sourceFile, insightManager.useCmt());
+                    VirtualFile cmtiPath = FileManager.fromSource(project, relativeRoot, sourceFile, insightManager.useCmt());
                     if (cmtiPath == null) {
-                        Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, sourceFile, insightManager.useCmt()) + " (root: " + FileSystems.getDefault().getPath(Platform.findBaseRoot(project).getPath()) + ")");
+                        Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, relativeRoot, sourceFile, insightManager.useCmt()) + " (root: " + FileSystems.getDefault().getPath(Platform.findBaseRoot(project).getPath()) + ")");
                     } else {
                         insightManager.queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }
@@ -83,6 +87,11 @@ public class InferredTypesService {
             userData.clearInternalData(sourceFile);
         }
         return userData;
+    }
+
+    private static Path getRelativeRoot(Project project) {
+        FileSystem fileSystem = FileSystems.getDefault();
+        return OCamlSDK.getSDK(project) == null ? fileSystem.getPath("lib", "bs") : fileSystem.getPath("_build", "default");
     }
 
 }

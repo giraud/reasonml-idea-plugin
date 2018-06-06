@@ -40,14 +40,14 @@ public class FileManager {
     }
 
     @Nullable
-    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile sourceFile, boolean useCmt) {
-        String relativeCmiPath = separatorsToUnix(pathFromSource(project, sourceFile, useCmt).toString());
+    public static VirtualFile fromSource(@NotNull Project project, @NotNull Path relativeRoot, @NotNull VirtualFile sourceFile, boolean useCmt) {
+        Path path = pathFromSource(project, relativeRoot, sourceFile, useCmt);
+        String relativeCmiPath = separatorsToUnix(path.toString());
         return Platform.findBaseRoot(project).findFileByRelativePath(relativeCmiPath);
     }
 
-    public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile sourceFile, boolean useCmt) {
+    public static Path pathFromSource(@NotNull Project project, @NotNull Path relativeRoot, @NotNull VirtualFile sourceFile, boolean useCmt) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
-        Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
 
         Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
         Path relativePath = basePath.relativize(new File(sourceFile.getPath()).toPath());
