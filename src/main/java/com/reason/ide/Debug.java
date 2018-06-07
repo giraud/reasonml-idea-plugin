@@ -1,10 +1,11 @@
 package com.reason.ide;
 
-import java.util.*;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.Joiner;
-import com.reason.lang.core.psi.PsiModule;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class Debug {
 
@@ -61,9 +62,9 @@ public class Debug {
         }
     }
 
-    public void debug(String comment, PsiModule module) {
+    public void debug(String comment, PsiQualifiedNamedElement element) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + module.getQualifiedName() + " (" + module.getContainingFile().getVirtualFile().getPath() + ")");
+            m_log.debug(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ")");
         }
     }
 

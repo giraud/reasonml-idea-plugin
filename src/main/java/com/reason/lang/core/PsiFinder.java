@@ -1,8 +1,5 @@
 package com.reason.lang.core;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
@@ -15,18 +12,22 @@ import com.intellij.psi.stubs.StubIndex;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.ide.files.RmlFileType;
-import com.reason.ide.files.RmlInterfaceFileType;
+import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import gnu.trove.THashMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import static com.reason.lang.core.MlScope.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static com.reason.lang.core.MlScope.all;
+import static com.reason.lang.core.MlScope.inBsconfig;
 
 public final class PsiFinder {
 
@@ -91,7 +92,6 @@ public final class PsiFinder {
         }
 
         Collection<PsiModule> result = new ArrayList<>(inConfig.values());
-
         if (scope == all) {
             result.addAll(other.values());
         }
@@ -135,16 +135,60 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String lowerName, @NotNull MlFileType fileType, MlScope scope) {
-        List<PsiLet> result = new ArrayList<>();
+    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        m_log.debug("Find lets, name", name, scope.name());
 
-        Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, lowerName, project, GlobalSearchScope.allScope(project), PsiLet.class);
-        for (PsiLet let : lets) {
-            String canonicalPath = let.getContainingFile().getVirtualFile().getCanonicalPath();
-            Bucklescript bucklescript = BucklescriptManager.getInstance(project);
-            if (bucklescript.isDependency(canonicalPath)) {
-                result.add(let);
+        Map<String/*qn*/, PsiLet> inConfig = new THashMap<>();
+        Map<String/*qn*/, PsiLet> other = new THashMap<>();
+
+        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+
+        Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, name, project, GlobalSearchScope.allScope(project), PsiLet.class);
+        if (lets.isEmpty()) {
+            m_log.debug("  No lets found");
+        } else {
+            m_log.debug("  lets found", lets.size());
+            for (PsiLet let : lets) {
+                boolean keepFile;
+
+                FileBase containingFile = (FileBase) let.getContainingFile();
+                VirtualFile virtualFile = containingFile.getVirtualFile();
+                FileType moduleFileType = virtualFile.getFileType();
+                System.out.println("  " + virtualFile.getCanonicalPath());
+                if (fileType == MlFileType.implementationOnly) {
+                    keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
+                } else if (fileType == MlFileType.interfaceOnly) {
+                    keepFile = moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType;
+                } else {
+                    // use interface if there is one, implementation otherwise ... always the case ????
+                    // we need a better way (cache through VirtualFileListener ?) to find that info
+                    if (moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType) {
+                        keepFile = true;
+                    } else {
+                        String nameWithoutExtension = virtualFile.getNameWithoutExtension();
+                        String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
+                                OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                        Collection<VirtualFile> interfaceFiles = FilenameIndex
+                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, GlobalSearchScope.allScope(project));
+                        keepFile = interfaceFiles.isEmpty();
+                    }
+                }
+
+                if (keepFile) {
+                    if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                        m_log.debug("    keep (in config)", let);
+                        inConfig.put(let.getQualifiedName(), let);
+                    } else {
+                        m_log.debug("    keep (not in config)", let);
+                        other.put(let.getQualifiedName(), let);
+                    }
+                }
             }
+        }
+
+        List<PsiLet> result = new ArrayList<>(inConfig.values());
+        if (scope == all) {
+            result.addAll(other.values());
         }
 
         return result;

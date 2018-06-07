@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
-import static com.reason.lang.core.MlScope.inBsconfig;
+import static com.reason.lang.core.MlScope.all;
 import static java.util.stream.Collectors.toList;
 
 public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
@@ -56,7 +56,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
         Project project = myElement.getProject();
-        Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, m_referenceName, interfaceOrImplementation, inBsconfig);
+        Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, m_referenceName, interfaceOrImplementation, all);
 
         //System.out.println("  lets: " + lets.size());
         //for (PsiLet let : lets) {
