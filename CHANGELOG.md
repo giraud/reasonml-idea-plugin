@@ -10,6 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.54
+
+* :rocket: add "exposing" code lens to opens
+* :house: completion uses opens and local opens
+* :house: better path resolution for "go to" action
+* :house: rincewind-0.2
+* :house: improve parsers
+
 ## 0.53
 
 * :rocket: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) improve parsers

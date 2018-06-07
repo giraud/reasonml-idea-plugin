@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.53</version>
+    <version>0.54</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -11,8 +11,9 @@
     <change-notes><![CDATA[
         <ul>
             <li>improve parsers</li>
-            <li>improve braces intention</li>
-            <li>fix #65
+            <li>add "exposing" code lens to opens</li>
+            <li>completion uses opens and local opens</li>
+            <li>better path resolution for "go to" action</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

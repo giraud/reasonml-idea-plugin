@@ -154,7 +154,7 @@ public final class PsiFinder {
                 FileBase containingFile = (FileBase) let.getContainingFile();
                 VirtualFile virtualFile = containingFile.getVirtualFile();
                 FileType moduleFileType = virtualFile.getFileType();
-                System.out.println("  " + virtualFile.getCanonicalPath());
+
                 if (fileType == MlFileType.implementationOnly) {
                     keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
                 } else if (fileType == MlFileType.interfaceOnly) {
