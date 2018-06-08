@@ -26,7 +26,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
     private final InsightManager m_insightManager;
 
     @Nullable
-    private Compiler m_compiler;
+    private final Compiler m_compiler;
 
     VirtualFileListener(@NotNull Project project) {
         m_cmtiFileListener = CmtiFileListener.getInstance(project);
@@ -76,9 +76,9 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
 
     @Override
     public void fileDeleted(@NotNull VirtualFileEvent event) {
-        if (m_compiler != null) {
-            m_compiler.run(event.getFile().getFileType());
-        }
+        //if (m_compiler != null) {
+        //    m_compiler.run(event.getFile().getFileType());
+        //}
     }
 
     @Override
