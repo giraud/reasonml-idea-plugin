@@ -5,12 +5,12 @@ import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
-import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
 import com.reason.lang.core.stub.ModuleStub;
 import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +65,11 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.MODULES, name);
+        }
+
+        String fqn = stub.getQualifiedName();
+        if (fqn != null) {
+            sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
         }
     }
 

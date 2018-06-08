@@ -16,6 +16,7 @@ import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
+import com.reason.ide.search.ModuleFqnIndex;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -326,5 +327,20 @@ public final class PsiFinder {
         }
 
         return result.values();
+    }
+
+    public PsiModule findModuleAlias(Project project, String moduleQname) {
+        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, GlobalSearchScope.allScope(project));
+        if (!modules.isEmpty()) {
+            PsiModule moduleReference = modules.iterator().next();
+            String alias = moduleReference.getAlias();
+            if (alias != null) {
+                modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, GlobalSearchScope.allScope(project));
+                if (!modules.isEmpty()) {
+                    return modules.iterator().next();
+                }
+            }
+        }
+        return null;
     }
 }

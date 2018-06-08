@@ -10,10 +10,7 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiUtil;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.ocaml.OclModulePathFinder;
 import com.reason.lang.reason.RmlModulePathFinder;
 import com.reason.lang.reason.RmlTypes;
@@ -81,7 +78,14 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             Collection<PsiQualifiedNamedElement> filteredElements = namedElements;
             if (1 < namedElements.size()) {
                 // Find potential paths of current element
-                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
+                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).
+                        stream().
+                        map(item -> {
+                            PsiModule moduleAlias = PsiFinder.getInstance().findModuleAlias(project, item);
+                            String qn = (moduleAlias == null) ? item : moduleAlias.getQualifiedName();
+                            return qn + "." + m_referenceName;
+                        }).
+                        collect(toList());
                 if (m_debug) {
                     System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
                 }
