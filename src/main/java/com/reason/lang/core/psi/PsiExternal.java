@@ -4,6 +4,10 @@ import com.reason.lang.core.HMSignature;
 import org.jetbrains.annotations.NotNull;
 
 public interface PsiExternal extends PsiNamedElement, PsiStructuredElement {
+
     @NotNull
     HMSignature getSignature();
+
+    boolean isFunction();
+
 }

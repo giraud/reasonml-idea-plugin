@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.stub.type.ModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiExternalStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
 import com.reason.lang.core.stub.type.PsiTypeElementType;
 
@@ -13,7 +14,7 @@ public class RmlTypes extends MlTypes {
         FILE_MODULE = new ModuleStubElementType("FILE_MODULE", RmlLanguage.INSTANCE);
 
         ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
-        EXTERNAL_EXPRESSION = new RmlElementType("EXTERNAL_EXPRESSION");
+        EXTERNAL_EXPRESSION = new PsiExternalStubElementType("EXTERNAL_EXPRESSION", RmlLanguage.INSTANCE);
         EXCEPTION_EXPRESSION = new RmlElementType("EXCEPTION_EXPRESSION");
         EXCEPTION_NAME = new RmlElementType("EXCEPTION_NAME");
         INCLUDE_EXPRESSION = new RmlElementType("INCLUDE_EXPRESSION");

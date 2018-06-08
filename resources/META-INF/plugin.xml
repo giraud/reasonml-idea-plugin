@@ -141,6 +141,7 @@
         <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
         <stubIndex implementation="com.reason.ide.search.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.TypeIndex"/>
+        <stubIndex implementation="com.reason.ide.search.ExternalIndex"/>
 
         <lang.refactoringSupport language="ReasonML"
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>

@@ -1,8 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
+import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
@@ -11,17 +14,27 @@ import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.stub.PsiExternalStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Objects;
 
-public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExternal {
+public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> implements PsiExternal {
+
+    @NotNull
+    private final MlTypes m_types;
 
     //region Constructors
-    public PsiExternalImpl(MlTypes types, ASTNode node) {
-        super(types, node);
+    public PsiExternalImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+        super(node);
+        m_types = types;
+    }
+
+    public PsiExternalImpl(@NotNull MlTypes types, @NotNull PsiExternalStub stub, @NotNull IStubElementType nodeType) {
+        super(stub, nodeType);
+        m_types = types;
     }
     //endregion
 
@@ -72,6 +85,17 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
     }
 
     @Override
+    public boolean isFunction() {
+        PsiExternalStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isFunction();
+        }
+
+        PsiSignature signature = PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+        return signature != null;
+    }
+
+    @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
@@ -101,11 +125,15 @@ public class PsiExternalImpl extends MlAstWrapperPsiElement implements PsiExtern
                 return null;
             }
 
-            @Nullable
             @Override
             public Icon getIcon(boolean unused) {
                 return Icons.EXTERNAL;
             }
         };
+    }
+
+    @Override
+    public String toString() {
+        return "External " + (isFunction() ? "(f) " : "") + getName();
     }
 }
