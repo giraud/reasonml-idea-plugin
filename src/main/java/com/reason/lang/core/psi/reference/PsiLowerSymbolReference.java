@@ -34,6 +34,8 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     @NotNull
     private final MlTypes m_types;
 
+    @SuppressWarnings("FieldCanBeLocal") private final boolean m_debug = false;
+
     public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull MlTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
@@ -48,13 +50,18 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             return null;
         }
 
-        System.out.println("resolving " + m_referenceName);
+        if (m_debug) {
+            System.out.println("resolving " + m_referenceName);
+        }
+
         PsiNamedElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class, PsiExternal.class);
 
         // If name is used in a let definition, it's already the reference
         // let <referenceName> = ...
         if (parent != null && parent.getNameIdentifier() == myElement) {
-            System.out.println("  Parent " + parent + ", stop here");
+            if (m_debug) {
+                System.out.println("  Parent " + parent + ", stop here");
+            }
             return myElement;
         }
 
@@ -63,9 +70,11 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         Project project = myElement.getProject();
         Collection<PsiQualifiedNamedElement> namedElements = PsiFinder.getInstance().findLetsOrExternals(project, m_referenceName, interfaceOrImplementation, all);
 
-        System.out.println("  elements: " + namedElements.size());
-        for (PsiQualifiedNamedElement element : namedElements) {
-            System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+        if (m_debug) {
+            System.out.println("  elements: " + namedElements.size());
+            for (PsiQualifiedNamedElement element : namedElements) {
+                System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+            }
         }
 
         if (!namedElements.isEmpty()) {
@@ -73,7 +82,9 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             if (1 < namedElements.size()) {
                 // Find potential paths of current element
                 List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
-                System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
+                if (m_debug) {
+                    System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
+                }
 
                 // Filter the modules, keep the ones with the same qualified name
                 filteredElements = namedElements.stream().
@@ -83,9 +94,11 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                         }).
                         collect(toList());
 
-                System.out.println("  filtered elements: " + filteredElements.size());
-                for (PsiQualifiedNamedElement element : filteredElements) {
-                    System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+                if (m_debug) {
+                    System.out.println("  filtered elements: " + filteredElements.size());
+                    for (PsiQualifiedNamedElement element : filteredElements) {
+                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+                    }
                 }
             }
 
@@ -94,7 +107,9 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             }
 
             PsiNamedElement elementReference = (PsiNamedElement) filteredElements.iterator().next();
-            System.out.println("»» " + elementReference.getName());
+            if (m_debug) {
+                System.out.println("»» " + elementReference.getName());
+            }
             return elementReference.getNameIdentifier();
         }
 

@@ -4,8 +4,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.Joiner;
+import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
@@ -32,6 +36,8 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     private final String m_referenceName;
     @NotNull
     private final MlTypes m_types;
+
+    @SuppressWarnings("FieldCanBeLocal") private final boolean m_debug = false;
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
@@ -77,17 +83,21 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         Project project = myElement.getProject();
         Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, m_referenceName, interfaceOrImplementation, all);
 
-        //System.out.println("  modules: " + modules.size());
-        //for (PsiModule module : modules) {
-        //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
-        //}
+        if (m_debug) {
+            System.out.println("  modules: " + modules.size());
+            for (PsiModule module : modules) {
+                System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
+            }
+        }
 
         if (!modules.isEmpty()) {
             Collection<PsiModule> filteredModules = modules;
             if (1 < modules.size()) {
                 // Find potential paths of current element
                 List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
-                //System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
+                if (m_debug) {
+                    System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
+                }
 
                 // Filter the modules, keep the ones with the same qualified name
                 filteredModules = modules.stream().
@@ -97,10 +107,12 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                         }).
                         collect(toList());
 
-                //System.out.println("  filtered modules: " + filteredModules.size());
-                //for (PsiModule module : filteredModules) {
-                //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
-                //}
+                if (m_debug) {
+                    System.out.println("  filtered modules: " + filteredModules.size());
+                    for (PsiModule module : filteredModules) {
+                        System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
+                    }
+                }
             }
 
             if (filteredModules.isEmpty()) {
@@ -108,7 +120,23 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             }
 
             PsiModule moduleReference = filteredModules.iterator().next();
-            //System.out.println("»» " + moduleReference.getName());
+            String moduleAlias = moduleReference.getAlias();
+            if (moduleAlias != null) {
+                // TODO move to PsiFinder, more optimized ?
+                Collection<PsiModule> moduleAliasReference = StubIndex.getElements(IndexKeys.MODULES, moduleAlias, project, GlobalSearchScope.allScope(project), PsiModule.class);
+                if (!moduleAliasReference.isEmpty()) {
+                    moduleReference = moduleAliasReference.iterator().next();
+                    if (m_debug) {
+                        System.out.println("»» Alias module " + moduleReference.getAlias() + " resolved to " + moduleReference.getQualifiedName());
+                    }
+                }
+            }
+
+            if (m_debug) {
+                System.out.println("»» " + moduleReference.getQualifiedName() + " / " + moduleReference.getAlias());
+            }
+
+
             return moduleReference.getNameIdentifier();
         }
 

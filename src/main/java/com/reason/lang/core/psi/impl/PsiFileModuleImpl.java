@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -156,6 +157,7 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
 
     @Override
     public String toString() {
-        return "FModule " + getQualifiedName() + " (" + getContainingFile().getVirtualFile().getCanonicalPath() + ")";
+        VirtualFile virtualFile = getContainingFile().getVirtualFile();
+        return "FModule " + getQualifiedName() + (virtualFile == null ? " ?" : " (" + virtualFile.getCanonicalPath() + ")");
     }
 }
