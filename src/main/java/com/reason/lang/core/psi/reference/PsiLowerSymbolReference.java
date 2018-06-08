@@ -1,15 +1,19 @@
-package com.reason.lang.core.psi.impl;
+package com.reason.lang.core.psi.reference;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.Joiner;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.ocaml.OclModulePathFinder;
 import com.reason.lang.reason.RmlModulePathFinder;
 import com.reason.lang.reason.RmlTypes;
@@ -30,7 +34,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     @NotNull
     private final MlTypes m_types;
 
-    PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull MlTypes types) {
+    public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull MlTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;
@@ -44,53 +48,54 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             return null;
         }
 
-        //System.out.println("resolving " + m_referenceName);
-        PsiElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class);
+        System.out.println("resolving " + m_referenceName);
+        PsiNamedElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class, PsiExternal.class);
 
         // If name is used in a let definition, it's already the reference
         // let <referenceName> = ...
-        if (parent != null && ((PsiLet) parent).getNameIdentifier() == myElement) {
+        if (parent != null && parent.getNameIdentifier() == myElement) {
+            System.out.println("  Parent " + parent + ", stop here");
             return myElement;
         }
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
         Project project = myElement.getProject();
-        Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiQualifiedNamedElement> namedElements = PsiFinder.getInstance().findLetsOrExternals(project, m_referenceName, interfaceOrImplementation, all);
 
-        //System.out.println("  lets: " + lets.size());
-        //for (PsiLet let : lets) {
-        //    System.out.println("    " + let.getContainingFile().getVirtualFile().getCanonicalPath() + " " + let.getQualifiedName());
-        //}
+        System.out.println("  elements: " + namedElements.size());
+        for (PsiQualifiedNamedElement element : namedElements) {
+            System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+        }
 
-        if (!lets.isEmpty()) {
-            Collection<PsiLet> filteredLets = lets;
-            if (1 < lets.size()) {
+        if (!namedElements.isEmpty()) {
+            Collection<PsiQualifiedNamedElement> filteredElements = namedElements;
+            if (1 < namedElements.size()) {
                 // Find potential paths of current element
                 List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
-                //System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
+                System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
 
                 // Filter the modules, keep the ones with the same qualified name
-                filteredLets = lets.stream().
-                        filter(module -> {
-                            String moduleQn = module.getQualifiedName();
-                            return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
+                filteredElements = namedElements.stream().
+                        filter(element -> {
+                            String qn = element.getQualifiedName();
+                            return m_referenceName.equals(qn) || potentialPaths.contains(qn);
                         }).
                         collect(toList());
 
-                //System.out.println("  filtered lets: " + filteredLets.size());
-                //for (PsiLet module : filteredLets) {
-                //    System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
-                //}
+                System.out.println("  filtered elements: " + filteredElements.size());
+                for (PsiQualifiedNamedElement element : filteredElements) {
+                    System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+                }
             }
 
-            if (filteredLets.isEmpty()) {
+            if (filteredElements.isEmpty()) {
                 return null;
             }
 
-            PsiLet letReference = filteredLets.iterator().next();
-            //System.out.println("»» " + letReference.getName());
-            return letReference.getNameIdentifier();
+            PsiNamedElement elementReference = (PsiNamedElement) filteredElements.iterator().next();
+            System.out.println("»» " + elementReference.getName());
+            return elementReference.getNameIdentifier();
         }
 
         return null;

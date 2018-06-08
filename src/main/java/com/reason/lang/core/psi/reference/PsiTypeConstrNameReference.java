@@ -1,12 +1,12 @@
-package com.reason.lang.core.psi.impl;
+package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
 import org.jetbrains.annotations.NotNull;
@@ -16,13 +16,10 @@ public class PsiTypeConstrNameReference extends PsiReferenceBase<PsiTypeConstrNa
 
     @Nullable
     private final String m_referenceName;
-    @NotNull
-    private final MlTypes m_types;
 
-    PsiTypeConstrNameReference(@NotNull PsiTypeConstrName element, @NotNull MlTypes types) {
+    public PsiTypeConstrNameReference(@NotNull PsiTypeConstrName element) {
         super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
-        m_types = types;
     }
 
     @Override

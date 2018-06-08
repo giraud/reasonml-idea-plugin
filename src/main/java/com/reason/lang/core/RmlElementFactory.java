@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi.impl;
+package com.reason.lang.core;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -15,7 +15,7 @@ public class RmlElementFactory {
     }
 
     @Nullable
-    static PsiElement createModuleName(Project project, String name) {
+    public static PsiElement createModuleName(Project project, String name) {
         PsiModule dummyModule = createFileFromText(project, "module " + name + " = {};").asModule();
         if (dummyModule != null) {
             return dummyModule.getModules().iterator().next().getNameIdentifier();
@@ -23,7 +23,7 @@ public class RmlElementFactory {
         return null;
     }
 
-    static PsiElement createTypeName(Project project, String name) {
+    public static PsiElement createTypeName(Project project, String name) {
         FileBase dummyFile = createFileFromText(project, "type " + name + ";");
         return ((PsiType) dummyFile.getFirstChild()).getNameIdentifier();
     }

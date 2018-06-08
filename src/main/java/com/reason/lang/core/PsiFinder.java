@@ -6,14 +6,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
+import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
+import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
@@ -135,23 +138,57 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        m_log.debug("Find lets, name", name, scope.name());
+    public Collection<? extends PsiQualifiedNamedElement> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Map<String/*qn*/, PsiLet> letInConfig = new THashMap<>();
+        Map<String/*qn*/, PsiLet> letOther = new THashMap<>();
 
-        Map<String/*qn*/, PsiLet> inConfig = new THashMap<>();
-        Map<String/*qn*/, PsiLet> other = new THashMap<>();
+        findLowerSymbols("lets", letInConfig, letOther, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
+
+        List<PsiQualifiedNamedElement> result = new ArrayList<>(letInConfig.values());
+        if (scope == all) {
+            result.addAll(letOther.values());
+        }
+
+        return result;
+    }
+
+    @NotNull
+    public Collection<PsiQualifiedNamedElement> findLetsOrExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Map<String/*qn*/, PsiLet> letInConfig = new THashMap<>();
+        Map<String/*qn*/, PsiLet> letOther = new THashMap<>();
+        Map<String/*qn*/, PsiExternal> externalInConfig = new THashMap<>();
+        Map<String/*qn*/, PsiExternal> externalOther = new THashMap<>();
+
+        findLowerSymbols("lets", letInConfig, letOther, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
+        findLowerSymbols("externals", externalInConfig, externalOther, project, name, fileType, scope, IndexKeys.EXTERNALS, PsiExternal.class);
+
+        List<PsiQualifiedNamedElement> result = new ArrayList<>();
+        result.addAll(letInConfig.values());
+        result.addAll(externalInConfig.values());
+        if (scope == all) {
+            result.addAll(letOther.values());
+            result.addAll(externalOther.values());
+        }
+
+        return result;
+    }
+
+    private <T extends PsiQualifiedNamedElement> void findLowerSymbols(@NotNull String debugName, @NotNull Map<String/*qn*/, T> inConfig, @NotNull Map<String/*qn*/, T> other, @NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope, StubIndexKey<String, T> indexKey, Class<T> clazz) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug("Find " + debugName + " name", name, scope.name());
+        }
 
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
-        Collection<PsiLet> lets = StubIndex.getElements(IndexKeys.LETS, name, project, GlobalSearchScope.allScope(project), PsiLet.class);
-        if (lets.isEmpty()) {
+        Collection<T> items = StubIndex.getElements(indexKey, name, project, GlobalSearchScope.allScope(project), clazz);
+        if (items.isEmpty()) {
             m_log.debug("  No lets found");
         } else {
-            m_log.debug("  lets found", lets.size());
-            for (PsiLet let : lets) {
+            m_log.debug("  lets found", items.size());
+            for (T item : items) {
                 boolean keepFile;
 
-                FileBase containingFile = (FileBase) let.getContainingFile();
+                FileBase containingFile = (FileBase) item.getContainingFile();
                 VirtualFile virtualFile = containingFile.getVirtualFile();
                 FileType moduleFileType = virtualFile.getFileType();
 
@@ -176,22 +213,15 @@ public final class PsiFinder {
 
                 if (keepFile) {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                        m_log.debug("    keep (in config)", let);
-                        inConfig.put(let.getQualifiedName(), let);
+                        m_log.debug("    keep (in config)", item);
+                        inConfig.put(item.getQualifiedName(), item);
                     } else {
-                        m_log.debug("    keep (not in config)", let);
-                        other.put(let.getQualifiedName(), let);
+                        m_log.debug("    keep (not in config)", item);
+                        other.put(item.getQualifiedName(), item);
                     }
                 }
             }
         }
-
-        List<PsiLet> result = new ArrayList<>(inConfig.values());
-        if (scope == all) {
-            result.addAll(other.values());
-        }
-
-        return result;
     }
 
     @NotNull

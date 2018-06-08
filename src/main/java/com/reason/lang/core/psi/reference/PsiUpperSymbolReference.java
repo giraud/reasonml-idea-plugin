@@ -1,4 +1,4 @@
-package com.reason.lang.core.psi.impl;
+package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
@@ -10,6 +10,7 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.ocaml.OclModulePathFinder;
@@ -32,7 +33,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @NotNull
     private final MlTypes m_types;
 
-    PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
+    public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;

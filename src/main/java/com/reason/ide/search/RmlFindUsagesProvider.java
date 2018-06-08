@@ -40,7 +40,7 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
             return "type";
         }
         if (element instanceof PsiLowerSymbol) {
-            return "let";
+            return "let/external";
         }
 
         return "unknown type";

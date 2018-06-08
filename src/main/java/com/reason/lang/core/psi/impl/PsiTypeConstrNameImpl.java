@@ -7,6 +7,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.reference.PsiTypeConstrNameReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +46,7 @@ public class PsiTypeConstrNameImpl extends MlAstWrapperPsiElement implements Psi
 
     @Override
     public PsiReference getReference() {
-        return new PsiTypeConstrNameReference(this, m_types);
+        return new PsiTypeConstrNameReference(this);
     }
 
 }

@@ -7,6 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.ide.Debug;
@@ -46,14 +47,14 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
             if (lowerName != null) {
                 PsiLet let = null;
 
-                Collection<PsiLet> lets = PsiFinder.getInstance().findLets(project, lowerName, interfaceOrImplementation, MlScope.all);
+                Collection<? extends PsiQualifiedNamedElement> lets = PsiFinder.getInstance().findLets(project, lowerName, interfaceOrImplementation, MlScope.all);
                 //Collection<PsiLet> filteredLets = lets;
                 if (!lets.isEmpty()) {
                     // TODO: Find the correct module path...
 //                    for (PsiLet filteredLet : filteredLets) {
 //                        System.out.println(" " + filteredLet.getContainingFile().getVirtualFile().getCanonicalPath());
 //                    }
-                    let = lets.iterator().next();
+                    let = (PsiLet) lets.iterator().next();
                 }
 
                 if (let != null && let.isObject()) {

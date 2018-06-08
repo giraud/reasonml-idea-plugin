@@ -10,10 +10,8 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiExternalStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +46,21 @@ public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> im
         }
 
         return findChildByClass(PsiLowerSymbol.class);
+    }
+
+    @Nullable
+    @Override
+    public String getQualifiedName() {
+        String path;
+
+        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        if (parent != null) {
+            path = ((PsiModule) parent).getQualifiedName();
+        } else {
+            path = PsiUtil.fileNameToModuleName(getContainingFile());
+        }
+
+        return path + "." + getName();
     }
 
     @Override

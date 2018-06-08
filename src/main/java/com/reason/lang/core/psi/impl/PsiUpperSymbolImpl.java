@@ -8,6 +8,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.reference.PsiUpperSymbolReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,26 +48,6 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
     @Override
     public PsiReference getReference() {
         return new PsiUpperSymbolReference(this, m_types);
-    }
-
-    @NotNull
-    public String getQualifiedName() {
-        return "";
-
-        //// use a stub ?
-        //String path = null;
-        //
-        //PsiElement parent = getParent();
-        //if (parent instanceof PsiModule) {
-        //    path = ((PsiModule) parent).getQualifiedName();
-        //}
-        //
-        //if (path == null) {
-        //    path = RmlPsiUtil.fileNameToModuleName(getContainingFile());
-        //}
-        //
-        //System.out.println(" » qn uppersymbol: " + path + "." + getName());
-        //return path + "." + getName();
     }
 
     @Override
