@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.54</version>
+    <version>0.55</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>improve parsers</li>
-            <li>add "exposing" code lens to opens</li>
-            <li>completion uses opens and local opens</li>
-            <li>better path resolution for "go to" action</li>
+            <li>fix editor freeze when too many cmt/i files are updated</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.55
+
+* :house: fix editor freeze when too many cmt/i files are updated
+
 ## 0.54
 
 * :rocket: add "exposing" code lens to opens

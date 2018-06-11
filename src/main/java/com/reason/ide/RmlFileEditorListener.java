@@ -43,7 +43,7 @@ public class RmlFileEditorListener implements FileEditorManagerListener {
         }
     }
 
-    public boolean isOpen(@NotNull VirtualFile file) {
+    boolean isOpen(@NotNull VirtualFile file) {
         return m_openedFiles.contains(file);
     }
 
