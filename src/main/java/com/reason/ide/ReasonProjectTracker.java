@@ -1,7 +1,5 @@
 package com.reason.ide;
 
-import java.io.*;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.AppTopics;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -9,11 +7,16 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.format.ReformatOnSave;
 import com.reason.ide.hints.RmlDocumentListener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
 
 import static com.reason.Platform.getOsPrefix;
 
@@ -27,6 +30,8 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
     private MessageBusConnection m_messageBusConnection;
     @Nullable
     private VirtualFileListener m_vfListener;
+    @Nullable
+    private RmlFileEditorListener m_fileEditorListener;
 
     protected ReasonProjectTracker(Project project) {
         super(project);
@@ -54,7 +59,8 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
         EditorFactory.getInstance().getEventMulticaster().addDocumentListener(m_documentListener);
 
         m_messageBusConnection = myProject.getMessageBus().connect();
-        m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new RmlFileEditorListener(myProject));
+        m_fileEditorListener = new RmlFileEditorListener(myProject);
+        m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, m_fileEditorListener);
         m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(myProject));
 
         m_vfListener = new VirtualFileListener(myProject);
@@ -72,5 +78,9 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
         if (m_messageBusConnection != null) {
             m_messageBusConnection.disconnect();
         }
+    }
+
+    public boolean isOpen(@NotNull VirtualFile file) {
+        return m_fileEditorListener != null && m_fileEditorListener.isOpen(file);
     }
 }

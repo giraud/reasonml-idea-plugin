@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
+import com.reason.ide.ReasonProjectTracker;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
 import com.reason.ide.sdk.OCamlSDK;
@@ -22,6 +23,7 @@ public class CmtiFileListener implements ProjectComponent {
     private final Logger m_log;
     private final Project m_project;
     private final InsightManager m_insightManager;
+    private final ReasonProjectTracker m_projectTracker;
 
     public static CmtiFileListener getInstance(Project project) {
         return project.getComponent(CmtiFileListener.class);
@@ -31,6 +33,7 @@ public class CmtiFileListener implements ProjectComponent {
         m_log = Logger.getInstance("ReasonML.vfs");
         m_project = project;
         m_insightManager = project.getComponent(InsightManager.class);
+        m_projectTracker = project.getComponent(ReasonProjectTracker.class);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class CmtiFileListener implements ProjectComponent {
         VirtualFile sourceFile = FileManager.toSource(m_project, relativeCmti);
         if (sourceFile == null) {
             m_log.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, relativeCmti));
-        } else {
+        } else if (m_projectTracker.isOpen(sourceFile)) {
             m_insightManager.queryTypes(path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
         }
     }
