@@ -19,9 +19,7 @@ import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.MlScope;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,11 +84,11 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                             withTypeText(PsiSignatureUtil.getProvidersType((PsiModule) item)).
                             withIcon(PsiIconUtil.getProvidersIcon(item, 0)));
                 }
-            } else if (item instanceof PsiLet) {
-                PsiLet let = (PsiLet) item;
-                resultSet.addElement(LookupElementBuilder.create(let).
-                        withTypeText(PsiSignatureUtil.getProvidersType(let)).
-                        withIcon(PsiIconUtil.getProvidersIcon(let, 0)));
+            } else if (item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
+                PsiNamedElement element = (PsiNamedElement) item;
+                resultSet.addElement(LookupElementBuilder.create(element).
+                        withTypeText(PsiSignatureUtil.getProvidersType(element)).
+                        withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
             }
 
             PsiElement prevItem = item.getPrevSibling();
