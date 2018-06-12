@@ -26,7 +26,7 @@ This code might change quite a lot or break in the future. The [project board](h
 - Intentions (_ReasonML_): add braces to function, transform local open
 - Works natively on Windows
 
-This plugin offer a lightweight integration for OCaml files.
+This plugin offer a lightweight integration for OCaml files, go to the **wiki** to see how to **configure OCaml** if you're not using bucklescript.
 
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
