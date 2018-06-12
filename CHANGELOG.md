@@ -10,9 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.55
+## 0.55.1
 
 * :house: fix editor freeze when too many cmt/i files are updated
+* :house: ![o](resources/icons/ocaml-file.png) better completion
 
 ## 0.54
 
