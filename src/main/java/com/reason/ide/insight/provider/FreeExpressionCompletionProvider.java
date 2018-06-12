@@ -76,6 +76,9 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         // Add all local expressions (let and module name)
         PsiElement item = cursorElement.getPrevSibling();
+        if (item == null) {
+            item = cursorElement.getParent();
+        }
         while (item != null) {
             if (item instanceof PsiModule) {
                 if (!(item instanceof PsiFileModuleImpl)) {
