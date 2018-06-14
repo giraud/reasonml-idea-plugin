@@ -38,9 +38,9 @@ allprojects {
     }
 
     runIde {
-        //systemProperty "reasonBsbDisabled", "true"
         //systemProperty "reasonReformatOnSave", "true"
-        //jvmArgs = ['-agentpath:T:\\opt\\yjp-2017.02-b66\\bin\\win64\\yjpagent.dll']
+//        jvmArgs = ['-agentpath:T:\\opt\\yjp-2017.02-b66\\bin\\win64\\yjpagent.dll']
+        jvmArgs = ['-Dcompiler.process.debug.port=5005']
     }
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
@@ -54,12 +54,16 @@ repositories {
     mavenCentral()
 }
 
-//dependencies {
-//    compile project('reason-jps-plugin')
-//}
-//
-//project(':reason-jps-plugin') {
-//}
+dependencies {
+    compile project('jps-builder')
+    compile project('jps-shared')
+}
+
+project(':jps-builder') {
+    dependencies {
+        compile project(':jps-shared')
+    }
+}
 
 apply plugin: 'idea'
 idea {

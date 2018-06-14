@@ -1,0 +1,2 @@
+jar.archiveName = "jps-shared.jar"
+testClasses.enabled = false

@@ -1,5 +1,10 @@
 /.idea/
-/build/
 *.iml
+
+/build
 gradle-wrapper*
 gradlew*
+jps-builder/build
+jps-builder/out
+jps-shared/build
+jps-shared/out

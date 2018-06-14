@@ -196,7 +196,7 @@
         <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
-        <!--<compileServer.plugin classpath="reason-jps-plugin.jar"/>-->
+        <compileServer.plugin classpath="jps-builder.jar;jps-shared.jar"/>
 
         <!--
          | Intentions
