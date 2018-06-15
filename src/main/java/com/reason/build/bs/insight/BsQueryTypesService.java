@@ -60,7 +60,7 @@ public class BsQueryTypesService {
 
                 String[] types = newText.split("\n");
                 for (String type : types) {
-                    result.add(type);
+                    result.addTypes(type);
                 }
 
                 runAfter.run(result);

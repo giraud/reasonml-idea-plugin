@@ -9,12 +9,11 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface InferredTypes {
-    HMSignature getLetType(String name);
-
-    InferredTypes getModuleType(String name);
-
     @NotNull
     Collection<LogicalHMSignature> listTypesByLines();
+
+    @NotNull
+    Map<LogicalPosition, HMSignature> listTypesByIdents();
 
     @NotNull
     Map<LogicalPosition, String> listOpensByLines();

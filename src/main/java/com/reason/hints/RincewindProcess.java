@@ -45,7 +45,7 @@ public class RincewindProcess {
                 reader.lines().forEach(line -> {
                     if (!line.isEmpty()) {
                         //System.out.println(line);
-                        types.addToLines(line.split("\\|"));
+                        types.add(line.split("\\|"));
                     }
                 });
 

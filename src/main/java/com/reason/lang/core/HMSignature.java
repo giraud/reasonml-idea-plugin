@@ -39,7 +39,7 @@ public class HMSignature {
         }
 
         // Always use fat arrow
-        m_signature = Joiner.join(" => ", m_types);
+        m_signature = Joiner.join(" -> ", m_types);
     }
 
     @Override

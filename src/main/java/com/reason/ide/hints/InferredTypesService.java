@@ -11,9 +11,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.reason.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
+import com.reason.ide.docs.DocumentationProvider;
 import com.reason.ide.sdk.OCamlSDK;
 import com.reason.lang.core.LogicalHMSignature;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +75,11 @@ public class InferredTypesService {
 
             for (LogicalHMSignature signatureEntry : types.listTypesByLines()) {
                 userData.put(sourceFile, signatureEntry.getLogicalPosition(), signatureEntry.getSignature().toString(), timestamp);
+            }
+
+            PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
+            if (psiFile != null) {
+                psiFile.putUserData(DocumentationProvider.SIGNATURE_CONTEXT, types.listTypesByIdents());
             }
         }
     }

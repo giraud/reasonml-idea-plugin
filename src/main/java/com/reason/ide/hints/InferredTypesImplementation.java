@@ -8,19 +8,18 @@ import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 public class InferredTypesImplementation implements InferredTypes {
 
-
     private final Map<Integer, LogicalHMSignature> m_pos = new THashMap<>();
+    private final Map<LogicalPosition, HMSignature> m_idents = new THashMap<>();
     private final Map<LogicalPosition, String> m_opens = new THashMap<>();
 
-    private final Map<String, HMSignature> m_let = new HashMap<>();
-    private final Map<String, InferredTypesImplementation> m_modules = new HashMap<>();
+    private final Map<String, HMSignature> m_let = new THashMap<>();
+    private final Map<String, InferredTypesImplementation> m_modules = new THashMap<>();
 
-    public void add(String type) {
+    public void addTypes(String type) {
         try {
             if (type.startsWith("val")) {
                 int colonPos = type.indexOf(':');
@@ -39,7 +38,7 @@ public class InferredTypesImplementation implements InferredTypes {
                         String sigTypes = type.substring(beginIndex, endIndex);
                         String[] moduleSigTypes = sigTypes.trim().split("(?=module|val|type)");
                         for (String moduleSigType : moduleSigTypes) {
-                            moduleTypes.add(moduleSigType);
+                            moduleTypes.addTypes(moduleSigType);
                         }
                     }
                 }
@@ -67,7 +66,12 @@ public class InferredTypesImplementation implements InferredTypes {
         return m_pos.values();
     }
 
-    public void addToLines(@NotNull String[] tokens) {
+    @NotNull
+    public Map<LogicalPosition, HMSignature> listTypesByIdents() {
+        return new THashMap<>(m_idents);
+    }
+
+    public void add(@NotNull String[] tokens) {
         if ("O".equals(tokens[0])) {
             if (4 <= tokens.length) {
                 LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
@@ -75,9 +79,13 @@ public class InferredTypesImplementation implements InferredTypes {
             }
         } else if (5 <= tokens.length) {
             LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
-            LogicalHMSignature signature = m_pos.get(logicalPosition.line);
-            if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
-                m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(true, tokens[4])));
+            if ("I".equals(tokens[0])) {
+                m_idents.put(logicalPosition, new HMSignature(true, tokens[4]));
+            } else {
+                LogicalHMSignature signature = m_pos.get(logicalPosition.line);
+                if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
+                    m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(true, tokens[4])));
+                }
             }
         }
     }
@@ -86,6 +94,6 @@ public class InferredTypesImplementation implements InferredTypes {
         String[] codedPos = encodedPos.split("\\.");
         int line = Integer.parseInt(codedPos[0]);
         int column = Integer.parseInt(codedPos[1]);
-        return new LogicalPosition(0 < line ? line - 1 : 0, column);
+        return new LogicalPosition(0 < line ? line - 1 : 0, 0 < column ? column - 1 : 0);
     }
 }
