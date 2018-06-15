@@ -13,7 +13,7 @@ import java.util.Map;
 public class InferredTypesImplementation implements InferredTypes {
 
     private final Map<Integer, LogicalHMSignature> m_pos = new THashMap<>();
-    private final Map<LogicalPosition, HMSignature> m_idents = new THashMap<>();
+    private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>> m_idents = new THashMap<>();
     private final Map<LogicalPosition, String> m_opens = new THashMap<>();
 
     private final Map<String, HMSignature> m_let = new THashMap<>();
@@ -67,8 +67,8 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     @NotNull
-    public Map<LogicalPosition, HMSignature> listTypesByIdents() {
-        return new THashMap<>(m_idents);
+    public Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>> listTypesByIdents() {
+        return m_idents;
     }
 
     public void add(@NotNull String[] tokens) {
@@ -80,7 +80,19 @@ public class InferredTypesImplementation implements InferredTypes {
         } else if (5 <= tokens.length) {
             LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
             if ("I".equals(tokens[0])) {
-                m_idents.put(logicalPosition, new HMSignature(true, tokens[4]));
+                Map<String, Map<LogicalPosition, HMSignature>> lines = m_idents.get(logicalPosition.line);
+                if (lines == null) {
+                    lines = new THashMap<>();
+                    m_idents.put(logicalPosition.line, lines);
+                }
+
+                Map<LogicalPosition, HMSignature> idents = lines.get(tokens[3]);
+                if (idents == null) {
+                    idents = new THashMap<>();
+                    lines.put(tokens[3], idents);
+                }
+
+                idents.put(logicalPosition, new HMSignature(true, tokens[4]));
             } else {
                 LogicalHMSignature signature = m_pos.get(logicalPosition.line);
                 if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
@@ -94,6 +106,6 @@ public class InferredTypesImplementation implements InferredTypes {
         String[] codedPos = encodedPos.split("\\.");
         int line = Integer.parseInt(codedPos[0]);
         int column = Integer.parseInt(codedPos[1]);
-        return new LogicalPosition(0 < line ? line - 1 : 0, 0 < column ? column - 1 : 0);
+        return new LogicalPosition(line, column);
     }
 }

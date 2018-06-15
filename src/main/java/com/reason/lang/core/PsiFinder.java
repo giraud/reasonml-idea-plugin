@@ -17,9 +17,11 @@ import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.ModuleFqnIndex;
+import com.reason.ide.search.ValIndex;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -157,17 +159,22 @@ public final class PsiFinder {
     public Collection<PsiQualifiedNamedElement> findLetsOrExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
         Map<String/*qn*/, PsiLet> letInConfig = new THashMap<>();
         Map<String/*qn*/, PsiLet> letOther = new THashMap<>();
+        Map<String/*qn*/, PsiVal> valInConfig = new THashMap<>();
+        Map<String/*qn*/, PsiVal> valOther = new THashMap<>();
         Map<String/*qn*/, PsiExternal> externalInConfig = new THashMap<>();
         Map<String/*qn*/, PsiExternal> externalOther = new THashMap<>();
 
         findLowerSymbols("lets", letInConfig, letOther, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
+        findLowerSymbols("vals", valInConfig, valOther, project, name, fileType, scope, ValIndex.getInstance().getKey(), PsiVal.class);
         findLowerSymbols("externals", externalInConfig, externalOther, project, name, fileType, scope, IndexKeys.EXTERNALS, PsiExternal.class);
 
         List<PsiQualifiedNamedElement> result = new ArrayList<>();
         result.addAll(letInConfig.values());
+        result.addAll(valInConfig.values());
         result.addAll(externalInConfig.values());
         if (scope == all) {
             result.addAll(letOther.values());
+            result.addAll(valOther.values());
             result.addAll(externalOther.values());
         }
 

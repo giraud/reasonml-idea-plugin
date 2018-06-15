@@ -44,6 +44,7 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             }
         }
 
+        qualifiedNames.add("Pervasives");
         return qualifiedNames;
     }
 }

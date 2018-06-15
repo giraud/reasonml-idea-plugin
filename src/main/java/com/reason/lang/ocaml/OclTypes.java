@@ -1,10 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.stub.type.ModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiExternalStubElementType;
-import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiTypeElementType;
+import com.reason.lang.core.stub.type.*;
 
 public class OclTypes extends MlTypes {
 
@@ -26,7 +23,7 @@ public class OclTypes extends MlTypes {
         MODULE_PATH = new OclElementType("MODULE_PATH");
         OPEN_EXPRESSION = new OclElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE);
-        VAL_EXPRESSION = new OclElementType("VAL_EXPRESSION");
+        VAL_EXPRESSION = new PsiValStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE);
 
         BOOL = new OclTokenType("BOOL");
         STRING = new OclTokenType("STRING");

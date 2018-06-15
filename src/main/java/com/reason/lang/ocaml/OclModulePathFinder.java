@@ -26,6 +26,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
 
         // Find opens
 
+        qualifiedNames.add("Pervasives");
         return qualifiedNames;
     }
 

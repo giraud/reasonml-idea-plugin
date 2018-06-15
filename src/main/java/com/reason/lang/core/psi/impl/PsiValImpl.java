@@ -1,25 +1,40 @@
 package com.reason.lang.core.psi.impl;
 
+import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.stub.PsiValStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
+public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements PsiVal {
+
+    @NotNull
+    private final MlTypes m_types;
 
     //region Constructors
     public PsiValImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
-        super(types, node);
+        super(node);
+        m_types = types;
+    }
+
+    public PsiValImpl(@NotNull MlTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
+        super(stub, nodeType);
+        m_types = types;
     }
     //endregion
 
@@ -27,15 +42,7 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        PsiElement element = getFirstChild();
-        if (element != null) {
-            element = element.getNextSibling();
-            while (element instanceof PsiWhiteSpace) {
-                element = element.getNextSibling();
-            }
-        }
-
-        return element;
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Override
@@ -49,6 +56,22 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
         return this;
     }
     //endregion
+
+
+    @Nullable
+    @Override
+    public String getQualifiedName() {
+        String path;
+
+        PsiElement parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
+        if (parent != null) {
+            path = ((PsiModule) parent).getQualifiedName();
+        } else {
+            path = PsiUtil.fileNameToModuleName(getContainingFile());
+        }
+
+        return path + "." + getName();
+    }
 
     @NotNull
     @Override
@@ -82,6 +105,6 @@ public class PsiValImpl extends MlAstWrapperPsiElement implements PsiVal {
 
     @Override
     public String toString() {
-        return "PsiVal(" + getName() + ")";
+        return "Val " + getName();
     }
 }

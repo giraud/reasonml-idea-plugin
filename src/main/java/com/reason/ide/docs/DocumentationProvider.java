@@ -10,6 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 public class DocumentationProvider extends AbstractDocumentationProvider {
 
-    public static final Key<Map<LogicalPosition, HMSignature>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
+    public static final Key<Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
 
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
@@ -47,11 +48,19 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         if (editor != null) {
             LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
-            Map<LogicalPosition, HMSignature> signatures = psiFile.getUserData(SIGNATURE_CONTEXT);
-            if (signatures != null) {
-                HMSignature signature = signatures.get(elementPosition);
-                if (signature != null) {
-                    return signature.toString();
+            Map<Integer, Map<String, Map<LogicalPosition, HMSignature>>> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
+            if (signaturesContext != null) {
+                Map<String, Map<LogicalPosition, HMSignature>> lineSignatures = signaturesContext.get(elementPosition.line);
+                if (lineSignatures != null) {
+                    if (originalElement instanceof PsiLowerSymbol) {
+                        PsiLowerSymbol lowerSymbol = (PsiLowerSymbol) originalElement;
+                        Map<LogicalPosition, HMSignature> signatures = lineSignatures.get(lowerSymbol.getText());
+                        if (signatures != null) {
+                            if (signatures.size() == 1) {
+                                return signatures.values().iterator().next().toString();
+                            }
+                        }
+                    }
                 }
             }
         }

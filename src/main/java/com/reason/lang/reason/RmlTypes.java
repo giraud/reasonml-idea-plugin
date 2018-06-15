@@ -1,10 +1,7 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.stub.type.ModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiExternalStubElementType;
-import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiTypeElementType;
+import com.reason.lang.core.stub.type.*;
 
 public class RmlTypes extends MlTypes {
 
@@ -26,7 +23,7 @@ public class RmlTypes extends MlTypes {
         MODULE_PATH = new RmlElementType("MODULE_PATH");
         OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
         TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE);
-        VAL_EXPRESSION = new RmlElementType("VAL_EXPRESSION");
+        VAL_EXPRESSION = new PsiValStubElementType("VAL_EXPRESSION", RmlLanguage.INSTANCE);
 
         BOOL = new RmlElementType("BOOL");
         STRING = new RmlElementType("STRING");

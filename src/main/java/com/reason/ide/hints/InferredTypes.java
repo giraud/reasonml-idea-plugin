@@ -13,7 +13,7 @@ public interface InferredTypes {
     Collection<LogicalHMSignature> listTypesByLines();
 
     @NotNull
-    Map<LogicalPosition, HMSignature> listTypesByIdents();
+    Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>> listTypesByIdents();
 
     @NotNull
     Map<LogicalPosition, String> listOpensByLines();

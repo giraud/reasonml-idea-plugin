@@ -165,7 +165,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
     public String getQualifiedName() {
         String path;
 
-        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        PsiElement parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
         if (parent != null) {
             path = ((PsiModule) parent).getQualifiedName();
         } else {
