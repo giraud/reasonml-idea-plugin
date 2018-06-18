@@ -106,6 +106,6 @@ public class InferredTypesImplementation implements InferredTypes {
         String[] codedPos = encodedPos.split("\\.");
         int line = Integer.parseInt(codedPos[0]);
         int column = Integer.parseInt(codedPos[1]);
-        return new LogicalPosition(line, column);
+        return new LogicalPosition(line < 0 ? 0 : line, column < 0 ? 0 : column);
     }
 }
