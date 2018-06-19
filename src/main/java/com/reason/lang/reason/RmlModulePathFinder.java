@@ -34,17 +34,16 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 String openName = ((PsiNamedElement) item).getName();
                 // Add open value to all previous elements
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + "." + name).collect(Collectors.toList());
-                withOpenQualifier.addAll(qualifiedNames);
-                qualifiedNames = withOpenQualifier;
+                qualifiedNames.addAll(withOpenQualifier);
 
-                qualifiedNames.add(0, openName);
+                qualifiedNames.add(openName);
             }
 
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
                 PsiElement parent = item.getParent();
                 if (parent instanceof PsiLocalOpen) {
-                    qualifiedNames.add(0, ((PsiLocalOpen) parent).getName());
+                    qualifiedNames.add(((PsiLocalOpen) parent).getName());
                 }
                 item = parent;
             } else {
