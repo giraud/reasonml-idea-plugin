@@ -34,8 +34,8 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
 
     @Nullable
     @Override
-    public PsiScopedExpr getBody() {
-        return null;
+    public PsiElement getBody() {
+        return this;
     }
 
     @NotNull

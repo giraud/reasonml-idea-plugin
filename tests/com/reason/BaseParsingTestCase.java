@@ -52,7 +52,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         if (print) {
             System.out.println(DebugUtil.psiToString(file, false, true));
         }
-        return (PsiFileModuleImpl) file.asModule();
+        return (PsiFileModuleImpl) file.getFirstChild();
     }
 
     protected PsiModule doMlTest() {

@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.ModulePath;
@@ -15,7 +16,7 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     PsiSignature getSignature();
 
     @Nullable
-    PsiScopedExpr getBody();
+    PsiElement getBody();
 
     @NotNull
     Collection<PsiModule> getModules();

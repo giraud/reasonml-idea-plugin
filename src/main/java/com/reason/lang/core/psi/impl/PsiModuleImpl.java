@@ -63,7 +63,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     //endregion
 
     @Nullable
-    public PsiScopedExpr getBody() {
+    public PsiElement getBody() {
         return findChildByClass(PsiScopedExpr.class);
     }
 
@@ -75,21 +75,21 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @NotNull
     @Override
     public Collection<PsiOpen> getOpenExpressions() {
-        PsiScopedExpr body = getBody();
+        PsiElement body = getBody();
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiOpen.class);
     }
 
     @NotNull
     @Override
     public Collection<PsiInclude> getIncludeExpressions() {
-        PsiScopedExpr body = getBody();
+        PsiElement body = getBody();
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiInclude.class);
     }
 
     @NotNull
     @Override
     public Collection<PsiModule> getModules() {
-        PsiScopedExpr body = getBody();
+        PsiElement body = getBody();
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiModule.class);
     }
 
@@ -118,7 +118,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
                 result = moduleAlias.getExpressions();
             }
         } else {
-            PsiScopedExpr body = getBody();
+            PsiElement body = getBody();
             if (body != null) {
                 result = PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class, PsiExternal.class);
             }
@@ -130,14 +130,14 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @NotNull
     @Override
     public Collection<PsiLet> getLetExpressions() {
-        PsiScopedExpr body = getBody();
+        PsiElement body = getBody();
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiLet.class);
     }
 
     @NotNull
     @Override
     public Collection<PsiType> getTypeExpressions() {
-        PsiScopedExpr body = getBody();
+        PsiElement body = getBody();
         return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiType.class);
     }
 

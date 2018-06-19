@@ -51,17 +51,20 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             if (upperName != null) {
                 m_debug.debug("  symbol", upperName);
                 Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, upperName, interfaceOrImplementation, inBsconfig);
-                m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
+                if (m_debug.isDebugEnabled()) {
+                    m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
+                }
 
                 // Find the potential module paths, and filter the result
                 final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement);
                 m_debug.debug("  qn", qualifiedNames);
                 Collection<PsiModule> resolvedModules = modules.stream().filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).collect(Collectors.toList());
-                m_debug.debug("  resolved", resolvedModules.size());
+                if (m_debug.isDebugEnabled()) {
+                    m_debug.debug("  resolved", resolvedModules.size());
+                }
 
                 for (PsiModule resolvedModule : resolvedModules) {
                     if (resolvedModule != null) {
-                        //System.out.println("  »   resolvedModule: " + resolvedModule);
                         Collection<PsiNamedElement> expressions = resolvedModule.getExpressions();
                         for (PsiNamedElement expression : expressions) {
                             resultSet.addElement(

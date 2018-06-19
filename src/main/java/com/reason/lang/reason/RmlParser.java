@@ -130,6 +130,8 @@ public class RmlParser extends CommonParser {
             // Starts an expression
             else if (tokenType == m_types.OPEN) {
                 parseOpen(builder, state);
+            } else if (tokenType == m_types.INCLUDE) {
+                parseInclude(builder, state);
             } else if (tokenType == m_types.EXTERNAL) {
                 parseExternal(builder, state);
             } else if (tokenType == m_types.TYPE) {
@@ -308,6 +310,11 @@ public class RmlParser extends CommonParser {
     private void parseOpen(PsiBuilder builder, ParserState state) {
         state.endAny();
         state.addStart(mark(builder, open, m_types.OPEN_EXPRESSION));
+    }
+
+    private void parseInclude(PsiBuilder builder, ParserState state) {
+        state.endAny();
+        state.addStart(mark(builder, include, m_types.INCLUDE_EXPRESSION));
     }
 
     private void parsePercent(PsiBuilder builder, ParserState parserState) {
@@ -606,6 +613,9 @@ public class RmlParser extends CommonParser {
         }
 
         if (state.isResolution(open)) {
+            // It is a module name/path
+            state.setComplete();
+        } else if (state.isResolution(include)) {
             // It is a module name/path
             state.setComplete();
         } else if (state.isResolution(module)) {
