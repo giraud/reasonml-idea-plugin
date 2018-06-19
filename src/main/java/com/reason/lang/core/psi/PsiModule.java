@@ -1,13 +1,14 @@
 package com.reason.lang.core.psi;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.stub.ModuleStub;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<ModuleStub> {
     @Nullable
@@ -15,12 +16,6 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
 
     @Nullable
     PsiScopedExpr getBody();
-
-    @NotNull
-    Collection<PsiOpen> getOpenExpressions();
-
-    @NotNull
-    Collection<PsiInclude> getIncludeExpressions();
 
     @NotNull
     Collection<PsiModule> getModules();
@@ -32,6 +27,12 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     Collection<PsiNamedElement> getExpressions();
 
     @NotNull
+    Collection<PsiOpen> getOpenExpressions();
+
+    @NotNull
+    Collection<PsiInclude> getIncludeExpressions();
+
+    @NotNull
     Collection<PsiLet> getLetExpressions();
 
     @NotNull
@@ -41,7 +42,10 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     PsiExternal getExternalExpression(@NotNull String name);
 
     @Nullable
-    PsiNamedElement getLetExpression(@NotNull String make);
+    PsiType getTypeExpression(@NotNull String name);
+
+    @Nullable
+    PsiLet getLetExpression(@NotNull String make);
 
     @NotNull
     ModulePath getPath();

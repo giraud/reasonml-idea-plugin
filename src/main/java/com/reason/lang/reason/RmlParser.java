@@ -45,7 +45,18 @@ public class RmlParser extends CommonParser {
             //    parserState.add(markScope(builder, genericExpression, tokenType, startExpression, tokenType));
             //}
 
-            if (tokenType == m_types.SEMI) {
+            // special keywords that can be used as lident
+            if (tokenType == m_types.REF && state.isResolution(objectBinding)) {
+                parseLIdent(builder, state);
+            } else if (tokenType == m_types.LIST && state.isResolution(objectBinding)) {
+                parseLIdent(builder, state);
+            } else if (tokenType == m_types.METHOD && state.isResolution(objectBinding)) {
+                parseLIdent(builder, state);
+            } else if (tokenType == m_types.STRING && state.isResolution(objectBinding)) {
+                parseLIdent(builder, state);
+            }
+            //
+            else if (tokenType == m_types.SEMI) {
                 parseSemi(builder, state);
             } else if (tokenType == m_types.EQ) {
                 parseEq(builder, state);
@@ -172,6 +183,10 @@ public class RmlParser extends CommonParser {
     private void parseComma(ParserState state) {
         if (state.isResolution(namedSymbolSignature)) {
             state.setComplete();
+            state.popEnd();
+        } else if (state.isResolution(objectSignature)) {
+            state.setComplete();
+            state.popEnd();
             state.popEnd();
         }
     }
@@ -321,6 +336,10 @@ public class RmlParser extends CommonParser {
 
             state.dontMove = advance(builder);
             state.add(markScope(builder, namedSymbolSignature, m_types.SIG_SCOPE, groupExpression, null));
+        } else if (state.isResolution(objectField)) {
+            state.setComplete();
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, objectSignature, m_types.SIG_SCOPE, groupExpression, null));
         }
     }
 
@@ -416,6 +435,8 @@ public class RmlParser extends CommonParser {
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
+        } else if (state.isResolution(objectBinding)) {
+            state.add(markScope(builder, objectField, m_types.OBJECT_FIELD, groupExpression, null));
         } else if (shouldStartExpression(state)) {
             state.addStart(mark(builder, genericExpression, builder.getTokenType()));
         }
@@ -438,20 +459,17 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseRBracket(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACKET);
+    private void parseRBracket(PsiBuilder builder, ParserState state) {
+        ParserScope scope = state.endUntilScopeExpression(m_types.LBRACKET);
 
-        builder.advanceLexer();
-        parserState.dontMove = true;
+        state.dontMove = advance(builder);
 
         if (scope != null) {
             if (scope.resolution != annotation) {
                 scope.complete();
             }
-            parserState.popEnd();
+            state.popEnd();
         }
-
-        parserState.updateCurrentScope();
     }
 
     private void parseLBrace(PsiBuilder builder, ParserState state) {

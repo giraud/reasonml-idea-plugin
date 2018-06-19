@@ -31,7 +31,7 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
 
     public JsxAttributeCompletionProvider(ModulePathFinder modulePathFinder) {
         m_modulePathFinder = modulePathFinder;
-        m_debug = new Debug(Logger.getInstance("ReasonML.insight.jsxattribute"));
+        m_debug = new Debug(Logger.getInstance("ReasonML.insight.jsxAttribute"));
     }
 
     @Override
@@ -49,11 +49,13 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
             //attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
             if (m_debug.isDebugEnabled()) {
                 m_debug.debug("Tag found", tag.getName());
+                m_debug.debug("attributes", attributes.keySet());
             }
 
             // Attributes already used
             Collection<PsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
             List<String> usedNames = usedAttributes.stream().map(PsiTagProperty::getName).collect(toList());
+            m_debug.debug("used names", usedNames);
 
             // Now populate the dialog
             for (Map.Entry<String, String> attributeEntry : attributes.entrySet()) {

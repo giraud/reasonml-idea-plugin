@@ -1,9 +1,12 @@
 package com.reason.reason;
 
 import com.reason.BaseParsingTestCase;
+import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeBinding;
 import com.reason.lang.reason.RmlParserDefinition;
+
+import java.util.Collection;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 
@@ -27,7 +30,23 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeBindingWithRecord() {
-        assertNotNull(first(findChildrenOfType(first(parseCode("type t = {count: int};").getTypeExpressions()), PsiTypeBinding.class)));
+        PsiType type = first(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};").getTypeExpressions());
+
+        assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
+        Collection<PsiObjectField> fields = findChildrenOfType(type.getBinding(), PsiObjectField.class);
+        assertEquals(2, fields.size());
     }
+
+    public void testTypeSpecialProps() {
+        PsiType type = first(parseCode("type props = {\n" +
+                "string: string,\n" +
+                "ref: Js.nullable(Dom.element) => unit,\n" +
+                "method: string};").getTypeExpressions());
+
+        assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
+        Collection<PsiObjectField> fields = findChildrenOfType(type.getBinding(), PsiObjectField.class);
+        assertEquals(3, fields.size());
+    }
+
 
 }

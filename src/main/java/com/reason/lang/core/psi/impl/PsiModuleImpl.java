@@ -1,9 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import java.util.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -16,17 +12,16 @@ import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.ModuleStub;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
@@ -34,7 +29,7 @@ import static com.reason.lang.core.MlScope.all;
 public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
 
     private ModulePath m_modulePath;
-    private MlTypes m_types;
+    private final MlTypes m_types;
 
     //region Constructors
     public PsiModuleImpl(ASTNode node, MlTypes types) {
@@ -158,6 +153,27 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
                 for (PsiExternal external : externals) {
                     if (name.equals(external.getName())) {
                         result = external;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Nullable
+    @Override
+    public PsiType getTypeExpression(@NotNull String name) {
+        PsiType result = null;
+
+        PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
+        if (body != null) {
+            List<PsiType> expressions = PsiTreeUtil.getChildrenOfTypeAsList(body, PsiType.class);
+            if (!expressions.isEmpty()) {
+                for (PsiType expression : expressions) {
+                    if (name.equals(expression.getName())) {
+                        result = expression;
                         break;
                     }
                 }

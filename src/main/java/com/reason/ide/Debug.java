@@ -5,7 +5,7 @@ import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.Joiner;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Collection;
 
 public class Debug {
 
@@ -56,7 +56,7 @@ public class Debug {
         }
     }
 
-    public void debug(String comment, @Nullable List<String> t) {
+    public void debug(String comment, @Nullable Collection<String> t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
         }

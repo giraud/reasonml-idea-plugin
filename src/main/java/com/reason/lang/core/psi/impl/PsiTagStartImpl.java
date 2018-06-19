@@ -58,17 +58,20 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                 Collection<PsiModule> reactModules = StubIndex.getElements(IndexKeys.MODULES, "ReactDOMRe", project, GlobalSearchScope.allScope(project), PsiModule.class);
                 if (!reactModules.isEmpty()) {
                     PsiModule reactDomRe = reactModules.iterator().next();
-                    PsiExternal props = reactDomRe.getExternalExpression("props");
+                    PsiNamedElement props = reactDomRe.getTypeExpression("props");
                     if (props != null) {
-                        PsiSignature signature = PsiTreeUtil.getStubChildOfType(props, PsiSignature.class);
-                        if (signature != null) {
-                            Collection<PsiNamedSymbol> namedSymbols = PsiTreeUtil.findChildrenOfType(signature, PsiNamedSymbol.class);
-                            if (!namedSymbols.isEmpty()) {
-                                result = new HashMap<>();
-                                for (PsiNamedSymbol namedSymbol : namedSymbols) {
-                                    PsiSignature symbolSignature = PsiTreeUtil.getNextSiblingOfType(namedSymbol, PsiSignature.class);
-                                    String type = symbolSignature == null ? "" : symbolSignature.getText();
-                                    result.put(namedSymbol.getName(), type == null ? "" : type);
+                        PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, PsiTypeBinding.class);
+                        if (binding != null) {
+                            PsiObject object = PsiTreeUtil.getStubChildOfType(binding, PsiObject.class);
+                            if (object != null) {
+                                Collection<PsiObjectField> fields = PsiTreeUtil.findChildrenOfType(object, PsiObjectField.class);
+                                if (!fields.isEmpty()) {
+                                    result = new HashMap<>();
+                                    for (PsiObjectField field : fields) {
+                                        PsiSignature fieldSignature = field.getSignature();
+                                        String type = fieldSignature == null ? "" : fieldSignature.getText();
+                                        result.put(field.getName(), type == null ? "" : type);
+                                    }
                                 }
                             }
                         }
