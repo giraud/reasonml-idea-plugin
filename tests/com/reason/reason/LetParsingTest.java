@@ -5,6 +5,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiObject;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlParserDefinition;
 
@@ -50,4 +51,14 @@ public class LetParsingTest extends BaseParsingTestCase {
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);
     }
+
+    // let typeScaleRaw = { one = 1.375; two = 1.0 }
+    public void testObject() {
+        PsiLet let = first(parseCode("let typeScaleRaw = {one: 1.375, two: 1.0};").getLetExpressions());
+
+        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
+        assertNotNull(binding);
+        assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiObject.class));
+    }
+
 }
