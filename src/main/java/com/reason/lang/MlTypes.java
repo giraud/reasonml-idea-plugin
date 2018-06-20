@@ -65,6 +65,8 @@ public abstract class MlTypes {
     public IElementType COMMA;
     public IElementType COMMENT;
     public IElementType DIFF;
+    public IElementType LT_OR_EQUAL;
+    public IElementType GT_OR_EQUAL;
     public IElementType DOLLAR;
     public IElementType DOT;
     public IElementType DOTDOTDOT;

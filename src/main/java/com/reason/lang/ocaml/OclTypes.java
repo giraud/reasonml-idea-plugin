@@ -68,6 +68,8 @@ public class OclTypes extends MlTypes {
         COMMA = new OclTokenType("COMMA");
         COMMENT = new OclTokenType("COMMENT");
         DIFF = new OclTokenType("DIFF");
+        LT_OR_EQUAL = new OclTokenType("LT_OR_EQUAL");
+        GT_OR_EQUAL = new OclTokenType("GT_OR_EQUAL");
         DOLLAR = new OclTokenType("DOLLAR");
         DOT = new OclTokenType("DOT");
         DOTDOTDOT = new OclTokenType("DOTDOTDOT");

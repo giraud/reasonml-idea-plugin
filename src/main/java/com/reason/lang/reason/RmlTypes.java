@@ -68,6 +68,8 @@ public class RmlTypes extends MlTypes {
         COMMA = new RmlElementType("COMMA");
         COMMENT = new RmlElementType("COMMENT");
         DIFF = new RmlElementType("DIFF");
+        LT_OR_EQUAL = new RmlElementType("LT_OR_EQUAL");
+        GT_OR_EQUAL = new RmlElementType("GT_OR_EQUAL");
         DOLLAR = new RmlElementType("DOLLAR");
         DOT = new RmlElementType("DOT");
         DOTDOTDOT = new RmlElementType("DOTDOTDOT");
