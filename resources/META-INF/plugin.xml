@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.55.1</version>
+    <version>0.56</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,9 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>fix editor freeze when too many cmt/i files are updated</li>
-            <li>Better completion for OCaml</li>
+            <li>Fix JSX attribute completion with reason-react 0.4.2 (from external to type)</li>
+            <li>Go to symbol is working for the most part</li>
+            <li>ctrl-hover on a lower symbol display its type (still wip, not working for all symbols)</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

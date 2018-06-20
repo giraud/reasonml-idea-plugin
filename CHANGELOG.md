@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.56
+
+- :rocket: ![r](resources/icons/reason-file.png) Go to symbol is working for external/let mainly
+- :rocket: ![r](resources/icons/reason-file.png) ctrl-hover on a lower symbol display its type (still wip, not working for all symbols)
+- :bug: ![r](resources/icons/reason-file.png) JSX attribute completion with reason-react 0.4.2 (from external to type)
+
 ## 0.55.1
 
 * :house: fix editor freeze when too many cmt/i files are updated
