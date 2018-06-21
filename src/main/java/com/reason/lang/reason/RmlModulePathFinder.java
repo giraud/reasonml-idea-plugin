@@ -1,13 +1,13 @@
 package com.reason.lang.reason;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiLocalOpen;
-import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.PsiFinder;
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,33 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 qualifiedNames.addAll(withOpenQualifier);
 
                 qualifiedNames.add(openName);
+            } else if (item instanceof PsiModule) {
+                PsiModule module = (PsiModule) item;
+                String moduleName = module.getName();
+                String moduleAlias = findModuleAlias(element.getProject(), module.getAlias());
+
+                if (moduleAlias != null && !moduleAlias.equals(moduleName)) {
+                    // Replace module name in resolved paths with the module alias
+                    qualifiedNames = qualifiedNames.stream().map(name -> {
+                        if (name.equals(moduleName)) {
+                            return moduleAlias;
+                        } else if (name.startsWith(moduleName + ".")) {
+                            return moduleAlias + "." + moduleName.substring(moduleAlias.length());
+                        } else if (name.endsWith("." + moduleName)) {
+                            return name.replace("." + moduleName, "." + moduleAlias);
+                        }
+                        return name;
+                    }).collect(Collectors.toList());
+                }
             }
 
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
                 PsiElement parent = item.getParent();
                 if (parent instanceof PsiLocalOpen) {
-                    qualifiedNames.add(((PsiLocalOpen) parent).getName());
+                    String localOpenName = ((PsiLocalOpen) parent).getName();
+                    String localOpenAlias = findModuleAlias(element.getProject(), localOpenName);
+                    qualifiedNames.add(localOpenAlias == null || localOpenAlias.equals(localOpenName) ? localOpenName : localOpenAlias);
                 }
                 item = parent;
             } else {
@@ -53,5 +73,17 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
 
         qualifiedNames.add("Pervasives");
         return qualifiedNames;
+    }
+
+    @Nullable
+    private String findModuleAlias(@NotNull Project project, @Nullable String qname) {
+        // qname might be also an alias !
+        if (qname != null) {
+            PsiModule moduleAlias1 = PsiFinder.getInstance().findModuleAlias(project, qname);
+            if (moduleAlias1 != null) {
+                return moduleAlias1.getQualifiedName();
+            }
+        }
+        return qname;
     }
 }

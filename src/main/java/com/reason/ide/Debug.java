@@ -56,7 +56,7 @@ public class Debug {
         }
     }
 
-    public void debug(String comment, @Nullable Collection<String> t) {
+    public void debug(String comment, @Nullable Collection<? extends Object> t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
         }

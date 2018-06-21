@@ -1,10 +1,10 @@
 package com.reason.lang.core.psi;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.MlTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class PsiLocalOpen extends ASTWrapperPsiElement {
 
@@ -33,5 +33,10 @@ public class PsiLocalOpen extends ASTWrapperPsiElement {
     @Override
     public boolean canNavigate() {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Local open " + getName();
     }
 }

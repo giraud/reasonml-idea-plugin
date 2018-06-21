@@ -112,7 +112,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
             PsiNamedElement elementReference = (PsiNamedElement) filteredElements.iterator().next();
             if (m_debug) {
-                System.out.println("»» " + elementReference.getName());
+                System.out.println("»» " + elementReference + " " + elementReference.getNameIdentifier());
             }
             return elementReference.getNameIdentifier();
         }
