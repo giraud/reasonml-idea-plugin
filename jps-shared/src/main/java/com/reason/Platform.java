@@ -16,7 +16,7 @@ import java.util.Map;
 public class Platform {
 
     public static final String OCAML_VERSION = "4.02";
-    public static final String RINCEWIND_VERSION = "0.3";
+    public static final String RINCEWIND_VERSION = "0.4-dev";
 
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
