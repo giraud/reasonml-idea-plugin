@@ -336,7 +336,12 @@ public final class PsiFinder {
         return result.values();
     }
 
-    public PsiModule findModuleAlias(Project project, String moduleQname) {
+    @Nullable
+    public PsiModule findModuleAlias(@NotNull Project project, @Nullable String moduleQname) {
+        if (moduleQname == null) {
+            return null;
+        }
+
         Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, GlobalSearchScope.allScope(project));
         if (!modules.isEmpty()) {
             PsiModule moduleReference = modules.iterator().next();
@@ -344,7 +349,11 @@ public final class PsiFinder {
             if (alias != null) {
                 modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, GlobalSearchScope.allScope(project));
                 if (!modules.isEmpty()) {
-                    return modules.iterator().next();
+                    PsiModule next = modules.iterator().next();
+                    if (next != null) {
+                        PsiModule nextModuleAlias = findModuleAlias(project, next.getQualifiedName());
+                        return nextModuleAlias == null ? next : nextModuleAlias;
+                    }
                 }
             }
         }

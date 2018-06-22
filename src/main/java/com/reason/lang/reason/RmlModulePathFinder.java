@@ -23,8 +23,10 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
 
         String path = extractPathName(element, RmlTypes.INSTANCE);
         if (!path.isEmpty()) {
-            qualifiedNames.add(path);
-            qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
+            PsiModule moduleAlias = PsiFinder.getInstance().findModuleAlias(element.getProject(), path);
+            String modulePath = moduleAlias == null ? path : moduleAlias.getQualifiedName();
+            qualifiedNames.add(modulePath);
+            qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + modulePath);
         }
 
         // Walk backward until top of the file is reached, trying to find local opens and opens/includes

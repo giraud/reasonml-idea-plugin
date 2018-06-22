@@ -50,7 +50,9 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
                 m_debug.debug("  symbol", upperName);
-                Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, upperName, interfaceOrImplementation, inBsconfig);
+                PsiFinder psiFinder = PsiFinder.getInstance();
+
+                Collection<PsiModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
                 if (m_debug.isDebugEnabled()) {
                     m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
                 }
@@ -58,7 +60,14 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 // Find the potential module paths, and filter the result
                 final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement);
                 m_debug.debug("  qn", qualifiedNames);
-                Collection<PsiModule> resolvedModules = modules.stream().filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).collect(Collectors.toList());
+
+                Collection<PsiModule> resolvedModules = modules.stream().
+                        map(psiModule -> {
+                            PsiModule moduleAlias = psiFinder.findModuleAlias(project, psiModule.getQualifiedName());
+                            return moduleAlias == null ? psiModule : moduleAlias;
+                        }).
+                        filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).
+                        collect(Collectors.toList());
                 if (m_debug.isDebugEnabled()) {
                     m_debug.debug("  resolved", resolvedModules.size());
                 }
