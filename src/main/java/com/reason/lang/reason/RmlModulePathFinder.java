@@ -1,13 +1,11 @@
 package com.reason.lang.reason;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.stream.Collectors;
 public class RmlModulePathFinder extends BaseModulePathFinder {
 
     // Find the expression paths
-    // Need to add implicit elements like open/include/local open/...
     @NotNull
     public List<String> extractPotentialPaths(@NotNull PsiElement element) {
         List<String> qualifiedNames = new ArrayList<>();
@@ -77,15 +74,4 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
         return qualifiedNames;
     }
 
-    @Nullable
-    private String findModuleAlias(@NotNull Project project, @Nullable String qname) {
-        // qname might be also an alias !
-        if (qname != null) {
-            PsiModule moduleAlias1 = PsiFinder.getInstance().findModuleAlias(project, qname);
-            if (moduleAlias1 != null) {
-                return moduleAlias1.getQualifiedName();
-            }
-        }
-        return qname;
-    }
 }

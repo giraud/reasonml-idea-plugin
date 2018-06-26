@@ -6,14 +6,7 @@ import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 
 public class ValIndex extends StringStubIndexExtension<PsiVal> {
-    private static final StubIndexKey<String, PsiVal> VALS = StubIndexKey.createIndexKey("reason.val");
-    private static final int VERSION = 1;
-
-    private static final ValIndex INSTANCE = new ValIndex();
-
-    public static ValIndex getInstance() {
-        return INSTANCE;
-    }
+    private static final int VERSION = 2;
 
     @Override
     public int getVersion() {
@@ -23,6 +16,6 @@ public class ValIndex extends StringStubIndexExtension<PsiVal> {
     @NotNull
     @Override
     public StubIndexKey<String, PsiVal> getKey() {
-        return VALS;
+        return IndexKeys.VALS;
     }
 }

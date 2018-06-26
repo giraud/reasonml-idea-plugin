@@ -39,7 +39,6 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         m_types = types;
     }
 
-
     @Nullable
     @Override
     public PsiElement resolve() {

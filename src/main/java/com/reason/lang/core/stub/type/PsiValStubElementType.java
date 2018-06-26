@@ -2,7 +2,7 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
-import com.reason.ide.search.ValIndex;
+import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.impl.PsiValImpl;
@@ -43,7 +43,7 @@ public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal> 
     public void indexStub(@NotNull PsiValStub stub, @NotNull IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
-            sink.occurrence(ValIndex.getInstance().getKey(), name);
+            sink.occurrence(IndexKeys.VALS, name);
         }
     }
 

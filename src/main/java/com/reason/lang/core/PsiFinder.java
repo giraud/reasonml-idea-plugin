@@ -17,11 +17,7 @@ import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.ModuleFqnIndex;
-import com.reason.ide.search.ValIndex;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -163,19 +159,24 @@ public final class PsiFinder {
         Map<String/*qn*/, PsiVal> valOther = new THashMap<>();
         Map<String/*qn*/, PsiExternal> externalInConfig = new THashMap<>();
         Map<String/*qn*/, PsiExternal> externalOther = new THashMap<>();
+        Map<String/*qn*/, PsiType> typeInConfig = new THashMap<>();
+        Map<String/*qn*/, PsiType> typeOther = new THashMap<>();
 
         findLowerSymbols("lets", letInConfig, letOther, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
-        findLowerSymbols("vals", valInConfig, valOther, project, name, fileType, scope, ValIndex.getInstance().getKey(), PsiVal.class);
+        findLowerSymbols("vals", valInConfig, valOther, project, name, fileType, scope, IndexKeys.VALS, PsiVal.class);
         findLowerSymbols("externals", externalInConfig, externalOther, project, name, fileType, scope, IndexKeys.EXTERNALS, PsiExternal.class);
+        findLowerSymbols("types", typeInConfig, typeOther, project, name, fileType, scope, IndexKeys.TYPES, PsiType.class);
 
         List<PsiQualifiedNamedElement> result = new ArrayList<>();
         result.addAll(letInConfig.values());
         result.addAll(valInConfig.values());
         result.addAll(externalInConfig.values());
+        result.addAll(typeInConfig.values());
         if (scope == all) {
             result.addAll(letOther.values());
             result.addAll(valOther.values());
             result.addAll(externalOther.values());
+            result.addAll(typeOther.values());
         }
 
         return result;
@@ -235,7 +236,7 @@ public final class PsiFinder {
     @NotNull
     public Collection<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
         // All file names are unique in a project, we use the file name in the key
-        // Need a better algo to priorise the paths and not overwrite the correct resolved files
+        // Need a better algo to prioritise the paths and not overwrite the correct resolved files
         Map<String, PsiModule> result = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
