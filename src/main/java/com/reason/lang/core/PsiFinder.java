@@ -137,46 +137,60 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<? extends PsiQualifiedNamedElement> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Map<String/*qn*/, PsiLet> letInConfig = new THashMap<>();
-        Map<String/*qn*/, PsiLet> letOther = new THashMap<>();
+    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Map<String/*qn*/, PsiLet> inConfig = new THashMap<>();
+        Map<String/*qn*/, PsiLet> other = new THashMap<>();
 
-        findLowerSymbols("lets", letInConfig, letOther, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
+        findLowerSymbols("lets", inConfig, other, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
 
-        List<PsiQualifiedNamedElement> result = new ArrayList<>(letInConfig.values());
+        List<PsiLet> result = new ArrayList<>(inConfig.values());
         if (scope == all) {
-            result.addAll(letOther.values());
+            result.addAll(other.values());
         }
 
         return result;
     }
 
     @NotNull
-    public Collection<PsiQualifiedNamedElement> findLetsOrExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Map<String/*qn*/, PsiLet> letInConfig = new THashMap<>();
-        Map<String/*qn*/, PsiLet> letOther = new THashMap<>();
-        Map<String/*qn*/, PsiVal> valInConfig = new THashMap<>();
-        Map<String/*qn*/, PsiVal> valOther = new THashMap<>();
-        Map<String/*qn*/, PsiExternal> externalInConfig = new THashMap<>();
-        Map<String/*qn*/, PsiExternal> externalOther = new THashMap<>();
-        Map<String/*qn*/, PsiType> typeInConfig = new THashMap<>();
-        Map<String/*qn*/, PsiType> typeOther = new THashMap<>();
+    public Collection<PsiVal> findVals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Map<String/*qn*/, PsiVal> inConfig = new THashMap<>();
+        Map<String/*qn*/, PsiVal> other = new THashMap<>();
 
-        findLowerSymbols("lets", letInConfig, letOther, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
-        findLowerSymbols("vals", valInConfig, valOther, project, name, fileType, scope, IndexKeys.VALS, PsiVal.class);
-        findLowerSymbols("externals", externalInConfig, externalOther, project, name, fileType, scope, IndexKeys.EXTERNALS, PsiExternal.class);
-        findLowerSymbols("types", typeInConfig, typeOther, project, name, fileType, scope, IndexKeys.TYPES, PsiType.class);
+        findLowerSymbols("vals", inConfig, other, project, name, fileType, scope, IndexKeys.VALS, PsiVal.class);
 
-        List<PsiQualifiedNamedElement> result = new ArrayList<>();
-        result.addAll(letInConfig.values());
-        result.addAll(valInConfig.values());
-        result.addAll(externalInConfig.values());
-        result.addAll(typeInConfig.values());
+        List<PsiVal> result = new ArrayList<>(inConfig.values());
         if (scope == all) {
-            result.addAll(letOther.values());
-            result.addAll(valOther.values());
-            result.addAll(externalOther.values());
-            result.addAll(typeOther.values());
+            result.addAll(other.values());
+        }
+
+        return result;
+    }
+
+    @NotNull
+    public Collection<PsiType> findTypes(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Map<String/*qn*/, PsiType> inConfig = new THashMap<>();
+        Map<String/*qn*/, PsiType> other = new THashMap<>();
+
+        findLowerSymbols("types", inConfig, other, project, name, fileType, scope, IndexKeys.TYPES, PsiType.class);
+
+        List<PsiType> result = new ArrayList<>(inConfig.values());
+        if (scope == all) {
+            result.addAll(other.values());
+        }
+
+        return result;
+    }
+
+    @NotNull
+    public Collection<PsiExternal> findExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
+        Map<String/*qn*/, PsiExternal> inConfig = new THashMap<>();
+        Map<String/*qn*/, PsiExternal> other = new THashMap<>();
+
+        findLowerSymbols("externals", inConfig, other, project, name, fileType, scope, IndexKeys.EXTERNALS, PsiExternal.class);
+
+        List<PsiExternal> result = new ArrayList<>(inConfig.values());
+        if (scope == all) {
+            result.addAll(other.values());
         }
 
         return result;

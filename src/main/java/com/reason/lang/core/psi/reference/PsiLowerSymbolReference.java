@@ -2,6 +2,7 @@ package com.reason.lang.core.psi.reference;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
@@ -47,7 +49,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         if (m_debug) {
-            System.out.println("resolving " + m_referenceName);
+            System.out.println("resolving '" + m_referenceName + "'");
         }
 
         PsiNamedElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class, PsiExternal.class);
@@ -62,61 +64,171 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-
+        List<String> potentialPaths = null;
         Project project = myElement.getProject();
-        Collection<PsiQualifiedNamedElement> namedElements = PsiFinder.getInstance().findLetsOrExternals(project, m_referenceName, interfaceOrImplementation, all);
+        PsiFinder psiFinder = PsiFinder.getInstance();
 
+        // Try to find let items
+
+        Collection<PsiLet> lets = psiFinder.findLets(project, m_referenceName, interfaceOrImplementation, all);
         if (m_debug) {
-            System.out.println("  elements: " + namedElements.size());
-            for (PsiQualifiedNamedElement element : namedElements) {
+            System.out.println("  lets: " + lets.size());
+            for (PsiQualifiedNamedElement element : lets) {
                 System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
             }
         }
 
-        if (!namedElements.isEmpty()) {
-            Collection<PsiQualifiedNamedElement> filteredElements = namedElements;
-            if (1 < namedElements.size()) {
-                // Find potential paths of current element
-                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).
-                        stream().
-                        map(item -> {
-                            PsiModule moduleAlias = PsiFinder.getInstance().findModuleAlias(project, item);
-                            String qn = (moduleAlias == null) ? item : moduleAlias.getQualifiedName();
-                            return qn + "." + m_referenceName;
-                        }).
-                        collect(toList());
-                if (m_debug) {
-                    System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
-                }
-
+        if (!lets.isEmpty()) {
+            Collection<PsiLet> filteredLets = lets;
+            if (1 < lets.size()) {
                 // Filter the modules, keep the ones with the same qualified name
-                filteredElements = namedElements.stream().
-                        filter(element -> {
-                            String qn = element.getQualifiedName();
-                            return m_referenceName.equals(qn) || potentialPaths.contains(qn);
-                        }).
-                        collect(toList());
+                potentialPaths = getPotentialPaths(modulePathFinder, project);
+                filteredLets = lets.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
 
                 if (m_debug) {
-                    System.out.println("  filtered elements: " + filteredElements.size());
-                    for (PsiQualifiedNamedElement element : filteredElements) {
+                    System.out.println("  filtered lets: " + filteredLets.size());
+                    for (PsiQualifiedNamedElement element : filteredLets) {
                         System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
                     }
                 }
             }
 
-            if (filteredElements.isEmpty()) {
-                return null;
+            if (!filteredLets.isEmpty()) {
+                return extractNameIdentifier(filteredLets);
+            }
+        }
+
+        // Try to find val items
+
+        Collection<PsiVal> vals = psiFinder.findVals(project, m_referenceName, interfaceOrImplementation, all);
+        if (m_debug) {
+            System.out.println("  vals: " + vals.size());
+            for (PsiQualifiedNamedElement element : vals) {
+                System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+            }
+        }
+
+        if (!vals.isEmpty()) {
+            Collection<PsiVal> filteredVals = vals;
+            if (1 < vals.size()) {
+                // Filter the modules, keep the ones with the same qualified name
+                if (potentialPaths == null) {
+                    potentialPaths = getPotentialPaths(modulePathFinder, project);
+                }
+                filteredVals = vals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+
+                if (m_debug) {
+                    System.out.println("  filtered vals: " + filteredVals.size());
+                    for (PsiQualifiedNamedElement element : filteredVals) {
+                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+                    }
+                }
             }
 
-            PsiNamedElement elementReference = (PsiNamedElement) filteredElements.iterator().next();
-            if (m_debug) {
-                System.out.println("»» " + elementReference + " " + elementReference.getNameIdentifier());
+            if (!filteredVals.isEmpty()) {
+                return extractNameIdentifier(filteredVals);
             }
-            return elementReference.getNameIdentifier();
+        }
+
+        // Try to find external items
+
+        Collection<PsiExternal> externals = psiFinder.findExternals(project, m_referenceName, interfaceOrImplementation, all);
+        if (m_debug) {
+            System.out.println("  externals: " + externals.size());
+            for (PsiQualifiedNamedElement element : externals) {
+                System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+            }
+        }
+
+        if (!externals.isEmpty()) {
+            Collection<PsiExternal> filteredExternals = externals;
+            if (1 < externals.size()) {
+                // Filter the modules, keep the ones with the same qualified name
+                if (potentialPaths == null) {
+                    potentialPaths = getPotentialPaths(modulePathFinder, project);
+                }
+                filteredExternals = externals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+
+                if (m_debug) {
+                    System.out.println("  filtered externals: " + filteredExternals.size());
+                    for (PsiQualifiedNamedElement element : filteredExternals) {
+                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+                    }
+                }
+            }
+
+            if (!filteredExternals.isEmpty()) {
+                return extractNameIdentifier(filteredExternals);
+            }
+        }
+
+        // Try to find type items
+
+        Collection<PsiType> types = psiFinder.findTypes(project, m_referenceName, interfaceOrImplementation, all);
+        if (m_debug) {
+            System.out.println("  types: " + types.size());
+            for (PsiQualifiedNamedElement element : types) {
+                System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+            }
+        }
+
+        if (!types.isEmpty()) {
+            Collection<PsiType> filteredTypes = types;
+            if (1 < types.size()) {
+                // Filter the modules, keep the ones with the same qualified name
+                if (potentialPaths == null) {
+                    potentialPaths = getPotentialPaths(modulePathFinder, project);
+                }
+                filteredTypes = types.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+
+                if (m_debug) {
+                    System.out.println("  filtered types: " + filteredTypes.size());
+                    for (PsiQualifiedNamedElement element : filteredTypes) {
+                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
+                    }
+                }
+            }
+
+            if (!filteredTypes.isEmpty()) {
+                return extractNameIdentifier(filteredTypes);
+            }
         }
 
         return null;
+    }
+
+    @NotNull
+    private Predicate<? super PsiQualifiedNamedElement> getPathPredicate(List<String> potentialPaths) {
+        return element -> {
+            String qn = element.getQualifiedName();
+            return (m_referenceName != null && m_referenceName.equals(qn)) || potentialPaths.contains(qn);
+        };
+    }
+
+    private List<String> getPotentialPaths(ModulePathFinder modulePathFinder, Project project) {
+        // Find potential paths of current element
+        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).
+                stream().
+                map(item -> {
+                    PsiModule moduleAlias = PsiFinder.getInstance().findModuleAlias(project, item);
+                    String qn = (moduleAlias == null) ? item : moduleAlias.getQualifiedName();
+                    return qn + "." + m_referenceName;
+                }).
+                collect(toList());
+        if (m_debug) {
+            System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
+        }
+        return potentialPaths;
+    }
+
+    @Nullable
+    private PsiElement extractNameIdentifier(@NotNull Iterable<? extends PsiNameIdentifierOwner> filteredElements) {
+        PsiNameIdentifierOwner elementReference = filteredElements.iterator().next();
+        if (m_debug) {
+            System.out.println("»» " + elementReference + " " + elementReference.getNameIdentifier());
+        }
+        return elementReference.getNameIdentifier();
+
     }
 
     @NotNull
