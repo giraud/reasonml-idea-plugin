@@ -16,7 +16,7 @@ import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiRecordField;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -33,7 +33,7 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        m_debug.debug("OBJECT expression completion");
+        m_debug.debug("RECORD expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getPosition();
@@ -58,8 +58,8 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
                 }
 
                 if (let != null && let.isObject()) {
-                    Collection<PsiObjectField> fields = let.getObjectFields();
-                    for (PsiObjectField field : fields) {
+                    Collection<PsiRecordField> fields = let.getObjectFields();
+                    for (PsiRecordField field : fields) {
                         String name = field.getName();
                         if (name != null)
                             resultSet.addElement(

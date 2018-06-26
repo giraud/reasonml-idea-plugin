@@ -62,12 +62,12 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                     if (props != null) {
                         PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, PsiTypeBinding.class);
                         if (binding != null) {
-                            PsiObject object = PsiTreeUtil.getStubChildOfType(binding, PsiObject.class);
+                            PsiRecord object = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
                             if (object != null) {
-                                Collection<PsiObjectField> fields = PsiTreeUtil.findChildrenOfType(object, PsiObjectField.class);
+                                Collection<PsiRecordField> fields = PsiTreeUtil.findChildrenOfType(object, PsiRecordField.class);
                                 if (!fields.isEmpty()) {
                                     result = new HashMap<>();
-                                    for (PsiObjectField field : fields) {
+                                    for (PsiRecordField field : fields) {
                                         PsiSignature fieldSignature = field.getSignature();
                                         String type = fieldSignature == null ? "" : fieldSignature.getText();
                                         result.put(field.getName(), type == null ? "" : type);

@@ -1,7 +1,7 @@
 package com.reason.reason;
 
 import com.reason.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeBinding;
 import com.reason.lang.reason.RmlParserDefinition;
@@ -33,7 +33,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
         PsiType type = first(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};").getTypeExpressions());
 
         assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
-        Collection<PsiObjectField> fields = findChildrenOfType(type.getBinding(), PsiObjectField.class);
+        Collection<PsiRecordField> fields = findChildrenOfType(type.getBinding(), PsiRecordField.class);
         assertEquals(2, fields.size());
     }
 
@@ -44,7 +44,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
                 "method: string};").getTypeExpressions());
 
         assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
-        Collection<PsiObjectField> fields = findChildrenOfType(type.getBinding(), PsiObjectField.class);
+        Collection<PsiRecordField> fields = findChildrenOfType(type.getBinding(), PsiRecordField.class);
         assertEquals(3, fields.size());
     }
 

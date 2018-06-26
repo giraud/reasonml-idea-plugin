@@ -193,7 +193,8 @@ public class RmlTypes extends MlTypes {
         RIGHT_ARROW = new RmlElementType("RIGHT_ARROW");
 
         OBJECT = new RmlElementType("OBJECT");
-        OBJECT_FIELD = new RmlElementType("OBJECT_FIELD");
+        RECORD = new RmlElementType("RECORD");
+        RECORD_FIELD = new RmlElementType("RECORD_FIELD");
 
         AMPERSAND = new RmlElementType("AMPERSAND");
         BRACKET_GT = new RmlElementType("BRACKET_GT");

@@ -189,7 +189,8 @@ public abstract class MlTypes {
     public IElementType RIGHT_ARROW;
 
     public IElementType OBJECT;
-    public IElementType OBJECT_FIELD;
+    public IElementType RECORD;
+    public IElementType RECORD_FIELD;
 
     public IElementType AMPERSAND;
     public IElementType BRACKET_GT;

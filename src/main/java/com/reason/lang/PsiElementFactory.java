@@ -50,10 +50,10 @@ public class PsiElementFactory {
             return new PsiLocalOpen(node, types);
         } else if (type == types.PATTERN_MATCH_EXPR) {
             return new PsiPatternMatch(node);
-        } else if (type == types.OBJECT) {
-            return new PsiObject(node);
-        } else if (type == types.OBJECT_FIELD) {
-            return new PsiObjectField(node);
+        } else if (type == types.RECORD) {
+            return new PsiRecord(node);
+        } else if (type == types.RECORD_FIELD) {
+            return new PsiRecordField(node);
         } else if (type == types.INTERPOLATION) {
             return new PsiInterpolation(node);
         } else if (type == types.SIG_SCOPE) {

@@ -193,7 +193,8 @@ public class OclTypes extends MlTypes {
         RIGHT_ARROW = new OclTokenType("RIGHT_ARROW");
 
         OBJECT = new OclElementType("OBJECT");
-        OBJECT_FIELD = new OclElementType("OBJECT_FIELD");
+        RECORD = new OclElementType("RECORD");
+        RECORD_FIELD = new OclElementType("RECORD_FIELD");
 
         AMPERSAND = new OclTokenType("AMPERSAND");
         BRACKET_GT = new OclTokenType("BRACKET_GT");

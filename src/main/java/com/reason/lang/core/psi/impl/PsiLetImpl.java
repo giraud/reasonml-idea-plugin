@@ -97,12 +97,12 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @Override
     public boolean isObject() {
-        return findChildByClass(PsiObject.class) != null;
+        return findChildByClass(PsiRecord.class) != null;
     }
 
     @Override
-    public Collection<PsiObjectField> getObjectFields() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiObjectField.class);
+    public Collection<PsiRecordField> getObjectFields() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
     }
 
     @Override

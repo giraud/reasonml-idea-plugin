@@ -62,7 +62,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             OclTypes.INSTANCE.OR, OclTypes.INSTANCE.PRIVATE, OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.AS, OclTypes.INSTANCE.MUTABLE,
             OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL,
             // Ocaml
-            OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE, OclTypes.INSTANCE.OBJECT,
+            OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE, OclTypes.INSTANCE.RECORD,
             OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY, OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN,
             OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.SIG
     );

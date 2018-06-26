@@ -6,9 +6,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiObjectField extends ASTWrapperPsiElement {
+public class PsiRecordField extends ASTWrapperPsiElement {
 
-    public PsiObjectField(ASTNode node) {
+    public PsiRecordField(ASTNode node) {
         super(node);
     }
 
@@ -34,6 +34,6 @@ public class PsiObjectField extends ASTWrapperPsiElement {
 
     @Override
     public String toString() {
-        return "Object field " + getName();
+        return "Record field " + getName();
     }
 }

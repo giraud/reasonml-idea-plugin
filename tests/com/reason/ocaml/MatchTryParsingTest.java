@@ -23,9 +23,14 @@ public class MatchTryParsingTest extends BaseParsingTestCase {
     }
 
     public void testTryIn() {
-        PsiFileModuleImpl psiFileModule = parseCode("try x with Not_found -> assert false in otherExpression", true);
+        PsiFileModuleImpl psiFileModule = parseCode("try x with Not_found -> assert false in otherExpression");
         PsiElement[] children = psiFileModule.getChildren();
         assertEquals(2 + 1, children.length); // in is token
     }
 
+    public void testTryLet() {
+        PsiFileModuleImpl psiFileModule = parseCode("let e = try let t = 6 with Not_found -> ()", true);
+        PsiElement[] children = psiFileModule.getChildren();
+        assertEquals(1 + 1, children.length);
+    }
 }

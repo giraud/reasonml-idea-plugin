@@ -3,9 +3,9 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
-public class PsiObject extends ASTWrapperPsiElement {
+public class PsiRecord extends ASTWrapperPsiElement {
 
-    public PsiObject(ASTNode node) {
+    public PsiRecord(ASTNode node) {
         super(node);
     }
 
@@ -16,6 +16,6 @@ public class PsiObject extends ASTWrapperPsiElement {
 
     @Override
     public String toString() {
-        return "Object";
+        return "Record";
     }
 }
