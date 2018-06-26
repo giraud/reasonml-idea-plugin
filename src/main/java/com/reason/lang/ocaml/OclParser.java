@@ -159,46 +159,47 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseMatch(PsiBuilder builder, ParserState parserState) {
-        parserState.add(markCompleteScope(builder, match, m_types.MATCH, groupExpression, m_types.MATCH));
-        parserState.dontMove = advance(builder);
-        parserState.add(markCompleteScope(builder, matchBinaryCondition, m_types.BIN_CONDITION, groupExpression, null));
+    private void parseMatch(PsiBuilder builder, ParserState state) {
+        state.add(markCompleteScope(builder, match, m_types.MATCH, groupExpression, m_types.MATCH));
+        state.dontMove = advance(builder);
+        state.add(markCompleteScope(builder, matchBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.BIN_CONDITION));
     }
 
-    private void parseTry(PsiBuilder builder, ParserState parserState) {
-        parserState.add(markCompleteScope(builder, try_, m_types.TRY, groupExpression, m_types.TRY));
-        parserState.dontMove = advance(builder);
-        parserState.add(markCompleteScope(builder, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, null));
+    private void parseTry(PsiBuilder builder, ParserState state) {
+        state.add(markCompleteScope(builder, try_, m_types.TRY, groupExpression, m_types.TRY));
+        state.dontMove = advance(builder);
+        state.add(markCompleteScope(builder, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.BIN_CONDITION));
     }
 
-    private void parseWith(PsiBuilder builder, ParserState parserState) {
-        parserState.endUntilScopeExpression(parserState.isResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
-        parserState.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
+    private void parseWith(PsiBuilder builder, ParserState state) {
+        state.endUntilScopeExpression(m_types.BIN_CONDITION);
+        state.endUntilScopeExpression(state.isResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
+        state.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
     }
 
-    private void parseIf(PsiBuilder builder, ParserState parserState) {
-        parserState.add(markCompleteScope(builder, if_, m_types.IF, groupExpression, m_types.IF));
-        parserState.dontMove = advance(builder);
-        parserState.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, groupExpression, null));
+    private void parseIf(PsiBuilder builder, ParserState state) {
+        state.add(markCompleteScope(builder, if_, m_types.IF, groupExpression, m_types.IF));
+        state.dontMove = advance(builder);
+        state.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, groupExpression, null));
     }
 
-    private void parseThen(PsiBuilder builder, ParserState parserState) {
-        parserState.endUntilScopeExpression(m_types.IF);
-        parserState.add(markCompleteScope(builder, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN));
+    private void parseThen(PsiBuilder builder, ParserState state) {
+        state.endUntilScopeExpression(m_types.IF);
+        state.add(markCompleteScope(builder, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN));
     }
 
-    private void parseStruct(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(moduleNamedEq) || parserState.isResolution(moduleNamedSignature)) {
-            parserState.endAny();
+    private void parseStruct(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
+            state.endAny();
         }
-        parserState.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT));
+        state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT));
     }
 
-    private void parseSig(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(moduleNamedEq) || parserState.isResolution(moduleNamedColon)) {
-            parserState.endAny();
-            parserState.setResolution(moduleNamedSignature);
-            parserState.add(markScope(builder, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG));
+    private void parseSig(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedColon)) {
+            state.endAny();
+            state.setResolution(moduleNamedSignature);
+            state.add(markScope(builder, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG));
         }
     }
 

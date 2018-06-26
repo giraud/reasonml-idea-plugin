@@ -4,6 +4,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiObject;
 import com.reason.lang.ocaml.OclParserDefinition;
 
 public class LetParsingTest extends BaseParsingTestCase {
@@ -45,7 +46,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);
-        //assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiObject.class));
+        assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiObject.class));
     }
 
 }

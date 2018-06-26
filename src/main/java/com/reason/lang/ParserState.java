@@ -54,6 +54,21 @@ public class ParserState {
     }
 
     @Nullable
+    public ParserScope endUntilResolution(ParserScopeEnum resolution) {
+        ParserScope scope = null;
+
+        if (!m_scopes.isEmpty()) {
+            scope = m_scopes.peek();
+            while (scope != null && scope.resolution != resolution) {
+                popEnd();
+                scope = getLatestScope();
+            }
+        }
+
+        return scope;
+    }
+
+    @Nullable
     public ParserScope endUntilScopeExpression(IElementType scopeElementType) {
         ParserScope scope = null;
 

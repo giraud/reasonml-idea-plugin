@@ -3,9 +3,9 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 
-public class PsiFunctionBody extends ASTWrapperPsiElement {
+public class PsiAssert extends ASTWrapperPsiElement {
 
-    public PsiFunctionBody(ASTNode node) {
+    public PsiAssert(ASTNode node) {
         super(node);
     }
 
@@ -16,6 +16,6 @@ public class PsiFunctionBody extends ASTWrapperPsiElement {
 
     @Override
     public String toString() {
-        return "Function body";
+        return "Assert";
     }
 }

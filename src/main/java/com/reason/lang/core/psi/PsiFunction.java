@@ -21,6 +21,6 @@ public class PsiFunction extends ASTWrapperPsiElement {
 
     @Override
     public String toString() {
-        return "PsiFunction";
+        return "Function";
     }
 }
