@@ -2,6 +2,7 @@ package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 
 public class PsiAssert extends ASTWrapperPsiElement {
 
@@ -17,5 +18,9 @@ public class PsiAssert extends ASTWrapperPsiElement {
     @Override
     public String toString() {
         return "Assert";
+    }
+
+    public PsiElement getAssertion() {
+        return getFirstChild().getNextSibling();
     }
 }

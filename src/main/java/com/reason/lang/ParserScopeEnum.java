@@ -89,6 +89,9 @@ public enum ParserScopeEnum {
 
     genericExpression,
 
+    assert_,
+    assertScope,
+
     sexpr,
     library,
     executable,

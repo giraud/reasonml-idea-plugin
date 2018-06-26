@@ -70,6 +70,8 @@ public class OclParser extends CommonParser {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUNCTION) {
                 parseFun(builder, state);
+            } else if (tokenType == m_types.ASSERT) {
+                parseAssert(builder, state);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -119,6 +121,15 @@ public class OclParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseAssert(PsiBuilder builder, ParserState state) {
+        state.add(markComplete(builder, assert_, m_types.ASSERT));
+        state.dontMove = advance(builder);
+        IElementType tokenType = builder.getTokenType();
+        if (tokenType != m_types.LPAREN) {
+            state.add(markCompleteScope(builder, assertScope, m_types.SCOPED_EXPR, groupExpression, null));
         }
     }
 
@@ -313,7 +324,9 @@ public class OclParser extends CommonParser {
             state.setComplete();
         }
 
-        state.endAny();
+        if (!state.isResolution(assert_)) {
+            state.endAny();
+        }
         state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
     }
 
@@ -377,6 +390,10 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLIdent(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(modulePath)) {
+            state.popEnd();
+        }
+
         if (state.isResolution(typeConstrName)) {
             state.setResolution(typeNamed);
             state.setComplete();

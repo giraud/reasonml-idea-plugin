@@ -88,6 +88,8 @@ public class RmlParser extends CommonParser {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUN) {
                 parseFun(builder, state);
+            } else if (tokenType == m_types.ASSERT) {
+                parseAssert(builder, state);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -160,6 +162,14 @@ public class RmlParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseAssert(PsiBuilder builder, ParserState state) {
+        state.addStart(markComplete(builder, assert_, m_types.ASSERT));
+        state.dontMove = advance(builder);
+        if (builder.getTokenType() != m_types.LPAREN) {
+            state.add(markCompleteScope(builder, assertScope, m_types.SCOPED_EXPR, groupExpression, null));
         }
     }
 

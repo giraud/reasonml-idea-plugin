@@ -10,9 +10,10 @@ public class AssertParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiAssert assertExp = firstOfType(parseCode("assert (i < Array.length t);"), PsiAssert.class);
+        PsiAssert assertExp = firstOfType(parseCode("assert (i < Array.length t);", true), PsiAssert.class);
 
         assertNotNull(assertExp);
+        assertNotNull(assertExp.getAssertion());
     }
 
 }

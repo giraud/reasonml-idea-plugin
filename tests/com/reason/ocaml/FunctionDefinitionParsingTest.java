@@ -7,8 +7,8 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.ocaml.OclParserDefinition;
 
-public class FunctionParsingTest extends BaseParsingTestCase {
-    public FunctionParsingTest() {
+public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
+    public FunctionDefinitionParsingTest() {
         super("", "ml", new OclParserDefinition());
     }
 
