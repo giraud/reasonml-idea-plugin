@@ -191,9 +191,13 @@ public final class PsiFinder {
 
         Collection<T> items = StubIndex.getElements(indexKey, name, project, GlobalSearchScope.allScope(project), clazz);
         if (items.isEmpty()) {
-            m_log.debug("  No lets found");
+            if (m_log.isDebugEnabled()) {
+                m_log.debug("  No " + debugName + " found");
+            }
         } else {
-            m_log.debug("  lets found", items.size());
+            if (m_log.isDebugEnabled()) {
+                m_log.debug("  " + debugName + " found", items.size());
+            }
             for (T item : items) {
                 boolean keepFile;
 
