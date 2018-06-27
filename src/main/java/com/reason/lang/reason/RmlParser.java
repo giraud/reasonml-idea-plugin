@@ -46,13 +46,13 @@ public class RmlParser extends CommonParser {
             //}
 
             // special keywords that can be used as lident
-            if (tokenType == m_types.REF && state.isResolution(objectBinding)) {
+            if (tokenType == m_types.REF && state.isResolution(recordBinding)) {
                 parseLIdent(builder, state);
-            } else if (tokenType == m_types.LIST && state.isResolution(objectBinding)) {
+            } else if (tokenType == m_types.LIST && state.isResolution(recordBinding)) {
                 parseLIdent(builder, state);
-            } else if (tokenType == m_types.METHOD && state.isResolution(objectBinding)) {
+            } else if (tokenType == m_types.METHOD && state.isResolution(recordBinding)) {
                 parseLIdent(builder, state);
-            } else if (tokenType == m_types.STRING && state.isResolution(objectBinding)) {
+            } else if (tokenType == m_types.STRING && state.isResolution(recordBinding)) {
                 parseLIdent(builder, state);
             }
             //
@@ -196,7 +196,7 @@ public class RmlParser extends CommonParser {
         if (state.isResolution(namedSymbolSignature)) {
             state.setComplete();
             state.popEnd();
-        } else if (state.isResolution(objectSignature)) {
+        } else if (state.isResolution(recordSignature)) {
             state.setComplete();
             state.popEnd();
             state.popEnd();
@@ -353,10 +353,10 @@ public class RmlParser extends CommonParser {
 
             state.dontMove = advance(builder);
             state.add(markScope(builder, namedSymbolSignature, m_types.SIG_SCOPE, groupExpression, null));
-        } else if (state.isResolution(objectField)) {
+        } else if (state.isResolution(recordField)) {
             state.setComplete();
             state.dontMove = advance(builder);
-            state.add(markScope(builder, objectSignature, m_types.SIG_SCOPE, groupExpression, null));
+            state.add(markScope(builder, recordSignature, m_types.SIG_SCOPE, groupExpression, null));
         }
     }
 
@@ -420,6 +420,16 @@ public class RmlParser extends CommonParser {
             state.popEnd();
         }
 
+        if (state.isResolution(maybeRecord)) {
+            // Maybe a record, we must check
+            IElementType nextTokenType = builder.lookAhead(1);
+            if (nextTokenType == m_types.COLON) {
+                // Yes, this is a record binding
+                state.setResolution(recordBinding);
+                state.setTokenType(m_types.RECORD);
+            }
+        }
+
         if (state.isResolution(typeConstrName)) {
             // TYPE LIDENT ...
             state.setResolution(typeNamed);
@@ -452,8 +462,8 @@ public class RmlParser extends CommonParser {
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
-        } else if (state.isResolution(objectBinding)) {
-            state.add(markScope(builder, objectField, m_types.RECORD_FIELD, groupExpression, null));
+        } else if (state.isResolution(recordBinding)) {
+            state.add(markScope(builder, recordField, m_types.RECORD_FIELD, groupExpression, null));
         } else if (shouldStartExpression(state)) {
             state.addStart(mark(builder, genericExpression, builder.getTokenType()));
         }
@@ -491,11 +501,11 @@ public class RmlParser extends CommonParser {
 
     private void parseLBrace(PsiBuilder builder, ParserState state) {
         if (state.isResolution(typeNamedEq)) {
-            state.add(markScope(builder, objectBinding, m_types.RECORD, scopeExpression, m_types.LBRACE));
+            state.add(markScope(builder, recordBinding, m_types.RECORD, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
             state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(letNamedEq)) {
-            state.add(markScope(builder, funBody, m_types.LET_BINDING, scopeExpression, m_types.LBRACE));
+            state.add(markScope(builder, maybeRecord, null, scopeExpression, m_types.LBRACE));
         } else {
             ParserScope scope;
             if (state.isResolution(switchBinaryCondition)) {

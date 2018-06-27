@@ -53,7 +53,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testLocalScope() {
-        PsiLet let = first(parseCode("let x = { 1 };").getLetExpressions());
+        PsiLet let = first(parseCode("let x = { let y = 1; y + 3; }").getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);

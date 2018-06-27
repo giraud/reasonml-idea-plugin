@@ -346,7 +346,7 @@ public class OclParser extends CommonParser {
 
     private void parseLBrace(PsiBuilder builder, ParserState parserState) {
         parserState.endAny();
-        parserState.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
+        parserState.add(markScope(builder, recordBinding, m_types.RECORD, scopeExpression, m_types.LBRACE));
     }
 
     private void parseRBrace(PsiBuilder builder, ParserState parserState) {

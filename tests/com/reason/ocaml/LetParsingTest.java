@@ -42,11 +42,13 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testRecord() {
-        PsiLet let = first(parseCode("let typeScaleRaw = { one = 1.375; two = 1.0 }").getLetExpressions());
+        PsiLet let = first(parseCode("let r = { one = 1; two = 2 }", true).getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);
-        assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiRecord.class));
+        PsiRecord record = PsiTreeUtil.findChildOfType(binding, PsiRecord.class);
+        assertNotNull(record);
+        assertSize(2, record.getFields());
     }
 
 }

@@ -51,9 +51,10 @@ public enum ParserScopeEnum {
     macro,
     macroName,
 
-    objectBinding,
-    objectField,
-    objectSignature,
+    maybeRecord,
+    recordBinding,
+    recordField,
+    recordSignature,
 
     paren,
     brace,
