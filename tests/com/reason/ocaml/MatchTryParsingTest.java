@@ -29,7 +29,7 @@ public class MatchTryParsingTest extends BaseParsingTestCase {
     }
 
     public void testTryLet() {
-        PsiFileModuleImpl psiFileModule = parseCode("let e = try let t = 6 with Not_found -> ()", true);
+        PsiFileModuleImpl psiFileModule = parseCode("let e = try let t = 6 with Not_found -> ()");
         PsiElement[] children = psiFileModule.getChildren();
         assertEquals(1 + 1, children.length);
     }

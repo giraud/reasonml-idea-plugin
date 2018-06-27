@@ -52,12 +52,22 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertNotNull(binding);
     }
 
-    public void testRecord() {
-        PsiLet let = first(parseCode("let typeScaleRaw = {one: 1.375, two: 1.0};").getLetExpressions());
+    public void testLocalScope() {
+        PsiLet let = first(parseCode("let x = { 1 };").getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);
-        assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiRecord.class));
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiRecord.class));
+    }
+
+    public void testRecord() {
+        PsiLet let = first(parseCode("let typeScale = {one: 1.375, two: 1.0};", true).getLetExpressions());
+
+        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
+        assertNotNull(binding);
+        PsiRecord record = PsiTreeUtil.findChildOfType(binding, PsiRecord.class);
+        assertNotNull(record);
+        assertSize(2, record.getFields());
     }
 
 }

@@ -10,7 +10,7 @@ public class IncludeParsingTest extends BaseParsingTestCase {
     }
 
     public void testInclude() {
-        PsiInclude e = first(parseCode("include Belt", true).getIncludeExpressions());
+        PsiInclude e = first(parseCode("include Belt").getIncludeExpressions());
 
         assertNotNull(e);
         assertEquals("Belt", e.getName());
