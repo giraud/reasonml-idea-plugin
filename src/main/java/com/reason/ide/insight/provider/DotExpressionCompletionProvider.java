@@ -10,13 +10,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
+import com.reason.Joiner;
 import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -83,6 +82,32 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                                             withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                             );
                         }
+                    }
+                }
+            }
+        } else if (previousElement instanceof PsiLowerSymbol) {
+            // Expression of let/val/external/type
+            String lowerName = ((PsiLowerSymbol) previousElement).getName();
+            if (lowerName != null) {
+                m_debug.debug("  symbol", lowerName);
+                PsiFinder psiFinder = PsiFinder.getInstance();
+
+                // try let
+                Collection<PsiLet> lets = psiFinder.findLets(project, lowerName, interfaceOrImplementation, inBsconfig);
+                if (m_debug.isDebugEnabled()) {
+                    m_debug.debug("  lets", lets.size(), lets.size() == 1 ? " (" + lets.iterator().next().getName() + ")" : "[" + Joiner.join(", ", lets) + "]");
+                }
+
+                // need filtering
+
+                for (PsiLet expression : lets) {
+                    for (PsiRecordField recordField : expression.getObjectFields()) {
+                        resultSet.addElement(
+                                LookupElementBuilder.
+                                        create(recordField).
+                                        withTypeText(PsiSignatureUtil.getProvidersType(recordField)).
+                                        withIcon(PsiIconUtil.getProvidersIcon(recordField, 0))
+                        );
                     }
                 }
             }

@@ -1,15 +1,19 @@
 package com.reason.lang.core;
 
+import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiSignatureUtil {
+
+    private PsiSignatureUtil() {
+    }
+
     @NotNull
-    public static String getProvidersType(@Nullable PsiNamedElement element) {
+    public static String getProvidersType(@Nullable PsiElement element) {
         if (element instanceof PsiExternal) {
             return ((PsiExternal) element).getSignature().toString();
         } else if (element instanceof PsiLet) {
@@ -21,7 +25,6 @@ public class PsiSignatureUtil {
             HMSignature signature = val.getSignature();
             return signature.toString();
         }
-
         return "";
     }
 
