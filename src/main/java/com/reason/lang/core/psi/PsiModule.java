@@ -5,13 +5,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.stub.ModuleStub;
+import com.reason.lang.core.stub.PsiModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<ModuleStub> {
+public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiModuleStub> {
     @Nullable
     PsiSignature getSignature();
 

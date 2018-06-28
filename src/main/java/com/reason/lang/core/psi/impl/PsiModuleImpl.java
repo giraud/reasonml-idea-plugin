@@ -14,7 +14,7 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.stub.ModuleStub;
+import com.reason.lang.core.stub.PsiModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ import java.util.List;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
 
-public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implements PsiModule {
+public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implements PsiModule {
 
     private ModulePath m_modulePath;
     private final MlTypes m_types;
@@ -38,7 +38,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
         m_types = types;
     }
 
-    public PsiModuleImpl(ModuleStub stub, IStubElementType nodeType, MlTypes types) {
+    public PsiModuleImpl(PsiModuleStub stub, IStubElementType nodeType, MlTypes types) {
         super(stub, nodeType);
         m_types = types;
     }
@@ -255,7 +255,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @Override
     @Nullable
     public String getAlias() {
-        ModuleStub stub = getGreenStub();
+        PsiModuleStub stub = getGreenStub();
         if (stub != null) {
             return stub.getAlias();
         }
@@ -289,7 +289,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<ModuleStub> implement
     @Nullable
     @Override
     public String getQualifiedName() {
-        ModuleStub stub = getGreenStub();
+        PsiModuleStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }

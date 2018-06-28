@@ -7,13 +7,13 @@ import com.intellij.util.io.StringRef;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
-public class ModuleStub extends NamedStubBase<PsiModule> {
+public class PsiModuleStub extends NamedStubBase<PsiModule> {
     private final String m_qname;
     private final boolean m_isFileModule;
     private final boolean m_isComponent;
     private final String m_alias;
 
-    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname, String alias, boolean isFileModule, boolean isComponent) {
+    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname, String alias, boolean isFileModule, boolean isComponent) {
         super(parent, elementType, name);
         m_qname = qname;
         m_isFileModule = isFileModule;
@@ -21,7 +21,7 @@ public class ModuleStub extends NamedStubBase<PsiModule> {
         m_alias = alias;
     }
 
-    public ModuleStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, String alias, boolean isFileModule, boolean isComponent) {
+    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, String alias, boolean isFileModule, boolean isComponent) {
         super(parent, elementType, name);
         m_qname = qname;
         m_isFileModule = isFileModule;

@@ -8,7 +8,7 @@ import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
-import com.reason.lang.core.stub.ModuleStub;
+import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -16,23 +16,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModule> {
+public class ModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
 
     public ModuleStubElementType(String name, Language language) {
         super(name, language);
     }
 
-    public PsiModuleImpl createPsi(@NotNull final ModuleStub stub) {
+    public PsiModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
         MlTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
         return stub.isFileModule() ? new PsiFileModuleImpl(stub, this, types) : new PsiModuleImpl(stub, this, types);
     }
 
     @NotNull
-    public ModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new ModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi instanceof PsiFileModuleImpl, psi.isComponent());
+    public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi instanceof PsiFileModuleImpl, psi.isComponent());
     }
 
-    public void serialize(@NotNull final ModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
+    public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFileModule());
@@ -46,7 +46,7 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
     }
 
     @NotNull
-    public ModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
+    public PsiModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
         String qname = dataStream.readUTFFast();
         boolean isFileModule = dataStream.readBoolean();
@@ -58,10 +58,10 @@ public class ModuleStubElementType extends IStubElementType<ModuleStub, PsiModul
             alias = dataStream.readUTFFast();
         }
 
-        return new ModuleStub(parentStub, this, moduleName, qname, alias, isFileModule, isComponent);
+        return new PsiModuleStub(parentStub, this, moduleName, qname, alias, isFileModule, isComponent);
     }
 
-    public void indexStub(@NotNull final ModuleStub stub, @NotNull final IndexSink sink) {
+    public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.MODULES, name);

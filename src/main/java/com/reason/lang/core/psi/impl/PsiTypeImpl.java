@@ -38,8 +38,33 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     @NotNull
     @Override
     public String getName() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            String name = stub.getName();
+            return name == null ? "" : name;
+        }
+
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        if (nameIdentifier == null) {
+            return "";
+        }
+
+        StringBuilder nameBuilder = new StringBuilder();
+        boolean first = true;
+
+        PsiElement element = nameIdentifier.getFirstChild();
+        while (element != null) {
+            if (element instanceof PsiLowerSymbol) {
+                if (!first) {
+                    nameBuilder.append(" ");
+                }
+                nameBuilder.append(element.getText());
+                first = false;
+            }
+            element = element.getNextSibling();
+        }
+
+        return nameBuilder.toString();
     }
 
     @Override
@@ -57,6 +82,11 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     @Nullable
     @Override
     public String getQualifiedName() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
         String path;
 
         PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);

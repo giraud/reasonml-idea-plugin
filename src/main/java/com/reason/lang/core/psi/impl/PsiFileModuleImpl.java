@@ -9,7 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.stub.ModuleStub;
+import com.reason.lang.core.stub.PsiModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class PsiFileModuleImpl extends PsiModuleImpl {
-    public PsiFileModuleImpl(@NotNull ModuleStub stub, @NotNull IStubElementType nodeType, MlTypes types) {
+    public PsiFileModuleImpl(@NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType, MlTypes types) {
         super(stub, nodeType, types);
     }
 
@@ -117,7 +117,7 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
     @Nullable
     @Override
     public String getQualifiedName() {
-        ModuleStub stub = getGreenStub();
+        PsiModuleStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
@@ -132,7 +132,7 @@ public class PsiFileModuleImpl extends PsiModuleImpl {
 
     @Override
     public boolean isComponent() {
-        ModuleStub stub = getGreenStub();
+        PsiModuleStub stub = getGreenStub();
         if (stub != null) {
             return stub.isComponent();
         }

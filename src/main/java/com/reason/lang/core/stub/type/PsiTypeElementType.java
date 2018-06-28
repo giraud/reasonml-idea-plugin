@@ -2,6 +2,7 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
+import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.impl.PsiTypeImpl;
@@ -22,16 +23,19 @@ public class PsiTypeElementType extends IStubElementType<PsiTypeStub, PsiType> {
 
     @NotNull
     public PsiTypeStub createStub(@NotNull final PsiType psi, final StubElement parentStub) {
-        return new PsiTypeStub(parentStub, this, psi.getName());
+        return new PsiTypeStub(parentStub, this, psi.getName(), psi.getQualifiedName());
     }
 
     public void serialize(@NotNull final PsiTypeStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeUTFFast(stub.getQualifiedName());
     }
 
     @NotNull
     public PsiTypeStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
-        return new PsiTypeStub(parentStub, this, dataStream.readName());
+        StringRef name = dataStream.readName();
+        String qname = dataStream.readUTFFast();
+        return new PsiTypeStub(parentStub, this, name, qname);
     }
 
     public void indexStub(@NotNull final PsiTypeStub stub, @NotNull final IndexSink sink) {
