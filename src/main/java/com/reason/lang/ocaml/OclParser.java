@@ -33,7 +33,7 @@ public class OclParser extends CommonParser {
             }
 
             if (tokenType == m_types.SEMI) {
-                parseSemi(state);
+                parseSemi(builder, state);
             } else if (tokenType == m_types.IN) {
                 parseIn(state);
             } else if (tokenType == m_types.END) { // end (like a })
@@ -214,11 +214,19 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseSemi(ParserState state) {
-        // A SEMI operator ends the start expression, not the group or scope
-        ParserScope scope = state.endAny();
-        if (scope != null && state.isStart(scope)) {
+    private void parseSemi(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(recordField)) {
+            // SEMI ends the field, and starts a new one
+            state.setComplete();
             state.popEnd();
+            state.dontMove = advance(builder);
+            state.add(mark(builder, recordField, m_types.RECORD_FIELD));
+        } else {
+            // A SEMI operator ends the start expression, not the group or scope
+            ParserScope scope = state.endAny();
+            if (scope != null && state.isStart(scope)) {
+                state.popEnd();
+            }
         }
     }
 
@@ -344,23 +352,29 @@ public class OclParser extends CommonParser {
         parserState.updateCurrentScope();
     }
 
-    private void parseLBrace(PsiBuilder builder, ParserState parserState) {
-        parserState.endAny();
-        parserState.add(markScope(builder, recordBinding, m_types.RECORD, scopeExpression, m_types.LBRACE));
+    private void parseLBrace(PsiBuilder builder, ParserState state) {
+        state.endAny();
+        state.add(markScope(builder, recordBinding, m_types.RECORD, scopeExpression, m_types.LBRACE));
+        state.dontMove = advance(builder);
+        state.add(mark(builder, recordField, m_types.RECORD_FIELD));
     }
 
-    private void parseRBrace(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACE);
+    private void parseRBrace(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(recordField)) {
+            state.setComplete();
+        }
+
+        ParserScope scope = state.endUntilScopeExpression(m_types.LBRACE);
 
         builder.advanceLexer();
-        parserState.dontMove = true;
+        state.dontMove = true;
 
         if (scope != null) {
             scope.complete();
-            parserState.popEnd();
+            state.popEnd();
         }
 
-        parserState.updateCurrentScope();
+        state.updateCurrentScope();
     }
 
     private void parseLBracket(PsiBuilder builder, ParserState parserState) {

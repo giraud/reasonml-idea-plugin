@@ -5,7 +5,11 @@ import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.ocaml.OclParserDefinition;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {
@@ -48,7 +52,11 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertNotNull(binding);
         PsiRecord record = PsiTreeUtil.findChildOfType(binding, PsiRecord.class);
         assertNotNull(record);
-        assertSize(2, record.getFields());
+        Collection<PsiRecordField> fields = record.getFields();
+        assertSize(2, fields);
+        Iterator<PsiRecordField> itFields = fields.iterator();
+        assertEquals("one = 1", itFields.next().getText());
+        assertEquals("two = 2", itFields.next().getText());
     }
 
 }
