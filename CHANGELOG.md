@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.57
+
+- :rocket: Some record field completion
+- :bug: Fix #66 - Go To + module alias
+- :house: ![o](resources/icons/ocaml-file.png) Better module path resolution</li>
+- :house: Improved parsers
+            
 ## 0.56
 
 - :rocket: ![r](resources/icons/reason-file.png) Go to symbol is working for external/let mainly
