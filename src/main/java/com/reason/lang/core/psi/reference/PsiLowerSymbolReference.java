@@ -79,17 +79,14 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         if (!lets.isEmpty()) {
-            Collection<PsiLet> filteredLets = lets;
-            if (1 < lets.size()) {
-                // Filter the modules, keep the ones with the same qualified name
-                potentialPaths = getPotentialPaths(modulePathFinder, project);
-                filteredLets = lets.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+            // Filter the modules, keep the ones with the same qualified name
+            potentialPaths = getPotentialPaths(modulePathFinder, project);
+            Collection<PsiLet> filteredLets = lets.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
 
-                if (m_debug) {
-                    System.out.println("  filtered lets: " + filteredLets.size());
-                    for (PsiQualifiedNamedElement element : filteredLets) {
-                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
-                    }
+            if (m_debug) {
+                System.out.println("  filtered lets: " + filteredLets.size());
+                for (PsiQualifiedNamedElement element : filteredLets) {
+                    System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
                 }
             }
 
@@ -109,19 +106,16 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         if (!vals.isEmpty()) {
-            Collection<PsiVal> filteredVals = vals;
-            if (1 < vals.size()) {
-                // Filter the modules, keep the ones with the same qualified name
-                if (potentialPaths == null) {
-                    potentialPaths = getPotentialPaths(modulePathFinder, project);
-                }
-                filteredVals = vals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+            // Filter the modules, keep the ones with the same qualified name
+            if (potentialPaths == null) {
+                potentialPaths = getPotentialPaths(modulePathFinder, project);
+            }
+            Collection<PsiVal> filteredVals = vals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
 
-                if (m_debug) {
-                    System.out.println("  filtered vals: " + filteredVals.size());
-                    for (PsiQualifiedNamedElement element : filteredVals) {
-                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
-                    }
+            if (m_debug) {
+                System.out.println("  filtered vals: " + filteredVals.size());
+                for (PsiQualifiedNamedElement element : filteredVals) {
+                    System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
                 }
             }
 
@@ -141,19 +135,16 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         if (!externals.isEmpty()) {
-            Collection<PsiExternal> filteredExternals = externals;
-            if (1 < externals.size()) {
-                // Filter the modules, keep the ones with the same qualified name
-                if (potentialPaths == null) {
-                    potentialPaths = getPotentialPaths(modulePathFinder, project);
-                }
-                filteredExternals = externals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+            // Filter the modules, keep the ones with the same qualified name
+            if (potentialPaths == null) {
+                potentialPaths = getPotentialPaths(modulePathFinder, project);
+            }
+            Collection<PsiExternal> filteredExternals = externals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
 
-                if (m_debug) {
-                    System.out.println("  filtered externals: " + filteredExternals.size());
-                    for (PsiQualifiedNamedElement element : filteredExternals) {
-                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
-                    }
+            if (m_debug) {
+                System.out.println("  filtered externals: " + filteredExternals.size());
+                for (PsiQualifiedNamedElement element : filteredExternals) {
+                    System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
                 }
             }
 
@@ -173,19 +164,16 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         if (!types.isEmpty()) {
-            Collection<PsiType> filteredTypes = types;
-            if (1 < types.size()) {
-                // Filter the modules, keep the ones with the same qualified name
-                if (potentialPaths == null) {
-                    potentialPaths = getPotentialPaths(modulePathFinder, project);
-                }
-                filteredTypes = types.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+            // Filter the modules, keep the ones with the same qualified name
+            if (potentialPaths == null) {
+                potentialPaths = getPotentialPaths(modulePathFinder, project);
+            }
+            Collection<PsiType> filteredTypes = types.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
 
-                if (m_debug) {
-                    System.out.println("  filtered types: " + filteredTypes.size());
-                    for (PsiQualifiedNamedElement element : filteredTypes) {
-                        System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
-                    }
+            if (m_debug) {
+                System.out.println("  filtered types: " + filteredTypes.size());
+                for (PsiQualifiedNamedElement element : filteredTypes) {
+                    System.out.println("    " + element.getContainingFile().getVirtualFile().getCanonicalPath() + " " + element.getQualifiedName());
                 }
             }
 
