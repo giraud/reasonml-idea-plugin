@@ -61,7 +61,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testRecord() {
-        PsiLet let = first(parseCode("let typeScale = {one: 1.375, two: 1.0};", true).getLetExpressions());
+        PsiLet let = first(parseCode("let typeScale = {one: 1.375, two: 1.0};").getLetExpressions());
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);

@@ -503,7 +503,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLet(PsiBuilder builder, ParserState state) {
-        if (state.previousTokenType != m_types.EQ && state.previousTokenType != m_types.IN) {
+        if (state.previousTokenType != m_types.EQ && state.previousTokenType != m_types.IN && state.previousTokenType != m_types.TRY) {
             endLikeSemi(state);
         }
         state.addStart(mark(builder, let, m_types.LET_EXPRESSION));
