@@ -22,7 +22,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
 
     public void testRecursiveType() {
         PsiType type = first(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));").getTypeExpressions());
-        assertEquals("tree('a)", type.getName());
+        assertEquals("tree", type.getName());
     }
 
     public void testTypeBindingWithVariant() {

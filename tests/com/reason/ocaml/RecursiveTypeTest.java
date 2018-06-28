@@ -16,6 +16,6 @@ public class RecursiveTypeTest extends BaseParsingTestCase {
 
         assertEquals(2, types.size());
         assertEquals("update", first(types).getName());
-        assertEquals("'state self", second(types).getName());
+        assertEquals("self", second(types).getName());
     }
 }
