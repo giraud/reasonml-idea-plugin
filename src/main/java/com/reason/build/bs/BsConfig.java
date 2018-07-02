@@ -5,23 +5,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class BsConfig {
 
-    private static Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
-    private static Pattern NAME_REGEXP = Pattern.compile(".*\"name\":\\s*\"([^\"]*?)\".*");
-    private static Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
+    private static final Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
+    private static final Pattern NAME_REGEXP = Pattern.compile(".*\"name\":\\s*\"([^\"]*?)\".*");
+    private static final Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
 
+    private final Path m_basePath;
     private final String m_namespace;
     private final String[] m_deps;
     private final String m_pervasives;
 
     private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @NotNull String[] bsPlatformDeps, @Nullable String[] deps) {
+        m_basePath = FileSystems.getDefault().getPath(rootFile.getPath());
         m_namespace = hasNamespace ? toNamespace(name) : "";
         m_pervasives = locateFile(rootFile, "pervasives.mli");
 
@@ -44,16 +49,18 @@ class BsConfig {
             return false;
         }
 
-        if (canonicalPath.contains("node_modules") && m_deps != null) {
+        Path relativePath = m_basePath.relativize(new File(canonicalPath).toPath());
+        if (relativePath.startsWith("node_modules") && m_deps != null) {
+            String relative = relativePath.toString();
             for (String dep : m_deps) {
-                if (canonicalPath.contains(dep) || canonicalPath.contains(m_pervasives)) {
+                if (relative.contains(dep) || relative.contains(m_pervasives)) {
                     return true;
                 }
             }
             return false;
         }
 
-        return true;
+        return !relativePath.startsWith("..");
     }
 
     @NotNull

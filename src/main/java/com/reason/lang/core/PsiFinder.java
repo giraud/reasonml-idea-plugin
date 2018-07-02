@@ -8,7 +8,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.build.bs.Bucklescript;
@@ -28,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.intellij.psi.search.GlobalSearchScope.projectScope;
 import static com.reason.lang.core.MlScope.all;
 import static com.reason.lang.core.MlScope.inBsconfig;
 
@@ -50,7 +50,7 @@ public final class PsiFinder {
 
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
-        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, GlobalSearchScope.allScope(project), PsiModule.class);
+        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, projectScope(project), PsiModule.class);
         if (modules.isEmpty()) {
             m_log.debug("  No modules found");
         } else {
@@ -76,7 +76,7 @@ public final class PsiFinder {
                         String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
                                 OclInterfaceFileType.INSTANCE.getDefaultExtension();
                         Collection<VirtualFile> interfaceFiles = FilenameIndex
-                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, GlobalSearchScope.allScope(project));
+                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, projectScope(project));
                         keepFile = interfaceFiles.isEmpty();
                     }
                 }
@@ -203,7 +203,7 @@ public final class PsiFinder {
 
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
-        Collection<T> items = StubIndex.getElements(indexKey, name, project, GlobalSearchScope.allScope(project), clazz);
+        Collection<T> items = StubIndex.getElements(indexKey, name, project, projectScope(project), clazz);
         if (items.isEmpty()) {
             if (m_log.isDebugEnabled()) {
                 m_log.debug("  No " + debugName + " found");
@@ -233,7 +233,7 @@ public final class PsiFinder {
                         String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
                                 OclInterfaceFileType.INSTANCE.getDefaultExtension();
                         Collection<VirtualFile> interfaceFiles = FilenameIndex
-                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, GlobalSearchScope.allScope(project));
+                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, projectScope(project));
                         keepFile = interfaceFiles.isEmpty();
                     }
                 }
@@ -361,12 +361,12 @@ public final class PsiFinder {
             return null;
         }
 
-        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, GlobalSearchScope.allScope(project));
+        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, projectScope(project));
         if (!modules.isEmpty()) {
             PsiModule moduleReference = modules.iterator().next();
             String alias = moduleReference.getAlias();
             if (alias != null) {
-                modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, GlobalSearchScope.allScope(project));
+                modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, projectScope(project));
                 if (!modules.isEmpty()) {
                     PsiModule next = modules.iterator().next();
                     if (next != null) {
