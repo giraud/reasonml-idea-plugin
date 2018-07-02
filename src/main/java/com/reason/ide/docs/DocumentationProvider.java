@@ -8,11 +8,10 @@ import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -61,6 +60,18 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // No inferred type, look at the reference and use its signature if present
+        PsiReference reference = originalElement.getReference();
+        if (reference != null) {
+            PsiElement parent = PsiTreeUtil.getStubOrPsiParent(reference.resolve());
+            if (parent != null && !(parent instanceof PsiModule)) {
+                PsiSignature sig = PsiTreeUtil.getStubChildOfType(parent, PsiSignature.class);
+                if (sig != null) {
+                    return sig.asHMSignature().toString();
                 }
             }
         }

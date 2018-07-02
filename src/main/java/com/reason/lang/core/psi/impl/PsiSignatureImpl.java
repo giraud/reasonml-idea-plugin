@@ -22,4 +22,9 @@ public class PsiSignatureImpl extends ASTWrapperPsiElement implements PsiSignatu
         boolean isOcaml = containingFile instanceof OclFile || containingFile instanceof OclInterfaceFile;
         return new HMSignature(isOcaml, getText());
     }
+
+    @Override
+    public String toString() {
+        return "Signature";
+    }
 }
