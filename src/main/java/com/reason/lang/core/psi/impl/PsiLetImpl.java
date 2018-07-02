@@ -20,9 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements PsiLet {
 
@@ -75,24 +72,16 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 
-    @NotNull
-    @Override
-    public Map<String, String> getParameters() {
-        PsiParameters parameters = findChildByClass(PsiParameters.class);
-        Collection<PsiLowerSymbol> symbols = PsiTreeUtil.findChildrenOfType(parameters, PsiLowerSymbol.class);
-        if (symbols.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        Map<String, String> result = new HashMap<>();
-        for (PsiLowerSymbol symbol : symbols) {
-            String parameterName = symbol.getText();
-            if (!"children".equals(parameterName) && !"_children".equals(parameterName)) {
-                result.put(parameterName, "");
+    @Nullable
+    public PsiFunction getFunction() {
+        PsiLetBinding binding = getBinding();
+        if (binding != null) {
+            PsiElement child = binding.getFirstChild();
+            if (child instanceof PsiFunction) {
+                return (PsiFunction) child;
             }
         }
-
-        return result;
+        return null;
     }
 
     @Override

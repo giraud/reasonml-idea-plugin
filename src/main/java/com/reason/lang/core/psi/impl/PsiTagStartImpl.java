@@ -24,7 +24,6 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
         super(RmlTypes.INSTANCE, node);
     }
 
-
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
@@ -85,7 +84,10 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                 Collection<PsiLet> expressions = module.getLetExpressions();
                 for (PsiLet expression : expressions) {
                     if ("make".equals(expression.getName())) {
-                        return expression.getParameters();
+                        PsiFunction function = expression.getFunction();
+                        if (function != null) {
+                            return function.getParameters();
+                        }
                     }
                 }
             }

@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface PsiLet extends PsiInferredType, PsiQualifiedNamedElement, PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
 
@@ -19,8 +18,8 @@ public interface PsiLet extends PsiInferredType, PsiQualifiedNamedElement, PsiNa
     @NotNull
     HMSignature getSignature();
 
-    @NotNull
-    Map<String, String> getParameters();
+    @Nullable
+    PsiFunction getFunction();
 
     boolean isObject();
 
