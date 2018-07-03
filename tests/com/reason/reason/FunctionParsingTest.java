@@ -52,7 +52,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);").getLetExpressions());
 
         PsiFunction functionOuter = (PsiFunction) e.getBinding().getFirstChild();
-        assertEquals("Belt.Array.mapU(errors, (. error) => error##message)", functionOuter.getBody().getText());
+        assertEquals("Belt.Array.mapU(errors, (. error) => error##message);", functionOuter.getBody().getText());
 
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(functionOuter, PsiFunction.class);
         assertEquals("error##message", functionInner.getBody().getText());

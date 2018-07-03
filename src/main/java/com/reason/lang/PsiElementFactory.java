@@ -24,6 +24,10 @@ public class PsiElementFactory {
             return new PsiTypeImpl(node);
         } else if (type == types.ASSERT) {
             return new PsiAssert(node);
+        } else if (type == types.IF) {
+            return new PsiIfStatement(node);
+        } else if (type == types.BIN_CONDITION) {
+            return new PsiBinaryCondition(node);
         } else if (type == types.TYPE_CONSTR_NAME) {
             return new PsiTypeConstrNameImpl(types, node);
         } else if (type == types.TYPE_BINDING) {

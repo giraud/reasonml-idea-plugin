@@ -45,7 +45,7 @@ public class RmlParser extends CommonParser {
             //    parserState.add(markScope(builder, genericExpression, tokenType, startExpression, tokenType));
             //}
 
-            // special keywords that can be used as lident
+            // special keywords that can be used as lower identifier in records
             if (tokenType == m_types.REF && state.isResolution(recordBinding)) {
                 parseLIdent(builder, state);
             } else if (tokenType == m_types.LIST && state.isResolution(recordBinding)) {
@@ -90,6 +90,8 @@ public class RmlParser extends CommonParser {
                 parseFun(builder, state);
             } else if (tokenType == m_types.ASSERT) {
                 parseAssert(builder, state);
+            } else if (tokenType == m_types.IF) {
+                parseIf(builder, state);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -163,6 +165,10 @@ public class RmlParser extends CommonParser {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parseIf(PsiBuilder builder, ParserState state) {
+        state.add(markScope(builder, ifThenStatement, m_types.IF, groupExpression, m_types.IF));
     }
 
     private void parseAssert(PsiBuilder builder, ParserState state) {
@@ -506,6 +512,8 @@ public class RmlParser extends CommonParser {
             state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(letNamedEq)) {
             state.add(markScope(builder, maybeRecord, null, scopeExpression, m_types.LBRACE));
+        } else if (state.isResolution(ifThenStatement)) {
+            state.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else {
             ParserScope scope;
             if (state.isResolution(switchBinaryCondition)) {
@@ -537,6 +545,9 @@ public class RmlParser extends CommonParser {
             state.setTokenType(m_types.LOCAL_OPEN);
             state.setComplete();
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
+        } else if (state.isResolution(ifThenStatement)) {
+            state.setComplete();
+            state.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, scopeExpression, m_types.LPAREN));
         } else {
 
             if (state.isResolution(external)) {
@@ -561,12 +572,12 @@ public class RmlParser extends CommonParser {
     private void parseRParen(PsiBuilder builder, ParserState state) {
         ParserScope parenScope = state.endUntilScopeExpression(m_types.LPAREN);
         state.dontMove = advance(builder);
+        IElementType nextTokenType = builder.getTokenType();
 
         if (parenScope != null) {
             // Remove the scope from the stack, we want to test its parent
             state.pop();
 
-            IElementType nextTokenType = builder.getTokenType();
             if (nextTokenType == m_types.ARROW && !state.isResolution(patternMatch) && !state.isCurrentTokenType(m_types.SIG_SCOPE)) {
                 parenScope.resolution = parameters;
                 parenScope.tokenType = m_types.FUN_PARAMS;
@@ -590,6 +601,11 @@ public class RmlParser extends CommonParser {
             if (scope != null && scope.resolution == localOpen) {
                 state.popEnd();
             }
+        }
+
+        if (nextTokenType == m_types.SEMI) {
+            // ( ... ); -> skip semi, its ok
+            advance(builder);
         }
     }
 
