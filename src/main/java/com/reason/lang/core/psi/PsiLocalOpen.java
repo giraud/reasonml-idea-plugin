@@ -21,7 +21,7 @@ public class PsiLocalOpen extends ASTWrapperPsiElement {
         StringBuilder sb = new StringBuilder(firstChild.getText());
 
         PsiElement nextSibling = firstChild.getNextSibling();
-        while (nextSibling.getNode().getElementType() != m_types.SCOPED_EXPR) {
+        while (nextSibling != null && nextSibling.getNode().getElementType() != m_types.SCOPED_EXPR) {
             sb.append(nextSibling.getText());
             nextSibling = nextSibling.getNextSibling();
         }
