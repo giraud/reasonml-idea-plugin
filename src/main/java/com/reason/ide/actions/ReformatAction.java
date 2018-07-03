@@ -1,4 +1,4 @@
-package com.reason.ide.format;
+package com.reason.ide.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.BucklescriptManager;
+import com.reason.ide.format.ReformatUtil;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 

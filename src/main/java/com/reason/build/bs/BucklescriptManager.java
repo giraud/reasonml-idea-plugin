@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.IOException;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
@@ -142,6 +143,24 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         VirtualFile bsconfig = Platform.findBaseRoot(m_project).findChild("bsconfig.json");
         if (bsconfig != null) {
             m_config = BsConfig.read(bsconfig);
+        }
+    }
+
+    @Override
+    public void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
+        if (m_refmt != null) {
+            String oldText = document.getText();
+            String newText = m_refmt.convert(fromFormat, toFormat, oldText);
+            if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
+                getApplication().runWriteAction(() -> {
+                    CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup");
+                    try {
+                        virtualFile.rename(this, virtualFile.getNameWithoutExtension() + "." + toFormat);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
         }
     }
 

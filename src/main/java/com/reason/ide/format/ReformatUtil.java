@@ -7,13 +7,13 @@ import com.reason.ide.files.RmlFile;
 import com.reason.ide.files.RmlInterfaceFile;
 import org.jetbrains.annotations.Nullable;
 
-class ReformatUtil {
+public class ReformatUtil {
 
     private ReformatUtil() {
     }
 
     @Nullable
-    static String getFormat(@Nullable PsiFile file) {
+    public static String getFormat(@Nullable PsiFile file) {
         String format = null;
 
         if (file instanceof OclFile || file instanceof OclInterfaceFile) {

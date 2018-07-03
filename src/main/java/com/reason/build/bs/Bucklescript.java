@@ -1,6 +1,7 @@
 package com.reason.build.bs;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.build.Compiler;
 import com.reason.build.bs.compiler.BsCompiler;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,8 @@ public interface Bucklescript extends Compiler {
 
     @NotNull
     String getNamespace();
+
+    void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
 
     void refmt(@NotNull String format, @NotNull Document document);
 

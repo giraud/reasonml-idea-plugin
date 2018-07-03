@@ -4,6 +4,7 @@ package com.reason.build.bs.refmt;
 import com.intellij.openapi.diagnostic.Logger;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
@@ -21,14 +22,18 @@ public class RefmtProcess {
         return m_moduleConfiguration.isOnSaveEnabled();
     }
 
-    public String run(String format, String code) {
+    public String run(@NotNull String format, @NotNull String code) {
+        return convert(format, format, code);
+    }
+
+    public String convert(@NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
         String refmtPath = m_moduleConfiguration.getRefmtPath();
         if (refmtPath == null) {
             return code;
         }
 
         String columnsWidth = m_moduleConfiguration.getRefmtWidth();
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", format, "--print", format, "-w", columnsWidth);
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
 
         Process refmt = null;
         try {
@@ -63,5 +68,4 @@ public class RefmtProcess {
         // Something bad happened, do nothing
         return code;
     }
-
 }

@@ -59,9 +59,13 @@
 
     <actions>
         <!-- Add your actions here -->
-        <action id="reason.refmt" class="com.reason.ide.format.ReformatAction" text="Reformat code (refmt)">
+        <action id="reason.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
+        </action>
+        <action id="com.reason.ide.actions.ConvertAction" class="com.reason.ide.actions.ConvertAction"
+                text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
+            <add-to-group group-id="EditMenu" anchor="last"/>
         </action>
     </actions>
 
