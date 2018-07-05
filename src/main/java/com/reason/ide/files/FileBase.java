@@ -2,10 +2,13 @@ package com.reason.ide.files;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.stub.RmlFileStub;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -26,10 +29,15 @@ public abstract class FileBase extends PsiFileBase {
     }
 
     public boolean isComponent() {
-        //PsiModuleStub stub = getGreenStub();
-        //if (stub != null) {
-        //    return stub.isComponent();
-        //}
+        StubElement stub = getGreenStub();
+        if (stub instanceof RmlFileStub) {
+            return ((RmlFileStub) stub).isComponent();
+        }
+
+        FileType fileType = getFileType();
+        if (fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType) {
+            return false;
+        }
 
         // naive detection
 

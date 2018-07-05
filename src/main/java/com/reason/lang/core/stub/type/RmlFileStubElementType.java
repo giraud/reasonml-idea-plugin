@@ -7,7 +7,10 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.psi.tree.IStubFileElementType;
+import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
+import com.reason.ide.files.RmlInterfaceFile;
+import com.reason.lang.core.stub.OclFileStub;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.core.stub.RmlFileStub;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     public static final IStubFileElementType INSTANCE = new RmlFileStubElementType();
 
     private RmlFileStubElementType() {
@@ -29,7 +32,10 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
             @Override
             protected StubElement createStubForFile(@NotNull PsiFile file) {
                 if (file instanceof RmlFile) {
-                    return new RmlFileStub((RmlFile) file);
+                    return new RmlFileStub((RmlFile) file, ((RmlFile) file).isComponent());
+                }
+                else if (file instanceof RmlInterfaceFile) {
+                    return new RmlFileStub((RmlInterfaceFile) file, ((RmlInterfaceFile) file).isComponent());
                 }
                 return super.createStubForFile(file);
             }
@@ -43,12 +49,13 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
 
     @Override
     public void serialize(@NotNull RmlFileStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+        dataStream.writeBoolean(stub.isComponent());
     }
 
     @NotNull
     @Override
     public RmlFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
-        return new RmlFileStub(null);
+        return new RmlFileStub(null, dataStream.readBoolean());
     }
 
     @NotNull
