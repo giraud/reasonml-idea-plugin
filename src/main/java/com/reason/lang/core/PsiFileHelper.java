@@ -14,33 +14,33 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiType> getTypeExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.findChildrenOfType(file, PsiType.class);
-    }
-
-    @NotNull
-    public static Collection<PsiModule> getModuleExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.findChildrenOfType(file, PsiModule.class);
-    }
-
-    @NotNull
-    public static Collection<PsiLet> getLetExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.findChildrenOfType(file, PsiLet.class);
-    }
-
-    @NotNull
     public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.findChildrenOfAnyType(file, PsiType.class, PsiModule.class, PsiLet.class, PsiExternal.class, PsiVal.class);
     }
 
     @NotNull
+    public static Collection<PsiType> getTypeExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiType.class);
+    }
+
+    @NotNull
+    public static Collection<PsiModule> getModuleExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiModule.class);
+    }
+
+    @NotNull
+    public static Collection<PsiLet> getLetExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiLet.class);
+    }
+
+    @NotNull
     public static Collection<PsiExternal> getExternalExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.findChildrenOfType(file, PsiExternal.class);
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiExternal.class);
     }
 
     @NotNull
     public static Collection<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.findChildrenOfType(file, PsiInclude.class);
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
     }
 
     @Nullable

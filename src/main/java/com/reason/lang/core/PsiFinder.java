@@ -17,7 +17,6 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.ModuleFqnIndex;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,21 +116,22 @@ public final class PsiFinder {
         String[] names = name.split("\\.");
 
         PsiModule module = findModule(project, names[0], MlFileType.interfaceOrImplementation, inBsconfig);
-        if (module instanceof PsiFileModuleImpl) {
-            if (1 < names.length) {
-                PsiModule currentModule = module;
-                for (int i = 1; i < names.length; i++) {
-                    String innerModuleName = names[i];
-                    currentModule = currentModule.getModule(innerModuleName);
-                    if (currentModule == null) {
-                        return null;
-                    }
-                }
-                return currentModule;
-            }
-
-            return module;
-        }
+        // zzz
+        //if (module instanceof Psi File Module Impl) {
+        //    if (1 < names.length) {
+        //        PsiModule currentModule = module;
+        //        for (int i = 1; i < names.length; i++) {
+        //            String innerModuleName = names[i];
+        //            currentModule = currentModule.getModule(innerModuleName);
+        //            if (currentModule == null) {
+        //                return null;
+        //            }
+        //        }
+        //        return currentModule;
+        //    }
+        //
+        //    return module;
+        //}
 
         return null;
     }

@@ -26,6 +26,7 @@ import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
 import static com.reason.lang.core.MlScope.all;
+import static java.util.Collections.emptyList;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implements PsiModule {
 
@@ -77,21 +78,21 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     @Override
     public Collection<PsiOpen> getOpenExpressions() {
         PsiElement body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiOpen.class);
+        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiOpen.class);
     }
 
     @NotNull
     @Override
     public Collection<PsiInclude> getIncludeExpressions() {
         PsiElement body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiInclude.class);
+        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiInclude.class);
     }
 
     @NotNull
     @Override
     public Collection<PsiModule> getModules() {
         PsiElement body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiModule.class);
+        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class);
     }
 
     @Nullable
@@ -109,7 +110,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     @NotNull
     @Override
     public Collection<PsiNamedElement> getExpressions() {
-        Collection<PsiNamedElement> result = Collections.emptyList();
+        Collection<PsiNamedElement> result = emptyList();
 
         String alias = getAlias();
         if (alias != null) {
@@ -132,14 +133,14 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     @Override
     public Collection<PsiLet> getLetExpressions() {
         PsiElement body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiLet.class);
+        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class);
     }
 
     @NotNull
     @Override
     public Collection<PsiType> getTypeExpressions() {
         PsiElement body = getBody();
-        return body == null ? Collections.emptyList() : PsiTreeUtil.findChildrenOfType(body, PsiType.class);
+        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class);
     }
 
     @Nullable
@@ -147,9 +148,9 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     public PsiExternal getExternalExpression(@NotNull String name) {
         PsiExternal result = null;
 
-        PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
+        PsiElement body = getBody();
         if (body != null) {
-            List<PsiExternal> externals = PsiTreeUtil.getChildrenOfTypeAsList(body, PsiExternal.class);
+            List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class);
             if (!externals.isEmpty()) {
                 for (PsiExternal external : externals) {
                     if (name.equals(external.getName())) {
@@ -168,9 +169,9 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     public PsiType getTypeExpression(@NotNull String name) {
         PsiType result = null;
 
-        PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
+        PsiElement body = getBody();
         if (body != null) {
-            List<PsiType> expressions = PsiTreeUtil.getChildrenOfTypeAsList(body, PsiType.class);
+            List<PsiType> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class);
             if (!expressions.isEmpty()) {
                 for (PsiType expression : expressions) {
                     if (name.equals(expression.getName())) {
@@ -189,9 +190,9 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     public PsiLet getLetExpression(@NotNull String name) {
         PsiLet result = null;
 
-        PsiElement body = getClass().isAssignableFrom(PsiFileModuleImpl.class) ? this : getBody();
+        PsiElement body = getBody();
         if (body != null) {
-            List<PsiLet> expressions = PsiTreeUtil.getChildrenOfTypeAsList(body, PsiLet.class);
+            List<PsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class);
             if (!expressions.isEmpty()) {
                 for (PsiLet expression : expressions) {
                     if (name.equals(expression.getName())) {
@@ -234,10 +235,10 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
 
-            PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+            PsiModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
             while (parent != null) {
                 parents.add(parent);
-                parent = PsiTreeUtil.getParentOfType(parent, PsiModule.class);
+                parent = PsiTreeUtil.getStubOrPsiParentOfType(parent, PsiModule.class);
             }
 
             Collections.reverse(parents);

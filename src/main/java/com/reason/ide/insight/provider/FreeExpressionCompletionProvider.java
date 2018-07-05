@@ -22,7 +22,6 @@ import com.reason.lang.core.MlScope;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -80,13 +79,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             item = cursorElement.getParent();
         }
         while (item != null) {
-            if (item instanceof PsiModule) {
-                if (!(item instanceof PsiFileModuleImpl)) {
-                    resultSet.addElement(LookupElementBuilder.create(item).
-                            withTypeText(PsiSignatureUtil.getProvidersType(item)).
-                            withIcon(PsiIconUtil.getProvidersIcon(item, 0)));
-                }
-            } else if (item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
+            if (item instanceof PsiModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
                 PsiNamedElement element = (PsiNamedElement) item;
                 resultSet.addElement(LookupElementBuilder.create(element).
                         withTypeText(PsiSignatureUtil.getProvidersType(element)).

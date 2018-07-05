@@ -82,11 +82,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 }
             });
 
-            return treeElements.toArray(new TreeElement[treeElements.size()]);
+            return treeElements.toArray(new TreeElement[0]);
         } else if (m_element instanceof PsiModule) {
             List<TreeElement> treeElements = buildModuleStructure((PsiModule) m_element);
             if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[treeElements.size()]);
+                return treeElements.toArray(new TreeElement[0]);
             }
         }
 

@@ -6,12 +6,12 @@ import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
-import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.reason.RmlModulePathFinder;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
+import static com.intellij.patterns.PlatformPatterns.psiFile;
 import static com.intellij.patterns.StandardPatterns.or;
 
 public class RmlCompletionContributor extends CompletionContributor {
@@ -26,7 +26,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> declaration() {
-            return psiElement().withSuperParent(2, psiElement(PsiFileModuleImpl.class));
+            return psiElement().withSuperParent(2, psiFile());
         }
 
         @NotNull
