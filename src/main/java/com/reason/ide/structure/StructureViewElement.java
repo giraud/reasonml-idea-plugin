@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
-    private PsiElement m_element;
+    private final PsiElement m_element;
 
     StructureViewElement(PsiElement element) {
         m_element = element;
@@ -73,7 +73,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         if (m_element instanceof FileBase) {
             List<TreeElement> treeElements = new ArrayList<>();
 
-            ((FileBase) m_element).asModule().acceptChildren(new PsiElementVisitor() {
+            m_element.acceptChildren(new PsiElementVisitor() {
                 @Override
                 public void visitElement(PsiElement element) {
                     if (element instanceof PsiStructuredElement) {

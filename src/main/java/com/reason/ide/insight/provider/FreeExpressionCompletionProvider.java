@@ -11,10 +11,12 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Platform;
 import com.reason.ide.Debug;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.MlScope;
 import com.reason.lang.core.PsiFinder;
@@ -48,13 +50,13 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         PsiElement cursorElement = parameters.getPosition();
 
         // Add file modules
-        Collection<PsiModule> fileModules = psiFinder.findFileModules(project, interfaceOrImplementation);
-        for (PsiModule module : fileModules) {
-            if (!module.isComponent()) {
-                resultSet.addElement(LookupElementBuilder.create(module).
+        Collection<PsiFile> files = psiFinder.findFileModules(project, interfaceOrImplementation);
+        for (PsiFile file : files) {
+            if (!((FileBase) file).isComponent()) {
+                resultSet.addElement(LookupElementBuilder.create(file).
                         withTypeText(
-                                Platform.removeProjectDir(project, module.getContainingFile().getVirtualFile()).replace("node_modules" + File.separator, "")).
-                        withIcon(PsiIconUtil.getProvidersIcon(module, 0)));
+                                Platform.removeProjectDir(project, file.getVirtualFile()).replace("node_modules" + File.separator, "")).
+                        withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
             }
         }
 
@@ -81,7 +83,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             if (item instanceof PsiModule) {
                 if (!(item instanceof PsiFileModuleImpl)) {
                     resultSet.addElement(LookupElementBuilder.create(item).
-                            withTypeText(PsiSignatureUtil.getProvidersType((PsiModule) item)).
+                            withTypeText(PsiSignatureUtil.getProvidersType(item)).
                             withIcon(PsiIconUtil.getProvidersIcon(item, 0)));
                 }
             } else if (item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {

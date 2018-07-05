@@ -6,7 +6,6 @@ import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.impl.PsiFileModuleImpl;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.ocaml.OclTypes;
@@ -24,18 +23,17 @@ public class ModuleStubElementType extends IStubElementType<PsiModuleStub, PsiMo
 
     public PsiModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
         MlTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return stub.isFileModule() ? new PsiFileModuleImpl(stub, this, types) : new PsiModuleImpl(stub, this, types);
+        return new PsiModuleImpl(stub, this, types);
     }
 
     @NotNull
     public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
-        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi instanceof PsiFileModuleImpl, psi.isComponent());
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isComponent());
     }
 
     public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
-        dataStream.writeBoolean(stub.isFileModule());
         dataStream.writeBoolean(stub.isComponent());
 
         String alias = stub.getAlias();
@@ -49,7 +47,6 @@ public class ModuleStubElementType extends IStubElementType<PsiModuleStub, PsiMo
     public PsiModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
         String qname = dataStream.readUTFFast();
-        boolean isFileModule = dataStream.readBoolean();
         boolean isComponent = dataStream.readBoolean();
 
         String alias = null;
@@ -58,7 +55,7 @@ public class ModuleStubElementType extends IStubElementType<PsiModuleStub, PsiMo
             alias = dataStream.readUTFFast();
         }
 
-        return new PsiModuleStub(parentStub, this, moduleName, qname, alias, isFileModule, isComponent);
+        return new PsiModuleStub(parentStub, this, moduleName, qname, alias, isComponent);
     }
 
     public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {

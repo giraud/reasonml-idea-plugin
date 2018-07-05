@@ -16,11 +16,8 @@ public class RmlElementFactory {
 
     @Nullable
     public static PsiElement createModuleName(Project project, String name) {
-        PsiModule dummyModule = createFileFromText(project, "module " + name + " = {};").asModule();
-        if (dummyModule != null) {
-            return dummyModule.getModules().iterator().next().getNameIdentifier();
-        }
-        return null;
+        FileBase file = createFileFromText(project, "module " + name + " = {};");
+        return ((PsiModule) file.getFirstChild()).getNameIdentifier();
     }
 
     public static PsiElement createTypeName(Project project, String name) {
@@ -30,11 +27,8 @@ public class RmlElementFactory {
 
     @Nullable
     public static PsiElement createExpression(Project project, String expression) {
-        PsiModule dummyModule = createFileFromText(project, expression).asModule();
-        if (dummyModule != null) {
-            return dummyModule.getFirstChild().getNextSibling();
-        }
-        return null;
+        FileBase file = createFileFromText(project, expression);
+        return file.getFirstChild();
     }
 
     @NotNull

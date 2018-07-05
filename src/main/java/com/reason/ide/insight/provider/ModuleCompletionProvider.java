@@ -6,12 +6,11 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Platform;
-import com.reason.icons.Icons;
-import com.reason.ide.files.OclFile;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
@@ -73,21 +72,22 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         Collections.reverse(moduleNames);
         ModulePath modulePath = new ModulePath(moduleNames);
 
+        PsiFinder psiFinder = PsiFinder.getInstance();
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            Collection<PsiModule> modules = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
-            if (!modules.isEmpty()) {
-                for (PsiModule module : modules) {
+            Collection<PsiFile> files = psiFinder.findFileModules(project, interfaceOrImplementation);
+            if (!files.isEmpty()) {
+                for (PsiFile file : files) {
                     resultSet.addElement(
-                            LookupElementBuilder.create(module).
-                                    withTypeText(Platform.removeProjectDir(project, module.getContainingFile().getVirtualFile())).
-                                    withIcon(module.getContainingFile() instanceof OclFile ? Icons.OCL_FILE : Icons.RML_FILE)
+                            LookupElementBuilder.create(file).
+                                    withTypeText(Platform.removeProjectDir(project, file.getVirtualFile())).
+                                    withIcon(PsiIconUtil.getProvidersIcon(file, 0))
                     );
                 }
             }
         } else {
             String latestModuleName = modulePath.getLatest();
-            Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, latestModuleName, implementationOnly, inBsconfig);
+            Collection<PsiModule> modules = psiFinder.findModules(project, latestModuleName, implementationOnly, inBsconfig);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     for (PsiModule expression : module.getModules()) {

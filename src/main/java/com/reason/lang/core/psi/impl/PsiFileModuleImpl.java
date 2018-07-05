@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -20,10 +19,6 @@ import java.util.List;
 public class PsiFileModuleImpl extends PsiModuleImpl {
     public PsiFileModuleImpl(@NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType, MlTypes types) {
         super(stub, nodeType, types);
-    }
-
-    public PsiFileModuleImpl(@NotNull ASTNode node, MlTypes types) {
-        super(node, types);
     }
 
     @Nullable

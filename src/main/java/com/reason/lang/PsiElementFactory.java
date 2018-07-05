@@ -7,12 +7,13 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 
 public class PsiElementFactory {
+    private PsiElementFactory() {
+    }
+
     public static PsiElement createElement(MlTypes types, ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == types.FILE_MODULE) {
-            return new PsiFileModuleImpl(node, types);
-        } else if (type == types.EXTERNAL_EXPRESSION) {
+        if (type == types.EXTERNAL_EXPRESSION) {
             return new PsiExternalImpl(types, node);
         } else if (type == types.EXCEPTION_EXPRESSION) {
             return new PsiExceptionImpl(node);

@@ -252,13 +252,13 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
+    public Collection<PsiFile> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
         // All file names are unique in a project, we use the file name in the key
         // Need a better algo to prioritise the paths and not overwrite the correct resolved files
-        Map<String, PsiModule> result = new THashMap<>();
+        Map<String, PsiFile> result = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
-        Map<String, PsiModule> files = new THashMap<>();
+        Map<String, PsiFile> files = new THashMap<>();
         Collection<VirtualFile> rmiFiles;
         Collection<VirtualFile> rmlFiles;
         Collection<VirtualFile> ociFiles;
@@ -274,10 +274,7 @@ public final class PsiFinder {
                 if (bucklescript.isDependency(canonicalPath)) {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
                     if (file != null) {
-                        PsiModule module = ((FileBase) file).asModule();
-                        if (module != null) {
-                            files.put(virtualFile.getName(), module);
-                        }
+                        files.put(virtualFile.getName(), file);
                     }
                 }
             }
@@ -287,10 +284,7 @@ public final class PsiFinder {
                 if (bucklescript.isDependency(canonicalPath)) {
                     PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
                     if (file != null) {
-                        PsiModule module = ((FileBase) file).asModule();
-                        if (module != null) {
-                            files.put(virtualFile.getName(), module);
-                        }
+                        files.put(virtualFile.getName(), file);
                     }
                 }
             }
@@ -318,10 +312,7 @@ public final class PsiFinder {
 
                     if (keep) {
                         if (file instanceof FileBase) {
-                            PsiModule module = ((FileBase) file).asModule();
-                            if (module != null) {
-                                result.put(virtualFile.getName(), module);
-                            }
+                            result.put(virtualFile.getName(), file);
                         }
                     }
                 }
@@ -342,10 +333,7 @@ public final class PsiFinder {
 
                     if (keep) {
                         if (file instanceof FileBase) {
-                            PsiModule module = ((FileBase) file).asModule();
-                            if (module != null) {
-                                result.put(file.getName(), module);
-                            }
+                            result.put(file.getName(), file);
                         }
                     }
                 }

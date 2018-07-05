@@ -1,9 +1,11 @@
 package com.reason.lang.core;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -39,5 +41,10 @@ public class PsiFileHelper {
     @NotNull
     public static Collection<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.findChildrenOfType(file, PsiInclude.class);
+    }
+
+    @Nullable
+    public static PsiElement getLetExpression(@NotNull PsiFile file, @NotNull String name) {
+        return getLetExpressions(file).stream().filter(let -> name.equals(let.getName())).findFirst().orElseGet(null);
     }
 }
