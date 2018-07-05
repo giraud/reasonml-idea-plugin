@@ -3,14 +3,15 @@ package com.reason.ide.files;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.Platform;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.stub.RmlFileStub;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.List;
 
 public abstract class FileBase extends PsiFileBase {
@@ -29,11 +30,6 @@ public abstract class FileBase extends PsiFileBase {
     }
 
     public boolean isComponent() {
-        StubElement stub = getGreenStub();
-        if (stub instanceof RmlFileStub) {
-            return ((RmlFileStub) stub).isComponent();
-        }
-
         FileType fileType = getFileType();
         if (fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType) {
             return false;
@@ -55,5 +51,9 @@ public abstract class FileBase extends PsiFileBase {
         }
 
         return componentDef != null && makeDef != null;
+    }
+
+    public String shortLocation(@NotNull Project project) {
+        return Platform.removeProjectDir(project, getVirtualFile()).replace("node_modules" + File.separator, "").replace(getName(), "");
     }
 }

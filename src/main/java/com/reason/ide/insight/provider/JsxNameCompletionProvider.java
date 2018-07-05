@@ -10,7 +10,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
@@ -21,6 +20,7 @@ import com.reason.lang.core.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
@@ -41,15 +41,13 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         Project project = originalFile.getProject();
 
         // Find all files that are components ! TODO: components can be sub modules
-        Collection<PsiFile> files = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation);
+        Collection<FileBase> files = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation).stream().filter(fileBase -> fileBase.isComponent()).collect(Collectors.toList());
         m_debug.debug("Files found", files.size());
-        for (PsiFile file : files) {
-            String moduleName = ((FileBase) file).asModuleName();
-            if (m_debug.isDebugEnabled()) {
-                m_debug.debug(" is component", moduleName, ((FileBase) file).isComponent());
-            }
-            if (!fileModuleName.equals(moduleName) && ((FileBase) file).isComponent()) {
-                resultSet.addElement(LookupElementBuilder.create(file).
+        for (FileBase file : files) {
+            String moduleName = file.asModuleName();
+            if (!fileModuleName.equals(moduleName) && file.isComponent()) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(file.asModuleName()).
                         withIcon(getProvidersIcon(file, 0)).
                         withTypeText(PsiSignatureUtil.getProvidersType(PsiFileHelper.getLetExpression(file, "make"))).
                         withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))

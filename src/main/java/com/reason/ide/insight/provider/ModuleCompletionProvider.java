@@ -6,11 +6,10 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.Platform;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
@@ -75,13 +74,13 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         PsiFinder psiFinder = PsiFinder.getInstance();
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            Collection<PsiFile> files = psiFinder.findFileModules(project, interfaceOrImplementation);
+            Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
             if (!files.isEmpty()) {
-                for (PsiFile file : files) {
-                    resultSet.addElement(
-                            LookupElementBuilder.create(file).
-                                    withTypeText(Platform.removeProjectDir(project, file.getVirtualFile())).
-                                    withIcon(PsiIconUtil.getProvidersIcon(file, 0))
+                for (FileBase file : files) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(file.asModuleName()).
+                            withTypeText(file.shortLocation(project)).
+                            withIcon(PsiIconUtil.getProvidersIcon(file, 0))
                     );
                 }
             }
@@ -91,9 +90,9 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     for (PsiModule expression : module.getModules()) {
-                        resultSet.addElement(
-                                LookupElementBuilder.create(expression).
-                                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                        resultSet.addElement(LookupElementBuilder.
+                                create(expression).
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                         );
                     }
                 }

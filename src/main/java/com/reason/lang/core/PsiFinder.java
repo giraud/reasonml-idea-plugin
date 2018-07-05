@@ -253,13 +253,13 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiFile> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
+    public Collection<FileBase> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
         // All file names are unique in a project, we use the file name in the key
         // Need a better algo to prioritise the paths and not overwrite the correct resolved files
-        Map<String, PsiFile> result = new THashMap<>();
+        Map<String, FileBase> result = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
-        Map<String, PsiFile> files = new THashMap<>();
+        Map<String, FileBase> files = new THashMap<>();
         Collection<VirtualFile> rmiFiles;
         Collection<VirtualFile> rmlFiles;
         Collection<VirtualFile> ociFiles;
@@ -276,14 +276,14 @@ public final class PsiFinder {
             for (VirtualFile virtualFile : rmiFiles) {
                 PsiFile file = psiManager.findFile(virtualFile);
                 if (bucklescript.isDependency(file)) {
-                    files.put(virtualFile.getName(), file);
+                    files.put(virtualFile.getName(), (FileBase) file);
                 }
             }
 
             for (VirtualFile virtualFile : ociFiles) {
                 PsiFile file = psiManager.findFile(virtualFile);
                 if (file != null) {
-                    files.put(virtualFile.getName(), file);
+                    files.put(virtualFile.getName(), (FileBase) file);
                 }
             }
 
@@ -308,7 +308,7 @@ public final class PsiFinder {
 
                 if (keep) {
                     if (file instanceof FileBase) {
-                        result.put(virtualFile.getName(), file);
+                        result.put(virtualFile.getName(), (FileBase) file);
                     }
                 }
             }
@@ -326,7 +326,7 @@ public final class PsiFinder {
 
                 if (keep) {
                     if (file instanceof FileBase) {
-                        result.put(file.getName(), file);
+                        result.put(file.getName(), (FileBase) file);
                     }
                 }
             }

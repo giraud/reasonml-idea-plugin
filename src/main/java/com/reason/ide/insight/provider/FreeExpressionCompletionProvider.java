@@ -11,10 +11,8 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.Platform;
 import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
@@ -24,7 +22,6 @@ import com.reason.lang.core.PsiSignatureUtil;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,13 +46,13 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         PsiElement cursorElement = parameters.getPosition();
 
         // Add file modules
-        Collection<PsiFile> files = psiFinder.findFileModules(project, interfaceOrImplementation);
-        for (PsiFile file : files) {
+        Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
+        for (FileBase file : files) {
             m_debug.debug("  files found", files);
-            if (!((FileBase) file).isComponent()) {
-                resultSet.addElement(LookupElementBuilder.create(((FileBase) file).asModuleName()).
-                        withTypeText(
-                                Platform.removeProjectDir(project, file.getVirtualFile()).replace("node_modules" + File.separator, "")).
+            if (!file.isComponent()) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(file.asModuleName()).
+                        withTypeText(file.shortLocation(project)).
                         withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
             }
         }
@@ -66,7 +63,8 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             PsiModule fileModule = psiFinder.findRealFileModule(project, path);
             if (fileModule != null) {
                 for (PsiNamedElement expression : fileModule.getExpressions()) {
-                    resultSet.addElement(LookupElementBuilder.create(expression).
+                    resultSet.addElement(LookupElementBuilder.
+                            create(expression).
                             withTypeText(PsiSignatureUtil.getProvidersType(expression)).
                             withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
                             withInsertHandler(this::insertExpression));
