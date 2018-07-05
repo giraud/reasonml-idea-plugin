@@ -18,6 +18,6 @@ public class OclInterfaceFile extends FileBase {
 
     @Override
     public String toString() {
-        return "Ocaml interface file";
+        return getName();
     }
 }

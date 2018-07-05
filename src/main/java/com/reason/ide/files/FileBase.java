@@ -7,11 +7,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
+import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class FileBase extends PsiFileBase {
@@ -55,5 +58,9 @@ public abstract class FileBase extends PsiFileBase {
 
     public String shortLocation(@NotNull Project project) {
         return Platform.removeProjectDir(project, getVirtualFile()).replace("node_modules" + File.separator, "").replace(getName(), "");
+    }
+
+    public Collection<PsiNamedElement> getExpressions() {
+        return PsiFileHelper.getExpressions(this);
     }
 }

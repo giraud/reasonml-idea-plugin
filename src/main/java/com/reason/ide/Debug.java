@@ -1,6 +1,7 @@
 package com.reason.ide;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.Joiner;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,18 @@ public class Debug {
     public void debug(String comment, boolean t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + Boolean.toString(t));
+        }
+    }
+
+    public void debug(String comment, @Nullable PsiFile[] t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "" : t.length + " "));
+        }
+    }
+
+    public void debug(String comment, @Nullable PsiFile t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "" : t.getVirtualFile().getCanonicalPath() + " "));
         }
     }
 

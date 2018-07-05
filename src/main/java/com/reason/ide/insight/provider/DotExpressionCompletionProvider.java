@@ -12,6 +12,7 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Joiner;
 import com.reason.ide.Debug;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
@@ -48,17 +49,38 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             // Expression of module
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
+                // Find potential module paths, and filter the result
+                final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement);
+
                 m_debug.debug("  symbol", upperName);
+                m_debug.debug("  qn", qualifiedNames);
+
                 PsiFinder psiFinder = PsiFinder.getInstance();
+
+                // Find file modules
+
+                FileBase fileModule = psiFinder.findFileModule(project, upperName);
+                m_debug.debug("  file", fileModule);
+                if (fileModule != null) {
+                    if (qualifiedNames.contains(fileModule.asModuleName())) {
+                        Collection<PsiNamedElement> expressions = fileModule.getExpressions();
+                        for (PsiNamedElement expression : expressions) {
+                            resultSet.addElement(LookupElementBuilder.
+                                    create(expression).
+                                    withTypeText(PsiSignatureUtil.getProvidersType(expression)).
+                                    withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                            );
+                        }
+
+                    }
+                }
+
+                // Find modules
 
                 Collection<PsiModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
                 if (m_debug.isDebugEnabled()) {
                     m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
                 }
-
-                // Find the potential module paths, and filter the result
-                final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement);
-                m_debug.debug("  qn", qualifiedNames);
 
                 Collection<PsiModule> resolvedModules = modules.stream().
                         map(psiModule -> {

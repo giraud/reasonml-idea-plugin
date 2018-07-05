@@ -35,7 +35,7 @@ public final class PsiFinder {
 
     private static final PsiFinder INSTANCE = new PsiFinder();
 
-    private final Debug m_log = new Debug(Logger.getInstance("ReasonML.finder"));
+    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.finder"));
 
     public static PsiFinder getInstance() {
         return INSTANCE;
@@ -43,7 +43,7 @@ public final class PsiFinder {
 
     @NotNull
     public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        m_log.debug("Find modules, name", name, scope.name());
+        m_debug.debug("Find modules, name", name, scope.name());
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
         Map<String/*qn*/, PsiModule> other = new THashMap<>();
@@ -52,9 +52,9 @@ public final class PsiFinder {
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, projectScope(project), PsiModule.class);
         if (modules.isEmpty()) {
-            m_log.debug("  No modules found");
+            m_debug.debug("  No modules found");
         } else {
-            m_log.debug("  modules found", modules.size());
+            m_debug.debug("  modules found", modules.size());
             for (PsiModule module : modules) {
                 boolean keepFile;
 
@@ -83,10 +83,10 @@ public final class PsiFinder {
 
                 if (keepFile) {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                        m_log.debug("    keep (in config)", module);
+                        m_debug.debug("    keep (in config)", module);
                         inConfig.put(module.getQualifiedName(), module);
                     } else {
-                        m_log.debug("    keep (not in config)", module);
+                        m_debug.debug("    keep (not in config)", module);
                         other.put(module.getQualifiedName(), module);
                     }
                 }
@@ -198,20 +198,20 @@ public final class PsiFinder {
     }
 
     private <T extends PsiQualifiedNamedElement> void findLowerSymbols(@NotNull String debugName, @NotNull Map<String/*qn*/, T> inConfig, @NotNull Map<String/*qn*/, T> other, @NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope, StubIndexKey<String, T> indexKey, Class<T> clazz) {
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Find " + debugName + " name", name, scope.name());
+        if (m_debug.isDebugEnabled()) {
+            m_debug.debug("Find " + debugName + " name", name, scope.name());
         }
 
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         Collection<T> items = StubIndex.getElements(indexKey, name, project, projectScope(project), clazz);
         if (items.isEmpty()) {
-            if (m_log.isDebugEnabled()) {
-                m_log.debug("  No " + debugName + " found");
+            if (m_debug.isDebugEnabled()) {
+                m_debug.debug("  No " + debugName + " found");
             }
         } else {
-            if (m_log.isDebugEnabled()) {
-                m_log.debug("  " + debugName + " found", items.size());
+            if (m_debug.isDebugEnabled()) {
+                m_debug.debug("  " + debugName + " found", items.size());
             }
             for (T item : items) {
                 boolean keepFile;
@@ -241,15 +241,58 @@ public final class PsiFinder {
 
                 if (keepFile) {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                        m_log.debug("    keep (in config)", item);
+                        m_debug.debug("    keep (in config)", item);
                         inConfig.put(item.getQualifiedName(), item);
                     } else {
-                        m_log.debug("    keep (not in config)", item);
+                        m_debug.debug("    keep (not in config)", item);
                         other.put(item.getQualifiedName(), item);
                     }
                 }
             }
         }
+    }
+
+    @Nullable
+    public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
+        m_debug.debug("Find file module", name);
+
+        PsiFile result = null;
+        GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+
+        FileBase file = findFileModuleByExt(project, name, OclInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
+        if (file == null) {
+            file = findFileModuleByExt(project, name, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
+            if (file == null) {
+                file = findFileModuleByExt(project, name, OclFileType.INSTANCE.getDefaultExtension(), scope);
+                if (file == null) {
+                    file = findFileModuleByExt(project, name, RmlFileType.INSTANCE.getDefaultExtension(), scope);
+                }
+            }
+        }
+
+        return file;
+    }
+
+    @Nullable
+    private FileBase findFileModuleByExt(@NotNull Project project, @NotNull String name, @NotNull String ext, GlobalSearchScope scope) {
+        m_debug.debug("Find file module", name, ext);
+
+        PsiFile result = null;
+
+        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, name + "." + ext, scope);
+        if (0 < filesByName.length) {
+            m_debug.debug("  found", filesByName);
+            result = filesByName[0];
+        } else {
+            // retry with lower case name
+            filesByName = FilenameIndex.getFilesByName(project, PsiUtil.moduleNameToFileName(name) + "." + ext, scope);
+            if (0 < filesByName.length) {
+                m_debug.debug("  found", filesByName);
+                result = filesByName[0];
+            }
+        }
+
+        return result instanceof FileBase ? (FileBase) result : null;
     }
 
     @NotNull

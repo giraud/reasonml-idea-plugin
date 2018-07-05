@@ -20,6 +20,11 @@ public class PsiUtil {
     }
 
     @NotNull
+    public static String moduleNameToFileName(@NotNull String name) {
+        return name.substring(0, 1).toLowerCase(Locale.getDefault()) + name.substring(1);
+    }
+
+    @NotNull
     public static String fileNameToModuleName(@NotNull String filename) {
         String nameWithoutExtension = FileUtilRt.getNameWithoutExtension(filename);
         if (nameWithoutExtension.isEmpty()) {

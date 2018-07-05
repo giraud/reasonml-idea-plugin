@@ -18,6 +18,6 @@ public class OclFile extends FileBase {
 
     @Override
     public String toString() {
-        return "Ocaml File";
+        return getName();
     }
 }

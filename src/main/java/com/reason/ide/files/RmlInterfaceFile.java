@@ -18,6 +18,6 @@ public class RmlInterfaceFile extends FileBase {
 
     @Override
     public String toString() {
-        return "Reason interface file";
+        return getName();
     }
 }
