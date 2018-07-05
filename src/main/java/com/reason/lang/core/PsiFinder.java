@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.build.bs.Bucklescript;
@@ -111,7 +112,7 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiModule findFileModule(Project project, String name) {
+    public PsiModule findRealFileModule(Project project, String name) {
         // extract first token of path
         String[] names = name.split("\\.");
 
@@ -266,17 +267,17 @@ public final class PsiFinder {
 
         // List all interface files
         if (fileType != MlFileType.implementationOnly) {
-            rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension());
-            ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension());
+            rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), GlobalSearchScope.projectScope(project));
+            ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension(), GlobalSearchScope.projectScope(project));
 
             for (VirtualFile virtualFile : rmiFiles) {
                 String canonicalPath = virtualFile.getCanonicalPath();
-                if (bucklescript.isDependency(canonicalPath)) {
-                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                    if (file != null) {
-                        files.put(virtualFile.getName(), file);
-                    }
+                //if (bucklescript.isDependency(canonicalPath)) {
+                PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                if (file != null) {
+                    files.put(virtualFile.getName(), file);
                 }
+                //}
             }
 
             for (VirtualFile virtualFile : ociFiles) {

@@ -79,7 +79,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
             }
         } else {
             // The tag is a custom component
-            PsiModule module = PsiFinder.getInstance().findFileModule(project, tagName.getText());
+            PsiModule module = PsiFinder.getInstance().findRealFileModule(project, tagName.getText());
             if (module != null) {
                 Collection<PsiLet> expressions = module.getLetExpressions();
                 for (PsiLet expression : expressions) {

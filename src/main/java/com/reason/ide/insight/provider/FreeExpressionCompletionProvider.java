@@ -51,8 +51,10 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         // Add file modules
         Collection<PsiFile> files = psiFinder.findFileModules(project, interfaceOrImplementation);
         for (PsiFile file : files) {
+            m_debug.debug("  files found", files);
             if (!((FileBase) file).isComponent()) {
                 resultSet.addElement(LookupElementBuilder.create(file).
+                        withPresentableText(((FileBase) file).asModuleName()).
                         withTypeText(
                                 Platform.removeProjectDir(project, file.getVirtualFile()).replace("node_modules" + File.separator, "")).
                         withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
@@ -62,7 +64,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         // Add paths (opens and local opens for ex)
         List<String> paths = m_modulePathFinder.extractPotentialPaths(cursorElement);
         for (String path : paths) {
-            PsiModule fileModule = psiFinder.findFileModule(project, path);
+            PsiModule fileModule = psiFinder.findRealFileModule(project, path);
             if (fileModule != null) {
                 for (PsiNamedElement expression : fileModule.getExpressions()) {
                     resultSet.addElement(LookupElementBuilder.create(expression).

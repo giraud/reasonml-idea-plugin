@@ -18,6 +18,6 @@ public class RmlFile extends FileBase {
 
     @Override
     public String toString() {
-        return "Reason File";
+        return getName();
     }
 }
