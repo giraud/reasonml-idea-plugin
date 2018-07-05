@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 

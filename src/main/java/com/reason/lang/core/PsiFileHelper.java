@@ -1,7 +1,8 @@
-package com.reason.lang.core.psi;
+package com.reason.lang.core;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
