@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiFile;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.bs.compiler.BsCompiler;
@@ -136,6 +137,11 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     @Override
     public boolean isDependency(@Nullable String path) {
         return m_config == null || m_config.accept(path);
+    }
+
+    @Override
+    public boolean isDependency(@Nullable PsiFile file) {
+        return file != null && (m_config == null || m_config.accept(file.getVirtualFile().getCanonicalPath()));
     }
 
     @Override

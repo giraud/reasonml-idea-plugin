@@ -53,8 +53,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         for (PsiFile file : files) {
             m_debug.debug("  files found", files);
             if (!((FileBase) file).isComponent()) {
-                resultSet.addElement(LookupElementBuilder.create(file).
-                        withPresentableText(((FileBase) file).asModuleName()).
+                resultSet.addElement(LookupElementBuilder.create(((FileBase) file).asModuleName()).
                         withTypeText(
                                 Platform.removeProjectDir(project, file.getVirtualFile()).replace("node_modules" + File.separator, "")).
                         withIcon(PsiIconUtil.getProvidersIcon(file, 0)));

@@ -265,28 +265,25 @@ public final class PsiFinder {
         Collection<VirtualFile> ociFiles;
         Collection<VirtualFile> oclFiles;
 
+        PsiManager psiManager = PsiManager.getInstance(project);
+        GlobalSearchScope searchScope = GlobalSearchScope.projectScope(project);
+
         // List all interface files
         if (fileType != MlFileType.implementationOnly) {
-            rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), GlobalSearchScope.projectScope(project));
-            ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension(), GlobalSearchScope.projectScope(project));
+            rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), searchScope);
+            ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension(), searchScope);
 
             for (VirtualFile virtualFile : rmiFiles) {
-                String canonicalPath = virtualFile.getCanonicalPath();
-                //if (bucklescript.isDependency(canonicalPath)) {
-                PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                if (file != null) {
+                PsiFile file = psiManager.findFile(virtualFile);
+                if (bucklescript.isDependency(file)) {
                     files.put(virtualFile.getName(), file);
                 }
-                //}
             }
 
             for (VirtualFile virtualFile : ociFiles) {
-                String canonicalPath = virtualFile.getCanonicalPath();
-                if (bucklescript.isDependency(canonicalPath)) {
-                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
-                    if (file != null) {
-                        files.put(virtualFile.getName(), file);
-                    }
+                PsiFile file = psiManager.findFile(virtualFile);
+                if (file != null) {
+                    files.put(virtualFile.getName(), file);
                 }
             }
 
@@ -299,43 +296,37 @@ public final class PsiFinder {
             oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
 
             for (VirtualFile virtualFile : rmlFiles) {
-                String canonicalPath = virtualFile.getCanonicalPath();
-                if (canonicalPath != null && bucklescript.isDependency(canonicalPath)) {
-                    boolean keep = true;
-                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                boolean keep = true;
+                PsiFile file = psiManager.findFile(virtualFile);
 
-                    if (fileType != MlFileType.implementationOnly) {
-                        String interfaceName = virtualFile.getNameWithoutExtension() + "." + RmlInterfaceFileType.INSTANCE.getDefaultExtension();
-                        if (files.containsKey(interfaceName)) {
-                            keep = false;
-                        }
+                if (fileType != MlFileType.implementationOnly) {
+                    String interfaceName = virtualFile.getNameWithoutExtension() + "." + RmlInterfaceFileType.INSTANCE.getDefaultExtension();
+                    if (files.containsKey(interfaceName)) {
+                        keep = false;
                     }
+                }
 
-                    if (keep) {
-                        if (file instanceof FileBase) {
-                            result.put(virtualFile.getName(), file);
-                        }
+                if (keep) {
+                    if (file instanceof FileBase) {
+                        result.put(virtualFile.getName(), file);
                     }
                 }
             }
 
             for (VirtualFile virtualFile : oclFiles) {
-                String canonicalPath = virtualFile.getCanonicalPath();
-                if (canonicalPath != null && bucklescript.isDependency(canonicalPath)) {
-                    boolean keep = true;
-                    PsiFile file = PsiManager.getInstance(project).findFile(virtualFile);
+                boolean keep = true;
+                PsiFile file = psiManager.findFile(virtualFile);
 
-                    if (fileType != MlFileType.implementationOnly) {
-                        String interfaceName = virtualFile.getNameWithoutExtension() + "." + OclInterfaceFileType.INSTANCE.getDefaultExtension();
-                        if (files.containsKey(interfaceName)) {
-                            keep = false;
-                        }
+                if (fileType != MlFileType.implementationOnly) {
+                    String interfaceName = virtualFile.getNameWithoutExtension() + "." + OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                    if (files.containsKey(interfaceName)) {
+                        keep = false;
                     }
+                }
 
-                    if (keep) {
-                        if (file instanceof FileBase) {
-                            result.put(file.getName(), file);
-                        }
+                if (keep) {
+                    if (file instanceof FileBase) {
+                        result.put(file.getName(), file);
                     }
                 }
             }
