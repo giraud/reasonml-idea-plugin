@@ -16,21 +16,21 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testAbstractType() {
-        PsiType type = first(parseCode("type t;").getTypeExpressions());
+        PsiType type = first(typeExpressions(parseCode("type t;")));
         assertEquals("t", type.getName());
     }
 
     public void testRecursiveType() {
-        PsiType type = first(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));").getTypeExpressions());
+        PsiType type = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
         assertEquals("tree", type.getName());
     }
 
     public void testTypeBindingWithVariant() {
-        assertNotNull(first(findChildrenOfType(first(parseCode("type t = | Tick;").getTypeExpressions()), PsiTypeBinding.class)));
+        assertNotNull(first(findChildrenOfType(first(typeExpressions(parseCode("type t = | Tick;"))), PsiTypeBinding.class)));
     }
 
     public void testTypeBindingWithRecord() {
-        PsiType type = first(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};").getTypeExpressions());
+        PsiType type = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
 
         assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
         Collection<PsiRecordField> fields = findChildrenOfType(type.getBinding(), PsiRecordField.class);
@@ -38,10 +38,10 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeSpecialProps() {
-        PsiType type = first(parseCode("type props = {\n" +
+        PsiType type = first(typeExpressions(parseCode("type props = {\n" +
                 "string: string,\n" +
                 "ref: Js.nullable(Dom.element) => unit,\n" +
-                "method: string};").getTypeExpressions());
+                "method: string};")));
 
         assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
         Collection<PsiRecordField> fields = findChildrenOfType(type.getBinding(), PsiRecordField.class);

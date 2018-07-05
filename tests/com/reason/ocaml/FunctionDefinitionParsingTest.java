@@ -13,7 +13,7 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetFunction() {
-        PsiLet e = first(parseCode("let add x y = x + y").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
         assertTrue(e.isFunction());
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
@@ -23,7 +23,7 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
     }
 
     public void testFunctionLetBinding() {
-        PsiLet e = first(parseCode("let getAttributes node = let attr = \"r\" in attr").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
 
         assertTrue(e.isFunction());
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);

@@ -19,7 +19,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
     public void testOptionAsTag() {
         // option here is not a ReasonML keyword
-        PsiLet let = first(parseCode("let _ = <option className/>").getLetExpressions());
+        PsiLet let = first(letExpressions(parseCode("let _ = <option className/>")));
 
         PsiTagStart jsx = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
         assertNotNull(jsx);
@@ -27,7 +27,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
     public void testTagNameWithDot() {
         // option here is not a ReasonML keyword
-        PsiLet let = first(parseCode("let _ = <Container.Test></Container.Test>").getLetExpressions());
+        PsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
 
         PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
         PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();

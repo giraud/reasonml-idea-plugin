@@ -12,7 +12,7 @@ public class FunctionCallParsingTest extends BaseParsingTestCase {
     }
 
     public void testCall() {
-        PsiLet e = first(parseCode("let x = Future.force t.(i)").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let x = Future.force t.(i)")));
 
         PsiElement call = e.getBinding().getFirstChild();
         assertFalse(call instanceof PsiLocalOpen);

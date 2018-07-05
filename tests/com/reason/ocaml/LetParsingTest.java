@@ -17,7 +17,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testConstant() {
-        PsiLet let = first(parseCode("let x = 1").getLetExpressions());
+        PsiLet let = first(letExpressions(parseCode("let x = 1")));
 
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
@@ -26,7 +26,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
 
     public void testLetBinding() {
-        PsiLet let = first(parseCode("let obj = [%bs.obj { a = \"b\" }];").getLetExpressions());
+        PsiLet let = first(letExpressions(parseCode("let obj = [%bs.obj { a = \"b\" }];")));
 
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
@@ -40,13 +40,13 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testScopeWithLIdent() {
-        PsiLet let = first(parseCode("let l p = Js.log p; returnObj").getLetExpressions());
+        PsiLet let = first(letExpressions(parseCode("let l p = Js.log p; returnObj")));
 
         assertTrue(let.isFunction());
     }
 
     public void testRecord() {
-        PsiLet let = first(parseCode("let r = { one = 1; two = 2 }").getLetExpressions());
+        PsiLet let = first(letExpressions(parseCode("let r = { one = 1; two = 2 }")));
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);

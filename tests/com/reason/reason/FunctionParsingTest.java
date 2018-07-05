@@ -13,7 +13,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetFunction() {
-        PsiLet e = first(parseCode("let add = (x,y) => x + y;").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let add = (x,y) => x + y;")));
 
         assertTrue(e.isFunction());
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
@@ -23,7 +23,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetFunctionParenless() {
-        PsiLet e = first(parseCode("let add10 = x => x + 10;").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let add10 = x => x + 10;")));
 
         assertTrue(e.isFunction());
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
@@ -33,7 +33,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testAnonFunction() {
-        PsiLet e = first(parseCode("let x = Belt.map(items, (. item) => item)").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let x = Belt.map(items, (. item) => item)")));
 
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertNotNull(function);
@@ -41,7 +41,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testBraceFunction() {
-        PsiLet e = first(parseCode("let x = (x, y) => { x + y; }").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let x = (x, y) => { x + y; }")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertEquals("(x, y) => { x + y; }", function.getText());
@@ -49,7 +49,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testInnerFunction() {
-        PsiLet e = first(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let _ = error => Belt.Array.mapU(errors, (. error) => error##message);")));
 
         PsiFunction functionOuter = (PsiFunction) e.getBinding().getFirstChild();
         assertEquals("Belt.Array.mapU(errors, (. error) => error##message);", functionOuter.getBody().getText());
@@ -59,7 +59,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testInnerFunctionBraces() {
-        PsiLet e = first(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };").getLetExpressions());
+        PsiLet e = first(letExpressions(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };")));
 
         PsiFunction functionOuter = (PsiFunction) e.getBinding().getFirstChild();
         assertEquals("{ Belt.Array.mapU(errors, (. error) => error##message); }", functionOuter.getBody().getText());

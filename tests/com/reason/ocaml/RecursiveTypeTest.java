@@ -12,7 +12,7 @@ public class RecursiveTypeTest extends BaseParsingTestCase {
     }
 
     public void testAnd() {
-        Collection<PsiType> types = parseCode("type update = | NoUpdate and 'state self = {state: 'state;}").getTypeExpressions();
+        Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}"));
 
         assertEquals(2, types.size());
         assertEquals("update", first(types).getName());

@@ -42,12 +42,12 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
         ParserScope fileScope = new ParserScope(file, m_types == null ? null : m_types.FILE_MODULE, builder.mark());
-        fileScope.complete = true;
+        //fileScope.complete = true;
 
-        if (m_types != null) {
+        //if (m_types != null) {
             // Creates an empty UpperSymbol to be used as a reference name in FileModule
-            builder.mark().done(m_types.UPPER_SYMBOL);
-        }
+        //builder.mark().done(m_types.UPPER_SYMBOL);
+        //}
 
         ParserState state = new ParserState(fileScope);
         parseFile(builder, state);
