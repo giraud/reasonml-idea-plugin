@@ -4,7 +4,6 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.stub.PsiModuleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,9 +46,6 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
 
     @Nullable
     PsiLet getLetExpression(@NotNull String make);
-
-    @NotNull
-    ModulePath getPath();
 
     boolean isComponent();
 

@@ -10,6 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
@@ -229,8 +230,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     }
 
     @NotNull
-    @Override
-    public ModulePath getPath() {
+    private ModulePath getPath() {
         // TODO: use stub
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
@@ -295,7 +295,8 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
             return stub.getQualifiedName();
         }
 
-        return getPath() + "." + getName();
+        String path = getPath().toString();
+        return ((FileBase) getContainingFile()).asModuleName() + (path.isEmpty() ? "" : "." + path) + "." + getName();
     }
 
     @Override

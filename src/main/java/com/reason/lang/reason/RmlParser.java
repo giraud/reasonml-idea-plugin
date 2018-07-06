@@ -602,11 +602,6 @@ public class RmlParser extends CommonParser {
                 state.popEnd();
             }
         }
-
-        if (nextTokenType == m_types.SEMI) {
-            // ( ... ); -> skip semi, its ok
-            advance(builder);
-        }
     }
 
     private void parseEq(PsiBuilder builder, ParserState state) {

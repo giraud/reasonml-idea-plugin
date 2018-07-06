@@ -9,6 +9,7 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Joiner;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
@@ -75,13 +76,24 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         // If name is used in a module definition, it's already the reference
         // module <ReferenceName> = ...
         if (parent != null && ((PsiModule) parent).getNameIdentifier() == myElement) {
-            return myElement;
+            return null;
         }
 
+        Project project = myElement.getProject();
+        PsiFinder psiFinder = PsiFinder.getInstance();
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
-        Project project = myElement.getProject();
-        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, m_referenceName, interfaceOrImplementation, all);
+        // Might be a file module, try that
+        PsiElement prevSibling = myElement.getPrevSibling();
+        if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
+            FileBase fileModule = psiFinder.findFileModule(project, m_referenceName);
+            if (m_debug) {
+                System.out.println("  file: " + fileModule);
+            }
+            return fileModule;
+        }
+
+        Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation, all);
 
         if (m_debug) {
             System.out.println("  modules: " + modules.size());
