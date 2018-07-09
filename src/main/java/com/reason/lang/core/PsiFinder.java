@@ -22,14 +22,10 @@ import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import static com.intellij.psi.search.GlobalSearchScope.projectScope;
-import static com.reason.lang.core.MlScope.all;
-import static com.reason.lang.core.MlScope.inBsconfig;
 
 public final class PsiFinder {
 
@@ -42,12 +38,10 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        m_debug.debug("Find modules, name", name, scope.name());
+    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        m_debug.debug("Find modules, name", name);
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
-        Map<String/*qn*/, PsiModule> other = new THashMap<>();
-
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, projectScope(project), PsiModule.class);
@@ -81,29 +75,19 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keepFile) {
-                    if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                        m_debug.debug("    keep (in config)", module);
-                        inConfig.put(module.getQualifiedName(), module);
-                    } else {
-                        m_debug.debug("    keep (not in config)", module);
-                        other.put(module.getQualifiedName(), module);
-                    }
+                if (keepFile && bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                    m_debug.debug("    keep (in config)", module);
+                    inConfig.put(module.getQualifiedName(), module);
                 }
             }
         }
 
-        Collection<PsiModule> result = new ArrayList<>(inConfig.values());
-        if (scope == all) {
-            result.addAll(other.values());
-        }
-
-        return result;
+        return inConfig.values();
     }
 
     @Nullable
-    public PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Collection<PsiModule> modules = findModules(project, name, fileType, scope);
+    public PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        Collection<PsiModule> modules = findModules(project, name, fileType);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
         }
@@ -116,7 +100,7 @@ public final class PsiFinder {
         // extract first token of path
         String[] names = name.split("\\.");
 
-        PsiModule module = findModule(project, names[0], MlFileType.interfaceOrImplementation, inBsconfig);
+        PsiModule module = findModule(project, names[0], MlFileType.interfaceOrImplementation);
         // zzz
         //if (module instanceof Psi File Module Impl) {
         //    if (1 < names.length) {
@@ -134,74 +118,35 @@ public final class PsiFinder {
         //    return module;
         //}
 
-        return null;
+        return module;
     }
 
     @NotNull
-    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Map<String/*qn*/, PsiLet> inConfig = new THashMap<>();
-        Map<String/*qn*/, PsiLet> other = new THashMap<>();
-
-        findLowerSymbols("lets", inConfig, other, project, name, fileType, scope, IndexKeys.LETS, PsiLet.class);
-
-        List<PsiLet> result = new ArrayList<>(inConfig.values());
-        if (scope == all) {
-            result.addAll(other.values());
-        }
-
-        return result;
+    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        return findLowerSymbols("lets", project, name, fileType, IndexKeys.LETS, PsiLet.class);
     }
 
     @NotNull
-    public Collection<PsiVal> findVals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Map<String/*qn*/, PsiVal> inConfig = new THashMap<>();
-        Map<String/*qn*/, PsiVal> other = new THashMap<>();
-
-        findLowerSymbols("vals", inConfig, other, project, name, fileType, scope, IndexKeys.VALS, PsiVal.class);
-
-        List<PsiVal> result = new ArrayList<>(inConfig.values());
-        if (scope == all) {
-            result.addAll(other.values());
-        }
-
-        return result;
+    public Collection<PsiVal> findVals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        return findLowerSymbols("vals", project, name, fileType, IndexKeys.VALS, PsiVal.class);
     }
 
     @NotNull
-    public Collection<PsiType> findTypes(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Map<String/*qn*/, PsiType> inConfig = new THashMap<>();
-        Map<String/*qn*/, PsiType> other = new THashMap<>();
-
-        findLowerSymbols("types", inConfig, other, project, name, fileType, scope, IndexKeys.TYPES, PsiType.class);
-
-        List<PsiType> result = new ArrayList<>(inConfig.values());
-        if (scope == all) {
-            result.addAll(other.values());
-        }
-
-        return result;
+    public Collection<PsiType> findTypes(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        return findLowerSymbols("types", project, name, fileType, IndexKeys.TYPES, PsiType.class);
     }
 
     @NotNull
-    public Collection<PsiExternal> findExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope) {
-        Map<String/*qn*/, PsiExternal> inConfig = new THashMap<>();
-        Map<String/*qn*/, PsiExternal> other = new THashMap<>();
-
-        findLowerSymbols("externals", inConfig, other, project, name, fileType, scope, IndexKeys.EXTERNALS, PsiExternal.class);
-
-        List<PsiExternal> result = new ArrayList<>(inConfig.values());
-        if (scope == all) {
-            result.addAll(other.values());
-        }
-
-        return result;
+    public Collection<PsiExternal> findExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        return findLowerSymbols("externals", project, name, fileType, IndexKeys.EXTERNALS, PsiExternal.class);
     }
 
-    private <T extends PsiQualifiedNamedElement> void findLowerSymbols(@NotNull String debugName, @NotNull Map<String/*qn*/, T> inConfig, @NotNull Map<String/*qn*/, T> other, @NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, MlScope scope, StubIndexKey<String, T> indexKey, Class<T> clazz) {
+    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, StubIndexKey<String, T> indexKey, Class<T> clazz) {
         if (m_debug.isDebugEnabled()) {
-            m_debug.debug("Find " + debugName + " name", name, scope.name());
+            m_debug.debug("Find " + debugName + " name", name);
         }
 
+        Map<String/*qn*/, T> inConfig = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         Collection<T> items = StubIndex.getElements(indexKey, name, project, projectScope(project), clazz);
@@ -243,20 +188,18 @@ public final class PsiFinder {
                     if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
                         m_debug.debug("    keep (in config)", item);
                         inConfig.put(item.getQualifiedName(), item);
-                    } else {
-                        m_debug.debug("    keep (not in config)", item);
-                        other.put(item.getQualifiedName(), item);
                     }
                 }
             }
         }
+
+        return inConfig.values();
     }
 
     @Nullable
     public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
         m_debug.debug("Find file module", name);
 
-        PsiFile result = null;
         GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
 
         FileBase file = findFileModuleByExt(project, name, OclInterfaceFileType.INSTANCE.getDefaultExtension(), scope);

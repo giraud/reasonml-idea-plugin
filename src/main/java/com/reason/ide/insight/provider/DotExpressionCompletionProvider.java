@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
-import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class DotExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 
@@ -77,7 +76,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
 
                 // Find modules
 
-                Collection<PsiModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation, inBsconfig);
+                Collection<PsiModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation);
                 if (m_debug.isDebugEnabled()) {
                     m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
                 }
@@ -115,7 +114,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 PsiFinder psiFinder = PsiFinder.getInstance();
 
                 // try let
-                Collection<PsiLet> lets = psiFinder.findLets(project, lowerName, interfaceOrImplementation, inBsconfig);
+                Collection<PsiLet> lets = psiFinder.findLets(project, lowerName, interfaceOrImplementation);
                 if (m_debug.isDebugEnabled()) {
                     m_debug.debug("  lets", lets.size(), lets.size() == 1 ? " (" + lets.iterator().next().getName() + ")" : "[" + Joiner.join(", ", lets) + "]");
                 }

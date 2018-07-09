@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
-import static com.reason.lang.core.MlScope.all;
 import static java.util.stream.Collectors.toList;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
@@ -93,7 +92,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             return fileModule;
         }
 
-        Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
 
         if (m_debug) {
             System.out.println("  modules: " + modules.size());

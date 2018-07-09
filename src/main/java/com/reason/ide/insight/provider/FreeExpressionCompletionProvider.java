@@ -16,7 +16,6 @@ import com.intellij.util.PsiIconUtil;
 import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
-import com.reason.lang.core.MlScope;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiSignatureUtil;
 import com.reason.lang.core.psi.*;
@@ -95,7 +94,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
 
         // Add pervasives expressions
-        PsiModule pervasives = psiFinder.findModule(project, "Pervasives", interfaceOrImplementation, MlScope.all);
+        PsiModule pervasives = psiFinder.findModule(project, "Pervasives", interfaceOrImplementation);
         if (pervasives != null) {
             for (PsiNamedElement expression : pervasives.getExpressions()) {
                 resultSet.addElement(LookupElementBuilder.create(expression).

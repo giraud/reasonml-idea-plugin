@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
-import static com.reason.lang.core.MlScope.all;
 import static java.util.Collections.emptyList;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implements PsiModule {
@@ -116,7 +115,7 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiModule moduleAlias = PsiFinder.getInstance().findModule(getProject(), alias, interfaceOrImplementation, all);
+            PsiModule moduleAlias = PsiFinder.getInstance().findModule(getProject(), alias, interfaceOrImplementation);
             if (moduleAlias != null) {
                 result = moduleAlias.getExpressions();
             }

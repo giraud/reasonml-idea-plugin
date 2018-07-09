@@ -1,6 +1,8 @@
 package com.reason.build.bs;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Joiner;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,20 +22,22 @@ class BsConfig {
     private static final Pattern NAME_REGEXP = Pattern.compile(".*\"name\":\\s*\"([^\"]*?)\".*");
     private static final Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
 
+    private final static Logger m_log = Logger.getInstance("ReasonML.bsConfig");
+
     private final Path m_basePath;
     private final String m_namespace;
-    private final String[] m_deps;
-    private final String m_pervasives;
+    private final Path[] m_deps;
+    private final Path m_pervasives;
 
-    private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @NotNull String[] bsPlatformDeps, @Nullable String[] deps) {
-        m_basePath = FileSystems.getDefault().getPath(rootFile.getPath());
+    private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @NotNull Path[] bsPlatformDeps, @Nullable Path[] deps) {
+        m_basePath = FileSystems.getDefault().getPath(rootFile.getPath(), "node_modules");
         m_namespace = hasNamespace ? toNamespace(name) : "";
         m_pervasives = locateFile(rootFile, "pervasives.mli");
 
         if (deps == null) {
             m_deps = bsPlatformDeps;
         } else {
-            m_deps = new String[deps.length + bsPlatformDeps.length];
+            m_deps = new Path[deps.length + bsPlatformDeps.length];
             System.arraycopy(deps, 0, m_deps, 0, deps.length);
             System.arraycopy(bsPlatformDeps, 0, m_deps, deps.length, bsPlatformDeps.length);
         }
@@ -51,9 +55,8 @@ class BsConfig {
 
         Path relativePath = m_basePath.relativize(new File(canonicalPath).toPath());
         if (relativePath.startsWith("node_modules") && m_deps != null) {
-            String relative = relativePath.toString();
-            for (String dep : m_deps) {
-                if (relative.contains(dep) || relative.contains(m_pervasives)) {
+            for (Path dep : m_deps) {
+                if (relativePath.startsWith(dep) || relativePath.startsWith(m_pervasives)) {
                     return true;
                 }
             }
@@ -74,11 +77,11 @@ class BsConfig {
                 String jsonContent = content.toString();
                 String name = readName(jsonContent);
                 boolean hasNamespace = readNamespace(jsonContent);
-                String[] deps = readDependencies(jsonContent);
+                Path[] deps = readDependencies(jsonContent);
 
                 // find location of bs dependencies, could be lib/ocaml or jscomp/runtime (depends on os)
                 VirtualFile rootFile = bsconfig.getParent();
-                String[] bsDeps = new String[]{
+                Path[] bsDeps = new Path[]{
                         locateFile(rootFile, "js.mli"),
                         locateFile(rootFile, "js.ml"),
                         locateFile(rootFile, "belt.mli"),
@@ -93,30 +96,35 @@ class BsConfig {
     }
 
     @NotNull
-    private static String locateFile(@NotNull VirtualFile rootFile, @NotNull String filename) {
+    private static Path locateFile(@NotNull VirtualFile rootFile, @NotNull String filename) {
         VirtualFile jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/lib/ocaml/" + filename);
         if (jsPath == null) {
             jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/jscomp/runtime/" + filename);
             if (jsPath != null) {
-                return "bs-platform/jscomp/runtime/" + filename;
+                return FileSystems.getDefault().getPath("bs-platform", "jscomp", "runtime", filename);
             }
         }
-        return "bs-platform/lib/ocaml/" + filename;
+        return FileSystems.getDefault().getPath("bs-platform", "lib", "ocaml", filename);
     }
 
     @Nullable
-    private static String[] readDependencies(@NotNull String content) {
-        String[] result = null;
+    private static Path[] readDependencies(@NotNull String content) {
+        Path[] result = null;
 
         Matcher matcher = DEPS_REGEXP.matcher(content);
         if (matcher.matches()) {
             String[] tokens = matcher.group(1).split(",");
-            result = new String[tokens.length];
+            result = new Path[tokens.length];
             for (int i = 0; i < tokens.length; i++) {
                 String token = tokens[i].trim();
-                result[i] = token.substring(1, token.length() - 1) + "/lib";
+                result[i] = FileSystems.getDefault().getPath(token.substring(1, token.length() - 1), "lib");
             }
         }
+
+        if (m_log.isDebugEnabled()) {
+            m_log.debug("Dependencies found: [" + Joiner.join(", ", result) + "]");
+        }
+
         return result;
     }
 
@@ -145,17 +153,17 @@ class BsConfig {
 
     @NotNull
     private static String toNamespace(@NotNull String name) {
-        String result = name.replaceAll("_", "");
+        StringBuilder result = new StringBuilder(name.replaceAll("_", ""));
 
-        String[] tokens = result.split("[-@/]");
+        String[] tokens = result.toString().split("[-@/]");
         if (1 < tokens.length) {
-            result = upperCaseFirst(tokens[0]);
+            result = new StringBuilder(upperCaseFirst(tokens[0]));
             for (int i = 1; i < tokens.length; i++) {
-                result += upperCaseFirst(tokens[i]);
+                result.append(upperCaseFirst(tokens[i]));
             }
         }
 
-        return result;
+        return result.toString();
     }
 
     @NotNull

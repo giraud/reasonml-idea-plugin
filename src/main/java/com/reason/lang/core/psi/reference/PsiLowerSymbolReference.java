@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
-import static com.reason.lang.core.MlScope.all;
 import static java.util.stream.Collectors.toList;
 
 public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
@@ -70,7 +69,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find let items
 
-        Collection<PsiLet> lets = psiFinder.findLets(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiLet> lets = psiFinder.findLets(project, m_referenceName, interfaceOrImplementation);
         if (m_debug) {
             System.out.println("  lets: " + lets.size());
             for (PsiQualifiedNamedElement element : lets) {
@@ -97,7 +96,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find val items
 
-        Collection<PsiVal> vals = psiFinder.findVals(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiVal> vals = psiFinder.findVals(project, m_referenceName, interfaceOrImplementation);
         if (m_debug) {
             System.out.println("  vals: " + vals.size());
             for (PsiQualifiedNamedElement element : vals) {
@@ -126,7 +125,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find external items
 
-        Collection<PsiExternal> externals = psiFinder.findExternals(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiExternal> externals = psiFinder.findExternals(project, m_referenceName, interfaceOrImplementation);
         if (m_debug) {
             System.out.println("  externals: " + externals.size());
             for (PsiQualifiedNamedElement element : externals) {
@@ -155,7 +154,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find type items
 
-        Collection<PsiType> types = psiFinder.findTypes(project, m_referenceName, interfaceOrImplementation, all);
+        Collection<PsiType> types = psiFinder.findTypes(project, m_referenceName, interfaceOrImplementation);
         if (m_debug) {
             System.out.println("  types: " + types.size());
             for (PsiQualifiedNamedElement element : types) {

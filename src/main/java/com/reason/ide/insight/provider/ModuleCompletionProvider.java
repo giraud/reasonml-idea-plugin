@@ -24,7 +24,6 @@ import java.util.List;
 
 import static com.reason.lang.core.MlFileType.implementationOnly;
 import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
-import static com.reason.lang.core.MlScope.inBsconfig;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
     private final MlTypes m_types;
@@ -86,7 +85,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             }
         } else {
             String latestModuleName = modulePath.getLatest();
-            Collection<PsiModule> modules = psiFinder.findModules(project, latestModuleName, implementationOnly, inBsconfig);
+            Collection<PsiModule> modules = psiFinder.findModules(project, latestModuleName, implementationOnly);
             if (!modules.isEmpty()) {
                 for (PsiModule module : modules) {
                     for (PsiModule expression : module.getModules()) {
