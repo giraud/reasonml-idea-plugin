@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
 import com.reason.lang.core.PsiFinder;
@@ -20,7 +21,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
 
         String path = extractPathName(element, OclTypes.INSTANCE);
         if (!path.isEmpty()) {
-            PsiModule moduleAlias = PsiFinder.getInstance().findModuleAlias(element.getProject(), path);
+            PsiQualifiedNamedElement moduleAlias = PsiFinder.getInstance().findModuleAlias(element.getProject(), path);
             String modulePath = moduleAlias == null ? path : moduleAlias.getQualifiedName();
             qualifiedNames.add(modulePath);
             qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + modulePath);

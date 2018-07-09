@@ -5,6 +5,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.lang.core.PsiFileHelper;
@@ -12,12 +13,13 @@ import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class FileBase extends PsiFileBase {
+public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedElement {
 
     @NotNull
     private final String m_moduleName;
@@ -62,5 +64,11 @@ public abstract class FileBase extends PsiFileBase {
 
     public Collection<PsiNamedElement> getExpressions() {
         return PsiFileHelper.getExpressions(this);
+    }
+
+    @Nullable
+    @Override
+    public String getQualifiedName() {
+        return asModuleName();
     }
 }

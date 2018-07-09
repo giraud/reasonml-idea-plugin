@@ -268,7 +268,7 @@ public final class PsiFinder {
 
             for (VirtualFile virtualFile : ociFiles) {
                 PsiFile file = psiManager.findFile(virtualFile);
-                if (file != null) {
+                if (bucklescript.isDependency(file)) {
                     files.put(virtualFile.getName(), (FileBase) file);
                 }
             }
@@ -292,10 +292,8 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keep) {
-                    if (file instanceof FileBase) {
-                        result.put(virtualFile.getName(), (FileBase) file);
-                    }
+                if (keep && file instanceof FileBase && bucklescript.isDependency(file)) {
+                    result.put(virtualFile.getName(), (FileBase) file);
                 }
             }
 
@@ -310,10 +308,8 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keep) {
-                    if (file instanceof FileBase) {
-                        result.put(file.getName(), (FileBase) file);
-                    }
+                if (keep && file instanceof FileBase && bucklescript.isDependency(file)) {
+                    result.put(file.getName(), (FileBase) file);
                 }
             }
         }
@@ -322,21 +318,29 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiModule findModuleAlias(@NotNull Project project, @Nullable String moduleQname) {
+    public PsiQualifiedNamedElement findModuleAlias(@NotNull Project project, @Nullable String moduleQname) {
         if (moduleQname == null) {
             return null;
         }
 
-        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, projectScope(project));
+        GlobalSearchScope scope = projectScope(project);
+        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, scope);
+
         if (!modules.isEmpty()) {
             PsiModule moduleReference = modules.iterator().next();
             String alias = moduleReference.getAlias();
+
             if (alias != null) {
-                modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, projectScope(project));
+                FileBase fileModule = findFileModule(project, alias);
+                if (fileModule != null) {
+                    return fileModule;
+                }
+
+                modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, scope);
                 if (!modules.isEmpty()) {
                     PsiModule next = modules.iterator().next();
                     if (next != null) {
-                        PsiModule nextModuleAlias = findModuleAlias(project, next.getQualifiedName());
+                        PsiQualifiedNamedElement nextModuleAlias = findModuleAlias(project, next.getQualifiedName());
                         return nextModuleAlias == null ? next : nextModuleAlias;
                     }
                 }

@@ -7,6 +7,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
@@ -59,7 +61,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 // Find file modules
 
                 FileBase fileModule = psiFinder.findFileModule(project, upperName);
-                m_debug.debug("  file", fileModule);
+                m_debug.debug("  file", (PsiFile) fileModule);
                 if (fileModule != null) {
                     if (qualifiedNames.contains(fileModule.asModuleName())) {
                         Collection<PsiNamedElement> expressions = fileModule.getExpressions();
@@ -81,20 +83,20 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                     m_debug.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
                 }
 
-                Collection<PsiModule> resolvedModules = modules.stream().
+                Collection<? extends PsiQualifiedNamedElement> resolvedModules = modules.stream().
                         map(psiModule -> {
-                            PsiModule moduleAlias = psiFinder.findModuleAlias(project, psiModule.getQualifiedName());
+                            PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, psiModule.getQualifiedName());
                             return moduleAlias == null ? psiModule : moduleAlias;
                         }).
                         filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).
                         collect(Collectors.toList());
                 if (m_debug.isDebugEnabled()) {
-                    m_debug.debug("  resolved", resolvedModules.size());
+                    m_debug.debug("  resolved", resolvedModules);
                 }
 
-                for (PsiModule resolvedModule : resolvedModules) {
+                for (PsiQualifiedNamedElement resolvedModule : resolvedModules) {
                     if (resolvedModule != null) {
-                        Collection<PsiNamedElement> expressions = resolvedModule.getExpressions();
+                        Collection<PsiNamedElement> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiModule) resolvedModule).getExpressions();
                         for (PsiNamedElement expression : expressions) {
                             resultSet.addElement(
                                     LookupElementBuilder.

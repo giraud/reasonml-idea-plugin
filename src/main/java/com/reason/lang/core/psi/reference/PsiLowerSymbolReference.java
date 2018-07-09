@@ -197,7 +197,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).
                 stream().
                 map(item -> {
-                    PsiModule moduleAlias = PsiFinder.getInstance().findModuleAlias(project, item);
+                    PsiQualifiedNamedElement moduleAlias = PsiFinder.getInstance().findModuleAlias(project, item);
                     String qn = (moduleAlias == null) ? item : moduleAlias.getQualifiedName();
                     return qn + "." + m_referenceName;
                 }).
