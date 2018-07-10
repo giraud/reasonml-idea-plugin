@@ -11,6 +11,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.ide.Debug;
@@ -42,28 +43,17 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         PsiFinder psiFinder = PsiFinder.getInstance();
         Project project = parameters.getOriginalFile().getProject();
-        PsiElement cursorElement = parameters.getPosition();
+        PsiElement cursorElement = parameters.getOriginalPosition();
 
-        // Add file modules
-        Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
-        for (FileBase file : files) {
-            if (m_debug.isDebugEnabled()) {
-                m_debug.debug("  files found", files.size());
-            }
-            if (!file.isComponent()) {
-                resultSet.addElement(LookupElementBuilder.
-                        create(file.asModuleName()).
-                        withTypeText(file.shortLocation(project)).
-                        withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
-            }
-        }
+        List<String> paths = m_modulePathFinder.extractPotentialPaths(cursorElement);
+        m_debug.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)
-        List<String> paths = m_modulePathFinder.extractPotentialPaths(cursorElement);
         for (String path : paths) {
-            PsiModule fileModule = psiFinder.findRealFileModule(project, path);
-            if (fileModule != null) {
-                for (PsiNamedElement expression : fileModule.getExpressions()) {
+            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(project, path);
+            if (module != null) {
+                Collection<PsiNamedElement> expressions = (module instanceof FileBase) ? ((FileBase) module).getExpressions() : ((PsiModule) module).getExpressions();
+                for (PsiNamedElement expression : expressions) {
                     resultSet.addElement(LookupElementBuilder.
                             create(expression).
                             withTypeText(PsiSignatureUtil.getProvidersType(expression)).
@@ -102,6 +92,17 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                 resultSet.addElement(LookupElementBuilder.create(expression).
                         withTypeText(PsiSignatureUtil.getProvidersType(expression)).
                         withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+            }
+        }
+
+        // Add file modules
+        Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
+        for (FileBase file : files) {
+            if (!file.isComponent()) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(file.asModuleName()).
+                        withTypeText(file.shortLocation(project)).
+                        withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
             }
         }
     }
