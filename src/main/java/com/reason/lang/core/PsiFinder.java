@@ -95,32 +95,6 @@ public final class PsiFinder {
         return null;
     }
 
-    @Nullable
-    public PsiModule findRealFileModule(Project project, String name) {
-        // extract first token of path
-        String[] names = name.split("\\.");
-
-        PsiModule module = findModule(project, names[0], MlFileType.interfaceOrImplementation);
-        // zzz
-        //if (module instanceof Psi File Module Impl) {
-        //    if (1 < names.length) {
-        //        PsiModule currentModule = module;
-        //        for (int i = 1; i < names.length; i++) {
-        //            String innerModuleName = names[i];
-        //            currentModule = currentModule.getModule(innerModuleName);
-        //            if (currentModule == null) {
-        //                return null;
-        //            }
-        //        }
-        //        return currentModule;
-        //    }
-        //
-        //    return module;
-        //}
-
-        return module;
-    }
-
     @NotNull
     public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
         return findLowerSymbols("lets", project, name, fileType, IndexKeys.LETS, PsiLet.class);
@@ -346,6 +320,57 @@ public final class PsiFinder {
                 }
             }
         }
+        return null;
+    }
+
+    @Nullable
+    public PsiModule findRealFileModule(Project project, String name) {
+        // extract first token of path
+        String[] names = name.split("\\.");
+
+        PsiModule module = findModule(project, names[0], MlFileType.interfaceOrImplementation);
+        // zzz
+        //if (module instanceof Psi File Module Impl) {
+        //    if (1 < names.length) {
+        //        PsiModule currentModule = module;
+        //        for (int i = 1; i < names.length; i++) {
+        //            String innerModuleName = names[i];
+        //            currentModule = currentModule.getModule(innerModuleName);
+        //            if (currentModule == null) {
+        //                return null;
+        //            }
+        //        }
+        //        return currentModule;
+        //    }
+        //
+        //    return module;
+        //}
+
+        return module;
+    }
+
+    @Nullable
+    public PsiQualifiedNamedElement findModuleFromQn(@NotNull Project project, @NotNull String moduleQName) {
+        // extract first token of path
+        String[] names = moduleQName.split("\\.");
+
+        FileBase fileModule = findFileModule(project, names[0]);
+        if (fileModule != null) {
+            if (1 < names.length) {
+                //        PsiModule currentModule = module;
+                //        for (int i = 1; i < names.length; i++) {
+                //            String innerModuleName = names[i];
+                //            currentModule = currentModule.getModule(innerModuleName);
+                //            if (currentModule == null) {
+                //                return null;
+                //            }
+                //        }
+                //        return currentModule;
+            }
+
+            return fileModule;
+        }
+
         return null;
     }
 }

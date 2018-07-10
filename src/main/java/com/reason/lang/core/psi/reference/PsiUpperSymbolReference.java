@@ -3,14 +3,12 @@ package com.reason.lang.core.psi.reference;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Joiner;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.search.IndexKeys;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
@@ -95,7 +93,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
 
         if (m_debug) {
-            System.out.println("  modules: " + modules.size());
+            System.out.println("  modules: " + modules.size() + (modules.size() == 1 ? " (no filtering)" : ""));
             for (PsiModule module : modules) {
                 System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
             }
@@ -133,13 +131,12 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             PsiModule moduleReference = filteredModules.iterator().next();
             String moduleAlias = moduleReference.getAlias();
             if (moduleAlias != null) {
-                // TODO move to PsiFinder, more optimized ?
-                Collection<PsiModule> moduleAliasReference = StubIndex.getElements(IndexKeys.MODULES, moduleAlias, project, GlobalSearchScope.allScope(project), PsiModule.class);
-                if (!moduleAliasReference.isEmpty()) {
-                    moduleReference = moduleAliasReference.iterator().next();
+                PsiQualifiedNamedElement moduleFromAlias = PsiFinder.getInstance().findModuleFromQn(project, moduleAlias);
+                if (moduleFromAlias != null) {
                     if (m_debug) {
-                        System.out.println("»» Alias module " + moduleReference.getAlias() + " resolved to " + moduleReference.getQualifiedName());
+                        System.out.println("    module alias: " + moduleAlias + " resolved to file");
                     }
+                    return moduleFromAlias;
                 }
             }
 
