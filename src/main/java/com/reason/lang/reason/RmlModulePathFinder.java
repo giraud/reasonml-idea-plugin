@@ -30,6 +30,10 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
         // Walk backward until top of the file is reached, trying to find local opens and opens/includes
         PsiElement item = element;
         while (item != null) {
+            if (100 < qualifiedNames.size()) {
+                break; // There must be a problem with the parser
+            }
+
             if (item instanceof PsiOpen || item instanceof PsiInclude) {
                 String openName = ((PsiNamedElement) item).getName();
                 // Add open value to all previous elements
