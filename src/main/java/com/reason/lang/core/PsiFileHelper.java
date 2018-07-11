@@ -7,6 +7,7 @@ import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class PsiFileHelper {
@@ -15,7 +16,17 @@ public class PsiFileHelper {
 
     @NotNull
     public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.findChildrenOfAnyType(file, PsiType.class, PsiModule.class, PsiLet.class, PsiExternal.class, PsiVal.class);
+        Collection<PsiNamedElement> result = new ArrayList<>();
+
+        PsiElement element = file.getFirstChild();
+        while (element != null) {
+            if (element instanceof PsiNamedElement) {
+                result.add((PsiNamedElement) element);
+            }
+            element = element.getNextSibling();
+        }
+
+        return result;
     }
 
     @NotNull
@@ -45,6 +56,12 @@ public class PsiFileHelper {
 
     @Nullable
     public static PsiElement getLetExpression(@NotNull PsiFile file, @NotNull String name) {
-        return getLetExpressions(file).stream().filter(let -> name.equals(let.getName())).findFirst().orElseGet(null);
+        Collection<PsiLet> letExpressions = getLetExpressions(file);
+        for (PsiLet let : letExpressions) {
+            if (name.equals(let.getName())) {
+                return let;
+            }
+        }
+        return null;
     }
 }

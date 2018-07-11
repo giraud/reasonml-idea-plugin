@@ -65,7 +65,7 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> dotExpression() {
-            return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.DOT));
+            return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.DOT).andNot(psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.LPAREN))));
         }
 
         @NotNull

@@ -122,7 +122,14 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
         } else {
             PsiElement body = getBody();
             if (body != null) {
-                result = PsiTreeUtil.findChildrenOfAnyType(body, PsiType.class, PsiModule.class, PsiLet.class, PsiExternal.class);
+                result = new ArrayList<>();
+                PsiElement element = body.getFirstChild();
+                while (element != null) {
+                    if (element instanceof PsiNamedElement) {
+                        result.add((PsiNamedElement) element);
+                    }
+                    element = element.getNextSibling();
+                }
             }
         }
 
