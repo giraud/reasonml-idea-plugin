@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.intellij.psi.search.GlobalSearchScope.projectScope;
+import static com.intellij.psi.search.GlobalSearchScope.allScope;
 
 public final class PsiFinder {
 
@@ -43,8 +43,9 @@ public final class PsiFinder {
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+        GlobalSearchScope scope = allScope(project);
 
-        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, projectScope(project), PsiModule.class);
+        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, scope, PsiModule.class);
         if (modules.isEmpty()) {
             m_debug.debug("  No modules found");
         } else {
@@ -52,8 +53,7 @@ public final class PsiFinder {
             for (PsiModule module : modules) {
                 boolean keepFile;
 
-                FileBase containingFile = (FileBase) module.getContainingFile();
-                VirtualFile virtualFile = containingFile.getVirtualFile();
+                VirtualFile virtualFile = module.getContainingFile().getVirtualFile();
                 FileType moduleFileType = virtualFile.getFileType();
 
                 if (fileType == MlFileType.implementationOnly) {
@@ -69,8 +69,9 @@ public final class PsiFinder {
                         String nameWithoutExtension = virtualFile.getNameWithoutExtension();
                         String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
                                 OclInterfaceFileType.INSTANCE.getDefaultExtension();
+                        m_debug.debug("    Trying to find interface from implementation", nameWithoutExtension, extension);
                         Collection<VirtualFile> interfaceFiles = FilenameIndex
-                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, projectScope(project));
+                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, scope);
                         keepFile = interfaceFiles.isEmpty();
                     }
                 }
@@ -122,8 +123,9 @@ public final class PsiFinder {
 
         Map<String/*qn*/, T> inConfig = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+        GlobalSearchScope scope = allScope(project);
 
-        Collection<T> items = StubIndex.getElements(indexKey, name, project, projectScope(project), clazz);
+        Collection<T> items = StubIndex.getElements(indexKey, name, project, scope, clazz);
         if (items.isEmpty()) {
             if (m_debug.isDebugEnabled()) {
                 m_debug.debug("  No " + debugName + " found");
@@ -153,7 +155,7 @@ public final class PsiFinder {
                         String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
                                 OclInterfaceFileType.INSTANCE.getDefaultExtension();
                         Collection<VirtualFile> interfaceFiles = FilenameIndex
-                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, projectScope(project));
+                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, scope);
                         keepFile = interfaceFiles.isEmpty();
                     }
                 }
@@ -307,7 +309,7 @@ public final class PsiFinder {
             return null;
         }
 
-        GlobalSearchScope scope = projectScope(project);
+        GlobalSearchScope scope = allScope(project);
         Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, scope);
 
         if (!modules.isEmpty()) {
@@ -330,6 +332,7 @@ public final class PsiFinder {
                 }
             }
         }
+
         return null;
     }
 

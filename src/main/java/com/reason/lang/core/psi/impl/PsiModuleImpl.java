@@ -307,6 +307,6 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
 
     @Override
     public String toString() {
-        return "Module " + getName();
+        return "Module " + getQualifiedName();
     }
 }
