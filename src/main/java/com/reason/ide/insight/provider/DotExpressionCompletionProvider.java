@@ -7,7 +7,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
@@ -54,14 +53,14 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement);
 
                 m_debug.debug("  symbol", upperName);
-                m_debug.debug("  qn", qualifiedNames);
+                m_debug.debug("  potential paths", qualifiedNames);
 
                 PsiFinder psiFinder = PsiFinder.getInstance();
 
                 // Find file modules
 
                 FileBase fileModule = psiFinder.findFileModule(project, upperName);
-                m_debug.debug("  file", (PsiFile) fileModule);
+                m_debug.debug("  file", fileModule);
                 if (fileModule != null) {
                     if (qualifiedNames.contains(fileModule.asModuleName())) {
                         Collection<PsiNamedElement> expressions = fileModule.getExpressions();

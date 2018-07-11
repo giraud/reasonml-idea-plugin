@@ -9,11 +9,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <p>After you upgraded to this version, invalidate your caches!</p>
+
         <ul>
-            <li>Fix #66 - Go To + module alias</li>
-            <li>Improved parsers</li>
-            <li>Some record field completion</li>
-            <li>OCaml: better module path resolution</li>
+            <li></li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

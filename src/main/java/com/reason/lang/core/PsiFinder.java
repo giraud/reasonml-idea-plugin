@@ -172,9 +172,7 @@ public final class PsiFinder {
 
     @Nullable
     public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
-        m_debug.debug("Find file module", name);
-
-        GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         FileBase file = findFileModuleByExt(project, name, OclInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
         if (file == null) {
@@ -194,22 +192,34 @@ public final class PsiFinder {
     private FileBase findFileModuleByExt(@NotNull Project project, @NotNull String name, @NotNull String ext, GlobalSearchScope scope) {
         m_debug.debug("Find file module", name, ext);
 
-        PsiFile result = null;
+        FileBase result = null;
+        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         PsiFile[] filesByName = FilenameIndex.getFilesByName(project, name + "." + ext, scope);
         if (0 < filesByName.length) {
             m_debug.debug("  found", filesByName);
-            result = filesByName[0];
-        } else {
-            // retry with lower case name
-            filesByName = FilenameIndex.getFilesByName(project, PsiUtil.moduleNameToFileName(name) + "." + ext, scope);
-            if (0 < filesByName.length) {
-                m_debug.debug("  found", filesByName);
-                result = filesByName[0];
+            for (PsiFile file : filesByName) {
+                if (file instanceof FileBase && bucklescript.isDependency(file)) {
+                    result = (FileBase) file;
+                    m_debug.debug("  resolved to", (FileBase) file);
+                    break;
+                }
             }
         }
 
-        return result instanceof FileBase ? (FileBase) result : null;
+        if (result == null) {
+            // retry with lower case name
+            filesByName = FilenameIndex.getFilesByName(project, PsiUtil.moduleNameToFileName(name) + "." + ext, scope);
+            for (PsiFile file : filesByName) {
+                if (file instanceof FileBase && bucklescript.isDependency(file)) {
+                    result = (FileBase) file;
+                    m_debug.debug("  resolved to", (FileBase) file);
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     @NotNull

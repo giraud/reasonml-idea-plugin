@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.Joiner;
+import com.reason.ide.files.FileBase;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -63,9 +64,9 @@ public class Debug {
         }
     }
 
-    public void debug(String comment, @Nullable PsiFile t) {
+    public void debug(String comment, @Nullable FileBase t) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + (t == null ? "" : t.getVirtualFile().getCanonicalPath() + " "));
+            m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getVirtualFile().getCanonicalPath() + " "));
         }
     }
 
