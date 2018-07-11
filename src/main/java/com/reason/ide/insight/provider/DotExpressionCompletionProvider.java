@@ -64,14 +64,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 if (fileModule != null) {
                     if (qualifiedNames.contains(fileModule.asModuleName())) {
                         Collection<PsiNamedElement> expressions = fileModule.getExpressions();
-                        for (PsiNamedElement expression : expressions) {
-                            resultSet.addElement(LookupElementBuilder.
-                                    create(expression).
-                                    withTypeText(PsiSignatureUtil.getProvidersType(expression)).
-                                    withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                            );
-                        }
-
+                        addExpressions(resultSet, expressions);
                     }
                 }
 
@@ -96,14 +89,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 for (PsiQualifiedNamedElement resolvedModule : resolvedModules) {
                     if (resolvedModule != null) {
                         Collection<PsiNamedElement> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiModule) resolvedModule).getExpressions();
-                        for (PsiNamedElement expression : expressions) {
-                            resultSet.addElement(
-                                    LookupElementBuilder.
-                                            create(expression).
-                                            withTypeText(PsiSignatureUtil.getProvidersType(expression)).
-                                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                            );
-                        }
+                        addExpressions(resultSet, expressions);
                     }
                 }
             }
@@ -132,6 +118,19 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                         );
                     }
                 }
+            }
+        }
+    }
+
+    private void addExpressions(@NotNull CompletionResultSet resultSet, Collection<PsiNamedElement> expressions) {
+        for (PsiNamedElement expression : expressions) {
+            if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude)) {
+                // TODO: if include => include
+                resultSet.addElement(LookupElementBuilder.
+                        create(expression).
+                        withTypeText(PsiSignatureUtil.getProvidersType(expression)).
+                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                );
             }
         }
     }
