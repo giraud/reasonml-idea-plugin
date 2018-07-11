@@ -30,7 +30,7 @@ class BsConfig {
     private final Path m_pervasives;
 
     private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @NotNull Path[] bsPlatformDeps, @Nullable Path[] deps) {
-        m_basePath = FileSystems.getDefault().getPath(rootFile.getPath(), "node_modules");
+        m_basePath = FileSystems.getDefault().getPath(rootFile.getPath());
         m_namespace = hasNamespace ? toNamespace(name) : "";
         m_pervasives = locateFile(rootFile, "pervasives.mli");
 
@@ -117,7 +117,7 @@ class BsConfig {
             result = new Path[tokens.length];
             for (int i = 0; i < tokens.length; i++) {
                 String token = tokens[i].trim();
-                result[i] = FileSystems.getDefault().getPath(token.substring(1, token.length() - 1), "lib");
+                result[i] = FileSystems.getDefault().getPath("node_modules", token.substring(1, token.length() - 1), "lib");
             }
         }
 

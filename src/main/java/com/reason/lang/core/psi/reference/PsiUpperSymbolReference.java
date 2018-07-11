@@ -1,13 +1,14 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Joiner;
+import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.MlTypes;
 import com.reason.lang.ModulePathFinder;
@@ -35,7 +36,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @NotNull
     private final MlTypes m_types;
 
-    @SuppressWarnings("FieldCanBeLocal") private final boolean m_debug = false;
+    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref"));
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
@@ -78,51 +79,45 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         Project project = myElement.getProject();
         PsiFinder psiFinder = PsiFinder.getInstance();
-        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
+        m_debug.debug("Find reference for upper symbol", m_referenceName);
 
-        // Might be a file module, try that
+        // Find potential paths of current element
+        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
+        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
+        m_debug.debug("  potential paths", potentialPaths);
+
+        // Might be a file module, try that first
+
         PsiElement prevSibling = myElement.getPrevSibling();
         if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
             FileBase fileModule = psiFinder.findFileModule(project, m_referenceName);
-            if (m_debug) {
-                System.out.println("  file: " + fileModule);
+            if (fileModule != null) {
+                m_debug.debug("  file", fileModule);
+                return fileModule;
             }
-            return fileModule;
+            // else it might be an inner module
         }
+
+        // Try to find a module from dependencies
 
         Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
 
-        if (m_debug) {
-            System.out.println("  modules: " + modules.size() + (modules.size() == 1 ? " (no filtering)" : ""));
+        m_debug.debug("  modules", modules);
+        if (m_debug.isDebugEnabled()) {
             for (PsiModule module : modules) {
-                System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
+                m_debug.debug("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
             }
         }
 
         if (!modules.isEmpty()) {
-            Collection<PsiModule> filteredModules = modules;
-            if (1 < modules.size()) {
-                // Find potential paths of current element
-                List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
-                if (m_debug) {
-                    System.out.println("  potential paths: [" + Joiner.join(", ", potentialPaths) + "]");
-                }
-
-                // Filter the modules, keep the ones with the same qualified name
-                filteredModules = modules.stream().
-                        filter(module -> {
-                            String moduleQn = module.getQualifiedName();
-                            return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
-                        }).
-                        collect(toList());
-
-                if (m_debug) {
-                    System.out.println("  filtered modules: " + filteredModules.size());
-                    for (PsiModule module : filteredModules) {
-                        System.out.println("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
-                    }
-                }
-            }
+            // Filter the modules, keep the ones with the same qualified name
+            Collection<PsiModule> filteredModules = modules.stream().
+                    filter(module -> {
+                        String moduleQn = module.getQualifiedName();
+                        return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
+                    }).
+                    collect(toList());
+            m_debug.debug("  filtered modules: ", filteredModules);
 
             if (filteredModules.isEmpty()) {
                 return null;
@@ -133,17 +128,14 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             if (moduleAlias != null) {
                 PsiQualifiedNamedElement moduleFromAlias = PsiFinder.getInstance().findModuleFromQn(project, moduleAlias);
                 if (moduleFromAlias != null) {
-                    if (m_debug) {
-                        System.out.println("    module alias: " + moduleAlias + " resolved to file");
-                    }
+                    m_debug.debug("    module alias resolved to file", moduleAlias);
                     return moduleFromAlias;
                 }
             }
 
-            if (m_debug) {
-                System.out.println("»» " + moduleReference.getQualifiedName() + " / " + moduleReference.getAlias());
+            if (m_debug.isDebugEnabled()) {
+                m_debug.debug("»» " + moduleReference.getQualifiedName() + " / " + moduleReference.getAlias());
             }
-
 
             return moduleReference.getNameIdentifier();
         }

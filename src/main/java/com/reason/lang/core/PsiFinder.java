@@ -69,7 +69,6 @@ public final class PsiFinder {
                         String nameWithoutExtension = virtualFile.getNameWithoutExtension();
                         String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
                                 OclInterfaceFileType.INSTANCE.getDefaultExtension();
-                        m_debug.debug("    Trying to find interface from implementation", nameWithoutExtension, extension);
                         Collection<VirtualFile> interfaceFiles = FilenameIndex
                                 .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, scope);
                         keepFile = interfaceFiles.isEmpty();
@@ -77,8 +76,10 @@ public final class PsiFinder {
                 }
 
                 if (keepFile && bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                    m_debug.debug("    keep (in config)", module);
+                    m_debug.debug("       keep", module);
                     inConfig.put(module.getQualifiedName(), module);
+                } else {
+                    m_debug.debug("    abandon", module);
                 }
             }
         }
