@@ -204,6 +204,6 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
     @Override
     public String toString() {
-        return "Let " + getName();
+        return "Let " + getQualifiedName();
     }
 }

@@ -36,7 +36,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @NotNull
     private final MlTypes m_types;
 
-    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref"));
+    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref.upper"));
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
@@ -82,9 +82,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         m_debug.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().map(item -> item + "." + m_referenceName).collect(toList());
-        m_debug.debug("  potential paths", potentialPaths);
+        List<String> potentialPaths = getPotentialPaths();
 
         // Might be a file module, try that first
 
@@ -141,6 +139,17 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         }
 
         return null;
+    }
+
+    private List<String> getPotentialPaths() {
+        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
+
+        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().
+                map(item -> item + "." + m_referenceName).
+                collect(toList());
+        m_debug.debug("  potential paths", potentialPaths);
+
+        return potentialPaths;
     }
 
     @NotNull

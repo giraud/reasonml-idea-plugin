@@ -39,8 +39,14 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
         if (element instanceof PsiTypeName) {
             return "type";
         }
-        if (element instanceof PsiLowerSymbol) {
+        if (element instanceof PsiLet) {
             return "let";
+        }
+        if (element instanceof PsiVal) {
+            return "val";
+        }
+        if (element instanceof PsiExternal) {
+            return "external";
         }
 
         return "unknown type";

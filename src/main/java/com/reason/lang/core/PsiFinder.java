@@ -161,11 +161,9 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keepFile) {
-                    if (bucklescript.isDependency(virtualFile.getCanonicalPath())) {
-                        m_debug.debug("    keep (in config)", item);
-                        inConfig.put(item.getQualifiedName(), item);
-                    }
+                if (keepFile && bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                    m_debug.debug("    keep (in config)", item);
+                    inConfig.put(item.getQualifiedName(), item);
                 }
             }
         }

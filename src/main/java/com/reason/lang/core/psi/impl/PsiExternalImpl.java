@@ -147,6 +147,6 @@ public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> im
 
     @Override
     public String toString() {
-        return "External " + (isFunction() ? "(f) " : "") + getName();
+        return "External" + (isFunction() ? ".f " : " ") + getQualifiedName();
     }
 }

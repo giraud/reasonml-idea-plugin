@@ -11,7 +11,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiHMSignature;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVal;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -54,10 +58,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                     if (originalElement instanceof PsiLowerSymbol) {
                         PsiLowerSymbol lowerSymbol = (PsiLowerSymbol) originalElement;
                         Map<LogicalPosition, HMSignature> signatures = lineSignatures.get(lowerSymbol.getText());
-                        if (signatures != null) {
-                            if (signatures.size() == 1) {
-                                return signatures.values().iterator().next().toString();
-                            }
+                        if (signatures != null && signatures.size() == 1) {
+                            return limitSignature(signatures.values().iterator().next());
                         }
                     }
                 }
@@ -67,15 +69,21 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         // No inferred type, look at the reference and use its signature if present
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
-            PsiElement parent = PsiTreeUtil.getStubOrPsiParent(reference.resolve());
-            if (parent != null && !(parent instanceof PsiModule)) {
-                PsiSignature sig = PsiTreeUtil.getStubChildOfType(parent, PsiSignature.class);
-                if (sig != null) {
-                    return sig.asHMSignature().toString();
-                }
+            PsiElement resolvedElement = reference.resolve();
+            if (resolvedElement instanceof PsiHMSignature) {
+                return limitSignature(((PsiHMSignature) resolvedElement).getSignature());
             }
         }
 
         return super.getQuickNavigateInfo(element, originalElement);
+    }
+
+    @NotNull
+    private String limitSignature(HMSignature signature) {
+        String signatureString = signature.toString();
+        if (signatureString.length() > 1000) {
+            return signatureString.substring(0, 1000) + "...";
+        }
+        return signatureString;
     }
 }
