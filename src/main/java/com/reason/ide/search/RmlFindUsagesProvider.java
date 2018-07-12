@@ -21,7 +21,7 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiUpperSymbol || element instanceof PsiTypeName || element instanceof PsiLowerSymbol;
+        return element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol;
     }
 
     @Nullable
@@ -36,8 +36,8 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
         if (element instanceof PsiUpperSymbol || element instanceof PsiModule) {
             return "module";
         }
-        if (element instanceof PsiTypeName) {
-            return "type";
+        if (element instanceof PsiLowerSymbol) {
+            return "symbol";
         }
         if (element instanceof PsiLet) {
             return "let";

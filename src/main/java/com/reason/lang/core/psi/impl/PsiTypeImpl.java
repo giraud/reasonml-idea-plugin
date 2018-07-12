@@ -32,7 +32,7 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        PsiLowerSymbol constr = findChildByClass(PsiLowerSymbol.class);
+        PsiTypeConstrName constr = findChildByClass(PsiTypeConstrName.class);
         return constr == null ? null : PsiTreeUtil.findChildOfType(constr, PsiLowerSymbol.class);
     }
 
