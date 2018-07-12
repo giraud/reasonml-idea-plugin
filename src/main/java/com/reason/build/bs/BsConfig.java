@@ -27,20 +27,13 @@ class BsConfig {
     private final Path m_basePath;
     private final String m_namespace;
     private final Path[] m_deps;
-    private final Path m_pervasives;
+    private final String m_rootBsPlatform;
 
-    private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @NotNull Path[] bsPlatformDeps, @Nullable Path[] deps) {
+    private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @Nullable Path[] deps) {
         m_basePath = FileSystems.getDefault().getPath(rootFile.getPath());
         m_namespace = hasNamespace ? toNamespace(name) : "";
-        m_pervasives = locateFile(rootFile, "pervasives.mli");
-
-        if (deps == null) {
-            m_deps = bsPlatformDeps;
-        } else {
-            m_deps = new Path[deps.length + bsPlatformDeps.length];
-            System.arraycopy(deps, 0, m_deps, 0, deps.length);
-            System.arraycopy(bsPlatformDeps, 0, m_deps, deps.length, bsPlatformDeps.length);
-        }
+        m_rootBsPlatform = FileSystems.getDefault().getPath("node_modules", "bs-platform").toString();
+        m_deps = deps == null ? new Path[]{} : deps;
     }
 
     @NotNull
@@ -55,8 +48,11 @@ class BsConfig {
 
         Path relativePath = m_basePath.relativize(new File(canonicalPath).toPath());
         if (relativePath.startsWith("node_modules") && m_deps != null) {
+            if (relativePath.startsWith(m_rootBsPlatform)) {
+                return true;
+            }
             for (Path dep : m_deps) {
-                if (relativePath.startsWith(dep) || relativePath.startsWith(m_pervasives)) {
+                if (relativePath.startsWith(dep)) {
                     return true;
                 }
             }
@@ -81,30 +77,12 @@ class BsConfig {
 
                 // find location of bs dependencies, could be lib/ocaml or jscomp/runtime (depends on os)
                 VirtualFile rootFile = bsconfig.getParent();
-                Path[] bsDeps = new Path[]{
-                        locateFile(rootFile, "js.mli"),
-                        locateFile(rootFile, "js.ml"),
-                        locateFile(rootFile, "belt.mli"),
-                        locateFile(rootFile, "belt.ml")
-                };
 
-                return new BsConfig(rootFile, name, hasNamespace, bsDeps, deps);
+                return new BsConfig(rootFile, name, hasNamespace, deps);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @NotNull
-    private static Path locateFile(@NotNull VirtualFile rootFile, @NotNull String filename) {
-        VirtualFile jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/lib/ocaml/" + filename);
-        if (jsPath == null) {
-            jsPath = rootFile.findFileByRelativePath("node_modules/bs-platform/jscomp/runtime/" + filename);
-            if (jsPath != null) {
-                return FileSystems.getDefault().getPath("bs-platform", "jscomp", "runtime", filename);
-            }
-        }
-        return FileSystems.getDefault().getPath("bs-platform", "lib", "ocaml", filename);
     }
 
     @Nullable
