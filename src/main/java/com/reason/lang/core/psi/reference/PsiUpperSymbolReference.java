@@ -74,7 +74,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         // If name is used in a module definition, it's already the reference
         // module <ReferenceName> = ...
         if (parent != null && ((PsiModule) parent).getNameIdentifier() == myElement) {
-            return null;
+            return myElement;
         }
 
         Project project = myElement.getProject();

@@ -55,7 +55,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         // If name is used in a let definition, it's already the reference
         // let <referenceName> = ...
         if (parent != null && parent.getNameIdentifier() == myElement) {
-            return null;
+            return myElement;
         }
 
         Project project = myElement.getProject();
