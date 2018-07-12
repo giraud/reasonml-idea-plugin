@@ -45,6 +45,9 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
         if (element instanceof PsiExternal) {
             return "external";
         }
+        if (element instanceof PsiType) {
+            return "type";
+        }
 
         return "unknown type";
     }
