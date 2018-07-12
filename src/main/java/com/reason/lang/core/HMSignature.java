@@ -10,7 +10,9 @@ public class HMSignature {
 
     public static final HMSignature EMPTY = new HMSignature(false, "");
 
+    @NotNull
     private final String[] m_types;
+    @NotNull
     private final String m_signature;
 
     public HMSignature(boolean isOcaml, @NotNull String signature) {
@@ -38,7 +40,7 @@ public class HMSignature {
             m_types[i] = token;
         }
 
-        // Always use fat arrow
+        // Always use thin arrow
         m_signature = Joiner.join(" -> ", m_types);
     }
 
@@ -49,5 +51,9 @@ public class HMSignature {
 
     public boolean isFunctionSignature() {
         return 1 < m_types.length;
+    }
+
+    public boolean isEmpty() {
+        return m_signature.isEmpty();
     }
 }
