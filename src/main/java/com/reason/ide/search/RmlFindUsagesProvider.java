@@ -4,6 +4,7 @@ import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.lang.LexerAdapter;
 import com.reason.lang.core.psi.*;
@@ -66,9 +67,17 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @NotNull
     @Override
     public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
+        if (element instanceof PsiQualifiedNamedElement) {
+            String qualifiedName = ((PsiQualifiedNamedElement) element).getQualifiedName();
+            if (qualifiedName != null) {
+                return qualifiedName;
+            }
+        }
         if (element instanceof PsiNamedElement) {
             String name = ((PsiNamedElement) element).getName();
-            return name == null ? "" : name;
+            if (name != null) {
+                return name;
+            }
         }
 
         return "";
