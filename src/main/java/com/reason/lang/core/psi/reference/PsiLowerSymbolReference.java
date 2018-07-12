@@ -62,7 +62,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         PsiFinder psiFinder = PsiFinder.getInstance();
 
         PsiNameIdentifierOwner result = null;
-        int resultPosition = -1;
+        int resultPosition = Integer.MAX_VALUE;
 
         // Find potential paths of current element
         Map<String, Integer> potentialPaths = getPotentialPaths();
@@ -87,7 +87,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         // Try to find val items
 
         Collection<PsiVal> vals = psiFinder.findVals(project, m_referenceName, interfaceOrImplementation);
-        m_debug.debug("  vals", vals.size());
+        m_debug.debug("  vals", vals);
 
         if (!vals.isEmpty()) {
             // Filter the vals, keep the ones with the same qualified name
