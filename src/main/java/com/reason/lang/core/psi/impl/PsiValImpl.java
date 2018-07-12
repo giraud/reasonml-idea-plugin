@@ -105,6 +105,6 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
 
     @Override
     public String toString() {
-        return "Val " + getName();
+        return "Val " + getQualifiedName();
     }
 }

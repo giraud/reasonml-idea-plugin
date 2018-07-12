@@ -313,7 +313,6 @@ public class RmlParser extends CommonParser {
         if (state.notResolution(module)) {
             state.endUntilScopeExpression(null);
             state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
-            state.dontMove = advance(builder);
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         }
     }

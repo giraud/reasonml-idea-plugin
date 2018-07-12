@@ -12,7 +12,7 @@
         <p>After you upgraded to this version, invalidate your caches!</p>
 
         <ul>
-            <li></li>
+            <li>This release contains a big rewrite of how modules are referenced, it may break things that were working before!!!</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

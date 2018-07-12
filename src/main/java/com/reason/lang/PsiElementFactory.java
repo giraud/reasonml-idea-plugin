@@ -30,7 +30,7 @@ public class PsiElementFactory {
         } else if (type == types.BIN_CONDITION) {
             return new PsiBinaryCondition(node);
         } else if (type == types.TYPE_CONSTR_NAME) {
-            return new PsiTypeConstrNameImpl(types, node);
+            return new PsiTypeConstrName(node);
         } else if (type == types.TYPE_BINDING) {
             return new PsiTypeBinding(node);
         } else if (type == types.MODULE_EXPRESSION) {

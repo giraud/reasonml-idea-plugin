@@ -41,7 +41,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
-        ParserScope fileScope = new ParserScope(file, m_types == null ? null : m_types.FILE_MODULE, builder.mark());
+        ParserScope fileScope = new ParserScope(file, null, builder.mark());
 
         ParserState state = new ParserState(fileScope);
         parseFile(builder, state);

@@ -8,8 +8,6 @@ public class OclTypes extends MlTypes {
     public static final OclTypes INSTANCE = new OclTypes();
 
     private OclTypes() {
-        FILE_MODULE = new ModuleStubElementType("FILE_MODULE", OclLanguage.INSTANCE);
-
         ANNOTATION_EXPRESSION = new OclElementType("ANNOTATION_EXPRESSION");
         EXTERNAL_EXPRESSION = new PsiExternalStubElementType("EXTERNAL_EXPRESSION", OclLanguage.INSTANCE);
         EXCEPTION_EXPRESSION = new OclElementType("EXCEPTION_EXPRESSION");
@@ -18,11 +16,11 @@ public class OclTypes extends MlTypes {
         LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION", OclLanguage.INSTANCE);
         MACRO_EXPRESSION = new OclElementType("MACRO_EXPRESSION");
         MACRO_NAME = new OclElementType("MACRO_NAME");
-        MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION", OclLanguage.INSTANCE);
+        MODULE_EXPRESSION = new PsiModuleStubElementType("MODULE_EXPRESSION", OclLanguage.INSTANCE);
         UPPER_SYMBOL = new OclElementType("UPPER_SYMBOL");
         MODULE_PATH = new OclElementType("MODULE_PATH");
         OPEN_EXPRESSION = new OclElementType("OPEN_EXPRESSION");
-        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE);
+        TYPE_EXPRESSION = new PsiTypeStubElementType("TYPE_EXPRESSION", OclLanguage.INSTANCE);
         VAL_EXPRESSION = new PsiValStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE);
 
         BOOL = new OclTokenType("BOOL");

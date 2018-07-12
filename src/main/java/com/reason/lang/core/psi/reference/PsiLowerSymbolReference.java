@@ -171,16 +171,18 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     private Map<String, Integer> getPotentialPaths() {
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
-        Map<String, Integer> potentialPaths = new THashMap<>();
+        Map<String, Integer> result = new THashMap<>();
+
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement);
+        m_debug.debug("  potential paths", paths);
 
         Integer position = 0;
-        for (String qName : modulePathFinder.extractPotentialPaths(myElement)) {
-            potentialPaths.put(qName + "." + m_referenceName, position);
+        for (String qName : paths) {
+            result.put(qName + "." + m_referenceName, position);
             position++;
         }
-        m_debug.debug("  potential paths", potentialPaths);
 
-        return potentialPaths;
+        return result;
     }
 
     @NotNull

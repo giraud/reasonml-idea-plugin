@@ -8,8 +8,6 @@ public class RmlTypes extends MlTypes {
     public static final RmlTypes INSTANCE = new RmlTypes();
 
     private RmlTypes() {
-        FILE_MODULE = new ModuleStubElementType("FILE_MODULE", RmlLanguage.INSTANCE);
-
         ANNOTATION_EXPRESSION = new RmlElementType("ANNOTATION_EXPRESSION");
         EXTERNAL_EXPRESSION = new PsiExternalStubElementType("EXTERNAL_EXPRESSION", RmlLanguage.INSTANCE);
         EXCEPTION_EXPRESSION = new RmlElementType("EXCEPTION_EXPRESSION");
@@ -18,11 +16,11 @@ public class RmlTypes extends MlTypes {
         LET_EXPRESSION = new PsiLetStubElementType("LET_EXPRESSION", RmlLanguage.INSTANCE);
         MACRO_EXPRESSION = new RmlElementType("MACRO_EXPRESSION");
         MACRO_NAME = new RmlElementType("MACRO_NAME");
-        MODULE_EXPRESSION = new ModuleStubElementType("MODULE_EXPRESSION", RmlLanguage.INSTANCE);
+        MODULE_EXPRESSION = new PsiModuleStubElementType("MODULE_EXPRESSION", RmlLanguage.INSTANCE);
         UPPER_SYMBOL = new RmlElementType("UPPER_SYMBOL");
         MODULE_PATH = new RmlElementType("MODULE_PATH");
         OPEN_EXPRESSION = new RmlElementType("OPEN_EXPRESSION");
-        TYPE_EXPRESSION = new PsiTypeElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE);
+        TYPE_EXPRESSION = new PsiTypeStubElementType("TYPE_EXPRESSION", RmlLanguage.INSTANCE);
         VAL_EXPRESSION = new PsiValStubElementType("VAL_EXPRESSION", RmlLanguage.INSTANCE);
 
         BOOL = new RmlElementType("BOOL");

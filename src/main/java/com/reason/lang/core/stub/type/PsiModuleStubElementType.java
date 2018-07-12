@@ -15,9 +15,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
+public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
 
-    public ModuleStubElementType(String name, Language language) {
+    public PsiModuleStubElementType(String name, Language language) {
         super(name, language);
     }
 

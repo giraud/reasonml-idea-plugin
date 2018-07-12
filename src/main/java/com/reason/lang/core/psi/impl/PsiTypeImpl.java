@@ -32,7 +32,8 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiTypeConstrName.class);
+        PsiLowerSymbol constr = findChildByClass(PsiLowerSymbol.class);
+        return constr == null ? null : PsiTreeUtil.findChildOfType(constr, PsiLowerSymbol.class);
     }
 
     @NotNull
@@ -44,15 +45,15 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
             return name == null ? "" : name;
         }
 
-        PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier == null) {
+        PsiElement constrName = findChildByClass(PsiTypeConstrName.class);
+        if (constrName == null) {
             return "";
         }
 
         StringBuilder nameBuilder = new StringBuilder();
         boolean first = true;
 
-        PsiElement element = nameIdentifier.getFirstChild();
+        PsiElement element = constrName.getFirstChild();
         while (element != null) {
             if (element instanceof PsiLowerSymbol) {
                 if (!first) {
@@ -122,6 +123,6 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
 
     @Override
     public String toString() {
-        return "Type " + getName();
+        return "Type " + getQualifiedName();
     }
 }

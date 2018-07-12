@@ -1,6 +1,15 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.lang.ASTNode;
+import org.jetbrains.annotations.NotNull;
 
-public interface PsiTypeConstrName extends PsiNamedElement, PsiQualifiedNamedElement {
+public class PsiTypeConstrName extends ASTWrapperPsiElement {
+
+    //region Constructors
+    public PsiTypeConstrName(@NotNull ASTNode node) {
+        super(node);
+    }
+    //endregion
+
 }

@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class PsiTypeElementType extends IStubElementType<PsiTypeStub, PsiType> {
+public class PsiTypeStubElementType extends IStubElementType<PsiTypeStub, PsiType> {
 
-    public PsiTypeElementType(String name, Language language) {
+    public PsiTypeStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);
     }
 
