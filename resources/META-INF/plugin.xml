@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.58-beta</version>
+    <version>0.58</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -12,7 +12,7 @@
         <p>After you upgraded to this version, invalidate your caches!</p>
 
         <ul>
-            <li>This release contains a big rewrite of how modules are referenced, it may break things that were working before!!!</li>
+            <li>This release contains a big rewrite of how modules are referenced, it may break things that were working before (ex: find usages).</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

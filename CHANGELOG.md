@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.58
+
+This release contains a big rewrite of how modules are referenced, it may break things that were working before (ex: find usages).
+
+- :bug: Fix #72 - Autocomplete not working in uncurried function
+
 ## 0.57
 
 - :rocket: Some record field completion
