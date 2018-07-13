@@ -45,6 +45,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return PsiFileHelper.getLetExpressions(file);
     }
 
+    protected Collection<PsiVal> valExpressions(@NotNull PsiFile file) {
+        return PsiFileHelper.getValExpressions(file);
+    }
+
     protected PsiExternal externalExpression(@NotNull PsiFile file, @NotNull String name) {
         Collection<PsiExternal> externalExpressions = PsiFileHelper.getExternalExpressions(file);
         return externalExpressions.stream().filter(psiExternal -> name.equals(psiExternal.getName())).findFirst().get();

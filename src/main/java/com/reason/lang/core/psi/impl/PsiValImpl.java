@@ -11,15 +11,13 @@ import com.reason.icons.Icons;
 import com.reason.lang.MlTypes;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.PsiUtil;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiValStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements PsiVal {
 
@@ -42,7 +40,8 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+        Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(this, PsiLowerSymbol.class, PsiScopedExpr.class);
+        return elements.iterator().next();
     }
 
     @Override

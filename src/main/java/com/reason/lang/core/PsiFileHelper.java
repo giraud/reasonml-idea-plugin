@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class PsiFileHelper {
     private PsiFileHelper() {
@@ -30,33 +31,37 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiType> getTypeExpressions(@NotNull PsiFile file) {
+    public static List<PsiType> getTypeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiType.class);
     }
 
     @NotNull
-    public static Collection<PsiModule> getModuleExpressions(@NotNull PsiFile file) {
+    public static List<PsiModule> getModuleExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiModule.class);
     }
 
     @NotNull
-    public static Collection<PsiLet> getLetExpressions(@NotNull PsiFile file) {
+    public static List<PsiLet> getLetExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiLet.class);
     }
 
+    public static List<PsiVal> getValExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiVal.class);
+    }
+
     @NotNull
-    public static Collection<PsiExternal> getExternalExpressions(@NotNull PsiFile file) {
+    public static List<PsiExternal> getExternalExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiExternal.class);
     }
 
     @NotNull
-    public static Collection<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
+    public static List<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
     }
 
     @Nullable
     public static PsiElement getLetExpression(@NotNull PsiFile file, @NotNull String name) {
-        Collection<PsiLet> letExpressions = getLetExpressions(file);
+        List<PsiLet> letExpressions = getLetExpressions(file);
         for (PsiLet let : letExpressions) {
             if (name.equals(let.getName())) {
                 return let;
