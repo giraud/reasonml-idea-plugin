@@ -18,13 +18,13 @@ public class OclFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Ocaml file";
+        return "OCaml file";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "Ocaml language file";
+        return "OCaml language file";
     }
 
     @NotNull

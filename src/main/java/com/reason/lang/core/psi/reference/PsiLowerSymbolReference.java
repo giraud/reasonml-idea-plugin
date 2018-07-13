@@ -52,10 +52,10 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         PsiNamedElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class, PsiExternal.class, PsiVal.class, PsiType.class);
 
-        // If name is used in a let definition, it's already the reference
-        // let <referenceName> = ...
+        // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
+        // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         if (parent != null && parent.getNameIdentifier() == myElement) {
-            return myElement;
+            return null;
         }
 
         Project project = myElement.getProject();

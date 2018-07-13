@@ -18,13 +18,13 @@ public class Ml4FileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "OcamlP4 file";
+        return "OCamlP4 file";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "Ocaml preprocessor file";
+        return "OCaml preprocessor file";
     }
 
     @NotNull

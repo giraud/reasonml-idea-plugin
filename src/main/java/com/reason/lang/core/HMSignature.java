@@ -15,16 +15,16 @@ public class HMSignature {
     @NotNull
     private final String m_signature;
 
-    public HMSignature(boolean isOcaml, @NotNull String signature) {
+    public HMSignature(boolean isOCaml, @NotNull String signature) {
         String x = signature.
                 replaceAll("\n", "").
                 replaceAll("\\s+", " ");
 
-        String[] tokens = x.split(isOcaml ? "->" : "=>");
+        String[] tokens = x.split(isOCaml ? "->" : "=>");
         m_types = new String[tokens.length];
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i].trim();
-            if (isOcaml) {
+            if (isOCaml) {
                 // Transform ocaml to reason syntax
                 /*
                 String[] items = token.split(" ");

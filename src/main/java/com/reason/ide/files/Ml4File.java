@@ -18,6 +18,6 @@ public class Ml4File extends FileBase {
 
     @Override
     public String toString() {
-        return "OcamlP4 File";
+        return "OCamlP4 File";
     }
 }

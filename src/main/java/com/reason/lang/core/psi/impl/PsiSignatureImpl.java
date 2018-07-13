@@ -19,8 +19,8 @@ public class PsiSignatureImpl extends ASTWrapperPsiElement implements PsiSignatu
     @Override
     public HMSignature asHMSignature() {
         PsiFile containingFile = getContainingFile();
-        boolean isOcaml = containingFile instanceof OclFile || containingFile instanceof OclInterfaceFile;
-        return new HMSignature(isOcaml, getText());
+        boolean isOCaml = containingFile instanceof OclFile || containingFile instanceof OclInterfaceFile;
+        return new HMSignature(isOCaml, getText());
     }
 
     @Override

@@ -76,10 +76,10 @@
         <!-- Reason -->
         <fileTypeFactory implementation="com.reason.ide.files.RmlInterfaceFileTypeFactory"/>
         <fileTypeFactory implementation="com.reason.ide.files.RmlFileTypeFactory"/>
-        <!-- Ocaml -->
+        <!-- OCaml -->
         <fileTypeFactory implementation="com.reason.ide.files.OclInterfaceFileTypeFactory"/>
         <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
-        <!-- OcamlP4 -->
+        <!-- OCamlP4 -->
         <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
@@ -95,13 +95,13 @@
         <lang.parserDefinition language="ReasonML" implementationClass="com.reason.lang.reason.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory language="ReasonML"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
-        <!-- Ocaml -->
-        <lang.parserDefinition language="Ocaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Ocaml"
+        <!-- OCaml -->
+        <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="OCaml"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
-        <!-- OcamlP4 -->
-        <lang.parserDefinition language="OcamlP4" implementationClass="com.reason.lang.ocaml.OclP4ParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="OcamlP4"
+        <!-- OCamlP4 -->
+        <lang.parserDefinition language="OCamlP4" implementationClass="com.reason.lang.ocaml.OclP4ParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="OCamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- Dune -->
         <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>
@@ -114,19 +114,19 @@
 
         <lang.psiStructureViewFactory language="ReasonML"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
-        <lang.psiStructureViewFactory language="Ocaml"
+        <lang.psiStructureViewFactory language="OCaml"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
         <lang.foldingBuilder language="ReasonML" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="Ocaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
+        <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <!--<lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>-->
 
         <lang.commenter language="ReasonML" implementationClass="com.reason.ide.comment.RmlCommenter"/>
-        <lang.commenter language="Ocaml" implementationClass="com.reason.ide.comment.OclCommenter"/>
+        <lang.commenter language="OCaml" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="ReasonML" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
-        <lang.braceMatcher language="Ocaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
+        <lang.braceMatcher language="OCaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Dune" implementationClass="com.reason.ide.match.DunePairedBraceMatcher"/>
 
         <!--
@@ -135,7 +135,7 @@
 
         <lang.documentationProvider language="ReasonML"
                                     implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Ocaml" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+        <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
 
         <!--
          | Search
@@ -178,13 +178,13 @@
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
 
         <annotator language="ReasonML" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
-        <annotator language="Ocaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
+        <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
 
         <externalAnnotator language="ReasonML" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
-        <externalAnnotator language="Ocaml" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
+        <externalAnnotator language="OCaml" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
 
         <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
-        <lang.findUsagesProvider language="Ocaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
+        <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
 
         <lang.refactoringSupport language="ReasonML"
                                  implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
@@ -194,8 +194,8 @@
         <completion.contributor language="ReasonML"
                                 implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
 
-        <completion.contributor language="Ocaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
-        <completion.contributor language="Ocaml"
+        <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
+        <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->

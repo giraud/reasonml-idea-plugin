@@ -71,10 +71,10 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         PsiElement parent = PsiTreeUtil.getParentOfType(myElement, PsiModule.class);
 
-        // If name is used in a module definition, it's already the reference
-        // module <ReferenceName> = ...
+        // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
+        // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         if (parent != null && ((PsiModule) parent).getNameIdentifier() == myElement) {
-            return myElement;
+            return null;
         }
 
         Project project = myElement.getProject();

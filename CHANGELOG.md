@@ -142,7 +142,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 * :house: Better JSX parsing/highlighting
 * :rocket: Code lens style is customisable
 * :bug: Fix #33
-* :rocket: Completion contributor for Ocaml files (wip)
+* :rocket: Completion contributor for OCaml files (wip)
 
 ## 0.38
 
