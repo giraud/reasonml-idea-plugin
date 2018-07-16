@@ -1188,7 +1188,7 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 199: break;
           case 48: 
-            { return types.IF;
+            { return types.IF_STATEMENT;
             } 
             // fall through
           case 200: break;

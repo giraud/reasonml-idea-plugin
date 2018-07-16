@@ -39,6 +39,7 @@ public abstract class MlTypes {
     public IElementType FUNCTOR;
     public IElementType FUNCTOR_PARAMS;
 
+    public IElementType IF_STATEMENT;
     public IElementType LET_BINDING;
     public IElementType TYPE_CONSTR_NAME;
     public IElementType TYPE_BINDING;
@@ -84,7 +85,6 @@ public abstract class MlTypes {
     public IElementType FOR;
     public IElementType TYPE_ARGUMENT;
     public IElementType GT;
-    public IElementType IF;
     public IElementType BIN_CONDITION;
     public IElementType IN;
     public IElementType LAZY;

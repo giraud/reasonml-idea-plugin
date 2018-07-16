@@ -1,8 +1,8 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.tree.IElementType;
 
 class OclElementType extends IElementType {
     OclElementType(@NotNull @NonNls String debugName) {

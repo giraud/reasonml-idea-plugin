@@ -52,7 +52,7 @@ public class OclParser extends CommonParser {
                 parseSig(builder, state);
             } else if (tokenType == m_types.STRUCT) {
                 parseStruct(builder, state);
-            } else if (tokenType == m_types.IF) {
+            } else if (tokenType == m_types.IF_STATEMENT) {
                 parseIf(builder, state);
             } else if (tokenType == m_types.THEN) {
                 parseThen(builder, state);
@@ -189,13 +189,13 @@ public class OclParser extends CommonParser {
     }
 
     private void parseIf(PsiBuilder builder, ParserState state) {
-        state.add(markCompleteScope(builder, if_, m_types.IF, groupExpression, m_types.IF));
+        state.add(markCompleteScope(builder, if_, m_types.IF_STATEMENT, groupExpression, m_types.IF_STATEMENT));
         state.dontMove = advance(builder);
         state.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, groupExpression, null));
     }
 
     private void parseThen(PsiBuilder builder, ParserState state) {
-        state.endUntilScopeExpression(m_types.IF);
+        state.endUntilScopeExpression(m_types.IF_STATEMENT);
         state.add(markCompleteScope(builder, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN));
     }
 

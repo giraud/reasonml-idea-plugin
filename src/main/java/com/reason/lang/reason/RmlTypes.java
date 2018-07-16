@@ -43,6 +43,7 @@ public class RmlTypes extends MlTypes {
         FUNCTOR = new RmlElementType("FUNCTOR");
         FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
 
+        IF_STATEMENT = new RmlElementType("IF");
         LET_BINDING = new RmlElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
         TYPE_BINDING = new RmlElementType("TYPE_BINDING");
@@ -87,7 +88,6 @@ public class RmlTypes extends MlTypes {
         FOR = new RmlElementType("FOR");
         TYPE_ARGUMENT = new RmlElementType("TYPE_ARGUMENT");
         GT = new RmlElementType("GT");
-        IF = new RmlElementType("IF");
         BIN_CONDITION = new RmlElementType("BIN_CONDITION");
         IN = new RmlElementType("IN");
         LAZY = new RmlElementType("LAZY");
