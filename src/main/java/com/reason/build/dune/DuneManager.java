@@ -1,5 +1,8 @@
 package com.reason.build.dune;
 
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ProjectComponent;
@@ -13,12 +16,7 @@ import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.bs.ModuleConfiguration;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.RmlFileType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import com.reason.ide.files.FileHelper;
 
 public class DuneManager implements Compiler, ProjectComponent {
 
@@ -54,12 +52,14 @@ public class DuneManager implements Compiler, ProjectComponent {
 
     @Override
     public void run(@Nullable FileType fileType) {
-        if (m_compiler != null && (fileType instanceof RmlFileType || fileType instanceof OclFileType)) {
+        if (m_compiler != null && FileHelper.isCompilable(fileType)) {
             if (m_compiler.start()) {
                 ProcessHandler recreate = m_compiler.recreate();
                 if (recreate != null) {
                     getBsbConsole().attachToProcess(recreate);
                     m_compiler.startNotify();
+                } else {
+                    m_compiler.terminated();
                 }
             }
         }
@@ -81,5 +81,4 @@ public class DuneManager implements Compiler, ProjectComponent {
 
         return console;
     }
-
 }

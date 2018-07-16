@@ -9,10 +9,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.ide.files.RmlFileType;
-import com.reason.ide.files.RmlInterfaceFileType;
+import com.reason.ide.files.FileHelper;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 
@@ -26,13 +23,13 @@ public class ConvertAction extends AnAction {
             Bucklescript bucklescript = BucklescriptManager.getInstance(project);
             FileType fileType = file.getFileType();
 
-            if (fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType) {
+            if (FileHelper.isReason(fileType)) {
                 // convert ReasonML to OCaml
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {
                     bucklescript.convert(file.getVirtualFile(), "re", "ml", document);
                 }
-            } else if (fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType) {
+            } else if (FileHelper.isOCaml(fileType)) {
                 // convert OCaml to ReasonML
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {

@@ -1,5 +1,9 @@
 package com.reason.build.bs;
 
+import java.io.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
@@ -20,13 +24,7 @@ import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.build.bs.compiler.CliType;
 import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.ide.RmlNotification;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.RmlFileType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.io.IOException;
+import com.reason.ide.files.FileHelper;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
@@ -123,12 +121,14 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void run(FileType fileType) {
-        if (m_compiler != null && (fileType instanceof RmlFileType || fileType instanceof OclFileType)) {
+        if (m_compiler != null && FileHelper.isCompilable(fileType)) {
             if (m_compiler.start()) {
                 ProcessHandler recreate = m_compiler.recreate(CliType.standard);
                 if (recreate != null) {
                     getBsbConsole().attachToProcess(recreate);
                     m_compiler.startNotify();
+                } else {
+                    m_compiler.terminated();
                 }
             }
         }
@@ -176,7 +176,8 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
             String oldText = document.getText();
             String newText = m_refmt.run(format, oldText);
             if (!oldText.isEmpty() && !newText.isEmpty() && !oldText.equals(newText)) { // additional protection
-                getApplication().runWriteAction(() -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+                getApplication().runWriteAction(
+                        () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
             }
         }
     }
@@ -201,5 +202,4 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
         return console;
     }
-
 }

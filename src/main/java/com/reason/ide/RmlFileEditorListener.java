@@ -1,20 +1,15 @@
 package com.reason.ide;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.ide.files.RmlFileType;
-import com.reason.ide.files.RmlInterfaceFileType;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.InferredTypesService;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Listen to editor events and query merlin for types when editor get the focus.
@@ -30,7 +25,7 @@ public class RmlFileEditorListener implements FileEditorManagerListener {
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
         FileType fileType = file.getFileType();
-        if (fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType || fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType) {
+        if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
             m_openedFiles.add(file);
         }
     }
@@ -38,7 +33,7 @@ public class RmlFileEditorListener implements FileEditorManagerListener {
     @Override
     public void fileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
         FileType fileType = file.getFileType();
-        if (fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType || fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType) {
+        if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
             m_openedFiles.remove(file);
         }
     }
@@ -52,7 +47,7 @@ public class RmlFileEditorListener implements FileEditorManagerListener {
         VirtualFile newFile = event.getNewFile();
         if (newFile != null) {
             FileType fileType = newFile.getFileType();
-            if (fileType instanceof RmlFileType || fileType instanceof OclFileType) {
+            if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
                 InferredTypesService.queryForSelectedTextEditor(m_project);
             }
         }

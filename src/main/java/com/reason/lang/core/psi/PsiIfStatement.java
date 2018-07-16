@@ -1,9 +1,8 @@
 package com.reason.lang.core.psi;
 
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-
-import javax.annotation.Nullable;
 
 public class PsiIfStatement extends ASTWrapperPsiElement {
 
