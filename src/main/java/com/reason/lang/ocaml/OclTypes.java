@@ -1,7 +1,11 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.stub.type.*;
+import com.reason.lang.core.stub.type.PsiExternalStubElementType;
+import com.reason.lang.core.stub.type.PsiLetStubElementType;
+import com.reason.lang.core.stub.type.PsiModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiTypeStubElementType;
+import com.reason.lang.core.stub.type.PsiValStubElementType;
 
 public class OclTypes extends MlTypes {
 
@@ -43,7 +47,7 @@ public class OclTypes extends MlTypes {
         FUNCTOR = new OclElementType("FUNCTOR");
         FUNCTOR_PARAMS = new OclElementType("FUNCTOR_PARAMS");
 
-        IF_STATEMENT = new OclElementType("IF");
+        IF_STATEMENT = new OclElementType("IF_STATEMENT");
         LET_BINDING = new OclElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new OclElementType("TYPE_CONSTR_NAME");
         TYPE_BINDING = new OclElementType("TYPE_BINDING");
@@ -205,5 +209,4 @@ public class OclTypes extends MlTypes {
         JS_STRING_CLOSE = new OclElementType("JS_STRING_CLOSE");
         INTERPOLATION = new OclElementType("INTERPOLATION");
     }
-
 }

@@ -1,4 +1,4 @@
-package com.reason.lang.ocaml;
+package com.reason.lang.p4;
 
 import com.intellij.lang.Language;
 

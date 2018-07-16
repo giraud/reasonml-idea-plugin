@@ -8,15 +8,13 @@ import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
-import static com.reason.lang.ParserScopeType.groupExpression;
-import static com.reason.lang.ParserScopeType.scopeExpression;
+import static com.reason.lang.ParserScopeType.*;
 
 public class OclParser extends CommonParser {
 
-    OclParser() {
+    public OclParser() {
         super(OclTypes.INSTANCE);
     }
 
@@ -338,18 +336,14 @@ public class OclParser extends CommonParser {
         state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
     }
 
-    private void parseRParen(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.LPAREN);
-
-        builder.advanceLexer();
-        parserState.dontMove = true;
+    private void parseRParen(PsiBuilder builder, ParserState state) {
+        ParserScope scope = state.endUntilScopeExpression(m_types.LPAREN);
+        state.dontMove = advance(builder);
 
         if (scope != null) {
             scope.complete();
-            parserState.popEnd();
+            state.popEnd();
         }
-
-        parserState.updateCurrentScope();
     }
 
     private void parseLBrace(PsiBuilder builder, ParserState state) {
