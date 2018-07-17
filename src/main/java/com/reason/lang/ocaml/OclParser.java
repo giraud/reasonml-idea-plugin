@@ -2,7 +2,10 @@ package com.reason.lang.ocaml;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.*;
+import com.reason.lang.CommonParser;
+import com.reason.lang.ParserScope;
+import com.reason.lang.ParserScopeEnum;
+import com.reason.lang.ParserState;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
@@ -326,7 +329,7 @@ public class OclParser extends CommonParser {
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
             state.setCurrentResolution(localOpen);
-            state.setTokenElementType(m_types.LOCAL_OPEN);
+            state.setCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.setComplete();
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else if (state.isResolution(external)) {

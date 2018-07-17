@@ -549,7 +549,7 @@ public class RmlParser extends CommonParser {
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
             state.setCurrentResolution(localOpen);
-            state.setTokenElementType(m_types.LOCAL_OPEN);
+            state.setCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.setComplete();
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else if (state.isResolution(ifThenStatement)) {
