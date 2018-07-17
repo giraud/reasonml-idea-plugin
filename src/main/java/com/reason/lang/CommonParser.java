@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
+import static com.reason.lang.ParserScopeType.groupExpression;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
 
@@ -78,6 +79,12 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
         ParserScope scope = markScope(builder, resolution, compositeElementType, scopeType, scopeTokenElement);
+        scope.complete = true;
+        return scope;
+    }
+
+    protected ParserScope markCompleteGroup(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
+        ParserScope scope = markScope(builder, resolution, compositeElementType, groupExpression, null);
         scope.complete = true;
         return scope;
     }

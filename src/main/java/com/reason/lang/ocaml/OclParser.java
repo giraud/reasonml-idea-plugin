@@ -2,10 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.CommonParser;
-import com.reason.lang.ParserScope;
-import com.reason.lang.ParserScopeEnum;
-import com.reason.lang.ParserState;
+import com.reason.lang.*;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
@@ -188,12 +185,13 @@ public class OclParser extends CommonParser {
     private void parseTry(PsiBuilder builder, ParserState state) {
         state.add(markCompleteScope(builder, try_, m_types.TRY_EXPR, groupExpression, m_types.TRY));
         state.dontMove = advance(builder);
-        state.add(markCompleteScope(builder, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.GENERIC_COND));
+        state.add(markCompleteScope(builder, tryScope, m_types.SCOPED_EXPR, groupExpression, m_types.GENERIC_COND));
     }
 
     private void parseWith(PsiBuilder builder, ParserState state) {
         state.endUntilScopeExpression(m_types.GENERIC_COND);
         state.endUntilScopeExpression(state.isResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
+        state.dontMove = advance(builder);
         state.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
     }
 

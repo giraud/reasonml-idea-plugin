@@ -74,9 +74,10 @@ public enum ParserScopeEnum {
     switch_,
     switchBinaryCondition,
     switchBody,
-    switchPattern,
     patternMatchBody,
+
     try_,
+    tryScope,
     tryBinaryCondition,
 
     patternMatch,

@@ -45,6 +45,7 @@ public class OclTypes extends MlTypes {
         RECORD_FIELD = new MlCompositeElementType("RECORD_FIELD", OclLanguage.INSTANCE);
         INTERPOLATION_EXPR = new MlCompositeElementType("INTERPOLATION_EXPR", OclLanguage.INSTANCE);
         TRY_EXPR = new MlCompositeElementType("TRY_EXPR", OclLanguage.INSTANCE);
+        WITH_EXPR = new MlCompositeElementType("WITH_EXPR", OclLanguage.INSTANCE);
         UPPER_SYMBOL = new MlCompositeElementType("UPPER_SYMBOL", OclLanguage.INSTANCE);
         LOWER_SYMBOL = new MlCompositeElementType("LOWER_SYMBOL", OclLanguage.INSTANCE);
 
@@ -62,6 +63,7 @@ public class OclTypes extends MlTypes {
         CHAR_VALUE = new MlTokenElementType("CHAR_VALUE", OclLanguage.INSTANCE);
         INT_VALUE = new MlTokenElementType("INT_VALUE", OclLanguage.INSTANCE);
         SWITCH = new MlTokenElementType("SWITCH", OclLanguage.INSTANCE);
+        GENERIC_COND = new MlTokenElementType("GENERIC_COND", OclLanguage.INSTANCE);
         FUNCTION = new MlTokenElementType("FUNCTION", OclLanguage.INSTANCE);
         FUN = new MlTokenElementType("FUN", OclLanguage.INSTANCE);
         FUNCTOR = new MlTokenElementType("FUNCTOR", OclLanguage.INSTANCE);

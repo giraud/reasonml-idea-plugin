@@ -40,6 +40,7 @@ public abstract class MlTypes {
     public IElementType SWITCH_EXPR;
     public IElementType MATCH_EXPR;
     public IElementType TRY_EXPR;
+    public IElementType WITH_EXPR;
     public IElementType TYPE_CONSTR_NAME;
     public IElementType TYPE_BINDING;
     public IElementType UPPER_SYMBOL;

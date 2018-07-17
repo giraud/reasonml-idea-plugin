@@ -45,6 +45,7 @@ public class RmlTypes extends MlTypes {
         RECORD_FIELD = new MlCompositeElementType("RECORD_FIELD", RmlLanguage.INSTANCE);
         INTERPOLATION_EXPR = new MlCompositeElementType("INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
         TRY_EXPR = new MlCompositeElementType("TRY_EXPR", RmlLanguage.INSTANCE);
+        WITH_EXPR = new MlCompositeElementType("WITH_EXPR", RmlLanguage.INSTANCE);
 
         // Token element types
 
@@ -61,6 +62,7 @@ public class RmlTypes extends MlTypes {
         INT_VALUE = new MlTokenElementType("INT_VALUE", RmlLanguage.INSTANCE);
         EXCEPTION_NAME = new MlTokenElementType("EXCEPTION_NAME", RmlLanguage.INSTANCE);
         PROPERTY_NAME = new MlTokenElementType("PROPERTY_NAME", RmlLanguage.INSTANCE);
+        GENERIC_COND = new MlTokenElementType("GENERIC_COND", RmlLanguage.INSTANCE);
         SWITCH = new MlTokenElementType("SWITCH", RmlLanguage.INSTANCE);
         FUNCTION = new MlTokenElementType("FUNCTION", RmlLanguage.INSTANCE);
         FUN = new MlTokenElementType("FUN", RmlLanguage.INSTANCE);
