@@ -9,4 +9,8 @@ public class PsiLetBinding extends ASTWrapperPsiElement {
         super(node);
     }
 
+    @Override
+    public String toString() {
+        return "Let binding";
+    }
 }

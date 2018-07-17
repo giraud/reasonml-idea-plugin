@@ -461,7 +461,7 @@ public class RmlParser extends CommonParser {
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
-                    state.add(markComplete(builder, function, m_types.FUNCTION));
+                    state.add(markComplete(builder, function, m_types.FUN_EXPR));
                     state.add(markComplete(builder, parameters, m_types.FUN_PARAMS));
                     processSingleParam = true;
                 }
