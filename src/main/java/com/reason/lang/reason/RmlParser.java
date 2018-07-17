@@ -90,7 +90,7 @@ public class RmlParser extends CommonParser {
                 parseFun(builder, state);
             } else if (tokenType == m_types.ASSERT) {
                 parseAssert(builder, state);
-            } else if (tokenType == m_types.IF_STATEMENT) {
+            } else if (tokenType == m_types.IF) {
                 parseIf(builder, state);
             }
             // ( ... )
@@ -168,7 +168,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseIf(PsiBuilder builder, ParserState state) {
-        state.add(markScope(builder, ifThenStatement, m_types.IF_STATEMENT, groupExpression, m_types.IF_STATEMENT));
+        state.add(markCompleteScope(builder, ifThenStatement, m_types.IF_STATEMENT, groupExpression, m_types.IF));
     }
 
     private void parseAssert(PsiBuilder builder, ParserState state) {

@@ -1,11 +1,7 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.MlTypes;
-import com.reason.lang.core.stub.type.PsiExternalStubElementType;
-import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiTypeStubElementType;
-import com.reason.lang.core.stub.type.PsiValStubElementType;
+import com.reason.lang.core.stub.type.*;
 
 public class RmlTypes extends MlTypes {
 
@@ -48,6 +44,8 @@ public class RmlTypes extends MlTypes {
         FUNCTOR_PARAMS = new RmlElementType("FUNCTOR_PARAMS");
 
         IF_STATEMENT = new RmlElementType("IF_STATEMENT");
+        IF = new RmlElementType("IF");
+
         LET_BINDING = new RmlElementType("LET_BINDING");
         TYPE_CONSTR_NAME = new RmlElementType("TYPE_CONSTR_NAME");
         TYPE_BINDING = new RmlElementType("TYPE_BINDING");

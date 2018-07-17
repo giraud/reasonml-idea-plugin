@@ -40,6 +40,8 @@ public abstract class MlTypes {
     public IElementType FUNCTOR_PARAMS;
 
     public IElementType IF_STATEMENT;
+    public IElementType IF;
+
     public IElementType LET_BINDING;
     public IElementType TYPE_CONSTR_NAME;
     public IElementType TYPE_BINDING;

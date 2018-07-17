@@ -8,9 +8,11 @@ import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
-import static com.reason.lang.ParserScopeType.*;
+import static com.reason.lang.ParserScopeType.groupExpression;
+import static com.reason.lang.ParserScopeType.scopeExpression;
 
 public class OclParser extends CommonParser {
 
@@ -50,7 +52,7 @@ public class OclParser extends CommonParser {
                 parseSig(builder, state);
             } else if (tokenType == m_types.STRUCT) {
                 parseStruct(builder, state);
-            } else if (tokenType == m_types.IF_STATEMENT) {
+            } else if (tokenType == m_types.IF) {
                 parseIf(builder, state);
             } else if (tokenType == m_types.THEN) {
                 parseThen(builder, state);
@@ -187,7 +189,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseIf(PsiBuilder builder, ParserState state) {
-        state.add(markCompleteScope(builder, if_, m_types.IF_STATEMENT, groupExpression, m_types.IF_STATEMENT));
+        state.add(markCompleteScope(builder, if_, m_types.IF_STATEMENT, groupExpression, m_types.IF));
         state.dontMove = advance(builder);
         state.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, groupExpression, null));
     }

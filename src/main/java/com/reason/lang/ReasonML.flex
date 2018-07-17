@@ -98,7 +98,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "fun"         { return types.FUN; }
     "external"    { return types.EXTERNAL; }
     "unit"        { return types.UNIT; }
-    "if"          { return types.IF_STATEMENT; }
+    "if"          { return types.IF; }
     "else"        { return types.ELSE; }
     "switch"      { return types.SWITCH; }
     "as"          { return types.AS; }
