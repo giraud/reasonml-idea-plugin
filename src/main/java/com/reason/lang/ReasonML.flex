@@ -1,6 +1,8 @@
 package com.reason.lang;
 
-import com.com.reason.lang.core.psi.type.MlTypes;
+import com.intellij.lexer.FlexLexer;
+import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.psi.type.MlTypes;
 
 import static com.intellij.psi.TokenType.*;
 %%
@@ -24,7 +26,7 @@ import static com.intellij.psi.TokenType.*;
     private void tokenEnd() {
       zzStartRead = tokenStartIndex;
     }
-  %}
+%}
 
 %public
 %class ReasonMLLexer
@@ -167,6 +169,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "false"     { return types.BOOL_VALUE; }
     "true"      { return types.BOOL_VALUE; }
 
+    "_"   { return types.UNDERSCORE; }
+
     "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR_VALUE; }
     {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
     {UPPERCASE}{IDENTCHAR}*          { return types.UIDENT; }
@@ -235,7 +239,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "`"   { return types.BACKTICK; }
     "~"   { return types.TILDE; }
     "&"   { return types.AMPERSAND; }
-    "_"   { return types.UNDERSCORE; }
 
     "<"  { return types.LT; }
     ">"  { return types.GT; }

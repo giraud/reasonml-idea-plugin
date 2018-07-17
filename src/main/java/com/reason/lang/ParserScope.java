@@ -2,20 +2,23 @@ package com.reason.lang;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.psi.type.MlCompositeElementType;
+import com.reason.lang.core.psi.type.MlTokenElementType;
 
 public class ParserScope {
     public ParserScopeEnum resolution;
     ParserScopeType scopeType = ParserScopeType.any;
-    public IElementType tokenType;
-    IElementType scopeElementType;
+    private IElementType compositeElementType;
+    MlTokenElementType scopeTokenElementType;
     boolean complete = false;
     boolean start = false;
 
     private PsiBuilder.Marker mark;
 
-    ParserScope(ParserScopeEnum resolution, IElementType tokenType, PsiBuilder.Marker mark) {
+    ParserScope(ParserScopeEnum resolution, IElementType compositeElementType, MlTokenElementType scopeTokenElementType, PsiBuilder.Marker mark) {
         this.resolution = resolution;
-        this.tokenType = tokenType;
+        this.compositeElementType = compositeElementType;
+        this.scopeTokenElementType = scopeTokenElementType;
         this.mark = mark;
     }
 
@@ -29,8 +32,8 @@ public class ParserScope {
 
     private void done() {
         if (mark != null) {
-            if (tokenType != null) {
-                mark.done(tokenType);
+            if (compositeElementType != null) {
+                mark.done(compositeElementType);
             } else {
                 mark.drop();
             }
@@ -47,5 +50,25 @@ public class ParserScope {
 
     public void complete() {
         complete = true;
+    }
+
+    boolean isCompositeEqualTo(IElementType compositeElementType) {
+        return this.compositeElementType == compositeElementType;
+    }
+
+    boolean isScopeTokenEqualTo(MlTokenElementType tokenElementType) {
+        return this.scopeTokenElementType == tokenElementType;
+    }
+
+    void setScopeTokenType(MlTokenElementType tokenElementType) {
+        this.scopeTokenElementType = tokenElementType;
+    }
+
+    MlTokenElementType getScopeTokenType() {
+        return this.scopeTokenElementType;
+    }
+
+    public void setCompositeElementType(MlCompositeElementType compositeElementType) {
+        this.compositeElementType = compositeElementType;
     }
 }

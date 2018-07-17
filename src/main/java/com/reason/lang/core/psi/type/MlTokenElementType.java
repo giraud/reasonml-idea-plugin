@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class MlTokenElementType extends IElementType {
-    MlTokenElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
+    public MlTokenElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
         super(debugName, language);
     }
 }

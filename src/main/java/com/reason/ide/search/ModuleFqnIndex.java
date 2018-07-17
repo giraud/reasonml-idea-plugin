@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final ModuleFqnIndex INSTANCE = new ModuleFqnIndex();
 
     public static ModuleFqnIndex getInstance() {

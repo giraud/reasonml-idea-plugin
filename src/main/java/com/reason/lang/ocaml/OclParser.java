@@ -6,6 +6,7 @@ import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
+import com.reason.lang.core.psi.type.MlCompositeElementType;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
@@ -38,6 +39,8 @@ public class OclParser extends CommonParser {
                 parseIn(state);
             } else if (tokenType == m_types.END) { // end (like a })
                 parseEnd(builder, state);
+            } else if (tokenType == m_types.UNDERSCORE) {
+                parseUnderscore(builder, state);
             } else if (tokenType == m_types.PIPE) {
                 parsePipe(builder, state);
             } else if (tokenType == m_types.EQ) {
@@ -124,8 +127,15 @@ public class OclParser extends CommonParser {
         }
     }
 
+    private void parseUnderscore(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(let)) {
+            state.setResolution(letNamed);
+            state.setComplete();
+        }
+    }
+
     private void parseAssert(PsiBuilder builder, ParserState state) {
-        state.add(markComplete(builder, assert_, m_types.ASSERT));
+        state.add(markComplete(builder, assert_, m_types.ASSERT_STMT));
         state.dontMove = advance(builder);
         IElementType tokenType = builder.getTokenType();
         if (tokenType != m_types.LPAREN) {
@@ -137,12 +147,12 @@ public class OclParser extends CommonParser {
         if (isTypeResolution(state)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
-            state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
+            state.addStart(mark(builder, type, m_types.EXP_TYPE));
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         } else if (state.isResolution(letNamedEq)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
-            state.addStart(mark(builder, let, m_types.LET_EXPRESSION));
+            state.addStart(mark(builder, let, m_types.LET_STMT));
         }
     }
 
@@ -154,10 +164,10 @@ public class OclParser extends CommonParser {
 
     private void parsePipe(PsiBuilder builder, ParserState state) {
         if (state.isResolution(typeNamedEq)) {
-            state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT, groupExpression, m_types.PIPE));
+            state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT_EXP, groupExpression, m_types.PIPE));
         } else if (state.isResolution(typeNamedEqVariant)) {
             state.popEnd();
-            state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT, groupExpression, m_types.PIPE));
+            state.add(markCompleteScope(builder, typeNamedEqVariant, m_types.VARIANT_EXP, groupExpression, m_types.PIPE));
         } else {
             // By default, a pattern match
             if (state.isResolution(patternMatchBody)) {
@@ -171,31 +181,31 @@ public class OclParser extends CommonParser {
     }
 
     private void parseMatch(PsiBuilder builder, ParserState state) {
-        state.add(markCompleteScope(builder, match, m_types.MATCH, groupExpression, m_types.MATCH));
+        state.add(markCompleteScope(builder, match, m_types.MATCH_EXPR, groupExpression, m_types.MATCH));
         state.dontMove = advance(builder);
-        state.add(markCompleteScope(builder, matchBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.BIN_CONDITION));
+        state.add(markCompleteScope(builder, matchBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.GENERIC_COND));
     }
 
     private void parseTry(PsiBuilder builder, ParserState state) {
-        state.add(markCompleteScope(builder, try_, m_types.TRY, groupExpression, m_types.TRY));
+        state.add(markCompleteScope(builder, try_, m_types.TRY_EXPR, groupExpression, m_types.TRY));
         state.dontMove = advance(builder);
-        state.add(markCompleteScope(builder, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.BIN_CONDITION));
+        state.add(markCompleteScope(builder, tryBinaryCondition, m_types.BIN_CONDITION, groupExpression, m_types.GENERIC_COND));
     }
 
     private void parseWith(PsiBuilder builder, ParserState state) {
-        state.endUntilScopeExpression(m_types.BIN_CONDITION);
+        state.endUntilScopeExpression(m_types.GENERIC_COND);
         state.endUntilScopeExpression(state.isResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
         state.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
     }
 
     private void parseIf(PsiBuilder builder, ParserState state) {
-        state.add(markCompleteScope(builder, if_, m_types.IF_STATEMENT, groupExpression, m_types.IF));
+        state.add(markCompleteScope(builder, if_, m_types.IF_STMT, groupExpression, m_types.IF));
         state.dontMove = advance(builder);
         state.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, groupExpression, null));
     }
 
     private void parseThen(PsiBuilder builder, ParserState state) {
-        state.endUntilScopeExpression(m_types.IF_STATEMENT);
+        state.endUntilScopeExpression(m_types.IF);
         state.add(markCompleteScope(builder, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN));
     }
 
@@ -297,11 +307,11 @@ public class OclParser extends CommonParser {
             if (innerScope != null && state.isResolution(genericExpression)) {
                 // let's say this is a function definition
                 innerScope.resolution = parameters;
-                innerScope.tokenType = m_types.FUN_PARAMS;
+                innerScope.setCompositeElementType((MlCompositeElementType) m_types.FUN_PARAMS);
                 innerScope.complete();
                 innerScope.end();
                 state.setResolution(function);
-                state.setTokenType(m_types.FUNCTION);
+                state.setCurrentCompositeElementType((MlCompositeElementType) m_types.FUNCTION);
                 state.setComplete();
                 state.dontMove = advance(builder);
                 state.add(markCompleteScope(builder, funBody, m_types.FUN_BODY, groupExpression, null));
@@ -319,7 +329,7 @@ public class OclParser extends CommonParser {
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
             state.setResolution(localOpen);
-            state.setTokenType(m_types.LOCAL_OPEN);
+            state.setTokenElementType(m_types.LOCAL_OPEN);
             state.setComplete();
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else if (state.isResolution(external)) {
@@ -350,7 +360,7 @@ public class OclParser extends CommonParser {
 
     private void parseLBrace(PsiBuilder builder, ParserState state) {
         state.endAny();
-        state.add(markScope(builder, recordBinding, m_types.RECORD, scopeExpression, m_types.LBRACE));
+        state.add(markScope(builder, recordBinding, m_types.RECORD_BINDING, scopeExpression, m_types.LBRACE));
         state.dontMove = advance(builder);
         state.add(mark(builder, recordField, m_types.RECORD_FIELD));
     }
@@ -377,7 +387,7 @@ public class OclParser extends CommonParser {
         IElementType nextTokenType = builder.rawLookup(1);
         if (nextTokenType == m_types.ARROBASE) {
             // This is an annotation
-            parserState.add(markScope(builder, annotation, m_types.ANNOTATION_EXPRESSION, scopeExpression, m_types.LBRACKET));
+            parserState.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, scopeExpression, m_types.LBRACKET));
         } else {
             parserState.add(markScope(builder, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET));
         }
@@ -456,7 +466,7 @@ public class OclParser extends CommonParser {
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.DOT) {
                     // We are parsing a module path
-                    state.add(mark(builder, modulePath, m_types.UPPER_SYMBOL));
+                    state.add(mark(builder, modulePath, m_types.MODULE_PATH));
                 }
             }
         }
@@ -466,23 +476,23 @@ public class OclParser extends CommonParser {
 
     private void parseOpen(PsiBuilder builder, ParserState state) {
         endLikeSemi(state);
-        state.addStart(mark(builder, open, m_types.OPEN_EXPRESSION));
+        state.addStart(mark(builder, open, m_types.OPEN_STMT));
     }
 
     private void parseInclude(PsiBuilder builder, ParserState state) {
         endLikeSemi(state);
-        state.addStart(mark(builder, include, m_types.INCLUDE_EXPRESSION));
+        state.addStart(mark(builder, include, m_types.INCLUDE_STMT));
     }
 
     private void parseExternal(PsiBuilder builder, ParserState state) {
         endLikeSemi(state);
-        state.addStart(mark(builder, external, m_types.EXTERNAL_EXPRESSION));
+        state.addStart(mark(builder, external, m_types.EXTERNAL_STMT));
     }
 
     private void parseType(PsiBuilder builder, ParserState state) {
         if (state.notResolution(module)) {
             endLikeSemi(state);
-            state.addStart(mark(builder, type, m_types.TYPE_EXPRESSION));
+            state.addStart(mark(builder, type, m_types.EXP_TYPE));
             state.dontMove = advance(builder);
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         }
@@ -490,25 +500,25 @@ public class OclParser extends CommonParser {
 
     private void parseException(PsiBuilder builder, ParserState state) {
         endLikeSemi(state);
-        state.addStart(mark(builder, exception, m_types.EXCEPTION_EXPRESSION));
+        state.addStart(mark(builder, exception, m_types.EXCEPTION_EXPR));
     }
 
     private void parseVal(PsiBuilder builder, ParserState state) {
         endLikeSemi(state);
-        state.addStart(mark(builder, val, m_types.VAL_EXPRESSION));
+        state.addStart(mark(builder, val, m_types.VAL_EXPR));
     }
 
     private void parseLet(PsiBuilder builder, ParserState state) {
         if (state.previousTokenType != m_types.EQ && state.previousTokenType != m_types.IN && state.previousTokenType != m_types.TRY) {
             endLikeSemi(state);
         }
-        state.addStart(mark(builder, let, m_types.LET_EXPRESSION));
+        state.addStart(mark(builder, let, m_types.LET_STMT));
     }
 
     private void parseModule(PsiBuilder builder, ParserState state) {
         if (state.notResolution(annotationName)) {
             endLikeSemi(state);
-            state.addStart(mark(builder, module, m_types.MODULE_EXPRESSION));
+            state.addStart(mark(builder, module, m_types.MODULE_STMT));
         }
     }
 

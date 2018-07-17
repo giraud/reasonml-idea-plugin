@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiExternal;
 import org.jetbrains.annotations.NotNull;
 
 public class ExternalIndex extends StringStubIndexExtension<PsiExternal> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     @Override
     public int getVersion() {

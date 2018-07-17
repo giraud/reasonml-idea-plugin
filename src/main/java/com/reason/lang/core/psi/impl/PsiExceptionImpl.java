@@ -61,6 +61,6 @@ public class PsiExceptionImpl extends ASTWrapperPsiElement implements PsiExcepti
 
     @Override
     public String toString() {
-        return "PsiException(" + getName() + ")";
+        return "Exception " + getName();
     }
 }

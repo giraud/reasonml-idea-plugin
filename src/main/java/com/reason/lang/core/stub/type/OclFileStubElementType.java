@@ -12,10 +12,8 @@ import com.reason.lang.core.stub.OclFileStub;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     public static final IStubFileElementType INSTANCE = new OclFileStubElementType();
 
     private OclFileStubElementType() {
@@ -42,12 +40,12 @@ public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
     }
 
     @Override
-    public void serialize(@NotNull OclFileStub stub, @NotNull StubOutputStream dataStream) throws IOException {
+    public void serialize(@NotNull OclFileStub stub, @NotNull StubOutputStream dataStream) {
     }
 
     @NotNull
     @Override
-    public OclFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
+    public OclFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) {
         return new OclFileStub(null);
     }
 

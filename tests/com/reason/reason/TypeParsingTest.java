@@ -41,7 +41,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
         PsiType type = first(typeExpressions(parseCode("type props = {\n" +
                 "string: string,\n" +
                 "ref: Js.nullable(Dom.element) => unit,\n" +
-                "method: string};")));
+                "method: string};", true)));
 
         assertNotNull(first(findChildrenOfType(type, PsiTypeBinding.class)));
         Collection<PsiRecordField> fields = findChildrenOfType(type.getBinding(), PsiRecordField.class);

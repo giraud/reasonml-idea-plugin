@@ -14,19 +14,19 @@ public class PsiElementFactory {
     public static PsiElement createElement(MlTypes types, ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == types.EXTERNAL_EXPRESSION) {
+        if (type == types.EXTERNAL_STMT) {
             return new PsiExternalImpl(types, node);
-        } else if (type == types.EXCEPTION_EXPRESSION) {
+        } else if (type == types.EXCEPTION_EXPR) {
             return new PsiExceptionImpl(node);
-        } else if (type == types.OPEN_EXPRESSION) {
+        } else if (type == types.OPEN_STMT) {
             return new PsiOpenImpl(types, node);
-        } else if (type == types.INCLUDE_EXPRESSION) {
+        } else if (type == types.INCLUDE_STMT) {
             return new PsiIncludeImpl(types, node);
-        } else if (type == types.TYPE_EXPRESSION) {
+        } else if (type == types.EXP_TYPE) {
             return new PsiTypeImpl(node);
-        } else if (type == types.ASSERT) {
+        } else if (type == types.ASSERT_STMT) {
             return new PsiAssert(node);
-        } else if (type == types.IF_STATEMENT) {
+        } else if (type == types.IF_STMT) {
             return new PsiIfStatement(node);
         } else if (type == types.BIN_CONDITION) {
             return new PsiBinaryCondition(node);
@@ -34,15 +34,15 @@ public class PsiElementFactory {
             return new PsiTypeConstrName(node);
         } else if (type == types.TYPE_BINDING) {
             return new PsiTypeBinding(node);
-        } else if (type == types.MODULE_EXPRESSION) {
+        } else if (type == types.MODULE_STMT) {
             return new PsiModuleImpl(node, types);
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
-        } else if (type == types.LET_EXPRESSION) {
+        } else if (type == types.LET_STMT) {
             return new PsiLetImpl(types, node);
-        } else if (type == types.VAL_EXPRESSION) {
+        } else if (type == types.VAL_EXPR) {
             return new PsiValImpl(types, node);
-        } else if (type == types.ANNOTATION_EXPRESSION) {
+        } else if (type == types.ANNOTATION_EXPR) {
             return new PsiAnnotation(node);
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
@@ -56,11 +56,11 @@ public class PsiElementFactory {
             return new PsiLocalOpen(node, types);
         } else if (type == types.PATTERN_MATCH_EXPR) {
             return new PsiPatternMatch(node);
-        } else if (type == types.RECORD) {
+        } else if (type == types.RECORD_BINDING) {
             return new PsiRecord(node);
         } else if (type == types.RECORD_FIELD) {
             return new PsiRecordField(node);
-        } else if (type == types.INTERPOLATION) {
+        } else if (type == types.INTERPOLATION_EXPR) {
             return new PsiInterpolation(node);
         } else if (type == types.SIG_SCOPE) {
             return new PsiSignatureImpl(node);
@@ -76,7 +76,7 @@ public class PsiElementFactory {
             return new PsiLowerSymbolImpl(types, node);
         } else if (type == types.NAMED_SYMBOL) {
             return new PsiNamedSymbol(node);
-        } else if (type == types.SWITCH) {
+        } else if (type == types.SWITCH_EXPR) {
             return new PsiSwitch(node);
         } else if (type == types.FUNCTION) {
             return new PsiFunction(node);

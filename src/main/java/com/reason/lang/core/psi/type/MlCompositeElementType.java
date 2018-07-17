@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class MlCompositeElementType extends IElementType {
-    MlCompositeElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
+    public MlCompositeElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
         super(debugName, language);
     }
 }

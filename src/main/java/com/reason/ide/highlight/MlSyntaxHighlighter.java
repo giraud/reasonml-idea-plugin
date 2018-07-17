@@ -24,7 +24,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> RML_KEYWORD_TYPES = of(
             RmlTypes.INSTANCE.BOOL, RmlTypes.INSTANCE.STRING, RmlTypes.INSTANCE.FLOAT, RmlTypes.INSTANCE.CHAR, RmlTypes.INSTANCE.INT,
             RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN, RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE,
-            RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE, RmlTypes.INSTANCE.SWITCH,
+            RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE, RmlTypes.INSTANCE.SWITCH_EXPR,
             RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN, RmlTypes.INSTANCE.TO, RmlTypes.INSTANCE.BOOL_VALUE,
             RmlTypes.INSTANCE.REF, RmlTypes.INSTANCE.EXCEPTION, RmlTypes.INSTANCE.WHEN, RmlTypes.INSTANCE.AND, RmlTypes.INSTANCE.REC, RmlTypes.INSTANCE.WHILE, RmlTypes.INSTANCE.ASR,
             RmlTypes.INSTANCE.CLASS, RmlTypes.INSTANCE.CONSTRAINT, RmlTypes.INSTANCE.DOWNTO, RmlTypes.INSTANCE.FUNCTOR, RmlTypes.INSTANCE.INHERIT,
@@ -52,7 +52,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> OCL_KEYWORD_TYPES = of(
             RmlTypes.INSTANCE.BOOL, RmlTypes.INSTANCE.STRING, RmlTypes.INSTANCE.FLOAT, RmlTypes.INSTANCE.CHAR, RmlTypes.INSTANCE.INT,
             OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN, OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE,
-            OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL, OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.SWITCH,
+            OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL, OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.SWITCH_EXPR,
             OclTypes.INSTANCE.TRY, OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN, OclTypes.INSTANCE.TO,
             OclTypes.INSTANCE.BOOL_VALUE, OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION, OclTypes.INSTANCE.WHEN,
             OclTypes.INSTANCE.AND, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.WHILE, OclTypes.INSTANCE.ASR, OclTypes.INSTANCE.CLASS,

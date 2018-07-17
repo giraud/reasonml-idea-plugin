@@ -1,7 +1,6 @@
 package com.reason.lang.dune;
 
 import com.intellij.lang.PsiBuilder;
-
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserState;
@@ -78,7 +77,7 @@ public class DuneParser extends CommonParser {
     */
     private void parseExecutable(PsiBuilder builder, ParserState state) {
         state.setResolution(executable);
-        state.setTokenType(DuneTypes.EXECUTABLE);
+        state.setTokenElementType(DuneTypes.EXECUTABLE);
         state.dontMove = advance(builder);
         if (builder.getTokenType() == DuneTypes.LPAREN) {
             state.setComplete();
@@ -95,7 +94,7 @@ public class DuneParser extends CommonParser {
     */
     private void parseLibrary(PsiBuilder builder, ParserState state) {
         state.setResolution(library);
-        state.setTokenType(DuneTypes.LIBRARY);
+        state.setTokenElementType(DuneTypes.LIBRARY);
         state.dontMove = advance(builder);
         if (builder.getTokenType() == DuneTypes.LPAREN) {
             state.setComplete();
@@ -108,7 +107,7 @@ public class DuneParser extends CommonParser {
     private void parseName(PsiBuilder builder, ParserState state) {
         if (state.previousTokenType == DuneTypes.LPAREN) {
             state.setResolution(name);
-            state.setTokenType(DuneTypes.NAME);
+            state.setTokenElementType(DuneTypes.NAME);
             state.setComplete();
         }
     }

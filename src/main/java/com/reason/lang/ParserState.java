@@ -2,6 +2,8 @@ package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.Stack;
+import com.reason.lang.core.psi.type.MlCompositeElementType;
+import com.reason.lang.core.psi.type.MlTokenElementType;
 import org.jetbrains.annotations.Nullable;
 
 import static com.reason.lang.ParserScopeType.any;
@@ -69,12 +71,12 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilScopeExpression(IElementType scopeElementType) {
+    public ParserScope endUntilScopeExpression(MlTokenElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeElementType != scopeElementType)) {
+            while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeTokenElementType != scopeElementType)) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -149,12 +151,12 @@ public class ParserState {
         }
     }
 
-    public boolean isCurrentTokenType(IElementType elementType) {
-        return currentScope.tokenType == elementType;
+    public boolean isCurrentCompositeElementType(IElementType compositeElementType) {
+        return currentScope.isCompositeEqualTo(compositeElementType);
     }
 
-    public boolean isScopeElementType(IElementType scopeElementType) {
-        return currentScope.scopeElementType == scopeElementType;
+    public boolean isScopeTokenElementType(MlTokenElementType scopeTokenElementType) {
+        return currentScope.isScopeTokenEqualTo(scopeTokenElementType);
     }
 
     public void setResolution(ParserScopeEnum resolution) {
@@ -169,8 +171,8 @@ public class ParserState {
         return currentScope.scopeType == scopeExpression || currentScope.scopeType == ParserScopeType.groupExpression;
     }
 
-    public void setTokenType(IElementType tokenType) {
-        currentScope.tokenType = tokenType;
+    public void setTokenElementType(MlTokenElementType tokenType) {
+        currentScope.setScopeTokenType(tokenType);
     }
 
     public void setScopeType(ParserScopeType scopeType) {
@@ -181,7 +183,15 @@ public class ParserState {
         return scope != null && scope.start;
     }
 
-    public IElementType getTokenType() {
-        return currentScope.tokenType;
+    public MlTokenElementType getScopeTokenType() {
+        return currentScope.getScopeTokenType();
+    }
+
+    public void setCurrentCompositeElementType(MlCompositeElementType compositeElementType) {
+        currentScope.setCompositeElementType(compositeElementType);
+    }
+
+    public boolean isCurrentTokenType(MlTokenElementType tokenElementType) {
+        return currentScope.isScopeTokenEqualTo(tokenElementType);
     }
 }

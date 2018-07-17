@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 
 public class ValIndex extends StringStubIndexExtension<PsiVal> {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     @Override
     public int getVersion() {

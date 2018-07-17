@@ -5,6 +5,7 @@ import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.psi.type.MlTokenElementType;
 import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        builder.setDebugMode(true);
+        builder.setDebugMode(false);
 
         //System.out.println("start parsing");
         //long start = System.currentTimeMillis();
@@ -42,7 +43,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
-        ParserScope fileScope = new ParserScope(file, null, builder.mark());
+        ParserScope fileScope = new ParserScope(file, null, null, builder.mark());
 
         ParserState state = new ParserState(fileScope);
         parseFile(builder, state);
@@ -59,25 +60,24 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType) {
-        return new ParserScope(resolution, tokenType, builder.mark());
+    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
+        return new ParserScope(resolution, compositeElementType, null, builder.mark());
     }
 
-    protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType) {
-        ParserScope scope = mark(builder, resolution, tokenType);
+    protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
+        ParserScope scope = mark(builder, resolution, compositeElementType);
         scope.complete = true;
         return scope;
     }
 
-    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
-        ParserScope scope = mark(builder, resolution, tokenType);
+    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
+        ParserScope scope = new ParserScope(resolution, compositeElementType, scopeTokenElementType, builder.mark());
         scope.scopeType = scopeType;
-        scope.scopeElementType = scopeElementType;
         return scope;
     }
 
-    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType tokenType, ParserScopeType scopeType, IElementType scopeElementType) {
-        ParserScope scope = markScope(builder, resolution, tokenType, scopeType, scopeElementType);
+    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
+        ParserScope scope = markScope(builder, resolution, compositeElementType, scopeType, scopeTokenElement);
         scope.complete = true;
         return scope;
     }
