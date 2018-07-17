@@ -441,7 +441,7 @@ public class RmlParser extends CommonParser {
             if (nextTokenType == m_types.COLON) {
                 // Yes, this is a record binding
                 state.setCurrentResolution(recordBinding);
-                state.setTokenElementType(m_types.RECORD);
+                state.setCurrentCompositeElementType(m_types.RECORD_EXPR);
             }
         }
 
@@ -520,7 +520,7 @@ public class RmlParser extends CommonParser {
         } else if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
             state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(letNamedEq)) {
-            state.add(markScope(builder, maybeRecord, null, scopeExpression, m_types.LBRACE));
+            state.add(markScope(builder, maybeRecord, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else if (state.isResolution(ifThenStatement)) {
             state.add(markScope(builder, brace, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACE));
         } else {
