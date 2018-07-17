@@ -24,7 +24,7 @@ public class OclTypes extends MlTypes {
         EXP_TYPE = new PsiTypeStubElementType("EXP_TYPE", OclLanguage.INSTANCE);
         VAL_EXPR = new PsiValStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE);
         ASSERT_STMT = new MlCompositeElementType("ASSERT_STMT", OclLanguage.INSTANCE);
-        FUNCTION = new MlCompositeElementType("FUNCTION", OclLanguage.INSTANCE);
+        FUN_EXPR = new MlCompositeElementType("FUN_EXPR", OclLanguage.INSTANCE);
         FUN_PARAMS = new MlCompositeElementType("FUN_PARAMS", OclLanguage.INSTANCE);
         FUN_BODY = new MlCompositeElementType("FUN_BODY", OclLanguage.INSTANCE);
         IF_STMT = new MlCompositeElementType("IF_STMT", OclLanguage.INSTANCE);
@@ -41,8 +41,10 @@ public class OclTypes extends MlTypes {
         TAG_START = new MlCompositeElementType("TAG_START", OclLanguage.INSTANCE);
         TAG_CLOSE = new MlCompositeElementType("TAG_CLOSE", OclLanguage.INSTANCE);
         TAG_PROPERTY = new MlCompositeElementType("TAG_PROPERTY", OclLanguage.INSTANCE);
+        RECORD_EXPR = new MlCompositeElementType("RECORD_EXPR", OclLanguage.INSTANCE);
         RECORD_FIELD = new MlCompositeElementType("RECORD_FIELD", OclLanguage.INSTANCE);
         INTERPOLATION_EXPR = new MlCompositeElementType("INTERPOLATION_EXPR", OclLanguage.INSTANCE);
+        TRY_EXPR = new MlCompositeElementType("TRY_EXPR", OclLanguage.INSTANCE);
         UPPER_SYMBOL = new MlCompositeElementType("UPPER_SYMBOL", OclLanguage.INSTANCE);
         LOWER_SYMBOL = new MlCompositeElementType("LOWER_SYMBOL", OclLanguage.INSTANCE);
 
@@ -59,6 +61,8 @@ public class OclTypes extends MlTypes {
         FLOAT_VALUE = new MlTokenElementType("FLOAT_VALUE", OclLanguage.INSTANCE);
         CHAR_VALUE = new MlTokenElementType("CHAR_VALUE", OclLanguage.INSTANCE);
         INT_VALUE = new MlTokenElementType("INT_VALUE", OclLanguage.INSTANCE);
+        SWITCH = new MlTokenElementType("SWITCH", OclLanguage.INSTANCE);
+        FUNCTION = new MlTokenElementType("FUNCTION", OclLanguage.INSTANCE);
         FUN = new MlTokenElementType("FUN", OclLanguage.INSTANCE);
         FUNCTOR = new MlTokenElementType("FUNCTOR", OclLanguage.INSTANCE);
         IF = new MlTokenElementType("IF", OclLanguage.INSTANCE);

@@ -2,7 +2,6 @@ package com.reason.lang;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.type.MlCompositeElementType;
 import com.reason.lang.core.psi.type.MlTokenElementType;
 
 public class ParserScope {
@@ -68,7 +67,7 @@ public class ParserScope {
         return this.scopeTokenElementType;
     }
 
-    public void setCompositeElementType(MlCompositeElementType compositeElementType) {
+    public void setCompositeElementType(IElementType compositeElementType) {
         this.compositeElementType = compositeElementType;
     }
 }

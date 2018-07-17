@@ -44,6 +44,6 @@ public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLow
 
     @Override
     public String toString() {
-        return "Lower symbol " + getName();
+        return "LSymbol " + getName();
     }
 }

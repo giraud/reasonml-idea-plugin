@@ -26,7 +26,7 @@ public class RmlTypes extends MlTypes {
         ASSERT_STMT = new MlCompositeElementType("ASSERT_STMT", RmlLanguage.INSTANCE);
         SCOPED_EXPR = new MlCompositeElementType("SCOPED_EXPR", RmlLanguage.INSTANCE);
         VARIANT_EXP = new MlCompositeElementType("VARIANT_EXP", RmlLanguage.INSTANCE);
-        FUNCTION = new MlCompositeElementType("FUNCTION", RmlLanguage.INSTANCE);
+        FUN_EXPR = new MlCompositeElementType("FUN_EXPR", RmlLanguage.INSTANCE);
         FUN_PARAMS = new MlCompositeElementType("FUN_PARAMS", RmlLanguage.INSTANCE);
         FUN_BODY = new MlCompositeElementType("FUN_BODY", RmlLanguage.INSTANCE);
         LET_BINDING = new MlCompositeElementType("LET_BINDING", RmlLanguage.INSTANCE);
@@ -41,8 +41,10 @@ public class RmlTypes extends MlTypes {
         TAG_START = new MlCompositeElementType("TAG_START", RmlLanguage.INSTANCE);
         TAG_CLOSE = new MlCompositeElementType("TAG_CLOSE", RmlLanguage.INSTANCE);
         TAG_PROPERTY = new MlCompositeElementType("TAG_PROPERTY", RmlLanguage.INSTANCE);
+        RECORD_EXPR = new MlCompositeElementType("RECORD_EXPR", RmlLanguage.INSTANCE);
         RECORD_FIELD = new MlCompositeElementType("RECORD_FIELD", RmlLanguage.INSTANCE);
         INTERPOLATION_EXPR = new MlCompositeElementType("INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
+        TRY_EXPR = new MlCompositeElementType("TRY_EXPR", RmlLanguage.INSTANCE);
 
         // Token element types
 
@@ -59,6 +61,8 @@ public class RmlTypes extends MlTypes {
         INT_VALUE = new MlTokenElementType("INT_VALUE", RmlLanguage.INSTANCE);
         EXCEPTION_NAME = new MlTokenElementType("EXCEPTION_NAME", RmlLanguage.INSTANCE);
         PROPERTY_NAME = new MlTokenElementType("PROPERTY_NAME", RmlLanguage.INSTANCE);
+        SWITCH = new MlTokenElementType("SWITCH", RmlLanguage.INSTANCE);
+        FUNCTION = new MlTokenElementType("FUNCTION", RmlLanguage.INSTANCE);
         FUN = new MlTokenElementType("FUN", RmlLanguage.INSTANCE);
         FUNCTOR = new MlTokenElementType("FUNCTOR", RmlLanguage.INSTANCE);
         UPPER_SYMBOL = new MlTokenElementType("UPPER_SYMBOL", RmlLanguage.INSTANCE);

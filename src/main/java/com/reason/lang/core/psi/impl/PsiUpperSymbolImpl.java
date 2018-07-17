@@ -53,6 +53,6 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
     @Override
     public String toString() {
         String name = getName();
-        return "Upper symbol " + (name == null || name.isEmpty() ? "<" + ((FileBase) getContainingFile()).asModuleName() + ">" : name);
+        return "USymbol " + (name == null || name.isEmpty() ? "<" + ((FileBase) getContainingFile()).asModuleName() + ">" : name);
     }
 }

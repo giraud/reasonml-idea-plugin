@@ -32,10 +32,10 @@ public abstract class MlTypes {
     public IElementType TAG_START;
     public IElementType TAG_CLOSE;
     public IElementType TAG_PROPERTY;
-    public IElementType FUNCTION;
+    public IElementType FUN_EXPR;
     public IElementType FUN_PARAMS;
     public IElementType FUN_BODY;
-    public IElementType RECORD_BINDING;
+    public IElementType RECORD_EXPR;
     public IElementType RECORD_FIELD;
     public IElementType SWITCH_EXPR;
     public IElementType MATCH_EXPR;
@@ -59,6 +59,7 @@ public abstract class MlTypes {
     public MlTokenElementType CHAR_VALUE;
     public MlTokenElementType INT_VALUE;
 
+    public MlTokenElementType FUNCTION;
     public MlTokenElementType FUN;
     public MlTokenElementType FUNCTOR;
     public MlTokenElementType GENERIC_COND;

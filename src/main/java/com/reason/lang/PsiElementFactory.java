@@ -56,7 +56,7 @@ public class PsiElementFactory {
             return new PsiLocalOpen(node, types);
         } else if (type == types.PATTERN_MATCH_EXPR) {
             return new PsiPatternMatch(node);
-        } else if (type == types.RECORD_BINDING) {
+        } else if (type == types.RECORD_EXPR) {
             return new PsiRecord(node);
         } else if (type == types.RECORD_FIELD) {
             return new PsiRecordField(node);
@@ -76,9 +76,11 @@ public class PsiElementFactory {
             return new PsiLowerSymbolImpl(types, node);
         } else if (type == types.NAMED_SYMBOL) {
             return new PsiNamedSymbol(node);
+        } else if (type == types.TRY_EXPR) {
+            return new PsiTry(node);
         } else if (type == types.SWITCH_EXPR) {
             return new PsiSwitch(node);
-        } else if (type == types.FUNCTION) {
+        } else if (type == types.FUN_EXPR) {
             return new PsiFunction(node);
         } else if (type == types.FUN_BODY) {
             return new PsiFunctionBody(node);

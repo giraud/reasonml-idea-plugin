@@ -9,4 +9,8 @@ public class PsiTypeBinding extends ASTWrapperPsiElement {
         super(node);
     }
 
+    @Override
+    public String toString() {
+        return "Type binding";
+    }
 }
