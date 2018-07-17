@@ -1,18 +1,19 @@
 package com.reason.lang.core.psi.impl;
 
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.type.MlTypes;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiStructuredElement {
 

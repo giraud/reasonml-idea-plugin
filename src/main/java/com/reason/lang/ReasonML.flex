@@ -1,32 +1,30 @@
 package com.reason.lang;
 
-import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.TokenType;
+import com.com.reason.lang.core.psi.type.MlTypes;
 
 import static com.intellij.psi.TokenType.*;
 %%
 
 %{
   public ReasonMLLexer(MlTypes types) {
-    this.types = types;
-  }
+      this.types = types;
+    }
 
-  private MlTypes types;
-  private int tokenStartIndex;
-  private CharSequence quotedStringId;
-  private int commentDepth;
+    private MlTypes types;
+    private int tokenStartIndex;
+    private CharSequence quotedStringId;
+    private int commentDepth;
 
-  //Store the start index of a token
-  private void tokenStart() {
-    tokenStartIndex = zzStartRead;
-  }
+    //Store the start index of a token
+    private void tokenStart() {
+      tokenStartIndex = zzStartRead;
+    }
 
-  //Set the start index of the token to the stored index
-  private void tokenEnd() {
-    zzStartRead = tokenStartIndex;
-  }
-%}
+    //Set the start index of the token to the stored index
+    private void tokenEnd() {
+      zzStartRead = tokenStartIndex;
+    }
+  %}
 
 %public
 %class ReasonMLLexer

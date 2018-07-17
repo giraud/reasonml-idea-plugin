@@ -10,11 +10,11 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ package com.reason.lang;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.TokenType;
+import com.reason.lang.core.psi.type.MlTypes;
 
 import static com.intellij.psi.TokenType.*;
 

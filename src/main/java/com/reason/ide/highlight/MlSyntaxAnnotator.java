@@ -9,10 +9,10 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiInterpolation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;

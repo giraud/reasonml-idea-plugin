@@ -1,6 +1,6 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.core.stub.type.*;
 
 public class OclTypes extends MlTypes {

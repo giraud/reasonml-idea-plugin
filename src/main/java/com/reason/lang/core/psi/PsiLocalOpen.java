@@ -3,7 +3,7 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiLocalOpen extends ASTWrapperPsiElement {

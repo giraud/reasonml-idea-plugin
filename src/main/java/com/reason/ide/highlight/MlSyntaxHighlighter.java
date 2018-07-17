@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.LexerAdapter;
-import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;

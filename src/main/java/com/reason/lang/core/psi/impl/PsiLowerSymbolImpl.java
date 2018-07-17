@@ -4,9 +4,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

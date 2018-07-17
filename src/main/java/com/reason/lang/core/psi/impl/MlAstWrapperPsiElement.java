@@ -2,7 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.reason.lang.MlTypes;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 
 abstract class MlAstWrapperPsiElement extends ASTWrapperPsiElement {

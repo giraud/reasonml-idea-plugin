@@ -5,9 +5,9 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

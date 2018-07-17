@@ -5,10 +5,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.MlTypes;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.reference.PsiUpperSymbolReference;
+import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
