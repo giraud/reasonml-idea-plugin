@@ -54,7 +54,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagChaining() {
-        Collection<PsiModule> psiModules = moduleExpressions(parseCode("module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};", true));
+        Collection<PsiModule> psiModules = moduleExpressions(parseCode("module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
         assertEquals(2, psiModules.size());
     }
 }

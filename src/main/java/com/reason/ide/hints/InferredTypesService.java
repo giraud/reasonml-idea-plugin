@@ -28,6 +28,8 @@ import java.util.Map;
 
 public class InferredTypesService {
 
+    private static final Logger LOG = Logger.getInstance("ReasonML.types.inferredService");
+
     private InferredTypesService() {
     }
 
@@ -43,7 +45,7 @@ public class InferredTypesService {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     VirtualFile cmtiPath = FileManager.fromSource(project, relativeRoot, sourceFile, insightManager.useCmt());
                     if (cmtiPath == null) {
-                        Logger.getInstance("ReasonML.types").warn("can't find file " + FileManager.pathFromSource(project, relativeRoot, sourceFile, insightManager.useCmt()) + " (root: " + FileSystems.getDefault().getPath(Platform.findBaseRoot(project).getPath()) + ")");
+                        LOG.warn("can't find file [" + FileSystems.getDefault().getPath(Platform.findBaseRoot(project).getPath()) + "] " + FileManager.pathFromSource(project, relativeRoot, sourceFile, insightManager.useCmt()));
                     } else {
                         insightManager.queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }

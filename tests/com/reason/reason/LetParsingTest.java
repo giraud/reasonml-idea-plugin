@@ -70,4 +70,10 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertSize(2, record.getFields());
     }
 
+    public void testSignature() {
+        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
+
+        assertEquals("(style, style) -> style", let.getSignature().toString());
+    }
+
 }
