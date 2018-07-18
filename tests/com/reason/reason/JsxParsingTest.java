@@ -19,7 +19,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
     public void testOptionAsTag() {
         // option here is not a ReasonML keyword
-        PsiLet let = first(letExpressions(parseCode("let _ = <option className/>", true)));
+        PsiLet let = first(letExpressions(parseCode("let _ = <option className/>")));
 
         PsiTagStart jsx = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
         assertNotNull(jsx);

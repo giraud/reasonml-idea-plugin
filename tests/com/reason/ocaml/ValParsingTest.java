@@ -19,7 +19,7 @@ public class ValParsingTest extends BaseParsingTestCase {
     }
 
     public void testSpecialName() {
-        PsiVal val = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t", true)));
+        PsiVal val = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
         assertInstanceOf(val.getNameIdentifier(), PsiScopedExpr.class);
         assertEquals("(>>=)", val.getName());
     }

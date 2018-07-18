@@ -371,7 +371,7 @@ public class RmlParser extends CommonParser {
         } else if (state.isResolution(recordField)) {
             state.setComplete();
             state.dontMove = advance(builder);
-            state.add(markScope(builder, recordSignature, m_types.SIG_SCOPE, groupExpression, null));
+            state.add(markScope(builder, recordSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
         }
     }
 
@@ -567,7 +567,7 @@ public class RmlParser extends CommonParser {
                 state.endAny();
             }
 
-            if (!state.isResolution(patternMatch)) {
+            if (!state.isResolution(patternMatch) && !state.isResolution(recordSignature)) {
                 // just a marker that will be used only if it's a function (duplicate the current token type)
                 state.add(mark(builder, genericExpression, m_types.LPAREN));
             }
