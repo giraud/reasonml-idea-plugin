@@ -127,14 +127,14 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     }
 
     @Override
-    public void run(@NotNull VirtualFile file) {
-        if (!m_disabled && m_compiler != null && FileHelper.isCompilable(file.getFileType())) {
-            VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, file);
+    public void run(@NotNull VirtualFile sourceFile) {
+        if (!m_disabled && m_compiler != null && FileHelper.isCompilable(sourceFile.getFileType())) {
+            VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
 
                 if (m_compiler.start()) {
-                    ProcessHandler recreate = m_compiler.recreate(CliType.standard);
+                    ProcessHandler recreate = m_compiler.recreate(sourceFile, CliType.standard);
                     if (recreate != null) {
                         getBsbConsole().attachToProcess(recreate);
                         m_compiler.startNotify();
@@ -172,7 +172,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     public void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
         if (m_refmt != null) {
             String oldText = document.getText();
-            String newText = m_refmt.convert(fromFormat, toFormat, oldText);
+            String newText = m_refmt.convert(virtualFile, fromFormat, toFormat, oldText);
             if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
                 getApplication().runWriteAction(() -> {
                     CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup");
@@ -187,10 +187,10 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     }
 
     @Override
-    public void refmt(@NotNull String format, @NotNull Document document) {
+    public void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document) {
         if (m_refmt != null) {
             String oldText = document.getText();
-            String newText = m_refmt.run(format, oldText);
+            String newText = m_refmt.run(sourceFile, format, oldText);
             if (!oldText.isEmpty() && !newText.isEmpty() && !oldText.equals(newText)) { // additional protection
                 getApplication().runWriteAction(
                         () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));

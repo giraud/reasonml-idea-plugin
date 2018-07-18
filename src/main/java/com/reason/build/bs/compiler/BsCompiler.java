@@ -7,9 +7,12 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,7 +31,11 @@ public final class BsCompiler implements CompilerLifecycle {
 
     public BsCompiler(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
-        recreate(CliType.make);
+        VirtualFile baseRoot = Platform.findBaseRoot(moduleConfiguration.getProject());
+        VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
+        if (sourceFile != null) {
+            recreate(sourceFile, CliType.make);
+        }
     }
 
     @Nullable
@@ -48,10 +55,10 @@ public final class BsCompiler implements CompilerLifecycle {
     }
 
     @Nullable
-    public ProcessHandler recreate(CliType cliType) {
+    public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
         try {
             killIt();
-            GeneralCommandLine cli = getGeneralCommandLine(cliType);
+            GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
             if (cli != null) {
                 m_bsb = new KillableColoredProcessHandler(cli);
                 if (m_outputListener != null) {
@@ -81,13 +88,13 @@ public final class BsCompiler implements CompilerLifecycle {
     }
 
     @Nullable
-    private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
-        String bsbPath = m_moduleConfiguration.getBsbPath();
+    private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, CliType cliType) {
+        String bsbPath = m_moduleConfiguration.getBsbPath(sourceFile);
 
         if (bsbPath == null) {
             Notifications.Bus.notify(new RmlNotification("Bsb",
                     "<html>Can't find bsb.\n"
-                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir() + "'.\n"
+                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir(sourceFile) + "'.\n"
                             + "Be sure that bsb is installed and reachable from that directory, "
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
@@ -106,7 +113,7 @@ public final class BsCompiler implements CompilerLifecycle {
                 cli = new GeneralCommandLine(bsbPath);
 
         }
-        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir());
+        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir(sourceFile));
         return cli;
     }
 

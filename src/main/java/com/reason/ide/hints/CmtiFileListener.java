@@ -73,7 +73,7 @@ public class CmtiFileListener implements ProjectComponent {
         if (sourceFile == null) {
             m_log.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
         } else if (m_projectTracker.isOpen(sourceFile)) {
-            m_insightManager.queryTypes(path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
+            m_insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
         }
     }
 

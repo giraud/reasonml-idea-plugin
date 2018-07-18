@@ -91,23 +91,11 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     }
 
     @Override
-    public void queryTypes(@NotNull Path path, @NotNull ProcessTerminated runAfter) {
+    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated runAfter) {
         if (m_rincewindProcess != null && isDownloaded.get()) {
-            m_rincewindProcess.types(getRincewindFile().getPath(), path.toString(), runAfter);
+            m_rincewindProcess.types(sourceFile, getRincewindFile().getPath(), path.toString(), runAfter);
         } else if (m_queryTypes != null) {
-            m_queryTypes.types(path.toString(), runAfter);
-        }
-    }
-
-    @Override
-    public void queryTypes(@NotNull VirtualFile file, @NotNull ProcessTerminated runAfter) {
-        if (m_rincewindProcess != null && isDownloaded.get()) {
-            String canonicalPath = file.getCanonicalPath();
-            if (canonicalPath != null) {
-                m_rincewindProcess.types(getRincewindFile().getPath(), canonicalPath, runAfter);
-            }
-        } else if (m_queryTypes != null) {
-            m_queryTypes.types(file, runAfter);
+            m_queryTypes.types(sourceFile, path.toString(), runAfter);
         }
     }
 

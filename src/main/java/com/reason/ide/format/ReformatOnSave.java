@@ -3,6 +3,7 @@ package com.reason.ide.format;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
@@ -26,9 +27,12 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
     public void beforeDocumentSaving(@NotNull Document document) {
         if (m_bs.isRefmtOnSaveEnabled()) {
             PsiFile file = m_documentManager.getPsiFile(document);
-            String format = ReformatUtil.getFormat(file);
-            if (format != null) {
-                m_bs.refmt(format, document);
+            if (file != null) {
+                VirtualFile virtualFile = file.getVirtualFile();
+                String format = ReformatUtil.getFormat(file);
+                if (format != null) {
+                    m_bs.refmt(virtualFile, format, document);
+                }
             }
         }
     }

@@ -25,11 +25,11 @@ public class BsQueryTypesService {
         m_log = Logger.getInstance("ReasonML.types");
     }
 
-    public void types(@NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
-        InferredTypesImplementation result = null;
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+        InferredTypesImplementation result;
 
-        String basePath = m_moduleConfiguration.getBasePath();
-        String bscPath = m_moduleConfiguration.getBscPath();
+        String basePath = m_moduleConfiguration.getBasePath(sourceFile);
+        String bscPath = m_moduleConfiguration.getBscPath(sourceFile);
         if (bscPath == null) {
             return;
         }
@@ -76,9 +76,5 @@ public class BsQueryTypesService {
                 bsc.destroy();
             }
         }
-    }
-
-    public void types(@NotNull VirtualFile cmiFile, @NotNull InsightManager.ProcessTerminated runAfter) {
-        types(cmiFile.getPath(), runAfter);
     }
 }

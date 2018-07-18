@@ -3,6 +3,7 @@ package com.reason.hints;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
@@ -21,12 +22,12 @@ public class RincewindProcess {
 
     RincewindProcess(@NotNull ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
-        m_log = Logger.getInstance("ReasonML.types");
+        m_log = Logger.getInstance("ReasonML.types.rincewind");
     }
 
-    public void types(@NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(m_moduleConfiguration.getBasePath()));
+        processBuilder.directory(new File(m_moduleConfiguration.getBasePath(sourceFile)));
 
         Process rincewind = null;
         try {

@@ -48,7 +48,7 @@ public class InferredTypesService {
                     if (cmtiPath == null) {
                         LOG.warn("can't find file " + FileManager.pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt()));
                     } else {
-                        insightManager.queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
+                        insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtiPath.getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }
                 }
             }

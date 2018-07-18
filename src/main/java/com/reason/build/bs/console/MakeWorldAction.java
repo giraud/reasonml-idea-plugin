@@ -6,6 +6,8 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.bs.compiler.BsCompiler;
@@ -28,11 +30,15 @@ public class MakeWorldAction extends DumbAwareAction {
         Bucklescript bucklescript = BucklescriptManager.getInstance(m_project);
         BsCompiler bsc = bucklescript.getOrCreateCompiler();
         if (bsc != null) {
-            ProcessHandler bscProcess = bsc.recreate(CliType.cleanMake);
-            if (bscProcess != null) {
-                m_console.attachToProcess(bscProcess);
-                bsc.startNotify();
-                InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+            VirtualFile baseRoot = Platform.findBaseRoot(m_project);
+            VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
+            if (sourceFile != null) {
+                ProcessHandler bscProcess = bsc.recreate(sourceFile, CliType.cleanMake);
+                if (bscProcess != null) {
+                    m_console.attachToProcess(bscProcess);
+                    bsc.startNotify();
+                    InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+                }
             }
         }
     }

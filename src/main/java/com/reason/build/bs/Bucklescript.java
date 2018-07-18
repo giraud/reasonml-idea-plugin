@@ -22,7 +22,7 @@ public interface Bucklescript extends Compiler {
 
     void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
 
-    void refmt(@NotNull String format, @NotNull Document document);
+    void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document);
 
     boolean isRefmtOnSaveEnabled();
 }

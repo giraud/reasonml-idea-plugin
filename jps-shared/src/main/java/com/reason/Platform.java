@@ -65,7 +65,7 @@ public class Platform {
             parent = parent.getParent();
             child = parent.findChild("bsconfig.json");
             if (parent.equals(baseDir)) {
-                throw new RuntimeException("problem when trying to find bsconfig.json, nothing found for " + sourceFile);
+                break;
             }
         }
 
@@ -73,18 +73,18 @@ public class Platform {
     }
 
     @Nullable
-    public static String getBinaryPath(@NotNull Project project, @Nullable String binary) {
-        if (binary == null) {
+    public static String getBinaryPath(@NotNull Project project, @NotNull VirtualFile sourceFile, @Nullable String relativeBinaryPath) {
+        if (relativeBinaryPath == null) {
             return null;
         }
 
-        File file = new File(binary);
+        File file = new File(relativeBinaryPath);
         if (file.isAbsolute()) {
-            return file.exists() ? binary : null;
+            return file.exists() ? relativeBinaryPath : null;
         }
 
-        VirtualFile baseDir = Platform.findBaseRoot(project);
-        VirtualFile absoluteBinary = baseDir.findFileByRelativePath(binary);
+        VirtualFile baseDir = Platform.findBaseRootFromFile(project, sourceFile);
+        VirtualFile absoluteBinary = baseDir.findFileByRelativePath(relativeBinaryPath);
 
         return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
     }

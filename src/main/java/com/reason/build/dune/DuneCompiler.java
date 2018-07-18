@@ -7,6 +7,8 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.RmlNotification;
@@ -85,7 +87,8 @@ public final class DuneCompiler implements CompilerLifecycle {
 
         GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
         //cli.withEnvironment("PATH", sdk.getHomePath() + "/bin" + ";" + sdk.getHomePath() + "/lib");
-        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir());
+        VirtualFile baseRoot = Platform.findBaseRoot(m_moduleConfiguration.getProject());
+        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir(baseRoot));
 
         return cli;
     }

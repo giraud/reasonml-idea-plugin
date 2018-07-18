@@ -252,6 +252,7 @@ public final class PsiFinder {
 
             for (VirtualFile virtualFile : ociFiles) {
                 if (bucklescript.isDependency(virtualFile)) {
+
                     files.put(virtualFile.getName(), (FileBase) psiManager.findFile(virtualFile));
                 }
             }

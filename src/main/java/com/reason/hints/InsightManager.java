@@ -24,8 +24,6 @@ public interface InsightManager {
     @NotNull
     File getRincewindFile();
 
-    void queryTypes(@NotNull Path path, @NotNull ProcessTerminated callback);
-
-    void queryTypes(@NotNull VirtualFile file, @NotNull ProcessTerminated callback);
+    void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated callback);
 
 }

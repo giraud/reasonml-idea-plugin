@@ -21,7 +21,7 @@ public class ReformatAction extends AnAction {
             if (format != null) {
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {
-                    BucklescriptManager.getInstance(project).refmt(format, document);
+                    BucklescriptManager.getInstance(project).refmt(file.getVirtualFile(), format, document);
                 }
             }
         }

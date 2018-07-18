@@ -2,6 +2,7 @@ package com.reason.build.bs.refmt;
 
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -22,12 +23,12 @@ public class RefmtProcess {
         return m_moduleConfiguration.isOnSaveEnabled();
     }
 
-    public String run(@NotNull String format, @NotNull String code) {
-        return convert(format, format, code);
+    public String run(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull String code) {
+        return convert(sourceFile, format, format, code);
     }
 
-    public String convert(@NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
-        String refmtPath = m_moduleConfiguration.getRefmtPath();
+    public String convert(@NotNull VirtualFile sourceFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
+        String refmtPath = m_moduleConfiguration.getRefmtPath(sourceFile);
         if (refmtPath == null) {
             return code;
         }
