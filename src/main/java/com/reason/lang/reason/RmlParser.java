@@ -387,13 +387,10 @@ public class RmlParser extends CommonParser {
         IElementType nextTokenType = builder.rawLookup(1);
         if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
             // Surely a tag
-            // option is a ReasonML keyword but also a JSX keyword !
+            // Note that option is a ReasonML keyword but also a JSX keyword !
             builder.remapCurrentToken(m_types.TAG_LT);
             ParserScope tagScope = markCompleteScope(builder, startTag, m_types.TAG_START, groupExpression, m_types.TAG_LT);
             state.add(tagScope);
-            if (state.isInScopeExpression()) {
-                state.addStart(tagScope);
-            }
 
             state.dontMove = advance(builder);
 

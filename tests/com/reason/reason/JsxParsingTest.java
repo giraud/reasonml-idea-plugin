@@ -3,10 +3,7 @@ package com.reason.reason;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiTagClose;
-import com.reason.lang.core.psi.PsiTagProperty;
-import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlParserDefinition;
 import com.reason.lang.reason.RmlTypes;
 
@@ -54,5 +51,10 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
         Collection<PsiTagProperty> props = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class);
         assertEquals(3, props.size());
+    }
+
+    public void testTagChaining() {
+        Collection<PsiModule> psiModules = moduleExpressions(parseCode("module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};", true));
+        assertEquals(2, psiModules.size());
     }
 }
