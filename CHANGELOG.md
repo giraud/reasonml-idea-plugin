@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.58.1
+
+- :bug: Fix #79 - IDE crash
+- :bux: Fix #77 - Show non-alphanumeric function names such as ">>=" in the structure panel
+            
 ## 0.58
 
 This release contains a big rewrite of how modules are referenced, it may break things that were working before (ex: find usages).
