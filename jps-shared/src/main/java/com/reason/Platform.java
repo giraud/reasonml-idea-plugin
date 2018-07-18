@@ -40,41 +40,8 @@ public class Platform {
         return "";
     }
 
-    //@Nullable
-    //private static String getBinary(String envVar, String propVar) {
-    //    Logger log = Logger.getInstance("ReasonML");
-    //
-    //    String binary = System.getProperty(propVar);
-    //    if (binary != null) {
-    //        log.info("Found '" + binary + "' in the property '" + propVar + "'");
-    //        return binary;
-    //    }
-    //
-    //    log.info("Property '" + envVar + "' not found, testing environment variable '" + propVar + "'");
-    //    binary = System.getenv(envVar);
-    //    if (binary != null) {
-    //        log.info("Found '" + binary + "' in the environment variable '" + envVar + "'");
-    //        return binary;
-    //    }
-    //
-    //    return null;
-    //}
-
-    //@NotNull
-    //public static String getBinary(String envVar, String propVar, @NotNull String defaultBinary) {
-    //    Logger log = Logger.getInstance("ReasonML");
-    //    log.info("Identifying '" + defaultBinary + "' binary");
-    //
-    //    String binary = getBinary(envVar, propVar);
-    //    if (binary != null) {
-    //        return binary;
-    //    }
-    //
-    //    log.warn("No '" + defaultBinary + "' found in environment or properties, use default one");
-    //    return defaultBinary;
-    //}
-
-    public static VirtualFile findBaseRoot(Project project) {
+    @NotNull
+    public static VirtualFile findBaseRoot(@NotNull Project project) {
         VirtualFile baseDir = m_baseDirs.get(project);
         if (baseDir == null) {
             baseDir = project.getBaseDir();
@@ -85,6 +52,24 @@ public class Platform {
             m_baseDirs.put(project, baseDir);
         }
         return baseDir;
+    }
+
+    // Iterate through parents until a bsConfig.json is found - must not be called for an OCaml project
+    @NotNull
+    public static VirtualFile findBaseRootFromFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFile baseDir = project.getBaseDir();
+
+        VirtualFile parent = sourceFile.getParent();
+        VirtualFile child = parent.findChild("bsconfig.json");
+        while (child == null) {
+            parent = parent.getParent();
+            child = parent.findChild("bsconfig.json");
+            if (parent.equals(baseDir)) {
+                throw new RuntimeException("problem when trying to find bsconfig.json, nothing found for " + sourceFile);
+            }
+        }
+
+        return parent;
     }
 
     @Nullable

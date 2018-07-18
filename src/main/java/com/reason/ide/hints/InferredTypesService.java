@@ -40,12 +40,13 @@ public class InferredTypesService {
                 Document document = selectedTextEditor.getDocument();
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
-                    InsightManager insightManager = project.getComponent(InsightManager.class);
-                    Path relativeRoot = getRelativeRoot(project);
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    VirtualFile cmtiPath = FileManager.fromSource(project, relativeRoot, sourceFile, insightManager.useCmt());
+                    InsightManager insightManager = project.getComponent(InsightManager.class);
+                    VirtualFile baseRoot = getBasePath(project, sourceFile);
+                    Path relativeBuildPath = getRelativeBuildPath(project);
+                    VirtualFile cmtiPath = FileManager.fromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt());
                     if (cmtiPath == null) {
-                        LOG.warn("can't find file [" + FileSystems.getDefault().getPath(Platform.findBaseRoot(project).getPath()) + "] " + FileManager.pathFromSource(project, relativeRoot, sourceFile, insightManager.useCmt()));
+                        LOG.warn("can't find file " + FileManager.pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt()));
                     } else {
                         insightManager.queryTypes(cmtiPath, types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                     }
@@ -98,9 +99,15 @@ public class InferredTypesService {
         return userData;
     }
 
-    private static Path getRelativeRoot(Project project) {
+    @NotNull
+    private static Path getRelativeBuildPath(@NotNull Project project) {
         FileSystem fileSystem = FileSystems.getDefault();
         return OCamlSDK.getSDK(project) == null ? fileSystem.getPath("lib", "bs") : fileSystem.getPath("_build", "default");
+    }
+
+    @NotNull
+    private static VirtualFile getBasePath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return OCamlSDK.getSDK(project) == null ? Platform.findBaseRootFromFile(project, sourceFile) : Platform.findBaseRoot(project);
     }
 
 }

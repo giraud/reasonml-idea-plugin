@@ -39,25 +39,22 @@ public class FileManager {
         return sourceFile;
     }
 
-    @Nullable
-    public static VirtualFile fromSource(@NotNull Project project, @NotNull Path relativeRoot, @NotNull VirtualFile sourceFile, boolean useCmt) {
-        Path path = pathFromSource(project, relativeRoot, sourceFile, useCmt);
-        String relativeCmiPath = separatorsToUnix(path.toString());
-        return Platform.findBaseRoot(project).findFileByRelativePath(relativeCmiPath);
-    }
-
-    public static Path pathFromSource(@NotNull Project project, @NotNull Path relativeRoot, @NotNull VirtualFile sourceFile, boolean useCmt) {
-        VirtualFile baseRoot = Platform.findBaseRoot(project);
-
-        Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-        Path relativePath = basePath.relativize(new File(sourceFile.getPath()).toPath());
+    public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
+        Path relativePath = FileSystems.getDefault().getPath(baseRoot.getPath()).relativize(new File(sourceFile.getPath()).toPath());
         Path relativeParent = relativePath.getParent();
         if (relativeParent != null) {
-            relativeRoot = relativeRoot.resolve(relativeParent);
+            relativeBuildPath = relativeBuildPath.resolve(relativeParent);
         }
 
         String namespace = BucklescriptManager.getInstance(project).getNamespace();
-        return relativeRoot.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + (useCmt ? ".cmt" : ".cmi"));
+        return relativeBuildPath.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + (useCmt ? ".cmt" : ".cmi"));
+    }
+
+    @Nullable
+    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
+        Path path = pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, useCmt);
+        String relativeCmiPath = separatorsToUnix(path.toString());
+        return baseRoot.findFileByRelativePath(relativeCmiPath);
     }
 
     private static String separatorsToUnix(String path) {
