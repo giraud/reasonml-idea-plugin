@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import org.jetbrains.annotations.NotNull;
@@ -72,16 +73,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     public TreeElement[] getChildren() {
         if (m_element instanceof FileBase) {
             List<TreeElement> treeElements = new ArrayList<>();
-
-            m_element.acceptChildren(new PsiElementVisitor() {
-                @Override
-                public void visitElement(PsiElement element) {
-                    if (element instanceof PsiStructuredElement) {
-                        treeElements.add(new StructureViewElement(element));
-                    }
-                }
-            });
-
+            m_element.acceptChildren(new ElementVisitor(treeElements));
             return treeElements.toArray(new TreeElement[0]);
         } else if (m_element instanceof PsiModule) {
             List<TreeElement> treeElements = buildModuleStructure((PsiModule) m_element);
@@ -96,22 +88,37 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     private List<TreeElement> buildModuleStructure(PsiModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
+
         PsiElement rootElement = moduleElement.getSignature();
         if (rootElement == null) {
             rootElement = moduleElement.getBody();
         }
 
         if (rootElement != null) {
-            rootElement.acceptChildren(new PsiElementVisitor() {
-                @Override
-                public void visitElement(PsiElement element) {
-                    if (element instanceof PsiStructuredElement) {
-                        treeElements.add(new StructureViewElement(element));
-                    }
-                }
-            });
+            rootElement.acceptChildren(new ElementVisitor(treeElements));
         }
 
         return treeElements;
     }
+
+    static class ElementVisitor extends PsiElementVisitor {
+        private final List<TreeElement> m_treeElements;
+
+        ElementVisitor(List<TreeElement> elements) {
+            m_treeElements = elements;
+        }
+
+        @Override
+        public void visitElement(PsiElement element) {
+            if (element instanceof PsiLet) {
+                PsiLet let = (PsiLet) element;
+                if (let.getName() != null && !let.getName().isEmpty()) {
+                    m_treeElements.add(new StructureViewElement(element));
+                }
+            } else if (element instanceof PsiStructuredElement) {
+                m_treeElements.add(new StructureViewElement(element));
+            }
+        }
+    }
+
 }

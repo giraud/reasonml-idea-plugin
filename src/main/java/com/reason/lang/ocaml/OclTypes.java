@@ -31,6 +31,7 @@ public class OclTypes extends MlTypes {
         LET_BINDING = new MlCompositeElementType("LET_BINDING", OclLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new MlCompositeElementType("TYPE_CONSTR_NAME", OclLanguage.INSTANCE);
         TYPE_BINDING = new MlCompositeElementType("TYPE_BINDING", OclLanguage.INSTANCE);
+        MATCH_EXPR = new MlCompositeElementType("MATCH_EXPR", OclLanguage.INSTANCE);
         PATTERN_MATCH_EXPR = new MlCompositeElementType("PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
         SCOPED_EXPR = new MlCompositeElementType("SCOPED_EXPR", OclLanguage.INSTANCE);
         SIG_SCOPE = new MlCompositeElementType("SIG_SCOPE", OclLanguage.INSTANCE);

@@ -47,10 +47,11 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return findChildByClass(PsiLowerSymbol.class);
     }
 
+    @Nullable
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE ? "" : nameIdentifier.getText();
     }
 
     @Override

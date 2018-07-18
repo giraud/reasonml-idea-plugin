@@ -6,6 +6,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.ocaml.OclParserDefinition;
 
 public class MatchTryParsingTest extends BaseParsingTestCase {
@@ -20,6 +22,12 @@ public class MatchTryParsingTest extends BaseParsingTestCase {
         PsiLet let = first(letExpressions(psiFile));
         assertTrue(let.isFunction());
         PsiFunction function = PsiTreeUtil.findChildOfType(let, PsiFunction.class);
+    }
+
+    public void testMatchExpr() {
+        PsiLet let = first(letExpressions(parseCode("let _ = match c with | VtMeta -> let _ = x", true)));
+        PsiLetBinding binding = let.getBinding();
+        assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiSwitch.class));
     }
 
     public void testTryIn() {
