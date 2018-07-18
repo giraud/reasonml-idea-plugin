@@ -1,12 +1,8 @@
 package com.reason.build.dune;
 
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,6 +13,10 @@ import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.files.FileHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class DuneManager implements Compiler, ProjectComponent {
 
@@ -46,13 +46,13 @@ public class DuneManager implements Compiler, ProjectComponent {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(@NotNull VirtualFile bsconfigFile) {
         // Nothing to do
     }
 
     @Override
-    public void run(@Nullable FileType fileType) {
-        if (m_compiler != null && FileHelper.isCompilable(fileType)) {
+    public void run(@Nullable VirtualFile file) {
+        if (m_compiler != null && FileHelper.isCompilable(file.getFileType())) {
             if (m_compiler.start()) {
                 ProcessHandler recreate = m_compiler.recreate();
                 if (recreate != null) {

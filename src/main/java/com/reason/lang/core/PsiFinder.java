@@ -75,7 +75,7 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keepFile && bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                if (keepFile && bucklescript.isDependency(virtualFile)) {
                     m_debug.debug("       keep", module);
                     inConfig.put(module.getQualifiedName(), module);
                 } else {
@@ -161,7 +161,7 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keepFile && bucklescript.isDependency(virtualFile.getCanonicalPath())) {
+                if (keepFile && bucklescript.isDependency(virtualFile)) {
                     m_debug.debug("    keep (in config)", item);
                     inConfig.put(item.getQualifiedName(), item);
                 }
@@ -200,7 +200,7 @@ public final class PsiFinder {
         if (0 < filesByName.length) {
             m_debug.debug("  found", filesByName);
             for (PsiFile file : filesByName) {
-                if (file instanceof FileBase && bucklescript.isDependency(file)) {
+                if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
                     result = (FileBase) file;
                     m_debug.debug("  resolved to", (FileBase) file);
                     break;
@@ -212,7 +212,7 @@ public final class PsiFinder {
             // retry with lower case name
             filesByName = FilenameIndex.getFilesByName(project, PsiUtil.moduleNameToFileName(name) + "." + ext, scope);
             for (PsiFile file : filesByName) {
-                if (file instanceof FileBase && bucklescript.isDependency(file)) {
+                if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
                     result = (FileBase) file;
                     m_debug.debug("  resolved to", (FileBase) file);
                     break;
@@ -245,16 +245,14 @@ public final class PsiFinder {
             ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension(), searchScope);
 
             for (VirtualFile virtualFile : rmiFiles) {
-                PsiFile file = psiManager.findFile(virtualFile);
-                if (bucklescript.isDependency(file)) {
-                    files.put(virtualFile.getName(), (FileBase) file);
+                if (bucklescript.isDependency(virtualFile)) {
+                    files.put(virtualFile.getName(), (FileBase) psiManager.findFile(virtualFile));
                 }
             }
 
             for (VirtualFile virtualFile : ociFiles) {
-                PsiFile file = psiManager.findFile(virtualFile);
-                if (bucklescript.isDependency(file)) {
-                    files.put(virtualFile.getName(), (FileBase) file);
+                if (bucklescript.isDependency(virtualFile)) {
+                    files.put(virtualFile.getName(), (FileBase) psiManager.findFile(virtualFile));
                 }
             }
 
@@ -277,7 +275,7 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keep && file instanceof FileBase && bucklescript.isDependency(file)) {
+                if (keep && file instanceof FileBase && bucklescript.isDependency(virtualFile)) {
                     result.put(virtualFile.getName(), (FileBase) file);
                 }
             }
@@ -293,7 +291,7 @@ public final class PsiFinder {
                     }
                 }
 
-                if (keep && file instanceof FileBase && bucklescript.isDependency(file)) {
+                if (keep && file instanceof FileBase && bucklescript.isDependency(virtualFile)) {
                     result.put(file.getName(), (FileBase) file);
                 }
             }

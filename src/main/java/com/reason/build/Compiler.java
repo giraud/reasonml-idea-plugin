@@ -1,11 +1,12 @@
 package com.reason.build;
 
-import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 
 public interface Compiler {
 
-    void refresh();
+    void refresh(@NotNull VirtualFile bsconfigFile);
 
-    void run(FileType fileType);
+    void run(@NotNull VirtualFile file);
 
 }

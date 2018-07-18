@@ -52,7 +52,7 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
         if (fileType instanceof JsonFileType) {
             if (file.getName().equals("bsconfig.json")) {
                 if (m_compiler != null) {
-                    m_compiler.refresh();
+                    m_compiler.refresh(file);
                 }
                 m_insightManager.downloadRincewindIfNeeded();
             }
@@ -63,14 +63,14 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
         } else if (fileType instanceof CmtFileType) {
             m_cmtiFileListener.onChange(file);
         } else if (event.isFromSave() && m_compiler != null) {
-            m_compiler.run(fileType);
+            m_compiler.run(file);
         }
     }
 
     @Override
     public void fileCreated(@NotNull VirtualFileEvent event) {
         if (m_compiler != null) {
-            m_compiler.run(event.getFile().getFileType());
+            m_compiler.run(event.getFile());
         }
     }
 
@@ -84,14 +84,14 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
     @Override
     public void fileMoved(@NotNull VirtualFileMoveEvent event) {
         if (m_compiler != null) {
-            m_compiler.run(event.getFile().getFileType());
+            m_compiler.run(event.getFile());
         }
     }
 
     @Override
     public void fileCopied(@NotNull VirtualFileCopyEvent event) {
         if (m_compiler != null) {
-            m_compiler.run(event.getFile().getFileType());
+            m_compiler.run(event.getFile());
         }
     }
 

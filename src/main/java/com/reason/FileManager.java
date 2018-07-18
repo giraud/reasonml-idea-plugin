@@ -16,9 +16,9 @@ public class FileManager {
     }
 
     @NotNull
-    public static String toRelativeSourceName(@NotNull Project project, @NotNull Path relativePath) {
+    public static String toRelativeSourceName(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull Path relativePath) {
         String sourcePath = relativePath.toString();
-        String namespace = BucklescriptManager.getInstance(project).getNamespace();
+        String namespace = BucklescriptManager.getInstance(project).getNamespace(sourceFile);
         if (!namespace.isEmpty()) {
             sourcePath = sourcePath.replace("-" + namespace, "");
         }
@@ -27,8 +27,8 @@ public class FileManager {
     }
 
     @Nullable
-    public static VirtualFile toSource(@NotNull Project project, @NotNull Path relativeCmi) {
-        String relativeSource = separatorsToUnix(toRelativeSourceName(project, relativeCmi));
+    public static VirtualFile toSource(@NotNull Project project, @NotNull VirtualFile cmxFile, @NotNull Path relativeCmi) {
+        String relativeSource = separatorsToUnix(toRelativeSourceName(project, cmxFile, relativeCmi));
         VirtualFile sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
 
         if (sourceFile == null) {
@@ -46,7 +46,7 @@ public class FileManager {
             relativeBuildPath = relativeBuildPath.resolve(relativeParent);
         }
 
-        String namespace = BucklescriptManager.getInstance(project).getNamespace();
+        String namespace = BucklescriptManager.getInstance(project).getNamespace(sourceFile);
         return relativeBuildPath.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + (useCmt ? ".cmt" : ".cmi"));
     }
 

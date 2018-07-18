@@ -101,4 +101,10 @@ public class Platform {
     public static String removeProjectDir(Project project, @Nullable VirtualFile file) {
         return file == null ? "" : removeProjectDir(project, file.getPath());
     }
+
+    @Nullable
+    public static VirtualFile findBsConfigFromFile(@NotNull Project project, @NotNull VirtualFile file) {
+        VirtualFile baseRoot = Platform.findBaseRootFromFile(project, file);
+        return baseRoot.findFileByRelativePath("bsconfig.json");
+    }
 }

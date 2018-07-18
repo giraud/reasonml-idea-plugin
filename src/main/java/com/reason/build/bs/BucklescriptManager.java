@@ -1,9 +1,5 @@
 package com.reason.build.bs;
 
-import java.io.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
@@ -11,13 +7,11 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiFile;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.bs.compiler.BsCompiler;
@@ -25,6 +19,13 @@ import com.reason.build.bs.compiler.CliType;
 import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.FileHelper;
+import gnu.trove.THashMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.util.Map;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
@@ -32,8 +33,8 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     private final Project m_project;
 
-    @Nullable
-    private BsConfig m_config;
+    boolean m_disabled;
+    Map<String, BsConfig> m_configs = new THashMap<>();
     @Nullable
     private BsCompiler m_compiler;
     @Nullable
@@ -69,22 +70,16 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void projectOpened() {
-        VirtualFile baseDir = Platform.findBaseRoot(m_project);
-        VirtualFile bsconfig = baseDir.findChild("bsconfig.json");
-
-        boolean disabled = Boolean.getBoolean("reasonBsbDisabled");
-        if (disabled) {
+        m_disabled = Boolean.getBoolean("reasonBsbDisabled");
+        if (m_disabled) {
             // But you should NEVER do that
             Notifications.Bus.notify(new RmlNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
             return;
         }
 
-        if (bsconfig != null) {
-            ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
-            m_config = BsConfig.read(bsconfig);
-            m_compiler = new BsCompiler(moduleConfiguration);
-            m_refmt = new RefmtProcess(moduleConfiguration);
-        }
+        ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
+        m_compiler = new BsCompiler(moduleConfiguration);
+        m_refmt = new RefmtProcess(moduleConfiguration);
     }
 
     @Override
@@ -92,8 +87,8 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         if (m_compiler != null) {
             m_compiler.killIt();
         }
-        m_config = null;
         m_compiler = null;
+        m_refmt = null;
     }
 
     @Nullable
@@ -115,41 +110,62 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @NotNull
     @Override
-    public String getNamespace() {
-        return m_config == null ? "" : m_config.getNamespace();
+    public String getNamespace(@NotNull VirtualFile sourceFile) {
+        VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
+        if (bsConfigFile != null) {
+            BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
+            return bsConfig.getNamespace();
+        }
+        return "";
+    }
+
+    //region Compiler
+    @Override
+    public void refresh(@NotNull VirtualFile bsconfigFile) {
+        BsConfig updatedConfig = BsConfig.read(bsconfigFile);
+        m_configs.put(bsconfigFile.getCanonicalPath(), updatedConfig);
     }
 
     @Override
-    public void run(FileType fileType) {
-        if (m_compiler != null && FileHelper.isCompilable(fileType)) {
-            if (m_compiler.start()) {
-                ProcessHandler recreate = m_compiler.recreate(CliType.standard);
-                if (recreate != null) {
-                    getBsbConsole().attachToProcess(recreate);
-                    m_compiler.startNotify();
-                } else {
-                    m_compiler.terminated();
+    public void run(@NotNull VirtualFile file) {
+        if (!m_disabled && m_compiler != null && FileHelper.isCompilable(file.getFileType())) {
+            VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, file);
+            if (bsConfigFile != null) {
+                getOrRefreshBsConfig(bsConfigFile);
+
+                if (m_compiler.start()) {
+                    ProcessHandler recreate = m_compiler.recreate(CliType.standard);
+                    if (recreate != null) {
+                        getBsbConsole().attachToProcess(recreate);
+                        m_compiler.startNotify();
+                    } else {
+                        m_compiler.terminated();
+                    }
                 }
             }
         }
     }
 
-    @Override
-    public boolean isDependency(@Nullable String path) {
-        return m_config == null || m_config.accept(path);
-    }
-
-    @Override
-    public boolean isDependency(@Nullable PsiFile file) {
-        return file != null && (m_config == null || m_config.accept(file.getVirtualFile().getCanonicalPath()));
-    }
-
-    @Override
-    public void refresh() {
-        VirtualFile bsconfig = Platform.findBaseRoot(m_project).findChild("bsconfig.json");
-        if (bsconfig != null) {
-            m_config = BsConfig.read(bsconfig);
+    @NotNull
+    private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
+        String bsConfigPath = bsConfigFile.getCanonicalPath();
+        BsConfig bsConfig = m_configs.get(bsConfigPath);
+        if (bsConfig == null) {
+            refresh(bsConfigFile);
+            bsConfig = m_configs.get(bsConfigPath);
         }
+        return bsConfig;
+    }
+    //endregion
+
+    @Override
+    public boolean isDependency(@Nullable VirtualFile file) {
+        if (file == null) {
+            return false;
+        }
+
+        VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, file);
+        return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getCanonicalPath());
     }
 
     @Override

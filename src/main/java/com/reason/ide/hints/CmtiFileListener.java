@@ -69,9 +69,9 @@ public class CmtiFileListener implements ProjectComponent {
 
         m_log.info("Detected change on file " + relativeCmti + ", reading types");
 
-        VirtualFile sourceFile = FileManager.toSource(m_project, relativeCmti);
+        VirtualFile sourceFile = FileManager.toSource(m_project, file, relativeCmti);
         if (sourceFile == null) {
-            m_log.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, relativeCmti));
+            m_log.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
         } else if (m_projectTracker.isOpen(sourceFile)) {
             m_insightManager.queryTypes(path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
         }
