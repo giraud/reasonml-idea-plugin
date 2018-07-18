@@ -26,7 +26,7 @@ public class OclParser extends CommonParser {
 
         int c = current_position_(builder);
         while (true) {
-            state.previousTokenType = tokenType;
+            state.previousTokenElementType = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
@@ -40,6 +40,8 @@ public class OclParser extends CommonParser {
                 parseEnd(builder, state);
             } else if (tokenType == m_types.UNDERSCORE) {
                 parseUnderscore(builder, state);
+            } else if (tokenType == m_types.RIGHT_ARROW) {
+                parseRightArrow(builder, state);
             } else if (tokenType == m_types.PIPE) {
                 parsePipe(builder, state);
             } else if (tokenType == m_types.EQ) {
@@ -123,6 +125,12 @@ public class OclParser extends CommonParser {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseRightArrow(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(patternMatch)) {
+            state.add(markScope(builder, patternMatchBody, m_types.SCOPED_EXPR, groupExpression, null));
         }
     }
 
@@ -327,7 +335,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
+        if (state.isResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.setCurrentResolution(localOpen);
             state.setCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.setComplete();
@@ -459,7 +467,7 @@ public class OclParser extends CommonParser {
         } else if (state.isResolution(module)) {
             // Module definition
             state.setCurrentResolution(moduleNamed);
-        } else if ((state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) || state.isResolution(typeNamedEq)) {
+        } else if ((state.isResolution(typeNamedEqVariant) && state.previousTokenElementType == m_types.PIPE) || state.isResolution(typeNamedEq)) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
         } else {
             if (!state.isResolution(modulePath)) {
@@ -509,7 +517,11 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLet(PsiBuilder builder, ParserState state) {
-        if (state.previousTokenType != m_types.EQ && state.previousTokenType != m_types.IN && state.previousTokenType != m_types.TRY) {
+        boolean shouldStart = state.previousTokenElementType != m_types.EQ &&
+                state.previousTokenElementType != m_types.IN &&
+                state.previousTokenElementType != m_types.TRY &&
+                (!state.isResolution(patternMatchBody) || state.previousTokenElementType != m_types.RIGHT_ARROW);
+        if (shouldStart) {
             endLikeSemi(state);
         }
         state.addStart(mark(builder, let, m_types.LET_STMT));

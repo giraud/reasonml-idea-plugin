@@ -29,7 +29,7 @@ public class DuneParser extends CommonParser {
             //break;
             //}
 
-            state.previousTokenType = tokenType;
+            state.previousTokenElementType = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
@@ -105,7 +105,7 @@ public class DuneParser extends CommonParser {
 
     /* (name id) */
     private void parseName(PsiBuilder builder, ParserState state) {
-        if (state.previousTokenType == DuneTypes.LPAREN) {
+        if (state.previousTokenElementType == DuneTypes.LPAREN) {
             state.setCurrentResolution(name);
             state.setTokenElementType(DuneTypes.NAME);
             state.setComplete();

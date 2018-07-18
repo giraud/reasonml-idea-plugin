@@ -33,7 +33,7 @@ public class RmlParser extends CommonParser {
             //break;
             //}
 
-            state.previousTokenType = tokenType;
+            state.previousTokenElementType = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
@@ -454,7 +454,7 @@ public class RmlParser extends CommonParser {
             state.setCurrentResolution(letNamed);
             state.setComplete();
         } else if (state.isResolution(letNamedEq)) {
-            if (state.previousTokenType == m_types.EQ) {
+            if (state.previousTokenElementType == m_types.EQ) {
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
@@ -544,7 +544,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(modulePath) && state.previousTokenType == m_types.DOT) {
+        if (state.isResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.setCurrentResolution(localOpen);
             state.setCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.setComplete();
@@ -655,10 +655,10 @@ public class RmlParser extends CommonParser {
             state.setComplete();
         } else if (state.isResolution(module)) {
             state.setCurrentResolution(moduleNamed);
-        } else if ((state.isResolution(startTag) || state.isResolution(closeTag)) && state.previousTokenType == m_types.DOT) {
+        } else if ((state.isResolution(startTag) || state.isResolution(closeTag)) && state.previousTokenElementType == m_types.DOT) {
             // a namespaced custom component
             builder.remapCurrentToken(m_types.TAG_NAME);
-        } else if (state.isResolution(typeNamedEqVariant) && state.previousTokenType == m_types.PIPE) {
+        } else if (state.isResolution(typeNamedEqVariant) && state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
         } else {
             if (shouldStartExpression(state)) {

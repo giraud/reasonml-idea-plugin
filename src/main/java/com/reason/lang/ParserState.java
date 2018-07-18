@@ -11,7 +11,7 @@ import static com.reason.lang.ParserScopeType.scopeExpression;
 public class ParserState {
 
     public boolean dontMove = false;
-    public IElementType previousTokenType;
+    public IElementType previousTokenElementType;
 
     private final ParserScope m_rootScope;
     private final Stack<ParserScope> m_scopes = new Stack<>();

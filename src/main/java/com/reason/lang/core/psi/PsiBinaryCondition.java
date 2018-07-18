@@ -13,4 +13,9 @@ public class PsiBinaryCondition extends ASTWrapperPsiElement {
     public boolean canNavigate() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Binary condition";
+    }
 }

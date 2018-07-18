@@ -14,4 +14,8 @@ public class PsiPatternMatch extends ASTWrapperPsiElement {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "Pattern match";
+    }
 }

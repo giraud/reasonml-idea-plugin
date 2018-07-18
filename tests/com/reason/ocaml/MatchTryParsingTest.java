@@ -25,7 +25,11 @@ public class MatchTryParsingTest extends BaseParsingTestCase {
     }
 
     public void testMatchExpr() {
-        PsiLet let = first(letExpressions(parseCode("let _ = match c with | VtMeta -> let _ = x", true)));
+        PsiFile psiFileModule = parseCode("let _ = match c with | VtMeta -> let _ = x");
+        PsiElement[] children = psiFileModule.getChildren();
+        assertEquals(1, children.length);
+
+        PsiLet let = first(letExpressions(psiFileModule));
         PsiLetBinding binding = let.getBinding();
         assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiSwitch.class));
     }
