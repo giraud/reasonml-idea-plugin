@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.59
+
+- :rocket: [#71](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/71) Monorepo with multiple bs projects
+- :nail_care: ![o](resources/icons/ocaml-file.png) 'let _' is not shown in the structure panel
+- :bug: Fix (again) property completion in JSX after rework on references has been done
+
 ## 0.58.1
 
 - :bug: Fix #79 - IDE crash

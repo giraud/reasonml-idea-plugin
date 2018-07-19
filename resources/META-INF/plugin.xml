@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.58.1</version>
+    <version>0.59</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,9 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Fix #79 - IDE crash</li>
-            <li>Fix #77 - Show non-alphanumeric function names such as ">>=" in the structure panel</li>
+           <li>#71 - Monorepo with multiple bs projects</li>
+           <li>'let _' is not shown in the structure panel</li>
+           <li>Fix (again) property completion in JSX after rework on references has been done</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
