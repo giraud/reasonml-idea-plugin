@@ -5,7 +5,9 @@ public enum ParserScopeEnum {
 
     open,
     include,
+
     localOpen,
+    localOpenScope,
 
     external,
     externalNamed,

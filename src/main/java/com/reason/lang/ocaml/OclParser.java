@@ -339,7 +339,7 @@ public class OclParser extends CommonParser {
             state.setCurrentResolution(localOpen);
             state.setCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.setComplete();
-            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
+            state.add(markScope(builder, localOpenScope, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else if (state.isResolution(external)) {
             // overloading an operator
             state.setCurrentResolution(externalNamed);
@@ -348,12 +348,13 @@ public class OclParser extends CommonParser {
             // overloading an operator
             state.setCurrentResolution(valNamed);
             state.setComplete();
-        }
+        } else {
+            if (!state.isResolution(assert_)) {
+                state.endAny();
+            }
 
-        if (!state.isResolution(assert_)) {
-            state.endAny();
+            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         }
-        state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
     }
 
     private void parseRParen(PsiBuilder builder, ParserState state) {
