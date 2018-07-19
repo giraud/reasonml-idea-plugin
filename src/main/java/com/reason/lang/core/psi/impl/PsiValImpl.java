@@ -41,7 +41,7 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
     @Override
     public PsiElement getNameIdentifier() {
         Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(this, PsiLowerSymbol.class, PsiScopedExpr.class);
-        return elements.iterator().next();
+        return elements.isEmpty() ? null : elements.iterator().next();
     }
 
     @Override

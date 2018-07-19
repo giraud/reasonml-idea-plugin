@@ -3,6 +3,7 @@ package com.reason.lang;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.Stack;
 import com.reason.lang.core.psi.type.MlTokenElementType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.reason.lang.ParserScopeType.any;
@@ -101,7 +102,7 @@ public class ParserState {
         return currentScope.resolution != scope;
     }
 
-    public void setComplete() {
+    public void complete() {
         currentScope.complete = true;
     }
 
@@ -158,8 +159,10 @@ public class ParserState {
         return currentScope.isScopeTokenEqualTo(scopeTokenElementType);
     }
 
-    public void setCurrentResolution(ParserScopeEnum resolution) {
+    @NotNull
+    public ParserState currentResolution(@NotNull ParserScopeEnum resolution) {
         currentScope.resolution = resolution;
+        return this;
     }
 
     public boolean notInScopeExpression() {
@@ -182,12 +185,10 @@ public class ParserState {
         return scope != null && scope.start;
     }
 
-    public MlTokenElementType getCurrentScopeTokenType() {
-        return currentScope.getScopeTokenType();
-    }
-
-    public void setCurrentCompositeElementType(IElementType compositeElementType) {
-        currentScope.setCompositeElementType(compositeElementType);
+    @NotNull
+    public ParserState currentCompositeElementType(@NotNull IElementType compositeElementType) {
+        currentScope.compositeElementType(compositeElementType);
+        return this;
     }
 
     public boolean isCurrentTokenType(MlTokenElementType tokenElementType) {

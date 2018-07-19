@@ -34,6 +34,7 @@ public enum ParserScopeEnum {
     letNamedEq,
     letNamedParametersEq,
     letNamedSignature,
+    letNamedBinding,
 
     function,
     parameters,
@@ -99,5 +100,7 @@ public enum ParserScopeEnum {
     sexpr,
     library,
     executable,
-    name
+    maybeLetFunction,
+    maybeLetFunctionParameters,
+    valNamedSymbol, name
 }

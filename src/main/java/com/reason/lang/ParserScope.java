@@ -47,8 +47,14 @@ public class ParserScope {
         }
     }
 
-    public void complete() {
+    public ParserScope complete() {
         complete = true;
+        return this;
+    }
+
+    public ParserScope resolution(ParserScopeEnum resolution) {
+        this.resolution = resolution;
+        return this;
     }
 
     boolean isCompositeEqualTo(IElementType compositeElementType) {
@@ -67,7 +73,8 @@ public class ParserScope {
         return this.scopeTokenElementType;
     }
 
-    public void setCompositeElementType(IElementType compositeElementType) {
+    public ParserScope compositeElementType(IElementType compositeElementType) {
         this.compositeElementType = compositeElementType;
+        return this;
     }
 }

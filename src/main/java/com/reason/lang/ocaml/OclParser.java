@@ -136,8 +136,8 @@ public class OclParser extends CommonParser {
 
     private void parseUnderscore(PsiBuilder builder, ParserState state) {
         if (state.isResolution(let)) {
-            state.setCurrentResolution(letNamed);
-            state.setComplete();
+            state.currentResolution(letNamed);
+            state.complete();
         }
     }
 
@@ -227,7 +227,7 @@ public class OclParser extends CommonParser {
     private void parseSig(PsiBuilder builder, ParserState state) {
         if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedColon)) {
             state.endAny();
-            state.setCurrentResolution(moduleNamedSignature);
+            state.currentResolution(moduleNamedSignature);
             state.add(markScope(builder, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG));
         }
     }
@@ -235,7 +235,7 @@ public class OclParser extends CommonParser {
     private void parseSemi(PsiBuilder builder, ParserState state) {
         if (state.isResolution(recordField)) {
             // SEMI ends the field, and starts a new one
-            state.setComplete();
+            state.complete();
             state.popEnd();
             state.dontMove = advance(builder);
             state.add(mark(builder, recordField, m_types.RECORD_FIELD));
@@ -272,8 +272,8 @@ public class OclParser extends CommonParser {
 
     private void parseColon(PsiBuilder builder, ParserState state) { // :
         if (state.isResolution(moduleNamed)) {
-            state.setCurrentResolution(moduleNamedColon);
-            state.setComplete();
+            state.currentResolution(moduleNamedColon);
+            state.complete();
         } else if (state.isResolution(externalNamed)) {
             state.dontMove = advance(builder);
             state.add(markScope(builder, externalNamedSignature, m_types.SIG_SCOPE, groupExpression, m_types.SIG));
@@ -292,62 +292,56 @@ public class OclParser extends CommonParser {
     private void parseEq(PsiBuilder builder, ParserState state) { // =
         if (state.isResolution(typeNamed)) {
             state.popEnd();
-            state.setCurrentResolution(typeNamedEq);
+            state.currentResolution(typeNamedEq);
             state.dontMove = advance(builder);
             state.add(markCompleteScope(builder, typeNamedEq, m_types.TYPE_BINDING, groupExpression, null));
         } else if (state.isResolution(letNamed)) {
             ParserScopeEnum resolution = letNamedEq;
-            state.setCurrentResolution(resolution);
+            state.currentResolution(resolution);
             state.dontMove = advance(builder);
             state.add(markScope(builder, resolution, m_types.LET_BINDING, groupExpression, m_types.EQ));
-            state.setComplete();
+            state.complete();
         } else if (state.isResolution(tagProperty)) {
-            state.setCurrentResolution(tagPropertyEq);
+            state.currentResolution(tagPropertyEq);
         } else if (state.isResolution(moduleNamed)) {
-            state.setCurrentResolution(moduleNamedEq);
-            state.setComplete();
+            state.currentResolution(moduleNamedEq);
+            state.complete();
         } else if (state.isResolution(externalNamedSignature)) {
-            state.setComplete();
+            state.complete();
             state.endUntilStart();
             state.updateCurrentScope();
-        } else if (state.isResolution(genericExpression)) {
+        } else if (state.isResolution(maybeLetFunctionParameters)) {
             ParserScope innerScope = state.pop();
-            if (innerScope != null && state.isResolution(genericExpression)) {
-                // let's say this is a function definition
-                innerScope.resolution = parameters;
-                innerScope.setCompositeElementType(m_types.FUN_PARAMS);
-                innerScope.complete();
-                innerScope.end();
-                state.setCurrentResolution(function);
-                state.setCurrentCompositeElementType(m_types.FUN_EXPR);
-                state.setComplete();
+            if (innerScope != null) {
+                // This is a function definition, change the scopes
+                innerScope.resolution(parameters).compositeElementType(m_types.FUN_PARAMS).complete().end();
+                state.currentResolution(function).currentCompositeElementType(m_types.FUN_EXPR).complete();
                 state.dontMove = advance(builder);
-                state.add(markCompleteScope(builder, funBody, m_types.FUN_BODY, groupExpression, null));
+                state.add(markCompleteGroup(builder, funBody, m_types.FUN_BODY));
             }
         }
     }
 
     private void parseArrobase(PsiBuilder builder, ParserState parserState) {
         if (parserState.isResolution(annotation)) {
-            parserState.setComplete();
+            parserState.complete();
             parserState.add(markComplete(builder, annotationName, m_types.MACRO_NAME));
         }
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
-            state.setCurrentResolution(localOpen);
-            state.setCurrentCompositeElementType(m_types.LOCAL_OPEN);
-            state.setComplete();
+            state.currentResolution(localOpen);
+            state.currentCompositeElementType(m_types.LOCAL_OPEN);
+            state.complete();
             state.add(markScope(builder, localOpenScope, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else if (state.isResolution(external)) {
             // overloading an operator
-            state.setCurrentResolution(externalNamed);
-            state.setComplete();
+            state.currentResolution(externalNamed).complete();
         } else if (state.isResolution(val)) {
             // overloading an operator
-            state.setCurrentResolution(valNamed);
-            state.setComplete();
+            state.currentResolution(valNamed).complete();
+            state.add(markScope(builder, valNamedSymbol, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else {
             if (!state.isResolution(assert_)) {
                 state.endAny();
@@ -376,7 +370,7 @@ public class OclParser extends CommonParser {
 
     private void parseRBrace(PsiBuilder builder, ParserState state) {
         if (state.isResolution(recordField)) {
-            state.setComplete();
+            state.complete();
         }
 
         ParserScope scope = state.endUntilScopeExpression(m_types.LBRACE);
@@ -424,18 +418,18 @@ public class OclParser extends CommonParser {
         }
 
         if (state.isResolution(typeConstrName)) {
-            state.setCurrentResolution(typeNamed);
-            state.setComplete();
+            state.currentResolution(typeNamed);
+            state.complete();
             state.setPreviousComplete();
         } else if (state.isResolution(external)) {
-            state.setCurrentResolution(externalNamed);
-            state.setComplete();
+            state.currentResolution(externalNamed);
+            state.complete();
         } else if (state.isResolution(let)) {
-            state.setCurrentResolution(letNamed);
-            state.setComplete();
+            state.currentResolution(letNamed);
+            state.complete();
         } else if (state.isResolution(val)) {
-            state.setCurrentResolution(valNamed);
-            state.setComplete();
+            state.currentResolution(valNamed);
+            state.complete();
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
@@ -443,9 +437,10 @@ public class OclParser extends CommonParser {
         if (state.isResolution(letNamed)) {
             IElementType nextTokenType = builder.getTokenType();
             if (nextTokenType != m_types.EQ) {
+                state.add(markCompleteGroup(builder, letNamedBinding, m_types.LET_BINDING));
                 // add a generic marker: it may be a function + parameters
-                state.add(mark(builder, genericExpression, null));
-                state.add(mark(builder, genericExpression, null));
+                state.add(mark(builder, maybeLetFunction, null));
+                state.add(mark(builder, maybeLetFunctionParameters, null));
             }
         }
     }
@@ -457,17 +452,17 @@ public class OclParser extends CommonParser {
 
         if (state.isResolution(open)) {
             // It is a module name/path
-            state.setComplete();
+            state.complete();
         } else if (state.isResolution(include)) {
             // It is a module name/path
-            state.setComplete();
+            state.complete();
         } else if (state.isResolution(exception)) {
-            state.setComplete();
-            state.setCurrentResolution(exceptionNamed);
+            state.complete();
+            state.currentResolution(exceptionNamed);
             builder.remapCurrentToken(m_types.EXCEPTION_NAME);
         } else if (state.isResolution(module)) {
             // Module definition
-            state.setCurrentResolution(moduleNamed);
+            state.currentResolution(moduleNamed);
         } else if ((state.isResolution(typeNamedEqVariant) && state.previousTokenElementType == m_types.PIPE) || state.isResolution(typeNamedEq)) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
         } else {

@@ -8,6 +8,7 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.type.MlTokenElementType;
 import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
@@ -83,11 +84,16 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return scope;
     }
 
-    protected ParserScope markCompleteGroup(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
-        ParserScope scope = markScope(builder, resolution, compositeElementType, groupExpression, null);
+    protected ParserScope markGroup(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @Nullable MlTokenElementType scopeTokenElementType) {
+        return markScope(builder, resolution, compositeElementType, groupExpression, scopeTokenElementType);
+    }
+
+    protected ParserScope markCompleteGroup(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType) {
+        ParserScope scope = markGroup(builder, resolution, compositeElementType, null);
         scope.complete = true;
         return scope;
     }
+
 
     protected boolean advance(PsiBuilder builder) {
         builder.advanceLexer();

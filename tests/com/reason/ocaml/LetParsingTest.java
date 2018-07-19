@@ -33,7 +33,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetBindingWithFunction() {
-        PsiLet let = first(letExpressions(parseCode("let add x y = x + y", true)));
+        PsiLet let = first(letExpressions(parseCode("let add x y = x + y")));
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
