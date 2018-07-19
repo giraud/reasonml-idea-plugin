@@ -3,9 +3,12 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
@@ -76,9 +79,9 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
             }
         } else {
             // The tag is a custom component
-            PsiModule module = PsiFinder.getInstance().findRealFileModule(project, tagName.getText());
+            PsiQualifiedNamedElement module = PsiFinder.getInstance().findModuleFromQn(project, tagName.getText());
             if (module != null) {
-                Collection<PsiLet> expressions = module.getLetExpressions();
+                Collection<PsiLet> expressions = (module instanceof FileBase) ? PsiFileHelper.getLetExpressions((PsiFile) module) : ((PsiModule) module).getLetExpressions();
                 for (PsiLet expression : expressions) {
                     if ("make".equals(expression.getName())) {
                         PsiFunction function = expression.getFunction();

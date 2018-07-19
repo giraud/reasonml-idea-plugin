@@ -2,6 +2,7 @@ package com.reason.lang.core;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -68,5 +69,17 @@ public class PsiFileHelper {
             }
         }
         return null;
+    }
+
+    @Nullable
+    static PsiQualifiedNamedElement getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
+        Collection<PsiModule> modules = getModuleExpressions(file);
+        for (PsiModule module : modules) {
+            if (name.equals(module.getName())) {
+                return module;
+            }
+        }
+        return null;
+
     }
 }
