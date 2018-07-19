@@ -3,11 +3,9 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.search.IndexKeys;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
@@ -54,10 +52,9 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
             // no tag name, it's not a custom tag
             tagName = findChildByClass(PsiLowerSymbol.class);
             if (tagName != null) {
-                Collection<PsiModule> reactModules = StubIndex.getElements(IndexKeys.MODULES, "ReactDOMRe", project, GlobalSearchScope.allScope(project), PsiModule.class);
-                if (!reactModules.isEmpty()) {
-                    PsiModule reactDomRe = reactModules.iterator().next();
-                    PsiNamedElement props = reactDomRe.getTypeExpression("props");
+                FileBase reactDOMRe = PsiFinder.getInstance().findFileModule(project, "ReactDOMRe");
+                if (reactDOMRe != null) {
+                    PsiNamedElement props = reactDOMRe.getTypeExpression("props");
                     if (props != null) {
                         PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, PsiTypeBinding.class);
                         if (binding != null) {
@@ -96,4 +93,8 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Tag start";
+    }
 }

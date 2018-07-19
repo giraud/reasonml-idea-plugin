@@ -12,6 +12,7 @@ import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,8 +63,22 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
         return Platform.removeProjectDir(project, getVirtualFile()).replace("node_modules" + File.separator, "").replace(getName(), "");
     }
 
+    @NotNull
     public Collection<PsiNamedElement> getExpressions() {
         return PsiFileHelper.getExpressions(this);
+    }
+
+    @Nullable
+    public PsiNamedElement getTypeExpression(String name) {
+        List<PsiType> expressions = PsiFileHelper.getTypeExpressions(this);
+        if (!expressions.isEmpty()) {
+            for (PsiType expression : expressions) {
+                if (name.equals(expression.getName())) {
+                    return expression;
+                }
+            }
+        }
+        return null;
     }
 
     @Nullable
