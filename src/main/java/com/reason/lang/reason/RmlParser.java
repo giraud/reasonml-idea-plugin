@@ -564,7 +564,7 @@ public class RmlParser extends CommonParser {
                 state.endAny();
             }
 
-            if (!state.isResolution(patternMatch) && !state.isResolution(recordSignature) && !state.isResolution(letNamedSignature)) {
+            if (!state.isResolution(patternMatch) && !state.isResolution(recordSignature) && !state.isResolution(letNamedSignature) && !state.isResolution(tagPropertyEq)) {
                 // just a marker that will be used only if it's a function (duplicate the current token type)
                 state.add(mark(builder, genericExpression, m_types.LPAREN));
             }
@@ -602,7 +602,7 @@ public class RmlParser extends CommonParser {
             }
 
             ParserScope scope = state.getLatestScope();
-            if (scope != null && scope.resolution == localOpen) {
+            if (scope != null && (scope.resolution == localOpen || scope.resolution == tagPropertyEq)) {
                 state.popEnd();
             }
         }

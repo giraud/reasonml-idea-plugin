@@ -8,6 +8,7 @@ import com.reason.lang.reason.RmlParserDefinition;
 import com.reason.lang.reason.RmlTypes;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 public class JsxParsingTest extends BaseParsingTestCase {
     public JsxParsingTest() {
@@ -40,10 +41,13 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropWithParen() {
-        PsiElement psiElement = firstElement(parseCode("<div style=(x)/>"));
+        PsiTagStart tag = (PsiTagStart) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
 
-        PsiTagProperty tag = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class).iterator().next();
-        assertEquals("style=(x)", tag.getText());
+        Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
+        assertEquals(2, properties.size());
+        Iterator<PsiTagProperty> itProperties = properties.iterator();
+        assertEquals("style=(x)", itProperties.next().getText());
+        assertEquals("onFocus=a11y.onFocus", itProperties.next().getText());
     }
 
     public void testTagPropsWithDot() {
