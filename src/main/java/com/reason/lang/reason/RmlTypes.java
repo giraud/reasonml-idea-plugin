@@ -46,6 +46,7 @@ public class RmlTypes extends MlTypes {
         INTERPOLATION_EXPR = new MlCompositeElementType("INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
         TRY_EXPR = new MlCompositeElementType("TRY_EXPR", RmlLanguage.INSTANCE);
         WITH_EXPR = new MlCompositeElementType("WITH_EXPR", RmlLanguage.INSTANCE);
+        STRUCT_EXPR = new MlCompositeElementType("STRUCT_EXPR", RmlLanguage.INSTANCE);
 
         // Token element types
 

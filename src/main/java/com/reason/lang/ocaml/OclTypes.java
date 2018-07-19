@@ -49,6 +49,7 @@ public class OclTypes extends MlTypes {
         WITH_EXPR = new MlCompositeElementType("WITH_EXPR", OclLanguage.INSTANCE);
         UPPER_SYMBOL = new MlCompositeElementType("UPPER_SYMBOL", OclLanguage.INSTANCE);
         LOWER_SYMBOL = new MlCompositeElementType("LOWER_SYMBOL", OclLanguage.INSTANCE);
+        STRUCT_EXPR = new MlCompositeElementType("STRUCT_EXPR", OclLanguage.INSTANCE);
 
         // Token element types
 

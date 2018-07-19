@@ -84,6 +84,8 @@ public class PsiElementFactory {
             return new PsiFunction(node);
         } else if (type == types.FUN_BODY) {
             return new PsiFunctionBody(node);
+        } else if (type == types.STRUCT_EXPR) {
+            return new PsiStruct(node);
         }
 
         return new PsiToken(node);

@@ -45,6 +45,7 @@ public abstract class MlTypes {
     public IElementType TYPE_BINDING;
     public IElementType UPPER_SYMBOL;
     public IElementType LOWER_SYMBOL;
+    public IElementType STRUCT_EXPR;
 
     // Token element types
 

@@ -102,5 +102,5 @@ public enum ParserScopeEnum {
     executable,
     maybeLetFunction,
     maybeLetFunctionParameters,
-    valNamedSymbol, name
+    valNamedSymbol, struct, name
 }

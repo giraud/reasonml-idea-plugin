@@ -220,8 +220,10 @@ public class OclParser extends CommonParser {
     private void parseStruct(PsiBuilder builder, ParserState state) {
         if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
             state.endAny();
+            state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT));
+        } else {
+            state.add(markCompleteScope(builder, struct, m_types.STRUCT_EXPR, scopeExpression, m_types.STRUCT));
         }
-        state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, scopeExpression, m_types.STRUCT));
     }
 
     private void parseSig(PsiBuilder builder, ParserState state) {
@@ -256,18 +258,14 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseEnd(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(null);
-
-        builder.advanceLexer();
-        parserState.dontMove = true;
+    private void parseEnd(PsiBuilder builder, ParserState state) {
+        ParserScope scope = state.endUntilScopeExpression(null);
+        state.dontMove = advance(builder);
 
         if (scope != null) {
             scope.complete();
-            parserState.popEnd();
+            state.popEnd();
         }
-
-        parserState.updateCurrentScope();
     }
 
     private void parseColon(PsiBuilder builder, ParserState state) { // :
