@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +24,7 @@ class BsConfig {
     private static final Pattern NAME_REGEXP = Pattern.compile(".*\"name\":\\s*\"([^\"]*?)\".*");
     private static final Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
 
-    private final static Logger m_log = Logger.getInstance("ReasonML.bsConfig");
+    private final static Logger LOG = Logger.getInstance("ReasonML.bsConfig");
 
     private final Path m_basePath;
     private final String m_namespace;
@@ -86,24 +88,26 @@ class BsConfig {
     }
 
     @Nullable
-    private static Path[] readDependencies(@NotNull String content) {
-        Path[] result = null;
+    static Path[] readDependencies(@NotNull String content) {
+        List<Path> result = null;
 
         Matcher matcher = DEPS_REGEXP.matcher(content);
         if (matcher.matches()) {
             String[] tokens = matcher.group(1).split(",");
-            result = new Path[tokens.length];
+            result = new ArrayList<>();
             for (int i = 0; i < tokens.length; i++) {
                 String token = tokens[i].trim();
-                result[i] = FileSystems.getDefault().getPath("node_modules", token.substring(1, token.length() - 1), "lib");
+                if (2 < token.length()) {
+                    result.add(FileSystems.getDefault().getPath("node_modules", token.substring(1, token.length() - 1), "lib"));
+                }
             }
         }
 
-        if (m_log.isDebugEnabled()) {
-            m_log.debug("Dependencies found: [" + Joiner.join(", ", result) + "]");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Dependencies found: [" + Joiner.join(", ", result) + "]");
         }
 
-        return result;
+        return result == null ? null : result.toArray(new Path[0]);
     }
 
     @NotNull
