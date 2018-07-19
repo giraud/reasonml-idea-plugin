@@ -16,6 +16,7 @@ import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -44,9 +45,12 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
         if (tag != null) {
             Map<String, String> attributes = tag.getAttributes();
 
-            // TODO: additional attributes for UpperSymbol => only key and ref
-            //attributes.put("key", "string=?");
-            //attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
+            if (tag.getNameIdentifier() instanceof PsiUpperSymbol) {
+                // Additional attributes for UpperSymbol => only key and ref
+                attributes.put("key", "string=?");
+                attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
+            }
+
             if (m_debug.isDebugEnabled()) {
                 m_debug.debug("Tag found", tag.getName());
                 m_debug.debug("attributes", attributes.keySet());
