@@ -5,8 +5,8 @@ import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.lang.LexerAdapter;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +15,7 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new LexerAdapter(OclTypes.INSTANCE),
+        return new DefaultWordsScanner(new OclLexer(),
                 TokenSet.create(OclTypes.INSTANCE.UPPER_SYMBOL, OclTypes.INSTANCE.LOWER_SYMBOL), TokenSet.EMPTY, TokenSet.EMPTY);
     }
 

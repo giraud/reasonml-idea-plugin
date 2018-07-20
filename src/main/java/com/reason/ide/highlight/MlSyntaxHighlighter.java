@@ -6,9 +6,10 @@ import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.LexerAdapter;
 import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.RmlLexer;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -134,7 +135,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new LexerAdapter(m_types);
+        return m_types instanceof RmlTypes ? new RmlLexer() : new OclLexer();
     }
 
     @NotNull

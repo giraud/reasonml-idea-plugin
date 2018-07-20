@@ -1,6 +1,5 @@
 package com.reason.lang.p4;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -14,10 +13,11 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.Ml4File;
-import com.reason.lang.LexerAdapter;
 import com.reason.lang.PsiElementFactory;
+import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclParser;
 import com.reason.lang.ocaml.OclTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class OclP4ParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -29,7 +29,7 @@ public class OclP4ParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new LexerAdapter(OclTypes.INSTANCE);
+        return new OclLexer();
     }
 
     @NotNull

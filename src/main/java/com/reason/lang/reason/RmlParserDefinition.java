@@ -14,7 +14,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.RmlFile;
 import com.reason.ide.files.RmlInterfaceFile;
 import com.reason.ide.files.RmlInterfaceFileType;
-import com.reason.lang.LexerAdapter;
 import com.reason.lang.PsiElementFactory;
 import com.reason.lang.core.stub.type.RmlFileStubElementType;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +26,7 @@ public class RmlParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new LexerAdapter(RmlTypes.INSTANCE);
+        return new RmlLexer();
     }
 
     @NotNull

@@ -14,7 +14,6 @@ import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.OclInterfaceFile;
 import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.lang.LexerAdapter;
 import com.reason.lang.PsiElementFactory;
 import com.reason.lang.core.stub.type.OclFileStubElementType;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +26,7 @@ public class OclParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new LexerAdapter(OclTypes.INSTANCE);
+        return new OclLexer();
     }
 
     @NotNull

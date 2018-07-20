@@ -10,9 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
-           <li>#71 - Monorepo with multiple bs projects</li>
-           <li>'let _' is not shown in the structure panel</li>
-           <li>Fix (again) property completion in JSX after rework on references has been done</li>
+           <li></li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
@@ -148,8 +146,10 @@
         <stubIndex implementation="com.reason.ide.search.TypeIndex"/>
         <stubIndex implementation="com.reason.ide.search.ExternalIndex"/>
 
-        <lang.refactoringSupport language="ReasonML"
-                                 implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
+        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
+        <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
+
+        <gotoClassContributor implementation="com.reason.ide.go.MlModuleContributor"/>
 
         <!--
          | SDK & Settings
@@ -169,6 +169,12 @@
          | Others
          -->
 
+        <internalFileTemplate name="Reason Module"/>
+        <internalFileTemplate name="OCaml Module"/>
+
+        <lang.refactoringSupport language="ReasonML"
+                                 implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
+
         <iconProvider implementation="com.reason.icons.IconProvider"/>
 
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
@@ -182,12 +188,6 @@
 
         <externalAnnotator language="ReasonML" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
         <externalAnnotator language="OCaml" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
-
-        <lang.findUsagesProvider language="ReasonML" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
-        <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
-
-        <lang.refactoringSupport language="ReasonML"
-                                 implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
 
         <completion.contributor language="ReasonML"
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>

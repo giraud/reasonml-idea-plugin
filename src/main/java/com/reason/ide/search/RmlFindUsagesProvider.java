@@ -1,13 +1,15 @@
 package com.reason.ide.search;
 
 import com.intellij.lang.HelpID;
-import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
+import com.intellij.lang.cacheBuilder.WordOccurrence;
 import com.intellij.lang.cacheBuilder.WordsScanner;
+import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.psi.tree.TokenSet;
-import com.reason.lang.LexerAdapter;
+import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.reason.RmlLexer;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,9 +18,26 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new LexerAdapter(RmlTypes.INSTANCE),
-                TokenSet.create(RmlTypes.INSTANCE.UPPER_SYMBOL, RmlTypes.INSTANCE.LOWER_SYMBOL), TokenSet.EMPTY,
-                TokenSet.EMPTY);
+        //return new DefaultWordsScanner(new LexerAdapter(RmlTypes.INSTANCE),
+        //        TokenSet.create(RmlTypes.INSTANCE.UPPER_SYMBOL, RmlTypes.INSTANCE.LOWER_SYMBOL), TokenSet.EMPTY,
+        //        TokenSet.EMPTY);
+        return (fileText, processor) -> {
+            RmlLexer lexer = new RmlLexer();
+            lexer.start(fileText);
+            IElementType tokenType;
+            while ((tokenType = lexer.getTokenType()) != null) {
+                //TODO process occurrences in string literals and comments
+                if (tokenType == RmlTypes.INSTANCE.UIDENT || tokenType == RmlTypes.INSTANCE.LIDENT) {
+                    int tokenStart = lexer.getTokenStart();
+                    for (TextRange wordRange : StringUtil.getWordIndicesIn(lexer.getTokenText())) {
+                        int start = tokenStart + wordRange.getStartOffset();
+                        int end = tokenStart + wordRange.getEndOffset();
+                        processor.process(new WordOccurrence(fileText, start, end, WordOccurrence.Kind.CODE));
+                    }
+                }
+                lexer.advance();
+            }
+        };
     }
 
     @Override
