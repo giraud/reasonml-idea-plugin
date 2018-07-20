@@ -12,11 +12,11 @@ import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
+import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
 
     @Override
     public Map<String, String> getAttributes() {
-        Map<String, String> result = Collections.emptyMap();
+        Map<String, String> result = new THashMap<>();
 
         Project project = getProject();
 

@@ -14,13 +14,19 @@ import java.util.Locale;
 
 public class PsiUtil {
 
+    private PsiUtil() {
+    }
+
     @NotNull
     public static String fileNameToModuleName(@NotNull PsiFile file) {
         return fileNameToModuleName(file.getName());
     }
 
     @NotNull
-    public static String moduleNameToFileName(@NotNull String name) {
+    static String moduleNameToFileName(@NotNull String name) {
+        if (name.isEmpty()) {
+            return name;
+        }
         return name.substring(0, 1).toLowerCase(Locale.getDefault()) + name.substring(1);
     }
 
