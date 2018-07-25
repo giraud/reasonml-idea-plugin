@@ -6,6 +6,7 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ArrayUtil;
 import com.reason.ide.files.FileBase;
@@ -26,12 +27,13 @@ public class MlModuleContributor implements ChooseByNameContributor {
     public NavigationItem[] getItemsByName(String name, String pattern, Project project, boolean includeNonProjectItems) {
         ArrayList<NavigationItem> items = new ArrayList<>();
 
-        FileBase fileModule = PsiFinder.getInstance().findFileModule(project, name);
+        GlobalSearchScope scope = includeNonProjectItems ? GlobalSearchScope.allScope(project) : GlobalSearchScope.projectScope(project);
+        FileBase fileModule = PsiFinder.getInstance().findFileModule(project, name, scope);
         if (fileModule != null) {
             items.add(new MlModuleNavigationItem(fileModule, fileModule.asModuleName()));
         }
 
-        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, name, MlFileType.interfaceOrImplementation);
+        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, name, scope, MlFileType.interfaceOrImplementation);
         for (PsiModule element : modules) {
             items.add(new MlModuleNavigationItem(element, element.getName()));
         }

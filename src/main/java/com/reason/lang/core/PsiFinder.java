@@ -38,12 +38,11 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull MlFileType fileType) {
         m_debug.debug("Find modules, name", name);
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
-        GlobalSearchScope scope = allScope(project);
 
         Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, scope, PsiModule.class);
         if (modules.isEmpty()) {
@@ -85,6 +84,11 @@ public final class PsiFinder {
         }
 
         return inConfig.values();
+    }
+
+    @NotNull
+    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+        return findModules(project, name, GlobalSearchScope.allScope(project), fileType);
     }
 
     @Nullable
@@ -172,9 +176,7 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-
+    public FileBase findFileModule(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope) {
         FileBase file = findFileModuleByExt(project, name, OclInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
         if (file == null) {
             file = findFileModuleByExt(project, name, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
@@ -187,6 +189,11 @@ public final class PsiFinder {
         }
 
         return file;
+    }
+
+    @Nullable
+    public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
+        return findFileModule(project, name, GlobalSearchScope.allScope(project));
     }
 
     @Nullable
