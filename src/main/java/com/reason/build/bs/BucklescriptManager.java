@@ -33,8 +33,8 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     private final Project m_project;
 
-    boolean m_disabled;
-    Map<String, BsConfig> m_configs = new THashMap<>();
+    private boolean m_disabled;
+    private final Map<String, BsConfig> m_configs = new THashMap<>();
     @Nullable
     private BsCompiler m_compiler;
     @Nullable

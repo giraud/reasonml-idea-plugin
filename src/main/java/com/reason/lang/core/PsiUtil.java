@@ -89,11 +89,20 @@ public class PsiUtil {
     }
 
     @Nullable
-    public static PsiElement nextSibling(PsiElement element) {
+    public static PsiElement nextSibling(@NotNull PsiElement element) {
         PsiElement nextSibling = element.getNextSibling();
         while (nextSibling instanceof PsiWhiteSpace) {
             nextSibling = nextSibling.getNextSibling();
         }
         return nextSibling;
+    }
+
+    @Nullable
+    public static <T> T nextSiblingOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+        PsiElement nextSibling = element.getNextSibling();
+        while (nextSibling != null && !(nextSibling.getClass().isAssignableFrom(clazz))) {
+            nextSibling = nextSibling.getNextSibling();
+        }
+        return nextSibling != null && nextSibling.getClass().isAssignableFrom(clazz) ? (T) nextSibling : null;
     }
 }

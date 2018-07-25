@@ -77,7 +77,7 @@ public class PsiElementFactory {
         } else if (type == types.NAMED_SYMBOL) {
             return new PsiNamedSymbol(node);
         } else if (type == types.TRY_EXPR) {
-            return new PsiTry(node);
+            return new PsiTry(types, node);
         } else if (type == types.SWITCH_EXPR || type == types.MATCH_EXPR) {
             return new PsiSwitch(node);
         } else if (type == types.FUN_EXPR) {

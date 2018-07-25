@@ -31,6 +31,7 @@ public final class BsCompiler implements CompilerLifecycle {
 
     public BsCompiler(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
+        // zzz
         VirtualFile baseRoot = Platform.findBaseRoot(moduleConfiguration.getProject());
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
         if (sourceFile != null) {
@@ -113,7 +114,9 @@ public final class BsCompiler implements CompilerLifecycle {
                 cli = new GeneralCommandLine(bsbPath);
 
         }
+
         cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir(sourceFile));
+
         return cli;
     }
 
