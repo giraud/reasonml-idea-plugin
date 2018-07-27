@@ -16,6 +16,7 @@ import com.reason.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
 import com.reason.ide.docs.DocumentationProvider;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.sdk.OCamlSDK;
 import com.reason.lang.core.LogicalHMSignature;
 import org.jetbrains.annotations.NotNull;
@@ -41,14 +42,16 @@ public class InferredTypesService {
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    InsightManager insightManager = project.getComponent(InsightManager.class);
-                    VirtualFile baseRoot = getBasePath(project, sourceFile);
-                    Path relativeBuildPath = getRelativeBuildPath(project);
-                    VirtualFile cmtiPath = FileManager.fromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt());
-                    if (cmtiPath == null) {
-                        LOG.warn("can't find file " + FileManager.pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt()));
-                    } else {
-                        insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtiPath.getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
+                    if (!FileHelper.isInterface(sourceFile.getFileType())) {
+                        InsightManager insightManager = project.getComponent(InsightManager.class);
+                        VirtualFile baseRoot = getBasePath(project, sourceFile);
+                        Path relativeBuildPath = getRelativeBuildPath(project);
+                        VirtualFile cmtiPath = FileManager.fromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt());
+                        if (cmtiPath == null) {
+                            LOG.warn("can't find file " + FileManager.pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt()));
+                        } else {
+                            insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtiPath.getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
+                        }
                     }
                 }
             }
