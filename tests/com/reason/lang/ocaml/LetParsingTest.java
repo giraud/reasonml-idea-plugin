@@ -63,4 +63,10 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("two = 2", itFields.next().getText());
     }
 
+    public void testRec() {
+        PsiLet let = first(letExpressions(parseCode("let rec lx x = x + 1")));
+
+        assertTrue(let.isFunction());
+        assertEquals("lx", let.getName());
+    }
 }

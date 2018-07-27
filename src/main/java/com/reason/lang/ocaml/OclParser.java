@@ -56,10 +56,14 @@ public class OclParser extends CommonParser {
                 parseSig(builder, state);
             } else if (tokenType == m_types.STRUCT) {
                 parseStruct(builder, state);
+            } else if (tokenType == m_types.BEGIN) {
+                parseBegin(builder, state);
             } else if (tokenType == m_types.IF) {
                 parseIf(builder, state);
             } else if (tokenType == m_types.THEN) {
                 parseThen(builder, state);
+            } else if (tokenType == m_types.ELSE) {
+                parseElse(builder, state);
             } else if (tokenType == m_types.MATCH) {
                 parseMatch(builder, state);
             } else if (tokenType == m_types.TRY) {
@@ -154,16 +158,21 @@ public class OclParser extends CommonParser {
     }
 
     private void parseAnd(PsiBuilder builder, ParserState state) {
+        state.endUntilStart();
         if (isTypeResolution(state)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, type, m_types.EXP_TYPE));
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
-        } else if (state.isResolution(letNamedEq)) {
+        } else if (isLetResolution(state)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, let, m_types.LET_STMT));
         }
+    }
+
+    private boolean isLetResolution(ParserState state) {
+        return state.isResolution(letNamed) || state.isResolution(letNamedEq);
     }
 
     private void parseString(ParserState state) {
@@ -221,6 +230,12 @@ public class OclParser extends CommonParser {
         state.add(markCompleteScope(builder, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN));
     }
 
+    private void parseElse(PsiBuilder builder, ParserState state) {
+        state.endUntilScopeExpression(m_types.IF);
+        state.dontMove = advance(builder);
+        state.add(markCompleteScope(builder, ifElseStatement, m_types.SCOPED_EXPR, groupExpression, m_types.ELSE));
+    }
+
     private void parseStruct(PsiBuilder builder, ParserState state) {
         if (state.isResolution(moduleNamedEq) || state.isResolution(moduleNamedSignature)) {
             state.endAny();
@@ -260,6 +275,10 @@ public class OclParser extends CommonParser {
         if (scope != null && state.isStart(scope)) {
             state.popEnd();
         }
+    }
+
+    private void parseBegin(PsiBuilder builder, ParserState state) {
+        state.add(markScope(builder, beginScope, m_types.SCOPED_EXPR, scopeExpression, null));
     }
 
     private void parseEnd(PsiBuilder builder, ParserState state) {

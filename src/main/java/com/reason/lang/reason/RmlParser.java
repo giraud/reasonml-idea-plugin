@@ -195,16 +195,21 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseAnd(PsiBuilder builder, ParserState state) {
+        state.endUntilStart();
         if (isTypeResolution(state)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, type, m_types.EXP_TYPE));
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
-        } else if (state.isResolution(letNamedEq)) {
+        } else if (isLetResolution(state)) {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, let, m_types.LET_STMT));
         }
+    }
+
+    private boolean isLetResolution(ParserState state) {
+        return state.isResolution(letNamedEq);
     }
 
     private void parseComma(ParserState state) {

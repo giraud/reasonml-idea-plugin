@@ -75,4 +75,10 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("(style, style) -> style", let.getSignature().toString());
     }
 
+    public void testRec() {
+        PsiLet let = first(letExpressions(parseCode("let rec lx = x => x + 1")));
+
+        assertTrue(let.isFunction());
+        assertEquals("lx", let.getName());
+    }
 }

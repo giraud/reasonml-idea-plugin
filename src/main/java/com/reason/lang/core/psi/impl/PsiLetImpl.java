@@ -182,7 +182,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
 
                 String letName = letValueName.getText();
                 if (isFunction()) {
-                    return letName + (isRecursive() ? " rec" : "") + signatureText;
+                    return letName + (isRecursive() ? " (rec)" : "") + signatureText;
                 }
 
                 return letName + signatureText;
