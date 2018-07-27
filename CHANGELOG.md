@@ -25,19 +25,19 @@
 
 ## 0.58.1
 
-- :bug: Fix #79 - IDE crash
-- :bux: Fix #77 - Show non-alphanumeric function names such as ">>=" in the structure panel
+- :bug: [#79](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/79) - IDE crash
+- :bug: [#77](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/77) - Show non-alphanumeric function names such as ">>=" in the structure panel
 
 ## 0.58
 
 This release contains a big rewrite of how modules are referenced, it may break things that were working before (ex: find usages).
 
-- :bug: Fix #72 - Autocomplete not working in uncurried function
+- :bug: [#72](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/72) - Autocomplete not working in uncurried function
 
 ## 0.57
 
 - :rocket: Some record field completion
-- :bug: Fix #66 - Go To + module alias
+- :bug: [#66](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/66) - Go To + module alias
 - :house: ![o](resources/icons/ocaml-file.png) Better module path resolution</li>
 - :house: Improved parsers
             
