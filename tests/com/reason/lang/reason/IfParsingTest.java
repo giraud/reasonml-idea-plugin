@@ -19,6 +19,6 @@ public class IfParsingTest extends BaseParsingTestCase {
         assertNotNull(e.getBinaryCondition());
         PsiScopedExpr ifScope = PsiTreeUtil.findChildOfType(e, PsiScopedExpr.class);
         assertNotNull(ifScope);
-        // zzz assertEquals("{ (); }", ifScope.getText());
+        assertEquals("{ (); }", ifScope.getText());
     }
 }

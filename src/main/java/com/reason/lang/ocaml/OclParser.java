@@ -214,6 +214,7 @@ public class OclParser extends CommonParser {
 
     private void parseThen(PsiBuilder builder, ParserState state) {
         state.endUntilScopeExpression(m_types.IF);
+        state.dontMove = advance(builder);
         state.add(markCompleteScope(builder, ifThenStatement, m_types.SCOPED_EXPR, groupExpression, m_types.THEN));
     }
 

@@ -37,10 +37,10 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testScopeWithSome() {
-//  ?      PsiLet let = first(parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };").getLetExpressions());
-//
-//        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
-//        Assert.assertNotNull(binding);
+        PsiLet let = first(letExpressions(parseCode("let l = (p) => { switch (a) { | Some(a) => a; (); | None => () }; Some(z); };")));
+
+        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
+        assertNotNull(binding);
     }
 
     public void testScopeWithLIdent() {

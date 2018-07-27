@@ -30,7 +30,7 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
         assertEquals(1, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
         assertNotNull(function.getBody());
     }
-    //
+
     //public void testAnonFunction() {
     //    PsiLet e = first(parseCode("let x = Belt.map items (fun item -> item)").getLetExpressions());
     //
@@ -38,7 +38,7 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
     //    assertNotNull(function);
     //    assertEquals(1, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
     //}
-    //
+
     //public void testInnerFunction() {
     //    PsiLet e = first(parseCode("let x error = Belt.Array.mapU errors (fun error  -> error##message)").getLetExpressions());
     //
