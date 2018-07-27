@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,4 +21,11 @@ public class AndParsingTest extends BaseParsingTestCase {
         assertEquals("ly", lets.get(1).getName());
     }
 
+    public void testModuleChaining() {
+        List<PsiModule> mods = new ArrayList(moduleExpressions(parseCode("module rec X: {} = {} and Y: {} = {};")));
+
+        assertEquals(2, mods.size());
+        assertEquals("X", mods.get(0).getName());
+        assertEquals("Y", mods.get(1).getName());
+    }
 }

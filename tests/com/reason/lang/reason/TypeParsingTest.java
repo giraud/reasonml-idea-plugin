@@ -60,4 +60,10 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals("pos", fields.get(1).getName());
     }
 
+    public void testTypeParameterized() {
+        PsiType type = first(typeExpressions(parseCode("type declaration_arity('a, 'b) = | RegularArity('a);")));
+        assertEquals("declaration_arity", type.getName());
+        assertEquals("| RegularArity('a)", type.getBinding().getText());
+    }
+
 }

@@ -36,6 +36,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertNotNull(first(findChildrenOfType(first(typeExpressions(parseCode("type t = {count: int;}"))), PsiTypeBinding.class)));
     }
 
+    @SuppressWarnings("unchecked")
     public void testTypeBindingWithRecordAs() {
         PsiTypeBinding typeBinding = first(findChildrenOfType(first(typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))), PsiTypeBinding.class));
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
@@ -43,6 +44,12 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals(2, fields.size());
         assertEquals("kind", fields.get(0).getName());
         assertEquals("pos", fields.get(1).getName());
+    }
+
+    public void testTypeParameterized() {
+        PsiType type = first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = | RegularArity of 'a")));
+        assertEquals("declaration_arity", type.getName());
+        assertEquals("| RegularArity of 'a", type.getBinding().getText());
     }
 
 }

@@ -208,11 +208,11 @@ public class RmlParser extends CommonParser {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, let, m_types.LET_STMT));
+        } else if (isModuleResolution(state)) {
+            state.endUntilScopeExpression(null);
+            state.dontMove = advance(builder);
+            state.addStart(mark(builder, module, m_types.MODULE_STMT));
         }
-    }
-
-    private boolean isLetResolution(ParserState state) {
-        return state.isResolution(letNamedEq);
     }
 
     private void parseComma(ParserState state) {

@@ -111,4 +111,11 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return state.isResolution(typeNamed) || state.isResolution(typeNamedEq) || state.isResolution(typeNamedEqVariant);
     }
 
+    protected boolean isModuleResolution(ParserState state) {
+        return state.isResolution(moduleNamed) || state.isResolution(moduleNamedSignature);
+    }
+
+    protected boolean isLetResolution(ParserState state) {
+        return state.isResolution(letNamed) || state.isResolution(letNamedEq);
+    }
 }

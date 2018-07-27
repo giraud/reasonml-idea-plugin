@@ -171,12 +171,13 @@ public class OclParser extends CommonParser {
             state.endUntilScopeExpression(null);
             state.dontMove = advance(builder);
             state.addStart(mark(builder, let, m_types.LET_STMT));
+        } else if (isModuleResolution(state)) {
+            state.endUntilScopeExpression(null);
+            state.dontMove = advance(builder);
+            state.addStart(mark(builder, module, m_types.MODULE_STMT));
         }
     }
 
-    private boolean isLetResolution(ParserState state) {
-        return state.isResolution(letNamed) || state.isResolution(letNamedEq);
-    }
 
     private void parseString(ParserState state) {
         if (state.isResolution(annotationName)) {
@@ -367,7 +368,7 @@ public class OclParser extends CommonParser {
             state.currentResolution(valNamed).complete();
             state.add(markScope(builder, valNamedSymbol, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else {
-            if (!state.isResolution(assert_)) {
+            if (!state.isResolution(assert_) && !state.isResolution(typeConstrName)) {
                 state.endAny();
             }
 
