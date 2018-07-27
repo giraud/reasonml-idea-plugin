@@ -9,7 +9,7 @@ public class TryWithTest extends BaseParsingTestCase {
     }
 
     public void testTry() {
-        PsiTry try_ = (PsiTry) first(expressions(parseCode("try f() with e -> let e = CErrors.push e", true)));
-        assertEquals("t", try_.getWith());
+        PsiTry try_ = (PsiTry) firstElement(parseCode("try f() with e -> let e = CErrors.push e"));
+        assertEquals("e -> let e = CErrors.push e", try_.getWith().getText());
     }
 }

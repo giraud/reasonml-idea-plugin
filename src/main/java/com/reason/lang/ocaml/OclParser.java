@@ -131,6 +131,9 @@ public class OclParser extends CommonParser {
     private void parseRightArrow(PsiBuilder builder, ParserState state) {
         if (state.isResolution(patternMatch)) {
             state.add(markScope(builder, patternMatchBody, m_types.SCOPED_EXPR, groupExpression, null));
+        } else if (state.isResolution(matchWith)) {
+            state.dontMove = advance(builder);
+            state.add(markScope(builder, matchException, m_types.SCOPED_EXPR, groupExpression, null));
         }
     }
 
@@ -512,13 +515,19 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLet(PsiBuilder builder, ParserState state) {
-        boolean shouldStart = state.previousTokenElementType != m_types.EQ &&
-                state.previousTokenElementType != m_types.IN &&
-                state.previousTokenElementType != m_types.TRY &&
-                (!state.isResolution(patternMatchBody) || state.previousTokenElementType != m_types.RIGHT_ARROW);
-        if (shouldStart) {
+        boolean dontStart = state.previousTokenElementType == m_types.SEMI ||
+                state.previousTokenElementType == m_types.IN ||
+                state.previousTokenElementType == m_types.EQ ||
+                state.previousTokenElementType == m_types.TRY ||
+                state.previousTokenElementType == m_types.THEN ||
+                state.previousTokenElementType == m_types.ELSE ||
+                state.previousTokenElementType == m_types.RIGHT_ARROW;
+        if (dontStart) {
+            state.endAny();
+        } else {
             endLikeSemi(state);
         }
+
         state.addStart(mark(builder, let, m_types.LET_STMT));
     }
 
@@ -534,7 +543,5 @@ public class OclParser extends CommonParser {
         if (scope != null && state.isStart(scope)) {
             state.popEnd();
         }
-
-        state.updateCurrentScope();
     }
 }
