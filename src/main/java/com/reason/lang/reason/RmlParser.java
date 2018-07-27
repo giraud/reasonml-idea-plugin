@@ -108,8 +108,11 @@ public class RmlParser extends CommonParser {
                 parseRBrace(builder, state);
             }
             // [ ... ]
+            // [> ... ]
             else if (tokenType == m_types.LBRACKET) {
                 parseLBracket(builder, state);
+            } else if (tokenType == m_types.BRACKET_GT) {
+                parseBracketGt(builder, state);
             } else if (tokenType == m_types.RBRACKET) {
                 parseRBracket(builder, state);
             }
@@ -501,6 +504,10 @@ public class RmlParser extends CommonParser {
         } else {
             parserState.add(markScope(builder, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET));
         }
+    }
+
+    private void parseBracketGt(PsiBuilder builder, ParserState parserState) {
+        parserState.add(markScope(builder, bracketGt, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET));
     }
 
     private void parseRBracket(PsiBuilder builder, ParserState state) {

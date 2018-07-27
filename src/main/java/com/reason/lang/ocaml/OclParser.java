@@ -94,8 +94,11 @@ public class OclParser extends CommonParser {
                 parseRBrace(builder, state);
             }
             // [ ... ]
+            // [> ... ]
             else if (tokenType == m_types.LBRACKET) {
                 parseLBracket(builder, state);
+            } else if (tokenType == m_types.BRACKET_GT) {
+                parseBracketGt(builder, state);
             } else if (tokenType == m_types.RBRACKET) {
                 parseRBracket(builder, state);
             }
@@ -259,7 +262,7 @@ public class OclParser extends CommonParser {
             state.complete();
             state.popEnd();
             state.dontMove = advance(builder);
-            state.add(mark(builder, recordField, m_types.RECORD_FIELD));
+            state.add(markScope(builder, recordField, m_types.RECORD_FIELD, groupExpression, null));
         } else {
             // A SEMI operator ends the start expression, not the group or scope
             ParserScope scope = state.endAny();
@@ -343,10 +346,10 @@ public class OclParser extends CommonParser {
         }
     }
 
-    private void parseArrobase(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isResolution(annotation)) {
-            parserState.complete();
-            parserState.add(markComplete(builder, annotationName, m_types.MACRO_NAME));
+    private void parseArrobase(PsiBuilder builder, ParserState state) {
+        if (state.isResolution(annotation)) {
+            state.complete();
+            state.add(markComplete(builder, annotationName, m_types.MACRO_NAME));
         }
     }
 
@@ -386,11 +389,11 @@ public class OclParser extends CommonParser {
         state.endAny();
         state.add(markScope(builder, recordBinding, m_types.RECORD_EXPR, scopeExpression, m_types.LBRACE));
         state.dontMove = advance(builder);
-        state.add(mark(builder, recordField, m_types.RECORD_FIELD));
+        state.add(markScope(builder, recordField, m_types.RECORD_FIELD, groupExpression, null));
     }
 
     private void parseRBrace(PsiBuilder builder, ParserState state) {
-        if (state.isResolution(recordField)) {
+        if (state.isResolution(recordField) && state.previousTokenElementType != m_types.SEMI) {
             state.complete();
         }
 
@@ -407,30 +410,30 @@ public class OclParser extends CommonParser {
         state.updateCurrentScope();
     }
 
-    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
+    private void parseLBracket(PsiBuilder builder, ParserState state) {
         IElementType nextTokenType = builder.rawLookup(1);
         if (nextTokenType == m_types.ARROBASE) {
             // This is an annotation
-            parserState.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, scopeExpression, m_types.LBRACKET));
+            state.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, scopeExpression, m_types.LBRACKET));
         } else {
-            parserState.add(markScope(builder, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET));
+            state.add(markScope(builder, bracket, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET));
         }
     }
 
-    private void parseRBracket(PsiBuilder builder, ParserState parserState) {
-        ParserScope scope = parserState.endUntilScopeExpression(m_types.LBRACKET);
+    private void parseBracketGt(PsiBuilder builder, ParserState state) {
+        state.add(markScope(builder, bracketGt, m_types.SCOPED_EXPR, scopeExpression, m_types.LBRACKET));
+    }
 
-        builder.advanceLexer();
-        parserState.dontMove = true;
+    private void parseRBracket(PsiBuilder builder, ParserState state) {
+        ParserScope scope = state.endUntilScopeExpression(m_types.LBRACKET);
+        state.dontMove = advance(builder);
 
         if (scope != null) {
             if (scope.resolution != annotation) {
                 scope.complete();
             }
-            parserState.popEnd();
+            state.popEnd();
         }
-
-        parserState.updateCurrentScope();
     }
 
     private void parseLIdent(PsiBuilder builder, ParserState state) {
