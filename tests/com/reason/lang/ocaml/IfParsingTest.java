@@ -1,4 +1,4 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;

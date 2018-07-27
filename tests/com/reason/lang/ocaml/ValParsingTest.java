@@ -1,10 +1,9 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 @SuppressWarnings("ConstantConditions")
 public class ValParsingTest extends BaseParsingTestCase {

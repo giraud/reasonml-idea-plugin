@@ -1,11 +1,10 @@
-package com.reason.reason;
+package com.reason.lang.reason;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
-import com.reason.lang.reason.RmlParserDefinition;
 
 public class FunctionParsingTest extends BaseParsingTestCase {
     public FunctionParsingTest() {

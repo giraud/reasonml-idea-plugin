@@ -1,19 +1,17 @@
-package com.reason.ocaml;
+package com.reason.lang.reason;
 
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 public class IncludeParsingTest extends BaseParsingTestCase {
     public IncludeParsingTest() {
-        super("", "ml", new OclParserDefinition());
+        super("", "re", new RmlParserDefinition());
     }
 
     public void testInclude() {
-        PsiInclude e = first(includeExpressions(parseCode("include Belt")));
+        PsiInclude e = first(includeExpressions(parseCode("include Belt;")));
 
         assertNotNull(e);
         assertEquals("Belt", e.getName());
     }
-
 }

@@ -1,11 +1,9 @@
-package com.reason.reason;
+package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.reason.RmlParserDefinition;
-import com.reason.lang.reason.RmlTypes;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package com.reason.reason;
+package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -7,7 +7,6 @@ import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.reason.RmlParserDefinition;
 
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {

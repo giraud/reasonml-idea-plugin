@@ -1,4 +1,4 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
@@ -6,7 +6,6 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 import java.util.Collection;
 import java.util.Iterator;

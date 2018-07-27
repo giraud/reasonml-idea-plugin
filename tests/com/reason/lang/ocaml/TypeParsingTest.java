@@ -1,9 +1,8 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeBinding;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 

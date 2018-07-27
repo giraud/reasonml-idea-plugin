@@ -1,10 +1,9 @@
-package com.reason.reason;
+package com.reason.lang.reason;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.reason.RmlParserDefinition;
 
 public class ExternalParsingTest extends BaseParsingTestCase {
     public ExternalParsingTest() {

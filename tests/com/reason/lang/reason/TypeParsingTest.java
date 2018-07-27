@@ -1,10 +1,9 @@
-package com.reason.reason;
+package com.reason.lang.reason;
 
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeBinding;
-import com.reason.lang.reason.RmlParserDefinition;
 
 import java.util.Collection;
 

@@ -1,11 +1,10 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiPatternMatch;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 import java.util.Collection;
 

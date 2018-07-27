@@ -1,11 +1,10 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
     public FunctionDefinitionParsingTest() {

@@ -1,7 +1,6 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.reason.BaseParsingTestCase;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 public class TryWithTest extends BaseParsingTestCase {
     public TryWithTest() {

@@ -1,4 +1,4 @@
-package com.reason.ocaml;
+package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -8,7 +8,6 @@ import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiSwitch;
-import com.reason.lang.ocaml.OclParserDefinition;
 
 public class MatchTryParsingTest extends BaseParsingTestCase {
     public MatchTryParsingTest() {
