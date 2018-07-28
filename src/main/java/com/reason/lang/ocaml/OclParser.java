@@ -350,7 +350,7 @@ public class OclParser extends CommonParser {
             if (innerScope != null) {
                 // This is a function definition, change the scopes
                 innerScope.resolution(parameters).compositeElementType(m_types.FUN_PARAMS).complete().end();
-                state.updateCurrentResolution(function).currentCompositeElementType(m_types.FUN_EXPR).complete();
+                state.updateCurrentResolution(function).updateCurrentCompositeElementType(m_types.FUN_EXPR).complete();
                 state.dontMove = advance(builder);
                 state.add(markCompleteGroup(builder, funBody, m_types.FUN_BODY));
             }
@@ -367,10 +367,11 @@ public class OclParser extends CommonParser {
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen);
-            state.currentCompositeElementType(m_types.LOCAL_OPEN);
+            state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
             state.add(markScope(builder, localOpenScope, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
-        } else if (state.isCurrentResolution(external)) {
+        }
+        else if (state.isCurrentResolution(external)) {
             // overloading an operator
             state.updateCurrentResolution(externalNamed).complete();
         } else if (state.isCurrentResolution(val)) {
@@ -378,7 +379,7 @@ public class OclParser extends CommonParser {
             state.updateCurrentResolution(valNamed).complete();
             state.add(markScope(builder, valNamedSymbol, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else {
-            if (!state.isCurrentResolution(assert_) && !state.isCurrentResolution(typeConstrName)) {
+            if (!state.isCurrentResolution(assert_) && !state.isCurrentResolution(typeConstrName) && !state.isCurrentContext(moduleInstanciation)) {
                 state.endAny();
             }
 
@@ -393,10 +394,6 @@ public class OclParser extends CommonParser {
         if (scope != null) {
             scope.complete();
             state.popEnd();
-            scope = state.getLatestScope();
-//            if (scope != null && scope.isCurrentResolution(moduleNamed)) {
-//                scope.resolution(moduleFunctorNamed);
-//            }
         }
     }
 
@@ -507,8 +504,13 @@ public class OclParser extends CommonParser {
             if (!state.isCurrentResolution(modulePath)) {
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.DOT) {
-                    // We are parsing a module path
-                    state.add(mark(builder, modulePath, m_types.MODULE_PATH));
+                    if (state.isCurrentContext(moduleDeclaration)) {
+                        // module X = <|>Path.Functor(...)
+                        state.add(mark(builder, modulePath, moduleInstanciation, m_types.MODULE_PATH/*?*/));
+                    } else {
+                        // We are parsing a module path
+                        state.add(mark(builder, modulePath, m_types.MODULE_PATH));
+                    }
                 }
             }
         }
@@ -517,8 +519,15 @@ public class OclParser extends CommonParser {
     }
 
     private void parseOpen(PsiBuilder builder, ParserState state) {
-        endLikeSemi(state);
-        state.addStart(mark(builder, open, m_types.OPEN_STMT));
+        if (state.isCurrentResolution(let)) {
+            // let open X (coq/indtypes.ml)
+            state.updateCurrentResolution(open);
+            state.updateCurrentCompositeElementType(m_types.OPEN_STMT);
+        }
+        else {
+            endLikeSemi(state);
+            state.addStart(mark(builder, open, m_types.OPEN_STMT));
+        }
     }
 
     private void parseInclude(PsiBuilder builder, ParserState state) {

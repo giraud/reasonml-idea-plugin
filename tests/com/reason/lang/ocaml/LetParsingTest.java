@@ -2,10 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.*;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -76,4 +73,11 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertTrue(let.isFunction());
         assertEquals("l = for i = 0 to l - 1 do let x = 1 done", let.getBinding().getText());
     }
+
+    public void testLikeLocalOpen() {
+        PsiOpen open = first(openExpressions(parseCode("let open Univ")));
+
+        assertEquals("let open Univ", open.getText());
+    }
+
 }

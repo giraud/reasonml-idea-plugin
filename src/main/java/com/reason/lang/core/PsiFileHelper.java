@@ -56,6 +56,11 @@ public class PsiFileHelper {
     }
 
     @NotNull
+    public static Collection<PsiOpen> getOpenExpressions(PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiOpen.class);
+    }
+
+    @NotNull
     public static List<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
     }

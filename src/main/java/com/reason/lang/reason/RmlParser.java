@@ -446,7 +446,7 @@ public class RmlParser extends CommonParser {
             if (nextTokenType == m_types.COLON) {
                 // Yes, this is a record binding
                 state.updateCurrentResolution(recordBinding);
-                state.currentCompositeElementType(m_types.RECORD_EXPR);
+                state.updateCurrentCompositeElementType(m_types.RECORD_EXPR);
             }
         }
 
@@ -558,7 +558,7 @@ public class RmlParser extends CommonParser {
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen);
-            state.currentCompositeElementType(m_types.LOCAL_OPEN);
+            state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
         } else if (state.isCurrentResolution(ifThenStatement)) {
@@ -606,7 +606,7 @@ public class RmlParser extends CommonParser {
             if (parenScope.isResolution(parameters) && nextTokenType == m_types.ARROW) {
                 // Transform the generic scope to a function scope
                 state.updateCurrentResolution(function);
-                state.currentCompositeElementType(m_types.FUN_EXPR);
+                state.updateCurrentCompositeElementType(m_types.FUN_EXPR);
                 state.setCurrentScopeType(groupExpression);
                 state.complete();
             } else if (state.isCurrentResolution(genericExpression)) {

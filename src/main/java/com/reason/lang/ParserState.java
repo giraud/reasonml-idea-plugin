@@ -186,7 +186,7 @@ public class ParserState {
     }
 
     @NotNull
-    public ParserState currentCompositeElementType(@NotNull IElementType compositeElementType) {
+    public ParserState updateCurrentCompositeElementType(@NotNull IElementType compositeElementType) {
         currentScope.compositeElementType(compositeElementType);
         return this;
     }
