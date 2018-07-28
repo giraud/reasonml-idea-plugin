@@ -31,7 +31,8 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             RmlTypes.INSTANCE.CLASS, RmlTypes.INSTANCE.CONSTRAINT, RmlTypes.INSTANCE.DOWNTO, RmlTypes.INSTANCE.FUNCTOR, RmlTypes.INSTANCE.INHERIT,
             RmlTypes.INSTANCE.INITIALIZER, RmlTypes.INSTANCE.LAND, RmlTypes.INSTANCE.LOR, RmlTypes.INSTANCE.LSL,
             RmlTypes.INSTANCE.LSR, RmlTypes.INSTANCE.LXOR, RmlTypes.INSTANCE.METHOD, RmlTypes.INSTANCE.MOD, RmlTypes.INSTANCE.NEW,
-            RmlTypes.INSTANCE.NONREC, RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE, RmlTypes.INSTANCE.VIRTUAL, RmlTypes.INSTANCE.VAL, RmlTypes.INSTANCE.PUB
+            RmlTypes.INSTANCE.NONREC, RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE, RmlTypes.INSTANCE.VIRTUAL,
+            RmlTypes.INSTANCE.VAL, RmlTypes.INSTANCE.PUB, RmlTypes.INSTANCE.PRI
     );
 
     private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
@@ -61,7 +62,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             OclTypes.INSTANCE.INITIALIZER, OclTypes.INSTANCE.LAND, OclTypes.INSTANCE.LOR, OclTypes.INSTANCE.LSL, OclTypes.INSTANCE.LSR,
             OclTypes.INSTANCE.LXOR, OclTypes.INSTANCE.METHOD, OclTypes.INSTANCE.MOD, OclTypes.INSTANCE.NEW, OclTypes.INSTANCE.NONREC,
             OclTypes.INSTANCE.OR, OclTypes.INSTANCE.PRIVATE, OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.AS, OclTypes.INSTANCE.MUTABLE,
-            OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL,
+            OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL, OclTypes.INSTANCE.PRI,
             // OCaml
             OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE, OclTypes.INSTANCE.RECORD,
             OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY, OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN,

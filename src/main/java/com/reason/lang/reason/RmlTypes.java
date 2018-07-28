@@ -166,6 +166,7 @@ public class RmlTypes extends MlTypes {
         UNIT = new MlTokenElementType("UNIT", RmlLanguage.INSTANCE);
         VAL = new MlTokenElementType("VAL", RmlLanguage.INSTANCE);
         PUB = new MlTokenElementType("PUB", RmlLanguage.INSTANCE);
+        PRI = new MlTokenElementType("PRI", RmlLanguage.INSTANCE);
         LOWER_SYMBOL = new MlTokenElementType("LOWER_SYMBOL", RmlLanguage.INSTANCE);
         WHEN = new MlTokenElementType("WHEN", RmlLanguage.INSTANCE);
         WHILE = new MlTokenElementType("WHILE", RmlLanguage.INSTANCE);

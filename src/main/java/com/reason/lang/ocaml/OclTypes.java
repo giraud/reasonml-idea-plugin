@@ -168,6 +168,7 @@ public class OclTypes extends MlTypes {
         UNIT = new MlTokenElementType("UNIT", OclLanguage.INSTANCE);
         VAL = new MlTokenElementType("VAL", OclLanguage.INSTANCE);
         PUB = new MlTokenElementType("PUB", OclLanguage.INSTANCE);
+        PRI = new MlTokenElementType("PRI", OclLanguage.INSTANCE);
         WHEN = new MlTokenElementType("WHEN", OclLanguage.INSTANCE);
         WHILE = new MlTokenElementType("WHILE", OclLanguage.INSTANCE);
         WITH = new MlTokenElementType("WITH", OclLanguage.INSTANCE);
