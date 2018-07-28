@@ -216,8 +216,15 @@ public class OclParser extends CommonParser {
     }
 
     private void parseWith(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentContext(moduleInstanciation)) {
+            // this is incorrect, it might comes from:
+            // module Constraint : Set.S with type elt = univ_constraint
+            state.popEnd();
+        }
+
         if (state.isCurrentResolution(moduleNamedColon)) {
-            // A functor like: module Make (M : Input) : S with type input = M.t
+            // A functor like:
+            // module Make (M : Input) : S with type input = M.t
         } else {
             state.endUntilScopeExpression(m_types.GENERIC_COND);
             state.endUntilScopeExpression(state.isCurrentResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
@@ -259,7 +266,7 @@ public class OclParser extends CommonParser {
             if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedColon)) {
                 state.endAny();
                 state.updateCurrentResolution(moduleNamedSignature);
-                state.add(markScope(builder, moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG));
+                state.add(markScope(builder, state.currentContext(), moduleSignature, m_types.SIG_SCOPE, scopeExpression, m_types.SIG));
             }
         }
     }
@@ -543,7 +550,10 @@ public class OclParser extends CommonParser {
         if (state.isCurrentResolution(module)) {
             state.updateCurrentContext(moduleTypeDeclaration);
         } else {
-            if (!state.isCurrentContext(moduleDeclaration)) {
+            if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
+                state.updateCurrentResolution(moduleNamedWithType);
+            }
+            else {
                 endLikeSemi(state);
                 state.addStart(mark(builder, type, m_types.EXP_TYPE));
                 state.dontMove = advance(builder);

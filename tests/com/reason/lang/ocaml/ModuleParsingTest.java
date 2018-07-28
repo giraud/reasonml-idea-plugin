@@ -54,5 +54,19 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("RedFlagsSig", module.getName());
     }
 
+    public void testModuleSig() {
+        PsiFile file = parseCode("module Level : sig end\ntype t");
+
+        assertEquals(2, expressions(file).size());
+        assertEquals("Level", first(moduleExpressions(file)).getName());
+    }
+
+    public void testModuleSig2() {
+        PsiFile file = parseCode("module Constraint : Set.S with type elt = univ_constraint\ntype t");
+
+        assertEquals(2, expressions(file).size());
+        assertEquals("Constraint", first(moduleExpressions(file)).getName());
+    }
+
 
 }
