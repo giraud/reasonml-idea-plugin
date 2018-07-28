@@ -61,7 +61,7 @@ public class ParserState {
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope.resolution != resolution) {
+            while (scope != null && scope.isNotResolution(resolution)) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -95,11 +95,11 @@ public class ParserState {
     }
 
     public boolean isResolution(ParserScopeEnum scope) {
-        return currentScope.resolution == scope;
+        return currentScope.isResolution(scope);
     }
 
     public boolean notResolution(ParserScopeEnum scope) {
-        return currentScope.resolution != scope;
+        return currentScope.isNotResolution(scope);
     }
 
     public void complete() {
@@ -161,7 +161,7 @@ public class ParserState {
 
     @NotNull
     public ParserState currentResolution(@NotNull ParserScopeEnum resolution) {
-        currentScope.resolution = resolution;
+        currentScope.resolution(resolution);
         return this;
     }
 

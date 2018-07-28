@@ -61,7 +61,7 @@ public class RmlParser extends CommonParser {
             } else if (tokenType == m_types.EQ) {
                 parseEq(builder, state);
             } else if (tokenType == m_types.UNDERSCORE) {
-                parseUnderscore(builder, state);
+                parseUnderscore(state);
             } else if (tokenType == m_types.ARROW) {
                 parseArrow(builder, state);
             } else if (tokenType == m_types.TRY) {
@@ -172,7 +172,7 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseUnderscore(PsiBuilder builder, ParserState state) {
+    private void parseUnderscore(ParserState state) {
         if (state.isResolution(let)) {
             state.currentResolution(letNamed);
             state.complete();
@@ -516,7 +516,7 @@ public class RmlParser extends CommonParser {
         state.dontMove = advance(builder);
 
         if (scope != null) {
-            if (scope.resolution != annotation) {
+            if (scope.isNotResolution(annotation)) {
                 scope.complete();
             }
             state.popEnd();
@@ -540,7 +540,7 @@ public class RmlParser extends CommonParser {
                 scope = state.endAny();
             }
 
-            boolean isSwitch = scope != null && scope.resolution == switch_;
+            boolean isSwitch = scope != null && scope.isResolution(switch_);
             state.add(markScope(builder, isSwitch ? switchBody : brace, m_types.SCOPED_EXPR, scopeExpression, isSwitch ? m_types.SWITCH : m_types.LBRACE));
         }
     }
@@ -595,7 +595,7 @@ public class RmlParser extends CommonParser {
             state.pop();
 
             if (nextTokenType == m_types.ARROW && !state.isResolution(patternMatch) && !state.isCurrentTokenType(m_types.SIG)) {
-                parenScope.resolution = parameters;
+                parenScope.resolution(parameters);
                 parenScope.compositeElementType(m_types.FUN_PARAMS);
             }
 
@@ -603,7 +603,7 @@ public class RmlParser extends CommonParser {
             parenScope.end();
 
             // Handle the generic scope
-            if (parenScope.resolution == parameters && nextTokenType == m_types.ARROW) {
+            if (parenScope.isResolution(parameters) && nextTokenType == m_types.ARROW) {
                 // Transform the generic scope to a function scope
                 state.currentResolution(function);
                 state.currentCompositeElementType(m_types.FUN_EXPR);
@@ -614,7 +614,7 @@ public class RmlParser extends CommonParser {
             }
 
             ParserScope scope = state.getLatestScope();
-            if (scope != null && (scope.resolution == localOpen || scope.resolution == tagPropertyEq)) {
+            if (scope != null && (scope.isResolution(localOpen) || scope.isResolution(tagPropertyEq))) {
                 state.popEnd();
             }
         }

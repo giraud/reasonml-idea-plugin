@@ -216,10 +216,14 @@ public class OclParser extends CommonParser {
     }
 
     private void parseWith(PsiBuilder builder, ParserState state) {
-        state.endUntilScopeExpression(m_types.GENERIC_COND);
-        state.endUntilScopeExpression(state.isResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
-        state.dontMove = advance(builder);
-        state.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
+        if (state.isResolution(moduleNamedColon)) {
+            // A functor like: module Make (M : Input) : S with type input = M.t
+        } else {
+            state.endUntilScopeExpression(m_types.GENERIC_COND);
+            state.endUntilScopeExpression(state.isResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
+            state.dontMove = advance(builder);
+            state.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
+        }
     }
 
     private void parseIf(PsiBuilder builder, ParserState state) {
@@ -383,6 +387,10 @@ public class OclParser extends CommonParser {
         if (scope != null) {
             scope.complete();
             state.popEnd();
+            scope = state.getLatestScope();
+//            if (scope != null && scope.isResolution(moduleNamed)) {
+//                scope.resolution(moduleFunctorNamed);
+//            }
         }
     }
 
@@ -430,7 +438,7 @@ public class OclParser extends CommonParser {
         state.dontMove = advance(builder);
 
         if (scope != null) {
-            if (scope.resolution != annotation) {
+            if (scope.isNotResolution(annotation)) {
                 scope.complete();
             }
             state.popEnd();
@@ -519,7 +527,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseType(PsiBuilder builder, ParserState state) {
-        if (state.notResolution(module)) {
+        if (!isModuleResolution(state)) {
             endLikeSemi(state);
             state.addStart(mark(builder, type, m_types.EXP_TYPE));
             state.dontMove = advance(builder);
@@ -542,6 +550,7 @@ public class OclParser extends CommonParser {
                 state.previousTokenElementType == m_types.IN ||
                 state.previousTokenElementType == m_types.EQ ||
                 state.previousTokenElementType == m_types.TRY ||
+                state.previousTokenElementType == m_types.DO ||
                 state.previousTokenElementType == m_types.THEN ||
                 state.previousTokenElementType == m_types.ELSE ||
                 state.previousTokenElementType == m_types.RIGHT_ARROW;

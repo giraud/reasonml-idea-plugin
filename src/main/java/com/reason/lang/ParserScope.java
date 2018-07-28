@@ -5,7 +5,7 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.type.MlTokenElementType;
 
 public class ParserScope {
-    public ParserScopeEnum resolution;
+    private ParserScopeEnum resolution;
     ParserScopeType scopeType = ParserScopeType.any;
     private IElementType compositeElementType;
     MlTokenElementType scopeTokenElementType;
@@ -50,6 +50,14 @@ public class ParserScope {
     public ParserScope complete() {
         complete = true;
         return this;
+    }
+
+    public boolean isResolution(ParserScopeEnum resolution) {
+        return this.resolution == resolution;
+    }
+
+    public boolean isNotResolution(ParserScopeEnum resolution) {
+        return this.resolution != resolution;
     }
 
     public ParserScope resolution(ParserScopeEnum resolution) {

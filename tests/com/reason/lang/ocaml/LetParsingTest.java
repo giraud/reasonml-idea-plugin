@@ -69,4 +69,11 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertTrue(let.isFunction());
         assertEquals("lx", let.getName());
     }
+
+    public void testInDoLoop() {
+        PsiLet let = first(letExpressions(parseCode("let x l = for i = 0 to l - 1 do let x = 1 done")));
+
+        assertTrue(let.isFunction());
+        assertEquals("l = for i = 0 to l - 1 do let x = 1 done", let.getBinding().getText());
+    }
 }

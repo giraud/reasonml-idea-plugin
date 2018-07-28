@@ -112,7 +112,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     protected boolean isModuleResolution(ParserState state) {
-        return state.isResolution(moduleNamed) || state.isResolution(moduleNamedSignature);
+        return state.isResolution(moduleNamed) || state.isResolution(moduleNamedSignature) || state.isResolution(moduleNamedColon);
     }
 
     protected boolean isLetResolution(ParserState state) {

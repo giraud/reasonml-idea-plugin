@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiStruct;
 
 import java.util.Collection;
@@ -31,4 +32,10 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
         assertNotNull(struct);
     }
+
+    public void testModuleFunctor2() {
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t"));
+        assertEquals(1, expressions.size());
+    }
+
 }
