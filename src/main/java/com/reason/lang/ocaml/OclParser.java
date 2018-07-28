@@ -137,7 +137,7 @@ public class OclParser extends CommonParser {
 
     private void parseRightArrow(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(patternMatch)) {
-            state.add(markScope(builder, patternMatchBody, m_types.SCOPED_EXPR, groupExpression, null));
+            state.add(markScope(builder, patternMatch, patternMatchBody, m_types.SCOPED_EXPR, groupExpression, null));
         } else if (state.isCurrentResolution(matchWith)) {
             state.dontMove = advance(builder);
             state.add(markScope(builder, matchException, m_types.SCOPED_EXPR, groupExpression, null));
@@ -168,7 +168,7 @@ public class OclParser extends CommonParser {
             state.addStart(mark(builder, type, m_types.EXP_TYPE));
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         } else if (isLetResolution(state)) {
-            state.endUntilScopeExpression(null);
+            state.endUntilScopeOrGroupExpression();
             state.dontMove = advance(builder);
             state.addStart(mark(builder, let, m_types.LET_STMT));
         } else if (isModuleResolution(state)) {
@@ -199,7 +199,7 @@ public class OclParser extends CommonParser {
             if (state.isCurrentResolution(patternMatch)) {
                 state.popEnd();
             }
-            state.add(markCompleteScope(builder, patternMatch, m_types.PATTERN_MATCH_EXPR, groupExpression, null));
+            state.add(markCompleteScope(builder, state.currentContext(), patternMatch, m_types.PATTERN_MATCH_EXPR, groupExpression, null));
         }
     }
 
@@ -222,6 +222,7 @@ public class OclParser extends CommonParser {
             state.endUntilScopeExpression(m_types.GENERIC_COND);
             state.endUntilScopeExpression(state.isCurrentResolution(matchBinaryCondition) ? m_types.MATCH : m_types.TRY);
             state.dontMove = advance(builder);
+            state.updateCurrentResolution(state.isCurrentContext(match) ? matchWith : tryWith);
             state.add(markCompleteScope(builder, matchWith, m_types.SCOPED_EXPR, groupExpression, m_types.WITH));
         }
     }
@@ -370,8 +371,7 @@ public class OclParser extends CommonParser {
             state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
             state.add(markScope(builder, localOpenScope, m_types.SCOPED_EXPR, scopeExpression, m_types.LPAREN));
-        }
-        else if (state.isCurrentResolution(external)) {
+        } else if (state.isCurrentResolution(external)) {
             // overloading an operator
             state.updateCurrentResolution(externalNamed).complete();
         } else if (state.isCurrentResolution(val)) {
@@ -506,7 +506,7 @@ public class OclParser extends CommonParser {
                 if (nextElementType == m_types.DOT) {
                     if (state.isCurrentContext(moduleDeclaration)) {
                         // module X = <|>Path.Functor(...)
-                        state.add(mark(builder, modulePath, moduleInstanciation, m_types.MODULE_PATH/*?*/));
+                        state.add(mark(builder, moduleInstanciation, modulePath, m_types.MODULE_PATH/*?*/));
                     } else {
                         // We are parsing a module path
                         state.add(mark(builder, modulePath, m_types.MODULE_PATH));
@@ -523,8 +523,7 @@ public class OclParser extends CommonParser {
             // let open X (coq/indtypes.ml)
             state.updateCurrentResolution(open);
             state.updateCurrentCompositeElementType(m_types.OPEN_STMT);
-        }
-        else {
+        } else {
             endLikeSemi(state);
             state.addStart(mark(builder, open, m_types.OPEN_STMT));
         }
@@ -584,7 +583,7 @@ public class OclParser extends CommonParser {
     private void parseModule(PsiBuilder builder, ParserState state) {
         if (state.notResolution(annotationName)) {
             endLikeSemi(state);
-            state.addStart(mark(builder, module, moduleDeclaration, m_types.MODULE_STMT));
+            state.addStart(mark(builder, moduleDeclaration, module, m_types.MODULE_STMT));
         }
     }
 

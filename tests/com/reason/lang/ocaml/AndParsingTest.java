@@ -4,8 +4,11 @@ import com.intellij.psi.PsiFile;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiSwitch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -30,5 +33,16 @@ public class AndParsingTest extends BaseParsingTestCase {
         assertEquals("X", mods.get(0).getName());
         assertEquals("Y", mods.get(1).getName());
     }
+
+    public void testPatternChaining() {
+        PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2", true);
+        Collection<PsiNamedElement> exps = expressions(file);
+
+        assertInstanceOf(firstElement(file), PsiSwitch.class);
+        assertEquals(0, exps.size());
+
+    }
+
+
 
 }

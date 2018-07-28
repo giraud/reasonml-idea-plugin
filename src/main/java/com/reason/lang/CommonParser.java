@@ -70,7 +70,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return new ParserScope(context, context, compositeElementType, null, builder.mark());
     }
 
-    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, ParserScopeEnum context, IElementType compositeElementType) {
+    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType) {
         return new ParserScope(context, resolution, compositeElementType, null, builder.mark());
     }
 
@@ -80,16 +80,24 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return scope;
     }
 
-    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
-        ParserScope scope = new ParserScope(resolution, resolution, compositeElementType, scopeTokenElementType, builder.mark());
+    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
+        ParserScope scope = new ParserScope(context, resolution, compositeElementType, scopeTokenElementType, builder.mark());
         scope.scopeType = scopeType;
         return scope;
     }
 
-    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
-        ParserScope scope = markScope(builder, resolution, compositeElementType, scopeType, scopeTokenElement);
+    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
+        return markScope(builder, resolution, resolution, compositeElementType, scopeType, scopeTokenElementType);
+    }
+
+    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
+        ParserScope scope = markScope(builder, context, resolution, compositeElementType, scopeType, scopeTokenElement);
         scope.complete = true;
         return scope;
+    }
+
+    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
+        return markCompleteScope(builder, resolution, resolution, compositeElementType, scopeType, scopeTokenElement);
     }
 
     protected ParserScope markGroup(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @Nullable MlTokenElementType scopeTokenElementType) {

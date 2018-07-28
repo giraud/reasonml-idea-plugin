@@ -93,4 +93,8 @@ public class ParserScope {
     public void context(ParserScopeEnum context) {
         m_context = context;
     }
+
+    public ParserScopeEnum getContext() {
+        return m_context;
+    }
 }

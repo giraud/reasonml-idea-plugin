@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.reason.lang.ParserScopeType.any;
+import static com.reason.lang.ParserScopeType.groupExpression;
 import static com.reason.lang.ParserScopeType.scopeExpression;
 
 public class ParserState {
@@ -77,6 +78,21 @@ public class ParserState {
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeTokenElementType != scopeElementType)) {
+                popEnd();
+                scope = getLatestScope();
+            }
+        }
+
+        return scope;
+    }
+
+    @Nullable
+    public ParserScope endUntilScopeOrGroupExpression() {
+        ParserScope scope = null;
+
+        if (!m_scopes.isEmpty()) {
+            scope = m_scopes.peek();
+            while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != groupExpression) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -201,5 +217,9 @@ public class ParserState {
 
     public void updateCurrentContext(ParserScopeEnum context) {
         currentScope.context(context);
+    }
+
+    public ParserScopeEnum currentContext() {
+        return currentScope.getContext();
     }
 }

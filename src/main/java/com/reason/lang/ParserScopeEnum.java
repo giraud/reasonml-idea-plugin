@@ -102,5 +102,5 @@ public enum ParserScopeEnum {
     executable,
     maybeLetFunction,
     maybeLetFunctionParameters,
-    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleFunctorNamed, moduleTypeDeclaration, moduleTypeNamed, moduleTypeNamedEq, moduleDeclaration, moduleInstanciation, name
+    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleFunctorNamed, moduleTypeDeclaration, moduleTypeNamed, moduleTypeNamedEq, moduleDeclaration, moduleInstanciation, tryWith, name
 }
