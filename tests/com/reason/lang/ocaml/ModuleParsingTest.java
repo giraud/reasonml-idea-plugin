@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiModule;
@@ -30,12 +31,28 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     public void testModuleFunctor() {
         PsiModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
         PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
+
         assertNotNull(struct);
     }
 
     public void testModuleFunctor2() {
         Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t"));
+
         assertEquals(1, expressions.size());
     }
+
+    public void testModuleFunctorInstantiation() {
+        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos", true);
+        Collection<PsiNamedElement> expressions = expressions(file);
+
+        assertEquals(2, expressions.size());
+    }
+
+    public void testModuleType() {
+        PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = sig end")));
+
+        assertEquals("RedFlagsSig", module.getName());
+    }
+
 
 }

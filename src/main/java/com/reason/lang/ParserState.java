@@ -94,7 +94,7 @@ public class ParserState {
         currentScope = m_scopes.isEmpty() ? m_rootScope : m_scopes.peek();
     }
 
-    public boolean isResolution(ParserScopeEnum scope) {
+    public boolean isCurrentResolution(ParserScopeEnum scope) {
         return currentScope.isResolution(scope);
     }
 
@@ -160,7 +160,7 @@ public class ParserState {
     }
 
     @NotNull
-    public ParserState currentResolution(@NotNull ParserScopeEnum resolution) {
+    public ParserState updateCurrentResolution(@NotNull ParserScopeEnum resolution) {
         currentScope.resolution(resolution);
         return this;
     }
@@ -195,4 +195,11 @@ public class ParserState {
         return currentScope.isScopeTokenEqualTo(tokenElementType);
     }
 
+    public boolean isCurrentContext(ParserScopeEnum context) {
+        return currentScope.isContext(context);
+    }
+
+    public void updateCurrentContext(ParserScopeEnum context) {
+        currentScope.context(context);
+    }
 }

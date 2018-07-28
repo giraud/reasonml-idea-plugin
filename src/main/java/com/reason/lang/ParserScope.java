@@ -5,20 +5,24 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.type.MlTokenElementType;
 
 public class ParserScope {
-    private ParserScopeEnum resolution;
-    ParserScopeType scopeType = ParserScopeType.any;
-    private IElementType compositeElementType;
+    private ParserScopeEnum m_resolution;
+    private IElementType m_compositeElementType;
+    private ParserScopeEnum m_context;
+
     MlTokenElementType scopeTokenElementType;
+    ParserScopeType scopeType = ParserScopeType.any;
+
     boolean complete = false;
     boolean start = false;
 
-    private PsiBuilder.Marker mark;
+    private PsiBuilder.Marker m_mark;
 
-    ParserScope(ParserScopeEnum resolution, IElementType compositeElementType, MlTokenElementType scopeTokenElementType, PsiBuilder.Marker mark) {
-        this.resolution = resolution;
-        this.compositeElementType = compositeElementType;
+    ParserScope(ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, MlTokenElementType scopeTokenElementType, PsiBuilder.Marker mark) {
+        m_context = context;
+        m_resolution = resolution;
+        m_compositeElementType = compositeElementType;
+        m_mark = mark;
         this.scopeTokenElementType = scopeTokenElementType;
-        this.mark = mark;
     }
 
     public void end() {
@@ -30,20 +34,20 @@ public class ParserScope {
     }
 
     private void done() {
-        if (mark != null) {
-            if (compositeElementType != null) {
-                mark.done(compositeElementType);
+        if (m_mark != null) {
+            if (m_compositeElementType != null) {
+                m_mark.done(m_compositeElementType);
             } else {
-                mark.drop();
+                m_mark.drop();
             }
-            mark = null;
+            m_mark = null;
         }
     }
 
     private void drop() {
-        if (mark != null) {
-            mark.drop();
-            mark = null;
+        if (m_mark != null) {
+            m_mark.drop();
+            m_mark = null;
         }
     }
 
@@ -53,20 +57,20 @@ public class ParserScope {
     }
 
     public boolean isResolution(ParserScopeEnum resolution) {
-        return this.resolution == resolution;
+        return m_resolution == resolution;
     }
 
     public boolean isNotResolution(ParserScopeEnum resolution) {
-        return this.resolution != resolution;
+        return m_resolution != resolution;
     }
 
     public ParserScope resolution(ParserScopeEnum resolution) {
-        this.resolution = resolution;
+        m_resolution = resolution;
         return this;
     }
 
     boolean isCompositeEqualTo(IElementType compositeElementType) {
-        return this.compositeElementType == compositeElementType;
+        return m_compositeElementType == compositeElementType;
     }
 
     boolean isScopeTokenEqualTo(MlTokenElementType tokenElementType) {
@@ -77,12 +81,16 @@ public class ParserScope {
         this.scopeTokenElementType = tokenElementType;
     }
 
-    MlTokenElementType getScopeTokenType() {
-        return this.scopeTokenElementType;
+    public ParserScope compositeElementType(IElementType compositeElementType) {
+        m_compositeElementType = compositeElementType;
+        return this;
     }
 
-    public ParserScope compositeElementType(IElementType compositeElementType) {
-        this.compositeElementType = compositeElementType;
-        return this;
+    boolean isContext(ParserScopeEnum context) {
+        return m_context == context;
+    }
+
+    public void context(ParserScopeEnum context) {
+        m_context = context;
     }
 }

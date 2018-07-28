@@ -24,4 +24,10 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("Y", module.getAlias());
     }
 
+    public void testModuleType() {
+        PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = {};", true)));
+
+        assertEquals("RedFlagsSig", module.getName());
+    }
+
 }

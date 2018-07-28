@@ -45,7 +45,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
-        ParserScope fileScope = new ParserScope(file, null, null, builder.mark());
+        ParserScope fileScope = new ParserScope(file, file, null, null, builder.mark());
 
         ParserState state = new ParserState(fileScope);
         parseFile(builder, state);
@@ -62,8 +62,16 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
-        return new ParserScope(resolution, compositeElementType, null, builder.mark());
+    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum context) {
+        return new ParserScope(context, context, m_types.GENERIC_EXPR, null, builder.mark());
+    }
+
+    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum context, IElementType compositeElementType) {
+        return new ParserScope(context, context, compositeElementType, null, builder.mark());
+    }
+
+    protected ParserScope mark(PsiBuilder builder, ParserScopeEnum resolution, ParserScopeEnum context, IElementType compositeElementType) {
+        return new ParserScope(context, resolution, compositeElementType, null, builder.mark());
     }
 
     protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
@@ -73,7 +81,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
-        ParserScope scope = new ParserScope(resolution, compositeElementType, scopeTokenElementType, builder.mark());
+        ParserScope scope = new ParserScope(resolution, resolution, compositeElementType, scopeTokenElementType, builder.mark());
         scope.scopeType = scopeType;
         return scope;
     }
@@ -108,14 +116,14 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     protected boolean isTypeResolution(ParserState state) {
-        return state.isResolution(typeNamed) || state.isResolution(typeNamedEq) || state.isResolution(typeNamedEqVariant);
+        return state.isCurrentResolution(typeNamed) || state.isCurrentResolution(typeNamedEq) || state.isCurrentResolution(typeNamedEqVariant);
     }
 
     protected boolean isModuleResolution(ParserState state) {
-        return state.isResolution(moduleNamed) || state.isResolution(moduleNamedSignature) || state.isResolution(moduleNamedColon);
+        return state.isCurrentResolution(moduleNamed) || state.isCurrentResolution(moduleNamedSignature) || state.isCurrentResolution(moduleNamedColon);
     }
 
     protected boolean isLetResolution(ParserState state) {
-        return state.isResolution(letNamed) || state.isResolution(letNamedEq);
+        return state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedEq);
     }
 }

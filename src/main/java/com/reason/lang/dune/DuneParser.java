@@ -76,7 +76,7 @@ public class DuneParser extends CommonParser {
     ))
     */
     private void parseExecutable(PsiBuilder builder, ParserState state) {
-        state.currentResolution(executable);
+        state.updateCurrentResolution(executable);
         state.setTokenElementType(DuneTypes.EXECUTABLE);
         state.dontMove = advance(builder);
         if (builder.getTokenType() == DuneTypes.LPAREN) {
@@ -93,7 +93,7 @@ public class DuneParser extends CommonParser {
     ))
     */
     private void parseLibrary(PsiBuilder builder, ParserState state) {
-        state.currentResolution(library);
+        state.updateCurrentResolution(library);
         state.setTokenElementType(DuneTypes.LIBRARY);
         state.dontMove = advance(builder);
         if (builder.getTokenType() == DuneTypes.LPAREN) {
@@ -106,7 +106,7 @@ public class DuneParser extends CommonParser {
     /* (name id) */
     private void parseName(PsiBuilder builder, ParserState state) {
         if (state.previousTokenElementType == DuneTypes.LPAREN) {
-            state.currentResolution(name);
+            state.updateCurrentResolution(name);
             state.setTokenElementType(DuneTypes.NAME);
             state.complete();
         }
