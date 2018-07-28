@@ -6,10 +6,6 @@ import com.reason.lang.core.psi.type.MlTokenElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.reason.lang.ParserScopeType.any;
-import static com.reason.lang.ParserScopeType.groupExpression;
-import static com.reason.lang.ParserScopeType.scopeExpression;
-
 public class ParserState {
 
     public boolean dontMove = false;
@@ -25,14 +21,45 @@ public class ParserState {
         currentScope = rootScope;
     }
 
-    // End any scope that is not a scope/group and that is not a start expression
-    @Nullable
-    public ParserScope endAny() {
+    // End everything
+    public void endAny() {
         ParserScope scope = null;
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && !scope.start && scope.scopeType == any) {
+            while (scope != null) {
+                popEnd();
+                scope = getLatestScope();
+            }
+        }
+    }
+
+    @NotNull
+    public ParserScope endUntilStartScope() {
+        ParserScope latestKnownScope = null;
+
+        if (!m_scopes.isEmpty()) {
+            latestKnownScope = m_scopes.peek();
+            ParserScope scope = latestKnownScope;
+            while (scope != null && !scope.isScopeStart()) {
+                popEnd();
+                scope = getLatestScope();
+                if (scope != null) {
+                    latestKnownScope = scope;
+                }
+            }
+        }
+
+        return latestKnownScope == null ? m_rootScope : latestKnownScope;
+    }
+
+    @Nullable
+    public ParserScope endUntilContext(@NotNull ParserScopeEnum context) {
+        ParserScope scope = null;
+
+        if (!m_scopes.isEmpty()) {
+            scope = m_scopes.peek();
+            while (scope != null && !scope.isContext(context)) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -42,12 +69,12 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilStart() {
+    public ParserScope endUntilResolution(@NotNull ParserScopeEnum resolution) {
         ParserScope scope = null;
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && !scope.start) {
+            while (scope != null && !scope.isResolution(resolution)) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -57,42 +84,12 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilResolution(ParserScopeEnum resolution) {
+    public ParserScope endUntilScopeToken(@NotNull MlTokenElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope.isNotResolution(resolution)) {
-                popEnd();
-                scope = getLatestScope();
-            }
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    public ParserScope endUntilScopeExpression(MlTokenElementType scopeElementType) {
-        ParserScope scope = null;
-
-        if (!m_scopes.isEmpty()) {
-            scope = m_scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && (scopeElementType == null || scope.scopeTokenElementType != scopeElementType)) {
-                popEnd();
-                scope = getLatestScope();
-            }
-        }
-
-        return scope;
-    }
-
-    @Nullable
-    public ParserScope endUntilScopeOrGroupExpression() {
-        ParserScope scope = null;
-
-        if (!m_scopes.isEmpty()) {
-            scope = m_scopes.peek();
-            while (scope != null && scope.scopeType != scopeExpression && scope.scopeType != groupExpression) {
+            while (scope != null && scope.scopeTokenElementType != scopeElementType) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -114,10 +111,6 @@ public class ParserState {
         return currentScope.isResolution(scope);
     }
 
-    public boolean notResolution(ParserScopeEnum scope) {
-        return currentScope.isNotResolution(scope);
-    }
-
     public void complete() {
         currentScope.complete = true;
     }
@@ -133,11 +126,7 @@ public class ParserState {
 
     public void add(ParserScope scope, boolean start) {
         add(scope);
-        scope.start = start;
-    }
-
-    public void addStart(ParserScope scope) {
-        add(scope, true);
+        scope.setStart(start);
     }
 
     boolean empty() {
@@ -182,23 +171,15 @@ public class ParserState {
     }
 
     public boolean notInScopeExpression() {
-        return currentScope.scopeType != scopeExpression && currentScope.scopeType != ParserScopeType.groupExpression;
+        return !currentScope.scope;
     }
 
     public boolean isInScopeExpression() {
-        return currentScope.scopeType == scopeExpression || currentScope.scopeType == ParserScopeType.groupExpression;
+        return currentScope.scope;
     }
 
     public void setTokenElementType(MlTokenElementType tokenType) {
         currentScope.setScopeTokenType(tokenType);
-    }
-
-    public void setCurrentScopeType(ParserScopeType scopeType) {
-        currentScope.scopeType = scopeType;
-    }
-
-    public boolean isStart(@Nullable ParserScope scope) {
-        return scope != null && scope.start;
     }
 
     @NotNull
@@ -215,11 +196,13 @@ public class ParserState {
         return currentScope.isContext(context);
     }
 
-    public void updateCurrentContext(ParserScopeEnum context) {
+    public ParserState updateCurrentContext(ParserScopeEnum context) {
         currentScope.context(context);
+        return this;
     }
 
     public ParserScopeEnum currentContext() {
         return currentScope.getContext();
     }
+
 }

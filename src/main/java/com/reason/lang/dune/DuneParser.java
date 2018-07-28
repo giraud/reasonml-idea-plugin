@@ -8,7 +8,6 @@ import com.reason.lang.ParserState;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
-import static com.reason.lang.ParserScopeType.scopeExpression;
 
 public class DuneParser extends CommonParser {
     public DuneParser() {
@@ -36,7 +35,7 @@ public class DuneParser extends CommonParser {
             }
 
             if (tokenType == DuneTypes.LPAREN) {
-                state.add(markScope(builder, sexpr, DuneTypes.SEXPR, scopeExpression, null));
+                state.add(markScope(builder, sexpr, DuneTypes.SEXPR, m_types.LPAREN));
             } else if (tokenType == DuneTypes.RPAREN) {
                 if (state.isInScopeExpression()) {
                     state.complete();

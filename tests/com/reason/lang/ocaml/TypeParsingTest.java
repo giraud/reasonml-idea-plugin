@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiRecord;
@@ -33,7 +34,9 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeBindingWithRecord() {
-        assertNotNull(first(findChildrenOfType(first(typeExpressions(parseCode("type t = {count: int;}"))), PsiTypeBinding.class)));
+        PsiFile file = parseCode("type t = {count: int;}", true);
+
+        assertNotNull(first(findChildrenOfType(first(typeExpressions(file)), PsiTypeBinding.class)));
     }
 
     @SuppressWarnings("unchecked")

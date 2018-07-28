@@ -1,11 +1,15 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {
@@ -13,13 +17,14 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testConstant() {
-        PsiLet let = first(letExpressions(parseCode("let x = 1")));
+        PsiFile file = parseCode("let x = 1 let y = 2");
+        List<PsiLet> lets = new ArrayList<>(letExpressions(file));
 
-        assertEquals("x", let.getName());
-        assertFalse(let.isFunction());
-        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
+        assertEquals(2, lets.size());
+        assertEquals("x", lets.get(0).getName());
+        assertFalse(lets.get(0).isFunction());
+        assertNotNull(first(PsiTreeUtil.findChildrenOfType(lets.get(0), PsiLetBinding.class)));
     }
-
 
     public void testLetBinding() {
         PsiLet let = first(letExpressions(parseCode("let obj = [%bs.obj { a = \"b\" }];")));
@@ -31,6 +36,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     public void testLetBindingWithFunction() {
         PsiLet let = first(letExpressions(parseCode("let add x y = x + y")));
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
+        assertEquals("x y = x + y", let.getBinding().getText());
     }
 
     public void testScopeWithSome() {
@@ -47,7 +53,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testRecord() {
-        PsiLet let = first(letExpressions(parseCode("let r = { one = 1; two = 2 }")));
+        PsiLet let = first(letExpressions(parseCode("let r = { one = 1; two = 2 }", true)));
 
         PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
         assertNotNull(binding);
@@ -68,16 +74,39 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testInDoLoop() {
-        PsiLet let = first(letExpressions(parseCode("let x l = for i = 0 to l - 1 do let x = 1 done")));
+        PsiFile file = parseCode("let x l = for i = 0 to l - 1 do let x = 1 done");
+        PsiLet let = first(letExpressions(file));
 
         assertTrue(let.isFunction());
         assertEquals("l = for i = 0 to l - 1 do let x = 1 done", let.getBinding().getText());
+    }
+
+    public void testWithSemiSeparator() {
+        PsiFile file = parseCode("let rec read_num = Printf.printf; let l = 1");
+        Collection<PsiLet> lets = letExpressions(file);
+
+        assertEquals(1, lets.size());
     }
 
     public void testLikeLocalOpen() {
         PsiOpen open = first(openExpressions(parseCode("let open Univ")));
 
         assertEquals("let open Univ", open.getText());
+    }
+
+    public void testLikeModule() {
+        PsiFile file = parseCode("let module Repr = (val repr : S)");
+        PsiModule module = first(moduleExpressions(file));
+
+        assertEquals(1, file.getChildren().length);
+        assertEquals("Repr", module.getName());
+    }
+
+    public void testChaining() {
+        PsiFile file = parseCode("let visit_vo f = let segments = [| a; b; |] in let repr = x");
+        Collection<PsiLet> lets = letExpressions(file);
+
+        assertEquals(1, lets.size());
     }
 
 }

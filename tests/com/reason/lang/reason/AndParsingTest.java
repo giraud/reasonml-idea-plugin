@@ -1,10 +1,13 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.PsiFile;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiType;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -22,10 +25,21 @@ public class AndParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleChaining() {
-        List<PsiModule> mods = new ArrayList(moduleExpressions(parseCode("module rec X: {} = {} and Y: {} = {};")));
+        PsiFile file = parseCode("module rec X: {} = {} and Y: {} = {};");
+        List<PsiModule> mods = new ArrayList(moduleExpressions(file));
 
         assertEquals(2, mods.size());
         assertEquals("X", mods.get(0).getName());
         assertEquals("Y", mods.get(1).getName());
+    }
+
+    /* type update = | NoUpdate and 'state self = {state: 'state;}*/
+    public void testAnd() {
+        PsiFile file = parseCode("type update = | NoUpdate and self('state) = {state: 'state};");
+        Collection<PsiType> types = typeExpressions(file);
+
+        assertEquals(2, types.size());
+        assertEquals("update", first(types).getName());
+        assertEquals("self", second(types).getName());
     }
 }

@@ -8,11 +8,9 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.type.MlTokenElementType;
 import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
-import static com.reason.lang.ParserScopeType.groupExpression;
 
 public abstract class CommonParser implements PsiParser, LightPsiParser {
 
@@ -74,42 +72,32 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return new ParserScope(context, resolution, compositeElementType, null, builder.mark());
     }
 
+    protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType) {
+        ParserScope scope = mark(builder, context, resolution, compositeElementType);
+        scope.complete = true;
+        return scope;
+    }
+
     protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType) {
-        ParserScope scope = mark(builder, resolution, compositeElementType);
-        scope.complete = true;
-        return scope;
+        return markComplete(builder, resolution, resolution, compositeElementType);
     }
 
-    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
+    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, @NotNull MlTokenElementType scopeTokenElementType) {
         ParserScope scope = new ParserScope(context, resolution, compositeElementType, scopeTokenElementType, builder.mark());
-        scope.scopeType = scopeType;
+        scope.scope = true;
+        scope.setStart(true);
         return scope;
     }
 
-    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElementType) {
-        return markScope(builder, resolution, resolution, compositeElementType, scopeType, scopeTokenElementType);
+    protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, @NotNull MlTokenElementType scopeTokenElementType) {
+        return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
 
-    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
-        ParserScope scope = markScope(builder, context, resolution, compositeElementType, scopeType, scopeTokenElement);
-        scope.complete = true;
-        return scope;
+    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, @NotNull MlTokenElementType scopeTokenElement) {
+        ParserScope scope1 = markScope(builder, resolution, resolution, compositeElementType, scopeTokenElement);
+        scope1.complete = true;
+        return scope1;
     }
-
-    protected ParserScope markCompleteScope(PsiBuilder builder, ParserScopeEnum resolution, IElementType compositeElementType, ParserScopeType scopeType, MlTokenElementType scopeTokenElement) {
-        return markCompleteScope(builder, resolution, resolution, compositeElementType, scopeType, scopeTokenElement);
-    }
-
-    protected ParserScope markGroup(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @Nullable MlTokenElementType scopeTokenElementType) {
-        return markScope(builder, resolution, compositeElementType, groupExpression, scopeTokenElementType);
-    }
-
-    protected ParserScope markCompleteGroup(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType) {
-        ParserScope scope = markGroup(builder, resolution, compositeElementType, null);
-        scope.complete = true;
-        return scope;
-    }
-
 
     protected boolean advance(PsiBuilder builder) {
         builder.advanceLexer();
@@ -123,15 +111,15 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         return true;
     }
 
-    protected boolean isTypeResolution(ParserState state) {
-        return state.isCurrentResolution(typeNamed) || state.isCurrentResolution(typeNamedEq) || state.isCurrentResolution(typeNamedEqVariant);
+    protected boolean isTypeResolution(ParserScope scope) {
+        return scope.isResolution(typeNamed) || scope.isResolution(typeNamedEq) || scope.isResolution(typeNamedEqVariant);
     }
 
-    protected boolean isModuleResolution(ParserState state) {
-        return state.isCurrentResolution(moduleNamed) || state.isCurrentResolution(moduleNamedSignature) || state.isCurrentResolution(moduleNamedColon);
+    protected boolean isModuleResolution(ParserScope scope) {
+        return scope.isResolution(moduleNamed) || scope.isResolution(moduleNamedSignature) || scope.isResolution(moduleNamedColon);
     }
 
-    protected boolean isLetResolution(ParserState state) {
-        return state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedEq);
+    protected boolean isLetResolution(ParserScope scope) {
+        return scope.isResolution(letNamed) || scope.isResolution(letNamedEq);
     }
 }

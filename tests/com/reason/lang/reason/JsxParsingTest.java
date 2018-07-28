@@ -39,7 +39,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropWithParen() {
-        PsiTagStart tag = (PsiTagStart) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
+        PsiTagStart tag = (PsiTagStart) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>", true));
 
         Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
         assertEquals(2, properties.size());

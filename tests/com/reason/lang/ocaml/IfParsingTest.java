@@ -15,7 +15,7 @@ public class IfParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasicIfParsing() {
-        PsiFile psiFile = parseCode("let _ = if x then ()");
+        PsiFile psiFile = parseCode("let _ = if x then ()", true);
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
         assertNotNull(e);
@@ -36,4 +36,12 @@ public class IfParsingTest extends BaseParsingTestCase {
         assertEquals("1", scopes.get(0).getText());
         assertEquals("2", scopes.get(1).getText());
     }
+
+    public void testIfWithIn() {
+        PsiFile file = parseCode("let _ =  if x then let init = y in let data = z", true);
+
+        assertEquals(1, letExpressions(file).size());
+        assertNotNull(firstOfType(file, PsiIfStatement.class));
+    }
+
 }

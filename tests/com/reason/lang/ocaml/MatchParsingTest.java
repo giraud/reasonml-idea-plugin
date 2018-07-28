@@ -4,13 +4,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.*;
 
-public class MatchTryParsingTest extends BaseParsingTestCase {
-    public MatchTryParsingTest() {
+public class MatchParsingTest extends BaseParsingTestCase {
+    public MatchParsingTest() {
         super("", "ml", new OclParserDefinition());
     }
 
@@ -33,15 +30,22 @@ public class MatchTryParsingTest extends BaseParsingTestCase {
         assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiSwitch.class));
     }
 
-    public void testTryIn() {
-        PsiFile psiFile = parseCode("try x with Not_found -> assert false in otherExpression");
-        PsiElement[] children = psiFile.getChildren();
-        assertEquals(5, children.length); // in is token
+    public void testMatchWithException() {
+        PsiFile psiFile = parseCode("match x with | exception Failure -> Printf.printf");
+        assertEquals(1, psiFile.getChildren().length);
     }
 
-    public void testTryLet() {
-        PsiFile psiFileModule = parseCode("let e = try let t = 6 with Not_found -> ()");
-        PsiElement[] children = psiFileModule.getChildren();
+    public void testComplexMatch() {
+        PsiFile file = parseCode("begin match Repr.repr o with\n"+
+                "    | BLOCK (0, [|id; o|]) ->\n"+
+                "      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]\n"+
+                "    | _ -> raise Exit\n"+
+                "    end", true);
+        PsiElement[] children = file.getChildren();
+
         assertEquals(1, children.length);
+        assertInstanceOf(children[0], PsiScopedExpr.class);
     }
+
+
 }

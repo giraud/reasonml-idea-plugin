@@ -2,10 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.reason.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +40,12 @@ public class AndParsingTest extends BaseParsingTestCase {
 
     }
 
+    public void testTypeChaining() {
+        Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}"));
 
+        assertEquals(2, types.size());
+        assertEquals("update", first(types).getName());
+        assertEquals("self", second(types).getName());
+    }
 
 }

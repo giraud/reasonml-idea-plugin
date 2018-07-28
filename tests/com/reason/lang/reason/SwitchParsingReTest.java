@@ -14,7 +14,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     }
 
     public void testPattern() {
-        PsiFile psiFile = parseCode("switch (x) { | Some(x) => x; (); | None => () };");
+        PsiFile psiFile = parseCode("switch (x) { | Some(x) => x; (); | None => () };", true);
 
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
         assertNotNull(switch_);

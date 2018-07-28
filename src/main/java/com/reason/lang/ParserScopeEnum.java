@@ -38,7 +38,7 @@ public enum ParserScopeEnum {
 
     function,
     parameters,
-    funBody,
+    functionBody,
 
     val,
     valNamed,
@@ -102,5 +102,5 @@ public enum ParserScopeEnum {
     executable,
     maybeLetFunction,
     maybeLetFunctionParameters,
-    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleFunctorNamed, moduleTypeDeclaration, moduleTypeNamed, moduleTypeNamedEq, moduleDeclaration, moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, name
+    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration, moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope, moduleNamedSignatureEq, array, name
 }

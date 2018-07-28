@@ -68,5 +68,12 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("Constraint", first(moduleExpressions(file)).getName());
     }
 
+    public void testModuleChaining() {
+        PsiFile file = parseCode(" module A = sig type t end\nmodule B = struct end");
+
+        assertEquals(2, moduleExpressions(file).size());
+    }
+
+
 
 }

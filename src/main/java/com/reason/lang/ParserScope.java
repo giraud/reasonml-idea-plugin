@@ -8,12 +8,11 @@ public class ParserScope {
     private ParserScopeEnum m_resolution;
     private IElementType m_compositeElementType;
     private ParserScopeEnum m_context;
-
     MlTokenElementType scopeTokenElementType;
-    ParserScopeType scopeType = ParserScopeType.any;
 
     boolean complete = false;
-    boolean start = false;
+    boolean scope = false;
+    private boolean m_scopeStart = false;
 
     private PsiBuilder.Marker m_mark;
 
@@ -60,10 +59,6 @@ public class ParserScope {
         return m_resolution == resolution;
     }
 
-    public boolean isNotResolution(ParserScopeEnum resolution) {
-        return m_resolution != resolution;
-    }
-
     public ParserScope resolution(ParserScopeEnum resolution) {
         m_resolution = resolution;
         return this;
@@ -96,5 +91,13 @@ public class ParserScope {
 
     public ParserScopeEnum getContext() {
         return m_context;
+    }
+
+    public boolean isScopeStart() {
+        return m_scopeStart;
+    }
+
+    public void setStart(boolean start) {
+        m_scopeStart = start;
     }
 }
