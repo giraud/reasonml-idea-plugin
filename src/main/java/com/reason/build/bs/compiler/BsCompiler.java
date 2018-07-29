@@ -116,6 +116,7 @@ public final class BsCompiler implements CompilerLifecycle {
         }
 
         cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir(sourceFile));
+        cli.withEnvironment("NINJA_ANSI_FORCED", "1");
 
         return cli;
     }
