@@ -83,4 +83,13 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertTrue(let.isFunction());
         assertEquals("lx", let.getName());
     }
+
+    public void testWithType() {
+        PsiFile file = parseCode("let cast_list: type a b. (eq(a, b), list(a)) => list(b) = (Refl, x) => x;", true);
+        PsiLet let = first(letExpressions(file));
+
+        assertEquals("type a b. (eq(a, b), list(a)) -> list(b)", let.getSignature().toString());
+        assertEquals("(Refl, x) => x", let.getFunction().getText());
+    }
+
 }

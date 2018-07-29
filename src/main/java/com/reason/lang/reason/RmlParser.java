@@ -311,7 +311,9 @@ public class RmlParser extends CommonParser {
 
     private void parseType(PsiBuilder builder, ParserState state) {
         if (!state.isCurrentResolution(module)) {
-            state.endUntilStartScope();
+            if (!state.isCurrentResolution(letNamedSignature)) {
+                state.endUntilStartScope();
+            }
             state.add(mark(builder, type, m_types.EXP_TYPE));
             state.dontMove = advance(builder);
             state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
@@ -560,7 +562,9 @@ public class RmlParser extends CommonParser {
 //                state.endAny();
 //            }
 
-            if (!state.isCurrentResolution(patternMatch) && !state.isCurrentResolution(recordSignature) && !state.isCurrentResolution(letNamedSignature) && !state.isCurrentResolution(tagPropertyEq)) {
+            if (!state.isCurrentResolution(patternMatch) && !state.isCurrentResolution(recordSignature) &&
+                    !state.isCurrentResolution(letNamedSignature) && !state.isCurrentResolution(tagPropertyEq) &&
+                    !state.isCurrentContext(typeConstrName)) {
                 // just a marker that will be used only if it's a function (duplicate the current token type)
                 state.add(mark(builder, genericExpression, m_types.LPAREN));
             }
@@ -690,7 +694,12 @@ public class RmlParser extends CommonParser {
         state.dontMove = advance(builder);
         IElementType nextTokenType = builder.getTokenType();
 
-        if (state.isCurrentResolution(function)) {
+        if (state.isCurrentContext(typeConstrName)) {
+            ParserScope scope = state.endUntilContext(type);
+            if (scope != null) {
+                state.popEnd();
+            }
+        } else if (state.isCurrentResolution(function)) {
             // let x = ($ANY) => <EXPR>
             state.add(markComplete(builder, state.currentContext(), functionBody, m_types.FUN_BODY));
         } else if (nextTokenType != m_types.LBRACE) {

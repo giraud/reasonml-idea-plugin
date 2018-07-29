@@ -74,7 +74,7 @@ public class OclParser extends CommonParser {
                 parseString(state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
-            } else if (tokenType == m_types.FUNCTION) {
+            } else if (tokenType == m_types.FUNCTION || tokenType == m_types.FUN) {
                 parseFun(builder, state);
             } else if (tokenType == m_types.ASSERT) {
                 parseAssert(builder, state);
@@ -173,6 +173,15 @@ public class OclParser extends CommonParser {
         } else if (state.isCurrentResolution(matchWith)) {
             state.dontMove = advance(builder);
             state.add(mark(builder, matchException, m_types.SCOPED_EXPR));
+        } else if (state.isCurrentContext(typeConstrName)) {
+            ParserScope scope = state.endUntilContext(type);
+            if (scope != null) {
+                state.popEnd();
+            }
+        } else if (state.isCurrentResolution(maybeLetFunctionParameters)) {
+            state.complete();
+            state.popEnd();
+            state.add(markComplete(builder, functionBody, m_types.FUN_BODY));
         }
     }
 
@@ -362,12 +371,16 @@ public class OclParser extends CommonParser {
         } else if (state.isCurrentResolution(valNamed)) {
             state.dontMove = advance(builder);
             state.add(markComplete(builder, valNamedSignature, m_types.SIG_SCOPE));
+        } else if (state.isCurrentResolution(letNamed)) {
+            state.dontMove = advance(builder);
+            state.add(markComplete(builder, letNamedSignature, m_types.SIG_SCOPE));
         }
     }
 
     private void parseFun(PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(letNamedEq)) {
-            state.add(markScope(builder, functionBody, m_types.LET_BINDING, null));
+        if (state.isCurrentContext(letBinding)) {
+            state.add(markCompleteScope(builder, function, m_types.FUN_EXPR, m_types.FUN));
+            state.add(mark(builder, maybeLetFunctionParameters, m_types.FUN_PARAMS));
         }
     }
 
@@ -377,7 +390,8 @@ public class OclParser extends CommonParser {
             state.updateCurrentResolution(typeNamedEq);
             state.dontMove = advance(builder);
             state.add(markComplete(builder, typeNamedEq, state.currentContext(), m_types.TYPE_BINDING));
-        } else if (state.isCurrentResolution(letNamed)) {
+        } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
+            state.endUntilContext(let);
             state.updateCurrentResolution(letNamedEq);
             state.dontMove = advance(builder);
             state.add(markComplete(builder, letBinding, letNamedBinding, m_types.LET_BINDING));
@@ -387,8 +401,7 @@ public class OclParser extends CommonParser {
             if (state.isCurrentResolution(moduleNamed)) {
                 state.updateCurrentResolution(moduleNamedEq);
                 state.complete();
-            }
-            else if (state.isCurrentResolution(moduleNamedSignature)) {
+            } else if (state.isCurrentResolution(moduleNamedSignature)) {
                 state.updateCurrentResolution(moduleNamedSignatureEq);
                 state.complete();
             }
@@ -528,7 +541,7 @@ public class OclParser extends CommonParser {
 
         if (state.isCurrentResolution(letNamed)) {
             IElementType nextTokenType = builder.getTokenType();
-            if (nextTokenType != m_types.EQ) {
+            if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
                 state.add(markComplete(builder, letBinding, letNamedBinding, m_types.LET_BINDING));
                 // add a generic marker: it may be a function + parameters
                 state.add(mark(builder, maybeLetFunction));
@@ -643,7 +656,7 @@ public class OclParser extends CommonParser {
                 state.previousTokenElementType != m_types.THEN && state.previousTokenElementType != m_types.ELSE &&
                 state.previousTokenElementType != m_types.IN && state.previousTokenElementType != m_types.LPAREN &&
                 state.previousTokenElementType != m_types.DO && state.previousTokenElementType != m_types.STRUCT &&
-                state.previousTokenElementType != m_types.SIG) {
+                state.previousTokenElementType != m_types.SIG && state.previousTokenElementType != m_types.COLON) {
             state.endUntilStartScope();
         }
     }
