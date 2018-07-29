@@ -165,7 +165,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
 
         VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, file);
-        return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getCanonicalPath());
+        return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getPath());
     }
 
     @Override
