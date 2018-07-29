@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.60
+
+- :house: Parsers updated
+
 ## 0.59.1
 
 - :rocket: You can use 'Go to class' to find OCaml/ReasonMl modules
