@@ -39,8 +39,17 @@ public class FileManager {
         return sourceFile;
     }
 
+    @Nullable
     public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
-        Path relativePath = FileSystems.getDefault().getPath(baseRoot.getPath()).relativize(new File(sourceFile.getPath()).toPath());
+        Path baseRootPath = FileSystems.getDefault().getPath(baseRoot.getPath());
+        Path relativePath;
+        try {
+            relativePath = baseRootPath.relativize(new File(sourceFile.getPath()).toPath());
+        } catch (IllegalArgumentException e) {
+            // Path can't be relativized
+            return null;
+        }
+
         Path relativeParent = relativePath.getParent();
         if (relativeParent != null) {
             relativeBuildPath = relativeBuildPath.resolve(relativeParent);
@@ -53,6 +62,9 @@ public class FileManager {
     @Nullable
     public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
         Path path = pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, useCmt);
+        if (path == null) {
+            return null;
+        }
         String relativeCmiPath = separatorsToUnix(path.toString());
         return baseRoot.findFileByRelativePath(relativeCmiPath);
     }
