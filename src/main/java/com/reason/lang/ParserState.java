@@ -1,6 +1,7 @@
 package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.Stack;
 import com.reason.lang.core.psi.type.MlTokenElementType;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +24,8 @@ public class ParserState {
 
     // End everything
     public void endAny() {
-        ParserScope scope = null;
-
         if (!m_scopes.isEmpty()) {
-            scope = m_scopes.peek();
+            ParserScope scope = m_scopes.peek();
             while (scope != null) {
                 popEnd();
                 scope = getLatestScope();
@@ -68,19 +67,15 @@ public class ParserState {
         return scope;
     }
 
-    @Nullable
-    public ParserScope endUntilResolution(@NotNull ParserScopeEnum resolution) {
-        ParserScope scope = null;
-
+    public void endUntilResolution(@NotNull ParserScopeEnum resolution) {
         if (!m_scopes.isEmpty()) {
-            scope = m_scopes.peek();
+            ParserScope scope = m_scopes.peek();
             while (scope != null && !scope.isResolution(resolution)) {
                 popEnd();
                 scope = getLatestScope();
             }
         }
 
-        return scope;
     }
 
     @Nullable
@@ -90,6 +85,21 @@ public class ParserState {
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
             while (scope != null && scope.scopeTokenElementType != scopeElementType) {
+                popEnd();
+                scope = getLatestScope();
+            }
+        }
+
+        return scope;
+    }
+
+    @Nullable
+    public ParserScope endUntilOneOfScopeToken(@NotNull MlTokenElementType... scopeElementTypes) {
+        ParserScope scope = null;
+
+        if (!m_scopes.isEmpty()) {
+            scope = m_scopes.peek();
+            while (scope != null && !ArrayUtil.contains(scope.scopeTokenElementType, scopeElementTypes)) {
                 popEnd();
                 scope = getLatestScope();
             }

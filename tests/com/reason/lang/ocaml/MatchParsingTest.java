@@ -47,5 +47,4 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertInstanceOf(children[0], PsiScopedExpr.class);
     }
 
-
 }

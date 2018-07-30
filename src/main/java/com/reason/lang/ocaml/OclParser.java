@@ -181,6 +181,7 @@ public class OclParser extends CommonParser {
         } else if (state.isCurrentResolution(maybeLetFunctionParameters)) {
             state.complete();
             state.popEnd();
+            state.dontMove = advance(builder);
             state.add(markComplete(builder, functionBody, m_types.FUN_BODY));
         }
     }
@@ -352,10 +353,10 @@ public class OclParser extends CommonParser {
     }
 
     private void parseEnd(PsiBuilder builder, ParserState state) {
-        ParserScope scope = state.endUntilStartScope();
+        ParserScope scope = state.endUntilOneOfScopeToken(m_types.BEGIN, m_types.SIG, m_types.STRUCT);
         state.dontMove = advance(builder);
 
-        if (scope.isScopeStart()) {
+        if (scope != null && scope.isScopeStart()) {
             scope.complete();
             state.popEnd();
         }
@@ -380,6 +381,7 @@ public class OclParser extends CommonParser {
     private void parseFun(PsiBuilder builder, ParserState state) {
         if (state.isCurrentContext(letBinding)) {
             state.add(markCompleteScope(builder, function, m_types.FUN_EXPR, m_types.FUN));
+            state.dontMove = advance(builder);
             state.add(mark(builder, maybeLetFunctionParameters, m_types.FUN_PARAMS));
         }
     }

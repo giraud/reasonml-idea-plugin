@@ -4,7 +4,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
 
@@ -41,6 +40,17 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertNotNull(function);
         assertEquals("Printf.printf \"a\"; Printf.printf \"b\"", function.getBody().getText());
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public void testFunctionFun() {
+        PsiFile file = parseCode("let _ = fun (_, info as ei) -> x");
+        PsiLet e = first(letExpressions(file));
+
+        assertTrue(e.isFunction());
+        PsiFunction function = e.getFunction();
+        assertEquals("(_, info as ei)", PsiTreeUtil.findChildOfType(function, PsiParameters.class).getText());
+        assertEquals("x", function.getBody().getText());
     }
 
 }
