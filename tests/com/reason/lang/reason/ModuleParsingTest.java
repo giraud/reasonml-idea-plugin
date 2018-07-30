@@ -1,5 +1,6 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.PsiFile;
 import com.reason.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiModule;
 
@@ -25,9 +26,21 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleType() {
-        PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = {};", true)));
+        PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = {};")));
 
         assertEquals("RedFlagsSig", module.getName());
     }
+
+
+    @SuppressWarnings("ConstantConditions")
+    public void testModule() {
+        PsiFile file = parseCode(" module Styles = { open Css; let y = 1 }", true);
+        PsiModule module = first(moduleExpressions(file));
+
+        assertEquals(1, expressions(file).size());
+        assertEquals("Styles", module.getName());
+        assertEquals("{ open Css; let y = 1 }", module.getBody().getText());
+    }
+
 
 }

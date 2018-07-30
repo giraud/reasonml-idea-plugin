@@ -293,7 +293,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLet(PsiBuilder builder, ParserState state) {
-        state.endAny();
+        state.endUntilStartScope();
         state.add(mark(builder, let, m_types.LET_STMT));
     }
 

@@ -81,7 +81,7 @@ public class ParserScope {
         return this;
     }
 
-    boolean isContext(ParserScopeEnum context) {
+    public boolean isContext(ParserScopeEnum context) {
         return m_context == context;
     }
 

@@ -659,7 +659,11 @@ public class OclParser extends CommonParser {
                 state.previousTokenElementType != m_types.IN && state.previousTokenElementType != m_types.LPAREN &&
                 state.previousTokenElementType != m_types.DO && state.previousTokenElementType != m_types.STRUCT &&
                 state.previousTokenElementType != m_types.SIG && state.previousTokenElementType != m_types.COLON) {
-            state.endUntilStartScope();
+            ParserScope parserScope = state.endUntilStartScope();
+            while (parserScope.isContext(function)) {
+                state.popEnd();
+                parserScope = state.endUntilStartScope();
+            }
         }
     }
 }
