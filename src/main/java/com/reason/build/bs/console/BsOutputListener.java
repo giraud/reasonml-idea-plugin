@@ -2,7 +2,6 @@ package com.reason.build.bs.console;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
@@ -11,6 +10,7 @@ import com.intellij.openapi.util.Key;
 import com.reason.build.annotations.ErrorsManager;
 import com.reason.build.annotations.OutputInfo;
 import com.reason.build.bs.compiler.BsCompiler;
+import com.reason.build.bs.compiler.RawProcessListener;
 import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static com.reason.build.bs.console.BsOutputListener.BuildStatus.*;
 import static java.lang.Integer.parseInt;
 
-public class BsOutputListener implements ProcessListener {
+public class BsOutputListener implements RawProcessListener {
 
     private static final Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
 
@@ -85,8 +85,9 @@ public class BsOutputListener implements ProcessListener {
 
     @Override
     public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
-        String text = event.getText();
+    }
 
+    public void onRawTextAvailable(@NotNull String text) {
         if (m_status == error) {
             if (m_failedLine == 1) {
                 // Extract file path and error position

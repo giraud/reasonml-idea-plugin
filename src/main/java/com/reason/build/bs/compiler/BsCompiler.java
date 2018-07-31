@@ -2,9 +2,7 @@ package com.reason.build.bs.compiler;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.KillableColoredProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -15,6 +13,9 @@ import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -24,8 +25,8 @@ public final class BsCompiler implements CompilerLifecycle {
 
     private final ModuleConfiguration m_moduleConfiguration;
 
-    private KillableColoredProcessHandler m_bsb;
-    private ProcessListener m_outputListener;
+    private BsProcessHandler m_bsb;
+    private RawProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
@@ -61,9 +62,9 @@ public final class BsCompiler implements CompilerLifecycle {
             killIt();
             GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
             if (cli != null) {
-                m_bsb = new KillableColoredProcessHandler(cli);
+                m_bsb = new BsProcessHandler(cli);
                 if (m_outputListener != null) {
-                    m_bsb.addProcessListener(m_outputListener);
+                    m_bsb.addRawProcessListener(m_outputListener);
                 }
             }
             return m_bsb;
@@ -81,10 +82,10 @@ public final class BsCompiler implements CompilerLifecycle {
         }
     }
 
-    public void addListener(ProcessListener outputListener) {
+    public void addListener(RawProcessListener outputListener) {
         m_outputListener = outputListener;
         if (m_bsb != null) {
-            m_bsb.addProcessListener(outputListener);
+            m_bsb.addRawProcessListener(outputListener);
         }
     }
 
@@ -131,6 +132,26 @@ public final class BsCompiler implements CompilerLifecycle {
 
     public void terminated() {
         m_started.set(false);
+    }
+
+    @SuppressWarnings("unused")
+    @NotNull
+    private String getMajorVersion(@NotNull VirtualFile sourceFile) {
+        Process p = null;
+        try {
+            p = Runtime.getRuntime().exec(m_moduleConfiguration.getBsbPath(sourceFile) + " -version");
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String[] numbers = reader.readLine().split("\\.");
+            return numbers[0];
+        } catch (InterruptedException | IOException e) {
+            return "";
+        } finally {
+            if (p != null) {
+                p.destroy();
+            }
+        }
     }
 
 }

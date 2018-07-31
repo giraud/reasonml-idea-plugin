@@ -2,10 +2,10 @@ package com.reason.build.annotations;
 
 public class OutputInfo {
     public boolean isError = true;
-    public int lineStart;
-    public int colStart;
-    public int lineEnd;
-    public int colEnd;
+    public int lineStart = -1;
+    public int colStart = -1;
+    public int lineEnd = -1;
+    public int colEnd = -1;
     public String message = "";
     public String path = "";
 
