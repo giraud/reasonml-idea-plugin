@@ -1,5 +1,6 @@
 package com.reason.ide.format;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
 import com.intellij.openapi.project.Project;
@@ -12,12 +13,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class ReformatOnSave extends FileDocumentManagerAdapter {
 
+    private static final Logger LOG = Logger.getInstance("ReasonML.refmt.auto");
+
     private final PsiDocumentManager m_documentManager;
     private final Bucklescript m_bs;
+    private final Project m_project;
 
     public ReformatOnSave(Project project) {
-        m_documentManager = PsiDocumentManager.getInstance(project);
-        m_bs = BucklescriptManager.getInstance(project);
+        m_project = project;
+        m_documentManager = PsiDocumentManager.getInstance(m_project);
+        m_bs = BucklescriptManager.getInstance(m_project);
     }
 
     /**
@@ -25,14 +30,21 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        if (m_bs.isRefmtOnSaveEnabled()) {
-            PsiFile file = m_documentManager.getPsiFile(document);
-            if (file != null) {
-                VirtualFile virtualFile = file.getVirtualFile();
-                String format = ReformatUtil.getFormat(file);
-                if (format != null) {
-                    m_bs.refmt(virtualFile, format, document);
-                }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Before document saving (" + m_project.getName() + ")");
+        }
+
+        // verify this document is part of the project
+        PsiFile file = m_documentManager.getCachedPsiFile(document);
+        if (file != null && m_bs.isRefmtOnSaveEnabled()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("File " + file.getVirtualFile().getPath() + " found, project=" + m_project.getName() + ", autoSave=" + m_bs.isRefmtOnSaveEnabled());
+            }
+
+            VirtualFile virtualFile = file.getVirtualFile();
+            String format = ReformatUtil.getFormat(file);
+            if (format != null) {
+                m_bs.refmt(virtualFile, format, document);
             }
         }
     }

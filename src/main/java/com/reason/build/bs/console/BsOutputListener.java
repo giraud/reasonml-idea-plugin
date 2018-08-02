@@ -76,10 +76,12 @@ public class BsOutputListener implements RawProcessListener {
         m_bsbInfo.clear();
 
         ApplicationManager.getApplication().invokeLater(() -> {
-            // When build is done, we need to refresh editors to be notified of latest modifications
-            DaemonCodeAnalyzer.getInstance(m_project).restart();
-            EditorFactory.getInstance().refreshAllEditors();
-            InferredTypesService.queryForSelectedTextEditor(m_project);
+            if (!m_project.isDisposed()) {
+                // When build is done, we need to refresh editors to be notified of latest modifications
+                DaemonCodeAnalyzer.getInstance(m_project).restart();
+                EditorFactory.getInstance().refreshAllEditors();
+                InferredTypesService.queryForSelectedTextEditor(m_project);
+            }
         });
     }
 
