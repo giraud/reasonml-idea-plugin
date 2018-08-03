@@ -28,7 +28,7 @@ public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLow
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return getFirstChild();
+        return this;
     }
 
     @Override
