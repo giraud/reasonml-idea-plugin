@@ -11,12 +11,12 @@ import java.io.*;
 
 public class RefmtProcess {
 
+    private final static Logger LOG = Logger.getInstance("ReasonML.refmt");
+
     private final ModuleConfiguration m_moduleConfiguration;
-    private final Logger m_log;
 
     public RefmtProcess(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
-        m_log = Logger.getInstance("ReasonML.refmt");
     }
 
     public boolean isOnSaveEnabled() {
@@ -30,6 +30,7 @@ public class RefmtProcess {
     public String convert(@NotNull VirtualFile sourceFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
         String refmtPath = m_moduleConfiguration.getRefmtPath(sourceFile);
         if (refmtPath == null) {
+            LOG.debug("No refmt binary found, reformat cancelled");
             return code;
         }
 
@@ -50,7 +51,7 @@ public class RefmtProcess {
             StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {
                 errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                m_log.warn(msgBuffer.toString());
+                LOG.warn(msgBuffer.toString());
             } else {
                 reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
                 String newText = msgBuffer.toString();
@@ -59,7 +60,7 @@ public class RefmtProcess {
                 }
             }
         } catch (IOException | RuntimeException e) {
-            m_log.error(e.getMessage());
+            LOG.error(e.getMessage());
         } finally {
             if (refmt != null) {
                 refmt.destroyForcibly();

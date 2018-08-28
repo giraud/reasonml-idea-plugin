@@ -190,10 +190,12 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     public void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document) {
         if (m_refmt != null) {
             String oldText = document.getText();
-            String newText = m_refmt.run(sourceFile, format, oldText);
-            if (!oldText.isEmpty() && !newText.isEmpty() && !oldText.equals(newText)) { // additional protection
-                getApplication().runWriteAction(
-                        () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+            if (!oldText.isEmpty()) {
+                String newText = m_refmt.run(sourceFile, format, oldText);
+                if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
+                    getApplication().runWriteAction(
+                            () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+                }
             }
         }
     }
