@@ -36,9 +36,9 @@ public class Debug {
         }
     }
 
-    public void debug(String comment, int t, Collection t1) {
+    public void debug(String comment, int t, @Nullable Collection t1) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + t + (1 == t1.size() ? " " + t1.iterator().next() : ""));
+            m_log.debug(comment + SEP + t + (t1 != null && 1 == t1.size() ? " " + t1.iterator().next() : ""));
         }
     }
 

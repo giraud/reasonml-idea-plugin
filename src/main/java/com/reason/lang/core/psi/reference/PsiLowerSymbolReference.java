@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi.reference;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -7,10 +8,12 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.ocaml.OclModulePathFinder;
@@ -41,6 +44,24 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;
+    }
+
+    @Override
+    public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
+        PsiElement newNameIdentifier = RmlElementFactory.createLetName(myElement.getProject(), newName);
+
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
+        if (newNameNode != null) {
+            PsiElement nameIdentifier = myElement.getFirstChild();
+            if (nameIdentifier == null) {
+                myElement.getNode().addChild(newNameNode);
+            } else {
+                ASTNode oldNameNode = nameIdentifier.getNode();
+                myElement.getNode().replaceChild(oldNameNode, newNameNode);
+            }
+        }
+
+        return myElement;
     }
 
     @Nullable

@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.psi.type.MlTypes;
@@ -32,7 +33,20 @@ public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLow
     }
 
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+        PsiElement newNameIdentifier = RmlElementFactory.createLetName(getProject(), newName);
+
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
+        if (newNameNode != null) {
+            PsiElement nameIdentifier = getFirstChild();
+            if (nameIdentifier == null) {
+                getNode().addChild(newNameNode);
+            } else {
+                ASTNode oldNameNode = nameIdentifier.getNode();
+                getNode().replaceChild(oldNameNode, newNameNode);
+            }
+        }
+
         return this;
     }
     //endregion

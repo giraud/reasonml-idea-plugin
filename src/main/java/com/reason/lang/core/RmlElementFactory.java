@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.reason.RmlLanguage;
@@ -18,6 +19,12 @@ public class RmlElementFactory {
     public static PsiElement createModuleName(Project project, String name) {
         FileBase file = createFileFromText(project, "module " + name + " = {};");
         return ((PsiModule) file.getFirstChild()).getNameIdentifier();
+    }
+
+    @Nullable
+    public static PsiElement createLetName(Project project, String name) {
+        FileBase file = createFileFromText(project, "let " + name + " = 1;");
+        return ((PsiLet) file.getFirstChild()).getNameIdentifier();
     }
 
     public static PsiElement createTypeName(Project project, String name) {
