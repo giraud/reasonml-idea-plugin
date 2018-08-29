@@ -20,18 +20,19 @@ public class Icons {
     public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocaml-file-green.png");
 
     public static final Icon TYPE = getIcon("/icons/type.png");
+    public static final Icon ANNOTATION = getIcon("/nodes/annotationtype.png");
 
-    // From jetbrains ide
-    public static final Icon ATTRIBUTE = getIcon("/css/property.png");
-    public static final Icon MODULE = getIcon("/nodes/method.png");
-    public static final Icon LET = getIcon("/nodes/field.png");
+    public static final Icon MODULE = getIcon("/nodes/javaModule.png");
+    public static final Icon LET = getIcon("/nodes/variable.png");
     public static final Icon VAL = getIcon("/nodes/variable.png");
+    public static final Icon ATTRIBUTE = getIcon("/css/property.png");
     public static final Icon FUNCTION = getIcon("/nodes/function.png");
+    public static final Icon METHOD = getIcon("/nodes/method.png");
+    public static final Icon CLASS = getIcon("/nodes/class.png");
     public static final Icon EXCEPTION = getIcon("/nodes/exceptionClass.png");
     public static final Icon EXTERNAL = getIcon("/nodes/enum.png");
     public static final Icon OBJECT = getIcon("/json/object.png");
 
-    public static final Icon SIGNATURE = getIcon("/nodes/static.png");
-    public static final Icon INCLUDE = getIcon("/nodes/javaModule.png");
     public static final Icon OPEN = getIcon("/objectBrowser/showModules.png");
+    public static final Icon INCLUDE = getIcon("/objectBrowser/showModules.png");
 }
