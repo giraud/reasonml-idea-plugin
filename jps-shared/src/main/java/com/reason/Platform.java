@@ -60,6 +60,10 @@ public class Platform {
         VirtualFile baseDir = project.getBaseDir();
 
         VirtualFile parent = sourceFile.getParent();
+        if (parent == null) {
+            return sourceFile;
+        }
+
         VirtualFile child = parent.findChild("bsconfig.json");
         while (child == null) {
             VirtualFile grandParent = parent.getParent();
