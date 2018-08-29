@@ -137,7 +137,7 @@ public final class PsiFinder {
             }
         } else {
             if (m_debug.isDebugEnabled()) {
-                m_debug.debug("  " + debugName + " found", items.size());
+                m_debug.debug("  " + debugName + " found", items.size(), items);
             }
             for (T item : items) {
                 boolean keepFile;

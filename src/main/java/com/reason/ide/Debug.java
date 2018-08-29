@@ -36,6 +36,12 @@ public class Debug {
         }
     }
 
+    public void debug(String comment, int t, Collection t1) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t + (1 == t1.size() ? " " + t1.iterator().next() : ""));
+        }
+    }
+
     public void debug(String comment, String t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + t);
