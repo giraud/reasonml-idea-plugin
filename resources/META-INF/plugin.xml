@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.60.2</version>
+    <version>0.61</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,10 @@
 
     <change-notes><![CDATA[
         <ul>
-           <li>#90 - IllegalArgumentException when clicking on an entry in "Structures" to go to a symbol</li>
-           <li>#59 - Colored output in Bucklescript tab</li>
+           <li>Fixed a bug that prevented 'find usages' to work on lower symbols</li>
+           <li>#89 - Renaming variables doesn't work</li>
+           <li>#92 - Changing icons</li>
+           <li>#94 - NPE in findBaseRootFromFile</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
