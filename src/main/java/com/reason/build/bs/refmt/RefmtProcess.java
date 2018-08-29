@@ -36,6 +36,9 @@ public class RefmtProcess {
 
         String columnsWidth = m_moduleConfiguration.getRefmtWidth();
         ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + "cols for project [" + (m_moduleConfiguration.getProject()) + "]");
+        }
 
         Process refmt = null;
         try {

@@ -40,9 +40,6 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
             VirtualFile virtualFile = file.getVirtualFile();
             String format = ReformatUtil.getFormat(file);
             if (format != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Reformating " + file.getVirtualFile().getPath() + " (" + format + ")");
-                }
                 m_bs.refmt(virtualFile, format, document);
             }
         }
