@@ -1,6 +1,7 @@
 package com.reason.ide.comment;
 
 import com.intellij.lang.Commenter;
+import com.intellij.lang.CustomUncommenter;
 import com.intellij.openapi.util.Couple;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.util.text.CharArrayUtil;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class OclCommenter implements Commenter/*, CustomUncommenter*/ {
+public class OclCommenter implements Commenter, CustomUncommenter {
     @Nullable
     @Override
     public String getLineCommentPrefix() {
@@ -42,7 +43,7 @@ public class OclCommenter implements Commenter/*, CustomUncommenter*/ {
     }
 
     @Nullable
-    //@Override
+    @Override
     public TextRange findMaximumCommentedRange(@NotNull CharSequence text) {
         // copied and adapted com.intellij.codeInsight.generation.CommentByBlockCommentHandler.getSelectedComments
         TextRange commentedRange = null;
@@ -66,7 +67,7 @@ public class OclCommenter implements Commenter/*, CustomUncommenter*/ {
     }
 
     @NotNull
-    //@Override
+    @Override
     public Collection<? extends Couple<TextRange>> getCommentRangesToDelete(@NotNull CharSequence text) {
         Collection<Couple<TextRange>> ranges = new ArrayList<>();
 
@@ -86,7 +87,7 @@ public class OclCommenter implements Commenter/*, CustomUncommenter*/ {
         if (offset1 < 0 || chars.charAt(offset1) == '\n' || chars.charAt(offset1) == '\r') {
             int offset2 = CharArrayUtil.shiftForward(chars, delOffset2, " \t");
             if (offset2 == chars.length() || chars.charAt(offset2) == '\r' || chars.charAt(offset2) == '\n') {
-                delOffset1 = offset1 + 1;
+                delOffset1 = (offset1 < 0) ? offset1 + 1 : offset1;
                 if (offset2 < chars.length()) {
                     delOffset2 = offset2 + 1;
                     if (chars.charAt(offset2) == '\r' && offset2 + 1 < chars.length() && chars.charAt(offset2 + 1) == '\n') {
