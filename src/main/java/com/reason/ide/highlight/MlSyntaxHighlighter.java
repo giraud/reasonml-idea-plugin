@@ -105,9 +105,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey OPERATION_SIGN_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
     public static final TextAttributesKey ANNOTATION_ = createTextAttributesKey("REASONML_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
     public static final TextAttributesKey TYPE_ARGUMENT_ = createTextAttributesKey("REASONML_TYPE_ARGUMENT", TYPE_ARGUMENT_KEY);
-    public static final TextAttributesKey POLY_VARIANT_ = createTextAttributesKey("REASONML_POLY_VARIANT", POLY_VARIANT_KEY);
-    private static final TextAttributesKey DOT_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.DOT);
-    private static final TextAttributesKey COMMA_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.COMMA);
+    private static final TextAttributesKey POLY_VARIANT_ = createTextAttributesKey("REASONML_POLY_VARIANT", POLY_VARIANT_KEY);
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("REASONML_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] NUMBER_KEYS = new TextAttributesKey[]{NUMBER_};
@@ -121,8 +119,8 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] OPTION_KEYS = new TextAttributesKey[]{OPTION_};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD_};
     private static final TextAttributesKey[] SEMICOLON_KEYS = new TextAttributesKey[]{SEMICOLON_};
-    private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{DOT_};
-    private static final TextAttributesKey[] COMMA_KEYS = new TextAttributesKey[]{COMMA_};
+    private static final TextAttributesKey[] DOT_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
+    private static final TextAttributesKey[] COMMA_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
     private static final TextAttributesKey[] OPERATION_SIGN_KEYS = new TextAttributesKey[]{OPERATION_SIGN_};
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
