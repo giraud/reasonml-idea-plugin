@@ -18,8 +18,6 @@ import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.execution.ui.ConsoleViewContentType.ERROR_OUTPUT;
-
 public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
 
     @Override
@@ -44,9 +42,7 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         if (bsc != null) {
             bsc.addListener(new BsOutputListener(project, bsc));
             ProcessHandler handler = bsc.getHandler();
-            if (handler == null) {
-                console.print("Bsb not found, check the event logs.", ERROR_OUTPUT);
-            } else {
+            if (handler != null) {
                 console.attachToProcess(handler);
             }
             bsc.startNotify();

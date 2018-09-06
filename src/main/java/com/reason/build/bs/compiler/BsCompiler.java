@@ -32,11 +32,10 @@ public final class BsCompiler implements CompilerLifecycle {
 
     public BsCompiler(ModuleConfiguration moduleConfiguration) {
         m_moduleConfiguration = moduleConfiguration;
-        // zzz
         VirtualFile baseRoot = Platform.findBaseRoot(moduleConfiguration.getProject());
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
         if (sourceFile != null) {
-            recreate(sourceFile, CliType.make);
+            create(sourceFile, CliType.make);
         }
     }
 
@@ -57,22 +56,37 @@ public final class BsCompiler implements CompilerLifecycle {
     }
 
     @Nullable
+    public ProcessHandler create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
+        try {
+            return createProcessHandler(sourceFile, cliType);
+        } catch (ExecutionException e) {
+            // Don't log when first time execution
+        }
+
+        return null;
+    }
+
+    @Nullable
     public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
         try {
-            killIt();
-            GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
-            if (cli != null) {
-                m_bsb = new BsProcessHandler(cli);
-                if (m_outputListener != null) {
-                    m_bsb.addRawProcessListener(m_outputListener);
-                }
-            }
-            return m_bsb;
+            return createProcessHandler(sourceFile, cliType);
         } catch (ExecutionException e) {
             Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
 
         return null;
+    }
+
+    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) throws ExecutionException {
+        killIt();
+        GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
+        if (cli != null) {
+            m_bsb = new BsProcessHandler(cli);
+            if (m_outputListener != null) {
+                m_bsb.addRawProcessListener(m_outputListener);
+            }
+        }
+        return m_bsb;
     }
 
     public void killIt() {
