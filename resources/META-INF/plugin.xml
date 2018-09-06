@@ -175,8 +175,10 @@
         <internalFileTemplate name="Reason Module"/>
         <internalFileTemplate name="OCaml Module"/>
 
+        <typedHandler implementation="com.reason.ide.ORTypedHandler" id="RmlTypedHandler"/>
+
         <lang.refactoringSupport language="ReasonML"
-                                 implementationClass="com.reason.ide.RmlRefactoringSupportProvider"/>
+                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.icons.IconProvider"/>
 

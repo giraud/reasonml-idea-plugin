@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RmlRefactoringSupportProvider extends RefactoringSupportProvider {
+public class ORRefactoringSupportProvider extends RefactoringSupportProvider {
     @Override
     public boolean isMemberInplaceRenameAvailable(@NotNull PsiElement element, @Nullable PsiElement context) {
         return element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol;
