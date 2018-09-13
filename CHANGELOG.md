@@ -10,50 +10,50 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.62.1
+## 0.62.1 - 2018/09/06
 
 - :rocket: Add a 'make' button to the bs console</li>
 - :bug: ![o](resources/icons/ocaml-file.png) [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) - Awkward behavior when typing comments</li>
 - :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Uncommenting nested comments is incorrect</li>
 
-## 0.61
+## 0.61 - 2018/08/29
 
 - :nail_care: [#92](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/92) Changing icons
 - :bug: Fixed a bug that prevented 'find usages' to work on lower symbols
 - :bug: [#89](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/89) Renaming variables doesn't work
 - :bug: [#94](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/94) NPE in findBaseRootFromFile
            
-## 0.60.2
+## 0.60.2 - 2018/07/31
 
 - :nail_care: [#59](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/59) Colored output in Bucklescript tab
 - :bug: [#90](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/90) IllegalArgumentException when clicking on an entry in "Structures" to go to a symbol</li>
 - :house: Parsers updated
 
-## 0.59.1
+## 0.59.1 - 2018/07/25
 
 - :rocket: You can use 'Go to class' to find OCaml/ReasonMl modules
 - :bug: ![o](resources/icons/ocaml-file.png) [#78](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/78) Let symbol missing in structure panel
 - :bug: [#82](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/82) Exception for GoTo/Declaration of a function parameter
 - :bug: [#87](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/87) NullPointerException at com.reason.Platform.findBaseRootFromFile
 
-## 0.59
+## 0.59 - 2018/07/19
 
 - :rocket: [#71](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/71) Monorepo with multiple bs projects
 - :nail_care: ![o](resources/icons/ocaml-file.png) 'let _' is not shown in the structure panel
 - :bug: Fix (again) property completion in JSX after rework on references has been done
 
-## 0.58.1
+## 0.58.1 - 2018/07/18
 
 - :bug: [#79](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/79) - IDE crash
 - :bug: [#77](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/77) - Show non-alphanumeric function names such as ">>=" in the structure panel
 
-## 0.58
+## 0.58 - 2018/07/12
 
 This release contains a big rewrite of how modules are referenced, it may break things that were working before (ex: find usages).
 
 - :bug: [#72](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/72) - Autocomplete not working in uncurried function
 
-## 0.57
+## 0.57.1 - 2018/07/10
 
 - :rocket: Some record field completion
 - :bug: [#66](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/66) - Go To + module alias
