@@ -14,14 +14,15 @@ public class RmlTypes extends MlTypes {
 
         EXTERNAL_STMT = new PsiExternalStubElementType("EXTERNAL_STMT", RmlLanguage.INSTANCE);
         LET_STMT = new PsiLetStubElementType("LET_STMT", RmlLanguage.INSTANCE);
-        MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         EXP_TYPE = new PsiTypeStubElementType("EXP_TYPE", RmlLanguage.INSTANCE);
         VAL_EXPR = new PsiValStubElementType("VAL_EXPRESSION", RmlLanguage.INSTANCE);
         ANNOTATION_EXPR = new MlCompositeElementType("ANNOTATION_EXPRESSION", RmlLanguage.INSTANCE);
         EXCEPTION_EXPR = new MlCompositeElementType("EXCEPTION_EXPRESSION", RmlLanguage.INSTANCE);
         INCLUDE_STMT = new MlCompositeElementType("INCLUDE_STMT", RmlLanguage.INSTANCE);
         MACRO_NAME = new MlCompositeElementType("MACRO_NAME", RmlLanguage.INSTANCE);
+        MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         MODULE_PATH = new MlCompositeElementType("MODULE_PATH", RmlLanguage.INSTANCE);
+        CLASS_STMT = new MlCompositeElementType("CLASS_STMT", RmlLanguage.INSTANCE);
         OPEN_STMT = new MlCompositeElementType("OPEN_STMT", RmlLanguage.INSTANCE);
         ASSERT_STMT = new MlCompositeElementType("ASSERT_STMT", RmlLanguage.INSTANCE);
         SCOPED_EXPR = new MlCompositeElementType("SCOPED_EXPR", RmlLanguage.INSTANCE);

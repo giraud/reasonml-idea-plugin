@@ -12,17 +12,19 @@ public class OclTypes extends MlTypes {
     private OclTypes() {
         // Composite element types
 
-        ANNOTATION_EXPR = new MlCompositeElementType("ANNOTATION_EXPRESSION", OclLanguage.INSTANCE);
         EXTERNAL_STMT = new PsiExternalStubElementType("EXTERNAL_STMT", OclLanguage.INSTANCE);
-        EXCEPTION_EXPR = new MlCompositeElementType("EXCEPTION_EXPRESSION", OclLanguage.INSTANCE);
-        INCLUDE_STMT = new MlCompositeElementType("INCLUDE_STMT", OclLanguage.INSTANCE);
         LET_STMT = new PsiLetStubElementType("LET_STMT", OclLanguage.INSTANCE);
-        MACRO_NAME = new MlCompositeElementType("MACRO_NAME", OclLanguage.INSTANCE);
-        MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", OclLanguage.INSTANCE);
-        MODULE_PATH = new MlCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);
-        OPEN_STMT = new MlCompositeElementType("OPEN_STMT", OclLanguage.INSTANCE);
         EXP_TYPE = new PsiTypeStubElementType("EXP_TYPE", OclLanguage.INSTANCE);
         VAL_EXPR = new PsiValStubElementType("VAL_EXPRESSION", OclLanguage.INSTANCE);
+        MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", OclLanguage.INSTANCE);
+
+        ANNOTATION_EXPR = new MlCompositeElementType("ANNOTATION_EXPRESSION", OclLanguage.INSTANCE);
+        EXCEPTION_EXPR = new MlCompositeElementType("EXCEPTION_EXPRESSION", OclLanguage.INSTANCE);
+        INCLUDE_STMT = new MlCompositeElementType("INCLUDE_STMT", OclLanguage.INSTANCE);
+        MACRO_NAME = new MlCompositeElementType("MACRO_NAME", OclLanguage.INSTANCE);
+        MODULE_PATH = new MlCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);
+        CLASS_STMT = new MlCompositeElementType("CLASS_STMT", OclLanguage.INSTANCE);
+        OPEN_STMT = new MlCompositeElementType("OPEN_STMT", OclLanguage.INSTANCE);
         ASSERT_STMT = new MlCompositeElementType("ASSERT_STMT", OclLanguage.INSTANCE);
         FUN_EXPR = new MlCompositeElementType("FUN_EXPR", OclLanguage.INSTANCE);
         FUN_PARAMS = new MlCompositeElementType("FUN_PARAMS", OclLanguage.INSTANCE);

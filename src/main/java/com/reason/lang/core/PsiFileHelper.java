@@ -42,6 +42,11 @@ public class PsiFileHelper {
     }
 
     @NotNull
+    public static List<PsiClass> getClassExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiClass.class);
+    }
+
+    @NotNull
     public static List<PsiLet> getLetExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiLet.class);
     }

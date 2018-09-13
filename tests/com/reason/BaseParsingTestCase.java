@@ -41,6 +41,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return PsiFileHelper.getModuleExpressions(file);
     }
 
+    protected Collection<PsiClass> classExpressions(@NotNull PsiFile file) {
+        return PsiFileHelper.getClassExpressions(file);
+    }
+
     protected Collection<PsiLet> letExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getLetExpressions(file);
     }

@@ -36,6 +36,8 @@ public class PsiElementFactory {
             return new PsiTypeBinding(node);
         } else if (type == types.MODULE_STMT) {
             return new PsiModuleImpl(node, types);
+        } else if (type == types.CLASS_STMT) {
+            return new PsiClassImpl(types, node);
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.LET_STMT) {

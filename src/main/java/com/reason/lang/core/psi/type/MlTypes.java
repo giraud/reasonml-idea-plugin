@@ -9,6 +9,7 @@ public abstract class MlTypes {
     public IElementType EXTERNAL_STMT;
     public IElementType LET_STMT;
     public IElementType MODULE_STMT;
+    public IElementType CLASS_STMT;
     public IElementType EXP_TYPE;
     public IElementType VAL_EXPR;
     public IElementType ANNOTATION_EXPR;

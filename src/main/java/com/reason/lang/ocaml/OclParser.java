@@ -56,6 +56,8 @@ public class OclParser extends CommonParser {
                 parseStruct(builder, state);
             } else if (tokenType == m_types.BEGIN) {
                 parseBegin(builder, state);
+            } else if (tokenType == m_types.OBJECT) {
+                parseObject(builder, state);
             } else if (tokenType == m_types.IF) {
                 parseIf(builder, state);
             } else if (tokenType == m_types.THEN) {
@@ -123,6 +125,8 @@ public class OclParser extends CommonParser {
                 parseType(builder, state);
             } else if (tokenType == m_types.MODULE) {
                 parseModule(builder, state);
+            } else if (tokenType == m_types.CLASS) {
+                parseClass(builder, state);
             } else if (tokenType == m_types.LET) {
                 parseLet(builder, state);
             } else if (tokenType == m_types.VAL) {
@@ -352,8 +356,12 @@ public class OclParser extends CommonParser {
         state.add(markScope(builder, beginScope, m_types.SCOPED_EXPR, m_types.BEGIN));
     }
 
+    private void parseObject(PsiBuilder builder, ParserState state) {
+        state.add(markScope(builder, objectScope, m_types.SCOPED_EXPR, m_types.OBJECT));
+    }
+
     private void parseEnd(PsiBuilder builder, ParserState state) {
-        ParserScope scope = state.endUntilOneOfScopeToken(m_types.BEGIN, m_types.SIG, m_types.STRUCT);
+        ParserScope scope = state.endUntilOneOfScopeToken(m_types.BEGIN, m_types.SIG, m_types.STRUCT, m_types.OBJECT);
         state.dontMove = advance(builder);
 
         if (scope != null && scope.isScopeStart()) {
@@ -406,10 +414,9 @@ public class OclParser extends CommonParser {
             } else if (state.isCurrentResolution(moduleNamedSignature)) {
                 state.updateCurrentResolution(moduleNamedSignatureEq);
                 state.complete();
+            } else if (state.isCurrentResolution(clazzNamed)) {
+                state.updateCurrentResolution(clazzNamedEq);
             }
-            //else {
-            // ERROR ? zzz
-            //}
         } else if (state.isCurrentResolution(externalNamedSignature)) {
             state.complete();
             state.endUntilStartScope();
@@ -537,6 +544,9 @@ public class OclParser extends CommonParser {
         } else if (state.isCurrentResolution(val)) {
             state.updateCurrentResolution(valNamed);
             state.complete();
+        } else if (state.isCurrentResolution(clazz)) {
+            state.updateCurrentResolution(clazzNamed);
+            state.complete();
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
@@ -650,6 +660,11 @@ public class OclParser extends CommonParser {
             endLikeSemi(state);
             state.add(mark(builder, moduleDeclaration, module, m_types.MODULE_STMT));
         }
+    }
+
+    private void parseClass(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.add(mark(builder, clazzDeclaration, clazz, m_types.CLASS_STMT));
     }
 
     private void endLikeSemi(ParserState state) {
