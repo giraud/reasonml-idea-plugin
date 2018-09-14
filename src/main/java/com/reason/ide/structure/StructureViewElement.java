@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiStructuredElement;
@@ -80,6 +81,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
+        } else if (m_element instanceof PsiClass) {
+            List<TreeElement> treeElements = buildClassStructure((PsiClass) m_element);
+            if (!treeElements.isEmpty()) {
+                return treeElements.toArray(new TreeElement[0]);
+            }
         }
 
         return EMPTY_ARRAY;
@@ -94,6 +100,18 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             rootElement = moduleElement.getBody();
         }
 
+        if (rootElement != null) {
+            rootElement.acceptChildren(new ElementVisitor(treeElements));
+        }
+
+        return treeElements;
+    }
+
+    @NotNull
+    private List<TreeElement> buildClassStructure(@NotNull PsiClass classElement) {
+        List<TreeElement> treeElements = new ArrayList<>();
+
+        PsiElement rootElement = classElement.getClassBody();
         if (rootElement != null) {
             rootElement.acceptChildren(new ElementVisitor(treeElements));
         }

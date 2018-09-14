@@ -5,7 +5,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.reason.icons.Icons;
-import com.reason.ide.highlight.MlSyntaxHighlighter;
+import com.reason.ide.highlight.ORSyntaxHighlighter;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,23 +16,23 @@ import java.util.Map;
 
 public class ReasonColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Annotation", MlSyntaxHighlighter.ANNOTATION_),
-            new AttributesDescriptor("Comment", MlSyntaxHighlighter.RML_COMMENT_),
-            new AttributesDescriptor("Code lens", MlSyntaxHighlighter.CODE_LENS_),
-            new AttributesDescriptor("Module name", MlSyntaxHighlighter.MODULE_NAME_),
-            new AttributesDescriptor("Option", MlSyntaxHighlighter.OPTION_),
-            new AttributesDescriptor("Markup tag", MlSyntaxHighlighter.MARKUP_TAG_),
-            new AttributesDescriptor("Markup attribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_),
-            new AttributesDescriptor("Keyword", MlSyntaxHighlighter.KEYWORD_),
-            new AttributesDescriptor("Operation", MlSyntaxHighlighter.OPERATION_SIGN_),
-            new AttributesDescriptor("String", MlSyntaxHighlighter.STRING_),
-            new AttributesDescriptor("Number", MlSyntaxHighlighter.NUMBER_),
-            new AttributesDescriptor("Semicolon", MlSyntaxHighlighter.SEMICOLON_),
-            new AttributesDescriptor("Braces", MlSyntaxHighlighter.BRACES_),
-            new AttributesDescriptor("Brackets", MlSyntaxHighlighter.BRACKETS_),
-            new AttributesDescriptor("Parenthesis", MlSyntaxHighlighter.PARENS_),
-            new AttributesDescriptor("Type argument", MlSyntaxHighlighter.TYPE_ARGUMENT_),
-            new AttributesDescriptor("Variant name", MlSyntaxHighlighter.VARIANT_NAME_),
+            new AttributesDescriptor("Annotation", ORSyntaxHighlighter.ANNOTATION_),
+            new AttributesDescriptor("Comment", ORSyntaxHighlighter.RML_COMMENT_),
+            new AttributesDescriptor("Code lens", ORSyntaxHighlighter.CODE_LENS_),
+            new AttributesDescriptor("Module name", ORSyntaxHighlighter.MODULE_NAME_),
+            new AttributesDescriptor("Option", ORSyntaxHighlighter.OPTION_),
+            new AttributesDescriptor("Markup tag", ORSyntaxHighlighter.MARKUP_TAG_),
+            new AttributesDescriptor("Markup attribute", ORSyntaxHighlighter.MARKUP_ATTRIBUTE_),
+            new AttributesDescriptor("Keyword", ORSyntaxHighlighter.KEYWORD_),
+            new AttributesDescriptor("Operation", ORSyntaxHighlighter.OPERATION_SIGN_),
+            new AttributesDescriptor("String", ORSyntaxHighlighter.STRING_),
+            new AttributesDescriptor("Number", ORSyntaxHighlighter.NUMBER_),
+            new AttributesDescriptor("Semicolon", ORSyntaxHighlighter.SEMICOLON_),
+            new AttributesDescriptor("Braces", ORSyntaxHighlighter.BRACES_),
+            new AttributesDescriptor("Brackets", ORSyntaxHighlighter.BRACKETS_),
+            new AttributesDescriptor("Parenthesis", ORSyntaxHighlighter.PARENS_),
+            new AttributesDescriptor("Type argument", ORSyntaxHighlighter.TYPE_ARGUMENT_),
+            new AttributesDescriptor("Variant name", ORSyntaxHighlighter.VARIANT_NAME_),
     };
 
     @Nullable
@@ -44,7 +44,7 @@ public class ReasonColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public com.intellij.openapi.fileTypes.SyntaxHighlighter getHighlighter() {
-        return new MlSyntaxHighlighter(RmlTypes.INSTANCE);
+        return new ORSyntaxHighlighter(RmlTypes.INSTANCE);
     }
 
     @NotNull
@@ -78,12 +78,12 @@ public class ReasonColorSettingsPage implements ColorSettingsPage {
     private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();
 
     static {
-        additionalTags.put("csAnnotation", MlSyntaxHighlighter.ANNOTATION_);
-        additionalTags.put("csCodeLens", MlSyntaxHighlighter.CODE_LENS_);
-        additionalTags.put("csMarkupAttribute", MlSyntaxHighlighter.MARKUP_ATTRIBUTE_);
-        additionalTags.put("csMarkupTag", MlSyntaxHighlighter.MARKUP_TAG_);
-        additionalTags.put("csModuleName", MlSyntaxHighlighter.MODULE_NAME_);
-        additionalTags.put("csVariantName", MlSyntaxHighlighter.VARIANT_NAME_);
+        additionalTags.put("csAnnotation", ORSyntaxHighlighter.ANNOTATION_);
+        additionalTags.put("csCodeLens", ORSyntaxHighlighter.CODE_LENS_);
+        additionalTags.put("csMarkupAttribute", ORSyntaxHighlighter.MARKUP_ATTRIBUTE_);
+        additionalTags.put("csMarkupTag", ORSyntaxHighlighter.MARKUP_TAG_);
+        additionalTags.put("csModuleName", ORSyntaxHighlighter.MODULE_NAME_);
+        additionalTags.put("csVariantName", ORSyntaxHighlighter.VARIANT_NAME_);
     }
 
     @Nullable

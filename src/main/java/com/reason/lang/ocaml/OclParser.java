@@ -131,6 +131,8 @@ public class OclParser extends CommonParser {
                 parseLet(builder, state);
             } else if (tokenType == m_types.VAL) {
                 parseVal(builder, state);
+            } else if (tokenType == m_types.METHOD) {
+                parseMethod(builder, state);
             } else if (tokenType == m_types.EXCEPTION) {
                 parseException(builder, state);
             }
@@ -357,7 +359,11 @@ public class OclParser extends CommonParser {
     }
 
     private void parseObject(PsiBuilder builder, ParserState state) {
-        state.add(markScope(builder, objectScope, m_types.SCOPED_EXPR, m_types.OBJECT));
+        if (state.isCurrentResolution(clazzNamedEq)) {
+            state.add(markScope(builder, clazzBodyScope, m_types.SCOPED_EXPR, m_types.OBJECT));
+        } else {
+            state.add(markScope(builder, objectScope, m_types.SCOPED_EXPR, m_types.OBJECT));
+        }
     }
 
     private void parseEnd(PsiBuilder builder, ParserState state) {
@@ -414,9 +420,9 @@ public class OclParser extends CommonParser {
             } else if (state.isCurrentResolution(moduleNamedSignature)) {
                 state.updateCurrentResolution(moduleNamedSignatureEq);
                 state.complete();
-            } else if (state.isCurrentResolution(clazzNamed)) {
-                state.updateCurrentResolution(clazzNamedEq);
             }
+        } else if (state.isCurrentResolution(clazzNamed)) {
+            state.updateCurrentResolution(clazzNamedEq);
         } else if (state.isCurrentResolution(externalNamedSignature)) {
             state.complete();
             state.endUntilStartScope();
@@ -643,7 +649,12 @@ public class OclParser extends CommonParser {
 
     private void parseVal(PsiBuilder builder, ParserState state) {
         endLikeSemi(state);
-        state.add(mark(builder, val, m_types.VAL_EXPR));
+        state.add(mark(builder, val, state.isCurrentContext(clazzBodyScope) ? m_types.CLASS_FIELD : m_types.VAL_EXPR));
+    }
+
+    private void parseMethod(PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.add(mark(builder, val, m_types.CLASS_METHOD));
     }
 
     private void parseLet(PsiBuilder builder, ParserState state) {

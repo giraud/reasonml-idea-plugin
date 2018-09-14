@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.highlight.MlSyntaxHighlighter;
+import com.reason.ide.highlight.ORSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +38,7 @@ public class RmlEditorLinePainter extends EditorLinePainter {
         String signature = data.get(file, lineNumber, document.getModificationStamp());
         if (signature != null) {
             EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
-            TextAttributes codeLens = globalScheme.getAttributes(MlSyntaxHighlighter.CODE_LENS_);
+            TextAttributes codeLens = globalScheme.getAttributes(ORSyntaxHighlighter.CODE_LENS_);
             info = Collections.singletonList(new LineExtensionInfo("  " + signature, codeLens));
         }
 

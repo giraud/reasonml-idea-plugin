@@ -20,7 +20,7 @@ import java.util.Set;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
-public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
+public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
     private static final Set<IElementType> RML_KEYWORD_TYPES = of(
             RmlTypes.INSTANCE.BOOL, RmlTypes.INSTANCE.STRING, RmlTypes.INSTANCE.FLOAT, RmlTypes.INSTANCE.CHAR, RmlTypes.INSTANCE.INT,
@@ -32,7 +32,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             RmlTypes.INSTANCE.INITIALIZER, RmlTypes.INSTANCE.LAND, RmlTypes.INSTANCE.LOR, RmlTypes.INSTANCE.LSL,
             RmlTypes.INSTANCE.LSR, RmlTypes.INSTANCE.LXOR, RmlTypes.INSTANCE.METHOD, RmlTypes.INSTANCE.MOD, RmlTypes.INSTANCE.NEW,
             RmlTypes.INSTANCE.NONREC, RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE, RmlTypes.INSTANCE.VIRTUAL,
-            RmlTypes.INSTANCE.VAL, RmlTypes.INSTANCE.PUB, RmlTypes.INSTANCE.PRI
+            RmlTypes.INSTANCE.VAL, RmlTypes.INSTANCE.PUB, RmlTypes.INSTANCE.PRI, RmlTypes.INSTANCE.OBJECT
     );
 
     private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
@@ -66,7 +66,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
             // OCaml
             OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE, OclTypes.INSTANCE.RECORD,
             OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY, OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN,
-            OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.SIG
+            OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.OBJECT
     );
 
     private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES = of(
@@ -127,7 +127,7 @@ public class MlSyntaxHighlighter extends SyntaxHighlighterBase {
 
     private final MlTypes m_types;
 
-    public MlSyntaxHighlighter(MlTypes types) {
+    public ORSyntaxHighlighter(MlTypes types) {
         m_types = types;
     }
 

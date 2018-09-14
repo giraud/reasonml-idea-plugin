@@ -3,15 +3,16 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.psi.PsiClass;
-import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.type.MlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
 
@@ -66,6 +67,24 @@ public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
     @Override
     public String getQualifiedName() {
         return getName();
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getClassBody() {
+        return findChildByClass(PsiScopedExpr.class);
+    }
+
+    @NotNull
+    @Override
+    public Collection<PsiClassField> getFields() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassField.class);
+    }
+
+    @NotNull
+    @Override
+    public Collection<PsiClassMethod> getMethods() {
+        return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassMethod.class);
     }
 
     @Override

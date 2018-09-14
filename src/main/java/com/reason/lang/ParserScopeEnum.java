@@ -102,5 +102,5 @@ public enum ParserScopeEnum {
     executable,
     maybeLetFunction,
     maybeLetFunctionParameters,
-    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration, moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope, moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, name
+    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration, moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope, moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, clazzBody, clazzBodyScope, name
 }

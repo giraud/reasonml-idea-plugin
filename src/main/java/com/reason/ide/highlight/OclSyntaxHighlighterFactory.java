@@ -10,6 +10,6 @@ public class OclSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
     public com.intellij.openapi.fileTypes.SyntaxHighlighter getSyntaxHighlighter(Project project, VirtualFile virtualFile) {
-        return new MlSyntaxHighlighter(OclTypes.INSTANCE);
+        return new ORSyntaxHighlighter(OclTypes.INSTANCE);
     }
 }

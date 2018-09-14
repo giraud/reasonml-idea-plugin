@@ -23,6 +23,8 @@ public class RmlTypes extends MlTypes {
         MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         MODULE_PATH = new MlCompositeElementType("MODULE_PATH", RmlLanguage.INSTANCE);
         CLASS_STMT = new MlCompositeElementType("CLASS_STMT", RmlLanguage.INSTANCE);
+        CLASS_FIELD = new MlCompositeElementType("CLASS_FIELD", RmlLanguage.INSTANCE);
+        CLASS_METHOD = new MlCompositeElementType("CLASS_METHOD", RmlLanguage.INSTANCE);
         OPEN_STMT = new MlCompositeElementType("OPEN_STMT", RmlLanguage.INSTANCE);
         ASSERT_STMT = new MlCompositeElementType("ASSERT_STMT", RmlLanguage.INSTANCE);
         SCOPED_EXPR = new MlCompositeElementType("SCOPED_EXPR", RmlLanguage.INSTANCE);

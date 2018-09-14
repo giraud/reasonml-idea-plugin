@@ -38,6 +38,10 @@ public class PsiElementFactory {
             return new PsiModuleImpl(node, types);
         } else if (type == types.CLASS_STMT) {
             return new PsiClassImpl(types, node);
+        } else if (type == types.CLASS_FIELD) {
+            return new PsiClassField(node);
+        } else if (type == types.CLASS_METHOD) {
+            return new PsiClassMethod(node);
         } else if (type == types.MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.LET_STMT) {
