@@ -451,17 +451,20 @@ public class OclParser extends CommonParser {
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
+            // Detecting a local open : M1.M2(...)
             state.updateCurrentResolution(localOpen);
             state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
             state.add(markScope(builder, localOpenScope, m_types.SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(external)) {
-            // overloading an operator
+            // Overloading an operator: external (...) = ...
             state.updateCurrentResolution(externalNamed).complete();
         } else if (state.isCurrentResolution(val)) {
-            // overloading an operator
+            // Overloading an operator: val (...) = ...
             state.updateCurrentResolution(valNamed).complete();
             state.add(markScope(builder, valNamedSymbol, m_types.SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(clazzNamed)) {
+            state.add(markScope(builder, state.currentContext(), clazzConstructor, m_types.CLASS_CONSTR, m_types.LPAREN));
         } else {
             state.add(markScope(builder, scope, paren, m_types.SCOPED_EXPR, m_types.LPAREN));
         }
@@ -502,13 +505,17 @@ public class OclParser extends CommonParser {
     }
 
     private void parseLBracket(PsiBuilder builder, ParserState state) {
-        IElementType nextTokenType = builder.rawLookup(1);
-        if (nextTokenType == m_types.ARROBASE) {
-            // This is an annotation
-            state.endUntilStartScope();
-            state.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
+        if (state.isCurrentResolution(clazz)) {
+            state.add(markScope(builder, clazzDeclaration, bracket, m_types.CLASS_PARAMS, m_types.LBRACKET));
         } else {
-            state.add(markScope(builder, bracket, m_types.SCOPED_EXPR, m_types.LBRACKET));
+            IElementType nextTokenType = builder.rawLookup(1);
+            if (nextTokenType == m_types.ARROBASE) {
+                // This is an annotation
+                state.endUntilStartScope();
+                state.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
+            } else {
+                state.add(markScope(builder, bracket, m_types.SCOPED_EXPR, m_types.LBRACKET));
+            }
         }
     }
 
@@ -628,7 +635,7 @@ public class OclParser extends CommonParser {
     }
 
     private void parseType(PsiBuilder builder, ParserState state) {
-        if (!state.isCurrentResolution(module)) {
+        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
             if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
                 state.updateCurrentResolution(moduleNamedWithType);
             } else {

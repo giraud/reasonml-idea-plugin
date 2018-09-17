@@ -17,4 +17,7 @@ public interface PsiClass extends PsiNamedElement, PsiQualifiedNamedElement, Nav
 
     @NotNull
     Collection<PsiClassMethod> getMethods();
+
+    @NotNull
+    Collection<PsiClassParameters> getParameters();
 }

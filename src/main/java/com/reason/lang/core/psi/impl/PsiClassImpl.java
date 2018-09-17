@@ -41,28 +41,6 @@ public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
     }
     //endregion
 
-    public ItemPresentation getPresentation() {
-        return new ItemPresentation() {
-            @Nullable
-            @Override
-            public String getPresentableText() {
-                return getName();
-            }
-
-            @Nullable
-            @Override
-            public String getLocationString() {
-                return null;
-            }
-
-            @NotNull
-            @Override
-            public Icon getIcon(boolean unused) {
-                return Icons.CLASS;
-            }
-        };
-    }
-
     @Nullable
     @Override
     public String getQualifiedName() {
@@ -85,6 +63,34 @@ public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
     @Override
     public Collection<PsiClassMethod> getMethods() {
         return PsiTreeUtil.findChildrenOfType(getClassBody(), PsiClassMethod.class);
+    }
+
+    @NotNull
+    @Override
+    public Collection<PsiClassParameters> getParameters() {
+        return PsiTreeUtil.findChildrenOfType(this, PsiClassParameters.class);
+    }
+
+    public ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return getName();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return null;
+            }
+
+            @NotNull
+            @Override
+            public Icon getIcon(boolean unused) {
+                return Icons.CLASS;
+            }
+        };
     }
 
     @Override

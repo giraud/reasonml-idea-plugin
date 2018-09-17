@@ -23,6 +23,8 @@ public class OclTypes extends MlTypes {
         INCLUDE_STMT = new MlCompositeElementType("INCLUDE_STMT", OclLanguage.INSTANCE);
         MACRO_NAME = new MlCompositeElementType("MACRO_NAME", OclLanguage.INSTANCE);
         MODULE_PATH = new MlCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);
+        CLASS_CONSTR = new MlCompositeElementType("CLASS_CONSTR", OclLanguage.INSTANCE);
+        CLASS_PARAMS = new MlCompositeElementType("CLASS_PARAMS", OclLanguage.INSTANCE);
         CLASS_STMT = new MlCompositeElementType("CLASS_STMT", OclLanguage.INSTANCE);
         CLASS_FIELD = new MlCompositeElementType("CLASS_FIELD", OclLanguage.INSTANCE);
         CLASS_METHOD = new MlCompositeElementType("CLASS_METHOD", OclLanguage.INSTANCE);

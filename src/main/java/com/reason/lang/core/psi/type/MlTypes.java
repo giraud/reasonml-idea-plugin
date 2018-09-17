@@ -12,6 +12,8 @@ public abstract class MlTypes {
     public IElementType CLASS_STMT;
     public IElementType EXP_TYPE;
     public IElementType VAL_EXPR;
+    public IElementType CLASS_PARAMS;
+    public IElementType CLASS_CONSTR;
     public IElementType CLASS_FIELD;
     public IElementType CLASS_METHOD;
     public IElementType ANNOTATION_EXPR;
