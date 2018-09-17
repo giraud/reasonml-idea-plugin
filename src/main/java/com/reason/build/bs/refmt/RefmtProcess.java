@@ -52,10 +52,7 @@ public class RefmtProcess {
             Streams.waitUntilReady(reader, errReader);
 
             StringBuilder msgBuffer = new StringBuilder();
-            if (errReader.ready()) {
-                errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                LOG.warn(msgBuffer.toString());
-            } else {
+            if (!errReader.ready()) {
                 reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
                 String newText = msgBuffer.toString();
                 if (!code.isEmpty() && !newText.isEmpty()) { // additional protection
