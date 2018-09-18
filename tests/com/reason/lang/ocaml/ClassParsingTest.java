@@ -51,11 +51,12 @@ public class ClassParsingTest extends BaseParsingTestCase {
     }
 
     public void testClassConstraint() {
-        Collection<PsiClass> classes = classExpressions(parseCode("class ['a] circle (c : 'a) = object constraint 'a = #point val mutable center = c method set_center c = center <- c method move = center#move end", true));
+        Collection<PsiClass> classes = classExpressions(parseCode("class ['a] circle (c : 'a) = object constraint 'a = #point val mutable center = c method set_center c = center <- c method move = center#move end"));
 
         PsiClass clazz = first(classes);
         assertEquals("circle", first(classes).getName());
         assertNotNull(clazz.getParameters());
+        assertNotNull(clazz.getConstructor());
         assertEquals(clazz.getFields().size(), 1);
         assertEquals(clazz.getMethods().size(), 2);
     }

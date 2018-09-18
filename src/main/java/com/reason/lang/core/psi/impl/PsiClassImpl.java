@@ -71,6 +71,12 @@ public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
         return PsiTreeUtil.findChildrenOfType(this, PsiClassParameters.class);
     }
 
+    @Nullable
+    @Override
+    public PsiClassConstructor getConstructor() {
+        return findChildByClass(PsiClassConstructor.class);
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
