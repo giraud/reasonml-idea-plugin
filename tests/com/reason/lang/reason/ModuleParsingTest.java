@@ -34,7 +34,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
 
     @SuppressWarnings("ConstantConditions")
     public void testModule() {
-        PsiFile file = parseCode(" module Styles = { open Css; let y = 1 }", true);
+        PsiFile file = parseCode(" module Styles = { open Css; let y = 1 }");
         PsiModule module = first(moduleExpressions(file));
 
         assertEquals(1, expressions(file).size());

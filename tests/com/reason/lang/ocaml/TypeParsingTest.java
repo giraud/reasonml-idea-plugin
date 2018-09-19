@@ -34,7 +34,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeBindingWithRecord() {
-        PsiFile file = parseCode("type t = {count: int;}", true);
+        PsiFile file = parseCode("type t = {count: int;}");
 
         assertNotNull(first(findChildrenOfType(first(typeExpressions(file)), PsiTypeBinding.class)));
     }

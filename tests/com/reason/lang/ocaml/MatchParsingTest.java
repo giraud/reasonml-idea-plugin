@@ -40,7 +40,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
                 "    | BLOCK (0, [|id; o|]) ->\n"+
                 "      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]\n"+
                 "    | _ -> raise Exit\n"+
-                "    end", true);
+                "    end");
         PsiElement[] children = file.getChildren();
 
         assertEquals(1, children.length);

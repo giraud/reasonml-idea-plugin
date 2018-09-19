@@ -32,7 +32,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetBindingWithJsx() {
-        PsiFile file = parseCode("let make = p => { render: x => { <div/>; } }", true);
+        PsiFile file = parseCode("let make = p => { render: x => { <div/>; } }");
         PsiElement[] children = file.getChildren();
         PsiElement element = PsiTreeUtil.nextLeaf(children[0], true);
 
@@ -71,7 +71,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testSignature() {
-        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };", true)));
+        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
         assertEquals("(style, style) -> style", let.getSignature().toString());
         assertEquals("(a, b) => { }", let.getBinding().getText());
@@ -85,7 +85,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testWithType() {
-        PsiFile file = parseCode("let cast_list: type a b. (eq(a, b), list(a)) => list(b) = (Refl, x) => x;", true);
+        PsiFile file = parseCode("let cast_list: type a b. (eq(a, b), list(a)) => list(b) = (Refl, x) => x;");
         PsiLet let = first(letExpressions(file));
 
         assertEquals("type a b. (eq(a, b), list(a)) -> list(b)", let.getSignature().toString());

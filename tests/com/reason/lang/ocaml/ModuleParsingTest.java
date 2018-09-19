@@ -42,14 +42,14 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctorInstantiation() {
-        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos", true);
+        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
         Collection<PsiNamedElement> expressions = expressions(file);
 
         assertEquals(2, expressions.size());
     }
 
     public void testModuleType() {
-        PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = sig end", true)));
+        PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = sig end")));
 
         assertEquals("RedFlagsSig", module.getName());
     }

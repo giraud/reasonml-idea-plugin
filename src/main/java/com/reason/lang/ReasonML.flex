@@ -16,6 +16,7 @@ import static com.intellij.psi.TokenType.*;
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;
+    private boolean inCommentString = false;
 
     //Store the start index of a token
     private void tokenStart() {
@@ -273,9 +274,10 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 }
 
 <IN_OCL_COMMENT> {
-    "(*" { commentDepth += 1; }
-    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
-    . | {NEWLINE} { }
+    "(*" { if (!inCommentString) commentDepth += 1; }
+    "*)" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } } }
+    "\"" { inCommentString = !inCommentString; }
+     . | {NEWLINE} { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
 }
 

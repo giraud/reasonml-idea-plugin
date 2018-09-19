@@ -32,7 +32,7 @@ public class AndParsingTest extends BaseParsingTestCase {
     }
 
     public void testPatternChaining() {
-        PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2", true);
+        PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
         Collection<PsiNamedElement> exps = expressions(file);
 
         assertInstanceOf(firstElement(file), PsiSwitch.class);
