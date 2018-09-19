@@ -47,10 +47,10 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @Override
     public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createModuleName(myElement.getProject(), newName);
-        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
 
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {
-            PsiElement nameIdentifier = myElement.getNameIdentifier();
+            PsiElement nameIdentifier = myElement.getFirstChild();
             if (nameIdentifier == null) {
                 myElement.getNode().addChild(newNameNode);
             } else {

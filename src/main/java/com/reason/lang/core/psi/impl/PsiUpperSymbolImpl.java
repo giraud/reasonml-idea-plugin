@@ -6,6 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.reference.PsiUpperSymbolReference;
 import com.reason.lang.core.psi.type.MlTypes;
@@ -30,12 +31,25 @@ public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpp
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return getFirstChild();
+        return this;
     }
 
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this; // Use PsiUpperSymbolReference.handleElementRename()
+    public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+        PsiElement newNameIdentifier = RmlElementFactory.createModuleName(getProject(), newName);
+
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
+        if (newNameNode != null) {
+            PsiElement nameIdentifier = getFirstChild();
+            if (nameIdentifier == null) {
+                getNode().addChild(newNameNode);
+            } else {
+                ASTNode oldNameNode = nameIdentifier.getNode();
+                getNode().replaceChild(oldNameNode, newNameNode);
+            }
+        }
+
+        return this;
     }
     //endregion
 

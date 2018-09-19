@@ -59,8 +59,8 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
     }
 
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this; // Use PsiUpperSymbolReference.handleElementRename()
+    public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+        return this;
     }
     //endregion
 
