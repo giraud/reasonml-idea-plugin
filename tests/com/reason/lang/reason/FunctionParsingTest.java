@@ -22,7 +22,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetFunctionParenless() {
-        PsiLet e = first(letExpressions(parseCode("let add10 = x => x + 10;", true)));
+        PsiLet e = first(letExpressions(parseCode("let add10 = x => x + 10;")));
 
         assertTrue(e.isFunction());
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();

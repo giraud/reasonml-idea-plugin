@@ -9,7 +9,7 @@ public class BeginParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiLet exp = (PsiLet) first(expressions(parseCode("let _ = begin end", true)));
+        PsiLet exp = (PsiLet) first(expressions(parseCode("let _ = begin end")));
 
         assertNotNull(exp);
         assertEquals("begin end", exp.getBinding().getText());

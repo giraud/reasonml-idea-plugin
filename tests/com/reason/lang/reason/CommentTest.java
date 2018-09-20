@@ -1,22 +1,21 @@
-package com.reason.lang.ocaml;
+package com.reason.lang.reason;
 
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
 import com.reason.BaseParsingTestCase;
 
-@SuppressWarnings("ConstantConditions")
 public class CommentTest extends BaseParsingTestCase {
     public CommentTest() {
-        super("", "ml", new OclParserDefinition());
+        super("", "re", new RmlParserDefinition());
     }
 
     public void testConstant() {
-        PsiFile psiFile = parseCode("(* *)");
+        PsiFile psiFile = parseCode("/* */");
         assertInstanceOf(firstElement(psiFile), PsiComment.class);
     }
 
     public void testConstant2() {
-        PsiFile psiFile = parseCode("(* \"this is a string *)\" *)");
+        PsiFile psiFile = parseCode("/* \"this is a string */\" */");
         assertInstanceOf(firstElement(psiFile), PsiComment.class);
         assertEquals(psiFile.getChildren().length, 1);
     }
