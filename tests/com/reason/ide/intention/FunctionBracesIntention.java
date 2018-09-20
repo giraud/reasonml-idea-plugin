@@ -16,7 +16,7 @@ public class FunctionBracesIntention extends LightPlatformCodeInsightFixtureTest
     public void testInnerFunction() {
         myFixture.configureByText(RmlFileType.INSTANCE, "Js.Promise.( Api.all() |> then_(result => <caret>Js.log(result)) );");
         IntentionAction bracesAction = (IntentionAction) myFixture.getAvailableIntention("Add braces to blockless function");
-        // myFixture.launchAction(bracesAction);
-        // myFixture.checkResult("Js.Promise.( Api.all() |> then_(result => { Js.log(result); }) );");
+        myFixture.launchAction(bracesAction);
+        myFixture.checkResult("Js.Promise.( Api.all() |> then_(result => { Js.log(result); }) );");
     }
 }

@@ -456,24 +456,21 @@ public class RmlParser extends CommonParser {
         }
 
         if (state.isCurrentResolution(typeConstrName)) {
-            // TYPE LIDENT ...
+            // TYPE <LIDENT> ...
             state.updateCurrentResolution(typeNamed);
             state.complete();
             state.setPreviousComplete();
         } else if (state.isCurrentResolution(external)) {
+            // EXTERNAL <LIDENT> ...
             state.updateCurrentResolution(externalNamed);
             state.complete();
         } else if (state.isCurrentResolution(let)) {
+            // LET <LIDENT> ...
             state.updateCurrentResolution(letNamed);
-            state.complete();
-        } else if (state.isCurrentResolution(clazzField)) {
-            state.updateCurrentResolution(clazzFieldNamed);
-            state.complete();
-        } else if (state.isCurrentResolution(clazzMethod)) {
-            state.updateCurrentResolution(clazzMethodNamed);
             state.complete();
         } else if (state.isCurrentResolution(letNamedEq)) {
             if (state.previousTokenElementType == m_types.EQ) {
+                // LET LIDENT EQ <LIDENT> ...
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
@@ -482,6 +479,18 @@ public class RmlParser extends CommonParser {
                     processSingleParam = true;
                 }
             }
+        } else if (state.isCurrentResolution(clazz)) {
+            // CLASS <LIDENT> ...
+            state.updateCurrentResolution(clazzNamed);
+            state.complete();
+        } else if (state.isCurrentResolution(clazzField)) {
+            // [CLASS LIDENT ...] VAL <LIDENT> ...
+            state.updateCurrentResolution(clazzFieldNamed);
+            state.complete();
+        } else if (state.isCurrentResolution(clazzMethod)) {
+            // METHOD <LIDENT> ...
+            state.updateCurrentResolution(clazzMethodNamed);
+            state.complete();
         } else if (state.isCurrentResolution(startTag)) {
             // This is a property
             state.endUntilStartScope();
@@ -495,11 +504,17 @@ public class RmlParser extends CommonParser {
             });
         } else if (state.isCurrentResolution(recordBinding)) {
             state.add(mark(builder, recordField, m_types.RECORD_FIELD));
-        } else if (state.isCurrentResolution(clazz)) {
-            state.updateCurrentResolution(clazzNamed);
-            state.complete();
         } else if (shouldStartExpression(state)) {
             state.add(mark(builder, genericExpression, builder.getTokenType()));
+        } else {
+            IElementType nextElementType = builder.lookAhead(1);
+            if (nextElementType == m_types.ARROW) {
+                // Single (paren less) function parameters
+                // <LIDENT> ARROW ...
+                state.add(markComplete(builder, state.currentContext(), function, m_types.FUN_EXPR));
+                state.add(markComplete(builder, state.currentContext(), parameters, m_types.FUN_PARAMS));
+                processSingleParam = true;
+            }
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);

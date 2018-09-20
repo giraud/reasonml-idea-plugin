@@ -6,6 +6,7 @@ import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
 
+@SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends BaseParsingTestCase {
     public FunctionParsingTest() {
         super("", "re", new RmlParserDefinition());
@@ -55,6 +56,13 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(functionOuter, PsiFunction.class);
         assertEquals("error##message", functionInner.getBody().getText());
+    }
+
+    public void testInnerFunctionNoParens() {
+        PsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2);")));
+
+        PsiFunction functionInner = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        assertEquals("2", functionInner.getBody().getText());
     }
 
     public void testInnerFunctionBraces() {
