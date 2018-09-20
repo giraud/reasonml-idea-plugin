@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLocalOpen;
 

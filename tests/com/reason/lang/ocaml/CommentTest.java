@@ -2,7 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 
 @SuppressWarnings("ConstantConditions")
 public class CommentTest extends BaseParsingTestCase {

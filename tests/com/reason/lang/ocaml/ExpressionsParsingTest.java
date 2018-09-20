@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiNamedElement;
 
 import java.util.Collection;

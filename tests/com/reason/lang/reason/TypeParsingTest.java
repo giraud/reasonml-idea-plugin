@@ -1,7 +1,7 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;

@@ -1,6 +1,6 @@
 package com.reason.lang.ocaml;
 
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiClassField;
 import com.reason.lang.core.psi.PsiClassMethod;

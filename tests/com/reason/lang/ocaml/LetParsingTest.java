@@ -1,9 +1,8 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;

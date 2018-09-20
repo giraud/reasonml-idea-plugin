@@ -2,7 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 
 public class CommentTest extends BaseParsingTestCase {
     public CommentTest() {

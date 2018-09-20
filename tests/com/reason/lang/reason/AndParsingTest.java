@@ -1,7 +1,7 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiFile;
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;

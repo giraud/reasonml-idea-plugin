@@ -1,6 +1,6 @@
 package com.reason.lang.reason;
 
-import com.reason.BaseParsingTestCase;
+import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiInclude;
 
 public class IncludeParsingTest extends BaseParsingTestCase {
