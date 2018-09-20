@@ -100,10 +100,15 @@ public class Platform {
 
     @NotNull
     private static String removeProjectDir(Project project, String path) {
-        VirtualFile baseRoot = Platform.findBaseRoot(project);
-        Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-        Path relativize = basePath.relativize(new File(path).toPath());
-        return relativize.toString();
+        try {
+            VirtualFile baseRoot = Platform.findBaseRoot(project);
+            Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
+            Path relativize = basePath.relativize(new File(path).toPath());
+            return relativize.toString();
+        }
+        catch (IllegalArgumentException e) {
+            return path;
+        }
     }
 
     @NotNull
