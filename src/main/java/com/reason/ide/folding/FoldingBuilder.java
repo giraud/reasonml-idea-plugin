@@ -8,10 +8,13 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.psi.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -58,9 +61,18 @@ public class FoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
-        FoldingDescriptor fold = fold(typeExpression.getBinding());
-        if (fold != null) {
-            descriptors.add(fold);
+        PsiElement constrName = PsiTreeUtil.findChildOfType(typeExpression, PsiTypeConstrName.class);
+        if (constrName != null) {
+            MlTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
+            PsiElement eqElement = PsiUtil.nextSiblingWithTokenType(constrName, types.EQ);
+            if (eqElement != null) {
+                TextRange eqRange = eqElement.getTextRange();
+                TextRange typeRange = typeExpression.getTextRange();
+                TextRange textRange = TextRange.create(eqRange.getStartOffset(), typeRange.getEndOffset());
+                if (textRange.getLength() > 5) {
+                    descriptors.add(new FoldingDescriptor(typeExpression, textRange));
+                }
+            }
         }
     }
 

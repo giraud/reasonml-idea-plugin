@@ -1,11 +1,7 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.psi.PsiElement;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
-import com.reason.Joiner;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
