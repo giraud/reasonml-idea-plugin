@@ -10,11 +10,19 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.63 - 2018/09/20
+
+- :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) - Add dates to changelog
+- :bug: Renaming inner module should work
+- :bug: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) - Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
+- :bug: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) - Class names don't appear in Structure panel
+- :bug: Fix a bug that prevent plugin to work with 2018.3-EAP
+
 ## 0.62.1 - 2018/09/06
 
 - :rocket: Add a 'make' button to the bs console</li>
-- :bug: ![o](resources/icons/ocaml-file.png) [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) - Awkward behavior when typing comments</li>
-- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Uncommenting nested comments is incorrect</li>
+- :bug: ![o](resources/icons/ocaml-file.png) [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) - Awkward behavior when typing comments
+- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Uncommenting nested comments is incorrect
 
 ## 0.61 - 2018/08/29
 
