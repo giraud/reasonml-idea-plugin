@@ -734,7 +734,7 @@ public class RmlParser extends CommonParser {
         } else if ((state.isCurrentResolution(startTag) || state.isCurrentResolution(closeTag)) && state.previousTokenElementType == m_types.DOT) {
             // a namespaced custom component
             builder.remapCurrentToken(m_types.TAG_NAME);
-        } else if (state.isCurrentResolution(typeNamedEqVariant) && state.previousTokenElementType == m_types.PIPE) {
+        } else if (state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
         } else {
             if (shouldStartExpression(state)) {

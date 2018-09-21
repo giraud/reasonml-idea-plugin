@@ -592,7 +592,7 @@ public class OclParser extends CommonParser {
             builder.remapCurrentToken(m_types.EXCEPTION_NAME);
         } else if (state.isCurrentResolution(module)) {
             state.updateCurrentResolution(moduleNamed);
-        } else if ((state.isCurrentResolution(typeNamedEqVariant) && state.previousTokenElementType == m_types.PIPE) || state.isCurrentResolution(typeNamedEq)) {
+        } else if (state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
         } else {
             if (!state.isCurrentResolution(modulePath)) {

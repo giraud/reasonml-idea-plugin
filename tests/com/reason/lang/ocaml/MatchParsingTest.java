@@ -6,6 +6,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
+import java.util.Collection;
+
 public class MatchParsingTest extends BaseParsingTestCase {
     public MatchParsingTest() {
         super("", "ml", new OclParserDefinition());
@@ -47,4 +49,14 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertInstanceOf(children[0], PsiScopedExpr.class);
     }
 
+    public void testPatternTokenType() {
+        PsiFile psiFile = parseCode("let _ = match action with | Incr  -> counter + 1");
+
+        PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
+        Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
+        PsiPatternMatch psiPatternMatch = patterns.iterator().next();
+        PsiUpperSymbol variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiUpperSymbol.class);
+        assertEquals(OclTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
+
+    }
 }
