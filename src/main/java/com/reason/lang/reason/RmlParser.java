@@ -70,8 +70,8 @@ public class RmlParser extends CommonParser {
                 parsePercent(builder, state);
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, state);
-            } else if (tokenType == m_types.STRING) {
-                parseString(builder, state);
+            } else if (tokenType == m_types.STRING_VALUE) {
+                parseStringValue(builder, state);
             } else if (tokenType == m_types.PIPE) {
                 parsePipe(builder, state);
             } else if (tokenType == m_types.TILDE) {
@@ -252,7 +252,7 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseString(PsiBuilder builder, ParserState state) {
+    private void parseStringValue(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) {
             state.endAny();
         } else if (state.isCurrentResolution(brace)) {
