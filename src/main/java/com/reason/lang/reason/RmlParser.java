@@ -316,11 +316,13 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseVal(PsiBuilder builder, ParserState state) {
-        state.endUntilStartScope();
-        if (state.isCurrentResolution(clazzBodyScope)) {
-            state.add(mark(builder, val, clazzField, m_types.CLASS_FIELD));
-        } else {
-            state.add(mark(builder, let, m_types.LET_STMT));
+        if (!state.isCurrentResolution(annotationName)) {
+            state.endUntilStartScope();
+            if (state.isCurrentResolution(clazzBodyScope)) {
+                state.add(mark(builder, val, clazzField, m_types.CLASS_FIELD));
+            } else {
+                state.add(mark(builder, let, m_types.LET_STMT));
+            }
         }
     }
 

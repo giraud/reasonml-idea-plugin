@@ -14,4 +14,9 @@ public class AnnotationParsingTest extends BaseParsingTestCase {
         assertEquals("@bs.module", annotation.getName());
     }
 
+    public void testAnnotationName() {
+        assertEquals("@bs.module", ((PsiAnnotation) firstElement(parseCode("[@bs.module]"))).getName());
+        assertEquals("@bs.val", ((PsiAnnotation) firstElement(parseCode("[@bs.val]"))).getName());
+    }
+
 }
