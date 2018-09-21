@@ -5,7 +5,7 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import com.reason.ide.files.RmlFileType;
 
 @SuppressWarnings("ConstantConditions")
-public class FunctionBracesIntention extends LightPlatformCodeInsightFixtureTestCase {
+public class FunctionBracesIntentionTest extends LightPlatformCodeInsightFixtureTestCase {
     public void testBasic() {
         myFixture.configureByText(RmlFileType.INSTANCE, "let add = (x, y) => <caret>x + y;");
         IntentionAction bracesAction = myFixture.getAvailableIntention("Add braces to blockless function");
