@@ -126,6 +126,7 @@ public class OclTypes extends MlTypes {
         MATCH = new MlTokenElementType("MATCH", OclLanguage.INSTANCE);
         MINUS = new MlTokenElementType("MINUS", OclLanguage.INSTANCE);
         MINUSDOT = new MlTokenElementType("MINUSDOT", OclLanguage.INSTANCE);
+        MIXIN_FIELD = new MlTokenElementType("MIXIN_FIELD", OclLanguage.INSTANCE);
         MODULE = new MlTokenElementType("MODULE", OclLanguage.INSTANCE);
         MUTABLE = new MlTokenElementType("MUTABLE", OclLanguage.INSTANCE);
         NONE = new MlTokenElementType("NONE", OclLanguage.INSTANCE);

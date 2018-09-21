@@ -123,6 +123,7 @@ public class RmlTypes extends MlTypes {
         MATCH = new MlTokenElementType("MATCH", RmlLanguage.INSTANCE);
         MINUS = new MlTokenElementType("MINUS", RmlLanguage.INSTANCE);
         MINUSDOT = new MlTokenElementType("MINUSDOT", RmlLanguage.INSTANCE);
+        MIXIN_FIELD = new MlTokenElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE = new MlTokenElementType("MODULE", RmlLanguage.INSTANCE);
         MUTABLE = new MlTokenElementType("MUTABLE", RmlLanguage.INSTANCE);
         NONE = new MlTokenElementType("NONE", RmlLanguage.INSTANCE);

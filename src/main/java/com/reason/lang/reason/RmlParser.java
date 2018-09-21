@@ -86,6 +86,8 @@ public class RmlParser extends CommonParser {
                 parseAssert(builder, state);
             } else if (tokenType == m_types.IF) {
                 parseIf(builder, state);
+            } else if (tokenType == m_types.DOTDOTDOT) {
+                parseDotDotDot(builder, state);
             }
             // ( ... )
             else if (tokenType == m_types.LPAREN) {
@@ -174,6 +176,16 @@ public class RmlParser extends CommonParser {
         state.add(markComplete(builder, ifThenStatement, m_types.IF_STMT));
     }
 
+    private void parseDotDotDot(PsiBuilder builder, ParserState state) {
+        if (state.previousTokenElementType == m_types.LBRACE) {
+            // Mixin:  ... LBRACE <DOTDOTDOT> LIDENT ...
+            state.updateCurrentResolution(recordBinding);
+            state.updateCurrentContext(record);
+            state.updateCurrentCompositeElementType(m_types.RECORD_EXPR);
+            state.add(mark(builder, recordBinding, mixin, m_types.MIXIN_FIELD));
+        }
+    }
+
     private void parseAssert(PsiBuilder builder, ParserState state) {
         state.add(markComplete(builder, assert_, m_types.ASSERT_STMT));
         state.dontMove = advance(builder);
@@ -209,6 +221,8 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentContext(recordSignature)) {
             state.complete();
             state.endUntilContext(recordField);
+            state.popEnd();
+        } else if (state.isCurrentResolution(mixin)) {
             state.popEnd();
         }
     }
@@ -504,6 +518,8 @@ public class RmlParser extends CommonParser {
             });
         } else if (state.isCurrentResolution(recordBinding)) {
             state.add(mark(builder, recordField, m_types.RECORD_FIELD));
+        } else if (state.isCurrentResolution(mixin)) {
+            state.complete();
         } else if (shouldStartExpression(state)) {
             state.add(mark(builder, genericExpression, builder.getTokenType()));
         } else {
@@ -562,16 +578,12 @@ public class RmlParser extends CommonParser {
             state.add(markScope(builder, scope, brace, m_types.SCOPED_EXPR, m_types.LBRACE));
         } else if (state.isCurrentResolution(clazzNamedEq)) {
             state.add(markScope(builder, clazzBodyScope, m_types.SCOPED_EXPR, m_types.LBRACE));
+        } else if (state.isCurrentResolution(switchBinaryCondition)) {
+            ParserScope switchScope = state.endUntilContext(switch_);
+            boolean isSwitch = switchScope != null && switchScope.isResolution(switch_);
+            state.add(markScope(builder, isSwitch ? switchBody : brace, m_types.SCOPED_EXPR, isSwitch ? m_types.SWITCH : m_types.LBRACE));
         } else {
-            ParserScope switchScope;
-            if (state.isCurrentResolution(switchBinaryCondition)) {
-                switchScope = state.endUntilContext(switch_);
-                boolean isSwitch = switchScope != null && switchScope.isResolution(switch_);
-                state.add(markScope(builder, isSwitch ? switchBody : brace, m_types.SCOPED_EXPR, isSwitch ? m_types.SWITCH : m_types.LBRACE));
-            } else {
-                state.add(markScope(builder, scope, brace, m_types.SCOPED_EXPR, m_types.LBRACE));
-            }
-
+            state.add(markScope(builder, scope, brace, m_types.SCOPED_EXPR, m_types.LBRACE));
         }
     }
 

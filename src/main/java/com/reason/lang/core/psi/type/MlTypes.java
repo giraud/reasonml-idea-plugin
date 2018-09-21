@@ -1,11 +1,8 @@
 package com.reason.lang.core.psi.type;
 
-import com.intellij.lang.Language;
 import com.intellij.psi.tree.IElementType;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class MlTypes {
-
     // Composite element types
 
     public IElementType EXTERNAL_STMT;
@@ -92,6 +89,7 @@ public abstract class MlTypes {
     public MlTokenElementType INITIALIZER;
     public MlTokenElementType LAZY;
     public MlTokenElementType LET;
+    public MlTokenElementType MIXIN_FIELD;
     public MlTokenElementType MODULE;
     public MlTokenElementType MUTABLE;
     public MlTokenElementType NEW;

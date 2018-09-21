@@ -68,6 +68,8 @@ public class PsiElementFactory {
             return new PsiPatternMatch(node);
         } else if (type == types.RECORD_EXPR) {
             return new PsiRecord(node);
+        } else if (type == types.MIXIN_FIELD) {
+            return new PsiMixinField(node);
         } else if (type == types.RECORD_FIELD) {
             return new PsiRecordField(node);
         } else if (type == types.INTERPOLATION_EXPR) {
