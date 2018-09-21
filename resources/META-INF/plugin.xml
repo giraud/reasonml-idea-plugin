@@ -231,6 +231,8 @@
 
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
                     factoryClass="com.reason.build.bs.console.BsToolWindowFactory"/>
+
+        <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
     </extensions>
 
 </idea-plugin>
