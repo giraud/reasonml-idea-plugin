@@ -20,6 +20,7 @@ public class RmlTypes extends MlTypes {
         EXCEPTION_EXPR = new MlCompositeElementType("EXCEPTION_EXPRESSION", RmlLanguage.INSTANCE);
         INCLUDE_STMT = new MlCompositeElementType("INCLUDE_STMT", RmlLanguage.INSTANCE);
         MACRO_NAME = new MlCompositeElementType("MACRO_NAME", RmlLanguage.INSTANCE);
+        MIXIN_FIELD = new MlCompositeElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         MODULE_PATH = new MlCompositeElementType("MODULE_PATH", RmlLanguage.INSTANCE);
         CLASS_STMT = new MlCompositeElementType("CLASS_STMT", RmlLanguage.INSTANCE);
@@ -34,6 +35,7 @@ public class RmlTypes extends MlTypes {
         FUN_EXPR = new MlCompositeElementType("FUN_EXPR", RmlLanguage.INSTANCE);
         FUN_PARAMS = new MlCompositeElementType("FUN_PARAMS", RmlLanguage.INSTANCE);
         FUN_BODY = new MlCompositeElementType("FUN_BODY", RmlLanguage.INSTANCE);
+        FUN_CALL_PARAMS = new MlCompositeElementType("FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         LET_BINDING = new MlCompositeElementType("LET_BINDING", RmlLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new MlCompositeElementType("TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);
         TYPE_BINDING = new MlCompositeElementType("TYPE_BINDING", RmlLanguage.INSTANCE);
@@ -123,7 +125,6 @@ public class RmlTypes extends MlTypes {
         MATCH = new MlTokenElementType("MATCH", RmlLanguage.INSTANCE);
         MINUS = new MlTokenElementType("MINUS", RmlLanguage.INSTANCE);
         MINUSDOT = new MlTokenElementType("MINUSDOT", RmlLanguage.INSTANCE);
-        MIXIN_FIELD = new MlTokenElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE = new MlTokenElementType("MODULE", RmlLanguage.INSTANCE);
         MUTABLE = new MlTokenElementType("MUTABLE", RmlLanguage.INSTANCE);
         NONE = new MlTokenElementType("NONE", RmlLanguage.INSTANCE);

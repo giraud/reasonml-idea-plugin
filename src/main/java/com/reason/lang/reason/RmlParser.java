@@ -626,7 +626,11 @@ public class RmlParser extends CommonParser {
                 state.add(mark(builder, genericExpression, m_types.LPAREN));
             }
 
-            state.add(markScope(builder, paren, m_types.SCOPED_EXPR, m_types.LPAREN));
+            if (state.previousTokenElementType == m_types.LIDENT) {
+                state.add(markScope(builder, paren, functionCallParams, m_types.FUN_CALL_PARAMS, m_types.LPAREN));
+            } else {
+                state.add(markScope(builder, paren, m_types.SCOPED_EXPR, m_types.LPAREN));
+            }
         }
     }
 

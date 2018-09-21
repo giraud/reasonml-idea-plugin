@@ -33,6 +33,7 @@ public class OclTypes extends MlTypes {
         FUN_EXPR = new MlCompositeElementType("FUN_EXPR", OclLanguage.INSTANCE);
         FUN_PARAMS = new MlCompositeElementType("FUN_PARAMS", OclLanguage.INSTANCE);
         FUN_BODY = new MlCompositeElementType("FUN_BODY", OclLanguage.INSTANCE);
+        FUN_CALL_PARAMS = new MlCompositeElementType("FUN_CALL_PARAMS", OclLanguage.INSTANCE);
         IF_STMT = new MlCompositeElementType("IF_STMT", OclLanguage.INSTANCE);
         LET_BINDING = new MlCompositeElementType("LET_BINDING", OclLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new MlCompositeElementType("TYPE_CONSTR_NAME", OclLanguage.INSTANCE);
@@ -56,6 +57,7 @@ public class OclTypes extends MlTypes {
         UPPER_SYMBOL = new MlCompositeElementType("UPPER_SYMBOL", OclLanguage.INSTANCE);
         LOWER_SYMBOL = new MlCompositeElementType("LOWER_SYMBOL", OclLanguage.INSTANCE);
         STRUCT_EXPR = new MlCompositeElementType("STRUCT_EXPR", OclLanguage.INSTANCE);
+        MIXIN_FIELD = new MlCompositeElementType("MIXIN_FIELD", OclLanguage.INSTANCE);
 
         // Token element types
 
@@ -126,7 +128,6 @@ public class OclTypes extends MlTypes {
         MATCH = new MlTokenElementType("MATCH", OclLanguage.INSTANCE);
         MINUS = new MlTokenElementType("MINUS", OclLanguage.INSTANCE);
         MINUSDOT = new MlTokenElementType("MINUSDOT", OclLanguage.INSTANCE);
-        MIXIN_FIELD = new MlTokenElementType("MIXIN_FIELD", OclLanguage.INSTANCE);
         MODULE = new MlTokenElementType("MODULE", OclLanguage.INSTANCE);
         MUTABLE = new MlTokenElementType("MUTABLE", OclLanguage.INSTANCE);
         NONE = new MlTokenElementType("NONE", OclLanguage.INSTANCE);

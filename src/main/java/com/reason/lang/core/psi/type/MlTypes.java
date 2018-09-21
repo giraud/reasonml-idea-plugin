@@ -23,6 +23,7 @@ public abstract class MlTypes {
     public IElementType GENERIC_EXPR;
     public IElementType MACRO_EXPR;
     public IElementType MACRO_NAME;
+    public IElementType MIXIN_FIELD;
     public IElementType MODULE_PATH;
     public IElementType ASSERT_STMT;
     public IElementType SCOPED_EXPR;
@@ -39,6 +40,7 @@ public abstract class MlTypes {
     public IElementType FUN_EXPR;
     public IElementType FUN_PARAMS;
     public IElementType FUN_BODY;
+    public IElementType FUN_CALL_PARAMS;
     public IElementType RECORD_EXPR;
     public IElementType RECORD_FIELD;
     public IElementType SWITCH_EXPR;
@@ -89,7 +91,6 @@ public abstract class MlTypes {
     public MlTokenElementType INITIALIZER;
     public MlTokenElementType LAZY;
     public MlTokenElementType LET;
-    public MlTokenElementType MIXIN_FIELD;
     public MlTokenElementType MODULE;
     public MlTokenElementType MUTABLE;
     public MlTokenElementType NEW;
