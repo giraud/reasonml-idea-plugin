@@ -6,14 +6,14 @@ import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseModulePathFinder implements ModulePathFinder {
 
     @NotNull
-    protected String extractPathName(@NotNull PsiElement element, @NotNull MlTypes types) {
+    protected String extractPathName(@NotNull PsiElement element, @NotNull ORTypes types) {
         String path = "";
 
         PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);

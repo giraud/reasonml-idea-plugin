@@ -7,7 +7,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ import javax.swing.*;
 public class PsiIncludeImpl extends MlAstWrapperPsiElement implements PsiInclude {
 
     //region Constructors
-    public PsiIncludeImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiIncludeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion

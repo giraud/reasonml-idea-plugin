@@ -12,16 +12,16 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiInterpolation;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;
 
 public abstract class ORSyntaxAnnotator implements Annotator {
 
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
-    ORSyntaxAnnotator(MlTypes types) {
+    ORSyntaxAnnotator(ORTypes types) {
         m_types = types;
     }
 

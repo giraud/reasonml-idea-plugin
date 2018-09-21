@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class DotExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 

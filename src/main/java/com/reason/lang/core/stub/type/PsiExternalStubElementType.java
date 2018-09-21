@@ -5,8 +5,8 @@ import com.intellij.psi.stubs.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
-import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.core.stub.PsiExternalStub;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -22,7 +22,7 @@ public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub
     }
 
     public PsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
-        MlTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
         return new PsiExternalImpl(types, stub, this);
     }
 

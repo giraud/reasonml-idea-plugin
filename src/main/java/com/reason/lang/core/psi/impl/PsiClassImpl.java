@@ -7,7 +7,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,7 @@ import java.util.Collection;
 public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
 
     //region Constructors
-    public PsiClassImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiClassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion

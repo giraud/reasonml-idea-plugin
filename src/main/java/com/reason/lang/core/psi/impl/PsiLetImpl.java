@@ -12,8 +12,8 @@ import com.reason.icons.Icons;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.core.stub.PsiLetStub;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,17 +24,17 @@ import java.util.Collection;
 public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements PsiLet {
 
     @NotNull
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
     private HMSignature m_inferredType = HMSignature.EMPTY;
 
     //region Constructors
-    public PsiLetImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiLetImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(node);
         m_types = types;
     }
 
-    public PsiLetImpl(@NotNull MlTypes types, @NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
+    public PsiLetImpl(@NotNull ORTypes types, @NotNull PsiLetStub stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);
         m_types = types;
     }

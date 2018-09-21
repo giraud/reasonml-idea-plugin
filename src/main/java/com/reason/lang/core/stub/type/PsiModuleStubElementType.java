@@ -6,8 +6,8 @@ import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiModuleImpl;
-import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.core.stub.PsiModuleStub;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -22,7 +22,7 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
     }
 
     public PsiModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
-        MlTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
         return new PsiModuleImpl(stub, this, types);
     }
 

@@ -2,13 +2,13 @@ package com.reason.lang;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.type.MlTokenElementType;
+import com.reason.lang.core.type.ORTokenElementType;
 
 public class ParserScope {
     private ParserScopeEnum m_resolution;
     private IElementType m_compositeElementType;
     private ParserScopeEnum m_context;
-    MlTokenElementType scopeTokenElementType;
+    ORTokenElementType scopeTokenElementType;
 
     boolean complete = false;
     boolean scope = false;
@@ -16,7 +16,7 @@ public class ParserScope {
 
     private PsiBuilder.Marker m_mark;
 
-    ParserScope(ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, MlTokenElementType scopeTokenElementType, PsiBuilder.Marker mark) {
+    ParserScope(ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType, PsiBuilder.Marker mark) {
         m_context = context;
         m_resolution = resolution;
         m_compositeElementType = compositeElementType;
@@ -68,11 +68,11 @@ public class ParserScope {
         return m_compositeElementType == compositeElementType;
     }
 
-    boolean isScopeTokenEqualTo(MlTokenElementType tokenElementType) {
+    boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
         return this.scopeTokenElementType == tokenElementType;
     }
 
-    void setScopeTokenType(MlTokenElementType tokenElementType) {
+    void setScopeTokenType(ORTokenElementType tokenElementType) {
         this.scopeTokenElementType = tokenElementType;
     }
 

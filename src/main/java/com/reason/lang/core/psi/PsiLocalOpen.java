@@ -3,14 +3,14 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiLocalOpen extends ASTWrapperPsiElement {
 
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
-    public PsiLocalOpen(ASTNode node, MlTypes types) {
+    public PsiLocalOpen(ASTNode node, ORTypes types) {
         super(node);
         m_types = types;
     }

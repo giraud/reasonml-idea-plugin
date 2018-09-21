@@ -1,6 +1,6 @@
 package com.reason.lang.core;
 
-public enum MlFileType {
+public enum ORFileType {
     implementationOnly,
     interfaceOnly,
     interfaceOrImplementation

@@ -1,81 +1,81 @@
 package com.reason.lang.dune;
 
-import com.reason.lang.core.psi.type.MlCompositeElementType;
-import com.reason.lang.core.psi.type.MlTokenElementType;
+import com.reason.lang.core.type.ORCompositeElementType;
+import com.reason.lang.core.type.ORTokenElementType;
 
 public class DuneTypes {
 
     // Composite element types
 
-    public static final MlCompositeElementType SEXPR = new MlCompositeElementType("s-expr", DuneLanguage.INSTANCE);
+    public static final ORCompositeElementType SEXPR = new ORCompositeElementType("s-expr", DuneLanguage.INSTANCE);
 
     // Token element types
 
-    public static final MlTokenElementType LPAREN = new MlTokenElementType("LPAREN", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType RPAREN = new MlTokenElementType("RPAREN", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType STRING = new MlTokenElementType("String", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType ATOM = new MlTokenElementType("ATOM", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType LPAREN = new ORTokenElementType("LPAREN", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType RPAREN = new ORTokenElementType("RPAREN", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType STRING = new ORTokenElementType("String", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType ATOM = new ORTokenElementType("ATOM", DuneLanguage.INSTANCE);
 
-    public static final MlTokenElementType VERSION = new MlTokenElementType("VERSION", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType VERSION = new ORTokenElementType("VERSION", DuneLanguage.INSTANCE);
 
-    public static final MlTokenElementType LIBRARY = new MlTokenElementType("LIBRARY", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType NAME = new MlTokenElementType("NAME", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PUBLIC_NAME = new MlTokenElementType("PUBLIC_NAME", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType SYNOPSIS = new MlTokenElementType("SYNOPSIS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType LIBRARY = new ORTokenElementType("LIBRARY", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType NAME = new ORTokenElementType("NAME", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PUBLIC_NAME = new ORTokenElementType("PUBLIC_NAME", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType SYNOPSIS = new ORTokenElementType("SYNOPSIS", DuneLanguage.INSTANCE);
 
-    public static final MlTokenElementType EXECUTABLE = new MlTokenElementType("EXECUTABLE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType KIND = new MlTokenElementType("KIND", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType MODES = new MlTokenElementType("MODES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType FLAGS = new MlTokenElementType("FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType C_NAMES = new MlTokenElementType("C_NAMES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType C_FLAGS = new MlTokenElementType("C_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType MODULES = new MlTokenElementType("MODULES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType WRAPPED = new MlTokenElementType("WRAPPED", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType OPTIONAL = new MlTokenElementType("OPTIONAL", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType LIBRARIES = new MlTokenElementType("LIBRARIES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType CXX_NAMES = new MlTokenElementType("CXX_NAMES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType CXX_FLAGS = new MlTokenElementType("CXX_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType NO_DYNLINK = new MlTokenElementType("NO_DYNLINK", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PREPROCESS = new MlTokenElementType("PREPROCESS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType JS_OF_OCAML = new MlTokenElementType("JS_OF_OCAML", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType VIRTUAL_DEPS = new MlTokenElementType("VIRTUAL_DEPS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType OCAMLC_FLAGS = new MlTokenElementType("OCAMLC_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType LIBRARY_FLAGS = new MlTokenElementType("LIBRARY_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType OCAMLOPT_FLAGS = new MlTokenElementType("OCAMLOPT_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType C_LIBRARY_FLAGS = new MlTokenElementType("C_LIBRARY_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType INSTALL_C_HEADERS = new MlTokenElementType("INSTALL_C_HEADERS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PREPROCESSOR_DEPS = new MlTokenElementType("PREPROCESSOR_DEPS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PPX_RUNTIME_LIBRARIES = new MlTokenElementType("PPX_RUNTIME_LIBRARIES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType SELF_BUILD_STUBS_ARCHIVE = new MlTokenElementType("SELF_BUILD_STUBS_ARCHIVE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType ALLOW_OVERLAPPING_DEPENDENCIES = new MlTokenElementType("ALLOW_OVERLAPPING_DEPENDENCIES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType MODULES_WITHOUT_IMPLEMENTATION = new MlTokenElementType("MODULES_WITHOUT_IMPLEMENTATION", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType COMMENT = new MlTokenElementType("COMMENT", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType EXE = new MlTokenElementType("EXE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType BEST = new MlTokenElementType("BEST", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType BYTE = new MlTokenElementType("BYTE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType NAMES = new MlTokenElementType("NAMES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType OBJECT = new MlTokenElementType("OBJECT", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType NATIVE = new MlTokenElementType("NATIVE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType LINK_FLAGS = new MlTokenElementType("LINK_FLAGS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType EXECUTABLES = new MlTokenElementType("EXECUTABLES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PUBLIC_NAMES = new MlTokenElementType("PUBLIC_NAMES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType SHARED_OBJECT = new MlTokenElementType("SHARED_OBJECT", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType DEPS = new MlTokenElementType("DEPS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType RULE = new MlTokenElementType("RULE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType MODE = new MlTokenElementType("MODE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType LOCKS = new MlTokenElementType("LOCKS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType ACTION = new MlTokenElementType("ACTION", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType TARGETS = new MlTokenElementType("TARGETS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PROMOTE = new MlTokenElementType("PROMOTE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType STANDARD = new MlTokenElementType("STANDARD", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType FALLBACK = new MlTokenElementType("FALLBACK", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType PROMOTE_UNTIL_CLEAN = new MlTokenElementType("PROMOTE_UNTIL_CLEAN", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType ALIAS = new MlTokenElementType("ALIAS", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType MENHIR = new MlTokenElementType("MENHIR", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType INSTALL = new MlTokenElementType("INSTALL", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType INCLUDE = new MlTokenElementType("INCLUDE", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType OCAML_LEX = new MlTokenElementType("OCAML_LEX", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType OCAML_YACC = new MlTokenElementType("OCAML_YACC", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType COPY_FILES = new MlTokenElementType("COPY_FILES", DuneLanguage.INSTANCE);
-    public static final MlTokenElementType COPY_FILES_SHARP = new MlTokenElementType("COPY_FILES_SHARP", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType EXECUTABLE = new ORTokenElementType("EXECUTABLE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType KIND = new ORTokenElementType("KIND", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType MODES = new ORTokenElementType("MODES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType FLAGS = new ORTokenElementType("FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType C_NAMES = new ORTokenElementType("C_NAMES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType C_FLAGS = new ORTokenElementType("C_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType MODULES = new ORTokenElementType("MODULES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType WRAPPED = new ORTokenElementType("WRAPPED", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType OPTIONAL = new ORTokenElementType("OPTIONAL", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType LIBRARIES = new ORTokenElementType("LIBRARIES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType CXX_NAMES = new ORTokenElementType("CXX_NAMES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType CXX_FLAGS = new ORTokenElementType("CXX_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType NO_DYNLINK = new ORTokenElementType("NO_DYNLINK", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PREPROCESS = new ORTokenElementType("PREPROCESS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType JS_OF_OCAML = new ORTokenElementType("JS_OF_OCAML", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType VIRTUAL_DEPS = new ORTokenElementType("VIRTUAL_DEPS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType OCAMLC_FLAGS = new ORTokenElementType("OCAMLC_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType LIBRARY_FLAGS = new ORTokenElementType("LIBRARY_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType OCAMLOPT_FLAGS = new ORTokenElementType("OCAMLOPT_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType C_LIBRARY_FLAGS = new ORTokenElementType("C_LIBRARY_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType INSTALL_C_HEADERS = new ORTokenElementType("INSTALL_C_HEADERS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PREPROCESSOR_DEPS = new ORTokenElementType("PREPROCESSOR_DEPS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PPX_RUNTIME_LIBRARIES = new ORTokenElementType("PPX_RUNTIME_LIBRARIES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType SELF_BUILD_STUBS_ARCHIVE = new ORTokenElementType("SELF_BUILD_STUBS_ARCHIVE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType ALLOW_OVERLAPPING_DEPENDENCIES = new ORTokenElementType("ALLOW_OVERLAPPING_DEPENDENCIES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType MODULES_WITHOUT_IMPLEMENTATION = new ORTokenElementType("MODULES_WITHOUT_IMPLEMENTATION", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType COMMENT = new ORTokenElementType("COMMENT", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType EXE = new ORTokenElementType("EXE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType BEST = new ORTokenElementType("BEST", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType BYTE = new ORTokenElementType("BYTE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType NAMES = new ORTokenElementType("NAMES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType OBJECT = new ORTokenElementType("OBJECT", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType NATIVE = new ORTokenElementType("NATIVE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType LINK_FLAGS = new ORTokenElementType("LINK_FLAGS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType EXECUTABLES = new ORTokenElementType("EXECUTABLES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PUBLIC_NAMES = new ORTokenElementType("PUBLIC_NAMES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType SHARED_OBJECT = new ORTokenElementType("SHARED_OBJECT", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType DEPS = new ORTokenElementType("DEPS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType RULE = new ORTokenElementType("RULE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType MODE = new ORTokenElementType("MODE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType LOCKS = new ORTokenElementType("LOCKS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType ACTION = new ORTokenElementType("ACTION", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType TARGETS = new ORTokenElementType("TARGETS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PROMOTE = new ORTokenElementType("PROMOTE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType STANDARD = new ORTokenElementType("STANDARD", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType FALLBACK = new ORTokenElementType("FALLBACK", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType PROMOTE_UNTIL_CLEAN = new ORTokenElementType("PROMOTE_UNTIL_CLEAN", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType ALIAS = new ORTokenElementType("ALIAS", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType MENHIR = new ORTokenElementType("MENHIR", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType INSTALL = new ORTokenElementType("INSTALL", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType INCLUDE = new ORTokenElementType("INCLUDE", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType OCAML_LEX = new ORTokenElementType("OCAML_LEX", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType OCAML_YACC = new ORTokenElementType("OCAML_YACC", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType COPY_FILES = new ORTokenElementType("COPY_FILES", DuneLanguage.INSTANCE);
+    public static final ORTokenElementType COPY_FILES_SHARP = new ORTokenElementType("COPY_FILES_SHARP", DuneLanguage.INSTANCE);
 }

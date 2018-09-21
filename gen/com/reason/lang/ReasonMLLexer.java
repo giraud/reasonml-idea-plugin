@@ -4,7 +4,7 @@ package com.reason.lang;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -656,11 +656,11 @@ public class ReasonMLLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-  public ReasonMLLexer(MlTypes types) {
+  public ReasonMLLexer(ORTypes types) {
       this.types = types;
     }
 
-    private MlTypes types;
+    private ORTypes types;
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int commentDepth;

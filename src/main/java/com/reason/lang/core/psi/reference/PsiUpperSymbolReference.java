@@ -16,7 +16,7 @@ import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclModulePathFinder;
 import com.reason.lang.reason.RmlModulePathFinder;
 import com.reason.lang.reason.RmlTypes;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
@@ -34,11 +34,11 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @Nullable
     private final String m_referenceName;
     @NotNull
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
     private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref.upper"));
 
-    public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull MlTypes types) {
+    public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
         super(element, PsiUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;

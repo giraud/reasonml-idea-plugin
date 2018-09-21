@@ -13,8 +13,8 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
-import com.reason.lang.core.psi.type.MlTypes;
-import com.reason.lang.core.psi.type.ORTypesUtil;
+import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -29,7 +29,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
-        MlTypes types = root.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = root.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
 
         PsiTreeUtil.processElements(root, element -> {
             if (element instanceof PsiLet) {
@@ -63,7 +63,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
         PsiElement constrName = PsiTreeUtil.findChildOfType(typeExpression, PsiTypeConstrName.class);
         if (constrName != null) {
-            MlTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
+            ORTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
             PsiElement eqElement = PsiUtil.nextSiblingWithTokenType(constrName, types.EQ);
             if (eqElement != null) {
                 TextRange eqRange = eqElement.getTextRange();

@@ -11,7 +11,7 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ArrayUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.MlFileType;
+import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class MlModuleContributor implements ChooseByNameContributor {
             items.add(new MlModuleNavigationItem(fileModule, fileModule.asModuleName()));
         }
 
-        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, name, scope, MlFileType.interfaceOrImplementation);
+        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, name, scope, ORFileType.interfaceOrImplementation);
         for (PsiModule element : modules) {
             items.add(new MlModuleNavigationItem(element, element.getName()));
         }
@@ -46,7 +46,7 @@ public class MlModuleContributor implements ChooseByNameContributor {
     public String[] getNames(Project project, boolean includeNonProjectItems) {
         ArrayList<String> modules = new ArrayList<>();
 
-        Collection<String> fileModules = PsiFinder.getInstance().findFileModules(project, MlFileType.implementationOnly).stream().map(FileBase::asModuleName).collect(Collectors.toList());
+        Collection<String> fileModules = PsiFinder.getInstance().findFileModules(project, ORFileType.implementationOnly).stream().map(FileBase::asModuleName).collect(Collectors.toList());
         Collection<String> allModuleNames = StubIndex.getInstance().getAllKeys(IndexKeys.MODULES, project);
 
         modules.addAll(fileModules);

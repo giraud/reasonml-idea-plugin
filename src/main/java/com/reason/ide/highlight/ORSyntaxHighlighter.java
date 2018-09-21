@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLexer;
@@ -125,9 +125,9 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
-    public ORSyntaxHighlighter(MlTypes types) {
+    public ORSyntaxHighlighter(ORTypes types) {
         m_types = types;
     }
 

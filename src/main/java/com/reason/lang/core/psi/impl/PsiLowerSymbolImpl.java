@@ -7,14 +7,14 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLowerSymbol {
 
     //region Constructors
-    public PsiLowerSymbolImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiLowerSymbolImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion

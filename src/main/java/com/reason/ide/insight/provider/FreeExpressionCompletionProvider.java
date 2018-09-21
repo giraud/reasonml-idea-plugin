@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class FreeExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 

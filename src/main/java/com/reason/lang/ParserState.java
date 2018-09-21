@@ -3,7 +3,7 @@ package com.reason.lang;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.Stack;
-import com.reason.lang.core.psi.type.MlTokenElementType;
+import com.reason.lang.core.type.ORTokenElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,7 +79,7 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilScopeToken(@NotNull MlTokenElementType scopeElementType) {
+    public ParserScope endUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!m_scopes.isEmpty()) {
@@ -94,7 +94,7 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilOneOfScopeToken(@NotNull MlTokenElementType... scopeElementTypes) {
+    public ParserScope endUntilOneOfScopeToken(@NotNull ORTokenElementType... scopeElementTypes) {
         ParserScope scope = null;
 
         if (!m_scopes.isEmpty()) {
@@ -170,7 +170,7 @@ public class ParserState {
         return currentScope.isCompositeEqualTo(compositeElementType);
     }
 
-    public boolean isScopeTokenElementType(MlTokenElementType scopeTokenElementType) {
+    public boolean isScopeTokenElementType(ORTokenElementType scopeTokenElementType) {
         return currentScope.isScopeTokenEqualTo(scopeTokenElementType);
     }
 
@@ -188,7 +188,7 @@ public class ParserState {
         return currentScope.scope;
     }
 
-    public void setTokenElementType(MlTokenElementType tokenType) {
+    public void setTokenElementType(ORTokenElementType tokenType) {
         currentScope.setScopeTokenType(tokenType);
     }
 
@@ -198,7 +198,7 @@ public class ParserState {
         return this;
     }
 
-    public boolean isCurrentTokenType(MlTokenElementType tokenElementType) {
+    public boolean isCurrentTokenType(ORTokenElementType tokenElementType) {
         return currentScope.isScopeTokenEqualTo(tokenElementType);
     }
 

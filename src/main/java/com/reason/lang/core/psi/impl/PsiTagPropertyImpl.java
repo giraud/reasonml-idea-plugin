@@ -4,14 +4,14 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiTagProperty;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiTagPropertyImpl extends MlAstWrapperPsiElement implements PsiTagProperty {
 
     //region Constructors
-    public PsiTagPropertyImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiTagPropertyImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion

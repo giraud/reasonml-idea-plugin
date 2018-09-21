@@ -8,12 +8,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.insight.provider.*;
 import com.reason.lang.ModulePathFinder;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
 abstract class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
 
-    CompletionContributor(@NotNull MlTypes types, @NotNull ModulePathFinder modulePathFinder, @NotNull CompletionPatterns patterns) {
+    CompletionContributor(@NotNull ORTypes types, @NotNull ModulePathFinder modulePathFinder, @NotNull CompletionPatterns patterns) {
         //extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new DebugCompletionProvider());
 
         extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types));

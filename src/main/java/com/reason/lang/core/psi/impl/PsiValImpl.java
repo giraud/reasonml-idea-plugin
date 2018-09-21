@@ -11,8 +11,8 @@ import com.reason.icons.Icons;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.core.stub.PsiValStub;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,15 +22,15 @@ import java.util.Collection;
 public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements PsiVal {
 
     @NotNull
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
     //region Constructors
-    public PsiValImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiValImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(node);
         m_types = types;
     }
 
-    public PsiValImpl(@NotNull MlTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
+    public PsiValImpl(@NotNull ORTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
         super(stub, nodeType);
         m_types = types;
     }

@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
-import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
     private final Debug m_debug;

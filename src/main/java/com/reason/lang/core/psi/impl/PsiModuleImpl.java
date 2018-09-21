@@ -14,8 +14,8 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.type.MlTypes;
 import com.reason.lang.core.stub.PsiModuleStub;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,21 +25,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.Collections.emptyList;
 
 public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implements PsiModule {
 
     private ModulePath m_modulePath;
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
     //region Constructors
-    public PsiModuleImpl(ASTNode node, MlTypes types) {
+    public PsiModuleImpl(ASTNode node, ORTypes types) {
         super(node);
         m_types = types;
     }
 
-    public PsiModuleImpl(PsiModuleStub stub, IStubElementType nodeType, MlTypes types) {
+    public PsiModuleImpl(PsiModuleStub stub, IStubElementType nodeType, ORTypes types) {
         super(stub, nodeType);
         m_types = types;
     }

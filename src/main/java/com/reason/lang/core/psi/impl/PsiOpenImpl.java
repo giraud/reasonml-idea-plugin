@@ -9,7 +9,7 @@ import com.reason.icons.Icons;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ import javax.swing.*;
 public class PsiOpenImpl extends MlAstWrapperPsiElement implements PsiOpen, PsiStructuredElement {
 
     //region Constructors
-    public PsiOpenImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiOpenImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion

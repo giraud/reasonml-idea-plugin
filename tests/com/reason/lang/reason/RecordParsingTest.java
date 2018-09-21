@@ -11,7 +11,7 @@ public class RecordParsingTest extends BaseParsingTestCase {
     }
 
     public void testMixin() {
-        PsiLet let = first(letExpressions(parseCode("let x = {...component, otherField: 1};", true)));
+        PsiLet let = first(letExpressions(parseCode("let x = {...component, otherField: 1};")));
 
         PsiRecord record = (PsiRecord) let.getBinding().getFirstChild();
         PsiRecordField field = record.getFields().iterator().next();

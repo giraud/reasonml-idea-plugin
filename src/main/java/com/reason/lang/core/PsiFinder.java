@@ -38,7 +38,7 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull MlFileType fileType) {
+    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull ORFileType fileType) {
         m_debug.debug("Find modules, name", name);
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
@@ -55,9 +55,9 @@ public final class PsiFinder {
                 VirtualFile virtualFile = module.getContainingFile().getVirtualFile();
                 FileType moduleFileType = virtualFile.getFileType();
 
-                if (fileType == MlFileType.implementationOnly) {
+                if (fileType == ORFileType.implementationOnly) {
                     keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
-                } else if (fileType == MlFileType.interfaceOnly) {
+                } else if (fileType == ORFileType.interfaceOnly) {
                     keepFile = moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType;
                 } else {
                     // use interface if there is one, implementation otherwise ... always the case ????
@@ -87,12 +87,12 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         return findModules(project, name, GlobalSearchScope.allScope(project), fileType);
     }
 
     @Nullable
-    public PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         Collection<PsiModule> modules = findModules(project, name, fileType);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
@@ -102,26 +102,26 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public Collection<PsiLet> findLets(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("lets", project, name, fileType, IndexKeys.LETS, PsiLet.class);
     }
 
     @NotNull
-    public Collection<PsiVal> findVals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public Collection<PsiVal> findVals(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("vals", project, name, fileType, IndexKeys.VALS, PsiVal.class);
     }
 
     @NotNull
-    public Collection<PsiType> findTypes(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public Collection<PsiType> findTypes(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("types", project, name, fileType, IndexKeys.TYPES, PsiType.class);
     }
 
     @NotNull
-    public Collection<PsiExternal> findExternals(@NotNull Project project, @NotNull String name, @NotNull MlFileType fileType) {
+    public Collection<PsiExternal> findExternals(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("externals", project, name, fileType, IndexKeys.EXTERNALS, PsiExternal.class);
     }
 
-    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull MlFileType fileType, StubIndexKey<String, T> indexKey, Class<T> clazz) {
+    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull ORFileType fileType, StubIndexKey<String, T> indexKey, Class<T> clazz) {
         if (m_debug.isDebugEnabled()) {
             m_debug.debug("Find " + debugName + " name", name);
         }
@@ -146,9 +146,9 @@ public final class PsiFinder {
                 VirtualFile virtualFile = containingFile.getVirtualFile();
                 FileType moduleFileType = virtualFile.getFileType();
 
-                if (fileType == MlFileType.implementationOnly) {
+                if (fileType == ORFileType.implementationOnly) {
                     keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
-                } else if (fileType == MlFileType.interfaceOnly) {
+                } else if (fileType == ORFileType.interfaceOnly) {
                     keepFile = moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType;
                 } else {
                     // use interface if there is one, implementation otherwise ... always the case ????
@@ -231,7 +231,7 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<FileBase> findFileModules(@NotNull Project project, @NotNull MlFileType fileType) {
+    public Collection<FileBase> findFileModules(@NotNull Project project, @NotNull ORFileType fileType) {
         // All file names are unique in a project, we use the file name in the key
         // Need a better algo to prioritise the paths and not overwrite the correct resolved files
         Map<String, FileBase> result = new THashMap<>();
@@ -247,7 +247,7 @@ public final class PsiFinder {
         GlobalSearchScope searchScope = GlobalSearchScope.projectScope(project);
 
         // List all interface files
-        if (fileType != MlFileType.implementationOnly) {
+        if (fileType != ORFileType.implementationOnly) {
             rmiFiles = FilenameIndex.getAllFilesByExt(project, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), searchScope);
             ociFiles = FilenameIndex.getAllFilesByExt(project, OclInterfaceFileType.INSTANCE.getDefaultExtension(), searchScope);
 
@@ -268,7 +268,7 @@ public final class PsiFinder {
         }
 
         // List all implementation files
-        if (fileType != MlFileType.interfaceOnly) {
+        if (fileType != ORFileType.interfaceOnly) {
             rmlFiles = FilenameIndex.getAllFilesByExt(project, RmlFileType.INSTANCE.getDefaultExtension());
             oclFiles = FilenameIndex.getAllFilesByExt(project, OclFileType.INSTANCE.getDefaultExtension());
 
@@ -276,7 +276,7 @@ public final class PsiFinder {
                 boolean keep = true;
                 PsiFile file = psiManager.findFile(virtualFile);
 
-                if (fileType != MlFileType.implementationOnly) {
+                if (fileType != ORFileType.implementationOnly) {
                     String interfaceName = virtualFile.getNameWithoutExtension() + "." + RmlInterfaceFileType.INSTANCE.getDefaultExtension();
                     if (files.containsKey(interfaceName)) {
                         keep = false;
@@ -292,7 +292,7 @@ public final class PsiFinder {
                 boolean keep = true;
                 PsiFile file = psiManager.findFile(virtualFile);
 
-                if (fileType != MlFileType.implementationOnly) {
+                if (fileType != ORFileType.implementationOnly) {
                     String interfaceName = virtualFile.getNameWithoutExtension() + "." + OclInterfaceFileType.INSTANCE.getDefaultExtension();
                     if (files.containsKey(interfaceName)) {
                         keep = false;

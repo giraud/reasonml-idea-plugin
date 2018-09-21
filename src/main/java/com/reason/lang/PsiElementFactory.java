@@ -5,13 +5,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 
 public class PsiElementFactory {
     private PsiElementFactory() {
     }
 
-    public static PsiElement createElement(MlTypes types, ASTNode node) {
+    public static PsiElement createElement(ORTypes types, ASTNode node) {
         IElementType type = node.getElementType();
 
         if (type == types.EXTERNAL_STMT) {

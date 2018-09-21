@@ -9,14 +9,14 @@ import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.reference.PsiUpperSymbolReference;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpperSymbol {
 
     //region Constructors
-    public PsiUpperSymbolImpl(@NotNull MlTypes types, @NotNull ASTNode node) {
+    public PsiUpperSymbolImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
     //endregion

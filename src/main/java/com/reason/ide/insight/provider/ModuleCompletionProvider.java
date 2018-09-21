@@ -14,7 +14,7 @@ import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.type.MlTypes;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,13 +22,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.reason.lang.core.MlFileType.implementationOnly;
-import static com.reason.lang.core.MlFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.implementationOnly;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
-    private final MlTypes m_types;
+    private final ORTypes m_types;
 
-    public ModuleCompletionProvider(MlTypes types) {
+    public ModuleCompletionProvider(ORTypes types) {
         m_types = types;
     }
 
