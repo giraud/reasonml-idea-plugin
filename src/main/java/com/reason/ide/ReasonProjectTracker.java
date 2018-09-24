@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.format.ReformatOnSave;
-import com.reason.ide.hints.RmlDocumentListener;
+import com.reason.ide.hints.ORDocumentListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +26,7 @@ public class ReasonProjectTracker implements ProjectComponent {
 
     private final Project m_project;
     @Nullable
-    private RmlDocumentListener m_documentListener;
+    private ORDocumentListener m_documentListener;
     @Nullable
     private MessageBusConnection m_messageBusConnection;
     @Nullable
@@ -56,7 +56,7 @@ public class ReasonProjectTracker implements ProjectComponent {
             m_log.info("32Bit system detected, can't use rincewind");
         }
 
-        m_documentListener = new RmlDocumentListener(m_project);
+        m_documentListener = new ORDocumentListener(m_project);
         EditorFactory.getInstance().getEventMulticaster().addDocumentListener(m_documentListener);
 
         m_messageBusConnection = m_project.getMessageBus().connect();

@@ -7,12 +7,12 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 
-public class RmlDocumentListener implements DocumentListener {
+public class ORDocumentListener implements DocumentListener {
 
     private final Project m_project;
     private int m_oldLinesCount;
 
-    public RmlDocumentListener(Project project) {
+    public ORDocumentListener(Project project) {
         m_project = project;
     }
 

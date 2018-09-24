@@ -21,4 +21,7 @@ public interface PsiLet extends PsiHMSignature, PsiInferredType, PsiQualifiedNam
     boolean isFunction();
 
     Collection<PsiRecordField> getObjectFields();
+
+    @Nullable
+    PsiSignature getSignature();
 }

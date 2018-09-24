@@ -3,9 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PlainTextTokenTypes;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.reason.ide.files.FileHelper;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiSignature;
 import org.jetbrains.annotations.NotNull;
@@ -21,9 +19,7 @@ public class PsiSignatureImpl extends ASTWrapperPsiElement implements PsiSignatu
     @NotNull
     @Override
     public HMSignature asHMSignature() {
-        PsiFile containingFile = getContainingFile();
-        boolean isOCaml = containingFile != null && FileHelper.isOCaml(containingFile.getFileType());
-        return new HMSignature(isOCaml, getText());
+        return new HMSignature(getText());
     }
 
     @NotNull

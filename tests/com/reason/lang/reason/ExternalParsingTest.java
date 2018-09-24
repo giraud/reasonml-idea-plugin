@@ -22,7 +22,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     public void testWithString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getSignature().toString());
+        assertEquals("ReasonReact.reactClass", e.getHMSignature().toString());
         assertFalse(e.isFunction());
         assertEquals("FormattedMessage", e.getExternalName());
     }
@@ -30,7 +30,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     public void testWithEmptyString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getSignature().toString());
+        assertEquals("ReasonReact.reactClass", e.getHMSignature().toString());
         assertFalse(e.isFunction());
         assertEquals("", e.getExternalName());
     }

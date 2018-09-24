@@ -220,7 +220,7 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
-        <editor.linePainter implementation="com.reason.ide.hints.RmlEditorLinePainter"/>
+        <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <compileServer.plugin classpath="jps-builder.jar;jps-shared.jar"/>
@@ -248,6 +248,9 @@
                     factoryClass="com.reason.build.bs.console.BsToolWindowFactory"/>
 
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
+
+        <codeInsight.parameterInfo language="ReasonML"
+                                   implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>
     </extensions>
 
 </idea-plugin>

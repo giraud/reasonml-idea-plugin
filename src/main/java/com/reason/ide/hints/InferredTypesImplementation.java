@@ -24,7 +24,7 @@ public class InferredTypesImplementation implements InferredTypes {
             if (type.startsWith("val")) {
                 int colonPos = type.indexOf(':');
                 if (0 < colonPos && colonPos < type.length()) {
-                    m_let.put(type.substring(4, colonPos - 1), new HMSignature(true, type.substring(colonPos + 1)));
+                    m_let.put(type.substring(4, colonPos - 1), new HMSignature(type.substring(colonPos + 1)));
                 }
             } else if (type.startsWith("module")) {
                 int colonPos = type.indexOf(':');
@@ -92,11 +92,11 @@ public class InferredTypesImplementation implements InferredTypes {
                     lines.put(tokens[3], idents);
                 }
 
-                idents.put(logicalPosition, new HMSignature(true, tokens[4]));
+                idents.put(logicalPosition, new HMSignature(tokens[4]));
             } else {
                 LogicalHMSignature signature = m_pos.get(logicalPosition.line);
                 if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
-                    m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(true, tokens[4])));
+                    m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(tokens[4])));
                 }
             }
         }

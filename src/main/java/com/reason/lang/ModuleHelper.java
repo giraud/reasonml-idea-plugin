@@ -24,7 +24,7 @@ public class ModuleHelper {
         // Try to find if it's a proxy to a react class
         List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class);
         for (PsiExternal external : externals) {
-            if ("ReasonReact.reactClass".equals(external.getSignature().toString())) {
+            if ("ReasonReact.reactClass".equals(external.getHMSignature().toString())) {
                 componentDef = external;
                 break;
             }

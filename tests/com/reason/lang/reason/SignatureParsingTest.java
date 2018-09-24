@@ -16,20 +16,30 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testMandatoryVal() {
         PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
 
-        HMSignature signature = let.getSignature();
+        HMSignature signature = let.getHMSignature();
+        assertEquals("int", signature.toString());
+        assertTrue(signature.isMandatory(0));
+    }
+
+    public void testParsingRml() {
+        PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;", true)));
+
+        HMSignature signature = let.getHMSignature();
+        assertEquals(3, signature.getTypes().length);
+        assertEquals("int", signature.toString());
         assertTrue(signature.isMandatory(0));
     }
 
     public void testOptionalFun() {
         PsiLet let = first(letExpressions(parseCode("let x:int => option(string) => string = (a,b) => c")));
 
-        HMSignature signature = let.getSignature();
+        HMSignature signature = let.getHMSignature();
         assertTrue(signature.isMandatory(0));
         assertFalse(signature.isMandatory(1));
     }
 
     public void testOptionalFunParameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option(string), c:bool=false, d:float=?) => 3", true)));
+        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option(string), c:bool=false, d:float=?) => 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiFunctionParameter> parameters = new ArrayList<>(function.getParameterList());

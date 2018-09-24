@@ -14,16 +14,16 @@ public class PsiSignatureUtil {
     }
 
     @NotNull
-    public static String getProvidersType(@Nullable PsiElement element) {
+    public static String getSignature(@Nullable PsiElement element) {
         if (element instanceof PsiExternal) {
-            return ((PsiExternal) element).getSignature().toString();
+            return ((PsiExternal) element).getHMSignature().toString();
         } else if (element instanceof PsiLet) {
             PsiLet let = (PsiLet) element;
-            HMSignature signature = let.hasInferredType() ? let.getInferredType() : let.getSignature();
+            HMSignature signature = let.hasInferredType() ? let.getInferredType() : let.getHMSignature();
             return signature.toString();
         } else if (element instanceof PsiVal) {
             PsiVal val = (PsiVal) element;
-            HMSignature signature = val.getSignature();
+            HMSignature signature = val.getHMSignature();
             return signature.toString();
         } else if (element instanceof PsiModule) {
             return ((PsiModule) element).getQualifiedName();

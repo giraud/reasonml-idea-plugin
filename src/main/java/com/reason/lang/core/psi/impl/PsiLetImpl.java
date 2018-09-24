@@ -67,10 +67,16 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         return findChildByClass(PsiLetBinding.class);
     }
 
+    @Override
+    @Nullable
+    public PsiSignature getSignature() {
+        return findChildByClass(PsiSignature.class);
+    }
+
     @NotNull
     @Override
-    public HMSignature getSignature() {
-        PsiSignature signature = findChildByClass(PsiSignature.class);
+    public HMSignature getHMSignature() {
+        PsiSignature signature = getSignature();
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 
@@ -106,7 +112,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         if (hasInferredType()) {
             return getInferredType().isFunctionSignature();
         } else {
-            HMSignature signature = getSignature();
+            HMSignature signature = getHMSignature();
             if (signature != HMSignature.EMPTY) {
                 return signature.isFunctionSignature();
             }
@@ -178,7 +184,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
                     return "_";
                 }
 
-                HMSignature signature = hasInferredType() ? getInferredType() : getSignature();
+                HMSignature signature = hasInferredType() ? getInferredType() : getHMSignature();
                 String signatureText = (signature == HMSignature.EMPTY ? "" : ":   " + signature);
 
                 String letName = letValueName.getText();

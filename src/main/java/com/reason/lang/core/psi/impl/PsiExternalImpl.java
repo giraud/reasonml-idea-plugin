@@ -88,7 +88,7 @@ public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> im
 
     @NotNull
     @Override
-    public HMSignature getSignature() {
+    public HMSignature getHMSignature() {
         PsiSignature signature = findChildByClass(PsiSignature.class);
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
@@ -139,7 +139,7 @@ public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> im
                     }
                 }
 
-                String signature = getSignature().toString();
+                String signature = getHMSignature().toString();
                 if (!signature.isEmpty()) {
                     aliasName += " :  " + signature;
                 }

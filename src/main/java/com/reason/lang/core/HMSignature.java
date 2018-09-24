@@ -7,30 +7,36 @@ import org.jetbrains.annotations.NotNull;
  */
 public class HMSignature {
 
-    public static final HMSignature EMPTY = new HMSignature(false, "");
+    public static final HMSignature EMPTY = new HMSignature("");
 
-    static class SignatureItem {
+    public static class SignatureType {
         String value;
         boolean mandatory;
         String defaultValue;
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     @NotNull
-    private final SignatureItem[] m_types;
+    private final SignatureType[] m_types;
     @NotNull
     private final String m_signature;
 
-    public HMSignature(boolean isOCaml, @NotNull String signature) {
+    public HMSignature(@NotNull String signature) {
         String normalized = signature.
+                trim().
                 replaceAll("\n", "").
                 replaceAll("\\s+", " ").
                 replaceAll("=>", "->");
 
         String[] items = normalized.split("->");
-        m_types = new SignatureItem[items.length];
+        m_types = new SignatureType[items.length];
         for (int i = 0; i < items.length; i++) {
             String[] tokens = items[i].trim().split("=");
-            m_types[i] = new SignatureItem();
+            m_types[i] = new SignatureType();
             m_types[i].value = tokens[0];
             m_types[i].mandatory = !tokens[0].contains("option") && tokens.length == 1;
             m_types[i].defaultValue = 2 == tokens.length ? tokens[1] : "";
@@ -42,7 +48,7 @@ public class HMSignature {
             if (0 < i) {
                 sb.append(" -> ");
             }
-            SignatureItem type = m_types[i];
+            SignatureType type = m_types[i];
             sb.append(type.value);
         }
         m_signature = sb.toString();
@@ -63,5 +69,9 @@ public class HMSignature {
 
     public boolean isMandatory(int index) {
         return m_types[index].mandatory;
+    }
+
+    public SignatureType[] getTypes() {
+        return m_types;
     }
 }

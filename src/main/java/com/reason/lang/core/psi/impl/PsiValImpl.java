@@ -75,7 +75,7 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
 
     @NotNull
     @Override
-    public HMSignature getSignature() {
+    public HMSignature getHMSignature() {
         PsiSignature signature = findChildByClass(PsiSignature.class);
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
@@ -86,7 +86,7 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
             @Nullable
             @Override
             public String getPresentableText() {
-                return getName() + ": " + getSignature();
+                return getName() + ": " + getHMSignature();
             }
 
             @Nullable

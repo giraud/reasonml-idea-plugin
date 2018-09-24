@@ -57,7 +57,7 @@ public class PsiElementFactory {
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
         } else if (type == types.FUN_CALL_PARAMS) {
-            return new PsiFunctionCallParams(node);
+            return new PsiFunctionCallParamsImpl(node);
         } else if (type == types.MACRO_EXPR) {
             return new PsiMacro(node);
         } else if (type == types.MACRO_NAME) {
@@ -115,7 +115,7 @@ public class PsiElementFactory {
         } else if (type == types.C_UNKNOWN_EXPR) {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();
-            if (parentNode.getElementType() == types.C_FUN_PARAMS) {
+            if (parentNode != null && parentNode.getElementType() == types.C_FUN_PARAMS) {
                 return new PsiFunctionParameterImpl(types, node);
             } else {
                 // Remove the unknown node by its children

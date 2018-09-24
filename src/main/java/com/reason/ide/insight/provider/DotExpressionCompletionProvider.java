@@ -113,7 +113,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                         resultSet.addElement(
                                 LookupElementBuilder.
                                         create(recordField).
-                                        withTypeText(PsiSignatureUtil.getProvidersType(recordField)).
+                                        withTypeText(PsiSignatureUtil.getSignature(recordField)).
                                         withIcon(PsiIconUtil.getProvidersIcon(recordField, 0))
                         );
                     }
@@ -128,7 +128,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 // TODO: if include => include
                 resultSet.addElement(LookupElementBuilder.
                         create(expression).
-                        withTypeText(PsiSignatureUtil.getProvidersType(expression)).
+                        withTypeText(PsiSignatureUtil.getSignature(expression)).
                         withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                 );
             }

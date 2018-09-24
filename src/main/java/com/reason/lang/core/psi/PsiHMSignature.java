@@ -6,6 +6,6 @@ import org.jetbrains.annotations.NotNull;
 public interface PsiHMSignature {
 
     @NotNull
-    HMSignature getSignature();
+    HMSignature getHMSignature();
 
 }

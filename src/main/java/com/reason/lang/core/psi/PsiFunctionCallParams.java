@@ -1,21 +1,11 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
 
-public class PsiFunctionCallParams extends ASTWrapperPsiElement {
+import java.util.Collection;
 
-    public PsiFunctionCallParams(ASTNode node) {
-        super(node);
-    }
-
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return "function call params";
-    }
+public interface PsiFunctionCallParams extends PsiElement {
+    @NotNull
+    Collection<PsiFunctionParameter> getParameterList();
 }

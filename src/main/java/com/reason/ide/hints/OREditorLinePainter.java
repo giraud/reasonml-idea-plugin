@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 
-public class RmlEditorLinePainter extends EditorLinePainter {
+public class OREditorLinePainter extends EditorLinePainter {
 
     @Nullable
     @Override
