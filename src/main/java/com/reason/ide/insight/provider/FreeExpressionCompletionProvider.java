@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static java.util.Collections.emptyList;
 
 public class FreeExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 
@@ -45,7 +46,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getOriginalPosition();
 
-        List<String> paths = m_modulePathFinder.extractPotentialPaths(cursorElement);
+        List<String> paths = cursorElement == null ? emptyList() : m_modulePathFinder.extractPotentialPaths(cursorElement);
         m_debug.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)
@@ -64,8 +65,8 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
 
         // Add all local expressions (let and module name)
-        PsiElement item = cursorElement.getPrevSibling();
-        if (item == null) {
+        PsiElement item = cursorElement == null ? null : cursorElement.getPrevSibling();
+        if (item == null && cursorElement != null) {
             item = cursorElement.getParent();
         }
         while (item != null) {
