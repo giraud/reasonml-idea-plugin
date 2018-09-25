@@ -1,31 +1,33 @@
 package com.reason.lang;
 
-import ORTypes;
+import com.intellij.lexer.FlexLexer;
+import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.type.ORTypes;
 
 import static com.intellij.psi.TokenType.*;
 %%
 
 %{
-  public ReasonMLLexer(ORTypes types) {
+    public ReasonMLLexer(ORTypes types) {
         this.types = types;
-      }
+    }
 
-      private ORTypes types;
-      private int tokenStartIndex;
-      private CharSequence quotedStringId;
-      private int commentDepth;
-      private boolean inCommentString = false;
+    private ORTypes types;
+    private int tokenStartIndex;
+    private CharSequence quotedStringId;
+    private int commentDepth;
+    private boolean inCommentString = false;
 
-      //Store the start index of a token
-      private void tokenStart() {
+    //Store the start index of a token
+    private void tokenStart() {
         tokenStartIndex = zzStartRead;
-      }
+    }
 
-      //Set the start index of the token to the stored index
-      private void tokenEnd() {
+    //Set the start index of the token to the stored index
+    private void tokenEnd() {
         zzStartRead = tokenStartIndex;
-      }
-  %}
+    }
+%}
 
 %public
 %class ReasonMLLexer
@@ -161,6 +163,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "int"       { return types.INT; }
     "float"     { return types.FLOAT; }
     "list"      { return types.LIST; }
+    "array"     { return types.ARRAY; }
 
     "false"     { return types.BOOL_VALUE; }
     "true"      { return types.BOOL_VALUE; }

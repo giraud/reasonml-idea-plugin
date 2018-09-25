@@ -61,11 +61,13 @@ public class OclTypes extends ORTypes {
 
         // Token element types
 
+        ARRAY = new ORTokenElementType("ARRAY", OclLanguage.INSTANCE);
         BOOL = new ORTokenElementType("BOOL", OclLanguage.INSTANCE);
-        STRING = new ORTokenElementType("STRING", OclLanguage.INSTANCE);
-        FLOAT = new ORTokenElementType("FLOAT", OclLanguage.INSTANCE);
         CHAR = new ORTokenElementType("CHAR", OclLanguage.INSTANCE);
         INT = new ORTokenElementType("INT", OclLanguage.INSTANCE);
+        FLOAT = new ORTokenElementType("FLOAT", OclLanguage.INSTANCE);
+        LIST = new ORTokenElementType("LIST", OclLanguage.INSTANCE);
+        STRING = new ORTokenElementType("STRING", OclLanguage.INSTANCE);
 
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", OclLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", OclLanguage.INSTANCE);
@@ -122,7 +124,6 @@ public class OclTypes extends ORTypes {
         LBRACKET = new ORTokenElementType("LBRACKET", OclLanguage.INSTANCE);
         LET = new ORTokenElementType("LET", OclLanguage.INSTANCE);
         LIDENT = new ORTokenElementType("LIDENT", OclLanguage.INSTANCE);
-        LIST = new ORTokenElementType("LIST", OclLanguage.INSTANCE);
         LPAREN = new ORTokenElementType("LPAREN", OclLanguage.INSTANCE);
         LT = new ORTokenElementType("LT", OclLanguage.INSTANCE);
         MATCH = new ORTokenElementType("MATCH", OclLanguage.INSTANCE);

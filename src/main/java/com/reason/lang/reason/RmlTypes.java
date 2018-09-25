@@ -57,11 +57,13 @@ public class RmlTypes extends ORTypes {
 
         // Token element types
 
+        ARRAY = new ORTokenElementType("ARRAY", RmlLanguage.INSTANCE);
         BOOL = new ORTokenElementType("BOOL", RmlLanguage.INSTANCE);
-        STRING = new ORTokenElementType("STRING", RmlLanguage.INSTANCE);
-        FLOAT = new ORTokenElementType("FLOAT", RmlLanguage.INSTANCE);
         CHAR = new ORTokenElementType("CHAR", RmlLanguage.INSTANCE);
+        FLOAT = new ORTokenElementType("FLOAT", RmlLanguage.INSTANCE);
         INT = new ORTokenElementType("INT", RmlLanguage.INSTANCE);
+        LIST = new ORTokenElementType("LIST", RmlLanguage.INSTANCE);
+        STRING = new ORTokenElementType("STRING", RmlLanguage.INSTANCE);
 
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", RmlLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", RmlLanguage.INSTANCE);
@@ -119,7 +121,6 @@ public class RmlTypes extends ORTypes {
         LBRACKET = new ORTokenElementType("LBRACKET", RmlLanguage.INSTANCE);
         LET = new ORTokenElementType("LET", RmlLanguage.INSTANCE);
         LIDENT = new ORTokenElementType("LIDENT", RmlLanguage.INSTANCE);
-        LIST = new ORTokenElementType("LIST", RmlLanguage.INSTANCE);
         LPAREN = new ORTokenElementType("LPAREN", RmlLanguage.INSTANCE);
         LT = new ORTokenElementType("LT", RmlLanguage.INSTANCE);
         MATCH = new ORTokenElementType("MATCH", RmlLanguage.INSTANCE);

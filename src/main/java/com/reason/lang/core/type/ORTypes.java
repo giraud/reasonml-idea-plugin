@@ -55,11 +55,13 @@ public abstract class ORTypes {
 
     // Token element types
 
+    public ORTokenElementType ARRAY;
     public ORTokenElementType BOOL;
-    public ORTokenElementType STRING;
-    public ORTokenElementType FLOAT;
     public ORTokenElementType CHAR;
+    public ORTokenElementType FLOAT;
     public ORTokenElementType INT;
+    public ORTokenElementType LIST;
+    public ORTokenElementType STRING;
 
     public ORTokenElementType BOOL_VALUE;
     public ORTokenElementType STRING_VALUE;
@@ -146,7 +148,6 @@ public abstract class ORTypes {
     public ORTokenElementType LBRACE;
     public ORTokenElementType LBRACKET;
     public ORTokenElementType LIDENT;
-    public ORTokenElementType LIST;
     public ORTokenElementType LPAREN;
     public ORTokenElementType LT;
     public ORTokenElementType MATCH;
