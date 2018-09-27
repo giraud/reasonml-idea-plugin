@@ -19,7 +19,9 @@ public class RmlTypes extends ORTypes {
         ANNOTATION_EXPR = new ORCompositeElementType("ANNOTATION_EXPRESSION", RmlLanguage.INSTANCE);
         EXCEPTION_EXPR = new ORCompositeElementType("EXCEPTION_EXPRESSION", RmlLanguage.INSTANCE);
         INCLUDE_STMT = new ORCompositeElementType("INCLUDE_STMT", RmlLanguage.INSTANCE);
+        MACRO_EXPR = new ORCompositeElementType("MACRO_EXPR", RmlLanguage.INSTANCE);
         MACRO_NAME = new ORCompositeElementType("MACRO_NAME", RmlLanguage.INSTANCE);
+        MACRO_RAW_BODY = new ORCompositeElementType("MACRO_RAW_BODY", RmlLanguage.INSTANCE);
         MIXIN_FIELD = new ORCompositeElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", RmlLanguage.INSTANCE);

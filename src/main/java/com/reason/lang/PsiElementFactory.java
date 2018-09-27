@@ -60,8 +60,12 @@ public class PsiElementFactory {
             return new PsiParametersImpl(types, node);
         } else if (type == types.FUN_CALL_PARAMS) {
             return new PsiFunctionCallParams(node);
+        } else if (type == types.MACRO_EXPR) {
+            return new PsiMacro(node);
         } else if (type == types.MACRO_NAME) {
             return new PsiMacroName(node);
+        } else if (type == types.MACRO_RAW_BODY) {
+            return new PsiRawMacroBody(node);
         } else if (type == types.SCOPED_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == types.LOCAL_OPEN) {

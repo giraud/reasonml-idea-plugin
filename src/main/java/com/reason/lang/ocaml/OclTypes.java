@@ -21,7 +21,9 @@ public class OclTypes extends ORTypes {
         ANNOTATION_EXPR = new ORCompositeElementType("ANNOTATION_EXPRESSION", OclLanguage.INSTANCE);
         EXCEPTION_EXPR = new ORCompositeElementType("EXCEPTION_EXPRESSION", OclLanguage.INSTANCE);
         INCLUDE_STMT = new ORCompositeElementType("INCLUDE_STMT", OclLanguage.INSTANCE);
+        MACRO_EXPR = new ORCompositeElementType("MACRO_EXPR", OclLanguage.INSTANCE);
         MACRO_NAME = new ORCompositeElementType("MACRO_NAME", OclLanguage.INSTANCE);
+        MACRO_RAW_BODY = new ORCompositeElementType("MACRO_RAW_BODY", OclLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);
         CLASS_CONSTR = new ORCompositeElementType("CLASS_CONSTR", OclLanguage.INSTANCE);
         CLASS_PARAMS = new ORCompositeElementType("CLASS_PARAMS", OclLanguage.INSTANCE);

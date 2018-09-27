@@ -210,6 +210,8 @@
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <compileServer.plugin classpath="jps-builder.jar;jps-shared.jar"/>
 
+        <languageInjector implementation="com.reason.lang.JsInjector"/>
+
         <!--
          | Intentions
          -->

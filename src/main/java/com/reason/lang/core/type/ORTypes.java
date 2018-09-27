@@ -23,6 +23,7 @@ public abstract class ORTypes {
     public IElementType GENERIC_EXPR;
     public IElementType MACRO_EXPR;
     public IElementType MACRO_NAME;
+    public IElementType MACRO_RAW_BODY;
     public IElementType MIXIN_FIELD;
     public IElementType MODULE_PATH;
     public IElementType ASSERT_STMT;

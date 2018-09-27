@@ -253,7 +253,9 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseStringValue(PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) {
+        if (state.isCurrentContext(macroRaw)) {
+            state.dontMove = wrapWith(m_types.MACRO_RAW_BODY, builder);
+        } else if (state.isCurrentResolution(annotationName)) {
             state.endAny();
         } else if (state.isCurrentResolution(brace)) {
             IElementType nextToken = builder.lookAhead(1);
@@ -371,11 +373,10 @@ public class RmlParser extends CommonParser {
         state.add(mark(builder, include, m_types.INCLUDE_STMT));
     }
 
-    private void parsePercent(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isCurrentResolution(macro)) {
-            parserState.complete();
-            parserState.add(markComplete(builder, macroName, m_types.MACRO_NAME));
-            parserState.complete();
+    private void parsePercent(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(macro)) {
+            state.complete();
+            state.add(mark(builder, macro, macroName, m_types.MACRO_NAME));
         }
     }
 
@@ -495,6 +496,18 @@ public class RmlParser extends CommonParser {
                     processSingleParam = true;
                 }
             }
+        } else if (state.isCurrentResolution(macroName)) {
+            state.complete();
+            boolean isRaw = "raw".equals(builder.getTokenText());
+            if (isRaw) {
+                state.dontMove = advance(builder);
+            }
+            state.popEnd();
+            if (isRaw) {
+                state.updateCurrentContext(macroRaw);
+            }
+            state.updateCurrentResolution(macroNamed);
+            return;
         } else if (state.isCurrentResolution(clazz)) {
             // CLASS <LIDENT> ...
             state.updateCurrentResolution(clazzNamed);
@@ -542,19 +555,19 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseLBracket(PsiBuilder builder, ParserState parserState) {
+    private void parseLBracket(PsiBuilder builder, ParserState state) {
         IElementType nextTokenType = builder.rawLookup(1);
         if (nextTokenType == m_types.ARROBASE) {
-            parserState.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
+            state.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
         } else if (nextTokenType == m_types.PERCENT) {
-            parserState.add(markScope(builder, macro, m_types.MACRO_EXPR, m_types.LBRACKET));
+            state.add(markScope(builder, macro, m_types.MACRO_EXPR, m_types.LBRACKET));
         } else {
-            parserState.add(markScope(builder, bracket, m_types.SCOPED_EXPR, m_types.LBRACKET));
+            state.add(markScope(builder, bracket, m_types.SCOPED_EXPR, m_types.LBRACKET));
         }
     }
 
-    private void parseBracketGt(PsiBuilder builder, ParserState parserState) {
-        parserState.add(markScope(builder, bracketGt, m_types.SCOPED_EXPR, m_types.LBRACKET));
+    private void parseBracketGt(PsiBuilder builder, ParserState state) {
+        state.add(markScope(builder, bracketGt, m_types.SCOPED_EXPR, m_types.LBRACKET));
     }
 
     private void parseRBracket(PsiBuilder builder, ParserState state) {

@@ -9,4 +9,8 @@ public class PsiMacroName extends ASTWrapperPsiElement {
         super(node);
     }
 
+    @Override
+    public String toString() {
+        return getText();
+    }
 }
