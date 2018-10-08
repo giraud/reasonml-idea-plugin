@@ -9,13 +9,23 @@ Please see the [wiki](../../wiki).
 
 ## Features
 
-|||
-|--------------------------------------------|----------------------------------|
-|[Reason](https://reasonml.github.io/) syntax<br/>![reason](docs/syntax-reason.png)|[OCaml](https://ocaml.org/) syntax<br/>![reason](docs/syntax-ocaml.png)|
-|[Dune](https://jbuilder.readthedocs.io/) syntax (limited support)<br/>![reason](docs/syntax-dune.png) |Structured view<br/>![structure](docs/structure.png)|
-|Code folding<br/>![folding](docs/folding.png)|js language injection<br/>![lang](docs/lang-inject.png)|
-|Bucklescript compiler integration<br/>![bsb](docs/bsb.png)|JSX syntax & completion<br/>![jsx](docs/jsx.png)|
-|Type annotation<br/>![type](docs/type.png)|Intentions (_ReasonML_): add braces to function, transform local open<br/>![int](docs/intention.png)|
+<div style={float:left}>
+    <div>Reason&nbsp;syntax</div><img src="docs/syntax-reason.png"/>
+</div>
+<div style={float:left}>
+    <div>Ocaml&nbsp;syntax</div><img src="docs/syntax-ocaml.png"/>
+</div>
+<div style={float:left}>
+    <div>Dune&nbsp;syntax (limited support)</div><img src="docs/syntax-dune.png"/>
+</div>
+<div style={float:left}><div>Structured view</div><img src="docs/structure.png"/></div>
+<div style={float:left}><div>Code folding</div><img src="docs/folding.png"/></div>
+<div style={float:left}><div>js language injection</div><img src="docs/lang-inject.png"/></div>
+<div style={float:left}><div>Bucklescript compiler integration</div><img src="docs/bsb.png"/></div>
+<div style={float:left}><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
+<div style={float:left}><div>Type annotation</div><img src="docs/type.png"/></div>
+<div style={float:left}><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
+
 
 - Line and block commenting 
 - Pair braces matcher
