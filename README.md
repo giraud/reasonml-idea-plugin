@@ -18,13 +18,13 @@ Please see the [wiki](../../wiki).
 <div style="float:left">
     <div>Dune&nbsp;syntax (limited support)</div><img src="docs/syntax-dune.png"/>
 </div>
-<div style="float:left"><div>Structured view</div><img src="docs/structure.png"/></div>
-<div style="float:left"><div>Code folding</div><img src="docs/folding.png"/></div>
-<div style="float:left"><div>js language injection</div><img src="docs/lang-inject.png"/></div>
-<div style="float:left"><div>Bucklescript compiler integration</div><img src="docs/bsb.png"/></div>
-<div style="float:left"><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
-<div style="float:left"><div>Type annotation</div><img src="docs/type.png"/></div>
-<div style="float:left"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
+<span style="float:left;margin-right:10px"><div>Structured view</div><img src="docs/structure.png"/></span>
+<div style="float:left;margin-right:10px"><div>Code folding</div><img src="docs/folding.png"/></div>
+<div style="float:left;margin-right:10px"><div>js language injection</div><img src="docs/lang-inject.png"/></div>
+<div style="float:left;margin-right:10px"><div>Bucklescript compiler integration</div><img src="docs/bsb.png"/></div>
+<div style="float:left;margin-right:10px"><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
+<div style="float:left;margin-right:10px"><div>Type annotation</div><img src="docs/type.png"/></div>
+<div style="float:left;margin-right:10px"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
 
 
 - Line and block commenting 
