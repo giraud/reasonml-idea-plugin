@@ -27,6 +27,7 @@ Please see the [wiki](../../wiki).
 <div style="float:left;margin-right:10px"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
 
 
+Other features:
 - Line and block commenting 
 - Pair braces matcher
 - Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
