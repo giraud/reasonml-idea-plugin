@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiExternalStub;
 import com.reason.lang.core.type.ORTypes;
@@ -57,7 +57,7 @@ public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> im
         if (parent != null) {
             path = ((PsiModule) parent).getQualifiedName();
         } else {
-            path = PsiUtil.fileNameToModuleName(getContainingFile());
+            path = ORUtil.fileNameToModuleName(getContainingFile());
         }
 
         return path + "." + getName();
@@ -105,7 +105,21 @@ public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> im
         }
 
         PsiSignature signature = PsiTreeUtil.findChildOfType(this, PsiSignature.class);
-        return signature != null;
+        return signature != null && signature.asHMSignature().isFunctionSignature();
+    }
+
+    @NotNull
+    @Override
+    public String getExternalName() {
+        ASTNode eqNode = getNode().findChildByType(m_types.EQ);
+        if (eqNode != null) {
+            ASTNode nextNode = ORUtil.nextSiblingNode(eqNode);
+            if (nextNode.getElementType() == m_types.STRING_VALUE) {
+                String text = nextNode.getText();
+                return 2 < text.length() ? text.substring(1, text.length() - 1) : "";
+            }
+        }
+        return "";
     }
 
     @Override

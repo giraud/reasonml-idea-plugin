@@ -11,8 +11,8 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
@@ -41,7 +41,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref.lower"));
 
     public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes types) {
-        super(element, PsiUtil.getTextRangeForReference(element));
+        super(element, ORUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;
     }

@@ -425,8 +425,8 @@ public class OclParser extends CommonParser {
             state.updateCurrentResolution(clazzNamedEq);
         } else if (state.isCurrentResolution(externalNamedSignature)) {
             state.complete();
-            state.endUntilStartScope();
-            state.updateCurrentScope();
+            state.popEnd();
+            state.updateCurrentResolution(externalNamedSignatureEq);
         } else if (state.isCurrentResolution(maybeLetFunctionParameters)) {
             ParserScope innerScope = state.pop();
             if (innerScope != null) {

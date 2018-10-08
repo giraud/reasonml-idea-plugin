@@ -19,4 +19,7 @@ public class AnnotationParsingTest extends BaseParsingTestCase {
         assertEquals("@bs.val", ((PsiAnnotation) firstElement(parseCode("[@bs.val]"))).getName());
     }
 
+    public void testAnnotationString() {
+        assertEquals("[@bs.module \"react-intl\"]", firstElement(parseCode("[@bs.module \"react-intl\"]")).getText());
+    }
 }

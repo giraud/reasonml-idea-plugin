@@ -48,7 +48,7 @@ public final class PsiFinder {
         return index.getAllKeys(project).
                 stream().
                 map(key -> index.getUnique(key, project, scope)).
-                filter(module -> bucklescript.isDependency(module.getContainingFile().getVirtualFile())).
+                filter(module -> module != null && bucklescript.isDependency(module.getContainingFile().getVirtualFile())).
                 collect(Collectors.toList());
     }
 
@@ -232,7 +232,7 @@ public final class PsiFinder {
 
         if (result == null) {
             // retry with lower case name
-            filesByName = FilenameIndex.getFilesByName(project, PsiUtil.moduleNameToFileName(name) + "." + ext, scope);
+            filesByName = FilenameIndex.getFilesByName(project, ORUtil.moduleNameToFileName(name) + "." + ext, scope);
             for (PsiFile file : filesByName) {
                 if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
                     result = (FileBase) file;

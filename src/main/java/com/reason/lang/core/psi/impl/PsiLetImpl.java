@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
@@ -159,7 +159,7 @@ public class PsiLetImpl extends StubBasedPsiElementBase<PsiLetStub> implements P
         if (parent != null) {
             path = ((PsiModule) parent).getQualifiedName();
         } else {
-            path = PsiUtil.fileNameToModuleName(getContainingFile());
+            path = ORUtil.fileNameToModuleName(getContainingFile());
         }
 
         return path + "." + getName();

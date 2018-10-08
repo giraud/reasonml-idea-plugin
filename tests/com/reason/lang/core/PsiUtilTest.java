@@ -8,23 +8,23 @@ public class PsiUtilTest {
 
     @Test
     public void moduleNameToFileNameWhenEmpty() {
-        assertEquals("", PsiUtil.moduleNameToFileName(""));
+        assertEquals("", ORUtil.moduleNameToFileName(""));
     }
 
     @Test
     public void moduleNameToFileName() {
-        assertEquals("testLower", PsiUtil.moduleNameToFileName("TestLower"));
+        assertEquals("testLower", ORUtil.moduleNameToFileName("TestLower"));
     }
 
     @Test
     public void fileNameToModuleNameWhenEmpty() {
-        assertEquals("", PsiUtil.fileNameToModuleName(""));
-        assertEquals("", PsiUtil.fileNameToModuleName(".ml"));
+        assertEquals("", ORUtil.fileNameToModuleName(""));
+        assertEquals("", ORUtil.fileNameToModuleName(".ml"));
     }
 
     @Test
     public void fileNameToModuleName() {
-        assertEquals("Lower", PsiUtil.fileNameToModuleName("lower.ml"));
-        assertEquals("Upper", PsiUtil.fileNameToModuleName("Upper.ml"));
+        assertEquals("Lower", ORUtil.fileNameToModuleName("lower.ml"));
+        assertEquals("Upper", ORUtil.fileNameToModuleName("Upper.ml"));
     }
 }

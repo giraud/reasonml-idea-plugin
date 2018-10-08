@@ -6,6 +6,9 @@ import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public class ModuleCompIndex extends StringStubIndexExtension<PsiModule> {
     private static final int VERSION = 1;
@@ -26,7 +29,9 @@ public class ModuleCompIndex extends StringStubIndexExtension<PsiModule> {
         return IndexKeys.MODULES_COMP;
     }
 
+    @Nullable
     public PsiModule getUnique(@NotNull String fqn, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        return get(fqn, project, scope).iterator().next();
+        Collection<PsiModule> psiModules = get(fqn, project, scope);
+        return psiModules.isEmpty() ? null : psiModules.iterator().next();
     }
 }

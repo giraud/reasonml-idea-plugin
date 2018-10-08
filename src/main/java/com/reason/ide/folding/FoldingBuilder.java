@@ -8,7 +8,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
@@ -64,7 +64,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
         PsiElement constrName = PsiTreeUtil.findChildOfType(typeExpression, PsiTypeConstrName.class);
         if (constrName != null) {
             ORTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
-            PsiElement eqElement = PsiUtil.nextSiblingWithTokenType(constrName, types.EQ);
+            PsiElement eqElement = ORUtil.nextSiblingWithTokenType(constrName, types.EQ);
             if (eqElement != null) {
                 TextRange eqRange = eqElement.getTextRange();
                 TextRange typeRange = typeExpression.getTextRange();

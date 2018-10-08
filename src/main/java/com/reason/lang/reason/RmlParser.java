@@ -256,7 +256,7 @@ public class RmlParser extends CommonParser {
         if (state.isCurrentContext(macroRaw)) {
             state.dontMove = wrapWith(m_types.C_MACRO_RAW_BODY, builder);
         } else if (state.isCurrentResolution(annotationName)) {
-            state.endAny();
+            state.endUntilStartScope();
         } else if (state.isCurrentResolution(brace)) {
             IElementType nextToken = builder.lookAhead(1);
             if (m_types.COLON.equals(nextToken)) {
@@ -407,10 +407,10 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseArrobase(PsiBuilder builder, ParserState parserState) {
-        if (parserState.isCurrentResolution(annotation)) {
-            parserState.complete();
-            parserState.add(markComplete(builder, annotationName, m_types.MACRO_NAME));
+    private void parseArrobase(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(annotation)) {
+            state.complete();
+            state.add(markComplete(builder, annotation, annotationName, m_types.MACRO_NAME));
         }
     }
 
@@ -724,7 +724,8 @@ public class RmlParser extends CommonParser {
             state.complete();
         } else if (state.isCurrentResolution(externalNamedSignature)) {
             state.complete();
-            state.endUntilStartScope();
+            state.popEnd();
+            state.updateCurrentResolution(externalNamedSignatureEq);
         } else if (state.isCurrentResolution(clazzNamed) || state.isCurrentResolution(clazzConstructor)) {
             state.updateCurrentResolution(clazzNamedEq);
         }

@@ -11,8 +11,8 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.PsiUtil;
 import com.reason.lang.core.RmlElementFactory;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -39,7 +39,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref.upper"));
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
-        super(element, PsiUtil.getTextRangeForReference(element));
+        super(element, ORUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
         m_types = types;
     }
