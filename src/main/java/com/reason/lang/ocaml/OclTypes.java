@@ -24,6 +24,8 @@ public class OclTypes extends ORTypes {
         MACRO_EXPR = new ORCompositeElementType("MACRO_EXPR", OclLanguage.INSTANCE);
         MACRO_NAME = new ORCompositeElementType("MACRO_NAME", OclLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
+        C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
+        C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", OclLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);
         CLASS_CONSTR = new ORCompositeElementType("CLASS_CONSTR", OclLanguage.INSTANCE);
         CLASS_PARAMS = new ORCompositeElementType("CLASS_PARAMS", OclLanguage.INSTANCE);

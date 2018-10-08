@@ -106,6 +106,10 @@ public class PsiElementFactory {
             return new PsiStruct(node);
         } else if (type == types.C_ML_INTERPOLATOR) {
             return new PsiMultiLineInterpolator(node);
+        } else if (type == types.C_JS_OBJECT) {
+            return new PsiJsObject(node);
+        } else if (type == types.C_JS_OBJECT_FIELD) {
+            return new PsiJsObjectField(node);
         }
 
         return new PsiToken(node);

@@ -25,6 +25,8 @@ public abstract class ORTypes {
     public IElementType MACRO_NAME;
     public IElementType C_MACRO_RAW_BODY;
     public IElementType C_ML_INTERPOLATOR;
+    public IElementType C_JS_OBJECT;
+    public IElementType C_JS_OBJECT_FIELD;
     public IElementType MIXIN_FIELD;
     public IElementType MODULE_PATH;
     public IElementType ASSERT_STMT;
