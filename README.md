@@ -9,6 +9,8 @@ Please see the [wiki](../../wiki).
 
 ## Features
 
+{::nomarkdown}
+
 <div style="float:left">
     <div>Reason&nbsp;syntax</div><img src="docs/syntax-reason.png"/>
 </div>
@@ -25,6 +27,8 @@ Please see the [wiki](../../wiki).
 <div style="float:left;margin-right:10px"><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
 <div style="float:left;margin-right:10px"><div>Type annotation</div><img src="docs/type.png"/></div>
 <div style="float:left;margin-right:10px"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
+
+{:/}
 
 
 - Line and block commenting 
