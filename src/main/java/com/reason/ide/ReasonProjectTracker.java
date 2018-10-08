@@ -71,12 +71,15 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
     public void projectClosed() {
         if (m_documentListener != null) {
             EditorFactory.getInstance().getEventMulticaster().removeDocumentListener(m_documentListener);
+            m_documentListener = null;
         }
         if (m_vfListener != null) {
             VirtualFileManager.getInstance().removeVirtualFileListener(m_vfListener);
+            m_vfListener = null;
         }
         if (m_messageBusConnection != null) {
             m_messageBusConnection.disconnect();
+            m_messageBusConnection = null;
         }
     }
 
