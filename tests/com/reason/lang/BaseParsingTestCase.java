@@ -10,6 +10,7 @@ import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -78,6 +79,15 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     protected <T extends PsiElement> T firstOfType(PsiElement element, Class<T> aClass) {
         return first(findChildrenOfType(element, aClass));
+    }
+
+    protected PsiFile parseFile(String name) throws IOException {
+        return parseFile(name, false);
+    }
+
+    protected PsiFile parseFile(String name, boolean print) throws IOException {
+        String text = loadFile(name + "." + myFileExt);
+        return parseCode(text, print);
     }
 
     protected PsiFile parseCode(String code) {

@@ -2,14 +2,15 @@ package com.reason.ide.files;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiUtil;
+import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiType;
@@ -36,15 +37,23 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
     }
 
     public boolean isComponent() {
-        FileType fileType = getFileType();
-        if (fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType) {
+        if (FileHelper.isOCaml(getFileType())) {
             return false;
         }
 
-        // naive detection
+        PsiElement componentDef = null;
 
+        // Try to find if it's a proxy to a react class
+        List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiExternal.class);
+        for (PsiExternal external : externals) {
+            if ("ReasonReact.reactClass".equals(external.getSignature().toString())) {
+                componentDef = external;
+                break;
+            }
+        }
+
+        // Try to find a make and a component (if not a proxy) functions
         List<PsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(this, PsiLet.class);
-        PsiLet componentDef = null;
         PsiLet makeDef = null;
         for (PsiLet let : expressions) {
             if (componentDef == null && "component".equals(let.getName())) {
