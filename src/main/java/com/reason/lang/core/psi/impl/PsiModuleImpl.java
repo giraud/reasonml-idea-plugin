@@ -11,6 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
@@ -256,7 +257,12 @@ public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implem
 
     @Override
     public boolean isComponent() {
-        return false;
+        PsiModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isComponent();
+        }
+
+        return ModuleHelper.isComponent(getBody());
     }
 
     @Override

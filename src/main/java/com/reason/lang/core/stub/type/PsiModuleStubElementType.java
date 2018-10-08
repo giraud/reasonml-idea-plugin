@@ -67,6 +67,9 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
         String fqn = stub.getQualifiedName();
         if (fqn != null) {
             sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
+            if (stub.isComponent()) {
+                sink.occurrence(IndexKeys.MODULES_COMP, fqn);
+            }
         }
     }
 

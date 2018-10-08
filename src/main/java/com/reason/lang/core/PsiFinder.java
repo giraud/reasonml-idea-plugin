@@ -16,7 +16,9 @@ import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
+import com.reason.ide.search.ModuleCompIndex;
 import com.reason.ide.search.ModuleFqnIndex;
+import com.reason.ide.search.ModuleIndex;
 import com.reason.lang.core.psi.*;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 
@@ -38,13 +41,25 @@ public final class PsiFinder {
     }
 
     @NotNull
+    public Collection<PsiModule> findComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
+        ModuleCompIndex index = ModuleCompIndex.getInstance();
+        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+
+        return index.getAllKeys(project).
+                stream().
+                map(key -> index.getUnique(key, project, scope)).
+                filter(module -> bucklescript.isDependency(module.getContainingFile().getVirtualFile())).
+                collect(Collectors.toList());
+    }
+
+    @NotNull
     public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull ORFileType fileType) {
         m_debug.debug("Find modules, name", name);
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
-        Collection<PsiModule> modules = StubIndex.getElements(IndexKeys.MODULES, name, project, scope, PsiModule.class);
+        Collection<PsiModule> modules = ModuleIndex.getInstance().get(name, project, scope);
         if (modules.isEmpty()) {
             m_debug.debug("  No modules found");
         } else {

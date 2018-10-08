@@ -10,13 +10,13 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import com.reason.ide.Debug;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.RmlFile;
-import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.PsiSignatureUtil;
+import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -36,12 +36,14 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
         m_debug.debug("JSX name expression completion");
 
+        PsiFinder psiFinder = PsiFinder.getInstance();
+
         RmlFile originalFile = (RmlFile) parameters.getOriginalFile();
         String fileModuleName = originalFile.asModuleName();
         Project project = originalFile.getProject();
 
-        // Find all files that are components ! TODO: components can be sub modules
-        Collection<FileBase> files = PsiFinder.getInstance().findFileModules(project, interfaceOrImplementation).stream().filter(fileBase -> fileBase.isComponent()).collect(Collectors.toList());
+        // Find all files that are components !
+        Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation).stream().filter(FileBase::isComponent).collect(Collectors.toList());
         m_debug.debug("Files found", files.size());
         for (FileBase file : files) {
             String moduleName = file.asModuleName();
@@ -49,10 +51,22 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
                 resultSet.addElement(LookupElementBuilder.
                         create(file.asModuleName()).
                         withIcon(getProvidersIcon(file, 0)).
-                        withTypeText(PsiSignatureUtil.getProvidersType(PsiFileHelper.getLetExpression(file, "make"))).
+                        withTypeText(file.shortLocation(project)).
                         withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
                 );
             }
+        }
+
+        Collection<PsiModule> innerModules = psiFinder.findComponents(project, GlobalSearchScope.allScope(project));
+        m_debug.debug("Inner modules found", innerModules.size());
+        for (PsiModule module : innerModules) {
+            resultSet.addElement(LookupElementBuilder.
+                    create(module.getName()).
+                    withIcon(getProvidersIcon(module, 0)).
+                    withTypeText(((FileBase) module.getContainingFile()).asModuleName()).
+                    withInsertHandler((context, item) -> insertTagNameHandler(project, context, module.getName()))
+            );
+
         }
     }
 

@@ -2,12 +2,13 @@ package com.reason.lang.reason;
 
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.psi.PsiModule;
 
 import java.io.IOException;
 
 public class ComponentTest extends BaseParsingTestCase {
     public ComponentTest() {
-        super("", "re", new RmlParserDefinition());
+        super("component", "re", new RmlParserDefinition());
     }
 
     @Override
@@ -18,6 +19,12 @@ public class ComponentTest extends BaseParsingTestCase {
     public void testProxy() throws IOException {
         FileBase psiFile = (FileBase) parseFile("FormattedMessage");
         assertEquals(true, psiFile.isComponent());
+    }
+
+    public void testInnerComponent() throws IOException {
+        PsiModule innerModule = firstOfType(parseFile("Inner"), PsiModule.class);
+
+        assertEquals(true, innerModule.isComponent());
     }
 
 }
