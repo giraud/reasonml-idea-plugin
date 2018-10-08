@@ -5,7 +5,7 @@ ReasonML language plugin for idea
 
 ## Documentation
 
-Please see the [wiki](wiki).
+Please see the [wiki](../../wiki).
 
 ## Features
 
