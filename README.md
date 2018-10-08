@@ -9,22 +9,22 @@ Please see the [wiki](../../wiki).
 
 ## Features
 
-<div style={float:left}>
+<div style="float:left">
     <div>Reason&nbsp;syntax</div><img src="docs/syntax-reason.png"/>
 </div>
-<div style={float:left}>
+<div style="float:left">
     <div>Ocaml&nbsp;syntax</div><img src="docs/syntax-ocaml.png"/>
 </div>
-<div style={float:left}>
+<div style="float:left">
     <div>Dune&nbsp;syntax (limited support)</div><img src="docs/syntax-dune.png"/>
 </div>
-<div style={float:left}><div>Structured view</div><img src="docs/structure.png"/></div>
-<div style={float:left}><div>Code folding</div><img src="docs/folding.png"/></div>
-<div style={float:left}><div>js language injection</div><img src="docs/lang-inject.png"/></div>
-<div style={float:left}><div>Bucklescript compiler integration</div><img src="docs/bsb.png"/></div>
-<div style={float:left}><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
-<div style={float:left}><div>Type annotation</div><img src="docs/type.png"/></div>
-<div style={float:left}><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
+<div style="float:left"><div>Structured view</div><img src="docs/structure.png"/></div>
+<div style="float:left"><div>Code folding</div><img src="docs/folding.png"/></div>
+<div style="float:left"><div>js language injection</div><img src="docs/lang-inject.png"/></div>
+<div style="float:left"><div>Bucklescript compiler integration</div><img src="docs/bsb.png"/></div>
+<div style="float:left"><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
+<div style="float:left"><div>Type annotation</div><img src="docs/type.png"/></div>
+<div style="float:left"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
 
 
 - Line and block commenting 
