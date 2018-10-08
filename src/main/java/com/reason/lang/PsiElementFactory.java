@@ -64,8 +64,8 @@ public class PsiElementFactory {
             return new PsiMacro(node);
         } else if (type == types.MACRO_NAME) {
             return new PsiMacroName(node);
-        } else if (type == types.MACRO_RAW_BODY) {
-            return new PsiRawMacroBody(node);
+        } else if (type == types.C_MACRO_RAW_BODY) {
+            return new PsiRawMacroBody(types, node);
         } else if (type == types.SCOPED_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == types.LOCAL_OPEN) {
@@ -104,6 +104,8 @@ public class PsiElementFactory {
             return new PsiFunctionBody(node);
         } else if (type == types.STRUCT_EXPR) {
             return new PsiStruct(node);
+        } else if (type == types.C_ML_INTERPOLATOR) {
+            return new PsiMultiLineInterpolator(node);
         }
 
         return new PsiToken(node);

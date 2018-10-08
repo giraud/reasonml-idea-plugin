@@ -3,15 +3,21 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.json.psi.impl.JSStringLiteralEscaper;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.LiteralTextEscaper;
 import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.impl.source.tree.LeafElement;
+import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiRawMacroBody extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
 
-    public PsiRawMacroBody(ASTNode node) {
+    private final ORTypes m_types;
+
+    public PsiRawMacroBody(ORTypes types, ASTNode node) {
         super(node);
+        m_types = types;
     }
 
 
@@ -24,6 +30,7 @@ public class PsiRawMacroBody extends ASTWrapperPsiElement implements PsiLanguage
     public PsiLanguageInjectionHost updateText(@NotNull String text) {
         ASTNode valueNode = getNode().getFirstChildNode();
         assert valueNode instanceof LeafElement;
+
         ((LeafElement) valueNode).replaceWithText(text);
         return this;
     }
@@ -37,5 +44,10 @@ public class PsiRawMacroBody extends ASTWrapperPsiElement implements PsiLanguage
                 return false;
             }
         };
+    }
+
+    public TextRange getMacroTextRange() {
+        IElementType elementType = getNode().getFirstChildNode().getElementType();
+        return elementType == m_types.STRING_VALUE ? new TextRange(1, getTextLength() - 1) : new TextRange(2, getTextLength() - 2);
     }
 }

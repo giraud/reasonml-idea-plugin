@@ -1,5 +1,6 @@
 package com.reason.lang.reason;
 
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
@@ -18,7 +19,22 @@ public class MacroParsingTest extends BaseParsingTestCase {
 
         PsiElement macro = expression.getBinding().getFirstChild();
         assertInstanceOf(macro, PsiMacro.class);
+
+        PsiRawMacroBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, PsiRawMacroBody.class);
         assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).toString());
-        assertEquals("\"xxx\"", PsiTreeUtil.findChildOfType(macro, PsiRawMacroBody.class).getText());
+        assertEquals("\"xxx\"", rawMacroBody.getText());
+        assertEquals(new TextRange(1, 4), rawMacroBody.getMacroTextRange());
+    }
+
+    public void testMultiLine() {
+        PsiLet expression = first(letExpressions(parseCode("let _ = [%raw {|function (a) {}|}]")));
+
+        PsiElement macro = expression.getBinding().getFirstChild();
+        assertInstanceOf(macro, PsiMacro.class);
+
+        PsiRawMacroBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, PsiRawMacroBody.class);
+        assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).toString());
+        assertEquals("{|function (a) {}|}", rawMacroBody.getText());
+        assertEquals(new TextRange(2, 17), rawMacroBody.getMacroTextRange());
     }
 }

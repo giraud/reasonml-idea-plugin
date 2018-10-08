@@ -3,67 +3,27 @@ ReasonML language plugin for idea
 
 ![screenshot](screenshot.png)
 
-## Status
+## Documentation
 
-:exclamation: This is a **work in progress**, the language has very basic - and partially implemented - functionalities.
-
-This code might change quite a lot or break in the future. The [project board](https://github.com/reasonml-editor/reasonml-idea-plugin/projects/1) should reflect what I'm working on.
+Please see the [wiki](wiki).
 
 ## Features
 
-- [Reason](https://reasonml.github.io/) syntax, [OCaml](https://ocaml.org/) syntax (limited support), [Dune](https://jbuilder.readthedocs.io/) syntax (limited support)
-- Structured view
-- Syntax highlighting
+|||
+|--------------------------------------------|----------------------------------|
+|[Reason](https://reasonml.github.io/) syntax<br/>![reason](docs/syntax-reason.png)|[OCaml](https://ocaml.org/) syntax<br/>![reason](docs/syntax-ocaml.png)|
+|[Dune](https://jbuilder.readthedocs.io/) syntax (limited support)<br/>![reason](docs/syntax-dune.png) |Structured view<br/>![structure](docs/structure.png)|
+|Code folding<br/>![folding](docs/folding.png)|js language injection<br/>![lang](docs/lang-inject.png)|
+|Bucklescript compiler integration<br/>![bsb](docs/bsb.png)|JSX syntax & completion<br/>![jsx](docs/jsx.png)|
+|Type annotation<br/>![type](docs/type.png)|Intentions (_ReasonML_): add braces to function, transform local open<br/>![int](docs/intention.png)|
+
 - Line and block commenting 
-- Code folding
 - Pair braces matcher
-- JSX completion
-- Bucklescript compiler integration
 - Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 - Reformat on save
-- Type annotation
-- Configuration through facet
-- Intentions (_ReasonML_): add braces to function, transform local open
 - Works natively on Windows
 
-This plugin offer a lightweight integration for OCaml files, go to the **wiki** to see how to **configure OCaml** if you're not using bucklescript.
-
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
-
-## Screenshots
-
-Type annotations:
-
-![type](docs/type.gif)
-
-Reformat using refmt(3)
-
-![refmt](docs/refmt.gif)
-
-Bucklescript window
-
-![bsb](docs/bsb.gif)
-
-## Bucklescript
-
-Advanced features, like syntax error highlighting or type annotations require the installation of [Bucklescript](https://bucklescript.github.io/).
-
-See the **wiki** to see how to **configure Bucklescript**.
-
-### Local installation
-
-- Install bucklescript locally to your project using npm or yarn
-- Start idea 
-
-The plugin will find and use the binaries found in the `node_modules/bs-platform` directory.
-
-> *Tip*: if you can, prefer a local installation... you won't have to configure anything else
-
-### Global installation
-
-- Install bucklescript globally
-- Start idea
-- Set the path to `bs-platform` in the reason settings
 
 ## Some live templates
 

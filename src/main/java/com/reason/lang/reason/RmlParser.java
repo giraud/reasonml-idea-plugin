@@ -254,7 +254,7 @@ public class RmlParser extends CommonParser {
 
     private void parseStringValue(PsiBuilder builder, ParserState state) {
         if (state.isCurrentContext(macroRaw)) {
-            state.dontMove = wrapWith(m_types.MACRO_RAW_BODY, builder);
+            state.dontMove = wrapWith(m_types.C_MACRO_RAW_BODY, builder);
         } else if (state.isCurrentResolution(annotationName)) {
             state.endAny();
         } else if (state.isCurrentResolution(brace)) {
@@ -277,7 +277,11 @@ public class RmlParser extends CommonParser {
             state.endAny();
         }
 
-        state.add(markScope(builder, multilineStart, m_types.SCOPED_EXPR, m_types.ML_STRING_OPEN));
+        if (state.isCurrentContext(macroRaw)) {
+            state.add(markComplete(builder, state.currentContext(), macroRawBody, m_types.C_MACRO_RAW_BODY));
+        }
+
+        state.add(markScope(builder, state.currentContext(), multilineStart, m_types.C_ML_INTERPOLATOR, m_types.ML_STRING_OPEN));
     }
 
     private void parseMlStringClose(PsiBuilder builder, ParserState state) {
@@ -288,8 +292,6 @@ public class RmlParser extends CommonParser {
             scope.complete();
             state.popEnd();
         }
-
-        state.updateCurrentScope();
     }
 
     private void parseJsStringOpen(PsiBuilder builder, ParserState state) {

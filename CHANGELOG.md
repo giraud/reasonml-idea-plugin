@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.64 - 2018/10/08
+
+- :rocket: ![r](resources/icons/reason-file.png) Js language injection in [%raw] blocks
+- :nail_care: ![r](resources/icons/reason-file.png) Better annotation parsing
+- :nail_care: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) Add missing keywords in highlighter
+- :bug: [#67](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67) - Curly braces intentions are broken</li>
+
 ## 0.63 - 2018/09/20
 
 - :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) - Add dates to changelog

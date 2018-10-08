@@ -1,4 +1,4 @@
-package com.reason.lang;
+package com.reason.ide;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
@@ -19,7 +19,9 @@ public class JsInjector implements LanguageInjector {
             FileType jsFileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
             if (jsFileType instanceof LanguageFileType) {
                 Language jsLanguage = ((LanguageFileType) jsFileType).getLanguage();
-                injectionPlacesRegistrar.addPlace(jsLanguage, new TextRange(1, host.getTextLength() - 1), null, null);
+                PsiRawMacroBody macroHost = (PsiRawMacroBody) host;
+                TextRange macroTextRange = macroHost.getMacroTextRange();
+                injectionPlacesRegistrar.addPlace(jsLanguage, macroTextRange, null, null);
             }
         }
     }

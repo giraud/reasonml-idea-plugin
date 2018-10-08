@@ -23,7 +23,7 @@ public class OclTypes extends ORTypes {
         INCLUDE_STMT = new ORCompositeElementType("INCLUDE_STMT", OclLanguage.INSTANCE);
         MACRO_EXPR = new ORCompositeElementType("MACRO_EXPR", OclLanguage.INSTANCE);
         MACRO_NAME = new ORCompositeElementType("MACRO_NAME", OclLanguage.INSTANCE);
-        MACRO_RAW_BODY = new ORCompositeElementType("MACRO_RAW_BODY", OclLanguage.INSTANCE);
+        C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);
         CLASS_CONSTR = new ORCompositeElementType("CLASS_CONSTR", OclLanguage.INSTANCE);
         CLASS_PARAMS = new ORCompositeElementType("CLASS_PARAMS", OclLanguage.INSTANCE);
@@ -60,6 +60,7 @@ public class OclTypes extends ORTypes {
         LOWER_SYMBOL = new ORCompositeElementType("LOWER_SYMBOL", OclLanguage.INSTANCE);
         STRUCT_EXPR = new ORCompositeElementType("STRUCT_EXPR", OclLanguage.INSTANCE);
         MIXIN_FIELD = new ORCompositeElementType("MIXIN_FIELD", OclLanguage.INSTANCE);
+        C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
 
         // Token element types
 

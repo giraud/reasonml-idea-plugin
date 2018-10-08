@@ -21,7 +21,7 @@ public class RmlTypes extends ORTypes {
         INCLUDE_STMT = new ORCompositeElementType("INCLUDE_STMT", RmlLanguage.INSTANCE);
         MACRO_EXPR = new ORCompositeElementType("MACRO_EXPR", RmlLanguage.INSTANCE);
         MACRO_NAME = new ORCompositeElementType("MACRO_NAME", RmlLanguage.INSTANCE);
-        MACRO_RAW_BODY = new ORCompositeElementType("MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
         MIXIN_FIELD = new ORCompositeElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", RmlLanguage.INSTANCE);
@@ -56,6 +56,7 @@ public class RmlTypes extends ORTypes {
         TRY_EXPR = new ORCompositeElementType("TRY_EXPR", RmlLanguage.INSTANCE);
         WITH_EXPR = new ORCompositeElementType("WITH_EXPR", RmlLanguage.INSTANCE);
         STRUCT_EXPR = new ORCompositeElementType("STRUCT_EXPR", RmlLanguage.INSTANCE);
+        C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
 
         // Token element types
 
