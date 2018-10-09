@@ -104,5 +104,5 @@ public enum ParserScopeEnum {
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin, functionCallParams, macroNamed, macroRaw, macroRawBody,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed, functionParameter, functionParameterNamed,
-    functionParameterSignature, patternMatchConstructor, functionParameterNamedSignature, name
+    functionParameterSignature, patternMatchConstructor, functionParameterNamedSignature, recordFieldSignature, maybeRecordUsage, recordUsage, recordFieldValue, name
 }

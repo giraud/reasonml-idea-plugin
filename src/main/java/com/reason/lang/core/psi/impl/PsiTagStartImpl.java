@@ -115,13 +115,10 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                     if (props != null) {
                         PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, PsiTypeBinding.class);
                         if (binding != null) {
-                            PsiRecord object = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
-                            if (object != null) {
-                                Collection<PsiRecordField> fields = PsiTreeUtil.findChildrenOfType(object, PsiRecordField.class);
-                                if (!fields.isEmpty()) {
-                                    for (PsiRecordField field : fields) {
-                                        result.add(new TagPropertyImpl(field, ORUtil.prevAnnotations(field)));
-                                    }
+                            PsiRecord record = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
+                            if (record != null) {
+                                for (PsiRecordField field : record.getFields()) {
+                                    result.add(new TagPropertyImpl(field, ORUtil.prevAnnotations(field)));
                                 }
                             }
                         }
