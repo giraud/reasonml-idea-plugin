@@ -12,6 +12,7 @@ public class HMSignature {
     static class SignatureItem {
         String value;
         boolean mandatory;
+        String defaultValue;
     }
 
     @NotNull
@@ -20,20 +21,31 @@ public class HMSignature {
     private final String m_signature;
 
     public HMSignature(boolean isOCaml, @NotNull String signature) {
-        // Always use thin arrow
-        m_signature = signature.
+        String normalized = signature.
                 replaceAll("\n", "").
                 replaceAll("\\s+", " ").
                 replaceAll("=>", "->");
 
-        String[] tokens = m_signature.split("->");
-        m_types = new SignatureItem[tokens.length];
-        for (int i = 0; i < tokens.length; i++) {
-            String token = tokens[i].trim();
+        String[] items = normalized.split("->");
+        m_types = new SignatureItem[items.length];
+        for (int i = 0; i < items.length; i++) {
+            String[] tokens = items[i].trim().split("=");
             m_types[i] = new SignatureItem();
-            m_types[i].value = token;
-            m_types[i].mandatory = !token.contains("option");
+            m_types[i].value = tokens[0];
+            m_types[i].mandatory = !tokens[0].contains("option") && tokens.length == 1;
+            m_types[i].defaultValue = 2 == tokens.length ? tokens[1] : "";
         }
+
+        // Always use thin arrow
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < m_types.length; i++) {
+            if (0 < i) {
+                sb.append(" -> ");
+            }
+            SignatureItem type = m_types[i];
+            sb.append(type.value);
+        }
+        m_signature = sb.toString();
     }
 
     @Override

@@ -34,7 +34,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     }
 
     public void testLet() {
-        PsiLet e = first(letExpressions(parseCode("let makeId = () => switch (id) { | None => text | Some(i) => i };", true)));
+        PsiLet e = first(letExpressions(parseCode("let makeId = () => switch (id) { | None => text | Some(i) => i };")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertEquals("switch (id) { | None => text | Some(i) => i }", function.getBody().getText());

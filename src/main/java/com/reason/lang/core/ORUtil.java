@@ -7,10 +7,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ORUtil {
@@ -44,6 +47,29 @@ public class ORUtil {
     public static TextRange getTextRangeForReference(@NotNull PsiNamedElement name) {
         PsiElement nameIdentifier = name.getNameIdentifier();
         return rangeInParent(name.getTextRange(), nameIdentifier == null ? TextRange.EMPTY_RANGE : name.getTextRange());
+    }
+
+    @Nullable
+    public static PsiElement prevSibling(@NotNull PsiElement element) {
+        // previous sibling without considering whitespace
+        PsiElement prevSibling = element.getPrevSibling();
+        while (prevSibling != null && prevSibling.getNode().getElementType() == TokenType.WHITE_SPACE) {
+            prevSibling = prevSibling.getPrevSibling();
+        }
+        return prevSibling;
+    }
+
+    @NotNull
+    public static List<PsiAnnotation> prevAnnotations(@NotNull PsiElement element) {
+        List<PsiAnnotation> annotations = new ArrayList<>();
+
+        PsiElement prevSibling = prevSibling(element);
+        while (prevSibling instanceof PsiAnnotation) {
+            annotations.add((PsiAnnotation) prevSibling);
+            prevSibling = prevSibling(prevSibling);
+        }
+
+        return annotations;
     }
 
     @Nullable

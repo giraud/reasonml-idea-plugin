@@ -22,7 +22,8 @@ public class PsiSignatureImpl extends ASTWrapperPsiElement implements PsiSignatu
     @Override
     public HMSignature asHMSignature() {
         PsiFile containingFile = getContainingFile();
-        return new HMSignature(FileHelper.isOCaml(containingFile.getFileType()), getText());
+        boolean isOCaml = containingFile != null && FileHelper.isOCaml(containingFile.getFileType());
+        return new HMSignature(isOCaml, getText());
     }
 
     @NotNull

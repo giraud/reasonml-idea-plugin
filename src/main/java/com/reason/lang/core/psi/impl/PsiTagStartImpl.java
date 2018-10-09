@@ -9,6 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
@@ -29,13 +30,19 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
 
         private final String m_name;
         private final String m_type;
-        private final boolean m_mandatory;
+        private boolean m_mandatory;
 
-        TagPropertyImpl(PsiRecordField field) {
+        TagPropertyImpl(PsiRecordField field, List<PsiAnnotation> annotations) {
             m_name = field.getName();
             PsiSignature signature = field.getSignature();
             m_type = signature.asString();
             m_mandatory = signature.asHMSignature().isMandatory(0);
+
+            for (PsiAnnotation annotation : annotations) {
+                if ("@bs.optional".equals(annotation.getName())) {
+                    m_mandatory = false;
+                }
+            }
         }
 
         public TagPropertyImpl(PsiFunctionParameter p) {
@@ -113,7 +120,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                                 Collection<PsiRecordField> fields = PsiTreeUtil.findChildrenOfType(object, PsiRecordField.class);
                                 if (!fields.isEmpty()) {
                                     for (PsiRecordField field : fields) {
-                                        result.add(new TagPropertyImpl(field));
+                                        result.add(new TagPropertyImpl(field, ORUtil.prevAnnotations(field)));
                                     }
                                 }
                             }

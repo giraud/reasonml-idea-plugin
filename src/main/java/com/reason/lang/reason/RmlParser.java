@@ -215,6 +215,10 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseComma(ParserState state) {
+        if (state.isCurrentContext(signature)) {
+            state.popEnd();
+        }
+
         if (state.isCurrentContext(recordSignature)) {
             state.complete();
             state.endUntilContext(recordField);
@@ -413,7 +417,12 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(functionParameter)) {
             state.updateCurrentResolution(functionParameterNamed);
             state.dontMove = advance(builder);
-            state.add(markComplete(builder, state.currentContext(), functionParameterNamedSignature, m_types.SIG_SCOPE));
+            state.add(markComplete(builder, signature, functionParameterNamedSignature, m_types.SIG_SCOPE));
+        } else if (state.isCurrentResolution(paren) && state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
+            state.complete();
+            state.updateCurrentContext(functionParameter).updateCurrentResolution(functionParameterNamed);
+            state.dontMove = advance(builder);
+            state.add(markComplete(builder, signature, functionParameterNamedSignature, m_types.SIG_SCOPE));
         }
     }
 
@@ -769,6 +778,8 @@ public class RmlParser extends CommonParser {
             state.updateCurrentResolution(externalNamedSignatureEq);
         } else if (state.isCurrentResolution(clazzNamed) || state.isCurrentResolution(clazzConstructor)) {
             state.updateCurrentResolution(clazzNamedEq);
+        } else if (state.isCurrentResolution(signature)) {
+            state.popEnd();
         }
     }
 
