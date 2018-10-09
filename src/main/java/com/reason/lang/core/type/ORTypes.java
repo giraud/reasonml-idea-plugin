@@ -31,6 +31,7 @@ public abstract class ORTypes {
     public IElementType C_MACRO_RAW_BODY;
     public IElementType C_ML_INTERPOLATOR;
     public IElementType C_UNKNOWN_EXPR;
+    public IElementType C_VARIANT_CONSTRUCTOR;
     public IElementType MIXIN_FIELD;
     public IElementType MODULE_PATH;
     public IElementType ASSERT_STMT;

@@ -112,6 +112,8 @@ public class PsiElementFactory {
             return new PsiJsObject(node);
         } else if (type == types.C_JS_OBJECT_FIELD) {
             return new PsiJsObjectField(node);
+        } else if (type == types.C_VARIANT_CONSTRUCTOR) {
+            return new PsiVariantConstructor(node);
         } else if (type == types.C_UNKNOWN_EXPR) {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();

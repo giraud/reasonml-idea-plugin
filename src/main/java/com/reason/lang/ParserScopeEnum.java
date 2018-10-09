@@ -104,5 +104,11 @@ public enum ParserScopeEnum {
     maybeFunction,
     maybeFunctionParameters,
 
-    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration, moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope, moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, clazzBody, clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters, clazzNamedConstructor, record, mixin, functionCallParams, macroNamed, macroRawNamed, macroRaw, macroRawBody, externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed, functionParameter, functionParameterNamed, functionParameterSignature, name
+    valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
+    moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope,
+    moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, clazzBody,
+    clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
+    clazzNamedConstructor, record, mixin, functionCallParams, macroNamed, macroRawNamed, macroRaw, macroRawBody,
+    externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed, functionParameter, functionParameterNamed,
+    functionParameterSignature, patternMatchConstructor, name
 }

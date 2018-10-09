@@ -3,9 +3,7 @@ package com.reason.lang.reason;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiPatternMatch;
-import com.reason.lang.core.psi.PsiSwitch;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.*;
 
 import java.util.Collection;
 
@@ -33,6 +31,13 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
         PsiUpperSymbol variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiUpperSymbol.class);
         assertEquals(RmlTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
 
+    }
+
+    public void testLet() {
+        PsiLet e = first(letExpressions(parseCode("let makeId = () => switch (id) { | None => text | Some(i) => i };", true)));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        assertEquals("switch (id) { | None => text | Some(i) => i }", function.getBody().getText());
     }
 
 }

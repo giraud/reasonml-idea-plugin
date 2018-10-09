@@ -572,7 +572,8 @@ public class RmlParser extends CommonParser {
                 // Add a generic wrapper in case it's a parameter
                 // It is complete only if we find a comma in the scope
                 if (state.isInScopeExpression() && !state.isCurrentContext(jsObject) &&
-                        !state.isCurrentContext(maybeFunction) && state.previousTokenElementType != m_types.DOT) {
+                        !state.isCurrentContext(maybeFunction) && !state.isCurrentResolution(patternMatchConstructor) &&
+                        state.previousTokenElementType != m_types.DOT) {
                     state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
                 }
             }
@@ -650,6 +651,10 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(letNamedSignature) || state.isCurrentResolution(switchBinaryCondition)) {
+            return;
+        }
+
         if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen);
             state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
@@ -662,8 +667,9 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(ifThenStatement)) {
             state.complete();
             state.add(markCompleteScope(builder, binaryCondition, m_types.BIN_CONDITION, m_types.LPAREN));
-        } else if (state.isCurrentResolution(letNamedSignature)) {
-            //
+        } else if (state.isCurrentResolution(patternMatch)) {
+            // | Some <(> ... ) =>     It's a constructor
+            state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
         } else {
             if (state.isCurrentResolution(external)) {
                 // overloading an operator
@@ -688,6 +694,11 @@ public class RmlParser extends CommonParser {
 
     private void parseRParen(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(letNamedSignature)) {
+            return;
+        }
+
+        if (state.isCurrentResolution(switchBinaryCondition)) {
+            state.popEnd();
             return;
         }
 
