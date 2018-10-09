@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.lang.core.psi.impl.PsiSignatureImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +32,10 @@ public class PsiRecordField extends ASTWrapperPsiElement implements PsiNamedElem
         return null;
     }
 
+    @NotNull
     public PsiSignature getSignature() {
-        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+        PsiSignature signature = PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+        return signature == null ? PsiSignatureImpl.EMPTY : signature;
     }
 
     @Override

@@ -13,16 +13,62 @@ import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
-import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagStart {
     public PsiTagStartImpl(@NotNull ASTNode node) {
         super(RmlTypes.INSTANCE, node);
+    }
+
+    static class TagPropertyImpl implements TagProperty {
+
+        private final String m_name;
+        private final String m_type;
+        private final boolean m_mandatory;
+
+        TagPropertyImpl(PsiRecordField field) {
+            m_name = field.getName();
+            PsiSignature signature = field.getSignature();
+            m_type = signature.asString();
+            m_mandatory = signature.asHMSignature().isMandatory(0);
+        }
+
+        public TagPropertyImpl(PsiFunctionParameter p) {
+            m_name = p.getName();
+            PsiSignature signature = p.getSignature();
+            m_type = signature.asString();
+            m_mandatory = signature.asHMSignature().isMandatory(0);
+        }
+
+        public TagPropertyImpl(String name, String type, boolean mandatory) {
+            m_name = name;
+            m_type = type;
+            m_mandatory = mandatory;
+        }
+
+        @Override
+        public String getName() {
+            return m_name;
+        }
+
+        @Override
+        public String getType() {
+            return m_type;
+        }
+
+        @Override
+        public boolean isMandatory() {
+            return m_mandatory;
+        }
+    }
+
+    public static TagProperty createProp(String name, String type) {
+        return new TagPropertyImpl(name, type, false);
     }
 
     @Nullable
@@ -44,8 +90,8 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
     }
 
     @Override
-    public Map<String, String> getAttributes() {
-        final Map<String, String> result = new THashMap<>();
+    public List<TagProperty> getAttributes() {
+        final List<TagProperty> result = new ArrayList<>();
 
         PsiFinder psiFinder = PsiFinder.getInstance();
         Project project = getProject();
@@ -67,9 +113,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                                 Collection<PsiRecordField> fields = PsiTreeUtil.findChildrenOfType(object, PsiRecordField.class);
                                 if (!fields.isEmpty()) {
                                     for (PsiRecordField field : fields) {
-                                        PsiSignature fieldSignature = field.getSignature();
-                                        String type = fieldSignature == null ? "" : fieldSignature.getText();
-                                        result.put(field.getName(), type == null ? "" : type);
+                                        result.add(new TagPropertyImpl(field));
                                     }
                                 }
                             }
@@ -96,7 +140,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                                     getParameterList().
                                     stream().
                                     filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName())).
-                                    forEach(p -> result.put(p.getName(), p.getSignature().asString()));
+                                    forEach(p -> result.add(new TagPropertyImpl(p)));
                         }
                     }
                 }

@@ -1,7 +1,15 @@
 package com.reason.lang.core.psi;
 
-import java.util.Map;
+import java.util.List;
 
 public interface PsiTagStart extends PsiNamedElement {
-    Map<String, String> getAttributes(); // Map is not a good API
+    interface TagProperty {
+        String getName();
+
+        String getType();
+
+        boolean isMandatory();
+    }
+
+    List<TagProperty> getAttributes();
 }

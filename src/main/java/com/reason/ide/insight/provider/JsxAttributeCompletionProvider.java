@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.ui.LayeredIcon;
 import com.intellij.util.ProcessingContext;
 import com.reason.icons.Icons;
 import com.reason.ide.Debug;
@@ -17,11 +18,12 @@ import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.impl.PsiTagStartImpl;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -43,17 +45,17 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
 
         PsiTagStart tag = PsiTreeUtil.getParentOfType(originalPosition, PsiTagStart.class);
         if (tag != null) {
-            Map<String, String> attributes = tag.getAttributes();
+            List<PsiTagStart.TagProperty> attributes = tag.getAttributes();
 
             if (tag.getNameIdentifier() instanceof PsiUpperSymbol) {
                 // Additional attributes for UpperSymbol => only key and ref
-                attributes.put("key", "string=?");
-                attributes.put("ref", "Js.nullable(Dom.element) => unit=?");
+                attributes.add(PsiTagStartImpl.createProp("key", "string=?"));
+                attributes.add(PsiTagStartImpl.createProp("ref", "Js.nullable(Dom.element) => unit=?"));
             }
 
             if (m_debug.isDebugEnabled()) {
                 m_debug.debug("Tag found", tag.getName());
-                m_debug.debug("attributes", attributes.keySet());
+                m_debug.debug("attributes", attributes);
             }
 
             // Attributes already used
@@ -62,14 +64,16 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
             m_debug.debug("used names", usedNames);
 
             // Now populate the dialog
-            for (Map.Entry<String, String> attributeEntry : attributes.entrySet()) {
-                String attributeName = attributeEntry.getKey();
-                if (!usedNames.contains(attributeName)) {
-                    resultSet.addElement(LookupElementBuilder.create(attributeName).
-                            withTypeText(attributeEntry.getValue(), true).
-                            withIcon(Icons.ATTRIBUTE).
-                            withInsertHandler((context, item) -> insertTagAttributeHandler(context))
-                    );
+            for (PsiTagStart.TagProperty attribute : attributes) {
+                if (!usedNames.contains(attribute.getName())) {
+                    boolean mandatory = attribute.isMandatory();
+                    Icon icon = mandatory ? LayeredIcon.create(Icons.ATTRIBUTE, Icons.MANDATORY) : Icons.ATTRIBUTE;
+                    resultSet.addElement(LookupElementBuilder.
+                            create(attribute.getName()).
+                            withBoldness(mandatory).
+                            withTypeText(attribute.getType(), true).
+                            withIcon(icon).
+                            withInsertHandler((context, item) -> insertTagAttributeHandler(context)));
                 }
             }
         }
