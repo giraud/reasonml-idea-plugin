@@ -243,8 +243,6 @@ public class RmlParser extends CommonParser {
             if (state.isCurrentContext(parameters)) {
                 state.add(markComplete(builder, functionParameter, m_types.C_FUN_PARAM));
             }
-
-            state.add(mark(builder, namedSymbol, m_types.NAMED_SYMBOL));
         }
     }
 
@@ -405,13 +403,6 @@ public class RmlParser extends CommonParser {
             //   MODULE UIDENT COLON ...
             state.updateCurrentResolution(moduleNamedSignature);
             state.complete();
-        } else if (state.isCurrentResolution(namedSymbol)) {
-            state.complete();
-            state.popEnd();
-            if (state.isCurrentContext(functionParameter)) {
-                state.dontMove = advance(builder);
-                state.add(markComplete(builder, state.currentContext(), functionParameterSignature, m_types.SIG_SCOPE));
-            }
         } else if (state.isCurrentResolution(recordField)) {
             state.complete();
             state.dontMove = advance(builder);
@@ -422,7 +413,7 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(functionParameter)) {
             state.updateCurrentResolution(functionParameterNamed);
             state.dontMove = advance(builder);
-            state.add(markComplete(builder, functionParameterSignature, m_types.SIG_SCOPE));
+            state.add(markComplete(builder, state.currentContext(), functionParameterNamedSignature, m_types.SIG_SCOPE));
         }
     }
 

@@ -81,7 +81,6 @@ public enum ParserScopeEnum {
 
     try_,
     tryScope,
-    tryBinaryCondition,
 
     patternMatch,
 
@@ -89,14 +88,9 @@ public enum ParserScopeEnum {
     interpolationStart,
     interpolationString,
 
-    namedSymbol,
-    namedSymbolSignature,
-
     genericExpression,
 
     assert_,
-    assertScope,
-
     sexpr,
     library,
     executable,
@@ -106,9 +100,9 @@ public enum ParserScopeEnum {
 
     valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
     moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope,
-    moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, clazzBody,
+    moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
-    clazzNamedConstructor, record, mixin, functionCallParams, macroNamed, macroRawNamed, macroRaw, macroRawBody,
+    clazzNamedConstructor, record, mixin, functionCallParams, macroNamed, macroRaw, macroRawBody,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed, functionParameter, functionParameterNamed,
-    functionParameterSignature, patternMatchConstructor, name
+    functionParameterSignature, patternMatchConstructor, functionParameterNamedSignature, name
 }

@@ -90,8 +90,6 @@ public class PsiElementFactory {
             return new PsiUpperSymbolImpl(types, node);
         } else if (type == types.LOWER_SYMBOL) {
             return new PsiLowerSymbolImpl(types, node);
-        } else if (type == types.NAMED_SYMBOL) {
-            return new PsiNamedSymbol(node);
         } else if (type == types.TRY_EXPR) {
             return new PsiTry(types, node);
         } else if (type == types.SWITCH_EXPR || type == types.MATCH_EXPR) {
@@ -101,7 +99,7 @@ public class PsiElementFactory {
         } else if (type == types.C_FUN_PARAMS) {
             return new PsiParametersImpl(types, node);
         } else if (type == types.C_FUN_PARAM) {
-            return new PsiFunctionParameter(node);
+            return new PsiFunctionParameter(types, node);
         } else if (type == types.C_FUN_BODY) {
             return new PsiFunctionBody(node);
         } else if (type == types.STRUCT_EXPR) {
@@ -118,7 +116,7 @@ public class PsiElementFactory {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();
             if (parentNode.getElementType() == types.C_FUN_PARAMS) {
-                return new PsiFunctionParameter(node);
+                return new PsiFunctionParameter(types, node);
             } else {
                 // Remove the unknown node by its children
 

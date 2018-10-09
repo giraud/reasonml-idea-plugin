@@ -39,7 +39,6 @@ public abstract class ORTypes {
     public IElementType VARIANT_EXP;
     public IElementType IF_STMT;
     public IElementType BIN_CONDITION;
-    public IElementType NAMED_SYMBOL;
     public IElementType PATTERN_MATCH_EXPR;
     public IElementType INTERPOLATION_EXPR;
     public IElementType SIG_SCOPE;

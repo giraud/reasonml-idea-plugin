@@ -50,7 +50,6 @@ public class OclTypes extends ORTypes {
         PATTERN_MATCH_EXPR = new ORCompositeElementType("PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
         SCOPED_EXPR = new ORCompositeElementType("SCOPED_EXPR", OclLanguage.INSTANCE);
         SIG_SCOPE = new ORCompositeElementType("SIG_SCOPE", OclLanguage.INSTANCE);
-        NAMED_SYMBOL = new ORCompositeElementType("NAMED_SYMBOL", OclLanguage.INSTANCE);
         BIN_CONDITION = new ORCompositeElementType("BIN_CONDITION", OclLanguage.INSTANCE);
         VARIANT_EXP = new ORCompositeElementType("VARIANT_EXP", OclLanguage.INSTANCE);
         SWITCH_EXPR = new ORCompositeElementType("SWITCH_EXPR", OclLanguage.INSTANCE);

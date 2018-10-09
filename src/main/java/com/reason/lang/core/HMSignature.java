@@ -1,6 +1,5 @@
 package com.reason.lang.core;
 
-import com.reason.Joiner;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,11 +20,13 @@ public class HMSignature {
     private final String m_signature;
 
     public HMSignature(boolean isOCaml, @NotNull String signature) {
-        String x = signature.
+        // Always use thin arrow
+        m_signature = signature.
                 replaceAll("\n", "").
-                replaceAll("\\s+", " ");
+                replaceAll("\\s+", " ").
+                replaceAll("=>", "->");
 
-        String[] tokens = x.split(isOCaml ? "->" : "=>");
+        String[] tokens = m_signature.split("->");
         m_types = new SignatureItem[tokens.length];
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i].trim();
@@ -33,9 +34,6 @@ public class HMSignature {
             m_types[i].value = token;
             m_types[i].mandatory = !token.contains("option");
         }
-
-        // Always use thin arrow
-        m_signature = Joiner.join(" -> ", tokens);
     }
 
     @Override

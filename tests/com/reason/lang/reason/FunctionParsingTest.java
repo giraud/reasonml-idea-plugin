@@ -105,4 +105,12 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals("children", itParams.next().getName());
     }
 
+    public void testParametersNamedSymbols2() {
+        PsiLet e = first(letExpressions(parseCode("let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        Collection<PsiFunctionParameter> parameters = function.getParameterList();
+        assertEquals(10, parameters.size());
+
+    }
 }

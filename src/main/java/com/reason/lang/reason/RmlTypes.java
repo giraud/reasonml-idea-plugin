@@ -48,7 +48,6 @@ public class RmlTypes extends ORTypes {
         TYPE_BINDING = new ORCompositeElementType("TYPE_BINDING", RmlLanguage.INSTANCE);
         PATTERN_MATCH_EXPR = new ORCompositeElementType("PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
         SIG_SCOPE = new ORCompositeElementType("SIG_SCOPE", RmlLanguage.INSTANCE);
-        NAMED_SYMBOL = new ORCompositeElementType("NAMED_SYMBOL", RmlLanguage.INSTANCE);
         IF_STMT = new ORCompositeElementType("IF_STMT", RmlLanguage.INSTANCE);
         BIN_CONDITION = new ORCompositeElementType("BIN_CONDITION", RmlLanguage.INSTANCE);
         SWITCH_EXPR = new ORCompositeElementType("SWITCH_EXPR", RmlLanguage.INSTANCE);

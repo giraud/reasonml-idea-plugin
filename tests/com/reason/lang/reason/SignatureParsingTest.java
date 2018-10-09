@@ -20,8 +20,8 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x:int => option(string) => string = (a,b) => c")));
 
         HMSignature signature = let.getSignature();
-        assertFalse(signature.isMandatory(0));
-        assertTrue(signature.isMandatory(1));
+        assertTrue(signature.isMandatory(0));
+        assertFalse(signature.isMandatory(1));
     }
 
 }

@@ -6,28 +6,32 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.psi.impl.PsiSignatureImpl;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiFunctionParameter extends ASTWrapperPsiElement implements PsiNamedElement {
 
-    public PsiFunctionParameter(ASTNode node) {
+    private final ORTypes m_types;
+
+    public PsiFunctionParameter(ORTypes m_types, ASTNode node) {
         super(node);
+        this.m_types = m_types;
     }
 
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return getFirstChild();
+        PsiElement firstChild = getFirstChild();
+        if (firstChild != null && firstChild.getNode().getElementType() == m_types.TILDE) {
+            return firstChild.getNextSibling();
+        }
+        return firstChild;
     }
 
     @Override
     public String getName() {
         PsiElement identifier = getNameIdentifier();
-        if (identifier instanceof PsiNamedSymbol) {
-            return ((PsiNamedSymbol) identifier).getName();
-        }
-
         return identifier == null ? "" : identifier.getText();
     }
 
