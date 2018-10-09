@@ -1,7 +1,7 @@
 package com.reason.ide;
 
 import com.intellij.AppTopics;
-import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
@@ -20,10 +20,11 @@ import java.io.File;
 
 import static com.reason.Platform.getOsPrefix;
 
-public class ReasonProjectTracker extends AbstractProjectComponent {
+public class ReasonProjectTracker implements ProjectComponent {
 
     private final Logger m_log = Logger.getInstance("ReasonML");
 
+    private final Project m_project;
     @Nullable
     private RmlDocumentListener m_documentListener;
     @Nullable
@@ -34,7 +35,7 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
     private RmlFileEditorListener m_fileEditorListener;
 
     protected ReasonProjectTracker(Project project) {
-        super(project);
+        m_project = project;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
         if (SystemInfo.is64Bit) {
             // Try to locate Rincewind
             if (!getOsPrefix().isEmpty()) {
-                InsightManagerImpl insightManager = (InsightManagerImpl) InsightManagerImpl.getInstance(myProject);
+                InsightManagerImpl insightManager = (InsightManagerImpl) InsightManagerImpl.getInstance(m_project);
                 File rincewindFile = insightManager.getRincewindFile();
                 if (rincewindFile.exists()) {
                     m_log.info("Found " + rincewindFile);
@@ -55,15 +56,15 @@ public class ReasonProjectTracker extends AbstractProjectComponent {
             m_log.info("32Bit system detected, can't use rincewind");
         }
 
-        m_documentListener = new RmlDocumentListener(myProject);
+        m_documentListener = new RmlDocumentListener(m_project);
         EditorFactory.getInstance().getEventMulticaster().addDocumentListener(m_documentListener);
 
-        m_messageBusConnection = myProject.getMessageBus().connect();
-        m_fileEditorListener = new RmlFileEditorListener(myProject);
+        m_messageBusConnection = m_project.getMessageBus().connect();
+        m_fileEditorListener = new RmlFileEditorListener(m_project);
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, m_fileEditorListener);
-        m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(myProject));
+        m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(m_project));
 
-        m_vfListener = new VirtualFileListener(myProject);
+        m_vfListener = new VirtualFileListener(m_project);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
     }
 

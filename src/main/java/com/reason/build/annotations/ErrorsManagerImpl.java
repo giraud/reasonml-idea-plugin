@@ -1,24 +1,17 @@
 package com.reason.build.annotations;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.containers.ConcurrentMultiMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public class ErrorsManagerImpl implements ErrorsManager, ProjectComponent {
 
     private final ConcurrentMultiMap<String, OutputInfo> m_errorsByFile = new ConcurrentMultiMap<>();
-
-    @Override
-    public void initComponent() { // For compatibility with idea#143
-    }
-
-    @Override
-    public void disposeComponent() { // For compatibility with idea#143
-    }
 
     @Override
     public void put(@Nullable OutputInfo info) {
@@ -47,4 +40,14 @@ public class ErrorsManagerImpl implements ErrorsManager, ProjectComponent {
     public void clearErrors() {
         m_errorsByFile.clear();
     }
+
+    //region Compatibility
+    @Override
+    public void initComponent() { // For compatibility with idea#143
+    }
+
+    @Override
+    public void disposeComponent() { // For compatibility with idea#143
+    }
+    //endregion
 }

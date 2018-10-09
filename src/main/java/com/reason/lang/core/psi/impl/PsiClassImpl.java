@@ -3,6 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
@@ -103,4 +104,12 @@ public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
     public String toString() {
         return "Class " + getQualifiedName();
     }
+
+    //region Compatibility
+    @SuppressWarnings("unused")
+    @Nullable
+    PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
+        return null;
+    }
+    //endregion
 }

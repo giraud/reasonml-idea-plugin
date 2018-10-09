@@ -4,6 +4,7 @@ import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -125,4 +126,12 @@ public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements
     public String toString() {
         return "Type " + getQualifiedName();
     }
+
+    //region Compatibility
+    @SuppressWarnings("unused")
+    @Nullable
+    PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
+        return null;
+    }
+    //endregion
 }

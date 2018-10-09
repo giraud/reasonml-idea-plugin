@@ -2,7 +2,7 @@ package com.reason.ide.format;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManagerAdapter;
+import com.intellij.openapi.fileEditor.FileDocumentManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
@@ -11,7 +11,7 @@ import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 
-public class ReformatOnSave extends FileDocumentManagerAdapter {
+public class ReformatOnSave implements FileDocumentManagerListener {
 
     private static final Logger LOG = Logger.getInstance("ReasonML.refmt.auto");
 
@@ -43,6 +43,36 @@ public class ReformatOnSave extends FileDocumentManagerAdapter {
                 m_bs.refmt(virtualFile, format, document);
             }
         }
+    }
+
+    @Override
+    public void beforeAllDocumentsSaving() {
+
+    }
+
+    @Override
+    public void beforeFileContentReload(VirtualFile file, @NotNull Document document) {
+
+    }
+
+    @Override
+    public void fileWithNoDocumentChanged(@NotNull VirtualFile file) {
+
+    }
+
+    @Override
+    public void fileContentReloaded(@NotNull VirtualFile file, @NotNull Document document) {
+
+    }
+
+    @Override
+    public void fileContentLoaded(@NotNull VirtualFile file, @NotNull Document document) {
+
+    }
+
+    @Override
+    public void unsavedDocumentsDropped() {
+
     }
 
 }
