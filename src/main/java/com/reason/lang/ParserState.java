@@ -215,4 +215,7 @@ public class ParserState {
         return currentScope.getContext();
     }
 
+    public ParserScopeEnum currentResolution() {
+        return currentScope.getResolution();
+    }
 }

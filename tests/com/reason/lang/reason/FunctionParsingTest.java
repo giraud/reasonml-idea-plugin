@@ -3,8 +3,12 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiFunctionParameter;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends BaseParsingTestCase {
@@ -73,6 +77,32 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         PsiFunction functionInner = PsiTreeUtil.findChildOfType(functionOuter, PsiFunction.class);
         assertEquals("error##message", functionInner.getBody().getText());
+    }
+
+    public void testParametersNamedSymbols() {
+        PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option(Js.t('a)), children) => null;")));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        Collection<PsiFunctionParameter> parameters = function.getParameterList();
+        assertEquals(3, parameters.size());
+
+        Iterator<PsiFunctionParameter> itParams = parameters.iterator();
+        assertEquals("id", itParams.next().getName());
+        assertEquals("values", itParams.next().getName());
+        assertEquals("children", itParams.next().getName());
+    }
+
+    public void testParametersLIdent() {
+        PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        Collection<PsiFunctionParameter> parameters = function.getParameterList();
+        assertEquals(3, parameters.size());
+
+        Iterator<PsiFunctionParameter> itParams = parameters.iterator();
+        assertEquals("id", itParams.next().getName());
+        assertEquals("values", itParams.next().getName());
+        assertEquals("children", itParams.next().getName());
     }
 
 }

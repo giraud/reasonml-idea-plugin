@@ -3,12 +3,10 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
-import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 public class PsiFunction extends ASTWrapperPsiElement {
 
@@ -31,21 +29,13 @@ public class PsiFunction extends ASTWrapperPsiElement {
     }
 
     @NotNull
-    public Map<String, String> getParameters() {
+    public Collection<PsiFunctionParameter> getParameterList() {
         PsiParameters parameters = findChildByClass(PsiParameters.class);
-        Collection<PsiLowerSymbol> symbols = PsiTreeUtil.findChildrenOfType(parameters, PsiLowerSymbol.class);
-        if (symbols.isEmpty()) {
-            return Collections.emptyMap();
+        Collection<PsiFunctionParameter> params = PsiTreeUtil.findChildrenOfType(parameters, PsiFunctionParameter.class);
+        if (params.isEmpty()) {
+            return Collections.emptyList();
         }
 
-        Map<String, String> result = new THashMap<>();
-        for (PsiLowerSymbol symbol : symbols) {
-            String parameterName = symbol.getText();
-            if (!"children".equals(parameterName) && !"_children".equals(parameterName)) {
-                result.put(parameterName, "");
-            }
-        }
-
-        return result;
+        return params;
     }
 }

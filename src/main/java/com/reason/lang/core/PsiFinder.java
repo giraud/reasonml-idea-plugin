@@ -40,6 +40,20 @@ public final class PsiFinder {
         return INSTANCE;
     }
 
+    @Nullable
+    public PsiModule findComponent(@NotNull String fqn, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+        ModuleCompIndex index = ModuleCompIndex.getInstance();
+
+        Collection<PsiModule> modules = index.get(fqn, project, scope);
+        if (modules.isEmpty()) {
+            return null;
+        }
+
+        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+        PsiModule module = modules.iterator().next();
+        return bucklescript.isDependency(module.getContainingFile().getVirtualFile()) ? module : null;
+    }
+
     @NotNull
     public Collection<PsiModule> findComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
         ModuleCompIndex index = ModuleCompIndex.getInstance();

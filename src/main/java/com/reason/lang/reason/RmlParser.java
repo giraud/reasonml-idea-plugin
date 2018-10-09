@@ -193,8 +193,8 @@ public class RmlParser extends CommonParser {
 
     private void parseFun(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(letNamedEq)) {
-            state.add(mark(builder, function, m_types.FUN_EXPR));
-            state.add(mark(builder, functionBody, m_types.FUN_BODY));
+            state.add(mark(builder, function, m_types.C_FUN_EXPR));
+            state.add(mark(builder, functionBody, m_types.C_FUN_BODY));
         }
     }
 
@@ -215,10 +215,7 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseComma(ParserState state) {
-        if (state.isCurrentResolution(namedSymbolSignature)) {
-            state.complete();
-            state.popEnd();
-        } else if (state.isCurrentContext(recordSignature)) {
+        if (state.isCurrentContext(recordSignature)) {
             state.complete();
             state.endUntilContext(recordField);
             state.popEnd();
@@ -226,12 +223,27 @@ public class RmlParser extends CommonParser {
             state.popEnd();
         } else if (state.isCurrentResolution(mixin)) {
             state.popEnd();
+        } else if (state.isCurrentContext(functionParameter) || state.isCurrentContext(maybeFunction)) {
+            state.endUntilStartScope();
+        } else if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
+            // We don't know yet but we need to complete the marker
+            state.complete();
+            state.popEnd();
         }
     }
 
     private void parseTilde(PsiBuilder builder, ParserState state) {
         IElementType nextToken = builder.rawLookup(1);
         if (m_types.LIDENT == nextToken) {
+            if (state.isCurrentContext(paren)) {
+                state.updateCurrentContext(parameters);
+                state.updateCurrentResolution(parameters);
+            }
+
+            if (state.isCurrentContext(parameters)) {
+                state.add(markComplete(builder, functionParameter, m_types.C_FUN_PARAM));
+            }
+
             state.add(mark(builder, namedSymbol, m_types.NAMED_SYMBOL));
         }
     }
@@ -396,9 +408,10 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(namedSymbol)) {
             state.complete();
             state.popEnd();
-
-            state.dontMove = advance(builder);
-            state.add(mark(builder, namedSymbolSignature, m_types.SIG_SCOPE));
+            if (state.isCurrentContext(functionParameter)) {
+                state.dontMove = advance(builder);
+                state.add(markComplete(builder, state.currentContext(), functionParameterSignature, m_types.SIG_SCOPE));
+            }
         } else if (state.isCurrentResolution(recordField)) {
             state.complete();
             state.dontMove = advance(builder);
@@ -406,6 +419,10 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(jsObjectField)) {
             state.complete();
             state.updateCurrentResolution(jsObjectFieldNamed);
+        } else if (state.isCurrentResolution(functionParameter)) {
+            state.updateCurrentResolution(functionParameterNamed);
+            state.dontMove = advance(builder);
+            state.add(markComplete(builder, functionParameterSignature, m_types.SIG_SCOPE));
         }
     }
 
@@ -481,6 +498,8 @@ public class RmlParser extends CommonParser {
             state.updateCurrentResolution(typeNamed);
             state.complete();
             state.setPreviousComplete();
+        } else if (state.isCurrentResolution(parameters)) {
+            state.add(markComplete(builder, state.currentContext(), functionParameter, m_types.C_FUN_PARAM));
         } else if (state.isCurrentResolution(external)) {
             // EXTERNAL <LIDENT> ...
             state.updateCurrentResolution(externalNamed);
@@ -495,8 +514,8 @@ public class RmlParser extends CommonParser {
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
-                    state.add(markComplete(builder, state.currentContext(), function, m_types.FUN_EXPR));
-                    state.add(markComplete(builder, state.currentContext(), parameters, m_types.FUN_PARAMS));
+                    state.add(markComplete(builder, state.currentContext(), function, m_types.C_FUN_EXPR));
+                    state.add(markComplete(builder, state.currentContext(), parameters, m_types.C_FUN_PARAMS));
                     processSingleParam = true;
                 }
             }
@@ -546,9 +565,16 @@ public class RmlParser extends CommonParser {
             if (nextElementType == m_types.ARROW) {
                 // Single (paren less) function parameters
                 // <LIDENT> ARROW ...
-                state.add(markComplete(builder, state.currentContext(), function, m_types.FUN_EXPR));
-                state.add(markComplete(builder, state.currentContext(), parameters, m_types.FUN_PARAMS));
+                state.add(markComplete(builder, state.currentContext(), function, m_types.C_FUN_EXPR));
+                state.add(markComplete(builder, state.currentContext(), parameters, m_types.C_FUN_PARAMS));
                 processSingleParam = true;
+            } else {
+                // Add a generic wrapper in case it's a parameter
+                // It is complete only if we find a comma in the scope
+                if (state.isInScopeExpression() && !state.isCurrentContext(jsObject) &&
+                        !state.isCurrentContext(maybeFunction) && state.previousTokenElementType != m_types.DOT) {
+                    state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
+                }
             }
         }
 
@@ -665,6 +691,10 @@ public class RmlParser extends CommonParser {
             return;
         }
 
+        if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
+            state.complete();
+        }
+
         ParserScope parenScope = state.endUntilScopeToken(m_types.LPAREN);
         state.dontMove = advance(builder);
         IElementType nextTokenType = builder.getTokenType();
@@ -676,7 +706,7 @@ public class RmlParser extends CommonParser {
             if (nextTokenType == m_types.ARROW) {
                 if (!state.isCurrentResolution(patternMatch) && !state.isCurrentTokenType(m_types.SIG)) {
                     parenScope.resolution(parameters);
-                    parenScope.compositeElementType(m_types.FUN_PARAMS);
+                    parenScope.compositeElementType(m_types.C_FUN_PARAMS);
                 }
             } else if (nextTokenType == m_types.LPAREN) {
                 if (state.isCurrentResolution(clazzNamed)) {
@@ -700,7 +730,7 @@ public class RmlParser extends CommonParser {
             if (parenScope.isResolution(parameters) && nextTokenType == m_types.ARROW) {
                 // Transform the generic scope to a function scope
                 state.updateCurrentResolution(function);
-                state.updateCurrentCompositeElementType(m_types.FUN_EXPR);
+                state.updateCurrentCompositeElementType(m_types.C_FUN_EXPR);
                 state.complete();
             } else if (state.isCurrentResolution(genericExpression)) {
                 state.popEnd();
@@ -805,7 +835,7 @@ public class RmlParser extends CommonParser {
             }
         } else if (state.isCurrentResolution(function)) {
             // let x = ($ANY) => <EXPR>
-            state.add(markComplete(builder, state.currentContext(), functionBody, m_types.FUN_BODY));
+            state.add(markComplete(builder, state.currentContext(), functionBody, m_types.C_FUN_BODY));
         } else if (nextTokenType != m_types.LBRACE) {
             if (state.isCurrentResolution(patternMatch)) {
                 state.add(mark(builder, state.currentContext(), patternMatchBody, m_types.SCOPED_EXPR));

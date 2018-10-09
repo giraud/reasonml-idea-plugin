@@ -100,4 +100,8 @@ public class ParserScope {
     public void setStart(boolean start) {
         m_scopeStart = start;
     }
+
+    public ParserScopeEnum getResolution() {
+        return m_resolution;
+    }
 }

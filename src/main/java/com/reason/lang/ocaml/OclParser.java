@@ -184,11 +184,11 @@ public class OclParser extends CommonParser {
             if (scope != null) {
                 state.popEnd();
             }
-        } else if (state.isCurrentResolution(maybeLetFunctionParameters)) {
+        } else if (state.isCurrentResolution(maybeFunctionParameters)) {
             state.complete();
             state.popEnd();
             state.dontMove = advance(builder);
-            state.add(markComplete(builder, functionBody, m_types.FUN_BODY));
+            state.add(markComplete(builder, functionBody, m_types.C_FUN_BODY));
         }
     }
 
@@ -394,9 +394,9 @@ public class OclParser extends CommonParser {
 
     private void parseFun(PsiBuilder builder, ParserState state) {
         if (state.isCurrentContext(letBinding)) {
-            state.add(markCompleteScope(builder, function, m_types.FUN_EXPR, m_types.FUN));
+            state.add(markCompleteScope(builder, function, m_types.C_FUN_EXPR, m_types.FUN));
             state.dontMove = advance(builder);
-            state.add(mark(builder, maybeLetFunctionParameters, m_types.FUN_PARAMS));
+            state.add(mark(builder, maybeFunctionParameters, m_types.C_FUN_PARAMS));
         }
     }
 
@@ -427,17 +427,17 @@ public class OclParser extends CommonParser {
             state.complete();
             state.popEnd();
             state.updateCurrentResolution(externalNamedSignatureEq);
-        } else if (state.isCurrentResolution(maybeLetFunctionParameters)) {
+        } else if (state.isCurrentResolution(maybeFunctionParameters)) {
             ParserScope innerScope = state.pop();
             if (innerScope != null) {
                 // This is a function definition, change the scopes
-                innerScope.resolution(parameters).compositeElementType(m_types.FUN_PARAMS).complete().end();
+                innerScope.resolution(parameters).compositeElementType(m_types.C_FUN_PARAMS).complete().end();
                 state.updateCurrentContext(function).
                         updateCurrentResolution(function).
-                        updateCurrentCompositeElementType(m_types.FUN_EXPR).
+                        updateCurrentCompositeElementType(m_types.C_FUN_EXPR).
                         complete();
                 state.dontMove = advance(builder);
-                state.add(markComplete(builder, functionBody, m_types.FUN_BODY));
+                state.add(markComplete(builder, functionBody, m_types.C_FUN_BODY));
             }
         }
     }
@@ -569,8 +569,8 @@ public class OclParser extends CommonParser {
             if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
                 state.add(markComplete(builder, letBinding, letNamedBinding, m_types.LET_BINDING));
                 // add a generic marker: it may be a function + parameters
-                state.add(mark(builder, maybeLetFunction));
-                state.add(mark(builder, maybeLetFunctionParameters));
+                state.add(mark(builder, maybeFunction));
+                state.add(mark(builder, maybeFunctionParameters));
             }
         }
     }

@@ -7,4 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public interface PsiSignature extends PsiElement {
     @NotNull
     HMSignature asHMSignature();
+
+    @NotNull
+    String asString();
 }

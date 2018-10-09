@@ -21,9 +21,14 @@ public class RmlTypes extends ORTypes {
         INCLUDE_STMT = new ORCompositeElementType("INCLUDE_STMT", RmlLanguage.INSTANCE);
         MACRO_EXPR = new ORCompositeElementType("MACRO_EXPR", RmlLanguage.INSTANCE);
         MACRO_NAME = new ORCompositeElementType("MACRO_NAME", RmlLanguage.INSTANCE);
-        C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
+        C_FUN_PARAM = new ORCompositeElementType("C_FUNCTION_PARAMETER", RmlLanguage.INSTANCE);
+        C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", RmlLanguage.INSTANCE);
+        C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", RmlLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", RmlLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", RmlLanguage.INSTANCE);
+        C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
         MIXIN_FIELD = new ORCompositeElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", RmlLanguage.INSTANCE);
@@ -36,9 +41,6 @@ public class RmlTypes extends ORTypes {
         ASSERT_STMT = new ORCompositeElementType("ASSERT_STMT", RmlLanguage.INSTANCE);
         SCOPED_EXPR = new ORCompositeElementType("SCOPED_EXPR", RmlLanguage.INSTANCE);
         VARIANT_EXP = new ORCompositeElementType("VARIANT_EXP", RmlLanguage.INSTANCE);
-        FUN_EXPR = new ORCompositeElementType("FUN_EXPR", RmlLanguage.INSTANCE);
-        FUN_PARAMS = new ORCompositeElementType("FUN_PARAMS", RmlLanguage.INSTANCE);
-        FUN_BODY = new ORCompositeElementType("FUN_BODY", RmlLanguage.INSTANCE);
         FUN_CALL_PARAMS = new ORCompositeElementType("FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         LET_BINDING = new ORCompositeElementType("LET_BINDING", RmlLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new ORCompositeElementType("TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);

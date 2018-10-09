@@ -56,8 +56,6 @@ public class PsiElementFactory {
             return new PsiAnnotation(node);
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
-        } else if (type == types.FUN_PARAMS) {
-            return new PsiParametersImpl(types, node);
         } else if (type == types.FUN_CALL_PARAMS) {
             return new PsiFunctionCallParams(node);
         } else if (type == types.MACRO_EXPR) {
@@ -98,9 +96,13 @@ public class PsiElementFactory {
             return new PsiTry(types, node);
         } else if (type == types.SWITCH_EXPR || type == types.MATCH_EXPR) {
             return new PsiSwitch(node);
-        } else if (type == types.FUN_EXPR) {
+        } else if (type == types.C_FUN_EXPR) {
             return new PsiFunction(node);
-        } else if (type == types.FUN_BODY) {
+        } else if (type == types.C_FUN_PARAMS) {
+            return new PsiParametersImpl(types, node);
+        } else if (type == types.C_FUN_PARAM) {
+            return new PsiFunctionParameter(node);
+        } else if (type == types.C_FUN_BODY) {
             return new PsiFunctionBody(node);
         } else if (type == types.STRUCT_EXPR) {
             return new PsiStruct(node);
@@ -110,6 +112,15 @@ public class PsiElementFactory {
             return new PsiJsObject(node);
         } else if (type == types.C_JS_OBJECT_FIELD) {
             return new PsiJsObjectField(node);
+        } else if (type == types.C_UNKNOWN_EXPR) {
+            // Try to resolve something from the parent context
+            ASTNode parentNode = node.getTreeParent();
+            if (parentNode.getElementType() == types.C_FUN_PARAMS) {
+                return new PsiFunctionParameter(node);
+            } else {
+                // Remove the unknown node by its children
+
+            }
         }
 
         return new PsiToken(node);
