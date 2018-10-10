@@ -37,8 +37,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     private final Map<String, BsConfig> m_configs = new THashMap<>();
     @Nullable
     private BsCompiler m_compiler;
-    @Nullable
-    private RefmtProcess m_refmt;
 
     private BucklescriptManager(Project project) {
         m_project = project;
@@ -79,7 +77,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
         ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
         m_compiler = new BsCompiler(moduleConfiguration);
-        m_refmt = new RefmtProcess(moduleConfiguration);
     }
 
     @Override
@@ -88,7 +85,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
             m_compiler.killIt();
         }
         m_compiler = null;
-        m_refmt = null;
     }
 
     @Nullable
@@ -170,39 +166,37 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
-        if (m_refmt != null) {
-            String oldText = document.getText();
-            String newText = m_refmt.convert(virtualFile, fromFormat, toFormat, oldText);
-            if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
-                getApplication().runWriteAction(() -> {
-                    CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup");
-                    try {
-                        virtualFile.rename(this, virtualFile.getNameWithoutExtension() + "." + toFormat);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
+        RefmtProcess refmt = RefmtProcess.getInstance(m_project);
+        String oldText = document.getText();
+        String newText = refmt.convert(virtualFile, fromFormat, toFormat, oldText);
+        if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
+            getApplication().runWriteAction(() -> {
+                CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup");
+                try {
+                    virtualFile.rename(this, virtualFile.getNameWithoutExtension() + "." + toFormat);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
     @Override
     public void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document) {
-        if (m_refmt != null) {
-            String oldText = document.getText();
-            if (!oldText.isEmpty()) {
-                String newText = m_refmt.run(sourceFile, format, oldText);
-                if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
-                    getApplication().runWriteAction(
-                            () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
-                }
+        RefmtProcess refmt = RefmtProcess.getInstance(m_project);
+        String oldText = document.getText();
+        if (!oldText.isEmpty()) {
+            String newText = refmt.run(sourceFile, format, oldText);
+            if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
+                getApplication().runWriteAction(
+                        () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
             }
         }
     }
 
     @Override
     public boolean isRefmtOnSaveEnabled() {
-        return m_refmt != null && m_refmt.isOnSaveEnabled();
+        return RefmtProcess.getInstance(m_project).isOnSaveEnabled();
     }
 
     private ConsoleView getBsbConsole() {

@@ -36,5 +36,6 @@ public class Icons {
     public static final Icon OPEN = getIcon("/objectBrowser/showModules.png");
     public static final Icon INCLUDE = getIcon("/objectBrowser/showModules.png");
 
-    public static final Icon MANDATORY = getIcon("/ide/errorPoint.png");
+    public static final Icon OVERLAY_MANDATORY = getIcon("/ide/errorPoint.png");
+    public static final Icon OVERLAY_EXECUTE = getIcon("/general/comboArrowRight.png");
 }

@@ -67,7 +67,7 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
             for (PsiTagStart.TagProperty attribute : attributes) {
                 if (!usedNames.contains(attribute.getName())) {
                     boolean mandatory = attribute.isMandatory();
-                    Icon icon = mandatory ? LayeredIcon.create(Icons.ATTRIBUTE, Icons.MANDATORY) : Icons.ATTRIBUTE;
+                    Icon icon = mandatory ? LayeredIcon.create(Icons.ATTRIBUTE, Icons.OVERLAY_MANDATORY) : Icons.ATTRIBUTE;
                     resultSet.addElement(LookupElementBuilder.
                             create(attribute.getName()).
                             withBoldness(mandatory).

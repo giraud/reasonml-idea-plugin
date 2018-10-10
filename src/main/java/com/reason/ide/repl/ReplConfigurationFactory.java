@@ -4,17 +4,28 @@ import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.LayeredIcon;
+import com.reason.icons.Icons;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 public class ReplConfigurationFactory extends ConfigurationFactory {
     private static final String FACTORY_NAME = "OCaml REPL configuration factory";
 
-    protected ReplConfigurationFactory(ConfigurationType type) {
+    ReplConfigurationFactory(ConfigurationType type) {
         super(type);
     }
 
+    @NotNull
     @Override
-    public RunConfiguration createTemplateConfiguration(Project project) {
+    public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
         return new ReplRunConfiguration(project, this, "OCaml repl");
+    }
+
+    @Override
+    public Icon getIcon() {
+        return LayeredIcon.create(Icons.OCL_FILE, Icons.OVERLAY_EXECUTE);
     }
 
     @Override

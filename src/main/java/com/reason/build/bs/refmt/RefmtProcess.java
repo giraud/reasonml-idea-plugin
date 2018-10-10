@@ -1,7 +1,9 @@
 package com.reason.build.bs.refmt;
 
 
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
@@ -9,14 +11,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
-public class RefmtProcess {
+public class RefmtProcess implements ProjectComponent {
 
     private final static Logger LOG = Logger.getInstance("ReasonML.refmt");
-
     private final ModuleConfiguration m_moduleConfiguration;
 
-    public RefmtProcess(ModuleConfiguration moduleConfiguration) {
-        m_moduleConfiguration = moduleConfiguration;
+    public RefmtProcess(Project project) {
+        m_moduleConfiguration = new ModuleConfiguration(project);
+    }
+
+    public static RefmtProcess getInstance(Project project) {
+        return project.getComponent(RefmtProcess.class);
     }
 
     public boolean isOnSaveEnabled() {
