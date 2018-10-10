@@ -1,6 +1,5 @@
 package com.reason.ide.repl;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
@@ -17,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 public class ReplRunConfiguration extends RunConfigurationBase {
     @Nullable
     private Sdk m_sdk;
+    private boolean m_cygwinEnabled = false;
+    private String m_cygwinPath = "";
 
     ReplRunConfiguration(Project project, ConfigurationFactory factory, String name) {
         super(project, factory, name);
@@ -38,29 +39,49 @@ public class ReplRunConfiguration extends RunConfigurationBase {
 
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-        if (m_sdk == null)
+        if (m_sdk == null) {
             throw new RuntimeConfigurationException("No SDK selected");
+        }
     }
 
     @Nullable
     @Override
-    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
+    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) {
         return new ReplGenericState(executionEnvironment);
     }
 
     @Nullable
-    public Sdk getSdk() {
+    Sdk getSdk() {
         return m_sdk;
     }
 
-    public void setSdk(Sdk selectedJdk) {
+    void setSdk(Sdk selectedJdk) {
         m_sdk = selectedJdk;
+    }
+
+    boolean getCygwinSelected() {
+        return m_cygwinEnabled;
+    }
+
+    void setCygwinSelected(boolean enabled) {
+        m_cygwinEnabled = enabled;
+    }
+
+    String getCygwinPath() {
+        return m_cygwinPath;
+    }
+
+    void setCygwinPath(String path) {
+        m_cygwinPath = path;
     }
 
     @Override
     public void writeExternal(@NotNull Element element) throws WriteExternalException {
         super.writeExternal(element);
-        element.addContent(new Element("sdk").setAttribute("name", m_sdk == null ? "" : m_sdk.getName()));
+        element.addContent(new Element("sdk").
+                setAttribute("name", m_sdk == null ? "" : m_sdk.getName()).
+                setAttribute("cygwin", Boolean.toString(m_cygwinEnabled)).
+                setAttribute("cygwinPath", m_cygwinPath == null ? "" : m_cygwinPath));
     }
 
     @Override
@@ -75,10 +96,12 @@ public class ReplRunConfiguration extends RunConfigurationBase {
                 for (Sdk sdk : model.getSdks()) {
                     if (sdkName.equals(sdk.getName())) {
                         m_sdk = sdk;
-                        return;
+                        break;
                     }
                 }
             }
+            m_cygwinEnabled = Boolean.valueOf(node.getAttributeValue("cygwin"));
+            m_cygwinPath = node.getAttributeValue("cygwinPath");
         }
     }
 }

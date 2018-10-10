@@ -28,6 +28,9 @@ public class ReplGenericState implements RunProfileState {
     @Override
     public ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner) throws ExecutionException {
         ProcessHandler processHandler = startProcess();
+        if (processHandler == null) {
+            return null;
+        }
 
         PromptConsoleView consoleView = new PromptConsoleView(m_environment.getProject(), true, true);
         consoleView.attachToProcess(processHandler);
@@ -35,26 +38,45 @@ public class ReplGenericState implements RunProfileState {
         return new DefaultExecutionResult(consoleView, processHandler);
     }
 
+    @Nullable
     private ProcessHandler startProcess() throws ExecutionException {
         ReplRunConfiguration runProfile = (ReplRunConfiguration) m_environment.getRunProfile();
         Sdk runSdk = runProfile.getSdk();
-        VirtualFile homeDirectory = runSdk.getHomeDirectory();
+        if (runSdk == null) {
+            return null;
+        }
 
-        GeneralCommandLine cmd;
+        VirtualFile homeDirectory = runSdk.getHomeDirectory();
+        if (homeDirectory == null) {
+            return null;
+        }
+
+        GeneralCommandLine cmd = null;
 
         if (SystemInfo.isWindows) {
             VirtualFile ocamlBinFile = homeDirectory.findFileByRelativePath("bin/ocaml.exe");
-            String ocamlBinPath = ocamlBinFile.getPath();
-
-            cmd = new GeneralCommandLine("C:/OCaml64/bin/bash.exe", "--login", "-c", ocamlBinPath);
+            if (ocamlBinFile != null) {
+                String ocamlBinPath = ocamlBinFile.getPath();
+                if (runProfile.getCygwinSelected()) {
+                    cmd = new GeneralCommandLine(runProfile.getCygwinPath(), "--login", "-c", ocamlBinPath);
+                } else {
+                    cmd = new GeneralCommandLine(ocamlBinPath);
+                }
+            }
         } else {
             VirtualFile ocamlBinFile = homeDirectory.findFileByRelativePath("bin/ocaml");
-            String ocamlBinPath = ocamlBinFile.getPath();
-            cmd = new GeneralCommandLine(ocamlBinPath);
+            if (ocamlBinFile != null) {
+                String ocamlBinPath = ocamlBinFile.getPath();
+                cmd = new GeneralCommandLine(ocamlBinPath);
+            }
         }
 
-        OSProcessHandler handler = new OSProcessHandler(cmd);
-        ProcessTerminatedListener.attach(handler, m_environment.getProject());
-        return handler;
+        if (cmd != null) {
+            OSProcessHandler handler = new OSProcessHandler(cmd);
+            ProcessTerminatedListener.attach(handler, m_environment.getProject());
+            return handler;
+        }
+
+        return null;
     }
 }

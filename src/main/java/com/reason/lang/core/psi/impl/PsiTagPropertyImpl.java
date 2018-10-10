@@ -2,7 +2,6 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +17,7 @@ public class PsiTagPropertyImpl extends MlAstWrapperPsiElement implements PsiTag
 
     @Nullable
     private PsiElement getNameElement() {
-        return findChildByClass(PsiLowerSymbol.class);
+        return getFirstChild();
     }
 
     @NotNull
