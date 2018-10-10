@@ -72,6 +72,11 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
         public boolean isMandatory() {
             return m_mandatory;
         }
+
+        @Override
+        public String toString() {
+            return m_name + ":" + m_type;
+        }
     }
 
     public static TagProperty createProp(String name, String type) {

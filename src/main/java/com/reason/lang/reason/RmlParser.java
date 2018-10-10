@@ -280,11 +280,11 @@ public class RmlParser extends CommonParser {
             state.dontMove = wrapWith(m_types.C_MACRO_RAW_BODY, builder);
         } else if (state.isCurrentResolution(annotationName)) {
             state.endUntilStartScope();
-        } else if (state.isCurrentResolution(brace)) {
+        } else if (state.isCurrentResolution(maybeRecordUsage)) {
             IElementType nextToken = builder.lookAhead(1);
             if (m_types.COLON.equals(nextToken)) {
-                state.updateCurrentResolution(jsObject);
-                state.dontMove = wrapWith(m_types.RECORD_FIELD, builder);
+                state.updateCurrentContext(jsObject).updateCurrentResolution(jsObject).updateCurrentCompositeElementType(m_types.C_JS_OBJECT);
+                state.add(markScope(builder, jsObject, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
             }
         } else if (state.isCurrentResolution(jsObject)) {
             state.add(markScope(builder, jsObject, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
@@ -604,7 +604,9 @@ public class RmlParser extends CommonParser {
             }
         }
 
-        state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+        if (!state.isCurrentResolution(tagProperty)) {
+            state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+        }
 
         if (processSingleParam) {
             state.popEnd();
