@@ -58,6 +58,10 @@
         <component>
             <implementation-class>com.reason.build.bs.refmt.RefmtProcess</implementation-class>
         </component>
+        <component>
+            <interface-class>com.reason.build.bs.compiler.BsCompiler</interface-class>
+            <implementation-class>com.reason.build.bs.compiler.BsCompiler</implementation-class>
+        </component>
     </project-components>
 
     <actions>

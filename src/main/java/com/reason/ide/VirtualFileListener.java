@@ -7,6 +7,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.*;
 import com.reason.build.Compiler;
 import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.compiler.CliType;
 import com.reason.build.dune.DuneManager;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightManagerImpl;
@@ -63,14 +64,14 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
         } else if (fileType instanceof CmtFileType) {
             m_cmtiFileListener.onChange(file);
         } else if (event.isFromSave() && m_compiler != null) {
-            m_compiler.run(file);
+            m_compiler.run(file, CliType.standard);
         }
     }
 
     @Override
     public void fileCreated(@NotNull VirtualFileEvent event) {
         if (m_compiler != null) {
-            m_compiler.run(event.getFile());
+            m_compiler.run(event.getFile(), CliType.standard);
         }
     }
 
@@ -84,14 +85,14 @@ class VirtualFileListener implements com.intellij.openapi.vfs.VirtualFileListene
     @Override
     public void fileMoved(@NotNull VirtualFileMoveEvent event) {
         if (m_compiler != null) {
-            m_compiler.run(event.getFile());
+            m_compiler.run(event.getFile(), CliType.standard);
         }
     }
 
     @Override
     public void fileCopied(@NotNull VirtualFileCopyEvent event) {
         if (m_compiler != null) {
-            m_compiler.run(event.getFile());
+            m_compiler.run(event.getFile(), CliType.standard);
         }
     }
 

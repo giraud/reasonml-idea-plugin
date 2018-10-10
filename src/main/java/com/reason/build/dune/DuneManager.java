@@ -12,6 +12,7 @@ import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.bs.ModuleConfiguration;
+import com.reason.build.bs.compiler.CliType;
 import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +52,7 @@ public class DuneManager implements Compiler, ProjectComponent {
     }
 
     @Override
-    public void run(@Nullable VirtualFile file) {
+    public void run(@NotNull VirtualFile file) {
         if (m_compiler != null && FileHelper.isCompilable(file.getFileType())) {
             if (m_compiler.start()) {
                 ProcessHandler recreate = m_compiler.recreate();
@@ -63,6 +64,11 @@ public class DuneManager implements Compiler, ProjectComponent {
                 }
             }
         }
+    }
+
+    @Override
+    public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
+        run(file);
     }
 
     // copied

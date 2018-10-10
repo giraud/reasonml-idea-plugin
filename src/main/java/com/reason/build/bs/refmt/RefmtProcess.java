@@ -75,4 +75,14 @@ public class RefmtProcess implements ProjectComponent {
         // Something bad happened, do nothing
         return code;
     }
+
+    //region Compatibility
+    @Override
+    public void initComponent() { // For compatibility with idea#143
+    }
+
+    @Override
+    public void disposeComponent() { // For compatibility with idea#143
+    }
+    //endregion
 }

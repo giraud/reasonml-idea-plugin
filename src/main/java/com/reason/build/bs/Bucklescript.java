@@ -3,19 +3,12 @@ package com.reason.build.bs;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.build.Compiler;
-import com.reason.build.bs.compiler.BsCompiler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface Bucklescript extends Compiler {
 
     boolean isDependency(@Nullable VirtualFile file);
-
-    @Nullable
-    BsCompiler getCompiler();
-
-    @Nullable
-    BsCompiler getOrCreateCompiler();
 
     @NotNull
     String getNamespace(@NotNull VirtualFile sourceFile);

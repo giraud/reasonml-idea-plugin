@@ -17,6 +17,7 @@ import com.reason.Platform;
 import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.build.bs.compiler.CliType;
 import com.reason.build.bs.refmt.RefmtProcess;
+import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.RmlNotification;
 import com.reason.ide.files.FileHelper;
 import gnu.trove.THashMap;
@@ -35,19 +36,9 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     private boolean m_disabled;
     private final Map<String, BsConfig> m_configs = new THashMap<>();
-    @Nullable
-    private BsCompiler m_compiler;
 
     private BucklescriptManager(Project project) {
         m_project = project;
-    }
-
-    @Override
-    public void initComponent() { // For compatibility with idea#143
-    }
-
-    @Override
-    public void disposeComponent() { // For compatibility with idea#143
     }
 
     /**
@@ -72,36 +63,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         if (m_disabled) {
             // But you should NEVER do that
             Notifications.Bus.notify(new RmlNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
-            return;
         }
-
-        ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
-        m_compiler = new BsCompiler(moduleConfiguration);
-    }
-
-    @Override
-    public void projectClosed() {
-        if (m_compiler != null) {
-            m_compiler.killIt();
-        }
-        m_compiler = null;
-    }
-
-    @Nullable
-    @Override
-    public BsCompiler getCompiler() {
-        return m_compiler;
-    }
-
-    @Nullable
-    @Override
-    public BsCompiler getOrCreateCompiler() {
-        if (m_compiler == null) {
-            // Try again
-            projectOpened();
-        }
-
-        return m_compiler;
     }
 
     @NotNull
@@ -117,29 +79,35 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     //region Compiler
     @Override
-    public void refresh(@NotNull VirtualFile bsconfigFile) {
-        BsConfig updatedConfig = BsConfig.read(bsconfigFile);
-        m_configs.put(bsconfigFile.getCanonicalPath(), updatedConfig);
+    public void refresh(@NotNull VirtualFile bsConfigFile) {
+        BsConfig updatedConfig = BsConfig.read(bsConfigFile);
+        m_configs.put(bsConfigFile.getCanonicalPath(), updatedConfig);
     }
 
     @Override
-    public void run(@NotNull VirtualFile sourceFile) {
-        if (!m_disabled && m_compiler != null && FileHelper.isCompilable(sourceFile.getFileType())) {
+    public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
+        if (!m_disabled && (sourceFile.isDirectory() || FileHelper.isCompilable(sourceFile.getFileType()))) {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
-
-                if (m_compiler.start()) {
-                    ProcessHandler recreate = m_compiler.recreate(sourceFile, CliType.standard);
-                    if (recreate != null) {
-                        getBsbConsole().attachToProcess(recreate);
-                        m_compiler.startNotify();
+                BsCompiler compiler = BsCompiler.getInstance(m_project);
+                if (compiler.start()) {
+                    ProcessHandler bscProcess = compiler.recreate(sourceFile, cliType);
+                    if (bscProcess != null) {
+                        getBsbConsole().attachToProcess(bscProcess);
+                        compiler.startNotify();
+                        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
                     } else {
-                        m_compiler.terminated();
+                        compiler.terminated();
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public void run(@NotNull VirtualFile file) {
+        run(file, CliType.standard);
     }
 
     @NotNull
@@ -214,4 +182,14 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
         return console;
     }
+
+    //region Compatibility
+    @Override
+    public void initComponent() { // For compatibility with idea#143
+    }
+
+    @Override
+    public void disposeComponent() { // For compatibility with idea#143
+    }
+    //endregion
 }

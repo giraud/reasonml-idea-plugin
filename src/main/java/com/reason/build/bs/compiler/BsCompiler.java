@@ -5,6 +5,8 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.build.CompilerLifecycle;
@@ -21,22 +23,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class BsCompiler implements CompilerLifecycle {
+public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
 
     private final ModuleConfiguration m_moduleConfiguration;
+    private final Project m_project;
 
     private BsProcessHandler m_bsb;
     private RawProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
-    public BsCompiler(ModuleConfiguration moduleConfiguration) {
-        m_moduleConfiguration = moduleConfiguration;
-        VirtualFile baseRoot = Platform.findBaseRoot(moduleConfiguration.getProject());
+    public static BsCompiler getInstance(Project project) {
+        return project.getComponent(BsCompiler.class);
+    }
+
+    public BsCompiler(Project project) {
+        m_project = project;
+        m_moduleConfiguration = new ModuleConfiguration(project);
+        VirtualFile baseRoot = Platform.findBaseRoot(project);
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
         if (sourceFile != null) {
             create(sourceFile, CliType.make);
         }
+    }
+
+    @Override
+    public void projectClosed() {
+        killIt();
     }
 
     @Nullable
