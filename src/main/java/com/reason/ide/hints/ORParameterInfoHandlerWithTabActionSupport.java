@@ -9,6 +9,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiSignatureItem;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -136,22 +137,35 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
             int currentParameterIndex = context.getCurrentParameterIndex();
             boolean grayedOut = currentParameterIndex != -1 && types.length <= currentParameterIndex;
             context.setUIComponentEnabled(!grayedOut);
-            TextRange paramRange = getSignatureTextRange(types, currentParameterIndex);
+
+
+            TextRange paramRange = getSignatureTextRange(st, currentParameterIndex);
 
             context.setupUIComponentPresentation(st.asHMSignature().toString(),
                     paramRange.getStartOffset(),
                     paramRange.getEndOffset(),
-                    !context.isUIComponentEnabled(),
+                    false, //!context.isUIComponentEnabled(),
                     false,
                     false,
                     context.getDefaultParameterColor());
         }
     }
 
-    private TextRange getSignatureTextRange(HMSignature.SignatureType[] types, int index) {
-        if (index == -1 || types.length <= index) {
+    private TextRange getSignatureTextRange(PsiSignature st, int index) {
+        Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(st, PsiSignatureItem.class);
+        if (index == -1 || items.size() <= index) {
             return TextRange.EMPTY_RANGE;
         }
+
+        int i = 0;
+        for (PsiSignatureItem item : items) {
+            if (i == index) {
+                TextRange textRange = TextRange.create(item.getStartOffsetInParent(), item.getStartOffsetInParent() + item.getTextLength());
+                return textRange;
+            }
+            i++;
+        }
+
         return TextRange.EMPTY_RANGE;
     }
 }
