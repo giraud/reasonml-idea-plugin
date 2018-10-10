@@ -22,12 +22,13 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     }
 
     public void testParsingRml() {
-        PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;", true)));
+        PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;")));
 
         HMSignature signature = let.getHMSignature();
         assertEquals(3, signature.getTypes().length);
-        assertEquals("int", signature.toString());
+        assertEquals("(~v:length, ~h:length) -> rule", signature.toString());
         assertTrue(signature.isMandatory(0));
+        assertTrue(signature.isMandatory(1));
     }
 
     public void testOptionalFun() {

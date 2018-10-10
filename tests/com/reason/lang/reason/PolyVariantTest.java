@@ -14,9 +14,9 @@ public class PolyVariantTest extends BaseParsingTestCase {
     }
 
     public void testPatternMatchConstant() {
-        PsiFile file = parseCode("let unwrapValue = fun\n" +
-                "  | `String(s) => toJsUnsafe(s)\n" +
-                "  | `Bool(b) => toJsUnsafe(Js.Boolean.to_js_boolean(b));\n");
+        PsiFile file = parseCode("let unwrapValue = fun " +
+                "  | `String(s) => toJsUnsafe(s) " +
+                "  | `Bool(b) => toJsUnsafe(Js.Boolean.to_js_boolean(b));");
         Collection<PsiNamedElement> expressions = expressions(file);
 
         assertEquals(1, expressions.size());

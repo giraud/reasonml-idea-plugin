@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface PsiLet extends PsiHMSignature, PsiInferredType, PsiQualifiedNamedElement, PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
+public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifiedNamedElement, PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
 
     @Nullable
     PsiLetBinding getBinding();

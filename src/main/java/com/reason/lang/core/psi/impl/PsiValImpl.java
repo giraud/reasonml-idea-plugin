@@ -67,10 +67,16 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
         return path + "." + getName();
     }
 
+    @Nullable
+    @Override
+    public PsiSignature getSignature() {
+        return findChildByClass(PsiSignature.class);
+    }
+
     @NotNull
     @Override
     public HMSignature getHMSignature() {
-        PsiSignature signature = findChildByClass(PsiSignature.class);
+        PsiSignature signature = getSignature();
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 

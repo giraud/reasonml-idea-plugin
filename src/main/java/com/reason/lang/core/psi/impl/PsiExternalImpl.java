@@ -48,9 +48,9 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     public String getQualifiedName() {
         String path;
 
-        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
         if (parent != null) {
-            path = ((PsiModule) parent).getQualifiedName();
+            path = parent.getQualifiedName();
         } else {
             path = ORUtil.fileNameToModuleName(getContainingFile());
         }
@@ -80,10 +80,17 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     }
     //endregion
 
+
+    @Nullable
+    @Override
+    public PsiSignature getSignature() {
+        return findChildByClass(PsiSignature.class);
+    }
+
     @NotNull
     @Override
     public HMSignature getHMSignature() {
-        PsiSignature signature = findChildByClass(PsiSignature.class);
+        PsiSignature signature = getSignature();
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 

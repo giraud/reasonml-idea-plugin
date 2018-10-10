@@ -1,6 +1,5 @@
 package com.reason.lang.reason;
 
-import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiSignature;
@@ -11,10 +10,9 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     }
 
     public void testSigature() {
-        PsiExternal e = externalExpression(parseCode("external props : (string) => string;"), "props");
+        PsiExternal e = externalExpression(parseCode("external props : (string) => string;", true), "props");
 
-        PsiSignature signature = PsiTreeUtil.getStubChildOfType(e, PsiSignature.class);
-        assertNotNull(signature);
+        PsiSignature signature = e.getSignature();
         assertEquals("(string) => string", signature.getText());
         assertTrue(e.isFunction());
     }

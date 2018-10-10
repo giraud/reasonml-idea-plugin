@@ -11,8 +11,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.psi.PsiHMSignature;
 import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
@@ -70,8 +70,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
-            if (resolvedElement instanceof PsiHMSignature) {
-                HMSignature signature = ((PsiHMSignature) resolvedElement).getHMSignature();
+            if (resolvedElement instanceof PsiSignatureElement) {
+                HMSignature signature = ((PsiSignatureElement) resolvedElement).getHMSignature();
                 if (!signature.isEmpty()) {
                     return limitSignature(signature);
                 }

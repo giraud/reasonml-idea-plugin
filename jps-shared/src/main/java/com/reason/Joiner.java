@@ -3,12 +3,13 @@ package com.reason;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Path;
-
 public class Joiner {
 
+    private Joiner() {
+    }
+
     @NotNull
-    public static String join(@NotNull String separator, @Nullable Iterable<? extends Object> items) {
+    public static String join(@NotNull String separator, @Nullable Iterable<?> items) {
         if (items == null) {
             return "<null>";
         }
@@ -26,31 +27,14 @@ public class Joiner {
     }
 
     @NotNull
-    public static String join(@NotNull String separator, @Nullable String[] items) {
+    public static String join(@NotNull String separator, @Nullable Object[] items) {
         if (items == null) {
             return "<null>";
         }
 
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (String item : items) {
-            if (!first) {
-                sb.append(separator);
-            }
-            sb.append(item);
-            first = false;
-        }
-        return sb.toString();
-    }
-
-    public static String join(@NotNull String separator, @Nullable Path[] items) {
-        if (items == null) {
-            return "<null>";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (Path item : items) {
+        for (Object item : items) {
             if (!first) {
                 sb.append(separator);
             }

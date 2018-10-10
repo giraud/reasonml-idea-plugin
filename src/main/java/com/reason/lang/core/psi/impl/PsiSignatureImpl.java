@@ -3,11 +3,14 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PlainTextTokenTypes;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 public class PsiSignatureImpl extends PsiToken<ORTypes> implements PsiSignature {
 
@@ -20,7 +23,8 @@ public class PsiSignatureImpl extends PsiToken<ORTypes> implements PsiSignature 
     @NotNull
     @Override
     public HMSignature asHMSignature() {
-        return new HMSignature(getText());
+        Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(this, PsiSignatureItem.class);
+        return new HMSignature(items);
     }
 
     @NotNull
