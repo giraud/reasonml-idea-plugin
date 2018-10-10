@@ -45,14 +45,14 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
             }
         }
 
-        public TagPropertyImpl(PsiFunctionParameter p) {
-            m_name = p.getName();
-            PsiSignature signature = p.getSignature();
+        TagPropertyImpl(PsiFunctionParameter parameter) {
+            m_name = parameter.getName();
+            PsiSignature signature = parameter.getSignature();
             m_type = signature.asString();
-            m_mandatory = signature.asHMSignature().isMandatory(0);
+            m_mandatory = !parameter.hasDefaultValue() && signature.asHMSignature().isMandatory(0);
         }
 
-        public TagPropertyImpl(String name, String type, boolean mandatory) {
+        TagPropertyImpl(String name, String type, boolean mandatory) {
             m_name = name;
             m_type = type;
             m_mandatory = mandatory;
@@ -145,8 +145,7 @@ public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagSta
                     if ("make".equals(expression.getName())) {
                         PsiFunction function = expression.getFunction();
                         if (function != null) {
-                            function.
-                                    getParameterList().
+                            function.getParameterList().
                                     stream().
                                     filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName())).
                                     forEach(p -> result.add(new TagPropertyImpl(p)));

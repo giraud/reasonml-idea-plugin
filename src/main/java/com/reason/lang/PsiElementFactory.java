@@ -99,7 +99,7 @@ public class PsiElementFactory {
         } else if (type == types.C_FUN_PARAMS) {
             return new PsiParametersImpl(types, node);
         } else if (type == types.C_FUN_PARAM) {
-            return new PsiFunctionParameter(types, node);
+            return new PsiFunctionParameterImpl(types, node);
         } else if (type == types.C_FUN_BODY) {
             return new PsiFunctionBody(node);
         } else if (type == types.STRUCT_EXPR) {
@@ -116,7 +116,7 @@ public class PsiElementFactory {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();
             if (parentNode.getElementType() == types.C_FUN_PARAMS) {
-                return new PsiFunctionParameter(types, node);
+                return new PsiFunctionParameterImpl(types, node);
             } else {
                 // Remove the unknown node by its children
 
