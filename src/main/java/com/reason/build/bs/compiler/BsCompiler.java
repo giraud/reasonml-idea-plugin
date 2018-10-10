@@ -119,12 +119,14 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
         String bsbPath = ModuleConfiguration.getBsbPath(m_project, sourceFile);
 
         if (bsbPath == null) {
-            Notifications.Bus.notify(new RmlNotification("Bsb",
-                    "<html>Can't find bsb.\n"
-                            + "Working directory is '" + ModuleConfiguration.getWorkingDir(m_project, sourceFile) + "'.\n"
-                            + "Be sure that bsb is installed and reachable from that directory, "
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
-                    ERROR, URL_OPENING_LISTENER));
+            if (!sourceFile.getPath().contains("node_modules")) {
+                Notifications.Bus.notify(new RmlNotification("Bsb",
+                        "<html>Can't find bsb.\n"
+                                + "Working directory is '" + ModuleConfiguration.getWorkingDir(m_project, sourceFile) + "'.\n"
+                                + "Be sure that bsb is installed and reachable from that directory, "
+                                + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
+                        ERROR, URL_OPENING_LISTENER));
+            }
             return null;
         }
 
