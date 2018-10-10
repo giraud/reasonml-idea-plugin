@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Collection;
 
-public class PsiClassImpl extends MlAstWrapperPsiElement implements PsiClass {
+public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
 
     //region Constructors
     public PsiClassImpl(@NotNull ORTypes types, @NotNull ASTNode node) {

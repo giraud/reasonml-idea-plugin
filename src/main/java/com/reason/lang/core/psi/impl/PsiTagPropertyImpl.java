@@ -7,7 +7,7 @@ import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiTagPropertyImpl extends MlAstWrapperPsiElement implements PsiTagProperty {
+public class PsiTagPropertyImpl extends PsiToken<ORTypes> implements PsiTagProperty {
 
     //region Constructors
     public PsiTagPropertyImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -29,7 +29,7 @@ public class PsiTagPropertyImpl extends MlAstWrapperPsiElement implements PsiTag
 
     @Override
     public String toString() {
-        return "TagProperty(" + getName() + ")";
+        return "TagProperty " + getName();
     }
 
 }

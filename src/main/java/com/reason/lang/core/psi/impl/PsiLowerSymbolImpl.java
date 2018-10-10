@@ -11,7 +11,7 @@ import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiLowerSymbolImpl extends MlAstWrapperPsiElement implements PsiLowerSymbol {
+public class PsiLowerSymbolImpl extends PsiToken<ORTypes> implements PsiLowerSymbol {
 
     //region Constructors
     public PsiLowerSymbolImpl(@NotNull ORTypes types, @NotNull ASTNode node) {

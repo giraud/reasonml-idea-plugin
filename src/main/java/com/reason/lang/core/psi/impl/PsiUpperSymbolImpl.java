@@ -13,7 +13,7 @@ import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiUpperSymbolImpl extends MlAstWrapperPsiElement implements PsiUpperSymbol {
+public class PsiUpperSymbolImpl extends PsiToken<ORTypes> implements PsiUpperSymbol {
 
     //region Constructors
     public PsiUpperSymbolImpl(@NotNull ORTypes types, @NotNull ASTNode node) {

@@ -77,7 +77,7 @@ public class RmlParser extends CommonParser {
             } else if (tokenType == m_types.TILDE) {
                 parseTilde(builder, state);
             } else if (tokenType == m_types.COMMA) {
-                parseComma(state);
+                parseComma(builder, state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUN) {
@@ -214,7 +214,7 @@ public class RmlParser extends CommonParser {
         }
     }
 
-    private void parseComma(ParserState state) {
+    private void parseComma(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(functionBody)) {
             // a function is part of something else, close it first
             state.popEnd();
@@ -224,7 +224,12 @@ public class RmlParser extends CommonParser {
             state.popEnd();
         }
 
-        if (state.isCurrentContext(recordSignature)) {
+        if (state.isCurrentResolution(signatureItem)) {
+            state.popEnd();
+            state.dontMove = advance(builder);
+            state.add(markComplete(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM));
+
+        } else if (state.isCurrentContext(recordSignature)) {
             state.complete();
             state.endUntilContext(recordField);
             state.popEnd();
@@ -682,11 +687,14 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(letNamedSignature) || state.isCurrentResolution(switchBinaryCondition)) {
+        if (state.isCurrentResolution(switchBinaryCondition)) {
             return;
         }
 
-        if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
+        if (state.isCurrentResolution(letNamedSignature)) {
+            state.dontMove = advance(builder);
+            state.add(markComplete(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM));
+        } else if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen);
             state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
@@ -724,6 +732,10 @@ public class RmlParser extends CommonParser {
     }
 
     private void parseRParen(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(signatureItem)) {
+            state.popEnd();
+        }
+
         if (state.isCurrentResolution(letNamedSignature)) {
             return;
         }

@@ -13,6 +13,7 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class PsiTagStartImpl extends MlAstWrapperPsiElement implements PsiTagStart {
+public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     public PsiTagStartImpl(@NotNull ASTNode node) {
         super(RmlTypes.INSTANCE, node);
     }

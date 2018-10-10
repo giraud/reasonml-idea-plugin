@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -8,15 +7,16 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiExceptionImpl extends ASTWrapperPsiElement implements PsiException {
+public class PsiExceptionImpl extends PsiToken<ORTypes> implements PsiException {
 
-    public PsiExceptionImpl(@NotNull ASTNode node) {
-        super(node);
+    public PsiExceptionImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
     @Nullable
@@ -51,7 +51,7 @@ public class PsiExceptionImpl extends ASTWrapperPsiElement implements PsiExcepti
                 return null;
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return Icons.EXCEPTION;

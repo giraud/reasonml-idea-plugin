@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiParametersImpl extends MlAstWrapperPsiElement implements PsiParameters {
+public class PsiParametersImpl extends PsiToken<ORTypes> implements PsiParameters {
     public PsiParametersImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
@@ -14,12 +14,6 @@ public class PsiParametersImpl extends MlAstWrapperPsiElement implements PsiPara
     @Override
     public int getArgumentsCount() {
         PsiElement[] children = getChildren();
-//        int count = children.length == 0 ? 0 : 1;
-//        for (PsiElement child : children) {
-//            if (child.getNode().getElementType() == m_types.COMMA) {
-//                count++;
-//            }
-//        }
         return children.length;
     }
 

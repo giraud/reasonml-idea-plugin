@@ -5,19 +5,22 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiDuneVersion;
 import com.reason.lang.core.psi.PsiSExpr;
-import com.reason.lang.core.psi.PsiToken;
+import com.reason.lang.core.psi.impl.PsiToken;
+import org.jetbrains.annotations.NotNull;
 
 class DunePsiElementFactory {
-    static PsiElement createElement(ASTNode node) {
+    private DunePsiElementFactory() {
+    }
+
+    static PsiElement createElement(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == DuneTypes.SEXPR) {
-            return new PsiSExpr(node);
-        }
-        else if (type == DuneTypes.VERSION) {
-            return new PsiDuneVersion(node);
+        if (type == DuneTypes.INSTANCE.SEXPR) {
+            return new PsiSExpr(DuneTypes.INSTANCE, node);
+        } else if (type == DuneTypes.INSTANCE.VERSION) {
+            return new PsiDuneVersion(DuneTypes.INSTANCE, node);
         }
 
-        return new PsiToken(node);
+        return new PsiToken<>(DuneTypes.INSTANCE, node);
     }
 }

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DunePairedBraceMatcher implements PairedBraceMatcher {
     private static final BracePair[] PAIRS = new BracePair[]{
-            new BracePair(DuneTypes.LPAREN, DuneTypes.RPAREN, true),
+            new BracePair(DuneTypes.INSTANCE.LPAREN, DuneTypes.INSTANCE.RPAREN, true),
     };
 
     @NotNull

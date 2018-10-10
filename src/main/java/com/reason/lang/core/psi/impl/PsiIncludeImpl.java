@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiIncludeImpl extends MlAstWrapperPsiElement implements PsiInclude {
+public class PsiIncludeImpl extends PsiToken<ORTypes> implements PsiInclude {
 
     //region Constructors
     public PsiIncludeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {

@@ -17,13 +17,13 @@ public class PsiElementFactory {
         if (type == types.EXTERNAL_STMT) {
             return new PsiExternalImpl(types, node);
         } else if (type == types.EXCEPTION_EXPR) {
-            return new PsiExceptionImpl(node);
+            return new PsiExceptionImpl(types, node);
         } else if (type == types.OPEN_STMT) {
             return new PsiOpenImpl(types, node);
         } else if (type == types.INCLUDE_STMT) {
             return new PsiIncludeImpl(types, node);
         } else if (type == types.EXP_TYPE) {
-            return new PsiTypeImpl(node);
+            return new PsiTypeImpl(types, node);
         } else if (type == types.ASSERT_STMT) {
             return new PsiAssert(node);
         } else if (type == types.IF_STMT) {
@@ -53,11 +53,11 @@ public class PsiElementFactory {
         } else if (type == types.VAL_EXPR) {
             return new PsiValImpl(types, node);
         } else if (type == types.ANNOTATION_EXPR) {
-            return new PsiAnnotation(node);
+            return new PsiAnnotationImpl(types, node);
         } else if (type == types.LET_BINDING) {
             return new PsiLetBinding(node);
         } else if (type == types.FUN_CALL_PARAMS) {
-            return new PsiFunctionCallParamsImpl(node);
+            return new PsiFunctionCallParamsImpl(types, node);
         } else if (type == types.MACRO_EXPR) {
             return new PsiMacro(node);
         } else if (type == types.MACRO_NAME) {
@@ -79,7 +79,7 @@ public class PsiElementFactory {
         } else if (type == types.INTERPOLATION_EXPR) {
             return new PsiInterpolation(node);
         } else if (type == types.SIG_SCOPE) {
-            return new PsiSignatureImpl(node);
+            return new PsiSignatureImpl(types, node);
         } else if (type == types.TAG_START) {
             return new PsiTagStartImpl(node);
         } else if (type == types.TAG_PROPERTY) {
@@ -123,6 +123,6 @@ public class PsiElementFactory {
             }
         }
 
-        return new PsiToken(node);
+        return new PsiToken<>(types, node);
     }
 }

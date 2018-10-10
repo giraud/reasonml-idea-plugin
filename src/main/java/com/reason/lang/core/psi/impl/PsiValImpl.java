@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -20,20 +19,15 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Collection;
 
-public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements PsiVal {
-
-    @NotNull
-    private final ORTypes m_types;
+public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements PsiVal {
 
     //region Constructors
     public PsiValImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-        super(node);
-        m_types = types;
+        super(types, node);
     }
 
     public PsiValImpl(@NotNull ORTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
-        super(stub, nodeType);
-        m_types = types;
+        super(types, stub, nodeType);
     }
     //endregion
 
@@ -63,9 +57,9 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
     public String getQualifiedName() {
         String path;
 
-        PsiElement parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
+        PsiModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
         if (parent != null) {
-            path = ((PsiModule) parent).getQualifiedName();
+            path = parent.getQualifiedName();
         } else {
             path = ORUtil.fileNameToModuleName(getContainingFile());
         }
@@ -83,7 +77,7 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
     @Override
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 return getName() + ": " + getHMSignature();
@@ -95,7 +89,7 @@ public class PsiValImpl extends StubBasedPsiElementBase<PsiValStub> implements P
                 return null;
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return Icons.VAL;

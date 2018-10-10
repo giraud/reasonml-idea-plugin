@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -30,20 +29,17 @@ import java.util.List;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.Collections.emptyList;
 
-public class PsiModuleImpl extends StubBasedPsiElementBase<PsiModuleStub> implements PsiModule {
+public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiModule {
 
     private ModulePath m_modulePath;
-    private final ORTypes m_types;
 
     //region Constructors
     public PsiModuleImpl(ASTNode node, ORTypes types) {
-        super(node);
-        m_types = types;
+        super(types, node);
     }
 
     public PsiModuleImpl(PsiModuleStub stub, IStubElementType nodeType, ORTypes types) {
-        super(stub, nodeType);
-        m_types = types;
+        super(types, stub, nodeType);
     }
     //endregion
 

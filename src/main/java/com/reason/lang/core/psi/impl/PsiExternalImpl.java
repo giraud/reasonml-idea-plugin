@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -20,20 +19,15 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Objects;
 
-public class PsiExternalImpl extends StubBasedPsiElementBase<PsiExternalStub> implements PsiExternal {
-
-    @NotNull
-    private final ORTypes m_types;
+public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> implements PsiExternal {
 
     //region Constructors
     public PsiExternalImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-        super(node);
-        m_types = types;
+        super(types, node);
     }
 
     public PsiExternalImpl(@NotNull ORTypes types, @NotNull PsiExternalStub stub, @NotNull IStubElementType nodeType) {
-        super(stub, nodeType);
-        m_types = types;
+        super(types, stub, nodeType);
     }
     //endregion
 

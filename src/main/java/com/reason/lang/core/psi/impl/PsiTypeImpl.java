@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -12,20 +11,21 @@ import com.reason.icons.Icons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiTypeStub;
+import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiTypeImpl extends StubBasedPsiElementBase<PsiTypeStub> implements PsiType {
+public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements PsiType {
 
     //region Constructors
-    public PsiTypeImpl(@NotNull ASTNode node) {
-        super(node);
+    public PsiTypeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
-    public PsiTypeImpl(PsiTypeStub stub, IStubElementType nodeType) {
-        super(stub, nodeType);
+    public PsiTypeImpl(@NotNull ORTypes types, @NotNull PsiTypeStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
     }
     //endregion
 

@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -13,13 +12,10 @@ import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiFunctionParameterImpl extends ASTWrapperPsiElement implements PsiNamedElement, PsiFunctionParameter {
+public class PsiFunctionParameterImpl extends PsiToken<ORTypes> implements PsiNamedElement, PsiFunctionParameter {
 
-    private final ORTypes m_types;
-
-    public PsiFunctionParameterImpl(ORTypes m_types, ASTNode node) {
-        super(node);
-        this.m_types = m_types;
+    public PsiFunctionParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
     @Nullable

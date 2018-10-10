@@ -34,9 +34,9 @@ public class DuneParser extends CommonParser {
                 break;
             }
 
-            if (tokenType == DuneTypes.LPAREN) {
-                state.add(markScope(builder, sexpr, DuneTypes.SEXPR, m_types.LPAREN));
-            } else if (tokenType == DuneTypes.RPAREN) {
+            if (tokenType == DuneTypes.INSTANCE.LPAREN) {
+                state.add(markScope(builder, sexpr, DuneTypes.INSTANCE.SEXPR, m_types.LPAREN));
+            } else if (tokenType == DuneTypes.INSTANCE.RPAREN) {
                 if (state.isInScopeExpression()) {
                     state.complete();
                     state.dontMove = advance(builder);
@@ -44,13 +44,13 @@ public class DuneParser extends CommonParser {
                 } else {
                     builder.error("Unbalanced parenthesis");
                 }
-            } else if (tokenType == DuneTypes.VERSION) {
-                wrapWith(DuneTypes.VERSION, builder);
-            } else if (tokenType == DuneTypes.EXECUTABLE) {
+            } else if (tokenType == DuneTypes.INSTANCE.VERSION) {
+                wrapWith(DuneTypes.INSTANCE.VERSION, builder);
+            } else if (tokenType == DuneTypes.INSTANCE.EXECUTABLE) {
                 parseExecutable(builder, state);
-            } else if (tokenType == DuneTypes.LIBRARY) {
+            } else if (tokenType == DuneTypes.INSTANCE.LIBRARY) {
                 parseLibrary(builder, state);
-            } else if (tokenType == DuneTypes.NAME) {
+            } else if (tokenType == DuneTypes.INSTANCE.NAME) {
                 parseName(builder, state);
             }
 
@@ -76,9 +76,9 @@ public class DuneParser extends CommonParser {
     */
     private void parseExecutable(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(executable);
-        state.setTokenElementType(DuneTypes.EXECUTABLE);
+        state.setTokenElementType(DuneTypes.INSTANCE.EXECUTABLE);
         state.dontMove = advance(builder);
-        if (builder.getTokenType() == DuneTypes.LPAREN) {
+        if (builder.getTokenType() == DuneTypes.INSTANCE.LPAREN) {
             state.complete();
         } else {
             builder.error("( expected");
@@ -93,9 +93,9 @@ public class DuneParser extends CommonParser {
     */
     private void parseLibrary(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(library);
-        state.setTokenElementType(DuneTypes.LIBRARY);
+        state.setTokenElementType(DuneTypes.INSTANCE.LIBRARY);
         state.dontMove = advance(builder);
-        if (builder.getTokenType() == DuneTypes.LPAREN) {
+        if (builder.getTokenType() == DuneTypes.INSTANCE.LPAREN) {
             state.complete();
         } else {
             builder.error("( expected");
@@ -104,9 +104,9 @@ public class DuneParser extends CommonParser {
 
     /* (name id) */
     private void parseName(PsiBuilder builder, ParserState state) {
-        if (state.previousTokenElementType == DuneTypes.LPAREN) {
+        if (state.previousTokenElementType == DuneTypes.INSTANCE.LPAREN) {
             state.updateCurrentResolution(name);
-            state.setTokenElementType(DuneTypes.NAME);
+            state.setTokenElementType(DuneTypes.INSTANCE.NAME);
             state.complete();
         }
     }

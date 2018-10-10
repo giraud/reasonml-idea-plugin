@@ -1,12 +1,14 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
+import com.reason.lang.core.psi.impl.PsiToken;
+import com.reason.lang.dune.DuneTypes;
+import org.jetbrains.annotations.NotNull;
 
-public class PsiSExpr extends ASTWrapperPsiElement {
-    public PsiSExpr(ASTNode node) {
-        super(node);
+public class PsiSExpr extends PsiToken<DuneTypes> {
+
+    public PsiSExpr(@NotNull DuneTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
     @Override
