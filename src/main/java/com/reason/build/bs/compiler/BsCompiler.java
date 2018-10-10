@@ -25,7 +25,6 @@ import static com.intellij.notification.NotificationType.ERROR;
 
 public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
 
-    private final ModuleConfiguration m_moduleConfiguration;
     private final Project m_project;
 
     private BsProcessHandler m_bsb;
@@ -39,7 +38,6 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
 
     public BsCompiler(Project project) {
         m_project = project;
-        m_moduleConfiguration = new ModuleConfiguration(project);
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
         if (sourceFile != null) {
@@ -118,12 +116,12 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, CliType cliType) {
-        String bsbPath = m_moduleConfiguration.getBsbPath(sourceFile);
+        String bsbPath = ModuleConfiguration.getBsbPath(m_project, sourceFile);
 
         if (bsbPath == null) {
             Notifications.Bus.notify(new RmlNotification("Bsb",
                     "<html>Can't find bsb.\n"
-                            + "Working directory is '" + m_moduleConfiguration.getWorkingDir(sourceFile) + "'.\n"
+                            + "Working directory is '" + ModuleConfiguration.getWorkingDir(m_project, sourceFile) + "'.\n"
                             + "Be sure that bsb is installed and reachable from that directory, "
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
@@ -143,7 +141,7 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
 
         }
 
-        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir(sourceFile));
+        cli.withWorkDirectory(ModuleConfiguration.getWorkingDir(m_project, sourceFile));
         cli.withEnvironment("NINJA_ANSI_FORCED", "1");
 
         return cli;
@@ -166,7 +164,7 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
     private String getMajorVersion(@NotNull VirtualFile sourceFile) {
         Process p = null;
         try {
-            p = Runtime.getRuntime().exec(m_moduleConfiguration.getBsbPath(sourceFile) + " -version");
+            p = Runtime.getRuntime().exec(ModuleConfiguration.getBsbPath(m_project, sourceFile) + " -version");
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 

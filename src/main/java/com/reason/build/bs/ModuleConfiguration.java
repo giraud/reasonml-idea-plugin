@@ -11,55 +11,45 @@ public class ModuleConfiguration {
 
     private static final String LOCAL_BS_PLATFORM = "node_modules/bs-platform";
 
-    @NotNull
-    private final Project m_project;
-
-    public ModuleConfiguration(@NotNull Project project) {
-        m_project = project;
-    }
-
-    @NotNull
-    public Project getProject() {
-        return m_project;
+    private ModuleConfiguration() {
     }
 
     @Nullable
-    public String getBsbPath(@NotNull VirtualFile sourceFile) {
-        String bsLocation = getBsPlatformLocation();
+    public static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String bsLocation = getBsPlatformLocation(project);
 
-        String result = Platform.getBinaryPath(m_project, sourceFile, bsLocation + "/lib/bsb.exe");
+        String result = Platform.getBinaryPath(project, sourceFile, bsLocation + "/lib/bsb.exe");
         if (result == null) {
-            result = Platform.getBinaryPath(m_project, sourceFile, bsLocation + "/bin/bsb.exe");
+            result = Platform.getBinaryPath(project, sourceFile, bsLocation + "/bin/bsb.exe");
         }
 
         return result;
     }
 
     @Nullable
-    public String getBscPath(@NotNull VirtualFile sourceFile) {
-        String bsbPath = getBsbPath(sourceFile);
+    public static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String bsbPath = getBsbPath(project, sourceFile);
         return bsbPath == null ? null : bsbPath.replace("bsb.exe", "bsc.exe");
     }
 
     @Nullable
-    public String getRefmtPath(@NotNull VirtualFile sourceFile) {
-        String bsLocation = getBsPlatformLocation();
+    public static String getRefmtPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String bsLocation = getBsPlatformLocation(project);
 
-        String result = getRefmtBin(m_project, sourceFile, bsLocation + "/lib");
+        String result = getRefmtBin(project, sourceFile, bsLocation + "/lib");
         if (result == null) {
-            result = getRefmtBin(m_project, sourceFile, bsLocation + "/bin");
+            result = getRefmtBin(project, sourceFile, bsLocation + "/bin");
         }
 
         return result;
     }
 
-    public boolean isOnSaveEnabled() {
-        ReasonSettings settings = ReasonSettings.getInstance(m_project);
-        return settings != null && settings.refmtOnSave;
+    public static boolean isOnSaveEnabled(@NotNull Project project) {
+        return ReasonSettings.getInstance(project).refmtOnSave;
     }
 
     @Nullable
-    private String getRefmtBin(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull String root) {
+    private static String getRefmtBin(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull String root) {
         String binary = Platform.getBinaryPath(project, sourceFile, root + "/refmt3.exe");
         if (binary == null) {
             binary = Platform.getBinaryPath(project, sourceFile, root + "/refmt.exe");
@@ -68,8 +58,8 @@ public class ModuleConfiguration {
     }
 
     @NotNull
-    private String getBsPlatformLocation() {
-        ReasonSettings settings = ReasonSettings.getInstance(m_project);
+    private static String getBsPlatformLocation(@NotNull Project project) {
+        ReasonSettings settings = ReasonSettings.getInstance(project);
         String bsbLocation = settings == null ? "" : settings.location.replace('\\', '/');
         if (bsbLocation.isEmpty()) {
             bsbLocation = LOCAL_BS_PLATFORM;
@@ -78,21 +68,19 @@ public class ModuleConfiguration {
     }
 
     @NotNull
-    public String getRefmtWidth() {
-        ReasonSettings settings = ReasonSettings.getInstance(m_project);
-        return settings == null ? "80" : settings.refmtWidth;
+    public static String getRefmtWidth(@NotNull Project project) {
+        return ReasonSettings.getInstance(project).refmtWidth;
     }
 
     @NotNull
-    public String getWorkingDir(@NotNull VirtualFile sourceFile) {
-        ReasonSettings settings = ReasonSettings.getInstance(m_project);
-        String dir = settings == null ? getBasePath(sourceFile) : settings.workingDir;
-        return dir != null && !dir.isEmpty() ? dir : getBasePath(sourceFile);
+    public static String getWorkingDir(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String workingDir = ReasonSettings.getInstance(project).workingDir;
+        return workingDir.isEmpty() ? getBasePath(project, sourceFile) : workingDir;
     }
 
     @NotNull
-    public String getBasePath(@NotNull VirtualFile sourceFile) {
-        VirtualFile rootDir = Platform.findBaseRootFromFile(m_project, sourceFile);
+    public static String getBasePath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFile rootDir = Platform.findBaseRootFromFile(project, sourceFile);
         String canonicalPath = rootDir.getCanonicalPath();
         assert canonicalPath != null;
         return canonicalPath;

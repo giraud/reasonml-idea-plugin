@@ -2,7 +2,9 @@ package com.reason.hints;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
@@ -14,20 +16,22 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
-public class RincewindProcess {
+public class RincewindProcess implements ProjectComponent {
 
-    private final Logger m_log;
-    private final ModuleConfiguration m_moduleConfiguration;
+    private final static Logger LOG = Logger.getInstance("ReasonML.types.rincewind");
+    private final Project m_project;
 
+    RincewindProcess(Project project) {
+        m_project = project;
+    }
 
-    RincewindProcess(@NotNull ModuleConfiguration moduleConfiguration) {
-        m_moduleConfiguration = moduleConfiguration;
-        m_log = Logger.getInstance("ReasonML.types.rincewind");
+    public static RincewindProcess getInstance(Project project) {
+        return project.getComponent(RincewindProcess.class);
     }
 
     public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(m_moduleConfiguration.getBasePath(sourceFile)));
+        processBuilder.directory(new File(ModuleConfiguration.getBasePath(m_project, sourceFile)));
 
         Process rincewind = null;
         try {
@@ -54,7 +58,7 @@ public class RincewindProcess {
                 runAfter.run(types);
             }
         } catch (Exception e) {
-            m_log.error("An error occurred when reading types", e);
+            LOG.error("An error occurred when reading types", e);
         } finally {
             if (rincewind != null) {
                 rincewind.destroy();

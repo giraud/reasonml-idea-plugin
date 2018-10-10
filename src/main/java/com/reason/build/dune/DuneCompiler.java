@@ -6,6 +6,7 @@ import com.intellij.execution.process.KillableColoredProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
@@ -22,17 +23,15 @@ import static com.intellij.notification.NotificationType.ERROR;
 
 public final class DuneCompiler implements CompilerLifecycle {
 
-    private final ModuleConfiguration m_moduleConfiguration;
-
-    private KillableColoredProcessHandler m_processHangler;
+    private final Project m_project;
     private final ProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
+    private KillableColoredProcessHandler m_processHangler;
 
-    DuneCompiler(ModuleConfiguration moduleConfiguration) {
-        m_moduleConfiguration = moduleConfiguration;
-        m_outputListener = new DuneOutputListener(moduleConfiguration.getProject(), this);
-
+    DuneCompiler(Project project) {
+        m_project = project;
+        m_outputListener = new DuneOutputListener(m_project, this);
         recreate();
     }
 
@@ -75,7 +74,7 @@ public final class DuneCompiler implements CompilerLifecycle {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine() {
-        Sdk sdk = OCamlSDK.getSDK(m_moduleConfiguration.getProject());
+        Sdk sdk = OCamlSDK.getSDK(m_project);
         if (sdk == null) {
             Notifications.Bus.notify(new RmlNotification("Dune",
                     "<html>Can't find sdk.\n"
@@ -87,8 +86,8 @@ public final class DuneCompiler implements CompilerLifecycle {
 
         GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
         //cli.withEnvironment("PATH", sdk.getHomePath() + "/bin" + ";" + sdk.getHomePath() + "/lib");
-        VirtualFile baseRoot = Platform.findBaseRoot(m_moduleConfiguration.getProject());
-        cli.withWorkDirectory(m_moduleConfiguration.getWorkingDir(baseRoot));
+        VirtualFile baseRoot = Platform.findBaseRoot(m_project);
+        cli.withWorkDirectory(ModuleConfiguration.getWorkingDir(m_project, baseRoot));
 
         return cli;
     }

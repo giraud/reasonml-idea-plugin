@@ -2,7 +2,9 @@ package com.reason.build.bs.insight;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
@@ -15,21 +17,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
-public class BsQueryTypesService {
+public class BsQueryTypesService implements ProjectComponent {
 
-    private final Logger m_log;
-    private final ModuleConfiguration m_moduleConfiguration;
+    private static final Logger LOG = Logger.getInstance("ReasonML.types");
+    private final Project m_project;
 
-    public BsQueryTypesService(ModuleConfiguration moduleConfiguration) {
-        m_moduleConfiguration = moduleConfiguration;
-        m_log = Logger.getInstance("ReasonML.types");
+    public BsQueryTypesService(Project project) {
+        m_project = project;
+    }
+
+    public static BsQueryTypesService getInstance(Project project) {
+        return project.getComponent(BsQueryTypesService.class);
     }
 
     public void types(@NotNull VirtualFile sourceFile, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         InferredTypesImplementation result;
 
-        String basePath = m_moduleConfiguration.getBasePath(sourceFile);
-        String bscPath = m_moduleConfiguration.getBscPath(sourceFile);
+        String basePath = ModuleConfiguration.getBasePath(m_project, sourceFile);
+        String bscPath = ModuleConfiguration.getBscPath(m_project, sourceFile);
         if (bscPath == null) {
             return;
         }
@@ -70,7 +75,7 @@ public class BsQueryTypesService {
                 runAfter.run(result);
             }
         } catch (Exception e) {
-            m_log.error("An error occurred when reading types", e);
+            LOG.error("An error occurred when reading types", e);
         } finally {
             if (bsc != null) {
                 bsc.destroy();

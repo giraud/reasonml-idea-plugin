@@ -14,10 +14,10 @@ import java.io.*;
 public class RefmtProcess implements ProjectComponent {
 
     private final static Logger LOG = Logger.getInstance("ReasonML.refmt");
-    private final ModuleConfiguration m_moduleConfiguration;
+    private final Project m_project;
 
     public RefmtProcess(Project project) {
-        m_moduleConfiguration = new ModuleConfiguration(project);
+        m_project = project;
     }
 
     public static RefmtProcess getInstance(Project project) {
@@ -25,7 +25,7 @@ public class RefmtProcess implements ProjectComponent {
     }
 
     public boolean isOnSaveEnabled() {
-        return m_moduleConfiguration.isOnSaveEnabled();
+        return ModuleConfiguration.isOnSaveEnabled(m_project);
     }
 
     public String run(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull String code) {
@@ -33,16 +33,16 @@ public class RefmtProcess implements ProjectComponent {
     }
 
     public String convert(@NotNull VirtualFile sourceFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
-        String refmtPath = m_moduleConfiguration.getRefmtPath(sourceFile);
+        String refmtPath = ModuleConfiguration.getRefmtPath(m_project, sourceFile);
         if (refmtPath == null) {
             LOG.debug("No refmt binary found, reformat cancelled");
             return code;
         }
 
-        String columnsWidth = m_moduleConfiguration.getRefmtWidth();
+        String columnsWidth = ModuleConfiguration.getRefmtWidth(m_project);
         ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + "cols for project [" + (m_moduleConfiguration.getProject()) + "]");
+            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + "cols for project [" + m_project + "]");
         }
 
         Process refmt = null;

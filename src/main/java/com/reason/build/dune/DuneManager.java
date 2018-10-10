@@ -11,7 +11,6 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.Compiler;
-import com.reason.build.bs.ModuleConfiguration;
 import com.reason.build.bs.compiler.CliType;
 import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +40,7 @@ public class DuneManager implements Compiler, ProjectComponent {
         VirtualFile duneConfig = baseDir.findChild("jbuild");
 
         if (duneConfig != null) {
-            ModuleConfiguration moduleConfiguration = new ModuleConfiguration(m_project);
-            m_compiler = new DuneCompiler(moduleConfiguration);
+            m_compiler = new DuneCompiler(m_project);
         }
     }
 
