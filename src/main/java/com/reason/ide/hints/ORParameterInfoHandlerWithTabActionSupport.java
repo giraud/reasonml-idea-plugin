@@ -4,6 +4,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -18,13 +19,6 @@ import java.util.Collections;
 import java.util.Set;
 
 public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, HMSignature, PsiElement> {
-
-    @NotNull
-    @Override
-    public PsiElement[] getActualParameters(@NotNull PsiFunctionCallParams callParams) {
-        Collection<PsiParameter> childrenOfType = PsiTreeUtil.findChildrenOfType(callParams, PsiParameter.class);
-        return childrenOfType.toArray(new PsiParameter[0]);
-    }
 
     @NotNull
     @Override
@@ -58,7 +52,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
     @Override
     public boolean couldShowInLookup() {
-        return false;
+        return true;
     }
 
     @Nullable
@@ -67,26 +61,36 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
         return null;
     }
 
+    @NotNull
+    @Override
+    public PsiElement[] getActualParameters(@NotNull PsiFunctionCallParams paramsOwner) {
+        Collection<PsiParameter> childrenOfType = paramsOwner.getParameterList();
+        return childrenOfType.toArray(new PsiParameter[0]);
+    }
+
     @Nullable
     @Override
     public PsiFunctionCallParams findElementForParameterInfo(@NotNull CreateParameterInfoContext context) {
-        return getPsiFunctionCallParams(context);
+        return findFunctionParams(context.getFile(), context.getOffset());
     }
 
     @Nullable
     @Override
     public PsiFunctionCallParams findElementForUpdatingParameterInfo(@NotNull UpdateParameterInfoContext context) {
-        return getPsiFunctionCallParams(context);
-    }
+        PsiFunctionCallParams paramsOwner = findFunctionParams(context.getFile(), context.getOffset());
+        if (paramsOwner != null) {
+            PsiElement currentOwner = context.getParameterOwner();
+            if (currentOwner == null || currentOwner == paramsOwner) {
+                return paramsOwner;
+            }
+        }
 
-    private PsiFunctionCallParams getPsiFunctionCallParams(ParameterInfoContext context) {
-        PsiElement elementAt = context.getFile().findElementAt(context.getOffset());
-        return PsiTreeUtil.getParentOfType(elementAt, PsiFunctionCallParams.class);
+        return null;
     }
 
     @Override
-    public void showParameterInfo(@NotNull PsiFunctionCallParams params, @NotNull CreateParameterInfoContext context) {
-        PsiLowerSymbol functionName = PsiTreeUtil.getPrevSiblingOfType(params, PsiLowerSymbol.class);
+    public void showParameterInfo(@NotNull PsiFunctionCallParams paramsOwner, @NotNull CreateParameterInfoContext context) {
+        PsiLowerSymbol functionName = PsiTreeUtil.getPrevSiblingOfType(paramsOwner, PsiLowerSymbol.class);
         if (functionName != null) {
             PsiReference reference = functionName.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolve();
@@ -96,7 +100,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                     PsiSignature signature = ((PsiSignatureElement) resolvedParent).getSignature();
                     if (signature != null) {
                         context.setItemsToShow(new Object[]{signature.asHMSignature()});
-                        context.showHint(params, params.getTextOffset(), this);
+                        context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
                     } else if (resolvedParent instanceof PsiLet) {
                         PsiLet resolvedLet = (PsiLet) resolvedParent;
                         if (resolvedLet.isFunction()) {
@@ -104,7 +108,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                             Collection<PsiParameter> parameters = resolvedLet.getFunction().getParameterList();
                             HMSignature hmSignature = new HMSignature(parameters);
                             context.setItemsToShow(new Object[]{hmSignature});
-                            context.showHint(params, params.getTextOffset(), this);
+                            context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
                         }
                     }
                 }
@@ -113,62 +117,45 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     }
 
     @Override
-    public void updateParameterInfo(@NotNull PsiFunctionCallParams psiFunctionCallParams, @NotNull UpdateParameterInfoContext context) {
-        Collection<PsiParameter> parameters = psiFunctionCallParams.getParameterList();
-        if (!parameters.isEmpty()) {
-            int offset = context.getOffset();
-            int i = 0;
-
-            for (PsiParameter parameter : parameters) {
-                TextRange textRange = parameter.getTextRange();
-                if (textRange.getStartOffset() <= offset && offset <= textRange.getEndOffset()) {
-                    context.setCurrentParameter(i);
-                    break;
-                }
-                i++;
-            }
+    public void updateParameterInfo(@NotNull PsiFunctionCallParams paramsOwner, @NotNull UpdateParameterInfoContext context) {
+        if (context.getParameterOwner() == null || paramsOwner.equals(context.getParameterOwner())) {
+            context.setParameterOwner(paramsOwner);
+            context.setCurrentParameter(ParameterInfoUtils.getCurrentParameterIndex(paramsOwner.getNode(), context.getOffset(), getActualParameterDelimiterType()));
+        } else {
+            context.removeHint();
         }
     }
 
     @Override
-    public void updateUI(HMSignature element, @NotNull ParameterInfoUIContext context) {
-        if (element == null) {
+    public void updateUI(HMSignature signature, @NotNull ParameterInfoUIContext context) {
+        if (signature == null) {
             context.setUIComponentEnabled(false);
             return;
         }
 
-        HMSignature.SignatureType[] types = element.getTypes();
-
         int currentParameterIndex = context.getCurrentParameterIndex();
+        HMSignature.SignatureType[] types = signature.getTypes();
+
         boolean grayedOut = currentParameterIndex != -1 && types.length <= currentParameterIndex;
         context.setUIComponentEnabled(!grayedOut);
 
-        TextRange paramRange = TextRange.EMPTY_RANGE; //getSignatureTextRange(element, currentParameterIndex);
+        TextRange paramRange = TextRange.EMPTY_RANGE;
 
-        context.setupUIComponentPresentation(element.toString(),
+        context.setupUIComponentPresentation(signature.toString(),
                 paramRange.getStartOffset(),
                 paramRange.getEndOffset(),
-                false, //!context.isUIComponentEnabled(),
+                !context.isUIComponentEnabled(),
                 false,
                 true,
                 context.getDefaultParameterColor());
     }
 
-    private TextRange getSignatureTextRange(PsiSignature st, int index) {
-        Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(st, PsiSignatureItem.class);
-        if (index == -1 || items.size() <= index) {
-            return TextRange.EMPTY_RANGE;
+    @Nullable
+    private PsiFunctionCallParams findFunctionParams(@NotNull PsiFile file, int offset) {
+        PsiElement elementAt = file.findElementAt(offset);
+        if (elementAt != null) {
+            return PsiTreeUtil.getParentOfType(elementAt, PsiFunctionCallParams.class);
         }
-
-        int i = 0;
-        for (PsiSignatureItem item : items) {
-            if (i == index) {
-                TextRange textRange = TextRange.create(item.getStartOffsetInParent(), item.getStartOffsetInParent() + item.getTextLength());
-                return textRange;
-            }
-            i++;
-        }
-
-        return TextRange.EMPTY_RANGE;
+        return null;
     }
 }
