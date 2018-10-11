@@ -255,8 +255,9 @@ public class RmlParser extends CommonParser {
                     advance(builder).
                     add(mark(builder, state.currentContext(), recordField, m_types.RECORD_FIELD));
         } else if (state.isCurrentResolution(recordField)) {
-            state.popEnd();
-            state.add(mark(builder, state.currentContext(), recordField, m_types.RECORD_FIELD));
+            state.popEnd()
+                    .advance(builder)
+                    .add(mark(builder, state.currentContext(), recordField, m_types.RECORD_FIELD));
         } else if (state.isCurrentResolution(jsObjectFieldNamed)) {
             state.popEnd();
         } else if (state.isCurrentResolution(mixin)) {

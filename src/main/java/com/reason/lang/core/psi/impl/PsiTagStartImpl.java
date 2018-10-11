@@ -9,6 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
@@ -36,8 +37,9 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         TagPropertyImpl(PsiRecordField field, List<PsiAnnotation> annotations) {
             m_name = field.getName();
             PsiSignature signature = field.getSignature();
-            m_type = signature.asString();
-            m_mandatory = signature.asHMSignature().isMandatory(0);
+            HMSignature hmSignature = signature == null ? HMSignature.EMPTY : signature.asHMSignature();
+            m_type = hmSignature.toString();
+            m_mandatory = hmSignature.isMandatory(0);
 
             for (PsiAnnotation annotation : annotations) {
                 if ("@bs.optional".equals(annotation.getName())) {
@@ -49,8 +51,9 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         TagPropertyImpl(PsiParameter parameter) {
             m_name = parameter.getName();
             PsiSignature signature = parameter.getSignature();
-            m_type = signature.asString();
-            m_mandatory = !parameter.hasDefaultValue() && signature.asHMSignature().isMandatory(0);
+            HMSignature hmSignature = signature == null ? HMSignature.EMPTY : signature.asHMSignature();
+            m_type = hmSignature.toString();
+            m_mandatory = !parameter.hasDefaultValue() && hmSignature.isMandatory(0);
         }
 
         TagPropertyImpl(String name, String type, boolean mandatory) {

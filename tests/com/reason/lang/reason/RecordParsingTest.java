@@ -25,12 +25,17 @@ public class RecordParsingTest extends BaseParsingTestCase {
     }
 
     public void testUsage() {
-        PsiLet e = first(letExpressions(parseCode("let r = { a: 1 };")));
+        PsiLet e = first(letExpressions(parseCode("let r = { a: 1, b: 2, c: 3, };")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        assertSize(3, fields);
         assertEquals("a", fields.get(0).getName());
-        assertSame(null, fields.get(0).getSignature());
+        assertNull(fields.get(0).getSignature());
+        assertEquals("b", fields.get(1).getName());
+        assertNull(fields.get(1).getSignature());
+        assertEquals("c", fields.get(2).getName());
+        assertNull(fields.get(2).getSignature());
     }
 
     public void testMixin() {
