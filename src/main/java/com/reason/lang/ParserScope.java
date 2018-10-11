@@ -3,21 +3,21 @@ package com.reason.lang;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTokenElementType;
+import org.jetbrains.annotations.NotNull;
 
 public class ParserScope {
+    ORTokenElementType scopeTokenElementType;
+
     private ParserScopeEnum m_resolution;
     private IElementType m_compositeElementType;
     private ParserScopeEnum m_context;
-    ORTokenElementType scopeTokenElementType;
-
-    boolean complete = false;
-    boolean scope = false;
+    private boolean m_isComplete = false;
+    private boolean m_isScope = false;
     private boolean m_scopeStart = false;
-
     private final int m_offset;
     private PsiBuilder.Marker m_mark;
 
-    ParserScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
+    private ParserScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
         m_mark = builder.mark();
         m_offset = builder.getCurrentOffset();
         m_context = context;
@@ -26,12 +26,28 @@ public class ParserScope {
         this.scopeTokenElementType = scopeTokenElementType;
     }
 
+    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull IElementType compositeElementType) {
+        return new ParserScope(builder, context, context, compositeElementType, null);
+    }
+
+    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType) {
+        return new ParserScope(builder, context, resolution, compositeElementType, null);
+    }
+
+    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
+        return new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType).setIsScope().setIsStart(true);
+    }
+
+    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
+        return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
+    }
+
     public boolean isEmpty(PsiBuilder builder) {
         return builder.getCurrentOffset() - m_offset == 0;
     }
 
     public void end() {
-        if (complete) {
+        if (m_isComplete) {
             done();
         } else {
             drop();
@@ -57,7 +73,7 @@ public class ParserScope {
     }
 
     public ParserScope complete() {
-        complete = true;
+        m_isComplete = true;
         return this;
     }
 
@@ -103,11 +119,23 @@ public class ParserScope {
         return m_scopeStart;
     }
 
-    public void setStart(boolean start) {
-        m_scopeStart = start;
+    @NotNull
+    public ParserScope setIsStart(boolean isStart) {
+        m_scopeStart = isStart;
+        return this;
     }
 
-    public ParserScopeEnum getResolution() {
+    ParserScopeEnum getResolution() {
         return m_resolution;
+    }
+
+    boolean isScope() {
+        return m_isScope;
+    }
+
+    @NotNull
+    ParserScope setIsScope() {
+        m_isScope = true;
+        return this;
     }
 }

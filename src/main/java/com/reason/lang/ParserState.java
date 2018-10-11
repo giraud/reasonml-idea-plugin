@@ -104,12 +104,12 @@ public class ParserState {
     }
 
     public ParserState complete() {
-        m_currentScope.complete = true;
+        m_currentScope.complete();
         return this;
     }
 
     public void setPreviousComplete() {
-        m_scopes.get(m_scopes.size() - 2).complete = true;
+        m_scopes.get(m_scopes.size() - 2).complete();
     }
 
     @NotNull
@@ -117,11 +117,6 @@ public class ParserState {
         m_scopes.add(scope);
         m_currentScope = scope;
         return this;
-    }
-
-    public void add(ParserScope scope, boolean start) {
-        add(scope);
-        scope.setStart(start);
     }
 
     boolean empty() {
@@ -227,11 +222,11 @@ public class ParserState {
     }
 
     public boolean notInScopeExpression() {
-        return !m_currentScope.scope;
+        return !m_currentScope.isScope();
     }
 
     public boolean isInScopeExpression() {
-        return m_currentScope.scope;
+        return m_currentScope.isScope();
     }
 
     public void setTokenElementType(ORTokenElementType tokenType) {
@@ -242,10 +237,6 @@ public class ParserState {
     public ParserState updateCurrentCompositeElementType(@NotNull IElementType compositeElementType) {
         m_currentScope.compositeElementType(compositeElementType);
         return this;
-    }
-
-    public boolean isCurrentTokenType(ORTokenElementType tokenElementType) {
-        return m_currentScope.isScopeTokenEqualTo(tokenElementType);
     }
 
     public boolean isCurrentContext(ParserScopeEnum context) {
