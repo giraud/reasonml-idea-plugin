@@ -8,6 +8,7 @@ import com.reason.lang.core.psi.PsiLet;
 
 import java.util.Collection;
 
+@SuppressWarnings("ConstantConditions")
 public class FunctionCallTest extends BaseParsingTestCase {
     public FunctionCallTest() {
         super("", "re", new RmlParserDefinition());
@@ -30,7 +31,10 @@ public class FunctionCallTest extends BaseParsingTestCase {
     }
 
     public void testCall3() {
-        PsiLet e = first(letExpressions(parseCode("let _ = subscriber->Topic.unsubscribe()", true)));
+        PsiLet e = first(letExpressions(parseCode("let _ = subscriber->Topic.unsubscribe()")));
+
+        PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
+        assertEmpty(callParams.getParameterList());
     }
 
 }

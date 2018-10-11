@@ -737,7 +737,8 @@ public class RmlParser extends CommonParser {
             // calling a function
             state.
                     add(markScope(builder, functionCall, functionCallParams, m_types.FUN_CALL_PARAMS, m_types.LPAREN)).
-                    add(markComplete(builder, functionCall, functionParameter, m_types.C_FUN_PARAM));
+                    advance(builder).
+                    add(mark(builder, functionCall, functionParameter, m_types.C_FUN_PARAM));
         } else {
             if (state.isCurrentResolution(external)) {
                 // overloading an operator
@@ -774,7 +775,10 @@ public class RmlParser extends CommonParser {
             return;
         }
 
-        if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
+        //if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
+        //    state.complete();
+        //}
+        if (!state.isScopeTokenElementType(m_types.LPAREN) && !state.isCurrentEmpty(builder)) {
             state.complete();
         }
 

@@ -277,4 +277,8 @@ public class ParserState {
         m_currentScope.scopeTokenElementType = token;
         return this;
     }
+
+    public boolean isCurrentEmpty(PsiBuilder builder) {
+        return m_currentScope.isEmpty(builder);
+    }
 }

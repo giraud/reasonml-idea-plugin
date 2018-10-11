@@ -43,7 +43,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
         builder = adapt_builder_(elementType, builder, this, null);
         PsiBuilder.Marker m = enter_section_(builder, 0, _COLLAPSE_, null);
 
-        ParserScope fileScope = new ParserScope(file, file, null, null, builder.mark());
+        ParserScope fileScope = new ParserScope(builder, file, file, null, null);
 
         ParserState state = new ParserState(fileScope);
         parseFile(builder, state);
@@ -61,15 +61,15 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
     protected ParserScope mark(PsiBuilder builder, ParserScopeEnum context) {
-        return new ParserScope(context, context, m_types.C_UNKNOWN_EXPR, null, builder.mark());
+        return new ParserScope(builder, context, context, m_types.C_UNKNOWN_EXPR, null);
     }
 
     protected ParserScope mark(PsiBuilder builder, ParserScopeEnum context, IElementType compositeElementType) {
-        return new ParserScope(context, context, compositeElementType, null, builder.mark());
+        return new ParserScope(builder, context, context, compositeElementType, null);
     }
 
     protected ParserScope mark(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType) {
-        return new ParserScope(context, resolution, compositeElementType, null, builder.mark());
+        return new ParserScope(builder, context, resolution, compositeElementType, null);
     }
 
     protected ParserScope markComplete(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType) {
@@ -83,7 +83,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
     }
 
     protected ParserScope markScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
-        ParserScope scope = new ParserScope(context, resolution, compositeElementType, scopeTokenElementType, builder.mark());
+        ParserScope scope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType);
         scope.scope = true;
         scope.setStart(true);
         return scope;

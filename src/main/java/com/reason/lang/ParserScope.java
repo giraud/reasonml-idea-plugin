@@ -14,14 +14,20 @@ public class ParserScope {
     boolean scope = false;
     private boolean m_scopeStart = false;
 
+    private final int m_offset;
     private PsiBuilder.Marker m_mark;
 
-    ParserScope(ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType, PsiBuilder.Marker mark) {
+    ParserScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
+        m_mark = builder.mark();
+        m_offset = builder.getCurrentOffset();
         m_context = context;
         m_resolution = resolution;
         m_compositeElementType = compositeElementType;
-        m_mark = mark;
         this.scopeTokenElementType = scopeTokenElementType;
+    }
+
+    public boolean isEmpty(PsiBuilder builder) {
+        return builder.getCurrentOffset() - m_offset == 0;
     }
 
     public void end() {
