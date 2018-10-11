@@ -17,13 +17,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, Object, PsiElement> {
+public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, HMSignature, PsiElement> {
 
     @NotNull
     @Override
     public PsiElement[] getActualParameters(@NotNull PsiFunctionCallParams callParams) {
-        Collection<PsiFunctionParameter> childrenOfType = PsiTreeUtil.findChildrenOfType(callParams, PsiFunctionParameter.class);
-        return childrenOfType.toArray(new PsiFunctionParameter[0]);
+        Collection<PsiParameter> childrenOfType = PsiTreeUtil.findChildrenOfType(callParams, PsiParameter.class);
+        return childrenOfType.toArray(new PsiParameter[0]);
     }
 
     @NotNull
@@ -91,12 +91,21 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
             PsiReference reference = functionName.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolve();
             if (resolvedElement instanceof PsiLowerSymbol) {
-                PsiElement parent = resolvedElement.getParent();
-                if (parent instanceof PsiSignatureElement) {
-                    PsiSignature signature = ((PsiSignatureElement) parent).getSignature();
+                PsiElement resolvedParent = resolvedElement.getParent();
+                if (resolvedParent instanceof PsiSignatureElement) {
+                    PsiSignature signature = ((PsiSignatureElement) resolvedParent).getSignature();
                     if (signature != null) {
-                        context.setItemsToShow(new Object[]{signature});
+                        context.setItemsToShow(new Object[]{signature.asHMSignature()});
                         context.showHint(params, params.getTextOffset(), this);
+                    } else if (resolvedParent instanceof PsiLet) {
+                        PsiLet resolvedLet = (PsiLet) resolvedParent;
+                        if (resolvedLet.isFunction()) {
+                            // We don't have the real signature, we just display the function arguments
+                            Collection<PsiParameter> parameters = resolvedLet.getFunction().getParameterList();
+                            HMSignature hmSignature = new HMSignature(parameters);
+                            context.setItemsToShow(new Object[]{hmSignature});
+                            context.showHint(params, params.getTextOffset(), this);
+                        }
                     }
                 }
             }
@@ -105,12 +114,12 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
     @Override
     public void updateParameterInfo(@NotNull PsiFunctionCallParams psiFunctionCallParams, @NotNull UpdateParameterInfoContext context) {
-        Collection<PsiFunctionParameter> parameters = psiFunctionCallParams.getParameterList();
+        Collection<PsiParameter> parameters = psiFunctionCallParams.getParameterList();
         if (!parameters.isEmpty()) {
             int offset = context.getOffset();
             int i = 0;
 
-            for (PsiFunctionParameter parameter : parameters) {
+            for (PsiParameter parameter : parameters) {
                 TextRange textRange = parameter.getTextRange();
                 if (textRange.getStartOffset() <= offset && offset <= textRange.getEndOffset()) {
                     context.setCurrentParameter(i);
@@ -122,31 +131,27 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     }
 
     @Override
-    public void updateUI(Object element, @NotNull ParameterInfoUIContext context) {
+    public void updateUI(HMSignature element, @NotNull ParameterInfoUIContext context) {
         if (element == null) {
             context.setUIComponentEnabled(false);
             return;
         }
 
-        if (element instanceof PsiSignature) {
-            PsiSignature st = (PsiSignature) element;
-            HMSignature.SignatureType[] types = st.asHMSignature().getTypes();
+        HMSignature.SignatureType[] types = element.getTypes();
 
-            int currentParameterIndex = context.getCurrentParameterIndex();
-            boolean grayedOut = currentParameterIndex != -1 && types.length <= currentParameterIndex;
-            context.setUIComponentEnabled(!grayedOut);
+        int currentParameterIndex = context.getCurrentParameterIndex();
+        boolean grayedOut = currentParameterIndex != -1 && types.length <= currentParameterIndex;
+        context.setUIComponentEnabled(!grayedOut);
 
+        TextRange paramRange = TextRange.EMPTY_RANGE; //getSignatureTextRange(element, currentParameterIndex);
 
-            TextRange paramRange = getSignatureTextRange(st, currentParameterIndex);
-
-            context.setupUIComponentPresentation(st.asHMSignature().toString(),
-                    paramRange.getStartOffset(),
-                    paramRange.getEndOffset(),
-                    false, //!context.isUIComponentEnabled(),
-                    false,
-                    false,
-                    context.getDefaultParameterColor());
-        }
+        context.setupUIComponentPresentation(element.toString(),
+                paramRange.getStartOffset(),
+                paramRange.getEndOffset(),
+                false, //!context.isUIComponentEnabled(),
+                false,
+                false,
+                context.getDefaultParameterColor());
     }
 
     private TextRange getSignatureTextRange(PsiSignature st, int index) {

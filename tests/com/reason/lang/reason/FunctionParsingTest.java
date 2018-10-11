@@ -3,9 +3,9 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionParameter;
+import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiParameters;
+import com.reason.lang.core.psi.PsiParameter;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -21,8 +21,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         assertTrue(e.isFunction());
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        assertNotNull(function);
-        assertEquals(2, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
+        assertEquals(2, function.getParameterList().size());
         assertNotNull(function.getBody());
     }
 
@@ -31,8 +30,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         assertTrue(e.isFunction());
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        assertNotNull(function);
-        assertEquals(1, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
+        assertEquals(1, function.getParameterList().size());
         assertNotNull(function.getBody());
     }
 
@@ -40,8 +38,8 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let x = Belt.map(items, (. item) => item)")));
 
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
-        assertNotNull(function);
-        assertEquals(1, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
+        assertEquals(1, function.getParameterList().size());
+        assertEquals("item", function.getParameterList().iterator().next().getText());
     }
 
     public void testBraceFunction() {
@@ -83,10 +81,10 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option(Js.t('a)), children) => null;")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        Collection<PsiFunctionParameter> parameters = function.getParameterList();
+        Collection<PsiParameter> parameters = function.getParameterList();
         assertEquals(3, parameters.size());
 
-        Iterator<PsiFunctionParameter> itParams = parameters.iterator();
+        Iterator<PsiParameter> itParams = parameters.iterator();
         assertEquals("id", itParams.next().getName());
         assertEquals("values", itParams.next().getName());
         assertEquals("children", itParams.next().getName());
@@ -96,10 +94,10 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        Collection<PsiFunctionParameter> parameters = function.getParameterList();
+        Collection<PsiParameter> parameters = function.getParameterList();
         assertEquals(3, parameters.size());
 
-        Iterator<PsiFunctionParameter> itParams = parameters.iterator();
+        Iterator<PsiParameter> itParams = parameters.iterator();
         assertEquals("id", itParams.next().getName());
         assertEquals("values", itParams.next().getName());
         assertEquals("children", itParams.next().getName());
@@ -109,8 +107,18 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        Collection<PsiFunctionParameter> parameters = function.getParameterList();
+        Collection<PsiParameter> parameters = function.getParameterList();
         assertEquals(10, parameters.size());
+    }
+
+    public void testRecordFunction() {
+        PsiLet e = first(letExpressions(parseCode("let make = (children) => { ...component, render: self => <div/>, }")));
+        PsiFunctionBody body = e.getFunction().getBody();
+        PsiFunction innerFunction = PsiTreeUtil.findChildOfType(body, PsiFunction.class);
+
+        assertEquals(1, innerFunction.getParameterList().size());
+        assertEquals("self", innerFunction.getParameterList().iterator().next().getName());
+        assertEquals("<div/>", innerFunction.getBody().getText());
 
     }
 }

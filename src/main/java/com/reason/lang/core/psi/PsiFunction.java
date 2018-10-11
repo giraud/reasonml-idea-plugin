@@ -1,38 +1,15 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORUtil;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-import static java.util.Collections.emptyList;
-
-public class PsiFunction extends ASTWrapperPsiElement {
-
-    public PsiFunction(ASTNode node) {
-        super(node);
-    }
-
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
-
-    public PsiFunctionBody getBody() {
-        return PsiTreeUtil.findChildOfType(this, PsiFunctionBody.class);
-    }
-
-    @Override
-    public String toString() {
-        return "Function";
-    }
+public interface PsiFunction extends PsiElement {
+    @Nullable
+    PsiFunctionBody getBody();
 
     @NotNull
-    public Collection<PsiFunctionParameter> getParameterList() {
-        PsiParameters parameters = findChildByClass(PsiParameters.class);
-        return parameters == null ? emptyList() : ORUtil.findImmediateChildrenOfType(parameters, PsiFunctionParameter.class);
-    }
+    Collection<PsiParameter> getParameterList();
 }

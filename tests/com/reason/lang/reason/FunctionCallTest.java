@@ -3,8 +3,8 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiFunctionParameter;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiParameter;
 
 import java.util.Collection;
 
@@ -18,7 +18,7 @@ public class FunctionCallTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
 
         PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
-        Collection<PsiFunctionParameter> parameters = callParams.getParameterList();
+        Collection<PsiParameter> parameters = callParams.getParameterList();
         assertEquals(1, parameters.size());
     }
 
@@ -26,7 +26,7 @@ public class FunctionCallTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId^, Js.Global.clearInterval)")));
 
         PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
-        Collection<PsiFunctionParameter> parameters = callParams.getParameterList();
+        Collection<PsiParameter> parameters = callParams.getParameterList();
         assertEquals(2, parameters.size());
     }
 

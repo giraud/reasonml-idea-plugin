@@ -5,11 +5,11 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.impl.PsiSignatureImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class RecordParsingTest extends BaseParsingTestCase {
     public RecordParsingTest() {
         super("", "re", new RmlParserDefinition());
@@ -30,7 +30,7 @@ public class RecordParsingTest extends BaseParsingTestCase {
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals("a", fields.get(0).getName());
-        assertSame(PsiSignatureImpl.EMPTY, fields.get(0).getSignature());
+        assertSame(null, fields.get(0).getSignature());
     }
 
     public void testMixin() {

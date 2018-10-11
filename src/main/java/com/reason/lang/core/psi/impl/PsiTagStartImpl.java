@@ -46,7 +46,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
         }
 
-        TagPropertyImpl(PsiFunctionParameter parameter) {
+        TagPropertyImpl(PsiParameter parameter) {
             m_name = parameter.getName();
             PsiSignature signature = parameter.getSignature();
             m_type = signature.asString();

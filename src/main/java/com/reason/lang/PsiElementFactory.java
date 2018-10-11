@@ -75,7 +75,7 @@ public class PsiElementFactory {
         } else if (type == types.MIXIN_FIELD) {
             return new PsiMixinField(node);
         } else if (type == types.RECORD_FIELD) {
-            return new PsiRecordField(node);
+            return new PsiRecordField(types, node);
         } else if (type == types.INTERPOLATION_EXPR) {
             return new PsiInterpolation(node);
         } else if (type == types.C_SIG_EXPR) {
@@ -95,11 +95,11 @@ public class PsiElementFactory {
         } else if (type == types.SWITCH_EXPR || type == types.MATCH_EXPR) {
             return new PsiSwitch(node);
         } else if (type == types.C_FUN_EXPR) {
-            return new PsiFunction(node);
+            return new PsiFunctionImpl(types, node);
         } else if (type == types.C_FUN_PARAMS) {
             return new PsiParametersImpl(types, node);
         } else if (type == types.C_FUN_PARAM) {
-            return new PsiFunctionParameterImpl(types, node);
+            return new PsiParameterImpl(types, node);
         } else if (type == types.C_FUN_BODY) {
             return new PsiFunctionBody(node);
         } else if (type == types.STRUCT_EXPR) {
@@ -118,7 +118,7 @@ public class PsiElementFactory {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();
             if (parentNode != null && parentNode.getElementType() == types.C_FUN_PARAMS) {
-                return new PsiFunctionParameterImpl(types, node);
+                return new PsiParameterImpl(types, node);
             } else {
                 // Remove the unknown node by its children
 

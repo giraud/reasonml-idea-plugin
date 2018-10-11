@@ -50,15 +50,18 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
     }
 
     @Override
-    void runInvoke(@NotNull Project project, @NotNull PsiFunction parentElement) {
-        String text = parentElement.getText();
+    void runInvoke(@NotNull Project project, @NotNull PsiFunction oldFunction) {
+        String text = oldFunction.getText();
         String[] tokens = text.split("=>", 2);
         PsiLet newSyntax = (PsiLet) RmlElementFactory.createExpression(project, "let x = " + tokens[0] + "=> {" + tokens[1] + "; };");
 
         if (newSyntax != null) {
-            PsiFunctionBody oldBody = PsiTreeUtil.findChildOfType(parentElement, PsiFunctionBody.class);
-            PsiFunctionBody newBody = PsiTreeUtil.findChildOfType(newSyntax.getBinding(), PsiFunctionBody.class);
-            parentElement.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
+            PsiFunction newFunction = newSyntax.getFunction();
+            if (newFunction != null) {
+                PsiFunctionBody oldBody = oldFunction.getBody();
+                PsiFunctionBody newBody = newFunction.getBody();
+                oldFunction.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
+            }
         }
     }
 

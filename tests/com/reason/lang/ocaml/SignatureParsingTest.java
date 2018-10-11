@@ -62,7 +62,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) (c : bool) (d : float) = 3")));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-        List<PsiFunctionParameter> parameters = new ArrayList<>(function.getParameterList());
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameterList());
 
         assertTrue(parameters.get(0).getSignature().asHMSignature().isMandatory(0));
         assertFalse(parameters.get(1).getSignature().asHMSignature().isMandatory(0));

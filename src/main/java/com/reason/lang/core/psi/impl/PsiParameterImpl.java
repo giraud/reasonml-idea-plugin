@@ -4,17 +4,18 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctionParameter;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiFunctionParameterImpl extends PsiToken<ORTypes> implements PsiNamedElement, PsiFunctionParameter {
+public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiNamedElement, PsiParameter {
 
-    public PsiFunctionParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public PsiParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
@@ -45,10 +46,16 @@ public class PsiFunctionParameterImpl extends PsiToken<ORTypes> implements PsiNa
     }
 
     @Override
-    @NotNull
+    @Nullable
     public PsiSignature getSignature() {
-        PsiSignature signature = PsiTreeUtil.findChildOfType(this, PsiSignature.class);
-        return signature == null ? PsiSignatureImpl.EMPTY : signature;
+        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+    }
+
+    @NotNull
+    @Override
+    public HMSignature getHMSignature() {
+        PsiSignature signature = getSignature();
+        return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 
     @Override

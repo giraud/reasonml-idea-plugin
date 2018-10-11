@@ -1,6 +1,7 @@
 package com.reason.lang.core;
 
 import com.reason.Joiner;
+import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +63,39 @@ public class HMSignature {
                 sb.append(m_type);
             }
             sb.append(")").append(ITEM_SEPARATOR).append(m_types[m_types.length - 1]);
+            m_signature = sb.toString();
+        }
+    }
+
+    public HMSignature(Collection<PsiParameter> parameters) {
+        m_types = new SignatureType[parameters.size()];
+        int i = 0;
+        for (PsiParameter item : parameters) {
+            String[] tokens = item.getText().split("=");
+            String normalizedValue = tokens[0];
+
+            SignatureType signatureType = new SignatureType();
+            signatureType.value = normalizedValue;
+            signatureType.mandatory = false /* we don't know */;
+            signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
+
+            m_types[i] = signatureType;
+            i++;
+        }
+
+        if (m_types.length < 3) {
+            m_signature = Joiner.join(ITEM_SEPARATOR, m_types);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("(");
+            for (int j = 0; j < m_types.length; j++) {
+                SignatureType m_type = m_types[j];
+                if (0 < j) {
+                    sb.append(", ");
+                }
+                sb.append(m_type);
+            }
+            sb.append(")").append(ITEM_SEPARATOR).append("'a");
             m_signature = sb.toString();
         }
     }

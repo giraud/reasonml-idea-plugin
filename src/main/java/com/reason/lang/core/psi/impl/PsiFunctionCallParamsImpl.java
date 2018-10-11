@@ -3,7 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiFunctionParameter;
+import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public class PsiFunctionCallParamsImpl extends PsiToken<ORTypes> implements PsiF
 
     @Override
     @NotNull
-    public Collection<PsiFunctionParameter> getParameterList() {
-        return ORUtil.findImmediateChildrenOfType(this, PsiFunctionParameter.class);
+    public Collection<PsiParameter> getParameterList() {
+        return ORUtil.findImmediateChildrenOfClass(this, PsiParameter.class);
     }
 }

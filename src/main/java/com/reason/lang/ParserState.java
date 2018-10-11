@@ -195,11 +195,11 @@ public class ParserState {
     public ParserState popEndUnlessFirstContext(@NotNull ParserScopeEnum context) {
         if (!m_scopes.isEmpty()) {
             ParserScope scope = m_scopes.pop();
-            ParserScope previousScope = m_scopes.peek();
-            while (scope != null && previousScope.isContext(context)) {
+            ParserScope previousScope = m_scopes.isEmpty() ? null : m_scopes.peek();
+            while (scope != null && previousScope != null && previousScope.isContext(context)) {
                 scope.end();
                 scope = m_scopes.pop();
-                previousScope = m_scopes.peek();
+                previousScope = m_scopes.isEmpty() ? null : m_scopes.peek();
             }
             m_scopes.push(scope);
         }

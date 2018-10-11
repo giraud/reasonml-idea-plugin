@@ -35,7 +35,9 @@ public class ParserScope {
     }
 
     public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
-        return new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType).setIsScope().setIsStart(true);
+        ParserScope parserScope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType).setIsStart(true);
+        parserScope.m_isScope = true;
+        return parserScope;
     }
 
     public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
@@ -107,8 +109,10 @@ public class ParserScope {
         return m_context == context;
     }
 
-    public void context(ParserScopeEnum context) {
+    @NotNull
+    public ParserScope context(@NotNull ParserScopeEnum context) {
         m_context = context;
+        return this;
     }
 
     public ParserScopeEnum getContext() {
@@ -131,11 +135,5 @@ public class ParserScope {
 
     boolean isScope() {
         return m_isScope;
-    }
-
-    @NotNull
-    ParserScope setIsScope() {
-        m_isScope = true;
-        return this;
     }
 }
