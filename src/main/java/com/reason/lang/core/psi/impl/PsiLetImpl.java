@@ -39,7 +39,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+        return findChildByClass(PsiLetName.class);
     }
 
     @Nullable
@@ -156,9 +156,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     public String getQualifiedName() {
         String path;
 
-        PsiElement parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
+        PsiModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
         if (parent != null) {
-            path = ((PsiModule) parent).getQualifiedName();
+            path = parent.getQualifiedName();
         } else {
             path = ORUtil.fileNameToModuleName(getContainingFile());
         }

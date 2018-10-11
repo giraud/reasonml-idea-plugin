@@ -574,8 +574,15 @@ public class OclParser extends CommonParser {
             state.updateCurrentResolution(externalNamed);
             state.complete();
         } else if (state.isCurrentResolution(let)) {
-            state.updateCurrentResolution(letNamed);
-            state.complete();
+            state.updateCurrentResolution(letNamed).complete();
+            state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
+            IElementType nextTokenType = builder.getTokenType();
+            if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
+                state.add(mark(builder, letBinding, letNamedBinding, m_types.LET_BINDING).complete()).
+                        add(mark(builder, function, m_types.C_FUN_EXPR).complete()).
+                        add(mark(builder, function, parameters, m_types.C_FUN_PARAMS).complete());
+            }
+            return;
         } else if (state.isCurrentResolution(val)) {
             state.updateCurrentResolution(valNamed);
             state.complete();
@@ -590,15 +597,6 @@ public class OclParser extends CommonParser {
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
-
-        if (state.isCurrentResolution(letNamed)) {
-            IElementType nextTokenType = builder.getTokenType();
-            if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
-                state.add(mark(builder, letBinding, letNamedBinding, m_types.LET_BINDING).complete()).
-                        add(mark(builder, function, m_types.C_FUN_EXPR).complete()).
-                        add(mark(builder, function, parameters, m_types.C_FUN_PARAMS).complete());
-            }
-        }
     }
 
     private void parseUIdent(PsiBuilder builder, ParserState state) {

@@ -572,8 +572,9 @@ public class RmlParser extends CommonParser {
             state.complete();
         } else if (state.isCurrentResolution(let)) {
             // LET <LIDENT> ...
-            state.updateCurrentResolution(letNamed);
-            state.complete();
+            state.updateCurrentResolution(letNamed).complete();
+            state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
+            return;
         } else if (state.isCurrentResolution(letNamedEq)) {
             if (state.previousTokenElementType == m_types.EQ) {
                 // let x = <c> => ...

@@ -26,6 +26,7 @@ public abstract class ORTypes {
     public IElementType C_FUN_PARAMS;
     public IElementType C_FUN_PARAM;
     public IElementType C_FUN_BODY;
+    public IElementType C_LET_NAME;
     public IElementType C_JS_OBJECT;
     public IElementType C_JS_OBJECT_FIELD;
     public IElementType C_MACRO_RAW_BODY;
