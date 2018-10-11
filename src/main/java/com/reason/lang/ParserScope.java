@@ -44,6 +44,10 @@ public class ParserScope {
         return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
 
+    static ParserScope markRoot(PsiBuilder builder) {
+        return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
+    }
+
     public boolean isEmpty(PsiBuilder builder) {
         return builder.getCurrentOffset() - m_offset == 0;
     }
