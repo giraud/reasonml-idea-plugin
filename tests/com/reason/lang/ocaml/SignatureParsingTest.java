@@ -2,10 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.HMSignature;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionParameter;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +13,22 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         super("", "ml", new OclParserDefinition());
     }
 
-    public void testMandatoryVal() {
-        PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
+    public void testLet() {
+        PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
-        HMSignature signature = let.getHMSignature();
+        HMSignature signature = e.getHMSignature();
         assertEquals("int", signature.toString());
         assertTrue(signature.isMandatory(0));
+    }
+
+    public void testVal() {
+        PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
+
+        HMSignature signature = e.getHMSignature();
+        assertEquals("('a option, ('a -> 'b)) -> 'b option", signature.toString());
+        assertFalse(signature.isMandatory(0));
+        assertTrue(signature.isMandatory(1));
+        assertFalse(signature.isMandatory(2));
     }
 
     public void testTrimming() {

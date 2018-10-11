@@ -379,14 +379,16 @@ public class OclParser extends CommonParser {
 
     private void parseColon(PsiBuilder builder, ParserState state) { // :
         if (state.isCurrentResolution(moduleNamed)) {
-            state.updateCurrentResolution(moduleNamedColon);
-            state.complete();
+            state.updateCurrentResolution(moduleNamedColon).complete();
         } else if (state.isCurrentResolution(externalNamed)) {
             state.advance(builder).
                     add(markComplete(builder, signature, externalNamedSignature, m_types.C_SIG_EXPR)).
                     add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(valNamed)) {
-            state.dontMove = advance(builder);
+            // val x <:> ...
+            state.advance(builder).
+                    add(markComplete(builder, signature, valNamedSignature, m_types.C_SIG_EXPR)).
+                    add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(functionParameter)) {
             state.updateCurrentResolution(functionParameterNamed).
                     advance(builder).

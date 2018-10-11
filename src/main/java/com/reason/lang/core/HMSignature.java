@@ -12,6 +12,7 @@ import java.util.Collection;
 public class HMSignature {
 
     public static final HMSignature EMPTY = new HMSignature("");
+    private static final String ITEM_SEPARATOR = " -> ";
 
     @NotNull
     private final SignatureType[] m_types;
@@ -25,7 +26,7 @@ public class HMSignature {
 
         @Override
         public String toString() {
-            return value;
+            return value + (defaultValue.isEmpty() ? "" : "=" + defaultValue);
         }
     }
 
@@ -37,7 +38,8 @@ public class HMSignature {
             String normalizedValue = tokens[0].
                     replaceAll("\\s+", " ").
                     replaceAll("\\( ", "\\(").
-                    replaceAll(", \\)", "\\)");
+                    replaceAll(", \\)", "\\)").
+                    replaceAll("=>", "->");
             SignatureType signatureType = new SignatureType();
             signatureType.value = (isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
             signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
@@ -48,7 +50,7 @@ public class HMSignature {
         }
 
         if (m_types.length < 3) {
-            m_signature = Joiner.join(" -> ", m_types);
+            m_signature = Joiner.join(ITEM_SEPARATOR, m_types);
         } else {
             StringBuilder sb = new StringBuilder();
             sb.append("(");
@@ -59,7 +61,7 @@ public class HMSignature {
                 }
                 sb.append(m_type);
             }
-            sb.append(") -> ").append(m_types[m_types.length - 1]);
+            sb.append(")").append(ITEM_SEPARATOR).append(m_types[m_types.length - 1]);
             m_signature = sb.toString();
         }
     }
@@ -85,7 +87,7 @@ public class HMSignature {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < m_types.length; i++) {
             if (0 < i) {
-                sb.append(" -> ");
+                sb.append(ITEM_SEPARATOR);
             }
             SignatureType type = m_types[i];
             sb.append(type.value);
