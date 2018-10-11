@@ -3,7 +3,10 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
+import com.reason.lang.core.psi.PsiFunctionParameter;
 import com.reason.lang.core.psi.PsiLet;
+
+import java.util.Collection;
 
 public class FunctionCallTest extends BaseParsingTestCase {
     public FunctionCallTest() {
@@ -11,9 +14,23 @@ public class FunctionCallTest extends BaseParsingTestCase {
     }
 
     public void testCall() {
-        PsiLet e = first(letExpressions(parseCode("let t = string_of_int(1);")));
+        PsiLet e = first(letExpressions(parseCode("let _ = string_of_int(1)")));
 
-        assertNotNull(first(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class)));
+        PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
+        Collection<PsiFunctionParameter> parameters = callParams.getParameterList();
+        assertEquals(1, parameters.size());
+    }
+
+    public void testCall2() {
+        PsiLet e = first(letExpressions(parseCode("let _ = Belt.Option.map(self.state.timerId^, Js.Global.clearInterval)")));
+
+        PsiFunctionCallParams callParams = PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
+        Collection<PsiFunctionParameter> parameters = callParams.getParameterList();
+        assertEquals(2, parameters.size());
+    }
+
+    public void testCall3() {
+        PsiLet e = first(letExpressions(parseCode("let _ = subscriber->Topic.unsubscribe()", true)));
     }
 
 }

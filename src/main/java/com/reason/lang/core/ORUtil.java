@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -131,5 +132,24 @@ public class ORUtil {
             nextSibling = nextSibling.getNextSibling();
         }
         return nextSibling != null && nextSibling.getClass().isAssignableFrom(clazz) ? (T) nextSibling : null;
+    }
+
+    @NotNull
+    public static <T> List<T> findImmediateChildrenOfType(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+        PsiElement child = element.getFirstChild();
+        if (child == null) {
+            return Collections.emptyList();
+        }
+
+        List<T> result = new ArrayList<>();
+
+        while (child != null) {
+            if (clazz.isInstance(child)) {
+                result.add((T) child);
+            }
+            child = child.getNextSibling();
+        }
+
+        return result;
     }
 }

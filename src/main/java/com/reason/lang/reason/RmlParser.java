@@ -248,6 +248,15 @@ public class RmlParser extends CommonParser {
             state.popEnd();
         } else if (state.isCurrentContext(functionParameter) || state.isCurrentContext(maybeFunction)) {
             state.popEndUntilStartScope();
+        } else if (state.isCurrentResolution(functionParameter)) {
+            state.complete().popEnd().
+                    advance(builder).
+                    add(mark(builder, state.currentContext(), functionParameter, m_types.C_FUN_PARAM));
+            IElementType nextTokenType = builder.getTokenType();
+            if (nextTokenType != m_types.RPAREN) {
+                // not at the end of a list: ie not => (p1, p2<,> )
+                state.complete();
+            }
         } else if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
             // We don't know yet but we need to complete the marker
             state.complete();
@@ -708,11 +717,10 @@ public class RmlParser extends CommonParser {
         }
 
         if (state.isCurrentResolution(letNamedSignature)) {
-            state.dontMove = advance(builder);
-            state.add(markComplete(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM));
+            state.advance(builder)
+                    .add(markComplete(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
-            state.updateCurrentResolution(localOpen);
-            state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
+            state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
             state.add(markScope(builder, paren, m_types.SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(clazzNamed)) {
@@ -725,6 +733,11 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(patternMatch)) {
             // | Some <(> ... ) =>     It's a constructor
             state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
+        } else if (state.previousTokenElementType == m_types.LIDENT) {
+            // calling a function
+            state.
+                    add(markScope(builder, functionCall, functionCallParams, m_types.FUN_CALL_PARAMS, m_types.LPAREN)).
+                    add(markComplete(builder, functionCall, functionParameter, m_types.C_FUN_PARAM));
         } else {
             if (state.isCurrentResolution(external)) {
                 // overloading an operator

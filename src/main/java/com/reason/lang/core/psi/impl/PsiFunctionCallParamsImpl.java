@@ -1,7 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiFunctionParameter;
 import com.reason.lang.core.type.ORTypes;
@@ -23,6 +23,6 @@ public class PsiFunctionCallParamsImpl extends PsiToken<ORTypes> implements PsiF
     @Override
     @NotNull
     public Collection<PsiFunctionParameter> getParameterList() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiFunctionParameter.class);
+        return ORUtil.findImmediateChildrenOfType(this, PsiFunctionParameter.class);
     }
 }

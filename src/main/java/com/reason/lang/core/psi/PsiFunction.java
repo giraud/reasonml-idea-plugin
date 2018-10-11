@@ -3,10 +3,12 @@ package com.reason.lang.core.psi;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.ORUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
+
+import static java.util.Collections.emptyList;
 
 public class PsiFunction extends ASTWrapperPsiElement {
 
@@ -31,11 +33,6 @@ public class PsiFunction extends ASTWrapperPsiElement {
     @NotNull
     public Collection<PsiFunctionParameter> getParameterList() {
         PsiParameters parameters = findChildByClass(PsiParameters.class);
-        Collection<PsiFunctionParameter> params = PsiTreeUtil.findChildrenOfType(parameters, PsiFunctionParameter.class);
-        if (params.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return params;
+        return parameters == null ? emptyList() : ORUtil.findImmediateChildrenOfType(parameters, PsiFunctionParameter.class);
     }
 }

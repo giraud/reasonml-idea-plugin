@@ -98,6 +98,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         myFile = createPsiFile("dummy", code);
         FileBase file = (FileBase) myFile;
         if (print) {
+            System.out.println("» " + this.getClass());
             System.out.println(DebugUtil.psiToString(file, true, true));
         }
         return file;
