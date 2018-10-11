@@ -83,21 +83,17 @@ public class HMSignature {
             i++;
         }
 
-        if (m_types.length < 3) {
-            m_signature = Joiner.join(ITEM_SEPARATOR, m_types);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("(");
-            for (int j = 0; j < m_types.length; j++) {
-                SignatureType m_type = m_types[j];
-                if (0 < j) {
-                    sb.append(", ");
-                }
-                sb.append(m_type);
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        for (int j = 0; j < m_types.length; j++) {
+            SignatureType m_type = m_types[j];
+            if (0 < j) {
+                sb.append(", ");
             }
-            sb.append(")").append(ITEM_SEPARATOR).append("'a");
-            m_signature = sb.toString();
+            sb.append(m_type);
         }
+        sb.append(")").append(ITEM_SEPARATOR).append("'a");
+        m_signature = sb.toString();
     }
 
     public HMSignature(@NotNull String signature) {

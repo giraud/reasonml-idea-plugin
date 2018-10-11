@@ -90,7 +90,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
         if (functionName != null) {
             PsiReference reference = functionName.getReference();
             PsiElement resolvedElement = reference == null ? null : reference.resolve();
-            if (resolvedElement instanceof PsiLowerSymbol) {
+            if (resolvedElement instanceof PsiNamedElement) {
                 PsiElement resolvedParent = resolvedElement.getParent();
                 if (resolvedParent instanceof PsiSignatureElement) {
                     PsiSignature signature = ((PsiSignatureElement) resolvedParent).getSignature();
@@ -150,7 +150,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                 paramRange.getEndOffset(),
                 false, //!context.isUIComponentEnabled(),
                 false,
-                false,
+                true,
                 context.getDefaultParameterColor());
     }
 
