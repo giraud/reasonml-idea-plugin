@@ -78,7 +78,7 @@ public class PsiElementFactory {
             return new PsiRecordField(node);
         } else if (type == types.INTERPOLATION_EXPR) {
             return new PsiInterpolation(node);
-        } else if (type == types.SIG_SCOPE) {
+        } else if (type == types.C_SIG_EXPR) {
             return new PsiSignatureImpl(types, node);
         } else if (type == types.TAG_START) {
             return new PsiTagStartImpl(node);
@@ -113,7 +113,7 @@ public class PsiElementFactory {
         } else if (type == types.C_VARIANT_CONSTRUCTOR) {
             return new PsiVariantConstructor(node);
         } else if (type == types.C_SIG_ITEM) {
-            return new PsiSignatureItem(types, node);
+            return new PsiSignatureItemImpl(types, node);
         } else if (type == types.C_UNKNOWN_EXPR) {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();

@@ -174,7 +174,11 @@ public class OclParser extends CommonParser {
     }
 
     private void parseRightArrow(PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(patternMatch)) {
+        if (state.isCurrentResolution(signatureItem)) {
+            state.popEnd().
+                    advance(builder).
+                    add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
+        } else if (state.isCurrentResolution(patternMatch)) {
             state.add(mark(builder, patternMatch, patternMatchBody, m_types.SCOPED_EXPR));
         } else if (state.isCurrentResolution(matchWith)) {
             state.dontMove = advance(builder);
@@ -325,7 +329,7 @@ public class OclParser extends CommonParser {
             if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedColon)) {
                 state.popEndUntilContext(moduleDeclaration);
                 state.updateCurrentResolution(moduleNamedSignature);
-                state.add(markScope(builder, state.currentContext(), moduleSignature, m_types.SIG_SCOPE, m_types.SIG));
+                state.add(markScope(builder, state.currentContext(), moduleSignature, m_types.C_SIG_EXPR, m_types.SIG));
             }
         }
     }
@@ -378,14 +382,20 @@ public class OclParser extends CommonParser {
             state.updateCurrentResolution(moduleNamedColon);
             state.complete();
         } else if (state.isCurrentResolution(externalNamed)) {
-            state.dontMove = advance(builder);
-            state.add(markComplete(builder, signature, externalNamedSignature, m_types.SIG_SCOPE));
-            state.add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
+            state.advance(builder).
+                    add(markComplete(builder, signature, externalNamedSignature, m_types.C_SIG_EXPR)).
+                    add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(valNamed)) {
             state.dontMove = advance(builder);
+        } else if (state.isCurrentResolution(functionParameter)) {
+            state.updateCurrentResolution(functionParameterNamed).
+                    advance(builder).
+                    add(markComplete(builder, signature, functionParameterNamedSignature, m_types.C_SIG_EXPR)).
+                    add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(letNamed)) {
-            state.dontMove = advance(builder);
-            state.add(markComplete(builder, letNamedSignature, m_types.SIG_SCOPE));
+            state.advance(builder).
+                    add(markComplete(builder, signature, letNamedSignature, m_types.C_SIG_EXPR)).
+                    add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
         }
     }
 
@@ -440,6 +450,11 @@ public class OclParser extends CommonParser {
                 state.dontMove = advance(builder);
                 state.add(markComplete(builder, functionBody, m_types.C_FUN_BODY));
             }
+        } else if (state.isCurrentResolution(functionParameter)) {
+            state.complete().
+                    popEndUntilResolution(function).
+                    advance(builder).
+                    add(markComplete(builder, functionBody, m_types.C_FUN_BODY));
         }
     }
 
@@ -466,6 +481,10 @@ public class OclParser extends CommonParser {
             state.add(markScope(builder, valNamedSymbol, m_types.SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.add(markScope(builder, state.currentContext(), clazzConstructor, m_types.CLASS_CONSTR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(functionParameter)) {
+            state.updateScopeToken(m_types.LPAREN);
+        } else if (state.isCurrentResolution(parameters)) {
+            state.add(markScope(builder, parameters, functionParameter, m_types.C_FUN_PARAM, m_types.LPAREN));
         } else {
             state.add(markScope(builder, scope, paren, m_types.SCOPED_EXPR, m_types.LPAREN));
         }
@@ -561,6 +580,11 @@ public class OclParser extends CommonParser {
         } else if (state.isCurrentResolution(clazz)) {
             state.updateCurrentResolution(clazzNamed);
             state.complete();
+        } else if (state.isCurrentResolution(parameters)) {
+            state.add(mark(builder, parameters, functionParameter, m_types.C_FUN_PARAM));
+        } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
+            state.complete().popEnd().
+                    add(mark(builder, parameters, functionParameter, m_types.C_FUN_PARAM));
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
@@ -568,10 +592,9 @@ public class OclParser extends CommonParser {
         if (state.isCurrentResolution(letNamed)) {
             IElementType nextTokenType = builder.getTokenType();
             if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
-                state.add(markComplete(builder, letBinding, letNamedBinding, m_types.LET_BINDING));
-                // add a generic marker: it may be a function + parameters
-                state.add(mark(builder, maybeFunction));
-                state.add(mark(builder, maybeFunctionParameters));
+                state.add(markComplete(builder, letBinding, letNamedBinding, m_types.LET_BINDING)).
+                        add(markComplete(builder, function, m_types.C_FUN_EXPR)).
+                        add(markComplete(builder, function, parameters, m_types.C_FUN_PARAMS));
             }
         }
     }

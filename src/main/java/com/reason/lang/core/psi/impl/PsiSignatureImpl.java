@@ -4,8 +4,10 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PlainTextTokenTypes;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileHelper;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +25,9 @@ public class PsiSignatureImpl extends PsiToken<ORTypes> implements PsiSignature 
     @NotNull
     @Override
     public HMSignature asHMSignature() {
-        Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(this, PsiSignatureItem.class);
-        return new HMSignature(items);
+        boolean isOcaml = FileHelper.isOCaml(getContainingFile().getFileType());
+        Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(this, PsiSignatureItemImpl.class);
+        return new HMSignature(isOcaml, items);
     }
 
     @NotNull

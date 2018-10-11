@@ -28,6 +28,7 @@ public class RmlTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", RmlLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", RmlLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", RmlLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", RmlLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
@@ -48,7 +49,6 @@ public class RmlTypes extends ORTypes {
         TYPE_CONSTR_NAME = new ORCompositeElementType("TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);
         TYPE_BINDING = new ORCompositeElementType("TYPE_BINDING", RmlLanguage.INSTANCE);
         PATTERN_MATCH_EXPR = new ORCompositeElementType("PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
-        SIG_SCOPE = new ORCompositeElementType("SIG_SCOPE", RmlLanguage.INSTANCE);
         IF_STMT = new ORCompositeElementType("IF_STMT", RmlLanguage.INSTANCE);
         BIN_CONDITION = new ORCompositeElementType("BIN_CONDITION", RmlLanguage.INSTANCE);
         SWITCH_EXPR = new ORCompositeElementType("SWITCH_EXPR", RmlLanguage.INSTANCE);

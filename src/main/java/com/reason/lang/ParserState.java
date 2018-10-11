@@ -271,4 +271,10 @@ public class ParserState {
         dontMove = true;
         return this;
     }
+
+    @NotNull
+    public ParserState updateScopeToken(@NotNull ORTokenElementType token) {
+        m_currentScope.scopeTokenElementType = token;
+        return this;
+    }
 }

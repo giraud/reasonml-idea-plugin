@@ -1,12 +1,12 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
 
+@SuppressWarnings("ConstantConditions")
 public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
     public FunctionDefinitionParsingTest() {
         super("", "ml", new OclParserDefinition());
@@ -16,9 +16,8 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
         assertTrue(e.isFunction());
-        PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
-        assertNotNull(function);
-        assertEquals(2, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
+        PsiFunction function = e.getFunction();
+        assertEquals(2, function.getParameterList().size());
         assertNotNull(function.getBody());
     }
 
@@ -26,26 +25,21 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
 
         assertTrue(e.isFunction());
-        PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
-        assertNotNull(function);
-        assertEquals(1, first(PsiTreeUtil.findChildrenOfType(function, PsiParameters.class)).getArgumentsCount());
+        PsiFunction function = e.getFunction();
+        assertEquals(1, function.getParameterList().size());
         assertNotNull(function.getBody());
     }
 
     public void testFunctionLetBinding2() {
-        PsiFile file = parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"");
-        PsiLet e = first(letExpressions(file));
+        PsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
 
         assertTrue(e.isFunction());
-        PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
-        assertNotNull(function);
+        PsiFunction function = e.getFunction();
         assertEquals("Printf.printf \"a\"; Printf.printf \"b\"", function.getBody().getText());
     }
 
-    @SuppressWarnings("ConstantConditions")
     public void testFunctionFun() {
-        PsiFile file = parseCode("let _ = fun (_, info as ei) -> x");
-        PsiLet e = first(letExpressions(file));
+        PsiLet e = first(letExpressions(parseCode("let _ = fun (_, info as ei) -> x")));
 
         assertTrue(e.isFunction());
         PsiFunction function = e.getFunction();

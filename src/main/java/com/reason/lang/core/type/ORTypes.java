@@ -30,6 +30,7 @@ public abstract class ORTypes {
     public IElementType C_JS_OBJECT_FIELD;
     public IElementType C_MACRO_RAW_BODY;
     public IElementType C_ML_INTERPOLATOR;
+    public IElementType C_SIG_EXPR;
     public IElementType C_SIG_ITEM;
     public IElementType C_UNKNOWN_EXPR;
     public IElementType C_VARIANT_CONSTRUCTOR;
@@ -42,7 +43,6 @@ public abstract class ORTypes {
     public IElementType BIN_CONDITION;
     public IElementType PATTERN_MATCH_EXPR;
     public IElementType INTERPOLATION_EXPR;
-    public IElementType SIG_SCOPE;
     public IElementType TAG_START;
     public IElementType TAG_CLOSE;
     public IElementType TAG_PROPERTY;

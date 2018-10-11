@@ -1,7 +1,7 @@
 package com.reason.lang.core;
 
 import com.reason.Joiner;
-import com.reason.lang.core.psi.impl.PsiSignatureItem;
+import com.reason.lang.core.psi.PsiSignatureItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -29,13 +29,13 @@ public class HMSignature {
         }
     }
 
-    public HMSignature(@NotNull Collection<PsiSignatureItem> items) {
+    public HMSignature(boolean isOcaml, @NotNull Collection<PsiSignatureItem> items) {
         m_types = new SignatureType[items.size()];
         int i = 0;
         for (PsiSignatureItem item : items) {
             String[] tokens = item.getText().split("=");
             SignatureType signatureType = new SignatureType();
-            signatureType.value = tokens[0];
+            signatureType.value = (isOcaml && item.isNamedItem()) ? "~" + tokens[0] : tokens[0];
             signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
             signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
 

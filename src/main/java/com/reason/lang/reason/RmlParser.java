@@ -431,11 +431,11 @@ public class RmlParser extends CommonParser {
 
         if (state.isCurrentResolution(externalNamed)) {
             state.dontMove = advance(builder);
-            state.add(markComplete(builder, signature, externalNamedSignature, m_types.SIG_SCOPE));
+            state.add(markComplete(builder, signature, externalNamedSignature, m_types.C_SIG_EXPR));
             state.add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(letNamed)) {
             state.dontMove = advance(builder);
-            state.add(markComplete(builder, signature, letNamedSignature, m_types.SIG_SCOPE));
+            state.add(markComplete(builder, signature, letNamedSignature, m_types.C_SIG_EXPR));
             IElementType nextTokenType = builder.getTokenType();
             if (nextTokenType != m_types.LPAREN) {
                 state.add(markComplete(builder, signature, signatureItem, m_types.C_SIG_ITEM));
@@ -449,7 +449,7 @@ public class RmlParser extends CommonParser {
             state.complete();
             state.dontMove = advance(builder);
             if (!state.isCurrentContext(recordUsage)) {
-                state.add(markComplete(builder, recordSignature, signature, m_types.SIG_SCOPE));
+                state.add(markComplete(builder, recordSignature, signature, m_types.C_SIG_EXPR));
                 state.add(markComplete(builder, recordSignature, signatureItem, m_types.C_SIG_ITEM));
             }
         } else if (state.isCurrentResolution(jsObjectField)) {
@@ -458,13 +458,13 @@ public class RmlParser extends CommonParser {
         } else if (state.isCurrentResolution(functionParameter)) {
             state.updateCurrentResolution(functionParameterNamed).
                     advance(builder).
-                    add(markComplete(builder, signature, functionParameterNamedSignature, m_types.SIG_SCOPE)).
+                    add(markComplete(builder, signature, functionParameterNamedSignature, m_types.C_SIG_EXPR)).
                     add(markComplete(builder, signature, functionParameterNamedSignatureItem, m_types.C_SIG_ITEM));
         } else if (state.isCurrentResolution(paren) && state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
             state.complete().
                     updateCurrentContext(functionParameter).updateCurrentResolution(functionParameterNamed).
                     advance(builder).
-                    add(markComplete(builder, signature, functionParameterNamedSignature, m_types.SIG_SCOPE)).
+                    add(markComplete(builder, signature, functionParameterNamedSignature, m_types.C_SIG_EXPR)).
                     add(markComplete(builder, signatureItem, functionParameterNamedSignatureItem, m_types.C_SIG_ITEM));
 
         }

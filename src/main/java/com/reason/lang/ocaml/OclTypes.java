@@ -31,6 +31,7 @@ public class OclTypes extends ORTypes {
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", OclLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
+        C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", OclLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", OclLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", OclLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
@@ -50,7 +51,6 @@ public class OclTypes extends ORTypes {
         MATCH_EXPR = new ORCompositeElementType("MATCH_EXPR", OclLanguage.INSTANCE);
         PATTERN_MATCH_EXPR = new ORCompositeElementType("PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
         SCOPED_EXPR = new ORCompositeElementType("SCOPED_EXPR", OclLanguage.INSTANCE);
-        SIG_SCOPE = new ORCompositeElementType("SIG_SCOPE", OclLanguage.INSTANCE);
         BIN_CONDITION = new ORCompositeElementType("BIN_CONDITION", OclLanguage.INSTANCE);
         VARIANT_EXP = new ORCompositeElementType("VARIANT_EXP", OclLanguage.INSTANCE);
         SWITCH_EXPR = new ORCompositeElementType("SWITCH_EXPR", OclLanguage.INSTANCE);

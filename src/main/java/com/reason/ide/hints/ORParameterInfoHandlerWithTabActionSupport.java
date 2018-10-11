@@ -9,7 +9,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiSignatureItem;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,11 +92,10 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
             PsiElement resolvedElement = reference == null ? null : reference.resolve();
             if (resolvedElement instanceof PsiLowerSymbol) {
                 PsiElement parent = resolvedElement.getParent();
-                if (parent instanceof PsiLet && ((PsiLet) parent).isFunction()) {
-                    PsiLet psiLet = (PsiLet) parent;
-                    PsiSignature sig = psiLet.getSignature();
-                    if (sig != null) {
-                        context.setItemsToShow(new Object[]{sig});
+                if (parent instanceof PsiSignatureElement) {
+                    PsiSignature signature = ((PsiSignatureElement) parent).getSignature();
+                    if (signature != null) {
+                        context.setItemsToShow(new Object[]{signature});
                         context.showHint(params, params.getTextOffset(), this);
                     }
                 }
