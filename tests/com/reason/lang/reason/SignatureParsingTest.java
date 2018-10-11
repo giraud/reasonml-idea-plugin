@@ -21,6 +21,13 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertTrue(signature.isMandatory(0));
     }
 
+    public void testTrimming() {
+        PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
+
+        PsiSignature signature = let.getSignature();
+        assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString());
+    }
+
     public void testParsingRml() {
         PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;")));
 

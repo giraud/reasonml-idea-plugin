@@ -5,6 +5,7 @@ import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiFunctionParameter;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiSignature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,13 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         HMSignature signature = let.getHMSignature();
         assertEquals("int", signature.toString());
         assertTrue(signature.isMandatory(0));
+    }
+
+    public void testTrimming() {
+        PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
+
+        PsiSignature signature = let.getSignature();
+        assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString());
     }
 
     public void testParsingRml() {

@@ -34,8 +34,12 @@ public class HMSignature {
         int i = 0;
         for (PsiSignatureItem item : items) {
             String[] tokens = item.getText().split("=");
+            String normalizedValue = tokens[0].
+                    replaceAll("\\s+", " ").
+                    replaceAll("\\( ", "\\(").
+                    replaceAll(", \\)", "\\)");
             SignatureType signatureType = new SignatureType();
-            signatureType.value = (isOcaml && item.isNamedItem()) ? "~" + tokens[0] : tokens[0];
+            signatureType.value = (isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
             signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
             signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
 
