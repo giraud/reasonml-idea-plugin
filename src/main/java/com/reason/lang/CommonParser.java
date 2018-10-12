@@ -44,7 +44,7 @@ public abstract class CommonParser implements PsiParser, LightPsiParser {
 
         ParserScope fileScope = ParserScope.markRoot(builder);
 
-        ParserState state = new ParserState(fileScope);
+        ParserState state = new ParserState(builder, fileScope);
         parseFile(builder, state);
 
         // if we have a scope at last position in file, without SEMI, we need to handle it here

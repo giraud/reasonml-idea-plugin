@@ -40,7 +40,7 @@ public class DuneParser extends CommonParser {
             } else if (tokenType == DuneTypes.INSTANCE.RPAREN) {
                 if (state.isInScopeExpression()) {
                     state.complete();
-                    state.advance(builder);
+                    state.advance();
                     state.popEnd();
                 } else {
                     builder.error("Unbalanced parenthesis");
@@ -78,7 +78,7 @@ public class DuneParser extends CommonParser {
     private void parseExecutable(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(executable);
         state.setTokenElementType(DuneTypes.INSTANCE.EXECUTABLE);
-        state.advance(builder);
+        state.advance();
         if (builder.getTokenType() == DuneTypes.INSTANCE.LPAREN) {
             state.complete();
         } else {
@@ -95,7 +95,7 @@ public class DuneParser extends CommonParser {
     private void parseLibrary(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(library);
         state.setTokenElementType(DuneTypes.INSTANCE.LIBRARY);
-        state.advance(builder);
+        state.advance();
         if (builder.getTokenType() == DuneTypes.INSTANCE.LPAREN) {
             state.complete();
         } else {

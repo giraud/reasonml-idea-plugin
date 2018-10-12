@@ -10,13 +10,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class ParserState {
 
+    private final PsiBuilder m_builder;
     private final ParserScope m_rootScope;
     private final Stack<ParserScope> m_scopes = new Stack<>();
+
     private ParserScope m_currentScope;
     public IElementType previousTokenElementType;
     public boolean dontMove = false;
 
-    ParserState(ParserScope rootScope) {
+    ParserState(PsiBuilder builder, ParserScope rootScope) {
+        m_builder = builder;
         m_rootScope = rootScope;
         m_currentScope = rootScope;
     }
@@ -257,8 +260,8 @@ public class ParserState {
     }
 
     @NotNull
-    public ParserState advance(PsiBuilder builder) {
-        builder.advanceLexer();
+    public ParserState advance() {
+        m_builder.advanceLexer();
         dontMove = true;
         return this;
     }
@@ -269,7 +272,7 @@ public class ParserState {
         return this;
     }
 
-    public boolean isCurrentEmpty(PsiBuilder builder) {
-        return m_currentScope.isEmpty(builder);
+    public boolean isCurrentEmpty() {
+        return m_currentScope.isEmpty(m_builder);
     }
 }

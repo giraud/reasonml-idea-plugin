@@ -17,7 +17,7 @@ public class ComponentTest extends BaseParsingTestCase {
     }
 
     public void testProxy() throws IOException {
-        FileBase psiFile = (FileBase) parseFile("FormattedMessage");
+        FileBase psiFile = (FileBase) parseFile("CompMessage");
         assertEquals(true, psiFile.isComponent());
     }
 
