@@ -33,6 +33,7 @@ public abstract class ORTypes {
     public IElementType C_ML_INTERPOLATOR;
     public IElementType C_SIG_EXPR;
     public IElementType C_SIG_ITEM;
+    public IElementType C_TAG_PROP_VALUE;
     public IElementType C_UNKNOWN_EXPR;
     public IElementType C_VARIANT_CONSTRUCTOR;
     public IElementType MIXIN_FIELD;

@@ -5,8 +5,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class JsxParsingTest extends BaseParsingTestCase {
     public JsxParsingTest() {
@@ -49,10 +51,14 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropsWithDot() {
-        PsiElement psiElement = firstElement(parseCode("<a className=Styles.link href=h download=d>"));
+        PsiTagStart e = (PsiTagStart) firstElement(parseCode("<a className=Styles.link href=h download=d>", true));
 
-        Collection<PsiTagProperty> props = PsiTreeUtil.findChildrenOfType(psiElement, PsiTagProperty.class);
-        assertEquals(3, props.size());
+        List<PsiTagProperty> props = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class));
+        assertSize(3, props);
+        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(0), PsiTagPropertyValue.class));
+        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(1), PsiTagPropertyValue.class));
+        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(2), PsiTagPropertyValue.class));
+
     }
 
     public void testTagChaining() {

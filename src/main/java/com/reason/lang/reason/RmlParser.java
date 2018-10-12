@@ -616,8 +616,8 @@ public class RmlParser extends CommonParser {
             builder.remapCurrentToken(m_types.PROPERTY_NAME);
             state.add(mark(builder, tagProperty, m_types.TAG_PROPERTY).complete());
             builder.setWhitespaceSkippedCallback((type, start, end) -> {
-                if (state.isCurrentResolution(tagProperty) || (state.isCurrentResolution(tagPropertyEq) && state.notInScopeExpression())) {
-                    state.popEnd();
+                if (state.isCurrentResolution(tagProperty) || (state.isCurrentResolution(tagPropertyValue) && state.notInScopeExpression())) {
+                    state.popEnd().popEnd();
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
@@ -867,10 +867,11 @@ public class RmlParser extends CommonParser {
                     .advance(builder)
                     .add(mark(builder, letBinding, letNamedEq, m_types.LET_BINDING).complete());
         } else if (state.isCurrentResolution(tagProperty)) {
-            state.updateCurrentResolution(tagPropertyEq);
+            state.updateCurrentResolution(tagPropertyEq)
+                    .advance(builder)
+                    .add(mark(builder, state.currentContext(), tagPropertyValue, m_types.C_TAG_PROP_VALUE).complete());
         } else if (state.isCurrentResolution(moduleNamed)) {
-            state.updateCurrentResolution(moduleNamedEq);
-            state.complete();
+            state.updateCurrentResolution(moduleNamedEq).complete();
         } else if (state.isCurrentResolution(externalNamedSignature)) {
             state.complete();
             state.popEnd();

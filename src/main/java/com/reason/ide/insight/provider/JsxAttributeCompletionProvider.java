@@ -45,7 +45,7 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
 
         PsiTagStart tag = PsiTreeUtil.getParentOfType(originalPosition, PsiTagStart.class);
         if (tag != null) {
-            List<PsiTagStart.TagProperty> attributes = tag.getAttributes();
+            List<PsiTagStart.TagProperty> attributes = tag.getUnifiedPropertyList();
 
             if (tag.getNameIdentifier() instanceof PsiUpperSymbol) {
                 // Additional attributes for UpperSymbol => only key and ref

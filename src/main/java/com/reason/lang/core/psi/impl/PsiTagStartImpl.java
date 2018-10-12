@@ -106,7 +106,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     }
 
     @Override
-    public List<TagProperty> getAttributes() {
+    public List<TagProperty> getUnifiedPropertyList() {
         final List<TagProperty> result = new ArrayList<>();
 
         PsiFinder psiFinder = PsiFinder.getInstance();

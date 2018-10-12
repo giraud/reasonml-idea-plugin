@@ -86,6 +86,8 @@ public class PsiElementFactory {
             return new PsiTagStartImpl(node);
         } else if (type == types.TAG_PROPERTY) {
             return new PsiTagPropertyImpl(types, node);
+        } else if (type == types.C_TAG_PROP_VALUE) {
+            return new PsiTagPropertyValueImpl(types, node);
         } else if (type == types.TAG_CLOSE) {
             return new PsiTagClose(node);
         } else if (type == types.UPPER_SYMBOL) {

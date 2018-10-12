@@ -11,5 +11,5 @@ public interface PsiTagStart extends PsiNamedElement {
         boolean isMandatory();
     }
 
-    List<TagProperty> getAttributes();
+    List<TagProperty> getUnifiedPropertyList();
 }
