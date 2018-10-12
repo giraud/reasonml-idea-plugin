@@ -67,10 +67,10 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testIncorrectProp() {
-        PsiTagStart e = (PsiTagStart) firstElement(parseCode("<MyComp x prop=1/>", true));
+        PsiTagStart e = (PsiTagStart) firstElement(parseCode("<MyComp prunningProp prop=1/>"));
 
         Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class);
-        assertEquals(1, properties.size());
+        assertEquals(2, properties.size());
     }
 
 }
