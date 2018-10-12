@@ -273,6 +273,6 @@ public class ParserState {
     }
 
     public boolean isCurrentEmpty() {
-        return m_currentScope.isEmpty(m_builder);
+        return m_currentScope.isEmpty();
     }
 }

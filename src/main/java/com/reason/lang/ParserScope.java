@@ -6,7 +6,11 @@ import com.reason.lang.core.type.ORTokenElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class ParserScope {
+
     ORTokenElementType scopeTokenElementType;
+
+    private final PsiBuilder m_builder;
+    private final int m_offset;
 
     private ParserScopeEnum m_resolution;
     private IElementType m_compositeElementType;
@@ -14,10 +18,10 @@ public class ParserScope {
     private boolean m_isComplete = false;
     private boolean m_isScope = false;
     private boolean m_scopeStart = false;
-    private final int m_offset;
     private PsiBuilder.Marker m_mark;
 
     private ParserScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
+        m_builder = builder;
         m_mark = builder.mark();
         m_offset = builder.getCurrentOffset();
         m_context = context;
@@ -48,8 +52,8 @@ public class ParserScope {
         return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
     }
 
-    public boolean isEmpty(PsiBuilder builder) {
-        return builder.getCurrentOffset() - m_offset == 0;
+    public boolean isEmpty() {
+        return m_builder.getCurrentOffset() - m_offset == 0;
     }
 
     public void end() {
