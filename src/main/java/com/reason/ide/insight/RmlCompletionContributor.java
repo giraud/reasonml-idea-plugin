@@ -2,7 +2,7 @@ package com.reason.ide.insight;
 
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.ide.insight.pattern.ORElementPattern;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
@@ -44,16 +44,16 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> jsxName() {
-            return psiElement(RmlTypes.INSTANCE.TAG_NAME);
+            return ORElementPattern.create((element, context) -> element.getNode().getElementType() == RmlTypes.INSTANCE.TAG_NAME); // PsiTagName!
         }
 
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> jsxAttribute() {
-            return or(
-                    psiElement().inside(PsiTagStart.class).andNot(psiElement().inside(PsiTagProperty.class)),
-                    psiElement().inside(PsiLowerSymbol.class).withParent(PsiTagStart.class)
-            );
+            return ORElementPattern.create((element, context) -> {
+                PsiElement parent = element.getParent();
+                return parent instanceof PsiTagProperty /*inside the prop name*/ || parent instanceof PsiTagStart;
+            });
         }
 
         @NotNull
