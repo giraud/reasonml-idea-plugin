@@ -614,10 +614,13 @@ public class RmlParser extends CommonParser {
             // This is a property
             state.popEndUntilStartScope();
             builder.remapCurrentToken(m_types.PROPERTY_NAME);
-            state.add(mark(builder, tagProperty, m_types.TAG_PROPERTY).complete());
+            state.add(mark(builder, tagProperty, m_types.TAG_PROPERTY));
             builder.setWhitespaceSkippedCallback((type, start, end) -> {
                 if (state.isCurrentResolution(tagProperty) || (state.isCurrentResolution(tagPropertyValue) && state.notInScopeExpression())) {
-                    state.popEnd().popEnd();
+                    if (state.isCurrentResolution(tagPropertyValue)) {
+                        state.popEnd();
+                    }
+                    state.popEnd();
                     builder.setWhitespaceSkippedCallback(null);
                 }
             });
@@ -871,6 +874,7 @@ public class RmlParser extends CommonParser {
                     .add(mark(builder, letBinding, letNamedEq, m_types.LET_BINDING).complete());
         } else if (state.isCurrentResolution(tagProperty)) {
             state.updateCurrentResolution(tagPropertyEq)
+                    .complete()
                     .advance()
                     .add(mark(builder, state.currentContext(), tagPropertyValue, m_types.C_TAG_PROP_VALUE).complete());
         } else if (state.isCurrentResolution(moduleNamed)) {

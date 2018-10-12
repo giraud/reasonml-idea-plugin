@@ -65,4 +65,12 @@ public class JsxParsingTest extends BaseParsingTestCase {
         Collection<PsiModule> psiModules = moduleExpressions(parseCode("module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
         assertEquals(2, psiModules.size());
     }
+
+    public void testIncorrectProp() {
+        PsiTagStart e = (PsiTagStart) firstElement(parseCode("<MyComp x prop=1/>", true));
+
+        Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class);
+        assertEquals(1, properties.size());
+    }
+
 }
