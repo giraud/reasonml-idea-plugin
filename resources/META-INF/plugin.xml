@@ -193,6 +193,8 @@
 
         <typedHandler implementation="com.reason.ide.ORTypedHandler" id="RmlTypedHandler"/>
 
+        <lang.refactoringSupport language="OCaml"
+                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="ReasonML"
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
 
