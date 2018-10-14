@@ -10,6 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.65 - 2018/10/14
+
+- :rocket: ![r](resources/icons/reason-file.png) Parameter info (when possible) using ctrl-p [ctrlp](docs.ctrlp.png)
+- :rocket: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
+- :house: ![r](resources/icons/reason-file.png) JSX completion can find inner component modules
+- :house: improve parser (function parameters, variant constructor, signature)
+- :bug: Transform compiler and refmt to project component, to fix incorrectly shared confs
+ 
 ## 0.64 - 2018/10/08
 
 - :rocket: ![r](resources/icons/reason-file.png) Js language injection in [%raw] blocks

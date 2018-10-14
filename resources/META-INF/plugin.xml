@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.64</version>
+    <version>0.65</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,11 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>ReasonML - Js language injection in [%raw] blocks
-            <li>#67 - Curly braces intentions are broken</li>
-            <li>ReasonML - Better annotation parsing</li>
-            <li>Add missing keywords in highlighter</li>
+            <li>Parameter info (when possible) using ctrl-p</li>
+            <li>#97 - Support for rtop / RPEL as tool window</li>
+            <li>JSX completion can find inner component modules</li>
+            <li>improve parser (function parameters, variant constructor, signature)</li>
+            <li>Transform compiler and refmt to project component, to fix incorrectly shared confs</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
