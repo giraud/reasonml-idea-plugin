@@ -10,6 +10,10 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.65.1 - 2018/10/18
+
+- :bug: Dune file were no more editable because of a change in the parser
+ 
 ## 0.65 - 2018/10/14
 
 - :rocket: ![r](resources/icons/reason-file.png) Parameter info (when possible) using ctrl-p

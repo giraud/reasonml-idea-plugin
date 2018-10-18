@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML language plugin</name>
-    <version>0.65</version>
+    <version>0.65.1</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,11 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Parameter info (when possible) using ctrl-p</li>
-            <li>#97 - Support for rtop / RPEL as tool window</li>
-            <li>JSX completion can find inner component modules</li>
-            <li>improve parser (function parameters, variant constructor, signature)</li>
-            <li>Transform compiler and refmt to project component, to fix incorrectly shared confs</li>
+            <li>Dune file were no more editable because of a change in the parser</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
