@@ -5,17 +5,16 @@ import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
 
-public abstract class CommonParser implements PsiParser, LightPsiParser {
+public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
-    protected ORTypes m_types;
+    protected T m_types;
 
-    protected CommonParser(ORTypes types) {
+    protected CommonParser(T types) {
         m_types = types;
     }
 

@@ -13,7 +13,7 @@ import static com.reason.lang.ParserScope.mark;
 import static com.reason.lang.ParserScope.markScope;
 import static com.reason.lang.ParserScopeEnum.*;
 
-public class RmlParser extends CommonParser {
+public class RmlParser extends CommonParser<RmlTypes> {
 
     RmlParser() {
         super(RmlTypes.INSTANCE);

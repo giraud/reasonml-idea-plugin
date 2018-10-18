@@ -65,7 +65,7 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new FlexAdapter(new DuneLexer());
+        return new FlexAdapter(new DuneLexer(DuneTypes.INSTANCE));
     }
 
     @NotNull

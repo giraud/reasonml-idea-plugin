@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.ParsingTestCase;
+import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
@@ -90,18 +91,35 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return parseCode(text, print);
     }
 
-    protected PsiFile parseCode(String code) {
+    protected FileBase parseCode(String code) {
         return parseCode(code, false);
     }
 
-    protected PsiFile parseCode(String code, boolean print) {
+    protected FileBase parseCode(String code, boolean print) {
+        parseRawCode(code, print);
+        return (FileBase) myFile;
+    }
+
+    protected PsiFile parseRawCode(String code, boolean print) {
         myFile = createPsiFile("dummy", code);
-        FileBase file = (FileBase) myFile;
         if (print) {
             System.out.println("» " + this.getClass());
-            System.out.println(DebugUtil.psiToString(file, true, true));
+            System.out.println(DebugUtil.psiToString(myFile, true, true));
         }
-        return file;
+        return myFile;
+    }
+
+    protected DuneFile parseDuneCode(String code) {
+        return parseDuneCode(code, false);
+    }
+
+    protected DuneFile parseDuneCode(String code, boolean print) {
+        myFile = createFile("jbuild", code);
+        if (print) {
+            System.out.println("» " + this.getClass());
+            System.out.println(DebugUtil.psiToString(myFile, true, true));
+        }
+        return (DuneFile) myFile;
     }
 
     @SuppressWarnings("unused")

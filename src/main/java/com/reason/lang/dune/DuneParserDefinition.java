@@ -1,7 +1,6 @@
 package com.reason.lang.dune;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.FlexAdapter;
@@ -22,12 +21,12 @@ public class DuneParserDefinition implements ParserDefinition {
     private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.INSTANCE.COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(RmlTypes.INSTANCE.STRING);
 
-    private static final IFileElementType FILE = new IFileElementType(Language.findInstance(DuneLanguage.class));
+    private static final IFileElementType FILE = new IFileElementType(DuneLanguage.INSTANCE);
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new FlexAdapter(new DuneLexer());
+        return new FlexAdapter(new DuneLexer(DuneTypes.INSTANCE));
     }
 
     @NotNull

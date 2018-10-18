@@ -182,6 +182,7 @@
         <projectConfigurable id="settings.reason" groupId="language" displayName="Reason"
                              instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
 
+        <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
         <!--<facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>-->
         <!--<framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>-->
 
@@ -249,8 +250,6 @@
 
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
                     factoryClass="com.reason.build.bs.console.BsToolWindowFactory"/>
-
-        <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
 
         <codeInsight.parameterInfo language="ReasonML"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>

@@ -725,7 +725,7 @@ public class DuneLexer implements FlexLexer {
   private int commentDepth;
   private int parenDepth;
 
-  public DuneLexer() {}
+  public DuneLexer(DuneTypes types) { this.types = types; }
 
   // Store the start index of a token
   private void tokenStart() {

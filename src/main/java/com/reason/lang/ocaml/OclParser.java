@@ -14,7 +14,7 @@ import static com.reason.lang.ParserScope.mark;
 import static com.reason.lang.ParserScope.markScope;
 import static com.reason.lang.ParserScopeEnum.*;
 
-public class OclParser extends CommonParser {
+public class OclParser extends CommonParser<OclTypes> {
 
     public OclParser() {
         super(OclTypes.INSTANCE);
