@@ -32,7 +32,7 @@ public class ReasonProjectTracker implements ProjectComponent {
     @Nullable
     private VirtualFileListener m_vfListener;
     @Nullable
-    private RmlFileEditorListener m_fileEditorListener;
+    private ORFileEditorListener m_fileEditorListener;
 
     protected ReasonProjectTracker(Project project) {
         m_project = project;
@@ -60,7 +60,7 @@ public class ReasonProjectTracker implements ProjectComponent {
         EditorFactory.getInstance().getEventMulticaster().addDocumentListener(m_documentListener);
 
         m_messageBusConnection = m_project.getMessageBus().connect();
-        m_fileEditorListener = new RmlFileEditorListener(m_project);
+        m_fileEditorListener = new ORFileEditorListener(m_project);
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, m_fileEditorListener);
         m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(m_project));
 

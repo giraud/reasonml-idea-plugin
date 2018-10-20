@@ -1,4 +1,4 @@
-package com.reason.build.bs.console;
+package com.reason.build.console;
 
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -14,6 +14,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.reason.build.bs.compiler.BsCompiler;
+import com.reason.build.bs.compiler.BsOutputListener;
 import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,18 +33,18 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
 
         bucklescriptWindow.getContentManager().addContent(content);
-        bucklescriptWindow.setIcon(Icons.BUCKLESCRIPT);
+        bucklescriptWindow.setIcon(Icons.BUCKLESCRIPT); // ? ProjectCompiler
 
         Disposer.register(project, console);
 
         // Start compiler
-        BsCompiler bsc = BsCompiler.getInstance(project);
-        bsc.addListener(new BsOutputListener(project, bsc));
-        ProcessHandler handler = bsc.getHandler();
-        if (handler != null) {
-            console.attachToProcess(handler);
-        }
-        bsc.startNotify();
+//        BsCompiler bsc = BsCompiler.getInstance(project);
+//        bsc.addListener(new BsOutputListener(project, bsc));
+//        ProcessHandler handler = bsc.getHandler();
+//        if (handler != null) {
+//            console.attachToProcess(handler);
+//        }
+//        bsc.startNotify();
     }
 
     private ActionToolbar createToolbar(@NotNull Project project, @NotNull BsConsole console) {

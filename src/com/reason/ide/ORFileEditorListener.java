@@ -14,11 +14,11 @@ import com.reason.ide.hints.InferredTypesService;
 /**
  * Listen to editor events and query merlin for types when editor get the focus.
  */
-public class RmlFileEditorListener implements FileEditorManagerListener {
+public class ORFileEditorListener implements FileEditorManagerListener {
     private final Project m_project;
     private final List<VirtualFile> m_openedFiles = new ArrayList<>();
 
-    RmlFileEditorListener(Project project) {
+    ORFileEditorListener(Project project) {
         m_project = project;
     }
 

@@ -1,4 +1,4 @@
-package com.reason.build.bs.console;
+package com.reason.build.console;
 
 import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.openapi.project.Project;

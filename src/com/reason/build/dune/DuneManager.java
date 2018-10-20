@@ -12,6 +12,7 @@ import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.bs.compiler.CliType;
+import com.reason.icons.Icons;
 import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +75,7 @@ public class DuneManager implements Compiler, ProjectComponent {
         ConsoleView console = null;
 
         ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow("Bucklescript");
+        window.setIcon(Icons.DUNE_FILE);
         Content windowContent = window.getContentManager().getContent(0);
         if (windowContent != null) {
             SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();

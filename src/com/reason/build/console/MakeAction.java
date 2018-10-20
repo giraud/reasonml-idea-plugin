@@ -1,4 +1,4 @@
-package com.reason.build.bs.console;
+package com.reason.build.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
@@ -16,13 +16,13 @@ import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.bs.compiler.CliType;
 
-public class MakeWorldAction extends DumbAwareAction {
+public class MakeAction extends DumbAwareAction {
 
     private final ConsoleView m_console;
     private final Project m_project;
 
-    MakeWorldAction(ConsoleView console, Project project) {
-        super("Clean and make world", "Clean and make world", AllIcons.General.Web);
+    MakeAction(ConsoleView console, Project project) {
+        super("Make", "Make", AllIcons.Actions.Compile);
         m_project = project;
         m_console = console;
     }
@@ -34,12 +34,12 @@ public class MakeWorldAction extends DumbAwareAction {
         if (editor == null) {
             VirtualFile baseDir = Platform.findBaseRoot(m_project);
             m_console.print("No active text editor found, using " + baseDir.getPath() + " as root directory\n", ConsoleViewContentType.NORMAL_OUTPUT);
-            BucklescriptManager.getInstance(m_project).run(baseDir, CliType.cleanMake);
+            BucklescriptManager.getInstance(m_project).run(baseDir, CliType.make);
         } else {
             Document document = editor.getDocument();
             PsiFile psiFile = PsiDocumentManager.getInstance(m_project).getPsiFile(document);
             if (psiFile != null) {
-                BucklescriptManager.getInstance(m_project).run(psiFile.getVirtualFile(), CliType.cleanMake);
+                BucklescriptManager.getInstance(m_project).run(psiFile.getVirtualFile(), CliType.make);
             }
         }
     }

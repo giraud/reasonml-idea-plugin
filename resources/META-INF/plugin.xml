@@ -245,7 +245,7 @@
          -->
 
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
-                    factoryClass="com.reason.build.bs.console.BsToolWindowFactory"/>
+                    factoryClass="com.reason.build.console.BsToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="ReasonML"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>

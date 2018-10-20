@@ -1,4 +1,4 @@
-package com.reason.build.bs.console;
+package com.reason.build.bs.compiler;
 
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
@@ -9,8 +9,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.reason.build.annotations.ErrorsManager;
 import com.reason.build.annotations.OutputInfo;
-import com.reason.build.bs.compiler.BsCompiler;
-import com.reason.build.bs.compiler.RawProcessListener;
 import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.reason.build.bs.console.BsOutputListener.BuildStatus.*;
+import static com.reason.build.bs.compiler.BsOutputListener.BuildStatus.*;
 import static java.lang.Integer.parseInt;
 
 public class BsOutputListener implements RawProcessListener {
