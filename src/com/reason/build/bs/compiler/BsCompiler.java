@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
+import com.reason.build.console.CliType;
 import com.reason.ide.RmlNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,11 +49,6 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
     @Override
     public void projectClosed() {
         killIt();
-    }
-
-    @Nullable
-    public ProcessHandler getHandler() {
-        return m_bsb;
     }
 
     // Wait for the tool window to be ready before starting the process
@@ -93,21 +89,23 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
             m_bsb = new BsProcessHandler(cli);
-            if (m_outputListener != null) {
+            if (m_outputListener == null) {
+                addListener(new BsOutputListener(m_project, this));
+            } else {
                 m_bsb.addRawProcessListener(m_outputListener);
             }
         }
         return m_bsb;
     }
 
-    public void killIt() {
+    private void killIt() {
         if (m_bsb != null) {
             m_bsb.killProcess();
             m_bsb = null;
         }
     }
 
-    public void addListener(RawProcessListener outputListener) {
+    private void addListener(RawProcessListener outputListener) {
         m_outputListener = outputListener;
         if (m_bsb != null) {
             m_bsb.addRawProcessListener(outputListener);

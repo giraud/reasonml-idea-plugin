@@ -14,7 +14,6 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
-import com.reason.build.bs.compiler.CliType;
 
 public class MakeAction extends DumbAwareAction {
 

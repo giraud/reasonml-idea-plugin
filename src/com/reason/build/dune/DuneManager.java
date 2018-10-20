@@ -11,7 +11,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.build.Compiler;
-import com.reason.build.bs.compiler.CliType;
+import com.reason.build.console.CliType;
 import com.reason.icons.Icons;
 import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
@@ -86,5 +86,10 @@ public class DuneManager implements Compiler, ProjectComponent {
         }
 
         return console;
+    }
+
+    @Override
+    public String toString() {
+        return "Dune";
     }
 }

@@ -3,7 +3,6 @@ package com.reason.ide;
 import com.intellij.AppTopics;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
@@ -12,7 +11,6 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.format.ReformatOnSave;
-import com.reason.ide.hints.ORDocumentListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,11 +24,9 @@ public class ReasonProjectTracker implements ProjectComponent {
 
     private final Project m_project;
     @Nullable
-    private ORDocumentListener m_documentListener;
-    @Nullable
     private MessageBusConnection m_messageBusConnection;
     @Nullable
-    private VirtualFileListener m_vfListener;
+    private ORVirtualFileListener m_vfListener;
     @Nullable
     private ORFileEditorListener m_fileEditorListener;
 
@@ -56,24 +52,19 @@ public class ReasonProjectTracker implements ProjectComponent {
             m_log.info("32Bit system detected, can't use rincewind");
         }
 
-        m_documentListener = new ORDocumentListener(m_project);
-        EditorFactory.getInstance().getEventMulticaster().addDocumentListener(m_documentListener);
+        //EditorFactory.getInstance().getEventMulticaster().addDocumentListener(m_documentListener);
 
         m_messageBusConnection = m_project.getMessageBus().connect();
         m_fileEditorListener = new ORFileEditorListener(m_project);
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, m_fileEditorListener);
         m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(m_project));
 
-        m_vfListener = new VirtualFileListener(m_project);
+        m_vfListener = new ORVirtualFileListener(m_project);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
     }
 
     @Override
     public void projectClosed() {
-        if (m_documentListener != null) {
-            EditorFactory.getInstance().getEventMulticaster().removeDocumentListener(m_documentListener);
-            m_documentListener = null;
-        }
         if (m_vfListener != null) {
             VirtualFileManager.getInstance().removeVirtualFileListener(m_vfListener);
             m_vfListener = null;

@@ -1,7 +1,7 @@
 package com.reason.build;
 
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.build.bs.compiler.CliType;
+import com.reason.build.console.CliType;
 import org.jetbrains.annotations.NotNull;
 
 public interface Compiler {

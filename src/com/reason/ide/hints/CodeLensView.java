@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-class CodeLensView {
-    static final Key<CodeLensInfo> CODE_LENS = Key.create("reasonml.codelens");
+public class CodeLensView {
+    public static final Key<CodeLensInfo> CODE_LENS = Key.create("reasonml.codelens");
 
     private CodeLensView() {
     }
@@ -36,7 +36,7 @@ class CodeLensView {
             return integerStringMap.get(line);
         }
 
-        public synchronized void put(@NotNull VirtualFile file, @NotNull LogicalPosition position, @NotNull String signature/*Map of sig?*/, long timestamp) {
+        synchronized void put(@NotNull VirtualFile file, @NotNull LogicalPosition position, @NotNull String signature/*Map of sig?*/, long timestamp) {
             m_timestamps.put(file, timestamp);
             Map<Integer, String> integerStringMap = m_signatures.get(file);
             if (integerStringMap == null) {
@@ -46,7 +46,7 @@ class CodeLensView {
             integerStringMap.putIfAbsent(position.line, signature);
         }
 
-        synchronized void move(@NotNull VirtualFile file, int startLine, int direction, long timestamp) {
+        public synchronized void move(@NotNull VirtualFile file, int startLine, int direction, long timestamp) {
             m_timestamps.put(file, timestamp);
             Map<Integer, String> signaturesByLine = m_signatures.get(file);
             if (signaturesByLine != null) {
