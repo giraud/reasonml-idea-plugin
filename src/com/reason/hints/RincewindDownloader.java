@@ -11,7 +11,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.reason.ide.RmlNotification;
+import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -106,14 +106,14 @@ public class RincewindDownloader extends Task.Backgroundable {
                 insightManager.isDownloaded.set(true);
                 m_log.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
 
-                Notifications.Bus.notify(new RmlNotification("Reason", "Downloaded " + targetFile, NotificationType.INFORMATION));
+                Notifications.Bus.notify(new ORNotification("Reason", "Downloaded " + targetFile, NotificationType.INFORMATION));
 
                 Application application = ApplicationManager.getApplication();
                 application.invokeLater(() -> application.runWriteAction(() -> {
                     VirtualFileManager.getInstance().syncRefresh();
                 }));
             } catch (IOException e) {
-                Notifications.Bus.notify(new RmlNotification("Reason", "Can't download " + targetFile + "\n" + e, NotificationType.ERROR));
+                Notifications.Bus.notify(new ORNotification("Reason", "Can't download " + targetFile + "\n" + e, NotificationType.ERROR));
             }
 
             indicator.setFraction(1.0);

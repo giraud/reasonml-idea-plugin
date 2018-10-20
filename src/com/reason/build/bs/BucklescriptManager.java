@@ -18,7 +18,7 @@ import com.reason.build.bs.compiler.BsCompiler;
 import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
-import com.reason.ide.RmlNotification;
+import com.reason.ide.ORNotification;
 import com.reason.ide.files.FileHelper;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +62,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         m_disabled = Boolean.getBoolean("reasonBsbDisabled");
         if (m_disabled) {
             // But you should NEVER do that
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
+            Notifications.Bus.notify(new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
         }
     }
 

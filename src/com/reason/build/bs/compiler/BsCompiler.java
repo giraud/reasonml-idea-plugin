@@ -12,7 +12,7 @@ import com.reason.Platform;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.build.console.CliType;
-import com.reason.ide.RmlNotification;
+import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +78,7 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
         try {
             return createProcessHandler(sourceFile, cliType);
         } catch (ExecutionException e) {
-            Notifications.Bus.notify(new RmlNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new ORNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
 
         return null;
@@ -118,7 +118,7 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
 
         if (bsbPath == null) {
             if (!sourceFile.getPath().contains("node_modules")) {
-                Notifications.Bus.notify(new RmlNotification("Bsb",
+                Notifications.Bus.notify(new ORNotification("Bsb",
                         "<html>Can't find bsb.\n"
                                 + "Working directory is '" + ModuleConfiguration.getWorkingDir(m_project, sourceFile) + "'.\n"
                                 + "Be sure that bsb is installed and reachable from that directory, "

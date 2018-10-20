@@ -9,19 +9,19 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class RmlNotification extends Notification {
+public class ORNotification extends Notification {
 
     private static final String REASON_ML_GROUP_DISPLAY = "Reason";
 
-    public RmlNotification(@Nullable String title, @Nullable String subtitle, @Nullable String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
+    public ORNotification(@Nullable String title, @Nullable String subtitle, @Nullable String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
         super(REASON_ML_GROUP_DISPLAY, /*getIcon(type), */"reason: " + title, /*subtitle, */content, type, listener);
     }
 
-    public RmlNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type) {
+    public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type) {
         super(REASON_ML_GROUP_DISPLAY, /*getIcon(type), */"reason: " + title, /*null, */content, type, null);
     }
 
-    public RmlNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type, NotificationListener listener) {
+    public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type, NotificationListener listener) {
         super(REASON_ML_GROUP_DISPLAY, /*getIcon(type), */"reason: " + title, /*null, */content, type, listener);
     }
 

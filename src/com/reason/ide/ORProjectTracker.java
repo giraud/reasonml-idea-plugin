@@ -18,7 +18,7 @@ import java.io.File;
 
 import static com.reason.Platform.getOsPrefix;
 
-public class ReasonProjectTracker implements ProjectComponent {
+public class ORProjectTracker implements ProjectComponent {
 
     private final Logger m_log = Logger.getInstance("ReasonML");
 
@@ -30,7 +30,7 @@ public class ReasonProjectTracker implements ProjectComponent {
     @Nullable
     private ORFileEditorListener m_fileEditorListener;
 
-    protected ReasonProjectTracker(Project project) {
+    protected ORProjectTracker(Project project) {
         m_project = project;
     }
 

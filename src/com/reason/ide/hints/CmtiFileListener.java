@@ -6,10 +6,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
-import com.reason.ide.ReasonProjectTracker;
+import com.reason.ide.FileManager;
+import com.reason.ide.ORProjectTracker;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
 import com.reason.ide.sdk.OCamlSDK;
@@ -23,7 +23,7 @@ public class CmtiFileListener implements ProjectComponent {
     private final Logger m_log;
     private final Project m_project;
     private final InsightManager m_insightManager;
-    private final ReasonProjectTracker m_projectTracker;
+    private final ORProjectTracker m_projectTracker;
 
     public static CmtiFileListener getInstance(Project project) {
         return project.getComponent(CmtiFileListener.class);
@@ -33,7 +33,7 @@ public class CmtiFileListener implements ProjectComponent {
         m_log = Logger.getInstance("ReasonML.vfs");
         m_project = project;
         m_insightManager = project.getComponent(InsightManager.class);
-        m_projectTracker = project.getComponent(ReasonProjectTracker.class);
+        m_projectTracker = project.getComponent(ORProjectTracker.class);
     }
 
     @Override

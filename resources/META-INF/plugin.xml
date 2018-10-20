@@ -39,7 +39,7 @@
             <implementation-class>com.reason.build.annotations.ErrorsManagerImpl</implementation-class>
         </component>
         <component>
-            <implementation-class>com.reason.ide.ReasonProjectTracker</implementation-class>
+            <implementation-class>com.reason.ide.ORProjectTracker</implementation-class>
         </component>
         <component>
             <interface-class>com.reason.build.bs.Bucklescript</interface-class>

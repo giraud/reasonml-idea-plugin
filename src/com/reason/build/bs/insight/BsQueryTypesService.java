@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.hints.InsightManager;
-import com.reason.ide.RmlNotification;
+import com.reason.ide.ORNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +52,7 @@ public class BsQueryTypesService implements ProjectComponent {
             StringBuilder msgBuffer = new StringBuilder();
             if (errReader.ready()) {
                 errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                Notifications.Bus.notify(new RmlNotification("Code lens", msgBuffer.toString(), NotificationType.ERROR));
+                Notifications.Bus.notify(new ORNotification("Code lens", msgBuffer.toString(), NotificationType.ERROR));
             } else {
                 reader.lines().forEach(line -> {
                     //System.out.println("»" + line + "«");

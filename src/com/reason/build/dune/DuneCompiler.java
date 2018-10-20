@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.build.CompilerLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
-import com.reason.ide.RmlNotification;
+import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public final class DuneCompiler implements CompilerLifecycle {
             }
             return m_processHangler;
         } catch (ExecutionException e) {
-            Notifications.Bus.notify(new RmlNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
+            Notifications.Bus.notify(new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
         }
 
         return null;
@@ -76,7 +76,7 @@ public final class DuneCompiler implements CompilerLifecycle {
     private GeneralCommandLine getGeneralCommandLine() {
         Sdk sdk = OCamlSDK.getSDK(m_project);
         if (sdk == null) {
-            Notifications.Bus.notify(new RmlNotification("Dune",
+            Notifications.Bus.notify(new ORNotification("Dune",
                     "<html>Can't find sdk.\n"
                             + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
