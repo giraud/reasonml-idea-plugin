@@ -158,4 +158,24 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
         }
         return null;
     }
+
+
+    //region Backward compatibility
+    @Nullable
+    @Override
+    public Object[] getParametersForDocumentation(HMSignature hmSignature, ParameterInfoContext parameterInfoContext) {
+        return new Object[0];
+    }
+
+    @Nullable
+    @Override
+    public String getParameterCloseChars() {
+        return null;
+    }
+
+    @Override
+    public boolean tracksParameterIndex() {
+        return false;
+    }
+    //endregion
 }

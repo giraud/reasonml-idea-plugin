@@ -1,11 +1,14 @@
 package com.reason.build.dune;
 
+import java.util.concurrent.atomic.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.KillableColoredProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -14,20 +17,21 @@ import com.reason.build.CompilerProcessLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class DuneProcess implements CompilerProcessLifecycle {
+public final class DuneProcess implements ProjectComponent, CompilerProcessLifecycle {
 
     private final Project m_project;
     private final ProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
     private KillableColoredProcessHandler m_processHandler;
+
+    public static DuneProcess getInstance(Project project) {
+        return project.getComponent(DuneProcess.class);
+    }
 
     DuneProcess(Project project) {
         m_project = project;
@@ -52,6 +56,7 @@ public final class DuneProcess implements CompilerProcessLifecycle {
             killIt();
             GeneralCommandLine cli = getGeneralCommandLine();
             if (cli != null) {
+                //cli.setRedirectErrorStream(true);
                 m_processHandler = new KillableColoredProcessHandler(cli);
                 if (m_outputListener != null) {
                     m_processHandler.addProcessListener(m_outputListener);

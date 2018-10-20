@@ -90,15 +90,15 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
-                BsProcess compiler = BsProcess.getInstance(m_project);
-                if (compiler.start()) {
-                    ProcessHandler bscProcess = compiler.recreate(sourceFile, cliType);
+                BsProcess process = BsProcess.getInstance(m_project);
+                if (process.start()) {
+                    ProcessHandler bscProcess = process.recreate(sourceFile, cliType);
                     if (bscProcess != null) {
                         getBsbConsole().attachToProcess(bscProcess);
-                        compiler.startNotify();
+                        process.startNotify();
                         InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
                     } else {
-                        compiler.terminated();
+                        process.terminated();
                     }
                 }
             }

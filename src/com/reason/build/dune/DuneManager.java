@@ -11,15 +11,16 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
+import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
+import com.reason.hints.InsightManagerImpl;
 import com.reason.icons.Icons;
 import com.reason.ide.files.FileHelper;
 
 public class DuneManager implements Compiler, ProjectComponent {
 
     private final Project m_project;
-    private final DuneProcess m_duneProcess;
 
     @NotNull
     public static Compiler getInstance(@NotNull Project project) {
@@ -28,7 +29,6 @@ public class DuneManager implements Compiler, ProjectComponent {
 
     DuneManager(@NotNull Project project) {
         m_project = project;
-        m_duneProcess = new DuneProcess(m_project);
     }
 
     @Override
@@ -39,13 +39,18 @@ public class DuneManager implements Compiler, ProjectComponent {
     @Override
     public void run(@NotNull VirtualFile file) {
         if (FileHelper.isCompilable(file.getFileType())) {
-            if (m_duneProcess.start()) {
-                ProcessHandler recreate = m_duneProcess.recreate();
-                if (recreate != null) {
-                    getBsbConsole().attachToProcess(recreate);
-                    m_duneProcess.startNotify();
-                } else {
-                    m_duneProcess.terminated();
+            VirtualFile duneConfig = Platform.findBaseRoot(m_project).findChild("jbuild");
+            if (duneConfig != null) {
+                DuneProcess process = DuneProcess.getInstance(m_project);
+                if (process.start()) {
+                    ProcessHandler handler = process.recreate();
+                    if (handler != null) {
+                        getBsbConsole().attachToProcess(handler);
+                        process.startNotify();
+                        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+                    } else {
+                        process.terminated();
+                    }
                 }
             }
         }
@@ -53,7 +58,7 @@ public class DuneManager implements Compiler, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
-        run(file);
+        run(file, CliType.standard);
     }
 
     // copied
@@ -78,4 +83,14 @@ public class DuneManager implements Compiler, ProjectComponent {
     public String toString() {
         return "Dune";
     }
+
+    //region Compatibility
+    @Override
+    public void initComponent() { // For compatibility with idea#143
+    }
+
+    @Override
+    public void disposeComponent() { // For compatibility with idea#143
+    }
+    //endregion
 }
