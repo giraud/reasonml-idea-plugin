@@ -32,13 +32,20 @@ public enum ParserScopeEnum {
     let,
     letNamed,
     letNamedEq,
-    letNamedParametersEq,
     letNamedSignature,
     letNamedBinding,
 
+    maybeFunctionParameter,
+
     function,
-    parameters,
+    functionParameters,
+    functionParameter,
+    functionParameterNamed,
+    functionParameterNamedSignature,
+    functionParameterNamedSignatureItem,
     functionBody,
+    functionCall,
+    functionCallParams,
 
     val,
     valNamed,
@@ -102,7 +109,8 @@ public enum ParserScopeEnum {
     moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope,
     moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
-    clazzNamedConstructor, record, mixin, functionCallParams, macroNamed, macroRaw, macroRawBody,
-    externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed, functionParameter, functionParameterNamed,
-    functionParameterSignature, patternMatchConstructor, recordFieldSignature, maybeRecordUsage, recordUsage, recordFieldValue, signatureItem, functionParameterNamedSignatureItem, functionParameterNamedSignature, functionCall, letNamedBindingFunction, maybeFunctionParameter, tagPropertyValue, name
+    clazzNamedConstructor, record, mixin, macroNamed, macroRaw, macroRawBody,
+    externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
+    patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction, tagPropertyValue,
+    name
 }

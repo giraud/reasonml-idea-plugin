@@ -103,7 +103,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             else if (tokenType == m_types.LBRACE) {
                 parseLBrace(builder, state);
             } else if (tokenType == m_types.RBRACE) {
-                parseRBrace(builder, state);
+                parseRBrace(state);
             }
             // [ ... ]
             // [> ... ]
@@ -112,7 +112,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             } else if (tokenType == m_types.BRACKET_GT) {
                 parseBracketGt(builder, state);
             } else if (tokenType == m_types.RBRACKET) {
-                parseRBracket(builder, state);
+                parseRBracket(state);
             }
             // < ... >
             else if (tokenType == m_types.LT) {
@@ -126,13 +126,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
             else if (tokenType == m_types.ML_STRING_OPEN) {
                 parseMlStringOpen(builder, state);
             } else if (tokenType == m_types.ML_STRING_CLOSE) {
-                parseMlStringClose(builder, state);
+                parseMlStringClose(state);
             }
             // {j| ... |j}
             else if (tokenType == m_types.JS_STRING_OPEN) {
                 parseJsStringOpen(builder, state);
             } else if (tokenType == m_types.JS_STRING_CLOSE) {
-                parseJsStringClose(builder, state);
+                parseJsStringClose(state);
             }
             // Starts an expression
             else if (tokenType == m_types.OPEN) {
@@ -187,7 +187,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             ParserScope paramsScope = state.pop();
             ParserScope functionScope = state.pop();
             state.add(functionScope.context(function).resolution(function).compositeElementType(m_types.C_FUN_EXPR))
-                    .add(paramsScope.context(function).resolution(parameters).compositeElementType(m_types.C_FUN_PARAMS))
+                    .add(paramsScope.context(function).resolution(functionParameters).compositeElementType(m_types.C_FUN_PARAMS))
                     .advance()
                     .add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM));
         }
@@ -284,11 +284,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         IElementType nextToken = builder.rawLookup(1);
         if (m_types.LIDENT == nextToken) {
             if (state.isCurrentContext(paren)) {
-                state.updateCurrentContext(parameters);
-                state.updateCurrentResolution(parameters);
+                state.updateCurrentContext(functionParameters);
+                state.updateCurrentResolution(functionParameters);
             }
 
-            if (state.isCurrentContext(parameters)) {
+            if (state.isCurrentContext(functionParameters)) {
                 state.add(mark(builder, functionParameter, m_types.C_FUN_PARAM).complete());
             }
         }
@@ -340,7 +340,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         state.add(markScope(builder, state.currentContext(), multilineStart, m_types.C_ML_INTERPOLATOR, m_types.ML_STRING_OPEN));
     }
 
-    private void parseMlStringClose(PsiBuilder builder, ParserState state) {
+    private void parseMlStringClose(ParserState state) {
         ParserScope scope = state.endUntilScopeToken(m_types.ML_STRING_OPEN);
         state.advance();
 
@@ -360,7 +360,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         state.add(mark(builder, interpolationString, m_types.INTERPOLATION_EXPR).complete());
     }
 
-    private void parseJsStringClose(PsiBuilder builder, ParserState state) {
+    private void parseJsStringClose(ParserState state) {
         ParserScope scope = state.endUntilScopeToken(m_types.JS_STRING_OPEN);
         state.advance();
 
@@ -564,7 +564,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.updateCurrentResolution(typeNamed);
             state.complete();
             state.setPreviousComplete();
-        } else if (state.isCurrentResolution(parameters)) {
+        } else if (state.isCurrentResolution(functionParameters)) {
             state.add(mark(builder, state.currentContext(), functionParameter, m_types.C_FUN_PARAM).complete());
         } else if (state.isCurrentResolution(external)) {
             // EXTERNAL <LIDENT> ...
@@ -582,7 +582,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
                     state.add(mark(builder, function, letNamedBindingFunction, m_types.C_FUN_EXPR).complete());
-                    state.add(mark(builder, function, parameters, m_types.C_FUN_PARAMS).complete());
+                    state.add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
                     state.add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
                 }
             }
@@ -638,7 +638,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 // Single (paren less) function parameters
                 // <c> => ...
                 state.add(mark(builder, function, function, m_types.C_FUN_EXPR).complete());
-                state.add(mark(builder, function, parameters, m_types.C_FUN_PARAMS).complete());
+                state.add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
                 state.add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
             } else {
                 // Add a generic wrapper in case it's a parameter
@@ -671,7 +671,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         state.add(markScope(builder, bracketGt, m_types.SCOPED_EXPR, m_types.LBRACKET));
     }
 
-    private void parseRBracket(PsiBuilder builder, ParserState state) {
+    private void parseRBracket(ParserState state) {
         ParserScope scope = state.endUntilScopeToken(m_types.LBRACKET);
         state.advance();
 
@@ -710,7 +710,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
     }
 
-    private void parseRBrace(PsiBuilder builder, ParserState state) {
+    private void parseRBrace(ParserState state) {
         if (state.isCurrentResolution(recordField)) {
             state.popEnd();
         }
@@ -814,7 +814,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
             if (nextTokenType == m_types.ARROW) {
                 if (!state.isCurrentResolution(patternMatch) && !state.isCurrentContext(signature)) {
-                    parenScope.resolution(parameters);
+                    parenScope.resolution(functionParameters);
                     parenScope.compositeElementType(m_types.C_FUN_PARAMS);
                 }
             } else if (nextTokenType == m_types.LPAREN) {
@@ -836,7 +836,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             parenScope.end();
 
             // Handle the generic scope
-            if (parenScope.isResolution(parameters) && nextTokenType == m_types.ARROW) {
+            if (parenScope.isResolution(functionParameters) && nextTokenType == m_types.ARROW) {
                 // Transform the generic scope to a function scope
                 state.updateCurrentResolution(function);
                 state.updateCurrentCompositeElementType(m_types.C_FUN_EXPR);

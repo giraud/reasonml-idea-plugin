@@ -2,6 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
@@ -108,4 +109,15 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals(1, lets.size());
     }
 
+    public void testCase1() {
+        FileBase file = parseCode("let format_open {o_loc; o_name; o_items; _} = " +
+                "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)", true);
+        PsiLet e = first(letExpressions(file));
+
+        PsiLetBinding binding = e.getBinding();
+        assertInstanceOf(binding.getFirstChild(), PsiFunction.class);
+        PsiFunction function = (PsiFunction) binding.getFirstChild();
+        assertEquals("{o_loc; o_name; o_items; _}", function.getParameterList().iterator().next().getText());
+        assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)", function.getBody().getText());
+    }
 }

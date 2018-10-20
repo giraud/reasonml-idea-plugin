@@ -27,7 +27,7 @@ public final class DuneCompiler implements CompilerLifecycle {
     private final ProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
-    private KillableColoredProcessHandler m_processHangler;
+    private KillableColoredProcessHandler m_processHandler;
 
     DuneCompiler(Project project) {
         m_project = project;
@@ -37,9 +37,9 @@ public final class DuneCompiler implements CompilerLifecycle {
 
     // Wait for the tool window to be ready before starting the process
     void startNotify() {
-        if (m_processHangler != null && !m_processHangler.isStartNotified()) {
+        if (m_processHandler != null && !m_processHandler.isStartNotified()) {
             try {
-                m_processHangler.startNotify();
+                m_processHandler.startNotify();
             } catch (Throwable e) {
                 // already done ?
             }
@@ -52,12 +52,12 @@ public final class DuneCompiler implements CompilerLifecycle {
             killIt();
             GeneralCommandLine cli = getGeneralCommandLine();
             if (cli != null) {
-                m_processHangler = new KillableColoredProcessHandler(cli);
+                m_processHandler = new KillableColoredProcessHandler(cli);
                 if (m_outputListener != null) {
-                    m_processHangler.addProcessListener(m_outputListener);
+                    m_processHandler.addProcessListener(m_outputListener);
                 }
             }
-            return m_processHangler;
+            return m_processHandler;
         } catch (ExecutionException e) {
             Notifications.Bus.notify(new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
         }
@@ -66,9 +66,9 @@ public final class DuneCompiler implements CompilerLifecycle {
     }
 
     private void killIt() {
-        if (m_processHangler != null) {
-            m_processHangler.killProcess();
-            m_processHangler = null;
+        if (m_processHandler != null) {
+            m_processHandler.killProcess();
+            m_processHandler = null;
         }
     }
 
