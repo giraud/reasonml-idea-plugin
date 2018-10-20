@@ -59,8 +59,8 @@
             <implementation-class>com.reason.build.bs.refmt.RefmtProcess</implementation-class>
         </component>
         <component>
-            <interface-class>com.reason.build.bs.compiler.BsCompiler</interface-class>
-            <implementation-class>com.reason.build.bs.compiler.BsCompiler</implementation-class>
+            <interface-class>com.reason.build.bs.compiler.BsProcess</interface-class>
+            <implementation-class>com.reason.build.bs.compiler.BsProcess</implementation-class>
         </component>
         <component>
             <implementation-class>com.reason.hints.RincewindProcess</implementation-class>

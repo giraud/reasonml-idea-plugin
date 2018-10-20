@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
-import com.reason.build.CompilerLifecycle;
+import com.reason.build.CompilerProcessLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class DuneCompiler implements CompilerLifecycle {
+public final class DuneProcess implements CompilerProcessLifecycle {
 
     private final Project m_project;
     private final ProcessListener m_outputListener;
@@ -29,7 +29,7 @@ public final class DuneCompiler implements CompilerLifecycle {
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
     private KillableColoredProcessHandler m_processHandler;
 
-    DuneCompiler(Project project) {
+    DuneProcess(Project project) {
         m_project = project;
         m_outputListener = new DuneOutputListener(m_project, this);
         recreate();

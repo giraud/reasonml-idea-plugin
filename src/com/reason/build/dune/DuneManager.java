@@ -1,5 +1,7 @@
 package com.reason.build.dune;
 
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ProjectComponent;
@@ -9,40 +11,24 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
-import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
 import com.reason.icons.Icons;
 import com.reason.ide.files.FileHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 
 public class DuneManager implements Compiler, ProjectComponent {
 
     private final Project m_project;
-
-    @Nullable
-    private DuneCompiler m_compiler;
+    private final DuneProcess m_duneProcess;
 
     @NotNull
     public static Compiler getInstance(@NotNull Project project) {
         return project.getComponent(DuneManager.class);
     }
 
-    private DuneManager(@NotNull Project project) {
+    DuneManager(@NotNull Project project) {
         m_project = project;
-    }
-
-    @Override
-    public void projectOpened() {
-        VirtualFile baseDir = Platform.findBaseRoot(m_project);
-        VirtualFile duneConfig = baseDir.findChild("jbuild");
-
-        if (duneConfig != null) {
-            m_compiler = new DuneCompiler(m_project);
-        }
+        m_duneProcess = new DuneProcess(m_project);
     }
 
     @Override
@@ -52,14 +38,14 @@ public class DuneManager implements Compiler, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile file) {
-        if (m_compiler != null && FileHelper.isCompilable(file.getFileType())) {
-            if (m_compiler.start()) {
-                ProcessHandler recreate = m_compiler.recreate();
+        if (FileHelper.isCompilable(file.getFileType())) {
+            if (m_duneProcess.start()) {
+                ProcessHandler recreate = m_duneProcess.recreate();
                 if (recreate != null) {
                     getBsbConsole().attachToProcess(recreate);
-                    m_compiler.startNotify();
+                    m_duneProcess.startNotify();
                 } else {
-                    m_compiler.terminated();
+                    m_duneProcess.terminated();
                 }
             }
         }

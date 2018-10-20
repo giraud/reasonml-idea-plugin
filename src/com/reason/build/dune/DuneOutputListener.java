@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.build.CompilerLifecycle;
+import com.reason.build.CompilerProcessLifecycle;
 import com.reason.build.annotations.ErrorsManager;
 import com.reason.build.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
@@ -35,13 +35,13 @@ public class DuneOutputListener implements ProcessListener {
 
     private final Project m_project;
     private final ErrorsManager m_errorsManager;
-    private final CompilerLifecycle m_compilerLifecycle;
+    private final CompilerProcessLifecycle m_compilerLifecycle;
     private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
     private OutputInfo m_latestInfo = null;
 
-    DuneOutputListener(Project project, CompilerLifecycle compilerLifecycle) {
+    DuneOutputListener(Project project, CompilerProcessLifecycle compilerLifecycle) {
         m_project = project;
         m_errorsManager = project.getComponent(ErrorsManager.class);
         m_compilerLifecycle = compilerLifecycle;

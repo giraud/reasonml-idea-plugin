@@ -33,7 +33,7 @@ public class BsOutputListener implements RawProcessListener {
 
     private final Project m_project;
     private final ErrorsManager m_errorsManager;
-    private final BsCompiler m_compiler;
+    private final BsProcess m_compiler;
     private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class BsOutputListener implements RawProcessListener {
     private OutputInfo m_latestInfo = null;
     private String m_previousText;
 
-    BsOutputListener(Project project, BsCompiler bsc) {
+    BsOutputListener(Project project, BsProcess bsc) {
         m_project = project;
         m_errorsManager = project.getComponent(ErrorsManager.class);
         m_compiler = bsc;

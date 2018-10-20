@@ -9,7 +9,7 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
-import com.reason.build.CompilerLifecycle;
+import com.reason.build.CompilerProcessLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.build.console.CliType;
 import com.reason.ide.ORNotification;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
+public final class BsProcess implements CompilerProcessLifecycle, ProjectComponent {
 
     private final Project m_project;
 
@@ -33,11 +33,11 @@ public final class BsCompiler implements CompilerLifecycle, ProjectComponent {
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
-    public static BsCompiler getInstance(Project project) {
-        return project.getComponent(BsCompiler.class);
+    public static BsProcess getInstance(Project project) {
+        return project.getComponent(BsProcess.class);
     }
 
-    public BsCompiler(Project project) {
+    public BsProcess(Project project) {
         m_project = project;
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");

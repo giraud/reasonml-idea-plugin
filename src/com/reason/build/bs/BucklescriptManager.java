@@ -14,7 +14,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
-import com.reason.build.bs.compiler.BsCompiler;
+import com.reason.build.bs.compiler.BsProcess;
 import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
@@ -90,7 +90,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
-                BsCompiler compiler = BsCompiler.getInstance(m_project);
+                BsProcess compiler = BsProcess.getInstance(m_project);
                 if (compiler.start()) {
                     ProcessHandler bscProcess = compiler.recreate(sourceFile, cliType);
                     if (bscProcess != null) {

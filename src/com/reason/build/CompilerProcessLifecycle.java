@@ -1,6 +1,6 @@
 package com.reason.build;
 
-public interface CompilerLifecycle {
+public interface CompilerProcessLifecycle {
 
     void terminated();
 
