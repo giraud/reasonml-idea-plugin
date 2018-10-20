@@ -10,8 +10,8 @@ allprojects {
 
     sourceSets {
         main {
-            java.srcDirs 'src/main/java', 'gen'
-            resources.srcDirs 'resources', 'plugin/resources'
+            java.srcDirs 'src', 'gen'
+            resources.srcDirs 'resources'
         }
         test {
             java.srcDir 'tests'

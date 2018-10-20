@@ -1,7 +1,8 @@
-package com.reason;
+package com.reason.ide;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

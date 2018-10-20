@@ -1,8 +1,7 @@
 package com.reason.lang;
 
-import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORTypes;
+import ORTypes;
 
 import static com.intellij.psi.TokenType.*;
 %%

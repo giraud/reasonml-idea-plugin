@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.reason.FileManager;
+import com.reason.ide.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
 import com.reason.ide.docs.DocumentationProvider;

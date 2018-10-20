@@ -179,8 +179,8 @@
                              instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
 
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
-        <!--<facetType implementation="com.reason.ide.facet.BsFacetType" id="bucklescript"/>-->
-        <!--<framework.detector implementation="com.reason.ide.facet.BsFrameworkDetector"/>-->
+        <!--<facetType implementation="BsFacetType" id="bucklescript"/>-->
+        <!--<framework.detector implementation="BsFrameworkDetector"/>-->
 
         <!--
          | Others
@@ -219,7 +219,7 @@
         <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
-        <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="com.reason.ide.hints.SignatureProvider"/>-->
+        <!--<codeInsight.parameterNameHints language="ReasonML" implementationClass="SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->

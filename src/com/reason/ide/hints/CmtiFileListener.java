@@ -6,7 +6,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.FileManager;
+import com.reason.ide.FileManager;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ReasonProjectTracker;
