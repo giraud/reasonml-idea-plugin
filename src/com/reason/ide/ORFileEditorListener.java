@@ -6,17 +6,13 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.messages.MessageBusConnection;
-import com.reason.build.Compiler;
-import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.CompilerManager;
 import com.reason.build.console.CliType;
-import com.reason.build.dune.DuneManager;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
 import com.reason.ide.hints.InferredTypesService;
-import com.reason.ide.sdk.OCamlSDK;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
@@ -57,14 +53,17 @@ public class ORFileEditorListener implements FileEditorManagerListener {
             final DocumentListener documentListener = new ORDocumentEventListener();
 
             selectedEditor.addPropertyChangeListener(propertyChangeListener);
-            document.addDocumentListener(documentListener);
+            document.addDocumentListener(documentListener, m_project);
 
             MessageBusConnection messageBus = m_project.getMessageBus().connect(m_project);
             messageBus.subscribe(FileEditorManagerListener.Before.FILE_EDITOR_MANAGER, new FileEditorManagerListener.Before.Adapter() {
                 @Override
                 public void beforeFileClosed(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
                     selectedEditor.removePropertyChangeListener(propertyChangeListener);
-                    document.removeDocumentListener(documentListener);
+//                    Document document = FileDocumentManager.getInstance().getDocument(file);
+//                    if (document != null) {
+//                        document.removeDocumentListener(documentListener);
+//                    }
                 }
             });
         }
@@ -105,17 +104,11 @@ public class ORFileEditorListener implements FileEditorManagerListener {
             m_file = file;
         }
 
-        @NotNull
-        private Compiler getCompiler(@NotNull Project project) {
-            Sdk projectSDK = OCamlSDK.getSDK(project);
-            return projectSDK == null ? BucklescriptManager.getInstance(project) : DuneManager.getInstance(project);
-        }
-
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE/* or always, but add debounce */) {
                 // Document is saved, run the compiler !!
-                getCompiler(m_project).run(m_file, CliType.standard);
+                CompilerManager.getInstance().getCompiler(m_project).run(m_file, CliType.standard);
             }
         }
     }

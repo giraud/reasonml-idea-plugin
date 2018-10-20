@@ -1,11 +1,11 @@
 <idea-plugin>
     <id>reasonml</id>
-    <name>ReasonML language plugin</name>
+    <name>ReasonML</name>
     <version>0.65.1</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
-      Reason (and OCaml) language plugin.
+      Add support for ReasonML language. Also add support for OCaml, and Dune.
     ]]></description>
 
     <change-notes><![CDATA[
@@ -28,6 +28,9 @@
     <depends>com.intellij.modules.lang</depends>
 
     <application-components>
+        <component>
+            <implementation-class>com.reason.build.CompilerManager</implementation-class>
+        </component>
     </application-components>
 
     <project-components>

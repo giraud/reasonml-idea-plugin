@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
-import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.CompilerManager;
 
 public class MakeWorldAction extends DumbAwareAction {
 
@@ -28,17 +28,19 @@ public class MakeWorldAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        CompilerManager compilerManager = CompilerManager.getInstance();
+
         // Try to detect the current active editor
         Editor editor = FileEditorManager.getInstance(m_project).getSelectedTextEditor();
         if (editor == null) {
             VirtualFile baseDir = Platform.findBaseRoot(m_project);
             m_console.print("No active text editor found, using " + baseDir.getPath() + " as root directory\n", ConsoleViewContentType.NORMAL_OUTPUT);
-            BucklescriptManager.getInstance(m_project).run(baseDir, CliType.cleanMake);
+            compilerManager.getCompiler(m_project).run(baseDir, CliType.cleanMake);
         } else {
             Document document = editor.getDocument();
             PsiFile psiFile = PsiDocumentManager.getInstance(m_project).getPsiFile(document);
             if (psiFile != null) {
-                BucklescriptManager.getInstance(m_project).run(psiFile.getVirtualFile(), CliType.cleanMake);
+                compilerManager.getCompiler(m_project).run(psiFile.getVirtualFile(), CliType.cleanMake);
             }
         }
     }
