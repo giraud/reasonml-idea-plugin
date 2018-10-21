@@ -10,12 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.66 - 2018/10/21
+
+- :house: Deleted virtual file listener because they are shared between projects. Now using editor listeners.
+- :house: Reworked the compilers code
+
 ## 0.65.1 - 2018/10/18
 
 - :bug: Dune file were no more editable because of a change in the parser
- 
-## 0.65 - 2018/10/14
-
 - :rocket: ![r](resources/icons/reason-file.png) Parameter info (when possible) using ctrl-p
 - :rocket: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
 - :house: ![r](resources/icons/reason-file.png) JSX completion can find inner component modules
