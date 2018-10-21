@@ -105,11 +105,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         }
     }
 
-    @Override
-    public void run(@NotNull VirtualFile file) {
-        run(file, CliType.standard);
-    }
-
     @NotNull
     private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
         String bsConfigPath = bsConfigFile.getCanonicalPath();

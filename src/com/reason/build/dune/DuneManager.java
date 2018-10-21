@@ -37,7 +37,7 @@ public class DuneManager implements Compiler, ProjectComponent {
     }
 
     @Override
-    public void run(@NotNull VirtualFile file) {
+    public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
         if (FileHelper.isCompilable(file.getFileType())) {
             VirtualFile duneConfig = Platform.findBaseRoot(m_project).findChild("jbuild");
             if (duneConfig != null) {
@@ -54,11 +54,6 @@ public class DuneManager implements Compiler, ProjectComponent {
                 }
             }
         }
-    }
-
-    @Override
-    public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
-        run(file, CliType.standard);
     }
 
     // copied

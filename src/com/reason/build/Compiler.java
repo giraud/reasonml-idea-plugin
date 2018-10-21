@@ -8,8 +8,6 @@ public interface Compiler {
 
     void refresh(@NotNull VirtualFile bsconfigFile);
 
-    void run(@NotNull VirtualFile file);
-
     void run(@NotNull VirtualFile file, @NotNull CliType cliType);
 
 }

@@ -1,7 +1,5 @@
 package com.reason.build.dune;
 
-import java.util.concurrent.atomic.*;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.KillableColoredProcessHandler;
@@ -14,9 +12,11 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.build.CompilerProcessLifecycle;
-import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -89,10 +89,11 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
             return null;
         }
 
-        GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
-        //cli.withEnvironment("PATH", sdk.getHomePath() + "/bin" + ";" + sdk.getHomePath() + "/lib");
         VirtualFile baseRoot = Platform.findBaseRoot(m_project);
-        cli.withWorkDirectory(ModuleConfiguration.getWorkingDir(m_project, baseRoot));
+        String workingDir = baseRoot.getPath();
+
+        GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
+        cli.setWorkDirectory(workingDir);
 
         return cli;
     }

@@ -20,11 +20,6 @@ public class CompilerManager implements ApplicationComponent {
         }
 
         @Override
-        public void run(@NotNull VirtualFile file) {
-            //nothing
-        }
-
-        @Override
         public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
             //nothing
         }
