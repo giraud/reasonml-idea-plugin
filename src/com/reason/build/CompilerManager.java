@@ -1,15 +1,21 @@
 package com.reason.build;
 
-import org.jetbrains.annotations.NotNull;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.console.CliType;
 import com.reason.build.dune.DuneManager;
+import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
+import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
+import static com.intellij.notification.NotificationType.ERROR;
 
 public class CompilerManager implements ApplicationComponent {
 
@@ -31,11 +37,20 @@ public class CompilerManager implements ApplicationComponent {
 
     @NotNull
     public Compiler getCompiler(@NotNull Project project) {
-        Sdk projectSDK = OCamlSDK.getSDK(project);
-        if (projectSDK == null) {
-            return BucklescriptManager.getInstance(project);
-        } else {
+        VirtualFile duneConfig = Platform.findBaseRoot(project).findChild("jbuild");
+        if (duneConfig != null) {
+            Sdk projectSDK = OCamlSDK.getSDK(project);
+            if (projectSDK == null) {
+                Notifications.Bus.notify(new ORNotification("Dune",
+                        "<html>Can't find sdk.\n"
+                                + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                                + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
+                        ERROR, URL_OPENING_LISTENER));
+                return DUMMY_COMPILER;
+            }
             return DuneManager.getInstance(project);
+        } else {
+            return BucklescriptManager.getInstance(project);
         }
     }
 }

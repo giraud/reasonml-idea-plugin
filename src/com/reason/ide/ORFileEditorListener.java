@@ -8,6 +8,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.messages.MessageBusConnection;
+import com.reason.build.Compiler;
 import com.reason.build.CompilerManager;
 import com.reason.build.console.CliType;
 import com.reason.ide.files.FileHelper;

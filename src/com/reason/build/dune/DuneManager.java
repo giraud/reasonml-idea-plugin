@@ -1,7 +1,5 @@
 package com.reason.build.dune;
 
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ProjectComponent;
@@ -11,12 +9,14 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
-import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.icons.Icons;
 import com.reason.ide.files.FileHelper;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 
 public class DuneManager implements Compiler, ProjectComponent {
 
@@ -39,18 +39,15 @@ public class DuneManager implements Compiler, ProjectComponent {
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
         if (FileHelper.isCompilable(file.getFileType())) {
-            VirtualFile duneConfig = Platform.findBaseRoot(m_project).findChild("jbuild");
-            if (duneConfig != null) {
-                DuneProcess process = DuneProcess.getInstance(m_project);
-                if (process.start()) {
-                    ProcessHandler handler = process.recreate();
-                    if (handler != null) {
-                        getBsbConsole().attachToProcess(handler);
-                        process.startNotify();
-                        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
-                    } else {
-                        process.terminated();
-                    }
+            DuneProcess process = DuneProcess.getInstance(m_project);
+            if (process.start()) {
+                ProcessHandler handler = process.recreate();
+                if (handler != null) {
+                    getBsbConsole().attachToProcess(handler);
+                    process.startNotify();
+                    InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+                } else {
+                    process.terminated();
                 }
             }
         }

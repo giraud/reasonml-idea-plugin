@@ -36,7 +36,6 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
     DuneProcess(Project project) {
         m_project = project;
         m_outputListener = new DuneOutputListener(m_project, this);
-        recreate();
     }
 
     // Wait for the tool window to be ready before starting the process
