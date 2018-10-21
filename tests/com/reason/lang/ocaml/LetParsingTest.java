@@ -111,7 +111,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
     public void testCase1() {
         FileBase file = parseCode("let format_open {o_loc; o_name; o_items; _} = " +
-                "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)", true);
+                "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)");
         PsiLet e = first(letExpressions(file));
 
         PsiLetBinding binding = e.getBinding();

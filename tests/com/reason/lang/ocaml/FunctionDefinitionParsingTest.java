@@ -13,7 +13,7 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
     }
 
     public void testLetFunction() {
-        PsiLet e = first(letExpressions(parseCode("let add x y = x + y", true)));
+        PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
         assertTrue(e.isFunction());
         PsiFunction function = e.getFunction();
