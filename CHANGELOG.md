@@ -10,7 +10,7 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.66 - 2018/10/21
+## 0.66.1 - 2018/10/21
 
 - :house: Deleted virtual file listener because they are shared between projects. Now using editor listeners.
 - :house: Reworked the compilers code
