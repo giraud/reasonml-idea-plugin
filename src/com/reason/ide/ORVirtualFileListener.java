@@ -6,6 +6,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightManagerImpl;
+import com.reason.ide.files.CmiFileType;
+import com.reason.ide.files.CmtFileType;
+import com.reason.ide.hints.CmtiFileListener;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,14 +16,11 @@ import org.jetbrains.annotations.NotNull;
  */
 class ORVirtualFileListener implements VirtualFileListener {
 
-    //    private final CmtiFileListener m_cmtiFileListener;
+    private final CmtiFileListener m_cmtiFileListener;
     private final InsightManager m_insightManager;
-//
-//    @Nullable
-//    private final Compiler m_compiler;
 
     ORVirtualFileListener(@NotNull Project project) {
-//        m_cmtiFileListener = CmtiFileListener.getInstance(project);
+        m_cmtiFileListener = CmtiFileListener.getInstance(project);
         m_insightManager = InsightManagerImpl.getInstance(project);
     }
 
@@ -41,43 +41,27 @@ class ORVirtualFileListener implements VirtualFileListener {
 
                 m_insightManager.downloadRincewindIfNeeded();
             }
-            //} else if (fileType instanceof DuneFileType) {
-            // OCaml SDK mandatory
-//        } else if (fileType instanceof CmiFileType) {
-//            m_cmtiFileListener.onChange(file);
-//        } else if (fileType instanceof CmtFileType) {
-//            m_cmtiFileListener.onChange(file);
-//        } else if (event.isFromSave() && m_compiler != null) {
-//            m_compiler.run(file, CliType.standard);
+        } else if (fileType instanceof CmiFileType) {
+            m_cmtiFileListener.onChange(file);
+        } else if (fileType instanceof CmtFileType) {
+            m_cmtiFileListener.onChange(file);
         }
     }
 
     @Override
     public void fileCreated(@NotNull VirtualFileEvent event) {
-//        if (m_compiler != null) {
-//            m_compiler.run(event.getFile(), CliType.standard);
-//        }
     }
 
     @Override
     public void fileDeleted(@NotNull VirtualFileEvent event) {
-        //if (m_compiler != null) {
-        //    m_compiler.run(event.getFile().getFileType());
-        //}
     }
 
     @Override
     public void fileMoved(@NotNull VirtualFileMoveEvent event) {
-//        if (m_compiler != null) {
-//            m_compiler.run(event.getFile(), CliType.standard);
-//        }
     }
 
     @Override
     public void fileCopied(@NotNull VirtualFileCopyEvent event) {
-//        if (m_compiler != null) {
-//            m_compiler.run(event.getFile(), CliType.standard);
-//        }
     }
 
     @Override
