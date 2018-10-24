@@ -6,6 +6,6 @@ public class RmlLanguage extends Language {
     public static final RmlLanguage INSTANCE = new RmlLanguage();
 
     private RmlLanguage() {
-        super("ReasonML");
+        super("Reason");
     }
 }
