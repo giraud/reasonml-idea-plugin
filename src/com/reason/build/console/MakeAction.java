@@ -14,7 +14,6 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Platform;
 import com.reason.build.CompilerManager;
-import com.reason.build.bs.BucklescriptManager;
 
 public class MakeAction extends DumbAwareAction {
 
@@ -35,7 +34,7 @@ public class MakeAction extends DumbAwareAction {
         Editor editor = FileEditorManager.getInstance(m_project).getSelectedTextEditor();
         if (editor == null) {
             VirtualFile baseDir = Platform.findBaseRoot(m_project);
-            m_console.print("No active text editor found, using " + baseDir.getPath() + " as root directory\n", ConsoleViewContentType.NORMAL_OUTPUT);
+            m_console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             compilerManager.getCompiler(m_project).run(baseDir, CliType.make);
         } else {
             Document document = editor.getDocument();

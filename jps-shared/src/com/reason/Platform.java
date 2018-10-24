@@ -58,6 +58,9 @@ public class Platform {
     @NotNull
     public static VirtualFile findBaseRootFromFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile baseDir = project.getBaseDir();
+        if (sourceFile.equals(baseDir)) {
+            return sourceFile;
+        }
 
         VirtualFile parent = sourceFile.getParent();
         if (parent == null) {
@@ -99,20 +102,19 @@ public class Platform {
     }
 
     @NotNull
-    private static String removeProjectDir(Project project, String path) {
+    private static String removeProjectDir(@NotNull Project project, @NotNull String path) {
         try {
             VirtualFile baseRoot = Platform.findBaseRoot(project);
             Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-            Path relativize = basePath.relativize(new File(path).toPath());
-            return relativize.toString();
-        }
-        catch (IllegalArgumentException e) {
+            Path relativePath = basePath.relativize(new File(path).toPath());
+            return relativePath.toString();
+        } catch (IllegalArgumentException e) {
             return path;
         }
     }
 
     @NotNull
-    public static String removeProjectDir(Project project, @Nullable VirtualFile file) {
+    public static String removeProjectDir(@NotNull Project project, @Nullable VirtualFile file) {
         return file == null ? "" : removeProjectDir(project, file.getPath());
     }
 
