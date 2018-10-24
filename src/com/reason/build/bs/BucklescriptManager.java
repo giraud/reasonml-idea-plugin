@@ -19,7 +19,6 @@ import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.ORNotification;
-import com.reason.ide.files.FileHelper;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,7 +85,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
-        if (!m_disabled && (sourceFile.isDirectory() || FileHelper.isCompilable(sourceFile.getFileType()))) {
+        if (!m_disabled) {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
