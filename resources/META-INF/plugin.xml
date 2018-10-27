@@ -77,12 +77,14 @@
     </project-components>
 
     <actions>
-        <!-- Add your actions here -->
-        <action id="reason.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
+        <action id="reason.actions.make" class="com.reason.build.console.MakeAction" text="Bsb -make"/>
+        <action id="reason.actions.makeWorld" class="com.reason.build.console.MakeWorldAction"
+                text="bsb -clean-world -make-world"/>
+        <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
         </action>
-        <action id="com.reason.ide.actions.ConvertAction" class="com.reason.ide.actions.ConvertAction"
+        <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"
                 text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
             <add-to-group group-id="EditMenu" anchor="last"/>
         </action>

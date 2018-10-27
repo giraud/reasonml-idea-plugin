@@ -13,33 +13,30 @@ import com.intellij.psi.PsiFile;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.CompilerManager;
+import com.reason.build.bs.BucklescriptManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public abstract class CompilerAction extends DumbAwareAction {
+abstract class CompilerAction extends DumbAwareAction {
 
-    private final ConsoleView m_console;
-    private final Project m_project;
-
-    CompilerAction(@NotNull String text, @NotNull String description, @NotNull Icon icon,@NotNull ConsoleView console, @NotNull Project project) {
+    CompilerAction(@NotNull String text, @NotNull String description, @NotNull Icon icon) {
         super(text, description, icon);
-        m_console = console;
-        m_project = project;
     }
 
-    void doAction(CliType cliType) {
-        Compiler compiler = CompilerManager.getInstance().getCompiler(m_project);
+    void doAction(@NotNull Project project, @NotNull CliType cliType) {
+        Compiler compiler = CompilerManager.getInstance().getCompiler(project);
 
         // Try to detect the current active editor
-        Editor editor = FileEditorManager.getInstance(m_project).getSelectedTextEditor();
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         if (editor == null) {
-            VirtualFile baseDir = Platform.findBaseRoot(m_project);
-            m_console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+            VirtualFile baseDir = Platform.findBaseRoot(project);
+            ConsoleView console = BucklescriptManager.getInstance(project).getBsbConsole();
+            console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             compiler.run(baseDir, cliType);
         } else {
             Document document = editor.getDocument();
-            PsiFile psiFile = PsiDocumentManager.getInstance(m_project).getPsiFile(document);
+            PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
             if (psiFile != null) {
                 compiler.run(psiFile.getVirtualFile(), cliType);
             }

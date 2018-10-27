@@ -1,5 +1,6 @@
 package com.reason.build.bs;
 
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.build.Compiler;
@@ -18,4 +19,6 @@ public interface Bucklescript extends Compiler {
     void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document);
 
     boolean isRefmtOnSaveEnabled();
+
+    ConsoleView getBsbConsole();
 }

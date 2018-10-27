@@ -24,7 +24,7 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         BsConsole console = new BsConsole(project);
         panel.setContent(console.getComponent());
 
-        ActionToolbar toolbar = createToolbar(project, console);
+        ActionToolbar toolbar = createToolbar(console);
         panel.setToolbar(toolbar.getComponent());
 
         Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
@@ -35,12 +35,12 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         Disposer.register(project, console);
     }
 
-    private ActionToolbar createToolbar(@NotNull Project project, @NotNull BsConsole console) {
+    private ActionToolbar createToolbar(@NotNull BsConsole console) {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new MakeAction(console, project));
-        group.add(new MakeWorldAction(console, project));
+        group.add(new MakeAction());
+        group.add(new MakeWorldAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());

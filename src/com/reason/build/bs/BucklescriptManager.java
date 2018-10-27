@@ -161,7 +161,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         return RefmtProcess.getInstance(m_project).isOnSaveEnabled();
     }
 
-    private ConsoleView getBsbConsole() {
+    public ConsoleView getBsbConsole() {
         ConsoleView console = null;
 
         ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow("Bucklescript");
