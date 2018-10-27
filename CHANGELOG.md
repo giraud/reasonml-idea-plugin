@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.67 - 2018/10/27
+
+- :rocket: [#112](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/112) - Build hotkeys
+- :bug: [#111](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/111) - Bsb window actions are not working outside of reason file
+- :bug: [#108](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/108) - Reason language id in markdown preview
+- :bug: [#106](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/106) - Inconsistent highlighting of matching (), [] and {}
+
 ## 0.66.2 - 2018/10/23
 
 - :house: Deleted virtual file listener because they are shared between projects. Now using editor listeners.
