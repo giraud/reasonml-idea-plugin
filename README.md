@@ -36,6 +36,14 @@ Other features:
 
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
+## How to help
+
+- Be patient
+- Give this project some love, star it or star the plugin page in [intellij repository](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin)
+- Fill the github repo with specific issues
+- <a href="https://liberapay.com/hgiraud/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a> Support my work with liberapay
+- <a href="https://www.paypal.me/rvgiraud"><img alt="Donate using paypal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a> Support my work with paypal-me
+
 ## Some live templates
 
 List of templates that may help development.
@@ -91,13 +99,6 @@ let jsComponent =
   I am moving away from merlin and trying to use the most of Intellij structures.
     
   Now, they have incompatible implementations, and different goals. 
-
-## How to help
-
-- Be patient
-- Give this project some love, star it or star the plugin page in [intellij repository](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin)
-- Fill the github repo with specific issues
-- <a href="https://liberapay.com/hgiraud/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a> Support my work
 
 ## Development
 
