@@ -16,6 +16,7 @@ public class OclPairedBraceMatcher implements PairedBraceMatcher {
             new BracePair(OclTypes.INSTANCE.LPAREN, OclTypes.INSTANCE.RPAREN, false),
             new BracePair(OclTypes.INSTANCE.LBRACKET, OclTypes.INSTANCE.RBRACKET, false),
             new BracePair(OclTypes.INSTANCE.LARRAY, OclTypes.INSTANCE.RARRAY, false), //
+            new BracePair(OclTypes.INSTANCE.LT, OclTypes.INSTANCE.GT, false), //
     };
 
     @NotNull

@@ -1,7 +1,8 @@
 package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
-import ORTypes;
+import com.reason.lang.core.type.ORTypes;
+import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
 %%
@@ -193,11 +194,11 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/>"  { return types.TAG_AUTO_CLOSE; }
     "[|"  { return types.LARRAY; }
     "|]"  { return types.RARRAY; }
-    ">]"  { return types.GT_BRACKET; }
-    ">}"  { return types.GT_BRACE; }
-    "{<"  { return types.BRACE_LT; }
-    "[<"  { return types.BRACKET_LT; }
-    "[>"  { return types.BRACKET_GT; }
+    //">]"  { return types.GT_BRACKET; }
+    //">}"  { return types.GT_BRACE; }
+    //"{<"  { return types.BRACE_LT; }
+    //"[<"  { return types.BRACKET_LT; }
+    //"[>"  { return types.BRACKET_GT; }
     "{|"  { return types.ML_STRING_OPEN; /*bs MultiLine*/ }
     "|}"  { return types.ML_STRING_CLOSE; /*bs MultiLine*/ }
     "{j|"  { return types.JS_STRING_OPEN; /*js interpolation*/ }
