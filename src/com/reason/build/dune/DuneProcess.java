@@ -16,6 +16,8 @@ import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -26,7 +28,6 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
     private final Project m_project;
     private final ProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
-    private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
     private KillableColoredProcessHandler m_processHandler;
 
     public static DuneProcess getInstance(Project project) {
@@ -55,7 +56,6 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
             killIt();
             GeneralCommandLine cli = getGeneralCommandLine();
             if (cli != null) {
-                //cli.setRedirectErrorStream(true);
                 m_processHandler = new KillableColoredProcessHandler(cli);
                 if (m_outputListener != null) {
                     m_processHandler.addProcessListener(m_outputListener);
@@ -92,21 +92,22 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
         String workingDir = baseRoot.getPath();
 
         GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
+        Map<String, String> environment = cli.getParentEnvironment();
+        String path = environment.get("PATH");
+        String newPath = sdk.getHomePath() + "/bin" + File.pathSeparator + path;
+        cli.withEnvironment("PATH", newPath);
         cli.setWorkDirectory(workingDir);
+        cli.setRedirectErrorStream(true);
 
         return cli;
     }
 
     public boolean start() {
-        boolean success = m_started.compareAndSet(false, true);
-        if (!success) {
-            m_restartNeeded.compareAndSet(false, true);
-        }
-        return success;
+        return m_started.compareAndSet(false, true);
     }
 
+    @Override
     public void terminated() {
         m_started.set(false);
     }
-
 }

@@ -13,7 +13,6 @@ import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.icons.Icons;
-import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -38,17 +37,15 @@ public class DuneManager implements Compiler, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
-        if (FileHelper.isCompilable(file.getFileType())) {
-            DuneProcess process = DuneProcess.getInstance(m_project);
-            if (process.start()) {
-                ProcessHandler handler = process.recreate();
-                if (handler != null) {
-                    getBsbConsole().attachToProcess(handler);
-                    process.startNotify();
-                    InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
-                } else {
-                    process.terminated();
-                }
+        DuneProcess process = DuneProcess.getInstance(m_project);
+        if (process.start()) {
+            ProcessHandler handler = process.recreate();
+            if (handler != null) {
+                getBsbConsole().attachToProcess(handler);
+                process.startNotify();
+                InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+            } else {
+                process.terminated();
             }
         }
     }

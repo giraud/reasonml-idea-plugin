@@ -88,6 +88,7 @@ public abstract class ORTypes {
     public ORTokenElementType DOWNTO;
     public ORTokenElementType ELSE;
     public ORTokenElementType END;
+    public ORTokenElementType ENDIF;
     public ORTokenElementType EXCEPTION;
     public ORTokenElementType EXTERNAL;
     public ORTokenElementType FOR;
