@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.type.ORTypes;
@@ -13,7 +14,8 @@ public class PsiSignatureItemImpl extends PsiToken<ORTypes> implements PsiSignat
 
     @Override
     public boolean isNamedItem() {
-        return ORUtil.nextSiblingWithTokenType(getFirstChild(), m_types.COLON) != null;
+        PsiElement firstChild = getFirstChild();
+        return firstChild != null && ORUtil.nextSiblingWithTokenType(firstChild, m_types.COLON) != null;
     }
 
     @Override
