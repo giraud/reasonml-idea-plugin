@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
@@ -13,9 +14,10 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     }
 
     public void testPattern() {
-        PsiFile psiFile = parseCode("switch (x) { | Some(x) => x; (); | None => () };");
+        FileBase e = parseCode("switch (x) { | Some(x) => x; (); | None => () }");
 
-        PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
+        assertSize(1, e.getChildren());
+        PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(e, PsiSwitch.class));
         assertNotNull(switch_);
 
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);

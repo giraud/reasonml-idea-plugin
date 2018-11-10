@@ -696,7 +696,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.add(markScope(builder, clazzBodyScope, m_types.SCOPED_EXPR, m_types.LBRACE));
         } else if (state.isCurrentResolution(switchBinaryCondition)) {
             boolean isSwitch = state.popEndUntilContext(switch_).isCurrentResolution(switch_);
-            //boolean isSwitch = switchScope != null && switchScope.isResolution(switch_);
             state.add(markScope(builder, isSwitch ? switchBody : brace, m_types.SCOPED_EXPR, isSwitch ? m_types.SWITCH : m_types.LBRACE));
         } else {
             // it might be a js object
@@ -715,7 +714,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEnd();
         }
 
-        ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD);
+        ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD, m_types.SWITCH);
         state.advance();
 
         if (scope != null) {
@@ -726,6 +725,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseLParen(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(switchBinaryCondition)) {
+            state.add(markScope(builder, state.currentContext(), paren, m_types.SCOPED_EXPR, m_types.LPAREN));
             return;
         }
 

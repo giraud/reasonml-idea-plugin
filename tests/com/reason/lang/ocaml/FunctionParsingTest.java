@@ -7,8 +7,8 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
 
 @SuppressWarnings("ConstantConditions")
-public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
-    public FunctionDefinitionParsingTest() {
+public class FunctionParsingTest extends BaseParsingTestCase {
+    public FunctionParsingTest() {
         super("", "ml", new OclParserDefinition());
     }
 
@@ -46,5 +46,4 @@ public class FunctionDefinitionParsingTest extends BaseParsingTestCase {
         assertEquals("(_, info as ei)", PsiTreeUtil.findChildOfType(function, PsiParameters.class).getText());
         assertEquals("x", function.getBody().getText());
     }
-
 }
