@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.67.1 - 2018/11/10
+
+- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o](resources/icons/ocaml-file.png)- "end" highlighted the same way as an unmatched parenthesis
+- :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r](resources/icons/reason-file.png) - Function parsing is not correct
+
 ## 0.67 - 2018/10/27
 
 - :rocket: [#112](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/112) - Build hotkeys

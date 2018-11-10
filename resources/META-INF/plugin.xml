@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.67</version>
+    <version>0.67.1</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,8 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#112 - Build hotkeys</li>
-            <li>#111 - Bsb window actions are not working outside of reason file</li>
-            <li>#108 - Reason language id in markdown preview</li>
-            <li>#106 - Inconsistent highlighting of matching (), [] and {}</li>
+            <li>#115 - "end" highlighted the same way as an unmatched parenthesis</li>
+            <li>#113 - Function parsing is not correct</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
