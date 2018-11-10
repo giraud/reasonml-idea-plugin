@@ -97,7 +97,7 @@ public class PsiElementFactory {
         } else if (type == types.TRY_EXPR) {
             return new PsiTry(types, node);
         } else if (type == types.SWITCH_EXPR || type == types.MATCH_EXPR) {
-            return new PsiSwitch(node);
+            return new PsiSwitchImpl(types, node);
         } else if (type == types.C_FUN_EXPR) {
             return new PsiFunctionImpl(types, node);
         } else if (type == types.C_FUN_PARAMS) {

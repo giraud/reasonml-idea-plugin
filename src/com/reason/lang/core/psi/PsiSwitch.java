@@ -1,21 +1,9 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
 
-public class PsiSwitch extends ASTWrapperPsiElement {
-
-    public PsiSwitch(ASTNode node) {
-        super(node);
-    }
-
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return "Switch";
-    }
+public interface PsiSwitch extends PsiElement {
+    @Nullable
+    PsiBinaryCondition getCondition();
 }

@@ -1,11 +1,9 @@
 package com.reason.lang.reason;
 
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionBody;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.*;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -119,6 +117,17 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals(1, innerFunction.getParameterList().size());
         assertEquals("self", innerFunction.getParameterList().iterator().next().getName());
         assertEquals("<div/>", innerFunction.getBody().getText());
+    }
 
+    public void testGHIssue113() {
+        PsiElement e = firstElement(parseCode("() => switch (isBuggy()) { | _ => \\\"buggy\\\" };\"", true));
+
+        assertInstanceOf(e, PsiFunction.class);
+        PsiFunction f = (PsiFunction) e;
+        assertSize(0, f.getParameterList());
+        PsiFunctionBody fb = f.getBody();
+        assertInstanceOf(fb.getFirstChild(), PsiSwitch.class);
+        PsiSwitch s = (PsiSwitch) fb.getFirstChild();
+        assertEquals("(isBuggy())", s.getCondition().getText());
     }
 }
