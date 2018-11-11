@@ -14,6 +14,7 @@ public class OclPairedBraceMatcher implements PairedBraceMatcher {
             new BracePair(OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, false),//
             new BracePair(OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.END, false),//
             new BracePair(OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.END, false), //
+            new BracePair(OclTypes.INSTANCE.OBJECT, OclTypes.INSTANCE.END, false), //
             new BracePair(OclTypes.INSTANCE.LPAREN, OclTypes.INSTANCE.RPAREN, false),
             new BracePair(OclTypes.INSTANCE.LBRACKET, OclTypes.INSTANCE.RBRACKET, false),
             new BracePair(OclTypes.INSTANCE.LARRAY, OclTypes.INSTANCE.RARRAY, false), //
