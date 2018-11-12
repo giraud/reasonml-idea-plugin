@@ -4,11 +4,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.Debug;
+import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ORUtil;
@@ -36,7 +37,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @NotNull
     private final ORTypes m_types;
 
-    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.ref.upper"));
+    private final Log m_debug = new Log(Logger.getInstance("ReasonML.ref.upper"));
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
         super(element, ORUtil.getTextRangeForReference(element));
@@ -90,7 +91,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
             FileBase fileModule = psiFinder.findFileModule(project, m_referenceName);
             if (fileModule != null) {
-                m_debug.debug("  file", fileModule);
+                m_debug.debug("  file", (PsiFile) fileModule);
                 return fileModule;
             }
             // else it might be an inner module

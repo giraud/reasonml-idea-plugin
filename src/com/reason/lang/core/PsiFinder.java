@@ -1,6 +1,5 @@
 package com.reason.lang.core;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -11,9 +10,9 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
+import com.reason.Log;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
-import com.reason.ide.Debug;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.ModuleCompIndex;
@@ -34,7 +33,7 @@ public final class PsiFinder {
 
     private static final PsiFinder INSTANCE = new PsiFinder();
 
-    private final Debug m_debug = new Debug(Logger.getInstance("ReasonML.finder"));
+    private final Log LOG = new Log("finder");
 
     public static PsiFinder getInstance() {
         return INSTANCE;
@@ -68,16 +67,16 @@ public final class PsiFinder {
 
     @NotNull
     public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull ORFileType fileType) {
-        m_debug.debug("Find modules, name", name);
+        LOG.debug("Find modules, name", name);
 
         Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         Collection<PsiModule> modules = ModuleIndex.getInstance().get(name, project, scope);
         if (modules.isEmpty()) {
-            m_debug.debug("  No modules found");
+            LOG.debug("  No modules found");
         } else {
-            m_debug.debug("  modules found", modules.size());
+            LOG.debug("  modules found", modules.size());
             for (PsiModule module : modules) {
                 boolean keepFile;
 
@@ -104,10 +103,10 @@ public final class PsiFinder {
                 }
 
                 if (keepFile && bucklescript.isDependency(virtualFile)) {
-                    m_debug.debug("       keep", module);
+                    LOG.debug("       keep", module);
                     inConfig.put(module.getQualifiedName(), module);
                 } else {
-                    m_debug.debug("    abandon", module);
+                    LOG.debug("    abandon", module);
                 }
             }
         }
@@ -151,8 +150,8 @@ public final class PsiFinder {
     }
 
     private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull ORFileType fileType, StubIndexKey<String, T> indexKey, Class<T> clazz) {
-        if (m_debug.isDebugEnabled()) {
-            m_debug.debug("Find " + debugName + " name", name);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Find " + debugName + " name", name);
         }
 
         Map<String/*qn*/, T> inConfig = new THashMap<>();
@@ -161,12 +160,12 @@ public final class PsiFinder {
 
         Collection<T> items = StubIndex.getElements(indexKey, name, project, scope, clazz);
         if (items.isEmpty()) {
-            if (m_debug.isDebugEnabled()) {
-                m_debug.debug("  No " + debugName + " found");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("  No " + debugName + " found");
             }
         } else {
-            if (m_debug.isDebugEnabled()) {
-                m_debug.debug("  " + debugName + " found", items.size(), items);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("  " + debugName + " found", items.size(), items);
             }
             for (T item : items) {
                 boolean keepFile;
@@ -195,7 +194,7 @@ public final class PsiFinder {
                 }
 
                 if (keepFile && bucklescript.isDependency(virtualFile)) {
-                    m_debug.debug("    keep (in config)", item);
+                    LOG.debug("    keep (in config)", item);
                     inConfig.put(item.getQualifiedName(), item);
                 }
             }
@@ -227,18 +226,18 @@ public final class PsiFinder {
 
     @Nullable
     private FileBase findFileModuleByExt(@NotNull Project project, @NotNull String name, @NotNull String ext, GlobalSearchScope scope) {
-        m_debug.debug("Find file module", name, ext);
+        LOG.debug("Find file module", name, ext);
 
         FileBase result = null;
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         PsiFile[] filesByName = FilenameIndex.getFilesByName(project, name + "." + ext, scope);
         if (0 < filesByName.length) {
-            m_debug.debug("  found", filesByName);
+            LOG.debug("  found", filesByName);
             for (PsiFile file : filesByName) {
                 if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
                     result = (FileBase) file;
-                    m_debug.debug("  resolved to", (FileBase) file);
+                    LOG.debug("  resolved to", file);
                     break;
                 }
             }
@@ -250,7 +249,7 @@ public final class PsiFinder {
             for (PsiFile file : filesByName) {
                 if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
                     result = (FileBase) file;
-                    m_debug.debug("  resolved to", (FileBase) file);
+                    LOG.debug("  resolved to", file);
                     break;
                 }
             }

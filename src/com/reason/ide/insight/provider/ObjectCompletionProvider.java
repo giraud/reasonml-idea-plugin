@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.ide.Debug;
+import com.reason.Log;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
@@ -24,10 +24,10 @@ import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ObjectCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private final Debug m_debug;
+    private final Log m_debug;
 
     public ObjectCompletionProvider() {
-        m_debug = new Debug(Logger.getInstance("ReasonML.insight.object"));
+        m_debug = new Log(Logger.getInstance("ReasonML.insight.object"));
     }
 
     @Override

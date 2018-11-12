@@ -6,15 +6,15 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
-import com.reason.ide.Debug;
+import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
@@ -30,24 +30,23 @@ import static java.util.Collections.emptyList;
 
 public class FreeExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private final Debug m_debug;
+    private final Log LOG = new Log("insight.free");
     private final ModulePathFinder m_modulePathFinder;
 
     public FreeExpressionCompletionProvider(ModulePathFinder modulePathFinder) {
         m_modulePathFinder = modulePathFinder;
-        m_debug = new Debug(Logger.getInstance("ReasonML.insight.free"));
     }
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        m_debug.debug("FREE expression completion");
+        LOG.debug("FREE expression completion");
 
         PsiFinder psiFinder = PsiFinder.getInstance();
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getOriginalPosition();
 
         List<String> paths = cursorElement == null ? emptyList() : m_modulePathFinder.extractPotentialPaths(cursorElement);
-        m_debug.debug("potential paths", paths);
+        LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)
         for (String path : paths) {
@@ -98,7 +97,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         // Add file modules
         Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
-        m_debug.debug("adding file modules from project", files);
+        LOG.debug("adding file modules from project", files);
         for (FileBase file : files) {
             if (!file.isComponent()) {
                 resultSet.addElement(LookupElementBuilder.
@@ -106,7 +105,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                         withTypeText(file.shortLocation(project)).
                         withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
             } else {
-                m_debug.debug("Component found, skip", file);
+                LOG.debug("Component found, skip", (PsiFile) file);
             }
         }
     }

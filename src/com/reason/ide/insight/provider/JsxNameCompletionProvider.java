@@ -12,7 +12,7 @@ import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
-import com.reason.ide.Debug;
+import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.RmlFile;
 import com.reason.lang.core.PsiFinder;
@@ -26,10 +26,10 @@ import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
-    private final Debug m_debug;
+    private final Log m_debug;
 
     public JsxNameCompletionProvider() {
-        m_debug = new Debug(Logger.getInstance("ReasonML.insight.jsxname"));
+        m_debug = new Log(Logger.getInstance("ReasonML.insight.jsxname"));
     }
 
     @Override

@@ -1,23 +1,26 @@
-package com.reason.ide;
+package com.reason;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.reason.Joiner;
-import com.reason.ide.files.FileBase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class Debug {
+public class Log {
 
     private static final String SEP = ": ";
     private final Logger m_log;
 
-    public Debug(Logger log) {
+    public Log(Logger log) {
         m_log = log;
+    }
+
+    public Log(String name) {
+        m_log = Logger.getInstance("ReasonML." + name);
     }
 
     public boolean isDebugEnabled() {
@@ -62,7 +65,7 @@ public class Debug {
 
     public void debug(String comment, boolean t) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + Boolean.toString(t));
+            m_log.debug(comment + SEP + t);
         }
     }
 
@@ -72,9 +75,15 @@ public class Debug {
         }
     }
 
-    public void debug(String comment, @Nullable FileBase t) {
+    public void debug(String comment, @Nullable PsiFile t) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getVirtualFile().getCanonicalPath() + " "));
+            debug(comment, t == null ? null : t.getVirtualFile());
+        }
+    }
+
+    public void debug(@NotNull String comment, @Nullable VirtualFile t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getCanonicalPath() + " "));
         }
     }
 
@@ -83,6 +92,12 @@ public class Debug {
             m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
         }
     }
+
+//    public void debug(String comment, List t) {
+//        if (m_log.isDebugEnabled()) {
+//            m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
+//        }
+//    }
 
     public void debug(String comment, PsiQualifiedNamedElement element) {
         if (m_log.isDebugEnabled()) {
@@ -98,7 +113,7 @@ public class Debug {
 
     public void debug(String comment, String t, boolean t1) {
         if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + t + " " + Boolean.toString(t1));
+            m_log.debug(comment + SEP + t + " " + t1);
         }
     }
 
@@ -110,11 +125,15 @@ public class Debug {
                 if (!start) {
                     sb.append(", ");
                 }
-                sb.append(entry.getKey() + ":" + entry.getValue());
+                sb.append(entry.getKey()).append(":").append(entry.getValue());
                 start = false;
 
             }
             m_log.debug(comment + SEP + "[" + sb.toString() + "]");
         }
+    }
+
+    public void error(String message, Exception e) {
+        m_log.error(message, e);
     }
 }

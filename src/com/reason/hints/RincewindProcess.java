@@ -3,9 +3,9 @@ package com.reason.hints;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Log;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.ORNotification;
@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 
 public class RincewindProcess implements ProjectComponent {
 
-    private final static Logger LOG = Logger.getInstance("ReasonML.types.rincewind");
+    private final static Log LOG = new Log("ReasonML.types.rincewind");
     private final Project m_project;
 
     RincewindProcess(Project project) {
@@ -30,6 +30,8 @@ public class RincewindProcess implements ProjectComponent {
     }
 
     public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+        LOG.debug("Looking for types for file", sourceFile);
+
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
         processBuilder.directory(new File(ModuleConfiguration.getBasePath(m_project, sourceFile)));
 

@@ -12,8 +12,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.util.ProcessingContext;
+import com.reason.Log;
 import com.reason.icons.Icons;
-import com.reason.ide.Debug;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
@@ -30,11 +30,11 @@ import static java.util.stream.Collectors.toList;
 public class JsxAttributeCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     private final ModulePathFinder m_modulePathFinder;
-    private final Debug m_debug;
+    private final Log m_debug;
 
     public JsxAttributeCompletionProvider(ModulePathFinder modulePathFinder) {
         m_modulePathFinder = modulePathFinder;
-        m_debug = new Debug(Logger.getInstance("ReasonML.insight.jsxAttribute"));
+        m_debug = new Log(Logger.getInstance("ReasonML.insight.jsxAttribute"));
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.psi.PsiFile;
-import com.reason.ide.Debug;
+import com.reason.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ import java.util.Collection;
 
 public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Collection<ErrorAnnotator.BsbErrorAnnotation>> {
 
-    private final Debug log = new Debug(Logger.getInstance("ReasonML.build"));
+    private final Log log = new Log(Logger.getInstance("ReasonML.build"));
 
     @Nullable
     @Override

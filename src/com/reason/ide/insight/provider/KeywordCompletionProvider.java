@@ -6,7 +6,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.text.CaseInsensitiveStringHashingStrategy;
-import com.reason.ide.Debug;
+import com.reason.Log;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
 
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private final Debug m_debug;
+    private final Log m_debug;
     private final String m_debugName;
     private final String[] m_keywords;
 
@@ -23,7 +23,7 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
     private static final AddSpaceInsertHandler INSERT_SPACE = new AddSpaceInsertHandler(false);
 
     public KeywordCompletionProvider(String debugName, String... keywords) {
-        m_debug = new Debug(Logger.getInstance("ReasonML.insight.keyword"));
+        m_debug = new Log(Logger.getInstance("ReasonML.insight.keyword"));
         m_debugName = debugName;
         m_keywords = keywords;
     }
