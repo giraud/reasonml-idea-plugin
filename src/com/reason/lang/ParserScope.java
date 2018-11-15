@@ -142,7 +142,7 @@ public class ParserScope {
         return m_resolution;
     }
 
-    boolean isScope() {
+    public boolean isScope() {
         return m_isScope;
     }
 }

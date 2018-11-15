@@ -97,4 +97,14 @@ public class JsxParsingTest extends BaseParsingTestCase {
         assertEquals("{<NotificationsList notifications />}", properties.get(0).getValue().getText());
         assertEquals("{<div> {ReasonReact.string(\"switch inside\")} </div>}", properties.get(1).getValue().getText());
     }
+
+    public void testProp03() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>", true));
+
+        List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
+        assertEquals(2, properties.size());
+        assertEquals("{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
+        assertEquals("\"X\"", properties.get(1).getValue().getText());
+    }
+
 }
