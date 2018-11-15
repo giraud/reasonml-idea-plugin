@@ -104,8 +104,9 @@ public class ParserScope {
         return this.scopeTokenElementType == tokenElementType;
     }
 
-    void setScopeTokenType(ORTokenElementType tokenElementType) {
+    void setScopeTokenType(@NotNull ORTokenElementType tokenElementType) {
         this.scopeTokenElementType = tokenElementType;
+        this.m_isScope = true;
     }
 
     public ParserScope compositeElementType(IElementType compositeElementType) {

@@ -1,5 +1,7 @@
 package com.reason.lang.core.psi;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public interface PsiTagStart extends PsiNamedElement {
@@ -11,5 +13,9 @@ public interface PsiTagStart extends PsiNamedElement {
         boolean isMandatory();
     }
 
+    @NotNull
+    List<PsiTagProperty> getProperties();
+
+    @NotNull
     List<TagProperty> getUnifiedPropertyList();
 }

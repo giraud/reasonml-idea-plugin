@@ -34,7 +34,9 @@ public class OclTypes extends ORTypes {
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", OclLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", OclLanguage.INSTANCE);
+        C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", OclLanguage.INSTANCE);
+        C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", OclLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", OclLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
         MODULE_PATH = new ORCompositeElementType("MODULE_PATH", OclLanguage.INSTANCE);

@@ -2,6 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,13 @@ public class PsiTagPropertyImpl extends PsiToken<ORTypes> implements PsiTagPrope
     public String getName() {
         PsiElement nameElement = getNameElement();
         return nameElement == null ? "" : nameElement.getText();
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getValue() {
+        PsiElement eq = ORUtil.nextSiblingWithTokenType(getFirstChild(), m_types.EQ);
+        return eq == null ? null : eq.getNextSibling();
     }
 
     @Override

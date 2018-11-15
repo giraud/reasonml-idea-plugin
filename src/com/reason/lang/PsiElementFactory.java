@@ -82,12 +82,16 @@ public class PsiElementFactory {
             return new PsiInterpolation(node);
         } else if (type == types.C_SIG_EXPR) {
             return new PsiSignatureImpl(types, node);
+        } else if (type == types.C_TAG) {
+            return new PsiTag(node);
         } else if (type == types.TAG_START) {
             return new PsiTagStartImpl(node);
         } else if (type == types.TAG_PROPERTY) {
             return new PsiTagPropertyImpl(types, node);
         } else if (type == types.C_TAG_PROP_VALUE) {
             return new PsiTagPropertyValueImpl(types, node);
+        } else if (type == types.C_TAG_BODY) {
+            return new PsiTagBody(node);
         } else if (type == types.TAG_CLOSE) {
             return new PsiTagClose(node);
         } else if (type == types.UPPER_SYMBOL) {

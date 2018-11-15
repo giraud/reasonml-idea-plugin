@@ -425,8 +425,8 @@ public class OclParser extends CommonParser<OclTypes> {
             state.updateCurrentResolution(letNamedEq);
             state.advance();
             state.add(mark(builder, letBinding, letNamedBinding, m_types.LET_BINDING).complete());
-        } else if (state.isCurrentResolution(tagProperty)) {
-            state.updateCurrentResolution(tagPropertyEq);
+        } else if (state.isCurrentResolution(jsxTagProperty)) {
+            state.updateCurrentResolution(jsxTagPropertyEq);
         } else if (state.isCurrentContext(moduleDeclaration)) {
             if (state.isCurrentResolution(moduleNamed)) {
                 state.updateCurrentResolution(moduleNamedEq);

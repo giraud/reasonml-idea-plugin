@@ -268,7 +268,7 @@ public class ParserState {
 
     @NotNull
     public ParserState updateScopeToken(@NotNull ORTokenElementType token) {
-        m_currentScope.scopeTokenElementType = token;
+        m_currentScope.setScopeTokenType(token);
         return this;
     }
 

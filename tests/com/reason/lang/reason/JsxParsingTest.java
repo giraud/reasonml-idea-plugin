@@ -15,6 +15,22 @@ public class JsxParsingTest extends BaseParsingTestCase {
         super("", "re", new RmlParserDefinition());
     }
 
+    public void testEmptyTag() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>"));
+
+        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
+        assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
+    }
+
+    public void testInnerClosingTag() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div><div/></div>", true));
+
+        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
+        assertEquals("<div/>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
+    }
+
     public void testOptionAsTag() {
         // option here is not a ReasonML keyword
         PsiLet let = first(letExpressions(parseCode("let _ = <option className/>")));
@@ -41,7 +57,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropWithParen() {
-        PsiTagStart tag = (PsiTagStart) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
+        PsiTag tag = (PsiTag) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
 
         Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
         assertEquals(2, properties.size());
@@ -51,7 +67,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropsWithDot() {
-        PsiTagStart e = (PsiTagStart) firstElement(parseCode("<a className=Styles.link href=h download=d>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<a className=Styles.link href=h download=d>"));
 
         List<PsiTagProperty> props = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class));
         assertSize(3, props);
@@ -67,10 +83,18 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testIncorrectProp() {
-        PsiTagStart e = (PsiTagStart) firstElement(parseCode("<MyComp prunningProp prop=1/>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<MyComp prunningProp prop=1/>"));
 
         Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class);
         assertEquals(2, properties.size());
     }
 
+    public void testProp02() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
+
+        List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
+        assertEquals(2, properties.size());
+        assertEquals("{<NotificationsList notifications />}", properties.get(0).getValue().getText());
+        assertEquals("{<div> {ReasonReact.string(\"switch inside\")} </div>}", properties.get(1).getValue().getText());
+    }
 }

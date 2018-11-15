@@ -120,7 +120,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testGHIssue113() {
-        PsiElement e = firstElement(parseCode("() => switch (isBuggy()) { | _ => \\\"buggy\\\" };\"", true));
+        PsiElement e = firstElement(parseCode("() => switch (isBuggy()) { | _ => \\\"buggy\\\" };\""));
 
         assertInstanceOf(e, PsiFunction.class);
         PsiFunction f = (PsiFunction) e;

@@ -105,6 +105,12 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         return null;
     }
 
+    @NotNull
+    @Override
+    public List<PsiTagProperty> getProperties() {
+        return ORUtil.findImmediateChildrenOfClass(this, PsiTagProperty.class);
+    }
+
     @Override
     public List<TagProperty> getUnifiedPropertyList() {
         final List<TagProperty> result = new ArrayList<>();

@@ -51,10 +51,13 @@ public enum ParserScopeEnum {
     valNamed,
     valNamedSignature,
 
-    startTag,
-    closeTag,
-    tagProperty,
-    tagPropertyEq,
+    jsxTag,
+    jsxStartTag,
+    jsxTagProperty,
+    jsxTagPropertyEq,
+    jsxTagPropertyEqValue,
+    jsxTagBody,
+    jsxTagClose,
 
     annotation,
     annotationName,
@@ -111,6 +114,5 @@ public enum ParserScopeEnum {
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin, macroNamed, macroRaw, macroRawBody,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
-    patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction, tagPropertyValue,
-    name
+    patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction, name
 }

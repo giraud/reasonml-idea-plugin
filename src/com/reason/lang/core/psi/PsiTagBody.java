@@ -2,15 +2,14 @@ package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import org.jetbrains.annotations.NotNull;
 
-public class PsiTagClose extends ASTWrapperPsiElement {
-    public PsiTagClose(@NotNull ASTNode node) {
+public class PsiTagBody extends ASTWrapperPsiElement {
+    public PsiTagBody(ASTNode node) {
         super(node);
     }
 
     @Override
     public String toString() {
-        return "Tag close";
+        return "Tag body";
     }
 }
