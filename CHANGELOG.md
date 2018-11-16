@@ -10,9 +10,15 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.67.2 - 2018/11/16
+
+- :house: ![r](resources/icons/reason-file.png) Improve JSX parsing
+- :bug: [#116](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116) ![o](resources/icons/ocaml-file.png) - Structure panel: show items defined in modules
+- :bug: [#105](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105) ![o](resources/icons/ocaml-file.png) - Missing/incorrect structure info for function named "string"
+
 ## 0.67.1 - 2018/11/10
 
-- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o](resources/icons/ocaml-file.png)- "end" highlighted the same way as an unmatched parenthesis
+- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o](resources/icons/ocaml-file.png) - "end" highlighted the same way as an unmatched parenthesis
 - :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r](resources/icons/reason-file.png) - Function parsing is not correct
 
 ## 0.67 - 2018/10/27

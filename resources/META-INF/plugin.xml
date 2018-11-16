@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.67.1</version>
+    <version>0.67.2</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,10 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#115 - "end" highlighted the same way as an unmatched parenthesis</li>
-            <li>#113 - Function parsing is not correct</li>
+            <li>#105 - Missing/incorrect structure info for function named "string"</li>
+            <li>#115 - add do..done pair in OCaml</li>
+            <li>#116 - Improve OCaml parser</li>
+            <li>Improve JSX parsing</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
