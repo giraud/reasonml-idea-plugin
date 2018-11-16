@@ -501,6 +501,11 @@ public class OclParser extends CommonParser<OclTypes> {
             scope.complete();
             state.popEnd();
         }
+
+        if (state.isCurrentResolution(let)) {
+            // we are processing an infix operator or a desconstruction (tuple) : let (..<)>
+            state.updateCurrentResolution(letNamed).complete();
+        }
     }
 
     private void parseLBrace(PsiBuilder builder, ParserState state) {
