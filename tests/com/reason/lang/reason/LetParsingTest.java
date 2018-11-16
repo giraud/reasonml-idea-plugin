@@ -3,6 +3,7 @@ package com.reason.lang.reason;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
@@ -82,6 +83,30 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertTrue(let.isFunction());
         assertEquals("lx", let.getName());
+    }
+
+    public void testIssue105() {
+        FileBase file = parseCode("let string = \"x\"");
+        PsiLet e = first(letExpressions(file));
+
+        assertFalse(e.isFunction());
+        assertEquals("string", e.getName());
+    }
+
+    public void testIssue105a() {
+        FileBase file = parseCode("let int = 1");
+        PsiLet e = first(letExpressions(file));
+
+        assertFalse(e.isFunction());
+        assertEquals("int", e.getName());
+    }
+
+    public void testIssue105b() {
+        FileBase file = parseCode("let bool = 1");
+        PsiLet e = first(letExpressions(file));
+
+        assertFalse(e.isFunction());
+        assertEquals("bool", e.getName());
     }
 
 }

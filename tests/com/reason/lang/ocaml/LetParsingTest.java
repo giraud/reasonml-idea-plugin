@@ -122,12 +122,43 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testIssue116() {
-        FileBase file = parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview", true);
+        FileBase file = parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
         PsiLet e = first(letExpressions(file));
 
         assertFalse(e.isFunction());
         assertEquals("Proofview.apply (Global.env ()) tac pr.proofview", e.getBinding().getText());
     }
 
+    public void testIssue105() {
+        FileBase file = parseCode("let string = \"x\"");
+        PsiLet e = first(letExpressions(file));
+
+        assertFalse(e.isFunction());
+        assertEquals("string", e.getName());
+    }
+
+    public void testIssue105a() {
+        FileBase file = parseCode("let string s = \"x\"");
+        PsiLet e = first(letExpressions(file));
+
+        assertTrue(e.isFunction());
+        assertEquals("string", e.getName());
+    }
+
+    public void testIssue105b() {
+        FileBase file = parseCode("let int = 1");
+        PsiLet e = first(letExpressions(file));
+
+        assertFalse(e.isFunction());
+        assertEquals("int", e.getName());
+    }
+
+    public void testIssue105c() {
+        FileBase file = parseCode("let bool = 1");
+        PsiLet e = first(letExpressions(file));
+
+        assertFalse(e.isFunction());
+        assertEquals("bool", e.getName());
+    }
 
 }

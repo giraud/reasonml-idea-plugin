@@ -75,7 +75,11 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (tokenType == m_types.ARROBASE) {
                 parseArrobase(builder, state);
             } else if (tokenType == m_types.STRING) {
-                parseString(state);
+                parseString(builder, state);
+            } else if (tokenType == m_types.INT) {
+                parseInt(builder, state);
+            } else if (tokenType == m_types.BOOL) {
+                parseBool(builder, state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUNCTION || tokenType == m_types.FUN) {
@@ -237,10 +241,26 @@ public class OclParser extends CommonParser<OclTypes> {
         return context;
     }
 
-
-    private void parseString(ParserState state) {
+    private void parseString(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(annotationName)) {
             state.endAny();
+        } else if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
+        }
+    }
+
+    private void parseInt(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
+        }
+    }
+
+    private void parseBool(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
         }
     }
 
@@ -580,15 +600,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.updateCurrentResolution(externalNamed);
             state.complete();
         } else if (state.isCurrentResolution(let)) {
-            state.updateCurrentResolution(letNamed).complete();
-            state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
-            IElementType nextTokenType = builder.getTokenType();
-            if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
-                state.add(mark(builder, letBinding, letNamedBinding, m_types.LET_BINDING).complete())
-                        .add(mark(builder, function, m_types.C_FUN_EXPR).complete())
-                        .add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
-//                        .add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
-            }
+            transitionToLetNamed(builder, state);
             return;
         } else if (state.isCurrentResolution(val)) {
             state.updateCurrentResolution(valNamed);
@@ -604,6 +616,19 @@ public class OclParser extends CommonParser<OclTypes> {
         }
 
         state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+    }
+
+    private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
+        state.updateCurrentResolution(letNamed).complete();
+        state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
+        IElementType nextTokenType = builder.getTokenType();
+        if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
+            state.add(mark(builder, letBinding, letNamedBinding, m_types.LET_BINDING).complete())
+                    .add(mark(builder, function, m_types.C_FUN_EXPR).complete())
+                    .add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
+//                        .add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
+        }
+
     }
 
     private void parseUIdent(PsiBuilder builder, ParserState state) {

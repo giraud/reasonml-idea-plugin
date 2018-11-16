@@ -72,6 +72,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 parsePercent(builder, state);
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, state);
+            } else if (tokenType == m_types.STRING) {
+                parseString(builder, state);
+            } else if (tokenType == m_types.INT) {
+                parseInt(builder, state);
+            } else if (tokenType == m_types.BOOL) {
+                parseBool(builder, state);
             } else if (tokenType == m_types.STRING_VALUE) {
                 parseStringValue(builder, state);
             } else if (tokenType == m_types.PIPE) {
@@ -312,6 +318,32 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
             state.add(mark(builder, patternMatch, m_types.PATTERN_MATCH_EXPR).complete());
         }
+    }
+
+    private void parseString(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
+        }
+    }
+
+    private void parseInt(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
+        }
+    }
+
+    private void parseBool(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
+        }
+    }
+
+    private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
+        state.updateCurrentResolution(letNamed).complete();
+        state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
     }
 
     private void parseStringValue(PsiBuilder builder, ParserState state) {
@@ -588,8 +620,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
         } else if (state.isCurrentResolution(let)) {
             // LET <LIDENT> ...
-            state.updateCurrentResolution(letNamed).complete();
-            state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
+            transitionToLetNamed(builder, state);
             return;
         } else if (state.isCurrentResolution(letNamedEq)) {
             if (state.previousTokenElementType == m_types.EQ) {
