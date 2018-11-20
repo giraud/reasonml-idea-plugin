@@ -731,6 +731,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseLBrace(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
+            state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
+            state.complete();
+        }
+
         if (state.isCurrentResolution(typeNamedEq)) {
             state.add(markScope(builder, recordBinding, m_types.RECORD_EXPR, m_types.LBRACE));
         } else if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedSignature)) {

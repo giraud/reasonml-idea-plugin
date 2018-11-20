@@ -2,10 +2,8 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiJsObject;
-import com.reason.lang.core.psi.PsiJsObjectField;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.*;
 
 import java.util.Collection;
 
@@ -37,5 +35,17 @@ public class JsObjectParsingTest extends BaseParsingTestCase {
 
         Collection<PsiJsObjectField> fields = object.getFields();
         assertEquals(5, fields.size());
+    }
+
+    public void testModuleOpen() {
+        PsiLet e = first(letExpressions(parseCode("let computingProperties = createStructuredSelector(" +
+                "    ComputingReducers.{ \"lastUpdate\": selectors.getLastUpdate },\n" +
+                "  );")));
+
+        PsiLetBinding binding = e.getBinding();
+        PsiFunctionCallParams call = PsiTreeUtil.findChildOfType(binding, PsiFunctionCallParams.class);
+        PsiLocalOpen open = ORUtil.findImmediateFirstChildOfClass(call, PsiLocalOpen.class);
+        PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(open, PsiJsObject.class);
+        assertNotNull(jsObject);
     }
 }
