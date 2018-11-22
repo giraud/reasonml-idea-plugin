@@ -63,6 +63,12 @@ public enum ParserScopeEnum {
     annotationName,
     macro,
     macroName,
+    macroNamed,
+    macroRawNamed,
+    macroRaw,
+    macroRawBody,
+    raw,
+    rawBody,
 
     maybeRecord,
     recordBinding,
@@ -112,7 +118,7 @@ public enum ParserScopeEnum {
     moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope,
     moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
-    clazzNamedConstructor, record, mixin, macroNamed, macroRaw, macroRawBody,
+    clazzNamedConstructor, record, mixin,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
     patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction, name
 }

@@ -29,6 +29,7 @@ public class RmlTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", RmlLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", RmlLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
+        C_RAW = new ORCompositeElementType("C_RAW", RmlLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", RmlLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", RmlLanguage.INSTANCE);
         C_TAG = new ORCompositeElementType("C_TAG", RmlLanguage.INSTANCE);
@@ -192,6 +193,7 @@ public class RmlTypes extends ORTypes {
         WHEN = new ORTokenElementType("WHEN", RmlLanguage.INSTANCE);
         WHILE = new ORTokenElementType("WHILE", RmlLanguage.INSTANCE);
         WITH = new ORTokenElementType("WITH", RmlLanguage.INSTANCE);
+        RAW = new ORTokenElementType("RAW", RmlLanguage.INSTANCE);
 
         ASR = new ORTokenElementType("ASR", RmlLanguage.INSTANCE);
         CLASS = new ORTokenElementType("CLASS", RmlLanguage.INSTANCE);

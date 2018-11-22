@@ -138,6 +138,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "when"        { return types.WHEN; }
     "while"       { return types.WHILE; }
     "with"        { return types.WITH; }
+    "raw"         { return types.RAW; }
 
     "mod"         { return types.MOD; }
     "land"        { return types.LAND; }

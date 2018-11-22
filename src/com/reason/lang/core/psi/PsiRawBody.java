@@ -11,11 +11,11 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiRawMacroBody extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
+public class PsiRawBody extends ASTWrapperPsiElement implements PsiLanguageInjectionHost {
 
     private final ORTypes m_types;
 
-    public PsiRawMacroBody(ORTypes types, ASTNode node) {
+    public PsiRawBody(ORTypes types, ASTNode node) {
         super(node);
         m_types = types;
     }

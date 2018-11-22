@@ -74,6 +74,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 parseColon(builder, state);
             } else if (tokenType == m_types.STRING) {
                 parseString(builder, state);
+            } else if (tokenType == m_types.RAW) {
+                parseRaw(builder, state);
             } else if (tokenType == m_types.INT) {
                 parseInt(builder, state);
             } else if (tokenType == m_types.BOOL) {
@@ -174,6 +176,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseRaw(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(macroName)) {
+            state.advance().complete().popEnd()
+                    .updateCurrentContext(macroRaw)
+                    .updateCurrentResolution(macroRawNamed);
         }
     }
 
@@ -349,6 +359,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
     private void parseStringValue(PsiBuilder builder, ParserState state) {
         if (state.isCurrentContext(macroRaw)) {
             state.dontMove = wrapWith(m_types.C_MACRO_RAW_BODY, builder);
+        } else if (state.isCurrentContext(raw)) {
+            state.complete()
+                    .add(mark(builder, rawBody, m_types.C_MACRO_RAW_BODY).complete())
+                    .advance()
+                    .popEnd();
         } else if (state.isCurrentResolution(annotationName)) {
             state.popEndUntilStartScope();
         } else if (state.isCurrentResolution(maybeRecordUsage)) {
@@ -469,6 +484,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(macro)) {
             state.complete();
             state.add(mark(builder, macro, macroName, m_types.MACRO_NAME));
+        } else {
+            IElementType nextTokenType = builder.rawLookup(1);
+            if (nextTokenType == m_types.RAW) {
+                state.add(mark(builder, raw, m_types.C_RAW));
+            }
         }
     }
 

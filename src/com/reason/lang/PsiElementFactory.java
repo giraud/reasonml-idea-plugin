@@ -65,7 +65,7 @@ public class PsiElementFactory {
         } else if (type == types.MACRO_NAME) {
             return new PsiMacroName(node);
         } else if (type == types.C_MACRO_RAW_BODY) {
-            return new PsiRawMacroBody(types, node);
+            return new PsiRawBody(types, node);
         } else if (type == types.SCOPED_EXPR) {
             return new PsiScopedExpr(node);
         } else if (type == types.LOCAL_OPEN) {
@@ -120,6 +120,8 @@ public class PsiElementFactory {
             return new PsiJsObjectField(node);
         } else if (type == types.C_VARIANT_CONSTRUCTOR) {
             return new PsiVariantConstructor(node);
+        } else if (type == types.C_RAW) {
+            return new PsiRaw(node);
         } else if (type == types.C_SIG_ITEM) {
             return new PsiSignatureItemImpl(types, node);
         } else if (type == types.C_UNKNOWN_EXPR) {
