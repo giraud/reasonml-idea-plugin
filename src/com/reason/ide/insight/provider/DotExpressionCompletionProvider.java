@@ -125,7 +125,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
 
     private void addExpressions(@NotNull CompletionResultSet resultSet, Collection<PsiNamedElement> expressions) {
         for (PsiNamedElement expression : expressions) {
-            if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude)) {
+            if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include
                 resultSet.addElement(LookupElementBuilder.
                         create(expression).
