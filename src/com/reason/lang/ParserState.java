@@ -275,4 +275,12 @@ public class ParserState {
     public boolean isCurrentEmpty() {
         return m_currentScope.isEmpty();
     }
+
+    public ParserState wrapWith(IElementType elementType) {
+        PsiBuilder.Marker mark = m_builder.mark();
+        m_builder.advanceLexer();
+        mark.done(elementType);
+        dontMove = true;
+        return this;
+    }
 }

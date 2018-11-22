@@ -58,13 +58,6 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    protected boolean wrapWith(IElementType elementType, PsiBuilder builder) {
-        PsiBuilder.Marker mark = builder.mark();
-        builder.advanceLexer();
-        mark.done(elementType);
-        return true;
-    }
-
     protected boolean isTypeResolution(ParserScope scope) {
         return scope.isResolution(typeNamed) || scope.isResolution(typeNamedEq) || scope.isResolution(typeNamedEqVariant);
     }

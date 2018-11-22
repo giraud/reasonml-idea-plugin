@@ -615,12 +615,12 @@ public class OclParser extends CommonParser<OclTypes> {
                     add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM));
         }
 
-        state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+        state.wrapWith(m_types.LOWER_SYMBOL);
     }
 
     private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(letNamed).complete();
-        state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
+        state.wrapWith(m_types.C_LET_NAME);
         IElementType nextTokenType = builder.getTokenType();
         if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
             state.add(mark(builder, letBinding, letNamedBinding, m_types.LET_BINDING).complete())
@@ -666,7 +666,7 @@ public class OclParser extends CommonParser<OclTypes> {
             }
         }
 
-        state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
+        state.wrapWith(m_types.UPPER_SYMBOL);
     }
 
     private void parseOpen(PsiBuilder builder, ParserState state) {

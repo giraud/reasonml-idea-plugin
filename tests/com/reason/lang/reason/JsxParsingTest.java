@@ -3,6 +3,7 @@ package com.reason.lang.reason;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
@@ -16,9 +17,11 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testEmptyTag() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>", true));
 
-        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
+        PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
+        assertEquals("<div>", tag.getText());
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), RmlTypes.INSTANCE.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }

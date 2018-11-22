@@ -46,7 +46,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
                     builder.error("Unbalanced parenthesis");
                 }
             } else if (tokenType == m_types.VERSION) {
-                wrapWith(m_types.VERSION, builder);
+                state.wrapWith(m_types.VERSION);
             } else if (tokenType == m_types.EXECUTABLE) {
                 parseExecutable(builder, state);
             } else if (tokenType == m_types.LIBRARY) {

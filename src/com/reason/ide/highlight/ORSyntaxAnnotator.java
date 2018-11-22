@@ -36,7 +36,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             TextAttributes scheme = globalScheme.getAttributes(ORSyntaxHighlighter.ANNOTATION_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
-        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_GT) {
+        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_GT || elementType == m_types.TAG_AUTO_CLOSE) {
             TextAttributes scheme = globalScheme.getAttributes(ORSyntaxHighlighter.MARKUP_TAG_);
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(ERASE_MARKER);

@@ -128,7 +128,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             } else if (tokenType == m_types.TAG_LT_SLASH) {
                 parseLtSlash(builder, state);
             } else if (tokenType == m_types.GT) {
-                parseGtClose(builder, state);
+                parseGt(builder, state);
             } else if (tokenType == m_types.TAG_AUTO_CLOSE) {
                 parseGtAutoClose(builder, state);
             }
@@ -353,12 +353,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(letNamed).complete();
-        state.dontMove = wrapWith(m_types.C_LET_NAME, builder);
+        state.wrapWith(m_types.C_LET_NAME);
     }
 
     private void parseStringValue(PsiBuilder builder, ParserState state) {
         if (state.isCurrentContext(macroRaw)) {
-            state.dontMove = wrapWith(m_types.C_MACRO_RAW_BODY, builder);
+            state.wrapWith(m_types.C_MACRO_RAW_BODY);
         } else if (state.isCurrentContext(raw)) {
             state.complete()
                     .add(mark(builder, rawBody, m_types.C_MACRO_RAW_BODY).complete())
@@ -568,7 +568,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.advance();
 
             builder.remapCurrentToken(m_types.TAG_NAME);
-            state.dontMove = wrapWith(nextTokenType == m_types.UIDENT ? m_types.UPPER_SYMBOL : m_types.LOWER_SYMBOL, builder);
+            state.wrapWith(nextTokenType == m_types.UIDENT ? m_types.UPPER_SYMBOL : m_types.LOWER_SYMBOL);
         }
     }
 
@@ -586,21 +586,21 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.advance();
 
             builder.remapCurrentToken(m_types.TAG_NAME);
-            state.dontMove = wrapWith(nextTokenType == m_types.UIDENT ? m_types.UPPER_SYMBOL : m_types.LOWER_SYMBOL, builder);
+            state.wrapWith(nextTokenType == m_types.UIDENT ? m_types.UPPER_SYMBOL : m_types.LOWER_SYMBOL);
         }
     }
 
-    private void parseGtClose(PsiBuilder builder, ParserState state) {
+    private void parseGt(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(jsxTagPropertyEqValue)) {
             state.popEnd().popEnd();
         }
 
-        state.advance();
         if (state.isCurrentResolution(jsxStartTag)) {
-            state.popEnd()
+            state.wrapWith(m_types.TAG_GT)
+                    .popEnd()
                     .add(mark(builder, jsxTagBody, m_types.C_TAG_BODY).complete());
         } else if (state.isCurrentResolution(jsxTagClose)) {
-            state.popEnd().popEnd();
+            state.wrapWith(m_types.TAG_GT).popEnd().popEnd();
         }
     }
 
@@ -719,7 +719,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (!state.isCurrentResolution(jsxTagProperty)) {
-            state.dontMove = wrapWith(m_types.LOWER_SYMBOL, builder);
+            state.wrapWith(m_types.LOWER_SYMBOL);
         }
     }
 
@@ -1004,7 +1004,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
         }
 
-        state.dontMove = wrapWith(m_types.UPPER_SYMBOL, builder);
+        state.wrapWith(m_types.UPPER_SYMBOL);
     }
 
     private void parseSwitch(PsiBuilder builder, ParserState state) {
