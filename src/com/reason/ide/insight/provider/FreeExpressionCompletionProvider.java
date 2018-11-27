@@ -54,11 +54,13 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             if (module != null) {
                 Collection<PsiNamedElement> expressions = (module instanceof FileBase) ? ((FileBase) module).getExpressions() : ((PsiModule) module).getExpressions();
                 for (PsiNamedElement expression : expressions) {
-                    resultSet.addElement(LookupElementBuilder.
-                            create(expression).
-                            withTypeText(PsiSignatureUtil.getSignature(expression)).
-                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
-                            withInsertHandler(this::insertExpression));
+                    if (!(expression instanceof PsiAnnotation)) {
+                        resultSet.addElement(LookupElementBuilder.
+                                create(expression).
+                                withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
+                                withInsertHandler(this::insertExpression));
+                    }
                 }
             }
         }
@@ -71,7 +73,8 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         while (item != null) {
             if (item instanceof PsiModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
                 PsiNamedElement element = (PsiNamedElement) item;
-                resultSet.addElement(LookupElementBuilder.create(element).
+                resultSet.addElement(LookupElementBuilder.
+                        create(element).
                         withTypeText(PsiSignatureUtil.getSignature(element)).
                         withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
             }
