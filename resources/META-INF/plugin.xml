@@ -118,7 +118,7 @@
         <lang.syntaxHighlighterFactory language="OCaml"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCamlP4 -->
-        <lang.parserDefinition language="OCamlP4" implementationClass="com.reason.lang.p4.OclP4ParserDefinition"/>
+        <lang.parserDefinition language="OCamlP4" implementationClass="com.reason.lang.extra.OclP4ParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OCamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- Dune -->

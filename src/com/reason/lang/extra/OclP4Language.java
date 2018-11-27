@@ -1,4 +1,4 @@
-package com.reason.lang.p4;
+package com.reason.lang.extra;
 
 import com.intellij.lang.Language;
 

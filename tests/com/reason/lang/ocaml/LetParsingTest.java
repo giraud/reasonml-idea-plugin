@@ -161,13 +161,4 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("bool", e.getName());
     }
 
-    public void testIssue117() {
-        FileBase file = parseCode("let str = \" xx\" in let str_no_white = String.split_on_char ' ' str");
-        Collection<PsiLet> es = letExpressions(file);
-
-        assertSize(1, es);
-        PsiLet e = first(es);
-        assertEquals("\" xx\" in let str_no_white = String.split_on_char ' ' str", e.getBinding().getText());
-    }
-
 }
