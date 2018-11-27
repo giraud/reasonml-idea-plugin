@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.67.2</version>
+    <version>0.68</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,10 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#105 - Missing/incorrect structure info for function named "string"</li>
-            <li>#115 - add do..done pair in OCaml</li>
-            <li>#116 - Improve OCaml parser</li>
-            <li>Improve JSX parsing</li>
+            <li>#107 - Sorry, REPL is only available in IDEA (it uses modules)</li>
+            <li>#118 - Support of mlg files</li>
+            <li>Better Jsx tag highlight</li>
+            <li>Js inject in raw macros</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.68 - 2018/11/27
+
+- :rocket:  [#118](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/118) ![o](resources/icons/ocaml-file.png)  - Support .mlg files
+- :bug: [#107](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/107) - Sorry, REPL is only available in IDEA (it uses modules)
+- :house: Better Jsx tag highlight
+- :nail_care: Js inject in raw macros
+
 ## 0.67.2 - 2018/11/16
 
 - :house: ![r](resources/icons/reason-file.png) Improve JSX parsing
