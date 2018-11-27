@@ -3,24 +3,24 @@ package com.reason.ide.files;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.reason.lang.extra.OclP4Language;
+import com.reason.lang.extra.OclMlgLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Ml4File extends FileBase {
-    public Ml4File(@NotNull FileViewProvider viewProvider) {
-        super(viewProvider, OclP4Language.INSTANCE);
+public class MlgFile extends FileBase {
+    public MlgFile(@NotNull FileViewProvider viewProvider) {
+        super(viewProvider, OclMlgLanguage.INSTANCE);
     }
 
     @NotNull
     @Override
     public FileType getFileType() {
-        return Ml4FileType.INSTANCE;
+        return MlgFileType.INSTANCE;
     }
 
     @Override
     public String toString() {
-        return Ml4FileType.INSTANCE.getDescription();
+        return MlgFileType.INSTANCE.getDescription();
     }
 
     //region Compatibility

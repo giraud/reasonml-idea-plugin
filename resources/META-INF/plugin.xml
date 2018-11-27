@@ -99,6 +99,8 @@
         <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
         <!-- OCamlP4 -->
         <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
+        <!-- OCamlMlg -->
+        <fileTypeFactory implementation="com.reason.ide.files.MlgFileTypeFactory"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
         <!-- Binary -->
@@ -121,6 +123,10 @@
         <lang.parserDefinition language="OCamlP4" implementationClass="com.reason.lang.extra.OclP4ParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OCamlP4"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+        <!-- OCamlMlg -->
+        <lang.parserDefinition language="Mlg" implementationClass="com.reason.lang.extra.OclMlgParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Mlg"
+                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- Dune -->
         <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Dune"
@@ -133,6 +139,10 @@
         <lang.psiStructureViewFactory language="Reason"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="OCaml"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+        <lang.psiStructureViewFactory language="OCamlP4"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Mlg"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
         <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.FoldingBuilder"/>

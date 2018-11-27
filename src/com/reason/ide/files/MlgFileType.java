@@ -2,35 +2,35 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.reason.icons.Icons;
-import com.reason.lang.extra.OclP4Language;
+import com.reason.lang.extra.OclMlgLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class Ml4FileType extends LanguageFileType {
-    public static final Ml4FileType INSTANCE = new Ml4FileType();
+public class MlgFileType extends LanguageFileType {
+    public static final MlgFileType INSTANCE = new MlgFileType();
 
-    private Ml4FileType() {
-        super(OclP4Language.INSTANCE);
+    private MlgFileType() {
+        super(OclMlgLanguage.INSTANCE);
     }
 
     @NotNull
     @Override
     public String getName() {
-        return "OCamlP4 file";
+        return "Mlg file";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "OCaml preprocessor file";
+        return "OCaml grammar file";
     }
 
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "ml4";
+        return "mlg";
     }
 
     @Nullable
