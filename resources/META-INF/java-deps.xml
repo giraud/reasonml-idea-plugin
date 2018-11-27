@@ -1,0 +1,14 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
+        <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
+    </extensions>
+    <project-components>
+        <component>
+            <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.reason.build.dune.DuneProcess</implementation-class>
+        </component>
+    </project-components>
+</idea-plugin>

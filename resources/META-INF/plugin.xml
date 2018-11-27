@@ -28,7 +28,7 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <depends>com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="java-deps.xml">com.intellij.modules.java</depends>
 
     <application-components>
         <component>
@@ -37,9 +37,6 @@
     </application-components>
 
     <project-components>
-        <component>
-            <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
-        </component>
         <component>
             <interface-class>com.reason.build.annotations.ErrorsManager</interface-class>
             <implementation-class>com.reason.build.annotations.ErrorsManagerImpl</implementation-class>
@@ -72,9 +69,6 @@
         <component>
             <implementation-class>com.reason.build.bs.insight.BsQueryTypesService</implementation-class>
             <interface-class>com.reason.build.bs.insight.BsQueryTypesService</interface-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.build.dune.DuneProcess</implementation-class>
         </component>
     </project-components>
 
@@ -179,19 +173,13 @@
         <gotoClassContributor implementation="com.reason.ide.go.MlModuleContributor"/>
 
         <!--
-         | SDK & Settings
+         | Settings
          -->
-
-        <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
 
         <projectService serviceInterface="com.reason.ide.settings.ReasonSettings"
                         serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
         <projectConfigurable id="settings.reason" groupId="language" displayName="Reason"
                              instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
-
-        <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
-        <!--<facetType implementation="BsFacetType" id="bucklescript"/>-->
-        <!--<framework.detector implementation="BsFrameworkDetector"/>-->
 
         <!--
          | Others
