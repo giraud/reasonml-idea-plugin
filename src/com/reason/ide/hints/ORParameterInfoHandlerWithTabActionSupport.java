@@ -127,7 +127,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     }
 
     @Override
-    public void updateUI(HMSignature signature, @NotNull ParameterInfoUIContext context) {
+    public void updateUI(@Nullable HMSignature signature, @NotNull ParameterInfoUIContext context) {
         if (signature == null) {
             context.setUIComponentEnabled(false);
             return;

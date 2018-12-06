@@ -11,6 +11,7 @@ public class PsiFunctorBinding extends PsiToken<ORTypes> {
         super(types, node);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Functor binding";

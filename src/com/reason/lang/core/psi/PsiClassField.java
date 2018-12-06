@@ -30,6 +30,7 @@ public class PsiClassField extends ASTWrapperPsiElement implements NavigatablePs
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @Nullable
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
@@ -57,6 +58,7 @@ public class PsiClassField extends ASTWrapperPsiElement implements NavigatablePs
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Class.Field " + getName();

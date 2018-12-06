@@ -49,6 +49,7 @@ public class ModulePath {
         return m_names;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return Joiner.join(".", m_names);
@@ -64,7 +65,7 @@ public class ModulePath {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }

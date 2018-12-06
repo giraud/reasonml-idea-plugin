@@ -45,7 +45,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     @Override
-    public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
+    public String getQuickNavigateInfo(PsiElement element, @NotNull PsiElement originalElement) {
         PsiFile psiFile = originalElement.getContainingFile();
         TextEditor editor = (TextEditor) FileEditorManager.getInstance(originalElement.getProject()).getSelectedEditor(psiFile.getVirtualFile());
 

@@ -14,6 +14,7 @@ public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
     private static final int VERSION = 2;
     private static final ModuleFqnIndex INSTANCE = new ModuleFqnIndex();
 
+    @NotNull
     public static ModuleFqnIndex getInstance() {
         return INSTANCE;
     }
@@ -29,6 +30,7 @@ public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
         return IndexKeys.MODULES_FQN;
     }
 
+    @NotNull
     @Override
     public Collection<PsiModule> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
         return StubIndex.getElements(getKey(), integer, project, /*new JavaSourceFilterScope(scope) TODO*/scope, PsiModule.class);

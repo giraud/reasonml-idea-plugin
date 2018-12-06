@@ -14,11 +14,13 @@ import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.icons.Icons;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
 public class DuneManager implements Compiler, ProjectComponent {
 
+    @NotNull
     private final Project m_project;
 
     @NotNull
@@ -41,7 +43,10 @@ public class DuneManager implements Compiler, ProjectComponent {
         if (process.start()) {
             ProcessHandler handler = process.recreate();
             if (handler != null) {
-                getBsbConsole().attachToProcess(handler);
+                ConsoleView console = getBsbConsole();
+                if (console != null) {
+                    console.attachToProcess(handler);
+                }
                 process.startNotify();
                 InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
             } else {
@@ -51,6 +56,7 @@ public class DuneManager implements Compiler, ProjectComponent {
     }
 
     // copied
+    @Nullable
     private ConsoleView getBsbConsole() {
         ConsoleView console = null;
 
@@ -68,6 +74,7 @@ public class DuneManager implements Compiler, ProjectComponent {
         return console;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Dune";

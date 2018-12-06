@@ -16,6 +16,7 @@ import static com.intellij.patterns.StandardPatterns.or;
 
 public class RmlCompletionContributor extends CompletionContributor {
 
+    @NotNull
     static CompletionPatterns PATTERNS = new RmlCompletionPatterns();
 
     RmlCompletionContributor() {

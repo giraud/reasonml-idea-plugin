@@ -15,13 +15,16 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 
 @State(name = "BsFacetConfiguration", storages = {@Storage("bucklescript.xml")})
 public class BsFacetConfiguration implements FacetConfiguration, PersistentStateComponent<BsFacetConfiguration> {
+    @NotNull
     @SuppressWarnings("WeakerAccess")
     public String location = "";
     @SuppressWarnings("WeakerAccess")
     public boolean refmtOnSave = true;
+    @NotNull
     @SuppressWarnings("WeakerAccess")
     public String refmtWidth = "";
 
+    @NotNull
     @Override
     public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
         return new FacetEditorTab[]{new BsFacetEditor(editorContext, this)};

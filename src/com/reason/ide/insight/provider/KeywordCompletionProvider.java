@@ -14,6 +14,7 @@ import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
 
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
 
+    @NotNull
     private final Log m_debug;
     private final String m_debugName;
     private final String[] m_keywords;

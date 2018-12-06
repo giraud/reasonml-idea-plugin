@@ -69,6 +69,7 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
         return nameBuilder.toString();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -123,6 +124,7 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Type " + getQualifiedName();

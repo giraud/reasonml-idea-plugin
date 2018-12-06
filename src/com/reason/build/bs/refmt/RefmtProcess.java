@@ -28,10 +28,12 @@ public class RefmtProcess implements ProjectComponent {
         return ModuleConfiguration.isOnSaveEnabled(m_project);
     }
 
+    @NotNull
     public String run(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull String code) {
         return convert(sourceFile, format, format, code);
     }
 
+    @NotNull
     public String convert(@NotNull VirtualFile sourceFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
         String refmtPath = ModuleConfiguration.getRefmtPath(m_project, sourceFile);
         if (refmtPath == null) {
@@ -64,7 +66,7 @@ public class RefmtProcess implements ProjectComponent {
                     return newText;
                 }
             }
-        } catch (IOException | RuntimeException e) {
+        } catch (@NotNull IOException | RuntimeException e) {
             LOG.error(e.getMessage());
         } finally {
             if (refmt != null) {

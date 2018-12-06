@@ -28,6 +28,7 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
         return "Add braces to blockless function";
     }
 
+    @NotNull
     @Override
     Class<PsiFunction> getClazz() {
         return PsiFunction.class;

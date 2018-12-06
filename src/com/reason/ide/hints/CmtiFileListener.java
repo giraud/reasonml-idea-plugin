@@ -23,6 +23,7 @@ public class CmtiFileListener implements ProjectComponent {
 
     private final static Logger LOG = Logger.getInstance("ReasonML.vfs");
 
+    @NotNull
     private final Project m_project;
     private final InsightManager m_insightManager;
     private final ORProjectTracker m_projectTracker;
@@ -45,7 +46,7 @@ public class CmtiFileListener implements ProjectComponent {
     public void disposeComponent() { // For compatibility with idea#143
     }
 
-    public void onChange(VirtualFile file) {
+    public void onChange(@NotNull VirtualFile file) {
         boolean useCmt = m_insightManager.useCmt();
         if (useCmt && file.getFileType() instanceof CmiFileType) {
             return;

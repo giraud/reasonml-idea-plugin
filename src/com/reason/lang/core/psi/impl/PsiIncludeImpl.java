@@ -33,6 +33,7 @@ public class PsiIncludeImpl extends PsiToken<ORTypes> implements PsiInclude {
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -60,6 +61,7 @@ public class PsiIncludeImpl extends PsiToken<ORTypes> implements PsiInclude {
         };
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "PsiInclude(" + getName() + ")";

@@ -35,11 +35,13 @@ public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiNamedEleme
         return identifier == null ? "" : identifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Function parameter " + getName();

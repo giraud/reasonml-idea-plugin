@@ -14,6 +14,7 @@ public class ModuleCompIndex extends StringStubIndexExtension<PsiModule> {
     private static final int VERSION = 1;
     private static final ModuleCompIndex INSTANCE = new ModuleCompIndex();
 
+    @NotNull
     public static ModuleCompIndex getInstance() {
         return INSTANCE;
     }

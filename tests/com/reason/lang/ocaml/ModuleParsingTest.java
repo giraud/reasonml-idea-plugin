@@ -28,26 +28,6 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("Y", module.getAlias());
     }
 
-    public void testModuleFunctor() {
-        PsiModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
-        PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
-
-        assertNotNull(struct);
-    }
-
-    public void testModuleFunctor2() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t"));
-
-        assertEquals(1, expressions.size());
-    }
-
-    public void testModuleFunctorInstantiation() {
-        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
-        Collection<PsiNamedElement> expressions = expressions(file);
-
-        assertEquals(2, expressions.size());
-    }
-
     public void testModuleType() {
         PsiModule module = first(moduleExpressions(parseCode("module type RedFlagsSig = sig end")));
 

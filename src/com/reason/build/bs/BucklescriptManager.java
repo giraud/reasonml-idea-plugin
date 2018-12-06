@@ -93,7 +93,10 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
                 if (process.start()) {
                     ProcessHandler bscProcess = process.recreate(sourceFile, cliType);
                     if (bscProcess != null) {
-                        getBsbConsole().attachToProcess(bscProcess);
+                        ConsoleView console = getBsbConsole();
+                        if (console != null) {
+                            console.attachToProcess(bscProcess);
+                        }
                         process.startNotify();
                         InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
                     } else {
@@ -161,6 +164,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         return RefmtProcess.getInstance(m_project).isOnSaveEnabled();
     }
 
+    @Nullable
     public ConsoleView getBsbConsole() {
         ConsoleView console = null;
 

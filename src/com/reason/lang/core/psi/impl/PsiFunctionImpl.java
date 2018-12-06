@@ -33,6 +33,7 @@ public class PsiFunctionImpl extends PsiToken<ORTypes> implements PsiFunction {
         return parameters == null ? emptyList() : ORUtil.findImmediateChildrenOfClass(parameters, PsiParameter.class);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Function";

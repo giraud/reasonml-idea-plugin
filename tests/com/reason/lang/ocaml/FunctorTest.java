@@ -1,8 +1,14 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiStruct;
+
+import java.util.Collection;
 
 public class FunctorTest extends BaseParsingTestCase {
     public FunctorTest() {
@@ -14,6 +20,26 @@ public class FunctorTest extends BaseParsingTestCase {
 
         assertNotNull(e);
         assertInstanceOf(e, PsiFunctor.class);
+    }
+
+    public void testModuleFunctor() {
+        PsiModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
+        PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
+
+        assertNotNull(struct);
+    }
+
+    public void testModuleFunctor2() {
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t"));
+
+        assertEquals(1, expressions.size());
+    }
+
+    public void testModuleFunctorInstantiation() {
+        PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
+        Collection<PsiNamedElement> expressions = expressions(file);
+
+        assertEquals(2, expressions.size());
     }
 
 }

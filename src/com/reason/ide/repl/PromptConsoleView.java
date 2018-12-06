@@ -17,9 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class PromptConsoleView extends ConsoleViewImpl {
+    @NotNull
     private final PromptConsole m_promptConsole;
 
-    PromptConsoleView(Project project, boolean viewer, final boolean attachToStdOut) {
+    PromptConsoleView(@NotNull Project project, boolean viewer, final boolean attachToStdOut) {
         super(project, GlobalSearchScope.allScope(project), viewer, new ConsoleState.NotStartedStated() {
             @NotNull
             @Override
@@ -43,6 +44,7 @@ public class PromptConsoleView extends ConsoleViewImpl {
         return m_promptConsole.getOutputEditor();
     }
 
+    @NotNull
     @Override
     public JComponent getPreferredFocusableComponent() {
         return m_promptConsole.getInputComponent();
@@ -54,7 +56,7 @@ public class PromptConsoleView extends ConsoleViewImpl {
     }
 
     @Override
-    public void attachToProcess(ProcessHandler processHandler) {
+    public void attachToProcess(@NotNull ProcessHandler processHandler) {
         super.attachToProcess(processHandler);
 
         processHandler.addProcessListener(new ProcessAdapter() {

@@ -31,14 +31,17 @@ public class BsOutputListener implements RawProcessListener {
         error
     }
 
+    @NotNull
     private final Project m_project;
     private final ErrorsManager m_errorsManager;
     private final BsProcess m_compiler;
+    @NotNull
     private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
     private BuildStatus m_status;
     private int m_failedLine;
+    @Nullable
     private OutputInfo m_latestInfo = null;
     private String m_previousText;
 
@@ -218,7 +221,8 @@ public class BsOutputListener implements RawProcessListener {
         return null;
     }
 
-    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
+    @NotNull
+    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(line);
@@ -232,6 +236,7 @@ public class BsOutputListener implements RawProcessListener {
         return info;
     }
 
+    @NotNull
     private OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;

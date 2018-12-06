@@ -10,7 +10,7 @@ public class PsiLocalOpen extends ASTWrapperPsiElement {
 
     private final ORTypes m_types;
 
-    public PsiLocalOpen(ASTNode node, ORTypes types) {
+    public PsiLocalOpen(@NotNull ASTNode node, ORTypes types) {
         super(node);
         m_types = types;
     }
@@ -35,6 +35,7 @@ public class PsiLocalOpen extends ASTWrapperPsiElement {
         return false;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Local open " + getName();

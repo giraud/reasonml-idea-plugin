@@ -70,7 +70,7 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
 
     @NotNull
     @Override
-    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+    public TextAttributesKey[] getTokenHighlights(@NotNull IElementType tokenType) {
         if (tokenType.equals(DuneTypes.INSTANCE.LPAREN) || tokenType.equals(DuneTypes.INSTANCE.RPAREN)) {
             return PAREN_KEYS;
         } else if (tokenType.equals(DuneTypes.INSTANCE.COMMENT)) {
@@ -92,6 +92,7 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
         return EMPTY_KEYS;
     }
 
+    @NotNull
     private static Set<IElementType> of(IElementType... types) {
         Set<IElementType> result = new HashSet<>();
         Collections.addAll(result, types);

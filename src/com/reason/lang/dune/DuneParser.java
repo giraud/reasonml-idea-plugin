@@ -4,6 +4,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserState;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
@@ -11,12 +12,12 @@ import static com.reason.lang.ParserScope.markScope;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public class DuneParser extends CommonParser<DuneTypes> {
-    public DuneParser() {
+    DuneParser() {
         super(DuneTypes.INSTANCE);
     }
 
     @Override
-    protected void parseFile(PsiBuilder builder, ParserState state) {
+    protected void parseFile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         IElementType tokenType = null;
 
         //long parseStart = System.currentTimeMillis();

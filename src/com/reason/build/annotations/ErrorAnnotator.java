@@ -32,7 +32,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
 
     @Nullable
     @Override
-    public Collection<BsbErrorAnnotation> doAnnotate(Collection<OutputInfo> collectedInfo) {
+    public Collection<BsbErrorAnnotation> doAnnotate(@NotNull Collection<OutputInfo> collectedInfo) {
         Collection<BsbErrorAnnotation> result = new ArrayList<>();
 
         for (OutputInfo info : collectedInfo) {
@@ -43,7 +43,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
     }
 
     @Override
-    public void apply(@NotNull PsiFile file, Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
+    public void apply(@NotNull PsiFile file, @NotNull Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
         FileEditorManager fem = FileEditorManager.getInstance(file.getProject());
         TextEditor selectedEditor = (TextEditor) fem.getSelectedEditor(file.getVirtualFile());
         if (selectedEditor != null) {

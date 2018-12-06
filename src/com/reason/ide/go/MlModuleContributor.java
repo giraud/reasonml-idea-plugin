@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class MlModuleContributor implements ChooseByNameContributor {
     @NotNull
     @Override
-    public NavigationItem[] getItemsByName(String name, String pattern, Project project, boolean includeNonProjectItems) {
+    public NavigationItem[] getItemsByName(@NotNull String name, String pattern, @NotNull Project project, boolean includeNonProjectItems) {
         ArrayList<NavigationItem> items = new ArrayList<>();
 
         GlobalSearchScope scope = includeNonProjectItems ? GlobalSearchScope.allScope(project) : GlobalSearchScope.projectScope(project);
@@ -43,7 +43,7 @@ public class MlModuleContributor implements ChooseByNameContributor {
 
     @NotNull
     @Override
-    public String[] getNames(Project project, boolean includeNonProjectItems) {
+    public String[] getNames(@NotNull Project project, boolean includeNonProjectItems) {
         ArrayList<String> modules = new ArrayList<>();
 
         Collection<String> fileModules = PsiFinder.getInstance().findFileModules(project, ORFileType.implementationOnly).stream().map(FileBase::asModuleName).collect(Collectors.toList());

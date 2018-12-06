@@ -19,7 +19,7 @@ public class ReplRunConfiguration extends RunConfigurationBase {
     private boolean m_cygwinEnabled = false;
     private String m_cygwinPath = "";
 
-    ReplRunConfiguration(Project project, ConfigurationFactory factory, String name) {
+    ReplRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, String name) {
         super(project, factory, name);
         ProjectSdksModel model = new ProjectSdksModel();
         model.reset(getProject());

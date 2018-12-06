@@ -74,6 +74,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
         return nameIdentifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -94,6 +95,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
         return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
     }
 
+    @NotNull
     private String getRealName() {
         PsiElement name = findChildByType(m_types.STRING);
         return name == null ? "" : name.getText();
@@ -161,6 +163,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "External" + (isFunction() ? ".f " : " ") + getQualifiedName();

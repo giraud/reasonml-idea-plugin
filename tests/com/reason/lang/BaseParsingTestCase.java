@@ -22,79 +22,93 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         super(dataPath, fileExt, definitions);
     }
 
+    @NotNull
     @Override
     protected String getTestDataPath() {
         return "testData";
     }
 
+    @NotNull
     protected Collection<PsiNamedElement> expressions(@NotNull PsiFile file) {
         return PsiFileHelper.getExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiInclude> includeExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getIncludeExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiType> typeExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getTypeExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiModule> moduleExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getModuleExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiClass> classExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getClassExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiLet> letExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getLetExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiOpen> openExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getOpenExpressions(file);
     }
 
+    @NotNull
     protected Collection<PsiVal> valExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getValExpressions(file);
     }
 
+    @NotNull
     protected PsiExternal externalExpression(@NotNull PsiFile file, @NotNull String name) {
         Collection<PsiExternal> externalExpressions = PsiFileHelper.getExternalExpressions(file);
         return externalExpressions.stream().filter(psiExternal -> name.equals(psiExternal.getName())).findFirst().get();
     }
 
-    protected PsiElement firstElement(PsiFile fileModule) {
+    protected PsiElement firstElement(@NotNull PsiFile fileModule) {
         return fileModule.getFirstChild();
     }
 
-    protected <T extends PsiElement> T first(Collection<T> collection) {
+    protected <T extends PsiElement> T first(@NotNull Collection<T> collection) {
         return collection.iterator().next();
     }
 
-    protected <T extends PsiElement> T second(Collection<T> collection) {
+    protected <T extends PsiElement> T second(@NotNull Collection<T> collection) {
         Iterator<T> iterator = collection.iterator();
         iterator.next();
         return iterator.next();
     }
 
-    protected <T extends PsiElement> T firstOfType(PsiElement element, Class<T> aClass) {
+    protected <T extends PsiElement> T firstOfType(PsiElement element, @NotNull Class<T> aClass) {
         return first(findChildrenOfType(element, aClass));
     }
 
+    @NotNull
     protected PsiFile parseFile(String name) throws IOException {
         return parseFile(name, false);
     }
 
+    @NotNull
     protected PsiFile parseFile(String name, boolean print) throws IOException {
         String text = loadFile(name + "." + myFileExt);
         return parseCode(text, print);
     }
 
+    @NotNull
     protected FileBase parseCode(String code) {
         return parseCode(code, false);
     }
 
+    @NotNull
     protected FileBase parseCode(String code, boolean print) {
         parseRawCode(code, print);
         return (FileBase) myFile;
@@ -109,10 +123,12 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return myFile;
     }
 
+    @NotNull
     protected DuneFile parseDuneCode(String code) {
         return parseDuneCode(code, false);
     }
 
+    @NotNull
     protected DuneFile parseDuneCode(String code, boolean print) {
         myFile = createFile("jbuild", code);
         if (print) {
@@ -123,7 +139,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @SuppressWarnings("unused")
-    void debugPsiAst(PsiElement element) {
+    void debugPsiAst(@NotNull PsiElement element) {
         System.out.println(DebugUtil.psiToString(element, false, true));
     }
 }

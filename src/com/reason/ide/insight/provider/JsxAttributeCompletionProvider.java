@@ -30,6 +30,7 @@ import static java.util.stream.Collectors.toList;
 public class JsxAttributeCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     private final ModulePathFinder m_modulePathFinder;
+    @NotNull
     private final Log m_debug;
 
     public JsxAttributeCompletionProvider(ModulePathFinder modulePathFinder) {

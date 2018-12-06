@@ -26,6 +26,7 @@ import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
+    @NotNull
     private final Log m_debug;
 
     public JsxNameCompletionProvider() {
@@ -70,7 +71,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         }
     }
 
-    private static void insertTagNameHandler(Project project, InsertionContext context, String tagName) {
+    private static void insertTagNameHandler(@NotNull Project project, InsertionContext context, @NotNull String tagName) {
         char completionChar = context.getCompletionChar();
         if (completionChar == ' ') {
             context.setAddCompletionChar(false);

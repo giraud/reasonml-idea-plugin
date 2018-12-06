@@ -17,10 +17,11 @@ import java.io.IOException;
 
 public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
 
-    public PsiModuleStubElementType(String name, Language language) {
+    public PsiModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
     }
 
+    @NotNull
     public PsiModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
         ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
         return new PsiModuleImpl(stub, this, types);

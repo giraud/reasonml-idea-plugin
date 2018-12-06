@@ -33,12 +33,15 @@ public class DuneOutputListener implements ProcessListener {
         error
     }
 
+    @NotNull
     private final Project m_project;
     private final ErrorsManager m_errorsManager;
     private final CompilerProcessLifecycle m_compilerLifecycle;
+    @NotNull
     private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
+    @Nullable
     private OutputInfo m_latestInfo = null;
 
     DuneOutputListener(Project project, CompilerProcessLifecycle compilerLifecycle) {
@@ -129,7 +132,7 @@ public class DuneOutputListener implements ProcessListener {
     }
 
     @Nullable
-    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, String colEnd) {
+    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
 
         VirtualFile baseDir = m_project.getBaseDir();

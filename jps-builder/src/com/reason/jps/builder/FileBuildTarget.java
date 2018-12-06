@@ -24,10 +24,12 @@ import static org.jetbrains.jps.util.JpsPathUtil.urlToFile;
 public class FileBuildTarget extends BuildTarget<FileRootDescriptor> {
     private static final Logger LOG = Logger.getInstance("ReasonML.fileBuildTarget");
 
+    @NotNull
     private final FileRootDescriptor m_rootDescriptor;
+    @NotNull
     private final File m_outputLocation;
 
-    public FileBuildTarget(FileBuildTargetType type, JpsModule module, File file) {
+    FileBuildTarget(FileBuildTargetType type, @NotNull JpsModule module, @NotNull File file) {
         super(type);
 
         m_rootDescriptor = new FileRootDescriptor(this, module, file);
@@ -50,6 +52,7 @@ public class FileBuildTarget extends BuildTarget<FileRootDescriptor> {
         return m_rootDescriptor.getRootId();
     }
 
+    @NotNull
     @Override
     public Collection<BuildTarget<?>> computeDependencies(BuildTargetRegistry targetRegistry, TargetOutputIndex outputIndex) {
         return Collections.emptyList();

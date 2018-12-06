@@ -9,6 +9,7 @@ public class PsiTagClose extends ASTWrapperPsiElement {
         super(node);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Tag close";

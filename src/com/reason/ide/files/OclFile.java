@@ -18,6 +18,7 @@ public class OclFile extends FileBase {
         return OclFileType.INSTANCE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return getName();

@@ -10,12 +10,13 @@ import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileHelper;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 
 public class ConvertAction extends AnAction {
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(@NotNull AnActionEvent e) {
         PsiFile file = e.getData(PSI_FILE);
         Project project = e.getProject();
 

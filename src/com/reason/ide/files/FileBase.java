@@ -41,6 +41,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
         return ModuleHelper.isComponent(this);
     }
 
+    @NotNull
     public String shortLocation(@NotNull Project project) {
         return Platform.removeProjectDir(project, getVirtualFile()).replace("node_modules" + File.separator, "").replace(getName(), "");
     }
@@ -51,7 +52,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
     }
 
     @Nullable
-    public PsiNamedElement getTypeExpression(String name) {
+    public PsiNamedElement getTypeExpression(@NotNull String name) {
         List<PsiType> expressions = PsiFileHelper.getTypeExpressions(this);
         if (!expressions.isEmpty()) {
             for (PsiType expression : expressions) {

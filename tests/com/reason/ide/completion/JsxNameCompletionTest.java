@@ -3,6 +3,7 @@ package com.reason.ide.completion;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.reason.ide.files.RmlFileType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class JsxNameCompletionTest extends LightPlatformCodeInsightFixtureTestCa
         super.setUp();
     }
 
+    @NotNull
     @Override
     protected String getTestDataPath() {
         return "testData/com/reason/lang/component";

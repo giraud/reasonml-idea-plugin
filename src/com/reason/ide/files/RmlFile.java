@@ -18,6 +18,7 @@ public class RmlFile extends FileBase {
         return RmlFileType.INSTANCE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return getName();

@@ -113,7 +113,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
     }
 
-    private void insertExpression(InsertionContext insertionContext, LookupElement element) {
+    private void insertExpression(@NotNull InsertionContext insertionContext, LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
         if (psiElement instanceof PsiLet) {
             PsiLet let = (PsiLet) psiElement;

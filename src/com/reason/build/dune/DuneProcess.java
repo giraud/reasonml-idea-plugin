@@ -14,6 +14,7 @@ import com.reason.Platform;
 import com.reason.build.CompilerProcessLifecycle;
 import com.reason.ide.ORNotification;
 import com.reason.ide.sdk.OCamlSDK;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -26,8 +27,10 @@ import static com.intellij.notification.NotificationType.ERROR;
 public final class DuneProcess implements ProjectComponent, CompilerProcessLifecycle {
 
     private final Project m_project;
+    @NotNull
     private final ProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
+    @Nullable
     private KillableColoredProcessHandler m_processHandler;
 
     public static DuneProcess getInstance(Project project) {
@@ -57,9 +60,7 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
             GeneralCommandLine cli = getGeneralCommandLine();
             if (cli != null) {
                 m_processHandler = new KillableColoredProcessHandler(cli);
-                if (m_outputListener != null) {
-                    m_processHandler.addProcessListener(m_outputListener);
-                }
+                m_processHandler.addProcessListener(m_outputListener);
             }
             return m_processHandler;
         } catch (ExecutionException e) {

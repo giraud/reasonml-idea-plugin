@@ -9,6 +9,7 @@ public class PsiModulePath extends ASTWrapperPsiElement {
         super(node);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "ModulePath";

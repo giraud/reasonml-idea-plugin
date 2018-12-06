@@ -31,6 +31,7 @@ public class PsiSignatureImpl extends PsiToken<ORTypes> implements PsiSignature 
         return asHMSignature().toString();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Signature";

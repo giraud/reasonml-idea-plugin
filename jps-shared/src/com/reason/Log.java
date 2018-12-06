@@ -75,7 +75,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @Nullable PsiFile t) {
+    public void debug(@NotNull String comment, @Nullable PsiFile t) {
         if (m_log.isDebugEnabled()) {
             debug(comment, t == null ? null : t.getVirtualFile());
         }
@@ -99,13 +99,13 @@ public class Log {
 //        }
 //    }
 
-    public void debug(String comment, PsiQualifiedNamedElement element) {
+    public void debug(String comment, @NotNull PsiQualifiedNamedElement element) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ")");
         }
     }
 
-    public void debug(String comment, PsiQualifiedNamedElement element, int position) {
+    public void debug(String comment, @NotNull PsiQualifiedNamedElement element, int position) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ") pos=" + position);
         }

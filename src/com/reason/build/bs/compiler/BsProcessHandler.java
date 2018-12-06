@@ -7,9 +7,11 @@ import com.intellij.execution.process.KillableProcessHandler;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BsProcessHandler extends KillableProcessHandler implements AnsiEscapeDecoder.ColoredTextAcceptor {
     private final AnsiEscapeDecoder m_ansiEscapeDecoder = new AnsiEscapeDecoder();
+    @Nullable
     private RawProcessListener m_listener = null;
 
     BsProcessHandler(@NotNull GeneralCommandLine commandLine) throws ExecutionException {

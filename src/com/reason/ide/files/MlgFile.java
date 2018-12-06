@@ -18,6 +18,7 @@ public class MlgFile extends FileBase {
         return MlgFileType.INSTANCE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return MlgFileType.INSTANCE.getDescription();

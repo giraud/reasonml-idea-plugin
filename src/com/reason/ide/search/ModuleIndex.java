@@ -9,6 +9,7 @@ public class ModuleIndex extends StringStubIndexExtension<PsiModule> {
     private static final int VERSION = 9;
     private static final ModuleIndex INSTANCE = new ModuleIndex();
 
+    @NotNull
     public static ModuleIndex getInstance() {
         return INSTANCE;
     }

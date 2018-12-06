@@ -17,6 +17,7 @@ public class DuneFile extends PsiFileBase {
         return DuneFileType.INSTANCE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return DuneFileType.INSTANCE.getDescription();

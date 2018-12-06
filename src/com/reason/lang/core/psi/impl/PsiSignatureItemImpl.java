@@ -18,6 +18,7 @@ public class PsiSignatureItemImpl extends PsiToken<ORTypes> implements PsiSignat
         return firstChild != null && ORUtil.nextSiblingWithTokenType(firstChild, m_types.COLON) != null;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Signature item";

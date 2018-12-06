@@ -49,6 +49,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE ? "" : nameIdentifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -91,6 +92,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return findChildByClass(PsiRecord.class) != null;
     }
 
+    @NotNull
     @Override
     public Collection<PsiRecordField> getObjectFields() {
         return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
@@ -203,6 +205,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Let " + getQualifiedName();

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class PsiJsObject extends ASTWrapperPsiElement {
 
-    public PsiJsObject(ASTNode node) {
+    public PsiJsObject(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -23,6 +23,7 @@ public class PsiJsObject extends ASTWrapperPsiElement {
         return PsiTreeUtil.findChildrenOfType(this, PsiJsObjectField.class);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "JsObject";

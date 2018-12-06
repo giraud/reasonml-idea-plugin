@@ -34,6 +34,7 @@ public class PsiUpperSymbolImpl extends PsiToken<ORTypes> implements PsiUpperSym
         return this;
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createModuleName(getProject(), newName);
@@ -64,6 +65,7 @@ public class PsiUpperSymbolImpl extends PsiToken<ORTypes> implements PsiUpperSym
         return new PsiUpperSymbolReference(this, m_types);
     }
 
+    @NotNull
     @Override
     public String toString() {
         String name = getName();

@@ -52,21 +52,24 @@ public class OclP4ParserDefinition implements ParserDefinition {
         return new OclParser();
     }
 
+    @NotNull
     @Override
     public IFileElementType getFileNodeType() {
         return FILE;
     }
 
-    public PsiFile createFile(FileViewProvider viewProvider) {
+    @NotNull
+    public PsiFile createFile(@NotNull FileViewProvider viewProvider) {
         return new Ml4File(viewProvider);
     }
 
+    @NotNull
     public ParserDefinition.SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return ParserDefinition.SpaceRequirements.MAY;
     }
 
     @NotNull
-    public PsiElement createElement(ASTNode node) {
+    public PsiElement createElement(@NotNull ASTNode node) {
         return PsiElementFactory.createElement(OclTypes.INSTANCE, node);
     }
 }

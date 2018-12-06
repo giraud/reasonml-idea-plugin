@@ -140,7 +140,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
     @NotNull
     @Override
-    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+    public TextAttributesKey[] getTokenHighlights(@NotNull IElementType tokenType) {
         if (tokenType.equals(m_types.COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(m_types.LBRACE) || tokenType.equals(m_types.RBRACE)) {
@@ -186,6 +186,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
         return EMPTY_KEYS;
     }
 
+    @NotNull
     private static Set<IElementType> of(IElementType... types) {
         Set<IElementType> result = new HashSet<>();
         Collections.addAll(result, types);

@@ -4,6 +4,7 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.ElementPatternCondition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ORElementPattern implements ElementPattern<PsiElement> {
@@ -30,6 +31,7 @@ public class ORElementPattern implements ElementPattern<PsiElement> {
         return false;
     }
 
+    @NotNull
     @Override
     public ElementPatternCondition<PsiElement> getCondition() {
         return new ElementPatternCondition<>(new ORPatternCondition(PsiElement.class));

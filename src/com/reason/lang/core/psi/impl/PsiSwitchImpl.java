@@ -21,6 +21,7 @@ public class PsiSwitchImpl extends PsiToken<ORTypes> implements PsiSwitch {
         return PsiTreeUtil.findChildOfType(this, PsiBinaryCondition.class);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Switch";

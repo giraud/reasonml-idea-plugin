@@ -10,6 +10,7 @@ public class PsiParametersImpl extends PsiToken<ORTypes> implements PsiParameter
         super(types, node);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Parameters";

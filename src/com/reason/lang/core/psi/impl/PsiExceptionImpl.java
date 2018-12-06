@@ -31,6 +31,7 @@ public class PsiExceptionImpl extends PsiToken<ORTypes> implements PsiException 
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -59,6 +60,7 @@ public class PsiExceptionImpl extends PsiToken<ORTypes> implements PsiException 
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Exception " + getName();

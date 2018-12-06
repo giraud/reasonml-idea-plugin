@@ -34,7 +34,7 @@ public class InferredTypesService {
     private InferredTypesService() {
     }
 
-    public static void queryForSelectedTextEditor(Project project) {
+    public static void queryForSelectedTextEditor(@NotNull Project project) {
         try {
             Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
             if (selectedTextEditor != null) {
@@ -60,7 +60,7 @@ public class InferredTypesService {
         }
     }
 
-    static void annotateFile(Project project, InferredTypes types, VirtualFile sourceFile) {
+    static void annotateFile(@NotNull Project project, InferredTypes types, VirtualFile sourceFile) {
         ApplicationManager.getApplication().runWriteAction(() -> annotatePsiExpressions(project, types, sourceFile));
     }
 

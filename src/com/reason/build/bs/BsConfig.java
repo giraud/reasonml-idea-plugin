@@ -26,8 +26,11 @@ class BsConfig {
 
     private final static Logger LOG = Logger.getInstance("ReasonML.bsConfig");
 
+    @NotNull
     private final Path m_basePath;
+    @NotNull
     private final String m_namespace;
+    @NotNull
     private final Path[] m_deps;
     private final String m_rootBsPlatform;
 
@@ -49,7 +52,7 @@ class BsConfig {
         }
 
         Path relativePath = m_basePath.relativize(new File(canonicalPath).toPath());
-        if (relativePath.startsWith("node_modules") && m_deps != null) {
+        if (relativePath.startsWith("node_modules")) {
             if (relativePath.startsWith(m_rootBsPlatform)) {
                 return true;
             }
@@ -95,8 +98,8 @@ class BsConfig {
         if (matcher.matches()) {
             String[] tokens = matcher.group(1).split(",");
             result = new ArrayList<>();
-            for (int i = 0; i < tokens.length; i++) {
-                String token = tokens[i].trim();
+            for (String token1 : tokens) {
+                String token = token1.trim();
                 if (2 < token.length()) {
                     result.add(FileSystems.getDefault().getPath("node_modules", token.substring(1, token.length() - 1), "lib"));
                 }

@@ -24,6 +24,7 @@ import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ObjectCompletionProvider extends CompletionProvider<CompletionParameters> {
 
+    @NotNull
     private final Log m_debug;
 
     public ObjectCompletionProvider() {

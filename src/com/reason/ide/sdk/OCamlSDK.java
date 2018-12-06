@@ -54,7 +54,7 @@ public class OCamlSDK extends SdkType {
 
     @Nullable
     @Override
-    public String getVersionString(String sdkHome) {
+    public String getVersionString(@NotNull String sdkHome) {
         Matcher matcher = VERSION_REGEXP.matcher(sdkHome);
         if (matcher.matches()) {
             return matcher.group(1);
@@ -62,8 +62,9 @@ public class OCamlSDK extends SdkType {
         return null;
     }
 
+    @NotNull
     @Override
-    public String suggestSdkName(String currentSdkName, String sdkHome) {
+    public String suggestSdkName(String currentSdkName, @NotNull String sdkHome) {
         return new File(sdkHome).getName();
     }
 

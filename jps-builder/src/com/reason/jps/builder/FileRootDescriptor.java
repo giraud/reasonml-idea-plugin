@@ -23,6 +23,7 @@ public class FileRootDescriptor extends BuildRootDescriptor {
         m_contentRoots = module.getContentRootsList().getUrls().stream().map(JpsPathUtil::urlToFile).collect(Collectors.toList());
     }
 
+    @NotNull
     @Override
     public String getRootId() {
         return m_path.getAbsolutePath();

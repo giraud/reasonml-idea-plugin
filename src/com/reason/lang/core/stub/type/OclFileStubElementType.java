@@ -20,6 +20,7 @@ public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
         super("OCAML_FILE", OclLanguage.INSTANCE);
     }
 
+    @NotNull
     @Override
     public StubBuilder getBuilder() {
         return new DefaultStubBuilder() {

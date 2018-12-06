@@ -15,6 +15,7 @@ public class PsiFunctionCallParamsImpl extends PsiToken<ORTypes> implements PsiF
         super(types, node);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "function call params";

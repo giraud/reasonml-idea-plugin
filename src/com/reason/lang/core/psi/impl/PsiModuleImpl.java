@@ -34,11 +34,11 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     private ModulePath m_modulePath;
 
     //region Constructors
-    public PsiModuleImpl(ASTNode node, ORTypes types) {
+    public PsiModuleImpl(@NotNull ASTNode node, @NotNull ORTypes types) {
         super(types, node);
     }
 
-    public PsiModuleImpl(PsiModuleStub stub, IStubElementType nodeType, ORTypes types) {
+    public PsiModuleImpl(@NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType, @NotNull ORTypes types) {
         super(types, stub, nodeType);
     }
     //endregion
@@ -56,6 +56,7 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
         return findChildByClass(PsiUpperSymbol.class);
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
         return this;
@@ -308,6 +309,7 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
         return ((FileBase) getContainingFile()).asModuleName() + (path.isEmpty() ? "" : "." + path) + "." + getName();
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Module " + getQualifiedName();

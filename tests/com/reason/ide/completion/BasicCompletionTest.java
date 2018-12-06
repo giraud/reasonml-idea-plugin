@@ -2,6 +2,7 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ public class BasicCompletionTest extends LightPlatformCodeInsightFixtureTestCase
         super.setUp();
     }
 
+    @NotNull
     @Override
     protected String getTestDataPath() {
         return "testData/com/reason/ide/completion";

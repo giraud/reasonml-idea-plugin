@@ -49,21 +49,24 @@ public class DuneParserDefinition implements ParserDefinition {
         return new DuneParser();
     }
 
+    @NotNull
     @Override
     public IFileElementType getFileNodeType() {
         return FILE;
     }
 
-    public PsiFile createFile(FileViewProvider viewProvider) {
+    @NotNull
+    public PsiFile createFile(@NotNull FileViewProvider viewProvider) {
         return new DuneFile(viewProvider);
     }
 
+    @NotNull
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }
 
     @NotNull
-    public PsiElement createElement(ASTNode node) {
+    public PsiElement createElement(@NotNull ASTNode node) {
         return DunePsiElementFactory.createElement(node);
     }
 }

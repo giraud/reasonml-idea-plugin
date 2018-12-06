@@ -16,24 +16,25 @@ public class RmlElementFactory {
     }
 
     @Nullable
-    public static PsiElement createModuleName(Project project, String name) {
+    public static PsiElement createModuleName(@NotNull Project project, String name) {
         FileBase file = createFileFromText(project, "module " + name + " = {};");
         return ((PsiModule) file.getFirstChild()).getNameIdentifier();
     }
 
     @Nullable
-    public static PsiElement createLetName(Project project, String name) {
+    public static PsiElement createLetName(@NotNull Project project, String name) {
         FileBase file = createFileFromText(project, "let " + name + " = 1;");
         return ((PsiLet) file.getFirstChild()).getNameIdentifier();
     }
 
-    public static PsiElement createTypeName(Project project, String name) {
+    @Nullable
+    public static PsiElement createTypeName(@NotNull Project project, String name) {
         FileBase dummyFile = createFileFromText(project, "type " + name + ";");
         return ((PsiType) dummyFile.getFirstChild()).getNameIdentifier();
     }
 
     @Nullable
-    public static PsiElement createExpression(Project project, String expression) {
+    public static PsiElement createExpression(@NotNull Project project, @NotNull String expression) {
         FileBase file = createFileFromText(project, expression);
         return file.getFirstChild();
     }

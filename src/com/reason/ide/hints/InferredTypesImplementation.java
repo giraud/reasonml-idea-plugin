@@ -19,7 +19,7 @@ public class InferredTypesImplementation implements InferredTypes {
     private final Map<String, HMSignature> m_let = new THashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new THashMap<>();
 
-    public void addTypes(String type) {
+    public void addTypes(@NotNull String type) {
         try {
             if (type.startsWith("val")) {
                 int colonPos = type.indexOf(':');
@@ -102,7 +102,8 @@ public class InferredTypesImplementation implements InferredTypes {
         }
     }
 
-    LogicalPosition extractLogicalPosition(@NotNull String encodedPos) {
+    @NotNull
+    private LogicalPosition extractLogicalPosition(@NotNull String encodedPos) {
         String[] codedPos = encodedPos.split("\\.");
         int line = Integer.parseInt(codedPos[0]);
         int column = Integer.parseInt(codedPos[1]);

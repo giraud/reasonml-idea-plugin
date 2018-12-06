@@ -9,7 +9,7 @@ import com.reason.ide.files.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
 public class StructureViewModel extends StructureViewModelBase implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
-    StructureViewModel(PsiFile psiFile) {
+    StructureViewModel(@NotNull PsiFile psiFile) {
         super(psiFile, new StructureViewElement(psiFile));
     }
 

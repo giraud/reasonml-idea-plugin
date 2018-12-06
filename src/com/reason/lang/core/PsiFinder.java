@@ -35,6 +35,7 @@ public final class PsiFinder {
 
     private final Log LOG = new Log("finder");
 
+    @NotNull
     public static PsiFinder getInstance() {
         return INSTANCE;
     }
@@ -149,7 +150,7 @@ public final class PsiFinder {
         return findLowerSymbols("externals", project, name, fileType, IndexKeys.EXTERNALS, PsiExternal.class);
     }
 
-    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull ORFileType fileType, StubIndexKey<String, T> indexKey, Class<T> clazz) {
+    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull ORFileType fileType, @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Find " + debugName + " name", name);
         }

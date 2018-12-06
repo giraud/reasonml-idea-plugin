@@ -15,7 +15,7 @@ public class PsiRawBody extends ASTWrapperPsiElement implements PsiLanguageInjec
 
     private final ORTypes m_types;
 
-    public PsiRawBody(ORTypes types, ASTNode node) {
+    public PsiRawBody(ORTypes types, @NotNull ASTNode node) {
         super(node);
         m_types = types;
     }
@@ -26,6 +26,7 @@ public class PsiRawBody extends ASTWrapperPsiElement implements PsiLanguageInjec
         return true;
     }
 
+    @NotNull
     @Override
     public PsiLanguageInjectionHost updateText(@NotNull String text) {
         ASTNode valueNode = getNode().getFirstChildNode();
@@ -46,6 +47,7 @@ public class PsiRawBody extends ASTWrapperPsiElement implements PsiLanguageInjec
         };
     }
 
+    @NotNull
     public TextRange getMacroTextRange() {
         IElementType elementType = getNode().getFirstChildNode().getElementType();
         return elementType == m_types.STRING_VALUE ? new TextRange(1, getTextLength() - 1) : new TextRange(2, getTextLength() - 2);

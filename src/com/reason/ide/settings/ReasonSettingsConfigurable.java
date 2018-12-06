@@ -30,6 +30,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
         return getHelpTopic();
     }
 
+    @NotNull
     @Nls
     @Override
     public String getDisplayName() {

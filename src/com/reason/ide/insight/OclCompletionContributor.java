@@ -13,6 +13,7 @@ import static com.intellij.patterns.StandardPatterns.or;
 
 public class OclCompletionContributor extends CompletionContributor {
 
+    @NotNull
     static CompletionPatterns PATTERNS = new OclCompletionPatterns();
 
     OclCompletionContributor() {

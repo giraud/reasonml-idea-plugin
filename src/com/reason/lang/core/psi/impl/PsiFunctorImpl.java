@@ -40,6 +40,7 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @Nullable
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;

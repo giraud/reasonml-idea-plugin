@@ -58,15 +58,15 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
-    protected boolean isTypeResolution(ParserScope scope) {
+    protected boolean isTypeResolution(@NotNull ParserScope scope) {
         return scope.isResolution(typeNamed) || scope.isResolution(typeNamedEq) || scope.isResolution(typeNamedEqVariant);
     }
 
-    protected boolean isModuleResolution(ParserScope scope) {
+    protected boolean isModuleResolution(@NotNull ParserScope scope) {
         return scope.isResolution(moduleNamed) || scope.isResolution(moduleNamedSignature) || scope.isResolution(moduleNamedColon);
     }
 
-    protected boolean isLetResolution(ParserScope scope) {
+    protected boolean isLetResolution(@NotNull ParserScope scope) {
         return scope.isResolution(letNamed) || scope.isResolution(letNamedEq);
     }
 }

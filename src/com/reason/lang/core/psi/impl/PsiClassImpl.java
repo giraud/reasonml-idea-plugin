@@ -36,6 +36,7 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
         return findChildByClass(PsiLowerSymbol.class);
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -100,6 +101,7 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Class " + getQualifiedName();

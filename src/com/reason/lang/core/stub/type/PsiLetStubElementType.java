@@ -21,6 +21,7 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
         super(name, language);
     }
 
+    @NotNull
     public PsiLetImpl createPsi(@NotNull PsiLetStub stub) {
         ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
         return new PsiLetImpl(types, stub, this);

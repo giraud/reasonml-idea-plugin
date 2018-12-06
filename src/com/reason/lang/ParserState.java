@@ -15,6 +15,7 @@ public class ParserState {
     private final Stack<ParserScope> m_scopes = new Stack<>();
 
     private ParserScope m_currentScope;
+    @Nullable
     public IElementType previousTokenElementType;
     public boolean dontMove = false;
 
@@ -106,6 +107,7 @@ public class ParserState {
         return m_currentScope.isResolution(scope);
     }
 
+    @NotNull
     public ParserState complete() {
         m_currentScope.complete();
         return this;
@@ -232,7 +234,7 @@ public class ParserState {
         return m_currentScope.isScope();
     }
 
-    public void setTokenElementType(ORTokenElementType tokenType) {
+    public void setTokenElementType(@NotNull ORTokenElementType tokenType) {
         m_currentScope.setScopeTokenType(tokenType);
     }
 
@@ -246,7 +248,8 @@ public class ParserState {
         return m_currentScope.isContext(context);
     }
 
-    public ParserState updateCurrentContext(ParserScopeEnum context) {
+    @NotNull
+    public ParserState updateCurrentContext(@NotNull ParserScopeEnum context) {
         m_currentScope.context(context);
         return this;
     }
@@ -276,7 +279,8 @@ public class ParserState {
         return m_currentScope.isEmpty();
     }
 
-    public ParserState wrapWith(IElementType elementType) {
+    @NotNull
+    public ParserState wrapWith(@NotNull IElementType elementType) {
         PsiBuilder.Marker mark = m_builder.mark();
         m_builder.advanceLexer();
         mark.done(elementType);

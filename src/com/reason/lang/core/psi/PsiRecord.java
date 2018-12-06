@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PsiRecord extends ASTWrapperPsiElement {
 
-    public PsiRecord(ASTNode node) {
+    public PsiRecord(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -37,6 +37,7 @@ public class PsiRecord extends ASTWrapperPsiElement {
         return result;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Record";

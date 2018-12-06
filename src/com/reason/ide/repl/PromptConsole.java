@@ -18,6 +18,7 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SideBorder;
 import com.reason.lang.ocaml.OclLanguage;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,12 +33,14 @@ final class PromptConsole implements Disposable {
 
     private final JPanel m_mainPanel = new JPanel(new BorderLayout());
     private final ConsoleViewImpl m_consoleView;
+    @NotNull
     private final EditorImpl m_outputEditor;
+    @NotNull
     private final EditorImpl m_promptEditor;
     private final PromptHistory m_history = new PromptHistory(100);
     private boolean m_promptEnabled = true;
 
-    PromptConsole(Project project, ConsoleViewImpl consoleView) {
+    PromptConsole(@NotNull Project project, ConsoleViewImpl consoleView) {
         m_consoleView = consoleView;
 
         EditorFactory editorFactory = EditorFactory.getInstance();
@@ -67,10 +70,12 @@ final class PromptConsole implements Disposable {
         editorFactory.releaseEditor(m_promptEditor);
     }
 
+    @NotNull
     JComponent getCenterComponent() {
         return m_mainPanel;
     }
 
+    @NotNull
     EditorImpl getOutputEditor() {
         return m_outputEditor;
     }
@@ -124,7 +129,7 @@ final class PromptConsole implements Disposable {
         // hook some key event on prompt editor
         m_promptEditor.getContentComponent().addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(@NotNull KeyEvent e) {
                 if (m_promptEnabled && e.isControlDown()) {
                     int keyCode = e.getKeyCode();
                     if (keyCode == KeyEvent.VK_ENTER) {
@@ -144,6 +149,7 @@ final class PromptConsole implements Disposable {
         });
     }
 
+    @NotNull
     private String normalizeCommand(String command) {
         String sanitizedCommand = command.trim();
         if (!sanitizedCommand.endsWith(";;")) {
@@ -157,7 +163,7 @@ final class PromptConsole implements Disposable {
         return sanitizedCommand;
     }
 
-    private void setPromptCommand(String text) {
+    private void setPromptCommand(@NotNull String text) {
         m_promptEditor.getDocument().setText(text);
         m_promptEditor.getScrollingModel().scrollHorizontally(0);
         m_promptEditor.getCaretModel().moveToOffset(text.length());

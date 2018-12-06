@@ -13,7 +13,7 @@ import javax.swing.*;
 public class ReplConfigurationFactory extends ConfigurationFactory {
     private static final String FACTORY_NAME = "OCaml REPL configuration factory";
 
-    ReplConfigurationFactory(ConfigurationType type) {
+    ReplConfigurationFactory(@NotNull ConfigurationType type) {
         super(type);
     }
 
@@ -23,11 +23,13 @@ public class ReplConfigurationFactory extends ConfigurationFactory {
         return new ReplRunConfiguration(project, this, "OCaml repl");
     }
 
+    @NotNull
     @Override
     public Icon getIcon() {
         return LayeredIcon.create(Icons.OCL_FILE, Icons.OVERLAY_EXECUTE);
     }
 
+    @NotNull
     @Override
     public String getName() {
         return FACTORY_NAME;

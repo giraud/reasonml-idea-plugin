@@ -11,6 +11,7 @@ public class PsiSExpr extends PsiToken<DuneTypes> {
         super(types, node);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "(";

@@ -18,6 +18,7 @@ public class Ml4File extends FileBase {
         return Ml4FileType.INSTANCE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return Ml4FileType.INSTANCE.getDescription();

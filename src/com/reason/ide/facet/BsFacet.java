@@ -27,6 +27,7 @@ public class BsFacet extends Facet<BsFacetConfiguration> {
         return FacetTypeRegistry.getInstance().findFacetType(ID);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return getModule().getName();

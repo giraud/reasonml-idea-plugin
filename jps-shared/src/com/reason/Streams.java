@@ -1,5 +1,7 @@
 package com.reason;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -7,7 +9,7 @@ public class Streams {
     private Streams() {
     }
 
-    public static void waitUntilReady(BufferedReader reader, BufferedReader errorReader) throws IOException {
+    public static void waitUntilReady(BufferedReader reader, @NotNull BufferedReader errorReader) throws IOException {
         long start = System.currentTimeMillis();
         boolean isReady = reader.ready() || errorReader.ready();
         while (!isReady) {

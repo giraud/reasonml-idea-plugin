@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.DumbAwareAction;
+import org.jetbrains.annotations.NotNull;
 
 class ClearLogAction extends DumbAwareAction {
     private ConsoleView m_console;
@@ -16,7 +17,7 @@ class ClearLogAction extends DumbAwareAction {
     }
 
     @Override
-    public void update(AnActionEvent e) {
+    public void update(@NotNull AnActionEvent e) {
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         e.getPresentation().setEnabled(editor != null && editor.getDocument().getTextLength() > 0);
     }

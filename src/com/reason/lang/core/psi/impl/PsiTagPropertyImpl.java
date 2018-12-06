@@ -35,6 +35,7 @@ public class PsiTagPropertyImpl extends PsiToken<ORTypes> implements PsiTagPrope
         return eq == null ? null : eq.getNextSibling();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "TagProperty " + getName();

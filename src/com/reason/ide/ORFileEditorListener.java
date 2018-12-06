@@ -81,7 +81,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         }
 
         @Override
-        public void propertyChange(PropertyChangeEvent evt) {
+        public void propertyChange(@NotNull PropertyChangeEvent evt) {
             if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE/* or always, but add debounce */) {
                 // Document is saved, run the compiler !!
                 CompilerManager.getInstance().getCompiler(m_project).run(m_file, CliType.standard);
@@ -93,13 +93,13 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         private int m_oldLinesCount;
 
         @Override
-        public void beforeDocumentChange(DocumentEvent event) {
+        public void beforeDocumentChange(@NotNull DocumentEvent event) {
             Document document = event.getDocument();
             m_oldLinesCount = document.getLineCount();
         }
 
         @Override
-        public void documentChanged(DocumentEvent event) {
+        public void documentChanged(@NotNull DocumentEvent event) {
             // When document lines count change, we clear the type annotations
             Document document = event.getDocument();
             int newLineCount = document.getLineCount();

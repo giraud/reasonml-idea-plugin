@@ -2,10 +2,11 @@ package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import org.jetbrains.annotations.NotNull;
 
 public class PsiScopedExpr extends ASTWrapperPsiElement {
 
-    public PsiScopedExpr(ASTNode node) {
+    public PsiScopedExpr(@NotNull ASTNode node) {
         super(node);
     }
 
@@ -14,6 +15,7 @@ public class PsiScopedExpr extends ASTWrapperPsiElement {
         return false;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Scoped expression";

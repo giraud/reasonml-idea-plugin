@@ -15,12 +15,15 @@ import org.jetbrains.annotations.NotNull;
 public class ReasonSettings implements PersistentStateComponent<ReasonSettings> {
     private Project m_project;
 
+    @NotNull
     @SuppressWarnings("WeakerAccess")
     public String location = "";
+    @NotNull
     @SuppressWarnings("WeakerAccess")
     public String workingDir = "";
     @SuppressWarnings("WeakerAccess")
     public boolean refmtOnSave = true;
+    @NotNull
     @SuppressWarnings("WeakerAccess")
     public String refmtWidth = "120";
 

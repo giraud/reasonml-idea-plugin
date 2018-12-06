@@ -39,6 +39,7 @@ public class OclFileType extends LanguageFileType {
         return Icons.OCL_FILE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return getName();

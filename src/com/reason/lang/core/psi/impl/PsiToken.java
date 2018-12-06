@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiToken<T> extends ASTWrapperPsiElement {
 
+    @NotNull
     protected final T m_types;
 
     public PsiToken(@NotNull T types, @NotNull ASTNode node) {

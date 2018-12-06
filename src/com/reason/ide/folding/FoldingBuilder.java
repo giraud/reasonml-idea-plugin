@@ -53,14 +53,14 @@ public class FoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[0]);
     }
 
-    private void foldLet(List<FoldingDescriptor> descriptors, PsiLet letExpression) {
+    private void foldLet(@NotNull List<FoldingDescriptor> descriptors, PsiLet letExpression) {
         FoldingDescriptor fold = fold(letExpression.getBinding());
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldType(List<FoldingDescriptor> descriptors, PsiType typeExpression) {
+    private void foldType(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiType typeExpression) {
         PsiElement constrName = PsiTreeUtil.findChildOfType(typeExpression, PsiTypeConstrName.class);
         if (constrName != null) {
             ORTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
@@ -76,7 +76,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(List<FoldingDescriptor> descriptors, PsiModule module) {
+    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, PsiModule module) {
         FoldingDescriptor foldSignature = fold(module.getSignature());
         if (foldSignature != null) {
             descriptors.add(foldSignature);

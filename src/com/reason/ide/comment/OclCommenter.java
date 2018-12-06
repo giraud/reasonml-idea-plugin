@@ -82,7 +82,7 @@ public class OclCommenter implements Commenter, CustomUncommenter {
         return ranges;
     }
 
-    private TextRange expandRange(CharSequence chars, int delOffset1, int delOffset2) {
+    private TextRange expandRange(@NotNull CharSequence chars, int delOffset1, int delOffset2) {
         int offset1 = CharArrayUtil.shiftBackward(chars, delOffset1 - 1, " \t");
         if (offset1 < 0 || chars.charAt(offset1) == '\n' || chars.charAt(offset1) == '\r') {
             int offset2 = CharArrayUtil.shiftForward(chars, delOffset2, " \t");
@@ -99,7 +99,7 @@ public class OclCommenter implements Commenter, CustomUncommenter {
         return new TextRange(delOffset1, delOffset2);
     }
 
-    private static int getNearest(String text, String pattern, int position) {
+    private static int getNearest(String text, @NotNull String pattern, int position) {
         int result = text.indexOf(pattern, position);
         return result == -1 ? text.length() : result;
     }

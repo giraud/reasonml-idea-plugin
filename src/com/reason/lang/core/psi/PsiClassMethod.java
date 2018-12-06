@@ -30,6 +30,7 @@ public class PsiClassMethod extends ASTWrapperPsiElement implements NavigatableP
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @Nullable
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
@@ -57,6 +58,7 @@ public class PsiClassMethod extends ASTWrapperPsiElement implements NavigatableP
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Class.Method " + getName();

@@ -45,6 +45,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -103,6 +104,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Val " + getQualifiedName();

@@ -4,11 +4,13 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTokenElementType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ParserScope {
 
     ORTokenElementType scopeTokenElementType;
 
+    @NotNull
     private final PsiBuilder m_builder;
     private final int m_offset;
 
@@ -18,6 +20,7 @@ public class ParserScope {
     private boolean m_isComplete = false;
     private boolean m_isScope = false;
     private boolean m_scopeStart = false;
+    @Nullable
     private PsiBuilder.Marker m_mark;
 
     private ParserScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
@@ -38,17 +41,19 @@ public class ParserScope {
         return new ParserScope(builder, context, resolution, compositeElementType, null);
     }
 
+    @NotNull
     public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
         ParserScope parserScope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType).setIsStart(true);
         parserScope.m_isScope = true;
         return parserScope;
     }
 
+    @NotNull
     public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
         return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
 
-    static ParserScope markRoot(PsiBuilder builder) {
+    static ParserScope markRoot(@NotNull PsiBuilder builder) {
         return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
     }
 
@@ -82,6 +87,7 @@ public class ParserScope {
         }
     }
 
+    @NotNull
     public ParserScope complete() {
         m_isComplete = true;
         return this;
@@ -91,6 +97,7 @@ public class ParserScope {
         return m_resolution == resolution;
     }
 
+    @NotNull
     public ParserScope resolution(ParserScopeEnum resolution) {
         m_resolution = resolution;
         return this;
@@ -109,6 +116,7 @@ public class ParserScope {
         this.m_isScope = true;
     }
 
+    @NotNull
     public ParserScope compositeElementType(IElementType compositeElementType) {
         m_compositeElementType = compositeElementType;
         return this;

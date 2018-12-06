@@ -4,6 +4,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.stub.PsiLetStub;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -20,6 +21,7 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
 
     boolean isFunction();
 
+    @NotNull
     Collection<PsiRecordField> getObjectFields();
 
     @Nullable

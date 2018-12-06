@@ -14,6 +14,7 @@ public class PsiTagPropertyValueImpl extends PsiToken<ORTypes> implements PsiTag
     //endregion
 
 
+    @NotNull
     @Override
     public String toString() {
         return "TagPropertyValue";

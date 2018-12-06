@@ -25,6 +25,7 @@ public class PsiLetNameImpl extends PsiToken<ORTypes> implements PsiLetName {
         return getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createLetName(getProject(), newName);
@@ -43,6 +44,7 @@ public class PsiLetNameImpl extends PsiToken<ORTypes> implements PsiLetName {
         return this;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Name " + getText();

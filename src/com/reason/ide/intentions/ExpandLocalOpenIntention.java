@@ -26,6 +26,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
         return "Expand local open";
     }
 
+    @NotNull
     @Override
     Class<PsiLocalOpen> getClazz() {
         return PsiLocalOpen.class;

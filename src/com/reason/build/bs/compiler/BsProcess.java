@@ -26,8 +26,10 @@ import static com.intellij.notification.NotificationType.ERROR;
 
 public final class BsProcess implements CompilerProcessLifecycle, ProjectComponent {
 
+    @NotNull
     private final Project m_project;
 
+    @Nullable
     private BsProcessHandler m_bsb;
     private RawProcessListener m_outputListener;
     private final AtomicBoolean m_started = new AtomicBoolean(false);
@@ -37,7 +39,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         return project.getComponent(BsProcess.class);
     }
 
-    public BsProcess(Project project) {
+    public BsProcess(@NotNull Project project) {
         m_project = project;
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
@@ -84,6 +86,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         return null;
     }
 
+    @Nullable
     private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) throws ExecutionException {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
@@ -113,7 +116,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     @Nullable
-    private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, CliType cliType) {
+    private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
         String bsbPath = ModuleConfiguration.getBsbPath(m_project, sourceFile);
 
         if (bsbPath == null) {
@@ -170,7 +173,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
 
             String[] numbers = reader.readLine().split("\\.");
             return numbers[0];
-        } catch (InterruptedException | IOException e) {
+        } catch (@NotNull InterruptedException | IOException e) {
             return "";
         } finally {
             if (p != null) {

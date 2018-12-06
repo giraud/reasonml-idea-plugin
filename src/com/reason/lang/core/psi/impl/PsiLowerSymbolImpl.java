@@ -32,6 +32,7 @@ public class PsiLowerSymbolImpl extends PsiToken<ORTypes> implements PsiLowerSym
         return this;
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = RmlElementFactory.createLetName(getProject(), newName);
@@ -56,6 +57,7 @@ public class PsiLowerSymbolImpl extends PsiToken<ORTypes> implements PsiLowerSym
         return new PsiLowerSymbolReference(this, m_types);
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "LSymbol " + getName();

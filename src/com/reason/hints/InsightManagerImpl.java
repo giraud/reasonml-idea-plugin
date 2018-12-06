@@ -19,7 +19,9 @@ import static com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
+    @NotNull
     public AtomicBoolean isDownloaded = new AtomicBoolean(false);
+    @NotNull
     AtomicBoolean isDownloading = new AtomicBoolean(false);
 
     private final Project m_project;

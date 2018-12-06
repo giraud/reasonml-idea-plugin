@@ -23,6 +23,7 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
         super("REASON_FILE", RmlLanguage.INSTANCE);
     }
 
+    @NotNull
     @Override
     public StubBuilder getBuilder() {
         return new DefaultStubBuilder() {
@@ -31,8 +32,7 @@ public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
             protected StubElement createStubForFile(@NotNull PsiFile file) {
                 if (file instanceof RmlFile) {
                     return new RmlFileStub((RmlFile) file, ((RmlFile) file).isComponent());
-                }
-                else if (file instanceof RmlInterfaceFile) {
+                } else if (file instanceof RmlInterfaceFile) {
                     return new RmlFileStub((RmlInterfaceFile) file, ((RmlInterfaceFile) file).isComponent());
                 }
                 return super.createStubForFile(file);

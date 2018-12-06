@@ -28,6 +28,7 @@ public class PsiRecordField extends PsiToken<ORTypes> implements PsiNamedElement
         return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
     }
 
+    @Nullable
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
@@ -50,6 +51,7 @@ public class PsiRecordField extends PsiToken<ORTypes> implements PsiNamedElement
         return false;
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Record field " + getName();

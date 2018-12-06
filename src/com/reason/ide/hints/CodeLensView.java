@@ -18,6 +18,7 @@ public class CodeLensView {
     }
 
     public static class CodeLensInfo {
+        @NotNull
         Map<VirtualFile, Map<Integer, String>> m_signatures = new THashMap<>();
         private final TObjectLongHashMap<VirtualFile> m_timestamps = new ObjectLongHashMap<>();
 

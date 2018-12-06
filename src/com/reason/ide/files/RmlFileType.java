@@ -39,6 +39,7 @@ public class RmlFileType extends LanguageFileType {
         return Icons.RML_FILE;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return getName();

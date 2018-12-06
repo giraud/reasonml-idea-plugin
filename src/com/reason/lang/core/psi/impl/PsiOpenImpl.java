@@ -45,6 +45,7 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen, PsiStruct
         return sbName.toString();
     }
 
+    @Nullable
     @Override
     public PsiElement setName(@NotNull String s) throws IncorrectOperationException {
         return null;  // TODO implement method
@@ -73,6 +74,7 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen, PsiStruct
         };
     }
 
+    @Nullable
     @Override
     public String toString() {
         return "Open " + getName();

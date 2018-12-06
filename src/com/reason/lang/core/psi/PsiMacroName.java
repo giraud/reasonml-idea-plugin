@@ -2,10 +2,11 @@ package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
+import org.jetbrains.annotations.NotNull;
 
 public class PsiMacroName extends ASTWrapperPsiElement {
 
-    public PsiMacroName(ASTNode node) {
+    public PsiMacroName(@NotNull ASTNode node) {
         super(node);
     }
 

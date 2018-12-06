@@ -24,6 +24,7 @@ public class BsFacetEditor extends FacetEditorTab {
         m_configuration = configuration;
     }
 
+    @NotNull
     @Nls
     @Override
     public String getDisplayName() {

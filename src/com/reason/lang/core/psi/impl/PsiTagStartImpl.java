@@ -30,6 +30,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
 
     static class TagPropertyImpl implements TagProperty {
 
+        @Nullable
         private final String m_name;
         private final String m_type;
         private boolean m_mandatory;
@@ -62,6 +63,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             m_mandatory = mandatory;
         }
 
+        @Nullable
         @Override
         public String getName() {
             return m_name;
@@ -77,6 +79,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             return m_mandatory;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return m_name + ":" + m_type;
@@ -100,6 +103,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         return nameIdentifier == null ? null : nameIdentifier.getText();
     }
 
+    @Nullable
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
@@ -111,6 +115,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         return ORUtil.findImmediateChildrenOfClass(this, PsiTagProperty.class);
     }
 
+    @NotNull
     @Override
     public List<TagProperty> getUnifiedPropertyList() {
         final List<TagProperty> result = new ArrayList<>();
@@ -168,6 +173,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         return result;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Tag start";

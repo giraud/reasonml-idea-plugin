@@ -16,13 +16,15 @@ public class BsFacetType extends FacetType<BsFacet, BsFacetConfiguration> {
         super(BsFacet.ID, "bucklescript", "Bucklescript");
     }
 
+    @NotNull
     @Override
     public BsFacetConfiguration createDefaultConfiguration() {
         return new BsFacetConfiguration();
     }
 
+    @Nullable
     @Override
-    public BsFacet createFacet(@NotNull Module module, String name, @NotNull BsFacetConfiguration configuration, @Nullable Facet underlyingFacet) {
+    public BsFacet createFacet(@NotNull Module module, @NotNull String name, @NotNull BsFacetConfiguration configuration, @Nullable Facet underlyingFacet) {
         return new BsFacet(this, module, name, configuration, underlyingFacet);
     }
 

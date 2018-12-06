@@ -30,6 +30,7 @@ import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 public class DotExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     private final ModulePathFinder m_modulePathFinder;
+    @NotNull
     private final Log m_debug;
 
     public DotExpressionCompletionProvider(ModulePathFinder modulePathFinder) {

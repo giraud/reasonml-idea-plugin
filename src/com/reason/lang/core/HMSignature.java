@@ -23,8 +23,10 @@ public class HMSignature {
     public static class SignatureType {
         String value;
         boolean mandatory = false;
+        @NotNull
         String defaultValue = "";
 
+        @NotNull
         @Override
         public String toString() {
             return value + (defaultValue.isEmpty() ? "" : "=" + defaultValue);
@@ -125,6 +127,7 @@ public class HMSignature {
         m_signature = sb.toString();
     }
 
+    @NotNull
     @Override
     public String toString() {
         return m_signature;
@@ -142,6 +145,7 @@ public class HMSignature {
         return m_types.length <= index || m_types[index].mandatory;
     }
 
+    @NotNull
     public SignatureType[] getTypes() {
         return m_types;
     }

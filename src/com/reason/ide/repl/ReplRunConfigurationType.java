@@ -8,11 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class ReplRunConfigurationType implements ConfigurationType {
+    @NotNull
     @Override
     public String getDisplayName() {
         return "OCaml REPL";
     }
 
+    @NotNull
     @Override
     public String getConfigurationTypeDescription() {
         return "OCaml REPL configuration Type";
@@ -29,6 +31,7 @@ public class ReplRunConfigurationType implements ConfigurationType {
         return "DEMO_RUN_CONFIGURATION";
     }
 
+    @NotNull
     @Override
     public ConfigurationFactory[] getConfigurationFactories() {
         return new ConfigurationFactory[]{new ReplConfigurationFactory(this)};

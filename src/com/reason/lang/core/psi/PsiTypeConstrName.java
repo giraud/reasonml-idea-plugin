@@ -13,6 +13,7 @@ public class PsiTypeConstrName extends ASTWrapperPsiElement {
     //endregion
 
 
+    @NotNull
     @Override
     public String toString() {
         return "Type constr name";
