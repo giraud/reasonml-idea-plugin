@@ -119,10 +119,22 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
                 result = moduleAlias.getExpressions();
             }
         } else {
-            PsiElement body = getBody();
-            if (body != null) {
+            PsiSignature signature = getSignature();
+            if (signature == null) {
+                PsiElement body = getBody();
+                if (body != null) {
+                    result = new ArrayList<>();
+                    PsiElement element = body.getFirstChild();
+                    while (element != null) {
+                        if (element instanceof PsiNamedElement) {
+                            result.add((PsiNamedElement) element);
+                        }
+                        element = element.getNextSibling();
+                    }
+                }
+            } else {
                 result = new ArrayList<>();
-                PsiElement element = body.getFirstChild();
+                PsiElement element = signature.getFirstChild();
                 while (element != null) {
                     if (element instanceof PsiNamedElement) {
                         result.add((PsiNamedElement) element);

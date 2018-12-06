@@ -35,7 +35,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
 
     public DotExpressionCompletionProvider(ModulePathFinder modulePathFinder) {
         m_modulePathFinder = modulePathFinder;
-        m_debug = new Log(Logger.getInstance("ReasonML.insight.dot"));
+        m_debug = new Log("insight.dot");
     }
 
     @Override
