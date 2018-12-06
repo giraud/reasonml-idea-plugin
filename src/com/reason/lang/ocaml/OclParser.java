@@ -340,6 +340,9 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedSignatureEq)) {
             state.popEndUntilContext(moduleDeclaration);
             state.add(markScope(builder, moduleBinding, m_types.SCOPED_EXPR, m_types.STRUCT));
+        } else if (state.isCurrentResolution(functorNamedEq)) {
+            state.popEndUntilContext(functorDeclaration);
+            state.add(markScope(builder, functorBinding, m_types.C_FUNCTOR_BINDING, m_types.STRUCT));
         } else {
             state.add(markScope(builder, struct, m_types.STRUCT_EXPR, m_types.STRUCT).complete());
         }
@@ -455,6 +458,11 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.updateCurrentResolution(moduleNamedSignatureEq);
                 state.complete();
             }
+        } else if (state.isCurrentContext(functorDeclaration)) {
+            if (state.isCurrentResolution(functorNamed)) {
+                state.updateCurrentResolution(functorNamedEq);
+                state.complete();
+            }
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);
         } else if (state.isCurrentResolution(externalNamedSignature)) {
@@ -508,6 +516,12 @@ public class OclParser extends CommonParser<OclTypes> {
             state.updateScopeToken(m_types.LPAREN);
         } else if (state.isCurrentResolution(functionParameters)) {
             state.add(markScope(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM, m_types.LPAREN));
+        } else if (state.isCurrentResolution(moduleNamed)) {
+            // This is a functor: module Make <(> ... )
+            state.updateCurrentContext(functorDeclaration).
+                    updateCurrentResolution(functorNamed).
+                    updateCurrentCompositeElementType(m_types.C_FUNCTOR).
+                    add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN));
         } else {
             state.add(markScope(builder, scope, paren, m_types.SCOPED_EXPR, m_types.LPAREN));
         }

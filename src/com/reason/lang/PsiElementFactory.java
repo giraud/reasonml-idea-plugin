@@ -102,6 +102,12 @@ public class PsiElementFactory {
             return new PsiTry(types, node);
         } else if (type == types.SWITCH_EXPR || type == types.MATCH_EXPR) {
             return new PsiSwitchImpl(types, node);
+        } else if (type == types.C_FUNCTOR) {
+            return new PsiFunctorImpl(types, node);
+        } else if (type == types.C_FUNCTOR_PARAMS) {
+            return new PsiParametersImpl(types, node);
+        } else if (type == types.C_FUNCTOR_BINDING) {
+            return new PsiFunctorBinding(types, node);
         } else if (type == types.C_FUN_EXPR) {
             return new PsiFunctionImpl(types, node);
         } else if (type == types.C_FUN_PARAMS) {
