@@ -9,10 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
@@ -38,6 +35,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldType(descriptors, (PsiType) element);
             } else if (element instanceof PsiModule) {
                 foldModule(descriptors, (PsiModule) element);
+            } else if (element instanceof PsiFunctor) {
+                foldFunctor(descriptors, (PsiFunctor) element);
             } else {
                 if (types.COMMENT == element.getNode().getElementType()) {
                     FoldingDescriptor fold = fold(element);
@@ -85,6 +84,13 @@ public class FoldingBuilder extends FoldingBuilderEx {
         FoldingDescriptor foldBody = fold(module.getBody());
         if (foldBody != null) {
             descriptors.add(foldBody);
+        }
+    }
+
+    private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, PsiFunctor functor) {
+        FoldingDescriptor foldBinding = fold(functor.getBinding());
+        if (foldBinding != null) {
+            descriptors.add(foldBinding);
         }
     }
 
