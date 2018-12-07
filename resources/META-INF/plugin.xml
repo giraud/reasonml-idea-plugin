@@ -101,6 +101,8 @@
         <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
         <!-- OCamlMlg -->
         <fileTypeFactory implementation="com.reason.ide.files.MlgFileTypeFactory"/>
+        <!-- OCaml - Yacc -->
+        <fileTypeFactory implementation="com.reason.ide.files.MlyFileTypeFactory"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
         <!-- Binary -->
@@ -127,6 +129,10 @@
         <lang.parserDefinition language="Mlg" implementationClass="com.reason.lang.extra.OclMlgParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mlg"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
+        <!-- OCaml - yacc -->
+        <lang.parserDefinition language="Mly" implementationClass="com.reason.lang.extra.OclMlyParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Mly"
+                                       implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- Dune -->
         <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Dune"
@@ -144,23 +150,28 @@
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="Mlg"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Mly"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
         <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="OCamlP4" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="Mlg" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
+        <lang.foldingBuilder language="Mly" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <!--<lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>-->
 
         <lang.commenter language="Reason" implementationClass="com.reason.ide.comment.RmlCommenter"/>
         <lang.commenter language="OCaml" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="OCamlP4" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Mlg" implementationClass="com.reason.ide.comment.OclCommenter"/>
+        <lang.commenter language="Mly" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="Reason" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
         <lang.braceMatcher language="OCaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="OCamlP4" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Mlg" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
+        <lang.braceMatcher language="Mly" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Dune" implementationClass="com.reason.ide.match.DunePairedBraceMatcher"/>
 
         <!--
@@ -189,6 +200,7 @@
         <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCamlP4" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="Mlg" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
+        <lang.findUsagesProvider language="Mly" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
 
         <gotoClassContributor implementation="com.reason.ide.go.MlModuleContributor"/>
 
@@ -236,6 +248,8 @@
 
         <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"
+                                implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
+        <completion.contributor language="Mly"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
 
         <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->

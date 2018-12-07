@@ -7,7 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MakeWorldAction extends CompilerAction {
 
-    MakeWorldAction() {
+    @SuppressWarnings("WeakerAccess")
+    public MakeWorldAction() {
         super("Clean and make world", "Clean and make world", AllIcons.General.Web);
     }
 
