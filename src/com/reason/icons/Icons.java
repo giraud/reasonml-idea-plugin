@@ -23,6 +23,7 @@ public class Icons {
     public static final Icon ANNOTATION = getIcon("/nodes/annotationtype.png");
 
     public static final Icon MODULE = getIcon("/nodes/javaModule.png");
+    public static final Icon FUNCTOR = getIcon("/nodes/artifact.png");
     public static final Icon LET = getIcon("/nodes/variable.png");
     public static final Icon VAL = getIcon("/nodes/variable.png");
     public static final Icon ATTRIBUTE = getIcon("/css/property.png");

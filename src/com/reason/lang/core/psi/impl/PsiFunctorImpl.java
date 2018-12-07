@@ -2,9 +2,7 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.psi.PsiElement;
-import com.intellij.ui.LayeredIcon;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.ORUtil;
@@ -70,7 +68,7 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return LayeredIcon.create(Icons.MODULE, IconLoader.getIcon("/general/ellipsis.png"));
+                return Icons.FUNCTOR;
             }
         };
     }
