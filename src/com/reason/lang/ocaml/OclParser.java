@@ -301,7 +301,10 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEnd();
         }
 
-        if (!state.isCurrentResolution(moduleNamedColon)) {
+        if (state.isCurrentResolution(functorNamedColon)) {
+            // A functor like:
+            // module Make (M : Input) : S <with> type input = M.t
+        } else if (!state.isCurrentResolution(moduleNamedColon)) {
             if (state.isCurrentContext(try_)) {
                 state.endUntilResolution(try_);
                 state.updateCurrentResolution(tryWith);
@@ -313,10 +316,6 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.advance();
             }
         }
-        //else {
-        // A functor like:
-        // module Make (M : Input) : S with type input = M.t
-        //}
     }
 
     private void parseIf(@NotNull PsiBuilder builder, ParserState state) {
@@ -405,6 +404,8 @@ public class OclParser extends CommonParser<OclTypes> {
     private void parseColon(@NotNull PsiBuilder builder, ParserState state) { // :
         if (state.isCurrentResolution(moduleNamed)) {
             state.updateCurrentResolution(moduleNamedColon).complete();
+        } else if (state.isCurrentResolution(functorNamed)) {
+            state.updateCurrentResolution(functorNamedColon);
         } else if (state.isCurrentResolution(externalNamed)) {
             state.advance().
                     add(mark(builder, signature, externalNamedSignature, m_types.C_SIG_EXPR).complete()).
@@ -460,7 +461,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.complete();
             }
         } else if (state.isCurrentContext(functorDeclaration)) {
-            if (state.isCurrentResolution(functorNamed)) {
+            if (state.isCurrentResolution(functorNamed) || state.isCurrentResolution(functorNamedColon)) {
                 state.updateCurrentResolution(functorNamedEq);
                 state.complete();
             }
@@ -706,7 +707,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseType(@NotNull PsiBuilder builder, ParserState state) {
-        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
+        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz) && !state.isCurrentResolution(functorNamedColon)) {
             if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
                 state.updateCurrentResolution(moduleNamedWithType);
             } else {

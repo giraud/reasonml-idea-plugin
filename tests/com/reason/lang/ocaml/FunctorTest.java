@@ -16,26 +16,27 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end", true)));
+        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
 
         assertNotNull(e);
         assertInstanceOf(e, PsiFunctor.class);
     }
 
-    public void testModuleFunctor() {
+    public void testModuleFunctor2() {
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t", true));
+
+        assertEquals(1, expressions.size());
+        assertInstanceOf(first(expressions), PsiFunctor.class);
+    }
+
+    public void testModuleFunctorInstanciation1() {
         PsiModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
         PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
 
         assertNotNull(struct);
     }
 
-    public void testModuleFunctor2() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t"));
-
-        assertEquals(1, expressions.size());
-    }
-
-    public void testModuleFunctorInstantiation() {
+    public void testModuleFunctorInstantiation2() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
         Collection<PsiNamedElement> expressions = expressions(file);
 

@@ -9,10 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.psi.PsiClass;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -81,6 +78,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
+        } else if (m_element instanceof PsiFunctor) {
+            List<TreeElement> treeElements = buildFunctorStructure((PsiFunctor) m_element);
+            if (!treeElements.isEmpty()) {
+                return treeElements.toArray(new TreeElement[0]);
+            }
         } else if (m_element instanceof PsiClass) {
             List<TreeElement> treeElements = buildClassStructure((PsiClass) m_element);
             if (!treeElements.isEmpty()) {
@@ -102,6 +104,18 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         if (rootElement != null) {
             rootElement.acceptChildren(new ElementVisitor(treeElements));
+        }
+
+        return treeElements;
+    }
+
+    @NotNull
+    private List<TreeElement> buildFunctorStructure(PsiFunctor functor) {
+        List<TreeElement> treeElements = new ArrayList<>();
+
+        PsiElement binding = functor.getBinding();
+        if (binding != null) {
+            binding.acceptChildren(new ElementVisitor(treeElements));
         }
 
         return treeElements;

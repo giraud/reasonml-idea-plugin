@@ -119,6 +119,8 @@ public enum ParserScopeEnum {
     functorNamedEq,
     functorDeclarationParams,
     functorParams,
+    functorBinding,
+    functorNamedColon,
 
     valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
     moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope,
@@ -127,5 +129,5 @@ public enum ParserScopeEnum {
     clazzNamedConstructor, record, mixin,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
     patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction,
-    functorBinding, name
+    name
 }

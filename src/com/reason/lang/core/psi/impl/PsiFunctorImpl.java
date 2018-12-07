@@ -9,6 +9,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiFunctorBinding;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,12 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;
+    }
+
+    @Nullable
+    @Override
+    public PsiFunctorBinding getBinding() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorBinding.class);
     }
 
     public ItemPresentation getPresentation() {
