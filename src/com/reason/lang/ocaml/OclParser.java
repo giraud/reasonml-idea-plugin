@@ -214,18 +214,18 @@ public class OclParser extends CommonParser<OclTypes> {
         // pop scopes until a known context is found
         ParserScopeEnum context = endUntilStartExpression(state);
 
-        if (context == type) {
-            state.popEnd();
-            state.advance();
-            state.add(mark(builder, type, m_types.EXP_TYPE));
-            state.add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
+        if (state.isCurrentContext(type)) {
+            state.popEnd().popEnd().
+                    advance().
+                    add(mark(builder, type, m_types.EXP_TYPE)).
+                    add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
         } else if (context == let) {
-            state.popEnd();
-            state.advance();
-            state.add(mark(builder, let, m_types.LET_STMT));
+            state.popEnd().
+                    advance().
+                    add(mark(builder, let, m_types.LET_STMT));
         } else if (context == moduleDeclaration) {
-            state.popEnd();
-            state.advance();
+            state.popEnd().
+                    advance();
             parseModule(builder, state);
         }
     }
@@ -304,6 +304,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(functorNamedColon)) {
             // A functor like:
             // module Make (M : Input) : S <with> type input = M.t
+            state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.WITH));
         } else if (!state.isCurrentResolution(moduleNamedColon)) {
             if (state.isCurrentContext(try_)) {
                 state.endUntilResolution(try_);
@@ -438,13 +439,17 @@ public class OclParser extends CommonParser<OclTypes> {
     private void parseEq(@NotNull PsiBuilder builder, ParserState state) { // =
         if (state.isCurrentContext(signature)) {
             state.popEndWhileContext(signature);
+        } else if (state.isCurrentResolution(typeNamedEq)) {
+            // Functor constraints
+            state.popEndUntilStartScope().complete();
+            state.popEnd();
         }
 
         if (state.isCurrentResolution(typeNamed)) {
-            state.popEnd();
-            state.updateCurrentResolution(typeNamedEq);
-            state.advance();
-            state.add(mark(builder, typeNamedEq, state.currentContext(), m_types.TYPE_BINDING).complete());
+            state.popEnd().
+                    updateCurrentResolution(typeNamedEq).
+                    advance().
+                    add(mark(builder, state.currentContext(), typeNamedEq, m_types.TYPE_BINDING).complete());
         } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
             state.popEndUntilContext(let);
             state.updateCurrentResolution(letNamedEq);
@@ -463,9 +468,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentContext(functorDeclaration)) {
             if (state.isCurrentResolution(functorNamed) || state.isCurrentResolution(functorNamedColon)) {
                 state.updateCurrentResolution(functorNamedEq).
-                        complete().
-                        advance().
-                        add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
+                        complete();
             }
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);
@@ -709,7 +712,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseType(@NotNull PsiBuilder builder, ParserState state) {
-        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz) && !state.isCurrentResolution(functorNamedColon)) {
+        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
             if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
                 state.updateCurrentResolution(moduleNamedWithType);
             } else {
