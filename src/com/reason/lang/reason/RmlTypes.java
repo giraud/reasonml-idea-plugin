@@ -40,6 +40,7 @@ public class RmlTypes extends ORTypes {
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", RmlLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", RmlLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
+        C_VARIANT_EXP = new ORCompositeElementType("C_VARIANT_EXP", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
         MIXIN_FIELD = new ORCompositeElementType("MIXIN_FIELD", RmlLanguage.INSTANCE);
         MODULE_STMT = new PsiModuleStubElementType("MODULE_STMT", RmlLanguage.INSTANCE);
@@ -52,7 +53,6 @@ public class RmlTypes extends ORTypes {
         OPEN_STMT = new ORCompositeElementType("OPEN_STMT", RmlLanguage.INSTANCE);
         ASSERT_STMT = new ORCompositeElementType("ASSERT_STMT", RmlLanguage.INSTANCE);
         SCOPED_EXPR = new ORCompositeElementType("SCOPED_EXPR", RmlLanguage.INSTANCE);
-        VARIANT_EXP = new ORCompositeElementType("VARIANT_EXP", RmlLanguage.INSTANCE);
         FUN_CALL_PARAMS = new ORCompositeElementType("FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         LET_BINDING = new ORCompositeElementType("LET_BINDING", RmlLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new ORCompositeElementType("TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);

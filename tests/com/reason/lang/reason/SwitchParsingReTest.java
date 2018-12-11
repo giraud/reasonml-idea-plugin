@@ -30,7 +30,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
         PsiPatternMatch psiPatternMatch = patterns.iterator().next();
-        PsiUpperSymbol variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiUpperSymbol.class);
+        PsiVariantConstructor variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiVariantConstructor.class);
         assertEquals(RmlTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
 
     }

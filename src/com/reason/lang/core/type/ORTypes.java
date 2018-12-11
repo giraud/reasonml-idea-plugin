@@ -42,12 +42,12 @@ public abstract class ORTypes {
     public IElementType C_TAG_PROP_VALUE;
     public IElementType C_TAG_BODY;
     public IElementType C_UNKNOWN_EXPR;
+    public IElementType C_VARIANT_EXP;
     public IElementType C_VARIANT_CONSTRUCTOR;
     public IElementType MIXIN_FIELD;
     public IElementType MODULE_PATH;
     public IElementType ASSERT_STMT;
     public IElementType SCOPED_EXPR;
-    public IElementType VARIANT_EXP;
     public IElementType IF_STMT;
     public IElementType BIN_CONDITION;
     public IElementType PATTERN_MATCH_EXPR;

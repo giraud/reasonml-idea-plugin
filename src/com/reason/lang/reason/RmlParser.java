@@ -315,10 +315,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(typeNamedEq)) {
-            state.add(mark(builder, typeNamedEqVariant, m_types.VARIANT_EXP));
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP));
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             state.popEnd();
-            state.add(mark(builder, typeNamedEqVariant, m_types.VARIANT_EXP).complete());
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -1002,6 +1002,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
+            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+            return;
         } else {
             if (shouldStartExpression(state)) {
                 state.add(mark(builder, genericExpression, builder.getTokenType()));

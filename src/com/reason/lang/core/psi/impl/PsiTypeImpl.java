@@ -16,6 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
+
+import static java.util.Collections.emptyList;
 
 public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements PsiType {
 
@@ -80,6 +83,16 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
     @Nullable
     public PsiTypeBinding getBinding() {
         return findChildByClass(PsiTypeBinding.class);
+    }
+
+    @NotNull
+    @Override
+    public Collection<PsiVariantConstructor> getVariants() {
+        PsiTypeBinding binding = getBinding();
+        if (binding != null) {
+            return PsiTreeUtil.findChildrenOfType(binding, PsiVariantConstructor.class);
+        }
+        return emptyList();
     }
 
     @Nullable

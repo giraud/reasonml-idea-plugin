@@ -267,10 +267,10 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(typeNamedEq)) {
-            state.add(mark(builder, typeNamedEqVariant, m_types.VARIANT_EXP).complete());
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             state.popEnd();
-            state.add(mark(builder, typeNamedEqVariant, m_types.VARIANT_EXP).complete());
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -671,6 +671,8 @@ public class OclParser extends CommonParser<OclTypes> {
             state.updateCurrentResolution(moduleNamed);
         } else if (state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
+            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+            return;
         } else {
             if (!state.isCurrentResolution(modulePath)) {
                 IElementType nextElementType = builder.lookAhead(1);
