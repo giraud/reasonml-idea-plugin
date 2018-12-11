@@ -7,4 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public interface PsiFunctor extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement {
     @Nullable
     PsiFunctorBinding getBinding();
+
+    @Nullable
+    PsiParameters getParameters();
 }

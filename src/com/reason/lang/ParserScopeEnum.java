@@ -119,8 +119,10 @@ public enum ParserScopeEnum {
     functorNamedEq,
     functorDeclarationParams,
     functorParams,
-    functorBinding,
+    functorNamedEqColon,
     functorNamedColon,
+    functorConstraints,
+    functorBinding,
 
     valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
     moduleInstanciation, tryWith, moduleNamedColonWith, moduleNamedWithType, doLoop, tryWithScope, letBinding, scope,

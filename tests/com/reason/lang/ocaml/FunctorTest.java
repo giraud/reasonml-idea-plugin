@@ -20,13 +20,17 @@ public class FunctorTest extends BaseParsingTestCase {
 
         assertNotNull(e);
         assertInstanceOf(e, PsiFunctor.class);
+        assertEquals("struct end", ((PsiFunctor) e).getBinding().getText());
     }
 
     public void testModuleFunctor2() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M : Input) : S with type input = M.t", true));
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M: Input) : S with type input = M.t", true));
 
         assertEquals(1, expressions.size());
-        assertInstanceOf(first(expressions), PsiFunctor.class);
+        PsiFunctor functor = (PsiFunctor) first(expressions);
+
+        assertEquals("(M: Input)", functor.getParameters().getText());
+        assertEquals("M.t", functor.getBinding().getText());
     }
 
     public void testModuleFunctorInstanciation1() {

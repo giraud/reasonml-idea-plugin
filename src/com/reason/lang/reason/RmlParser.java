@@ -456,7 +456,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseType(@NotNull PsiBuilder builder, ParserState state) {
-        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
+        if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz) && !state.isCurrentResolution(functorConstraints)) {
             if (!state.isCurrentResolution(letNamedSignature)) {
                 state.popEndUntilStartScope();
             }
@@ -525,6 +525,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             //   MODULE UIDENT COLON ...
             state.updateCurrentResolution(moduleNamedSignature);
             state.complete();
+        } else if (state.isCurrentResolution(functorNamedEq)) {
+            state.updateCurrentResolution(functorNamedEqColon);
         } else if (state.isCurrentResolution(recordField)) {
             state.complete();
             state.advance();
@@ -711,7 +713,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             } else {
                 // Add a generic wrapper in case it's a parameter
                 // It is complete only if we find a comma in the scope
-                if (state.isInScopeExpression() && !state.isCurrentContext(jsObject) &&
+                if (state.isInScopeExpression() && !state.isCurrentContext(jsObject) && !state.isCurrentContext(functorConstraints) &&
                         !state.isCurrentContext(maybeFunction) && !state.isCurrentResolution(patternMatchConstructor) &&
                         state.previousTokenElementType != m_types.DOT) {
                     state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
@@ -812,6 +814,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(letNamedSignature)) {
             state.advance()
                     .add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
+        } else if (state.isCurrentResolution(moduleNamedEq) && state.previousTokenElementType != m_types.UIDENT) {
+            // This is a functor :: module M = <(> .. )
+            state.updateCurrentContext(functorDeclaration).
+                    updateCurrentResolution(functorNamedEq).
+                    updateCurrentCompositeElementType(m_types.C_FUNCTOR).
+                    add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN));
+        } else if (state.isCurrentResolution(functorNamedEqColon)) {
+            // Functor constraint :: module M = (..) : <(> .. ) =
+            state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
         } else if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
@@ -893,7 +904,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.pop();
 
             if (nextTokenType == m_types.ARROW) {
-                if (!state.isCurrentResolution(patternMatch) && !state.isCurrentContext(signature)) {
+                if (!state.isCurrentResolution(patternMatch) && !state.isCurrentContext(signature) && !state.isCurrentContext(functorDeclaration)) {
                     parenScope.resolution(functionParameters);
                     parenScope.compositeElementType(m_types.C_FUN_PARAMS);
                 }
@@ -1036,6 +1047,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(function)) {
             // let x = ($ANY) < => > ...
             state.advance().add(mark(builder, state.currentContext(), functionBody, m_types.C_FUN_BODY).complete());
+        } else if (state.isCurrentResolution(functorNamedEqColon)) {
+            // functor :: module Make = (M) : R < => > ..
+            state.advance().add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
         } else {
             state.advance();
             IElementType nextTokenType = builder.getTokenType();

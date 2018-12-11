@@ -8,6 +8,7 @@ import com.reason.icons.Icons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiFunctorBinding;
+import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +52,12 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorBinding.class);
     }
 
+    @Nullable
+    @Override
+    public PsiParameters getParameters() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
@@ -73,4 +80,8 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
         };
     }
 
+    @Override
+    public String toString() {
+        return "Functor";
+    }
 }
