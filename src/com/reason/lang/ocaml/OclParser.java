@@ -462,8 +462,10 @@ public class OclParser extends CommonParser<OclTypes> {
             }
         } else if (state.isCurrentContext(functorDeclaration)) {
             if (state.isCurrentResolution(functorNamed) || state.isCurrentResolution(functorNamedColon)) {
-                state.updateCurrentResolution(functorNamedEq);
-                state.complete();
+                state.updateCurrentResolution(functorNamedEq).
+                        complete().
+                        advance().
+                        add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
             }
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);

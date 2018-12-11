@@ -24,7 +24,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctor2() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M: Input) : S with type input = M.t", true));
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M: Input) : S with type input = M.t"));
 
         assertEquals(1, expressions.size());
         PsiFunctor functor = (PsiFunctor) first(expressions);
