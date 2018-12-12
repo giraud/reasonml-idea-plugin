@@ -823,6 +823,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
             // Functor constraint :: module M = (..) : <(> .. ) =
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
+        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
+            // Variant decl params :: type t = | Variant <(> .. )
+            state.add(markScope(builder, functorConstraints, m_types.C_FUN_PARAMS, m_types.LPAREN)).
+                    advance().
+                    add(mark(builder, functionCall, functionParameter, m_types.C_FUN_PARAM));
         } else if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();
@@ -1002,7 +1007,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
-            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
             return;
         } else {
             if (shouldStartExpression(state)) {
