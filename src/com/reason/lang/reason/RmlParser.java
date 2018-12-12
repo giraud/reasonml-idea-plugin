@@ -824,10 +824,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // Functor constraint :: module M = (..) : <(> .. ) =
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
-            // Variant decl params :: type t = | Variant <(> .. )
-            state.add(markScope(builder, functorConstraints, m_types.C_FUN_PARAMS, m_types.LPAREN)).
+            // Variant params :: type t = | Variant <(> .. )
+            state.add(markScope(builder, variantConstructor, m_types.C_FUN_PARAMS, m_types.LPAREN)).
                     advance().
-                    add(mark(builder, functionCall, functionParameter, m_types.C_FUN_PARAM));
+                    add(mark(builder, variantConstructor, functionParameter, m_types.C_FUN_PARAM));
         } else if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
             state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
             state.complete();

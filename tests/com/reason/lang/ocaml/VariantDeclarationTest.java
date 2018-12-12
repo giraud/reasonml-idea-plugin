@@ -21,4 +21,14 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         assertEquals("White", variants.get(1).getName());
     }
 
+    public void testConstructor() {
+        PsiType e = first(typeExpressions(parseCode("type color = | Hex of string | Rgb of int * int * int")));
+
+        List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
+        assertEquals(2, variants.size());
+        assertEquals("Hex", variants.get(0).getName());
+        assertEquals(1, variants.get(0).getParameterList().size());
+        assertEquals("Rgb", variants.get(1).getName());
+        assertEquals(3, variants.get(1).getParameterList().size());
+    }
 }
