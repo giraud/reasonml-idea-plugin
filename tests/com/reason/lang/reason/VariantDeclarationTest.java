@@ -18,6 +18,9 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
     public void testBasic() {
         PsiType e = first(typeExpressions(parseCode("type color = | Black | White")));
 
+        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
+        assertEquals(2, children.size());
+
         List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
         assertEquals(2, variants.size());
         assertEquals("Black", variants.get(0).getName());
@@ -27,6 +30,9 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
     public void testBasic2() {
         PsiType e = first(typeExpressions(parseCode("type color = Black | White")));
 
+        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
+        assertEquals(2, children.size());
+
         List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
         assertEquals(2, variants.size());
         assertEquals("Black", variants.get(0).getName());
@@ -35,6 +41,9 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
 
     public void testConstructor() {
         PsiType e = first(typeExpressions(parseCode("type color = | Hex(string) | Rgb(int, int, int)")));
+
+        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
+        assertEquals(2, children.size());
 
         List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
         assertEquals(2, variants.size());
