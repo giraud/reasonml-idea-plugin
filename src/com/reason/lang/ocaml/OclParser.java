@@ -277,7 +277,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else if (state.isCurrentContext(variantConstructor)) {
             state.popEndWhileContext(variantConstructor);
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+            state.popEnd().add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -506,7 +506,7 @@ public class OclParser extends CommonParser<OclTypes> {
     private void parseOf(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(variantConstructor)) {
             // Variant params :: type t = | Variant <(> .. )
-            state.add(mark(builder, variantConstructorParameters, m_types.C_FUN_PARAMS).complete()).
+            state.add(mark(builder, variantConstructor, variantConstructorParameters, m_types.C_FUN_PARAMS).complete()).
                     advance().
                     add(mark(builder, variantConstructor, variantConstructorParameter, m_types.C_FUN_PARAM).complete());
         }

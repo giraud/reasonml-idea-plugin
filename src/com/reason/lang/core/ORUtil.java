@@ -153,6 +153,25 @@ public class ORUtil {
         return result;
     }
 
+    @NotNull
+    public static List<PsiElement> findImmediateChildrenOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
+        PsiElement child = element.getFirstChild();
+        if (child == null) {
+            return Collections.emptyList();
+        }
+
+        List<PsiElement> result = new ArrayList<>();
+
+        while (child != null) {
+            if (child.getNode().getElementType() == elementType) {
+                result.add(child);
+            }
+            child = child.getNextSibling();
+        }
+
+        return result;
+    }
+
     public static <T> T findImmediateFirstChildOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
         PsiElement child = element.getFirstChild();
 
