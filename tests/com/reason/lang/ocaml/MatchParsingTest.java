@@ -8,6 +8,7 @@ import com.reason.lang.core.psi.*;
 
 import java.util.Collection;
 
+@SuppressWarnings("ConstantConditions")
 public class MatchParsingTest extends BaseParsingTestCase {
     public MatchParsingTest() {
         super("", "ml", new OclParserDefinition());
@@ -19,7 +20,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
 
         PsiLet let = first(letExpressions(psiFile));
         assertTrue(let.isFunction());
-        PsiFunction function = PsiTreeUtil.findChildOfType(let, PsiFunction.class);
+        PsiTreeUtil.findChildOfType(let, PsiFunction.class);
     }
 
     public void testMatchExpr() {
@@ -57,6 +58,6 @@ public class MatchParsingTest extends BaseParsingTestCase {
         PsiPatternMatch psiPatternMatch = patterns.iterator().next();
         PsiVariantConstructor variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiVariantConstructor.class);
         assertEquals(OclTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
-
     }
+
 }

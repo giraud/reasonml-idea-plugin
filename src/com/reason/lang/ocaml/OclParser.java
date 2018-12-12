@@ -276,8 +276,8 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEnd();
             state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else if (state.isCurrentContext(variantConstructor)) {
-            state.popEndUntilContext(type).
-                    add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+            state.popEndWhileContext(variantConstructor);
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -320,7 +320,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.add(mark(builder, try_, tryWithScope, m_types.SCOPED_EXPR).complete());
             } else if (state.isCurrentContext(matchBinaryCondition)) {
                 state.popEndUntilContext(match);
-                state.updateCurrentResolution(matchWith);
+                state.updateCurrentResolution(matchWith).setStart();
                 state.advance();
             }
         }

@@ -287,4 +287,9 @@ public class ParserState {
         dontMove = true;
         return this;
     }
+
+    public ParserState setStart() {
+        m_currentScope.setIsStart(true);
+        return this;
+    }
 }
