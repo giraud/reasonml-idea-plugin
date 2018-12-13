@@ -28,7 +28,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
     }
 
     public void testBasic2() {
-        PsiType e = first(typeExpressions(parseCode("type color = Black | White", true)));
+        PsiType e = first(typeExpressions(parseCode("type color = Black | White")));
 
         List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.C_VARIANT_EXP);
         assertEquals(2, children.size());

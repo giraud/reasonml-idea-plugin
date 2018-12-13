@@ -319,11 +319,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             state.popEndUntilContext(typeBinding);
             state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
-        } else if (state.isCurrentContext(maybeVariant)) {
-            state.updateCurrentContext(typeNamedEqVariant).updateCurrentResolution(typeNamedEqVariant).complete();
-            builder.remapCurrentToken(m_types.C_VARIANT_CONSTRUCTOR);
-            state.popEndUntilContext(typeBinding).
-                    add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -1014,8 +1009,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
             state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
             return;
-        } else if (state.isCurrentResolution(typeNamedEq)) {
-            state.add(mark(builder, maybeVariant, m_types.C_VARIANT_EXP));
         } else {
             if (shouldStartExpression(state)) {
                 IElementType tokenType = builder.getTokenType();
@@ -1029,6 +1022,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 if (nextElementType == m_types.DOT) {
                     // We are parsing a module path
                     state.add(mark(builder, modulePath, m_types.UPPER_SYMBOL));
+                } else if (nextElementType == m_types.PIPE) {
+                    // We are parsing a variant
+                    builder.remapCurrentToken(m_types.VARIANT_NAME);
+                    state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete()).
+                            add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
+                    return;
                 }
             }
         }

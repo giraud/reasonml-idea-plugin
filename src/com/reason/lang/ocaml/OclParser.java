@@ -710,6 +710,11 @@ public class OclParser extends CommonParser<OclTypes> {
                         ParserScopeEnum newContext = state.currentContext() == functionBody ? genericExpression : state.currentContext();
                         state.add(mark(builder, newContext, modulePath, m_types.MODULE_PATH));
                     }
+                } else if (nextElementType == m_types.PIPE) {
+                    builder.remapCurrentToken(m_types.VARIANT_NAME);
+                    state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete()).
+                            add(mark(builder, variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
+                    return;
                 }
             }
         }

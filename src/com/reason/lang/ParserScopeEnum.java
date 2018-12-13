@@ -131,5 +131,5 @@ public enum ParserScopeEnum {
     clazzNamedConstructor, record, mixin,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
     patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction,
-    variantConstructor, variantConstructorParameter, variantConstructorParameters, typeBinding, maybeVariant, name
+    variantConstructor, variantConstructorParameter, variantConstructorParameters, typeBinding, name
 }

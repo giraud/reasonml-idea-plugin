@@ -54,7 +54,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
     }
 
     public void testMixed() {
-        PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot of reason | Loose | Strict", true)));
+        PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot of reason | Loose | Strict")));
 
         List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
         assertEquals(3, children.size());
