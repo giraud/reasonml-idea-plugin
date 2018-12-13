@@ -39,6 +39,7 @@ public class RmlTypes extends ORTypes {
         C_TAG = new ORCompositeElementType("C_TAG", RmlLanguage.INSTANCE);
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", RmlLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", RmlLanguage.INSTANCE);
+        C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
         C_VARIANT_EXP = new ORCompositeElementType("C_VARIANT_EXP", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
@@ -56,7 +57,6 @@ public class RmlTypes extends ORTypes {
         FUN_CALL_PARAMS = new ORCompositeElementType("FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         LET_BINDING = new ORCompositeElementType("LET_BINDING", RmlLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new ORCompositeElementType("TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);
-        TYPE_BINDING = new ORCompositeElementType("TYPE_BINDING", RmlLanguage.INSTANCE);
         PATTERN_MATCH_EXPR = new ORCompositeElementType("PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
         IF_STMT = new ORCompositeElementType("IF_STMT", RmlLanguage.INSTANCE);
         BIN_CONDITION = new ORCompositeElementType("BIN_CONDITION", RmlLanguage.INSTANCE);

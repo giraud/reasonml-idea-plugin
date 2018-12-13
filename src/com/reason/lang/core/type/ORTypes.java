@@ -63,7 +63,7 @@ public abstract class ORTypes {
     public IElementType TRY_EXPR;
     public IElementType WITH_EXPR;
     public IElementType TYPE_CONSTR_NAME;
-    public IElementType TYPE_BINDING;
+    public IElementType C_TYPE_BINDING;
     public IElementType UPPER_SYMBOL;
     public IElementType LOWER_SYMBOL;
     public IElementType STRUCT_EXPR;

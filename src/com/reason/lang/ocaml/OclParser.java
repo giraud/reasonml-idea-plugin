@@ -456,7 +456,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEnd().
                     updateCurrentResolution(typeNamedEq).
                     advance().
-                    add(mark(builder, state.currentContext(), typeNamedEq, m_types.TYPE_BINDING).complete());
+                    add(mark(builder, state.currentContext(), typeNamedEq, m_types.C_TYPE_BINDING).complete());
         } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
             state.popEndUntilContext(let);
             state.updateCurrentResolution(letNamedEq);

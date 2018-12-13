@@ -42,6 +42,7 @@ public class OclTypes extends ORTypes {
         C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", OclLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", OclLanguage.INSTANCE);
+        C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", OclLanguage.INSTANCE);
         C_VARIANT_EXP = new ORCompositeElementType("C_VARIANT_EXP", OclLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
@@ -57,7 +58,6 @@ public class OclTypes extends ORTypes {
         IF_STMT = new ORCompositeElementType("IF_STMT", OclLanguage.INSTANCE);
         LET_BINDING = new ORCompositeElementType("LET_BINDING", OclLanguage.INSTANCE);
         TYPE_CONSTR_NAME = new ORCompositeElementType("TYPE_CONSTR_NAME", OclLanguage.INSTANCE);
-        TYPE_BINDING = new ORCompositeElementType("TYPE_BINDING", OclLanguage.INSTANCE);
         MATCH_EXPR = new ORCompositeElementType("MATCH_EXPR", OclLanguage.INSTANCE);
         PATTERN_MATCH_EXPR = new ORCompositeElementType("PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
         SCOPED_EXPR = new ORCompositeElementType("SCOPED_EXPR", OclLanguage.INSTANCE);

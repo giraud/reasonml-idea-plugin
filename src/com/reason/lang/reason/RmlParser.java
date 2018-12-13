@@ -315,10 +315,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(typeNamedEq)) {
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP));
-        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
-            state.popEnd();
             state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
+            state.popEndUntilContext(typeBinding);
+            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+        } else if (state.isCurrentContext(maybeVariant)) {
+            state.updateCurrentContext(typeNamedEqVariant).updateCurrentResolution(typeNamedEqVariant).complete();
+            builder.remapCurrentToken(m_types.C_VARIANT_CONSTRUCTOR);
+            state.popEndUntilContext(typeBinding).
+                    add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -957,10 +962,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (state.isCurrentResolution(typeNamed)) {
-            state.popEnd();
-            state.updateCurrentResolution(typeNamedEq);
-            state.advance();
-            state.add(mark(builder, typeNamedEq, m_types.TYPE_BINDING).complete());
+            state.popEnd().
+                    updateCurrentResolution(typeNamedEq).
+                    advance().
+                    add(mark(builder, typeBinding, typeNamedEq, m_types.C_TYPE_BINDING).complete());
         } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
             if (state.isCurrentResolution(letNamedSignature)) {
                 state.popEnd();
@@ -1009,9 +1014,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
             state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
             return;
+        } else if (state.isCurrentResolution(typeNamedEq)) {
+            state.add(mark(builder, maybeVariant, m_types.C_VARIANT_EXP));
         } else {
             if (shouldStartExpression(state)) {
-                state.add(mark(builder, genericExpression, builder.getTokenType()));
+                IElementType tokenType = builder.getTokenType();
+                if (tokenType != null) {
+                    state.add(mark(builder, genericExpression, tokenType));
+                }
             }
 
             if (!state.isCurrentResolution(modulePath)) {
