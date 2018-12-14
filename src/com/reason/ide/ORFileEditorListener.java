@@ -35,7 +35,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
         FileType fileType = file.getFileType();
-        if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
+        if (FileHelper.isCompilable(fileType)) {
             FileEditor selectedEditor = source.getSelectedEditor(file);
             Document document = FileDocumentManager.getInstance().getDocument(file);
             if (selectedEditor != null && document != null) {

@@ -8,11 +8,19 @@ public class FileHelper {
     }
 
     public static boolean isCompilable(@Nullable FileType fileType) {
-        return isReason(fileType) || isOCaml(fileType);
+        return isReason(fileType) || isOCaml(fileType) || isOCamlLexer(fileType) || isOCamlParser(fileType);
     }
 
     public static boolean isReason(@Nullable FileType fileType) {
         return fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType;
+    }
+
+    private static boolean isOCamlLexer(@Nullable FileType fileType) {
+        return fileType instanceof MllFileType;
+    }
+
+    private static boolean isOCamlParser(@Nullable FileType fileType) {
+        return fileType instanceof MlyFileType;
     }
 
     public static boolean isOCaml(@Nullable FileType fileType) {
