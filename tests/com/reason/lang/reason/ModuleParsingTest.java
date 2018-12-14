@@ -31,8 +31,6 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("RedFlagsSig", module.getName());
     }
 
-
-    @SuppressWarnings("ConstantConditions")
     public void testModule() {
         PsiFile file = parseCode(" module Styles = { open Css; let y = 1 }");
         PsiModule module = first(moduleExpressions(file));
@@ -42,5 +40,13 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("{ open Css; let y = 1 }", module.getBody().getText());
     }
 
+    public void testInlineInterface() {
+        PsiFile file = parseCode("module Router: { let watchUrl: (url => unit) => watcherID; }");
+        PsiModule module = first(moduleExpressions(file));
+
+        assertEquals(1, expressions(file).size());
+        assertEquals("Router", module.getName());
+        assertEquals("{ let watchUrl: (url => unit) => watcherID; }", module.getBody().getText());
+    }
 
 }

@@ -828,8 +828,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (state.isCurrentResolution(letNamedSignature)) {
-            state.advance()
-                    .add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
+            state.add(markScope(builder, state.currentContext(), signatureScope, m_types.LPAREN, m_types.LPAREN)).
+                    advance().
+                    add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(moduleNamedEq) && state.previousTokenElementType != m_types.UIDENT) {
             // This is a functor :: module M = <(> .. )
             state.updateCurrentContext(functorDeclaration).
@@ -893,6 +894,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseRParen(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(signatureItem)) {
+            state.popEnd();
+        }
+        if (state.isCurrentResolution(signatureScope)) {
             state.popEnd();
         }
 

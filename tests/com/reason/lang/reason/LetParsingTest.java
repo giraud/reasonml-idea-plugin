@@ -9,6 +9,7 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
 
+@SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {
         super("", "re", new RmlParserDefinition());
@@ -107,6 +108,15 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertFalse(e.isFunction());
         assertEquals("bool", e.getName());
+    }
+
+    public void testSignatureB() {
+        FileBase file = parseCode("let watchUrl: (url => unit) => watcherID;", true);
+        PsiLet e = first(letExpressions(file));
+
+        assertTrue(e.isFunction());
+        assertEquals("watchUrl", e.getName());
+        assertEquals("(url => unit) => watcherID", e.getSignature().getText());
     }
 
 }
