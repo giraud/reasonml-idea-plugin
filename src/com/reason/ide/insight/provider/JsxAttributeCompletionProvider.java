@@ -5,7 +5,6 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.psi.PsiElement;
@@ -29,18 +28,18 @@ import static java.util.stream.Collectors.toList;
 
 public class JsxAttributeCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    private final ModulePathFinder m_modulePathFinder;
     @NotNull
-    private final Log m_debug;
+    private static final Log LOG = new Log("insight.jsxAttribute");
+
+    private final ModulePathFinder m_modulePathFinder;
 
     public JsxAttributeCompletionProvider(ModulePathFinder modulePathFinder) {
         m_modulePathFinder = modulePathFinder;
-        m_debug = new Log(Logger.getInstance("ReasonML.insight.jsxAttribute"));
     }
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
-        m_debug.debug("JSX attribute completion");
+        LOG.debug("JSX attribute completion");
 
         PsiElement originalPosition = parameters.getOriginalPosition();
 
@@ -54,15 +53,15 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
                 attributes.add(PsiTagStartImpl.createProp("ref", "Js.nullable(Dom.element) => unit=?"));
             }
 
-            if (m_debug.isDebugEnabled()) {
-                m_debug.debug("Tag found", tag.getName());
-                m_debug.debug("attributes", attributes);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Tag found", tag.getName());
+                LOG.debug("attributes", attributes);
             }
 
             // Attributes already used
             Collection<PsiTagProperty> usedAttributes = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
             List<String> usedNames = usedAttributes.stream().map(PsiTagProperty::getName).collect(toList());
-            m_debug.debug("used names", usedNames);
+            LOG.debug("used names", usedNames);
 
             // Now populate the dialog
             for (PsiTagStart.TagProperty attribute : attributes) {

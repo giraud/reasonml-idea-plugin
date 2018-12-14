@@ -124,7 +124,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             } else if (tokenType == m_types.BRACKET_GT) {
                 parseBracketGt(builder, state);
             } else if (tokenType == m_types.RBRACKET) {
-                parseRBracket(state);
+                parseRBracket(builder, state);
             }
             // < ... >
             else if (tokenType == m_types.LT) {
@@ -745,7 +745,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
     private void parseLBracket(PsiBuilder builder, @NotNull ParserState state) {
         IElementType nextTokenType = builder.rawLookup(1);
         if (nextTokenType == m_types.ARROBASE) {
-            state.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
+            if (state.isCurrentResolution(recordField)) {
+                state.popEnd();
+                state.add(markScope(builder, recordFieldAnnotation, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
+            } else {
+                state.add(markScope(builder, annotation, m_types.ANNOTATION_EXPR, m_types.LBRACKET));
+            }
         } else if (nextTokenType == m_types.PERCENT) {
             state.add(markScope(builder, macro, m_types.MACRO_EXPR, m_types.LBRACKET));
         } else {
@@ -753,11 +758,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
     }
 
-    private void parseBracketGt(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseBracketGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(markScope(builder, bracketGt, m_types.SCOPED_EXPR, m_types.LBRACKET));
     }
 
-    private void parseRBracket(ParserState state) {
+    private void parseRBracket(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         ParserScope scope = state.endUntilScopeToken(m_types.LBRACKET);
         state.advance();
 
@@ -766,6 +771,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 scope.complete();
             }
             state.popEnd();
+            if (scope.isContext(recordFieldAnnotation)) {
+                state.add(mark(builder, state.currentContext(), recordField, m_types.RECORD_FIELD));
+            }
         }
     }
 

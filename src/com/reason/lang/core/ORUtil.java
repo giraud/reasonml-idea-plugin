@@ -5,6 +5,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -172,12 +173,27 @@ public class ORUtil {
         return result;
     }
 
-    public static <T> T findImmediateFirstChildOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+    @Nullable
+    public static <T extends PsiElement> T findImmediateFirstChildOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
             if (clazz.isInstance(child)) {
                 return (T) child;
+            }
+            child = child.getNextSibling();
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static PsiElement findImmediateFirstChildWithoutClass(@NotNull PsiElement element, @NotNull Class clazz) {
+        PsiElement child = element.getFirstChild();
+
+        while (child != null) {
+            if (!clazz.isInstance(child) && !(child instanceof PsiWhiteSpace)) {
+                return child;
             }
             child = child.getNextSibling();
         }

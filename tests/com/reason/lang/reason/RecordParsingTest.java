@@ -46,4 +46,14 @@ public class RecordParsingTest extends BaseParsingTestCase {
         assertEquals(field.getName(), "otherField");
     }
 
+    public void testAnnotations() {
+        PsiType e = first(typeExpressions(parseCode("type props = { [@bs.optional] key: string, [@bs.optional] [@bs.as \"aria-label\"] ariaLabel: string, };")));
+        PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
+
+        List<PsiRecordField> fields = new ArrayList<>(record.getFields());
+        assertSize(2, fields);
+        assertEquals("key", fields.get(0).getName());
+        assertEquals("ariaLabel", fields.get(1).getName());
+    }
+
 }
