@@ -1,7 +1,6 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -37,7 +36,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     @NotNull
     private final ORTypes m_types;
 
-    private final Log m_debug = new Log(Logger.getInstance("ReasonML.ref.upper"));
+    private static final Log LOG = new Log("ref.upper");
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
         super(element, ORUtil.getTextRangeForReference(element));
@@ -70,17 +69,17 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             return null;
         }
 
-        PsiElement parent = PsiTreeUtil.getParentOfType(myElement, PsiModule.class);
+        PsiModule parent = PsiTreeUtil.getParentOfType(myElement, PsiModule.class);
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        if (parent != null && ((PsiModule) parent).getNameIdentifier() == myElement) {
+        if (parent != null && parent.getNameIdentifier() == myElement) {
             return null;
         }
 
         Project project = myElement.getProject();
         PsiFinder psiFinder = PsiFinder.getInstance();
-        m_debug.debug("Find reference for upper symbol", m_referenceName);
+        LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
         List<String> potentialPaths = getPotentialPaths();
@@ -91,7 +90,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
             FileBase fileModule = psiFinder.findFileModule(project, m_referenceName);
             if (fileModule != null) {
-                m_debug.debug("  file", (PsiFile) fileModule);
+                LOG.debug("  file", (PsiFile) fileModule);
                 return fileModule;
             }
             // else it might be an inner module
@@ -101,10 +100,10 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
 
-        m_debug.debug("  modules", modules);
-        if (m_debug.isDebugEnabled()) {
+        LOG.debug("  modules", modules);
+        if (LOG.isDebugEnabled()) {
             for (PsiModule module : modules) {
-                m_debug.debug("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
+                LOG.debug("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
             }
         }
 
@@ -116,7 +115,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                         return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
                     }).
                     collect(toList());
-            m_debug.debug("  filtered modules: ", filteredModules);
+            LOG.debug("  filtered modules: ", filteredModules);
 
             if (filteredModules.isEmpty()) {
                 return null;
@@ -127,13 +126,13 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             if (moduleAlias != null) {
                 PsiQualifiedNamedElement moduleFromAlias = PsiFinder.getInstance().findModuleFromQn(project, moduleAlias);
                 if (moduleFromAlias != null) {
-                    m_debug.debug("    module alias resolved to file", moduleAlias);
+                    LOG.debug("    module alias resolved to file", moduleAlias);
                     return moduleFromAlias;
                 }
             }
 
-            if (m_debug.isDebugEnabled()) {
-                m_debug.debug("»» " + moduleReference.getQualifiedName() + " / " + moduleReference.getAlias());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("»» " + moduleReference.getQualifiedName() + " / " + moduleReference.getAlias());
             }
 
             return moduleReference.getNameIdentifier();
@@ -148,7 +147,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().
                 map(item -> item + "." + m_referenceName).
                 collect(toList());
-        m_debug.debug("  potential paths", potentialPaths);
+        LOG.debug("  potential paths", potentialPaths);
 
         return potentialPaths;
     }
