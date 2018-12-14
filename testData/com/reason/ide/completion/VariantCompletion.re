@@ -1,0 +1,1 @@
+type color = | Black | Red;

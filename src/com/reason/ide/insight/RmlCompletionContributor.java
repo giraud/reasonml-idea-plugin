@@ -2,6 +2,7 @@ package com.reason.ide.insight;
 
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.insight.pattern.ORElementPattern;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiTagProperty;
@@ -66,7 +67,10 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> dotExpression() {
-            return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.DOT).andNot(psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.LPAREN))));
+            return ORElementPattern.create((element, context) -> {
+                PsiElement prevLeaf = PsiTreeUtil.prevLeaf(element);
+                return prevLeaf != null && prevLeaf.getNode().getElementType() == RmlTypes.INSTANCE.DOT;
+            });
         }
 
         @NotNull

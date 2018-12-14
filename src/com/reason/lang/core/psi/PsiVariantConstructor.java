@@ -26,7 +26,7 @@ public class PsiVariantConstructor extends ASTWrapperPsiElement {
     @NotNull
     @Override
     public String toString() {
-        return "Variant constructor";
+        return getName();
     }
 
     @NotNull

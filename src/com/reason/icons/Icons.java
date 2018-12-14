@@ -20,6 +20,7 @@ public class Icons {
     public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocaml-file-green.png");
 
     public static final Icon TYPE = getIcon("/icons/type.png");
+    public static final Icon VARIANT = getIcon("/icons/variant.png");
     public static final Icon ANNOTATION = getIcon("/nodes/annotationtype.png");
 
     public static final Icon MODULE = getIcon("/nodes/javaModule.png");

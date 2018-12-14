@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -133,6 +132,19 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                         withTypeText(PsiSignatureUtil.getSignature(expression)).
                         withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                 );
+
+                if (expression instanceof PsiType) {
+                    PsiType eType = (PsiType) expression;
+                    Collection<PsiVariantConstructor> variants = eType.getVariants();
+                    if (!variants.isEmpty()) {
+                        for (PsiVariantConstructor variant : variants) {
+                            resultSet.addElement(LookupElementBuilder.
+                                    create(variant).
+                                    withTypeText(eType.getName()).
+                                    withIcon(PsiIconUtil.getProvidersIcon(variant, 0)));
+                        }
+                    }
+                }
             }
         }
     }
