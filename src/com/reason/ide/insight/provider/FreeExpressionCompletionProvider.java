@@ -77,6 +77,9 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                         create(element).
                         withTypeText(PsiSignatureUtil.getSignature(element)).
                         withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
+                if (item instanceof PsiType) {
+                    expandType((PsiType) item, resultSet);
+                }
             }
 
             PsiElement prevItem = item.getPrevSibling();
@@ -109,6 +112,18 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                         withIcon(PsiIconUtil.getProvidersIcon(file, 0)));
             } else {
                 LOG.debug("Component found, skip", (PsiFile) file);
+            }
+        }
+    }
+
+    private void expandType(@NotNull PsiType type, @NotNull CompletionResultSet resultSet) {
+        Collection<PsiVariantConstructor> variants = type.getVariants();
+        if (!variants.isEmpty()) {
+            for (PsiVariantConstructor variant : variants) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(variant).
+                        withTypeText(type.getName()).
+                        withIcon(PsiIconUtil.getProvidersIcon(variant, 0)));
             }
         }
     }
