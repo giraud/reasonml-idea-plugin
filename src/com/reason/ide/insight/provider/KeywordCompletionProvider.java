@@ -1,6 +1,8 @@
 package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.ProcessingContext;
@@ -20,8 +22,8 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
     private final String[] m_keywords;
 
     private static final THashSet<String> KEYWORD_WITH_POPUP = ContainerUtil.newTroveSet(CaseInsensitiveStringHashingStrategy.INSTANCE, "open", "include");
-    private static final AddSpaceInsertHandler INSERT_SPACE_POPUP = new AddSpaceInsertHandler(true);
-    private static final AddSpaceInsertHandler INSERT_SPACE = new AddSpaceInsertHandler(false);
+    private static final InsertHandler<LookupElement> INSERT_SPACE_POPUP = new AddSpaceInsertHandler(true);
+    private static final InsertHandler<LookupElement> INSERT_SPACE = new AddSpaceInsertHandler(false);
 
     public KeywordCompletionProvider(String debugName, String... keywords) {
         m_debug = new Log(Logger.getInstance("ReasonML.insight.keyword"));
@@ -34,8 +36,16 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
         m_debug.debug(m_debugName + " expression completion");
 
         for (String keyword : m_keywords) {
+            InsertHandler<LookupElement> insertHandler;
+            if ("Some".equals(keyword)) {
+                insertHandler = ParenthesesInsertHandler.getInstance(true);
+                ;
+            } else {
+                insertHandler = KEYWORD_WITH_POPUP.contains(keyword) ? INSERT_SPACE_POPUP : INSERT_SPACE;
+            }
+
             LookupElementBuilder builder = LookupElementBuilder.create(keyword).
-                    withInsertHandler(KEYWORD_WITH_POPUP.contains(keyword) ? INSERT_SPACE_POPUP : INSERT_SPACE).
+                    withInsertHandler(insertHandler).
                     bold();
 
             result.addElement(PrioritizedLookupElement.withPriority(builder, KEYWORD_PRIORITY));

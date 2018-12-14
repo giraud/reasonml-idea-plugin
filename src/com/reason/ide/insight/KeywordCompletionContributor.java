@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 abstract class KeywordCompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor implements DumbAware {
 
     KeywordCompletionContributor(@NotNull CompletionPatterns patterns) {
-        extend(CompletionType.BASIC, patterns.declaration(), new KeywordCompletionProvider("declaration", "module", "open", "in", "include", "type", "let", "external"));
-        extend(CompletionType.BASIC, patterns.keyword(), new KeywordCompletionProvider("keyword", "module", "open", "in", "include", "type", "let", "external", "match"));
+        extend(CompletionType.BASIC, patterns.declaration(), new KeywordCompletionProvider("declaration", "module", "open", "in", "include", "type", "let", "external", "Some", "None"));
+        extend(CompletionType.BASIC, patterns.keyword(), new KeywordCompletionProvider("keyword", "module", "open", "in", "include", "type", "let", "external", "match", "Some", "None"));
     }
 
 }
