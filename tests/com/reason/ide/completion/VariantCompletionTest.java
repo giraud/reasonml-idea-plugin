@@ -19,14 +19,15 @@ public class VariantCompletionTest extends LightPlatformCodeInsightFixtureTestCa
         return "testData/com/reason/ide/completion";
     }
 
-    public void testModuleLetCompletion() {
+    public void testVariant() {
         myFixture.configureByFiles("VariantCompletion.re");
         myFixture.configureByText(RmlFileType.INSTANCE, "VariantCompletion.<caret>");
 
         myFixture.completeBasic();
 
         List<String> completionElements = myFixture.getLookupElementStrings();
-        assertSize(2, completionElements);
-        assertContainsElements(completionElements, "Black", "Red");
+        assertSize(3, completionElements);
+        assertContainsElements(completionElements, "Black", "color", "Red");
     }
+
 }

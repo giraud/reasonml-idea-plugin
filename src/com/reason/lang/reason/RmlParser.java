@@ -4,6 +4,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
+import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,6 +82,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 parseInt(builder, state);
             } else if (tokenType == m_types.BOOL) {
                 parseBool(builder, state);
+            } else if (tokenType == m_types.ARRAY) {
+                parseArray(builder, state);
             } else if (tokenType == m_types.STRING_VALUE) {
                 parseStringValue(builder, state);
             } else if (tokenType == m_types.PIPE) {
@@ -333,28 +336,40 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseString(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
+            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
     private void parseInt(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
+            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
     private void parseBool(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
+            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
-    private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
-        state.updateCurrentResolution(letNamed).complete();
-        state.wrapWith(m_types.C_LET_NAME);
+    private void parseArray(@NotNull PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
+        }
+    }
+
+    private void transitionTo(PsiBuilder builder, ParserState state, ParserScopeEnum resolution, IElementType wrapper) {
+        builder.remapCurrentToken(m_types.LIDENT);
+        state.updateCurrentResolution(resolution).complete();
+        state.wrapWith(wrapper);
     }
 
     private void parseStringValue(@NotNull PsiBuilder builder, ParserState state) {
@@ -643,7 +658,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
         } else if (state.isCurrentResolution(let)) {
             // LET <LIDENT> ...
-            transitionToLetNamed(builder, state);
+            state.updateCurrentResolution(letNamed).complete();
+            state.wrapWith(m_types.C_LET_NAME);
             return;
         } else if (state.isCurrentResolution(letNamedEq)) {
             if (state.previousTokenElementType == m_types.EQ) {

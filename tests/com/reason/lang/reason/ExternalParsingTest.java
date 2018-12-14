@@ -32,4 +32,21 @@ public class ExternalParsingTest extends BaseParsingTestCase {
         assertFalse(e.isFunction());
         assertEquals("", e.getExternalName());
     }
+
+    public void testString() {
+        PsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), PsiExternal.class);
+
+        assertEquals("string", e.getName());
+        assertEquals("string => reactElement", e.getSignature().getText());
+        assertEquals("%identity", e.getExternalName());
+    }
+
+    public void testArray() {
+        PsiExternal e = firstOfType(parseCode("external array : array(reactElement) => reactElement = \"%identity\""), PsiExternal.class);
+
+        assertEquals("array", e.getName());
+        assertEquals("array(reactElement) => reactElement", e.getSignature().getText());
+        assertEquals("%identity", e.getExternalName());
+    }
+
 }
