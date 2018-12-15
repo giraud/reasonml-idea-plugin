@@ -10,12 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.68 - 2018/11/27
+## 0.69 - 2018/12/15
 
-- :rocket:  [#118](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/118) ![o](resources/icons/ocaml-file.png)  - Support .mlg files
-- :bug: [#107](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/107) - Sorry, REPL is only available in IDEA (it uses modules)
-- :house: Better Jsx tag highlight
-- :nail_care: Js inject in raw macros
+- :rocket: Automatically adds parenthesis for 'Some'
+- :rocket: add basic highlighting for .mll and .mly
+- :bug: Fix record field parsing when multiple annotations are used
+- :house: Better completion (variants, signatures)
+- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) - Show Functor structure
 
 ## 0.67.2 - 2018/11/16
 
