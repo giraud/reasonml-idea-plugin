@@ -12,7 +12,7 @@ import com.reason.Log;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 
-import static com.reason.ide.insight.CompletionConstants.KEYWORD_PRIORITY;
+import static com.reason.ide.insight.CompletionUtils.KEYWORD_PRIORITY;
 
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
 

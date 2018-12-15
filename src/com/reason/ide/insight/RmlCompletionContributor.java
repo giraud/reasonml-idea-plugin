@@ -17,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.PlatformPatterns.psiFile;
 import static com.intellij.patterns.StandardPatterns.or;
+import static com.reason.ide.insight.CompletionUtils.getParentWithoutIdeaRulezzz;
+import static com.reason.ide.insight.CompletionUtils.getPrevNodeType;
 
 public class RmlCompletionContributor extends CompletionContributor {
 
@@ -40,11 +42,7 @@ public class RmlCompletionContributor extends CompletionContributor {
                 return true;
             }
 
-            PsiElement parent = element.getParent();
-            if (parent instanceof PsiUpperSymbol) {
-                parent = parent.getParent();
-            }
-
+            PsiElement parent = getParentWithoutIdeaRulezzz(element);
             return parent instanceof PsiOpen || parent instanceof PsiInclude;
         }
 
@@ -52,16 +50,6 @@ public class RmlCompletionContributor extends CompletionContributor {
         @Override
         public ElementPattern<? extends PsiElement> openInclude() {
             return ORElementPattern.create(this::testOpenInclude);
-        }
-
-        private IElementType getPrevNodeType(@NotNull PsiElement element) {
-            PsiElement prevLeaf = PsiTreeUtil.prevLeaf(element);
-            if (prevLeaf instanceof PsiWhiteSpace) {
-                prevLeaf = PsiTreeUtil.prevLeaf(prevLeaf);
-            }
-
-            ASTNode node = prevLeaf == null ? null : prevLeaf.getNode();
-            return node == null ? null : node.getElementType();
         }
 
         @NotNull
@@ -109,5 +97,6 @@ public class RmlCompletionContributor extends CompletionContributor {
         public ElementPattern<? extends PsiElement> jsObject() {
             return psiElement().afterLeaf(psiElement(RmlTypes.INSTANCE.SHARPSHARP));
         }
+
     }
 }
