@@ -10,7 +10,7 @@ interface CompletionPatterns {
     ElementPattern<? extends PsiElement> declaration();
 
     @NotNull
-    ElementPattern<? extends PsiElement> open();
+    ElementPattern<? extends PsiElement> openInclude();
 
     @NotNull
     ElementPattern<? extends PsiElement> keyword();

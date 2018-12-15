@@ -16,7 +16,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
     CompletionContributor(@NotNull ORTypes types, @NotNull ModulePathFinder modulePathFinder, @NotNull CompletionPatterns patterns) {
         //extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new DebugCompletionProvider());
 
-        extend(CompletionType.BASIC, patterns.open(), new ModuleCompletionProvider(types));
+        extend(CompletionType.BASIC, patterns.openInclude(), new ModuleCompletionProvider(types, modulePathFinder));
         extend(CompletionType.BASIC, patterns.freeExpression(), new FreeExpressionCompletionProvider(modulePathFinder));
         extend(CompletionType.BASIC, patterns.dotExpression(), new DotExpressionCompletionProvider(modulePathFinder));
         extend(CompletionType.BASIC, patterns.jsObject(), new ObjectCompletionProvider());

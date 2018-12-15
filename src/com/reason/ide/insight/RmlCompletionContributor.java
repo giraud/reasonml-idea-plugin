@@ -1,15 +1,18 @@
 package com.reason.ide.insight;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ProcessingContext;
 import com.reason.ide.insight.pattern.ORElementPattern;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiTagProperty;
-import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlModulePathFinder;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 import static com.intellij.patterns.PlatformPatterns.psiFile;
@@ -31,16 +34,40 @@ public class RmlCompletionContributor extends CompletionContributor {
             return psiElement().withSuperParent(2, psiFile());
         }
 
+        private boolean testOpenInclude(@NotNull PsiElement element, @Nullable ProcessingContext context) {
+            IElementType prevNodeType = getPrevNodeType(element);
+            if (prevNodeType == RmlTypes.INSTANCE.OPEN || prevNodeType == RmlTypes.INSTANCE.INCLUDE) {
+                return true;
+            }
+
+            PsiElement parent = element.getParent();
+            if (parent instanceof PsiUpperSymbol) {
+                parent = parent.getParent();
+            }
+
+            return parent instanceof PsiOpen || parent instanceof PsiInclude;
+        }
+
         @NotNull
         @Override
-        public ElementPattern<? extends PsiElement> open() {
-            return psiElement().inside(PsiOpen.class);
+        public ElementPattern<? extends PsiElement> openInclude() {
+            return ORElementPattern.create(this::testOpenInclude);
+        }
+
+        private IElementType getPrevNodeType(@NotNull PsiElement element) {
+            PsiElement prevLeaf = PsiTreeUtil.prevLeaf(element);
+            if (prevLeaf instanceof PsiWhiteSpace) {
+                prevLeaf = PsiTreeUtil.prevLeaf(prevLeaf);
+            }
+
+            ASTNode node = prevLeaf == null ? null : prevLeaf.getNode();
+            return node == null ? null : node.getElementType();
         }
 
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> keyword() {
-            return psiElement().andNot(psiElement().andOr(psiElement().inside(PsiTagStart.class), jsxName(), dotExpression(), jsObject()));
+            return psiElement().andNot(psiElement().andOr(psiElement().inside(PsiTagStart.class), openInclude(), jsxName(), dotExpression(), jsObject()));
         }
 
         @NotNull
@@ -61,13 +88,17 @@ public class RmlCompletionContributor extends CompletionContributor {
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> freeExpression() {
-            return psiElement().andNot(or(jsxName(), jsObject(), jsxAttribute(), dotExpression()));
+            return psiElement().andNot(or(openInclude(), jsxName(), jsObject(), jsxAttribute(), dotExpression()));
         }
 
         @NotNull
         @Override
         public ElementPattern<? extends PsiElement> dotExpression() {
             return ORElementPattern.create((element, context) -> {
+                if (testOpenInclude(element, context)) {
+                    return false;
+                }
+
                 PsiElement prevLeaf = PsiTreeUtil.prevLeaf(element);
                 return prevLeaf != null && prevLeaf.getNode().getElementType() == RmlTypes.INSTANCE.DOT;
             });

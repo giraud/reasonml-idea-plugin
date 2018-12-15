@@ -103,7 +103,6 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         // Add file modules
         Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
-        LOG.debug("adding file modules from project", files);
         for (FileBase file : files) {
             if (!file.isComponent()) {
                 resultSet.addElement(LookupElementBuilder.

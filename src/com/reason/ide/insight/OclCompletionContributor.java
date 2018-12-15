@@ -2,6 +2,9 @@ package com.reason.ide.insight;
 
 import com.intellij.patterns.ElementPattern;
 import com.intellij.psi.PsiElement;
+import com.reason.ide.insight.pattern.ORElementPattern;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.ocaml.OclModulePathFinder;
 import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +33,11 @@ public class OclCompletionContributor extends CompletionContributor {
 
         @NotNull
         @Override
-        public ElementPattern<? extends PsiElement> open() {
-            return alwaysFalse();
+        public ElementPattern<? extends PsiElement> openInclude() {
+            return ORElementPattern.create((element, context) -> {
+                PsiElement parent = element.getParent();
+                return parent instanceof PsiOpen || parent instanceof PsiInclude;
+            });
         }
 
         @NotNull

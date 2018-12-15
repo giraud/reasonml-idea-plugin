@@ -9,7 +9,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
+import com.reason.Log;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
@@ -26,20 +28,22 @@ import static com.reason.lang.core.ORFileType.implementationOnly;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
-    private final ORTypes m_types;
+    private static final Log LOG = new Log("insight.module");
 
-    public ModuleCompletionProvider(ORTypes types) {
+    private final ORTypes m_types;
+    private final ModulePathFinder m_modulePathFinder;
+
+    public ModuleCompletionProvider(ORTypes types, ModulePathFinder modulePathFinder) {
         m_types = types;
+        m_modulePathFinder = modulePathFinder;
     }
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        //System.out.println("»» Module completion");
+        LOG.debug("MODULE expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
-        PsiElement originalPosition = parameters.getOriginalPosition();
-
-        PsiElement cursorElement = originalPosition;
+        PsiElement cursorElement = parameters.getOriginalPosition();
 
         // PsiWhite after a DOT
         //if (originalPosition instanceof PsiWhiteSpace) {
@@ -50,8 +54,8 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         //}
         // from UIDENT node to PsiSymbolName
         //else if (originalPosition != null && originalPosition.getNode().getElementType() == m_types.UIDENT) {
-        if (originalPosition != null) {
-            cursorElement = originalPosition.getParent();
+        if (parameters.getOriginalPosition() != null) {
+            cursorElement = parameters.getOriginalPosition().getParent();
         }
 
         // Compute module path (all module names before the last dot)
