@@ -81,6 +81,12 @@ public class Log {
         }
     }
 
+    public void debug(@NotNull String comment, @NotNull String t, @Nullable PsiFile t1) {
+        if (m_log.isDebugEnabled()) {
+            debug(comment + SEP + t, t1 == null ? null : t1.getVirtualFile());
+        }
+    }
+
     public void debug(@NotNull String comment, @Nullable VirtualFile t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getCanonicalPath() + " "));

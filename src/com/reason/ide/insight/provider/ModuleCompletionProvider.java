@@ -6,7 +6,10 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
@@ -24,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static com.reason.lang.core.ORFileType.implementationOnly;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -45,34 +47,11 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getOriginalPosition();
 
-        // PsiWhite after a DOT
-        //if (originalPosition instanceof PsiWhiteSpace) {
-        //    PsiElement prevSibling = originalPosition.getPrevSibling();
-        //    if (prevSibling instanceof PsiOpen) {
-        //        cursorElement = prevSibling.getLastChild();
-        //    }
-        //}
-        // from UIDENT node to PsiSymbolName
-        //else if (originalPosition != null && originalPosition.getNode().getElementType() == m_types.UIDENT) {
-        if (parameters.getOriginalPosition() != null) {
-            cursorElement = parameters.getOriginalPosition().getParent();
-        }
-
         // Compute module path (all module names before the last dot)
-        List<PsiUpperSymbol> moduleNames = new ArrayList<>();
-        PsiElement previousSibling = cursorElement == null ? null : cursorElement.getPrevSibling();
-        if (previousSibling != null) {
-            IElementType previousElementType = previousSibling.getNode().getElementType();
-            while (previousElementType == m_types.DOT || previousElementType == m_types.UPPER_SYMBOL) {
-                if (previousSibling instanceof PsiUpperSymbol) {
-                    moduleNames.add((PsiUpperSymbol) previousSibling);
-                }
-                previousSibling = previousSibling == null ? null : previousSibling.getPrevSibling();
-                previousElementType = previousSibling == null ? null : previousSibling.getNode().getElementType();
-            }
+        ModulePath modulePath = computePathFromPsi(cursorElement);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("  module path", modulePath.toString());
         }
-        Collections.reverse(moduleNames);
-        ModulePath modulePath = new ModulePath(moduleNames);
 
         PsiFinder psiFinder = PsiFinder.getInstance();
         if (modulePath.isEmpty()) {
@@ -88,19 +67,36 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
                 }
             }
         } else {
-            String latestModuleName = modulePath.getLatest();
-            Collection<PsiModule> modules = psiFinder.findModules(project, latestModuleName, implementationOnly);
-            if (!modules.isEmpty()) {
+            PsiQualifiedNamedElement foundModule = psiFinder.findModuleFromQn(project, modulePath.toString());
+            if (foundModule != null) {
+                LOG.debug("  Found module", foundModule);
+                Collection<PsiModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() : ((PsiModule) foundModule).getModules();
                 for (PsiModule module : modules) {
-                    for (PsiModule expression : module.getModules()) {
-                        resultSet.addElement(LookupElementBuilder.
-                                create(expression).
-                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                        );
-                    }
+                    resultSet.addElement(LookupElementBuilder.
+                            create(module).
+                            withIcon(PsiIconUtil.getProvidersIcon(module, 0))
+                    );
                 }
             }
         }
 
+    }
+
+    @NotNull
+    private ModulePath computePathFromPsi(PsiElement cursorElement) {
+        List<PsiUpperSymbol> moduleNames = new ArrayList<>();
+        PsiElement previousLeaf = cursorElement == null ? null : PsiTreeUtil.prevLeaf(cursorElement);
+        if (previousLeaf != null) {
+            IElementType previousElementType = previousLeaf.getNode().getElementType();
+            while (previousElementType == m_types.DOT || previousElementType == m_types.UIDENT) {
+                if (previousElementType == m_types.UIDENT) {
+                    moduleNames.add((PsiUpperSymbol) ((LeafPsiElement) previousLeaf.getNode()).getParent());
+                }
+                previousLeaf = previousLeaf == null ? null : PsiTreeUtil.prevLeaf(previousLeaf);
+                previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();
+            }
+        }
+        Collections.reverse(moduleNames);
+        return new ModulePath(moduleNames);
     }
 }

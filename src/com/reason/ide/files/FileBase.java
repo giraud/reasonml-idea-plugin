@@ -9,6 +9,7 @@ import com.reason.Platform;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
@@ -68,5 +69,10 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
     @Override
     public String getQualifiedName() {
         return asModuleName();
+    }
+
+    @NotNull
+    public Collection<PsiModule> getModules() {
+        return PsiFileHelper.getModuleExpressions(this);
     }
 }

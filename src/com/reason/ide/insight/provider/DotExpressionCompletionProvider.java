@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
@@ -61,7 +60,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 // Find file modules
 
                 FileBase fileModule = psiFinder.findFileModule(project, upperName);
-                LOG.debug("  file", (PsiFile) fileModule);
+                LOG.debug("  file", upperName, fileModule);
                 if (fileModule != null) {
                     if (qualifiedNames.contains(fileModule.asModuleName())) {
                         Collection<PsiNamedElement> expressions = fileModule.getExpressions();
