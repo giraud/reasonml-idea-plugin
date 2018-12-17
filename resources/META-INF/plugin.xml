@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.69</version>
+    <version>0.69.1</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,11 +10,8 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Fix record field parsing when multiple annotations are used</li>
-            <li>Automatically adds parenthesis for 'Some'</li>
-            <li>Better completion (variants, signatures)</li>
-            <li>add basic highlighting for .mll and .mly</li>
             <li>#121 - Show Functor structure</li>
+            <li>#120 - Incorrect highlighting of JSX being a function parameter</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

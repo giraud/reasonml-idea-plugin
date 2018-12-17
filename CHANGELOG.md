@@ -10,13 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.69 - 2018/12/15
+## 0.69.1 - 2018/12/17
 
 - :rocket: Automatically adds parenthesis for 'Some'
 - :rocket: add basic highlighting for .mll and .mly
 - :bug: Fix record field parsing when multiple annotations are used
 - :house: Better completion (variants, signatures)
 - :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) - Show Functor structure
+- :bug: [#120](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/120) ![r](resources/icons/reason-file.png) - Incorrect highlighting of JSX being a function parameter
 
 ## 0.67.2 - 2018/11/16
 
