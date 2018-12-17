@@ -291,6 +291,13 @@
         </intentionAction>
 
         <!--
+         | Debug
+         -->
+
+        <programRunner implementation="com.reason.ide.debug.OCamlDebugRunner"/>
+        <xdebugger.breakpointType implementation="com.reason.ide.debug.ORLineBreakpointType"/>
+
+        <!--
          | UI
          -->
 
