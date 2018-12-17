@@ -161,4 +161,9 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("bool", e.getName());
     }
 
+    public void testIssue121() {
+        Collection<PsiLet> lets = letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n" + "let x =  1", true));
+
+        assertSize(2, lets);
+    }
 }
