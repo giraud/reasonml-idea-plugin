@@ -162,7 +162,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testIssue121() {
-        Collection<PsiLet> lets = letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n" + "let x =  1", true));
+        Collection<PsiLet> lets = letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n" + "let x =  1"));
 
         assertSize(2, lets);
     }
