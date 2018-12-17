@@ -255,14 +255,17 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(functionBody)) {
             // a function is part of something else, close it first
             state.popEnd().popEnd();
+        } else if (state.isCurrentResolution(modulePath)) {
+            state.complete().popEnd();
         }
 
         if (state.isCurrentResolution(functionParameterNamedSignatureItem)) {
             state.complete().
                     popEndUntilResolution(functionParameterNamed).popEnd().
                     advance().
-                    add(mark(builder, functionParameter, functionParameter, m_types.C_FUN_PARAM));
+                    add(mark(builder, functionParameter, m_types.C_FUN_PARAM));
         }
+
         if (state.isCurrentResolution(signatureItem) && !state.isCurrentContext(recordSignature)) {
             state.popEnd();
             state.advance();
@@ -651,7 +654,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
             state.setPreviousComplete();
         } else if (state.isCurrentResolution(functionParameters)) {
-            state.add(mark(builder, state.currentContext(), functionParameter, m_types.C_FUN_PARAM).complete());
+            state.add(mark(builder, functionParameter, m_types.C_FUN_PARAM).complete());
         } else if (state.isCurrentResolution(external)) {
             // EXTERNAL <LIDENT> ...
             state.updateCurrentResolution(externalNamed);

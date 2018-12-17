@@ -37,4 +37,10 @@ public class FunctionCallTest extends BaseParsingTestCase {
         assertEmpty(callParams.getParameterList());
     }
 
+    public void testIssue120() {
+        PsiLet e = first(letExpressions(parseCode("let _ = f(x == U.I, 1)")));
+
+        PsiFunctionCallParams params = PsiTreeUtil.findChildOfType(e, PsiFunctionCallParams.class);
+        assertSize(2, params.getParameterList());
+    }
 }
