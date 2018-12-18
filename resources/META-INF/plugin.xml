@@ -275,6 +275,13 @@
         <languageInjector implementation="com.reason.ide.JsInjector"/>
 
         <!--
+         | Templates
+         -->
+
+        <defaultLiveTemplatesProvider implementation="com.reason.ide.template.RmlLiveTemplateProvider"/>
+        <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
+
+        <!--
          | Intentions
          -->
 
