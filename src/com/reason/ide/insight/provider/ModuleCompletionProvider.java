@@ -14,7 +14,6 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
@@ -33,11 +32,9 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
     private static final Log LOG = new Log("insight.module");
 
     private final ORTypes m_types;
-    private final ModulePathFinder m_modulePathFinder;
 
-    public ModuleCompletionProvider(ORTypes types, ModulePathFinder modulePathFinder) {
+    public ModuleCompletionProvider(ORTypes types) {
         m_types = types;
-        m_modulePathFinder = modulePathFinder;
     }
 
     @Override
@@ -90,6 +87,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             IElementType previousElementType = previousLeaf.getNode().getElementType();
             while (previousElementType == m_types.DOT || previousElementType == m_types.UIDENT) {
                 if (previousElementType == m_types.UIDENT) {
+                    assert previousLeaf != null;
                     moduleNames.add((PsiUpperSymbol) ((LeafPsiElement) previousLeaf.getNode()).getParent());
                 }
                 previousLeaf = previousLeaf == null ? null : PsiTreeUtil.prevLeaf(previousLeaf);
