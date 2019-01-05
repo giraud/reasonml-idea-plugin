@@ -5,10 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class LogicalHMSignature {
 
-    @NotNull private final LogicalPosition m_logicalPosition;
-    @NotNull private final HMSignature m_signature;
+    @NotNull
+    private final LogicalPosition m_logicalPosition;
+    @NotNull
+    private final ORSignature m_signature;
 
-    public LogicalHMSignature(@NotNull LogicalPosition position, @NotNull HMSignature signature) {
+    public LogicalHMSignature(@NotNull LogicalPosition position, @NotNull ORSignature signature) {
         m_logicalPosition = position;
         m_signature = signature;
     }
@@ -19,7 +21,7 @@ public class LogicalHMSignature {
     }
 
     @NotNull
-    public HMSignature getSignature() {
+    public ORSignature getSignature() {
         return m_signature;
     }
 }

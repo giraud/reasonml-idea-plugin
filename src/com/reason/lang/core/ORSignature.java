@@ -1,24 +1,26 @@
 package com.reason.lang.core;
 
-import com.reason.Joiner;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
 /**
- * Hindley-Milner signature
+ * Unified signature between OCaml and Reason.
+ * Hindley-Milner
  */
-public class HMSignature {
+public class ORSignature {
 
-    public static final HMSignature EMPTY = new HMSignature("");
-    private static final String ITEM_SEPARATOR = " -> ";
+    public static final ORSignature EMPTY = new ORSignature("");
+    private static final String REASON_SEPARATOR = " => ";
+    private static final String OCAML_SEPARATOR = " -> ";
 
     @NotNull
     private final SignatureType[] m_types;
-    @NotNull
-    private final String m_signature;
+    @Nullable
+    private String m_signature;
 
     public static class SignatureType {
         String value;
@@ -33,7 +35,7 @@ public class HMSignature {
         }
     }
 
-    public HMSignature(boolean isOcaml, @NotNull Collection<PsiSignatureItem> items) {
+    public ORSignature(boolean isOcaml, @NotNull Collection<PsiSignatureItem> items) {
         m_types = new SignatureType[items.size()];
         int i = 0;
         for (PsiSignatureItem item : items) {
@@ -51,25 +53,9 @@ public class HMSignature {
             m_types[i] = signatureType;
             i++;
         }
-
-        if (m_types.length < 3) {
-            m_signature = Joiner.join(ITEM_SEPARATOR, m_types);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("(");
-            for (int j = 0; j < m_types.length - 1; j++) {
-                SignatureType m_type = m_types[j];
-                if (0 < j) {
-                    sb.append(", ");
-                }
-                sb.append(m_type);
-            }
-            sb.append(")").append(ITEM_SEPARATOR).append(m_types[m_types.length - 1]);
-            m_signature = sb.toString();
-        }
     }
 
-    public HMSignature(Collection<PsiParameter> parameters) {
+    public ORSignature(Collection<PsiParameter> parameters) {
         m_types = new SignatureType[parameters.size()];
         int i = 0;
         for (PsiParameter item : parameters) {
@@ -94,11 +80,11 @@ public class HMSignature {
             }
             sb.append(m_type);
         }
-        sb.append(")").append(ITEM_SEPARATOR).append("'a");
+        sb.append(")").append(REASON_SEPARATOR).append("'a");
         m_signature = sb.toString();
     }
 
-    public HMSignature(@NotNull String signature) {
+    public ORSignature(@NotNull String signature) {
         String normalized = signature.
                 trim().
                 replaceAll("\n", "").
@@ -114,23 +100,25 @@ public class HMSignature {
             m_types[i].mandatory = !tokens[0].contains("option") && tokens.length == 1;
             m_types[i].defaultValue = 2 == tokens.length ? tokens[1] : "";
         }
-
-        // Always use thin arrow
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < m_types.length; i++) {
-            if (0 < i) {
-                sb.append(ITEM_SEPARATOR);
-            }
-            SignatureType type = m_types[i];
-            sb.append(type.value);
-        }
-        m_signature = sb.toString();
     }
 
     @NotNull
     @Override
     public String toString() {
+        if (m_signature == null) {
+            m_signature = buildSignature(false);
+        }
         return m_signature;
+    }
+
+    @NotNull
+    public String toReason() {
+        return buildSignature(true);
+    }
+
+    @NotNull
+    public String toOCaml() {
+        return buildSignature(false);
     }
 
     public boolean isFunctionSignature() {
@@ -138,7 +126,7 @@ public class HMSignature {
     }
 
     public boolean isEmpty() {
-        return m_signature.isEmpty();
+        return m_signature == null || m_signature.isEmpty();
     }
 
     public boolean isMandatory(int index) {
@@ -148,5 +136,34 @@ public class HMSignature {
     @NotNull
     public SignatureType[] getTypes() {
         return m_types;
+    }
+
+    @NotNull
+    private String buildSignature(boolean reason) {
+        StringBuilder sb = new StringBuilder();
+
+        if (reason && 2 < m_types.length) {
+            sb.append("(");
+        }
+
+        String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
+        for (int i = 0; i < m_types.length - 1; i++) {
+            if (0 < i) {
+                sb.append(inputSeparator);
+            }
+            SignatureType type = m_types[i];
+            sb.append(type.value);
+        }
+
+        if (reason && 2 < m_types.length) {
+            sb.append(")");
+        }
+        if (1 < m_types.length) {
+            sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
+        }
+
+        sb.append(m_types[m_types.length - 1]);
+
+        return sb.toString();
     }
 }

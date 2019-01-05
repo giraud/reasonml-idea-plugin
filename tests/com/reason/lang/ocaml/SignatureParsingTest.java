@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.ORSignature;
 import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testLet() {
         PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
-        HMSignature signature = e.getHMSignature();
+        ORSignature signature = e.getHMSignature();
         assertEquals("int", signature.toString());
         assertTrue(signature.isMandatory(0));
     }
@@ -24,7 +24,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testVal() {
         PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
 
-        HMSignature signature = e.getHMSignature();
+        ORSignature signature = e.getHMSignature();
         assertEquals("('a option, ('a -> 'b)) -> 'b option", signature.toString());
         assertFalse(signature.isMandatory(0));
         assertTrue(signature.isMandatory(1));
@@ -41,7 +41,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testParsingRml() {
         PsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
 
-        HMSignature signature = let.getHMSignature();
+        ORSignature signature = let.getHMSignature();
         assertEquals(3, signature.getTypes().length);
         assertEquals("(~v:length, ~h:length) -> rule", signature.toString());
         assertTrue(signature.isMandatory(0));
@@ -51,7 +51,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testOptionalFun() {
         PsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
 
-        HMSignature signature = let.getHMSignature();
+        ORSignature signature = let.getHMSignature();
         assertEquals(3, signature.getTypes().length);
         assertEquals("(int, string option) -> string", signature.toString());
         assertTrue(signature.isMandatory(0));

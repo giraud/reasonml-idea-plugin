@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.ORSignature;
 import com.reason.lang.core.psi.impl.PsiToken;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +41,9 @@ public class PsiRecordField extends PsiToken<ORTypes> implements PsiNamedElement
 
     @NotNull
     @Override
-    public HMSignature getHMSignature() {
+    public ORSignature getHMSignature() {
         PsiSignature signature = getSignature();
-        return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
+        return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 
     @Override

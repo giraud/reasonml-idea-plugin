@@ -19,11 +19,11 @@ public class PsiSignatureUtil {
             return ((PsiExternal) element).getHMSignature().toString();
         } else if (element instanceof PsiLet) {
             PsiLet let = (PsiLet) element;
-            HMSignature signature = let.hasInferredType() ? let.getInferredType() : let.getHMSignature();
+            ORSignature signature = let.hasInferredType() ? let.getInferredType() : let.getHMSignature();
             return signature.toString();
         } else if (element instanceof PsiVal) {
             PsiVal val = (PsiVal) element;
-            HMSignature signature = val.getHMSignature();
+            ORSignature signature = val.getHMSignature();
             return signature.toString();
         } else if (element instanceof PsiModule) {
             return ((PsiModule) element).getQualifiedName();

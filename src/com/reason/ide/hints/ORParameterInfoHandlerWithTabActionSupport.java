@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.ORSignature;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, HMSignature, PsiElement> {
+public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, ORSignature, PsiElement> {
 
     @NotNull
     @Override
@@ -106,7 +106,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                         if (resolvedLet.isFunction()) {
                             // We don't have the real signature, we just display the function arguments
                             Collection<PsiParameter> parameters = resolvedLet.getFunction().getParameterList();
-                            HMSignature hmSignature = new HMSignature(parameters);
+                            ORSignature hmSignature = new ORSignature(parameters);
                             context.setItemsToShow(new Object[]{hmSignature});
                             context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
                         }
@@ -127,16 +127,16 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     }
 
     @Override
-    public void updateUI(@Nullable HMSignature signature, @NotNull ParameterInfoUIContext context) {
+    public void updateUI(@Nullable ORSignature signature, @NotNull ParameterInfoUIContext context) {
         if (signature == null) {
             context.setUIComponentEnabled(false);
             return;
         }
 
         int currentParameterIndex = context.getCurrentParameterIndex();
-        HMSignature.SignatureType[] types = signature.getTypes();
+        ORSignature.SignatureType[] types = signature.getTypes();
 
-        boolean grayedOut = currentParameterIndex != -1 && types.length <= currentParameterIndex;
+        boolean grayedOut = types.length <= currentParameterIndex;
         context.setUIComponentEnabled(!grayedOut);
 
         TextRange paramRange = TextRange.EMPTY_RANGE;
@@ -163,7 +163,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     //region Backward compatibility
     @Nullable
     @Override
-    public Object[] getParametersForDocumentation(HMSignature hmSignature, ParameterInfoContext parameterInfoContext) {
+    public Object[] getParametersForDocumentation(ORSignature hmSignature, ParameterInfoContext parameterInfoContext) {
         return new Object[0];
     }
 

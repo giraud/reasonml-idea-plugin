@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.ORSignature;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class DocumentationProvider extends AbstractDocumentationProvider {
 
-    public static final Key<Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
+    public static final Key<Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
 
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
@@ -51,13 +51,13 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         if (editor != null) {
             LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
-            Map<Integer, Map<String, Map<LogicalPosition, HMSignature>>> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
+            Map<Integer, Map<String, Map<LogicalPosition, ORSignature>>> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
             if (signaturesContext != null) {
-                Map<String, Map<LogicalPosition, HMSignature>> lineSignatures = signaturesContext.get(elementPosition.line);
+                Map<String, Map<LogicalPosition, ORSignature>> lineSignatures = signaturesContext.get(elementPosition.line);
                 if (lineSignatures != null) {
                     if (originalElement instanceof PsiLowerSymbol) {
                         PsiLowerSymbol lowerSymbol = (PsiLowerSymbol) originalElement;
-                        Map<LogicalPosition, HMSignature> signatures = lineSignatures.get(lowerSymbol.getText());
+                        Map<LogicalPosition, ORSignature> signatures = lineSignatures.get(lowerSymbol.getText());
                         if (signatures != null && signatures.size() == 1) {
                             return limitSignature(signatures.values().iterator().next());
                         }
@@ -71,7 +71,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
             if (resolvedElement instanceof PsiSignatureElement) {
-                HMSignature signature = ((PsiSignatureElement) resolvedElement).getHMSignature();
+                ORSignature signature = ((PsiSignatureElement) resolvedElement).getHMSignature();
                 if (!signature.isEmpty()) {
                     return limitSignature(signature);
                 }
@@ -82,7 +82,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
     }
 
     @NotNull
-    private String limitSignature(HMSignature signature) {
+    private String limitSignature(ORSignature signature) {
         String signatureString = signature.toString();
         if (signatureString.length() > 1000) {
             return signatureString.substring(0, 1000) + "...";

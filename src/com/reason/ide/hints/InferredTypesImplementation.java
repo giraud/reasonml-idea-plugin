@@ -2,8 +2,8 @@ package com.reason.ide.hints;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.LogicalPosition;
-import com.reason.lang.core.HMSignature;
 import com.reason.lang.core.LogicalHMSignature;
+import com.reason.lang.core.ORSignature;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,10 +13,10 @@ import java.util.Map;
 public class InferredTypesImplementation implements InferredTypes {
 
     private final Map<Integer, LogicalHMSignature> m_pos = new THashMap<>();
-    private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>> m_idents = new THashMap<>();
+    private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> m_idents = new THashMap<>();
     private final Map<LogicalPosition, String> m_opens = new THashMap<>();
 
-    private final Map<String, HMSignature> m_let = new THashMap<>();
+    private final Map<String, ORSignature> m_let = new THashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new THashMap<>();
 
     public void addTypes(@NotNull String type) {
@@ -24,7 +24,7 @@ public class InferredTypesImplementation implements InferredTypes {
             if (type.startsWith("val")) {
                 int colonPos = type.indexOf(':');
                 if (0 < colonPos && colonPos < type.length()) {
-                    m_let.put(type.substring(4, colonPos - 1), new HMSignature(type.substring(colonPos + 1)));
+                    m_let.put(type.substring(4, colonPos - 1), new ORSignature(type.substring(colonPos + 1)));
                 }
             } else if (type.startsWith("module")) {
                 int colonPos = type.indexOf(':');
@@ -48,7 +48,7 @@ public class InferredTypesImplementation implements InferredTypes {
         }
     }
 
-    public HMSignature getLetType(String name) {
+    public ORSignature getLetType(String name) {
         return m_let.get(name);
     }
 
@@ -67,7 +67,7 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     @NotNull
-    public Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, HMSignature>>> listTypesByIdents() {
+    public Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> listTypesByIdents() {
         return m_idents;
     }
 
@@ -80,23 +80,23 @@ public class InferredTypesImplementation implements InferredTypes {
         } else if (5 <= tokens.length) {
             LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
             if ("I".equals(tokens[0])) {
-                Map<String, Map<LogicalPosition, HMSignature>> lines = m_idents.get(logicalPosition.line);
+                Map<String, Map<LogicalPosition, ORSignature>> lines = m_idents.get(logicalPosition.line);
                 if (lines == null) {
                     lines = new THashMap<>();
                     m_idents.put(logicalPosition.line, lines);
                 }
 
-                Map<LogicalPosition, HMSignature> idents = lines.get(tokens[3]);
+                Map<LogicalPosition, ORSignature> idents = lines.get(tokens[3]);
                 if (idents == null) {
                     idents = new THashMap<>();
                     lines.put(tokens[3], idents);
                 }
 
-                idents.put(logicalPosition, new HMSignature(tokens[4]));
+                idents.put(logicalPosition, new ORSignature(tokens[4]));
             } else {
                 LogicalHMSignature signature = m_pos.get(logicalPosition.line);
                 if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
-                    m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new HMSignature(tokens[4])));
+                    m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new ORSignature(tokens[4])));
                 }
             }
         }

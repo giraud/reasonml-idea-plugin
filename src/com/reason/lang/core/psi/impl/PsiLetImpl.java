@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.HMSignature;
+import com.reason.lang.core.ORSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
@@ -23,7 +23,7 @@ import java.util.Collection;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
 
-    private HMSignature m_inferredType = HMSignature.EMPTY;
+    private ORSignature m_inferredType = ORSignature.EMPTY;
 
     //region Constructors
     public PsiLetImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -70,9 +70,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     @NotNull
     @Override
-    public HMSignature getHMSignature() {
+    public ORSignature getHMSignature() {
         PsiSignature signature = getSignature();
-        return signature == null ? HMSignature.EMPTY : signature.asHMSignature();
+        return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 
     @Nullable
@@ -108,8 +108,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         if (hasInferredType()) {
             return getInferredType().isFunctionSignature();
         } else {
-            HMSignature signature = getHMSignature();
-            if (signature != HMSignature.EMPTY) {
+            ORSignature signature = getHMSignature();
+            if (signature != ORSignature.EMPTY) {
                 return signature.isFunctionSignature();
             }
         }
@@ -138,18 +138,18 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     //region Inferred type
     @Override
-    public HMSignature getInferredType() {
+    public ORSignature getInferredType() {
         return m_inferredType;
     }
 
     @Override
-    public void setInferredType(HMSignature inferredType) {
+    public void setInferredType(ORSignature inferredType) {
         m_inferredType = inferredType;
     }
 
     @Override
     public boolean hasInferredType() {
-        return m_inferredType != HMSignature.EMPTY;
+        return m_inferredType != ORSignature.EMPTY;
     }
     //endregion
 
@@ -180,8 +180,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                     return "_";
                 }
 
-                HMSignature signature = hasInferredType() ? getInferredType() : getHMSignature();
-                String signatureText = (signature == HMSignature.EMPTY ? "" : ":   " + signature);
+                ORSignature signature = hasInferredType() ? getInferredType() : getHMSignature();
+                String signatureText = (signature == ORSignature.EMPTY ? "" : ":   " + signature);
 
                 String letName = letValueName.getText();
                 if (isFunction()) {
