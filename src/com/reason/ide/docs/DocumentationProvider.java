@@ -1,5 +1,6 @@
 package com.reason.ide.docs;
 
+import com.intellij.lang.Language;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -59,7 +60,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                         PsiLowerSymbol lowerSymbol = (PsiLowerSymbol) originalElement;
                         Map<LogicalPosition, ORSignature> signatures = lineSignatures.get(lowerSymbol.getText());
                         if (signatures != null && signatures.size() == 1) {
-                            return limitSignature(signatures.values().iterator().next());
+                            return limitSignature(element.getLanguage(), signatures.values().iterator().next());
                         }
                     }
                 }
@@ -73,7 +74,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getHMSignature();
                 if (!signature.isEmpty()) {
-                    return limitSignature(signature);
+                    return limitSignature(element.getLanguage(), signature);
                 }
             }
         }
@@ -82,8 +83,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
     }
 
     @NotNull
-    private String limitSignature(ORSignature signature) {
-        String signatureString = signature.toString();
+    private String limitSignature(Language lang, ORSignature signature) {
+        String signatureString = signature.asString(lang);
         if (signatureString.length() > 1000) {
             return signatureString.substring(0, 1000) + "...";
         }

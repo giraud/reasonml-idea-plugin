@@ -75,7 +75,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     public void testSignature() {
         PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
-        assertEquals("(style, style) -> style", let.getHMSignature().toString());
+        assertEquals("(style, style) => style", let.getHMSignature().asString(RmlLanguage.INSTANCE));
         assertEquals("(a, b) => { }", let.getBinding().getText());
     }
 

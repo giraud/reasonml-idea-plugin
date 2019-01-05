@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileHelper;
 import com.reason.lang.core.ORSignature;
@@ -27,8 +28,8 @@ public class PsiSignatureImpl extends PsiToken<ORTypes> implements PsiSignature 
 
     @NotNull
     @Override
-    public String asString() {
-        return asHMSignature().toString();
+    public String asString(@NotNull Language lang) {
+        return asHMSignature().asString(lang);
     }
 
     @NotNull

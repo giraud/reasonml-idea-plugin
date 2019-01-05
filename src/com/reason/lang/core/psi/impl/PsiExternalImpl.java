@@ -142,7 +142,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
                     }
                 }
 
-                String signature = getHMSignature().toString();
+                String signature = getHMSignature().asString(getLanguage());
                 if (!signature.isEmpty()) {
                     aliasName += " :  " + signature;
                 }

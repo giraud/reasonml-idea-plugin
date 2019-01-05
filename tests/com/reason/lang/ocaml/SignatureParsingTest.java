@@ -17,7 +17,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
         ORSignature signature = e.getHMSignature();
-        assertEquals("int", signature.toString());
+        assertEquals("int", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
     }
 
@@ -25,7 +25,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
 
         ORSignature signature = e.getHMSignature();
-        assertEquals("('a option, ('a -> 'b)) -> 'b option", signature.toString());
+        assertEquals("'a option -> ('a -> 'b) -> 'b option", signature.asString(OclLanguage.INSTANCE));
         assertFalse(signature.isMandatory(0));
         assertTrue(signature.isMandatory(1));
         assertFalse(signature.isMandatory(2));
@@ -35,7 +35,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
         PsiSignature signature = let.getSignature();
-        assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString());
+        assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString(OclLanguage.INSTANCE));
     }
 
     public void testParsingRml() {
@@ -43,7 +43,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
 
         ORSignature signature = let.getHMSignature();
         assertEquals(3, signature.getTypes().length);
-        assertEquals("(~v:length, ~h:length) -> rule", signature.toString());
+        assertEquals("v:length -> h:length -> rule", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
         assertTrue(signature.isMandatory(1));
     }
@@ -53,7 +53,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
 
         ORSignature signature = let.getHMSignature();
         assertEquals(3, signature.getTypes().length);
-        assertEquals("(int, string option) -> string", signature.toString());
+        assertEquals("int -> string option -> string", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
         assertFalse(signature.isMandatory(1));
     }

@@ -53,7 +53,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             m_name = parameter.getName();
             PsiSignature signature = parameter.getSignature();
             ORSignature hmSignature = signature == null ? ORSignature.EMPTY : signature.asHMSignature();
-            m_type = hmSignature.toString();
+            m_type = hmSignature.asString(parameter.getLanguage());
             m_mandatory = !parameter.hasDefaultValue() && hmSignature.isMandatory(0);
         }
 

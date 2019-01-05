@@ -17,7 +17,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
 
         ORSignature signature = let.getHMSignature();
-        assertEquals("int", signature.toString());
+        assertEquals("int", signature.asString(RmlLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
     }
 
@@ -25,7 +25,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
         PsiSignature signature = let.getSignature();
-        assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString());
+        assertEquals("string => componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString(RmlLanguage.INSTANCE));
     }
 
     public void testParsingRml() {
@@ -33,7 +33,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
 
         ORSignature signature = let.getHMSignature();
         assertEquals(3, signature.getTypes().length);
-        assertEquals("(~v:length, ~h:length) -> rule", signature.toString());
+        assertEquals("(~v:length, ~h:length) => rule", signature.asString(RmlLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
         assertTrue(signature.isMandatory(1));
     }
@@ -55,9 +55,9 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertTrue(parameters.get(0).getSignature().asHMSignature().isMandatory(0));
         assertFalse(parameters.get(1).getSignature().asHMSignature().isMandatory(0));
         assertFalse(parameters.get(2).getSignature().asHMSignature().isMandatory(0));
-        assertEquals("bool=false", parameters.get(2).getSignature().asString());
+        assertEquals("bool=false", parameters.get(2).getSignature().asString(RmlLanguage.INSTANCE));
         assertFalse(parameters.get(3).getSignature().asHMSignature().isMandatory(0));
-        assertEquals("float=?", parameters.get(3).getSignature().asString());
+        assertEquals("float=?", parameters.get(3).getSignature().asString(RmlLanguage.INSTANCE));
     }
 
     public void testJsObject() {
@@ -67,6 +67,6 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
-        assertEquals("{. \"__html\": string}", fields.get(0).getSignature().asString());
+        assertEquals("{. \"__html\": string}", fields.get(0).getSignature().asString(RmlLanguage.INSTANCE));
     }
 }

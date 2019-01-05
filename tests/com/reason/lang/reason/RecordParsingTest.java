@@ -21,7 +21,7 @@ public class RecordParsingTest extends BaseParsingTestCase {
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals("a", fields.get(0).getName());
-        assertEquals("int", fields.get(0).getSignature().asString());
+        assertEquals("int", fields.get(0).getSignature().asString(RmlLanguage.INSTANCE));
     }
 
     public void testUsage() {

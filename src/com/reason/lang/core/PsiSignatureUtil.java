@@ -16,15 +16,15 @@ public class PsiSignatureUtil {
     @NotNull
     public static String getSignature(@Nullable PsiElement element) {
         if (element instanceof PsiExternal) {
-            return ((PsiExternal) element).getHMSignature().toString();
+            return ((PsiExternal) element).getHMSignature().asString(element.getLanguage());
         } else if (element instanceof PsiLet) {
             PsiLet let = (PsiLet) element;
             ORSignature signature = let.hasInferredType() ? let.getInferredType() : let.getHMSignature();
-            return signature.toString();
+            return signature.asString(element.getLanguage());
         } else if (element instanceof PsiVal) {
             PsiVal val = (PsiVal) element;
             ORSignature signature = val.getHMSignature();
-            return signature.toString();
+            return signature.asString(element.getLanguage());
         } else if (element instanceof PsiModule) {
             return ((PsiModule) element).getQualifiedName();
         }

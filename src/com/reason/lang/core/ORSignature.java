@@ -1,9 +1,10 @@
 package com.reason.lang.core;
 
+import com.intellij.lang.Language;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
+import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
@@ -19,8 +20,6 @@ public class ORSignature {
 
     @NotNull
     private final SignatureType[] m_types;
-    @Nullable
-    private String m_signature;
 
     public static class SignatureType {
         String value;
@@ -81,7 +80,7 @@ public class ORSignature {
             sb.append(m_type);
         }
         sb.append(")").append(REASON_SEPARATOR).append("'a");
-        m_signature = sb.toString();
+        sb.toString(); /* TODO */
     }
 
     public ORSignature(@NotNull String signature) {
@@ -105,20 +104,11 @@ public class ORSignature {
     @NotNull
     @Override
     public String toString() {
-        if (m_signature == null) {
-            m_signature = buildSignature(false);
-        }
-        return m_signature;
+        throw new RuntimeException("Use asString(Language)");
     }
 
-    @NotNull
-    public String toReason() {
-        return buildSignature(true);
-    }
-
-    @NotNull
-    public String toOCaml() {
-        return buildSignature(false);
+    public String asString(Language lang) {
+        return buildSignature(lang == RmlLanguage.INSTANCE);
     }
 
     public boolean isFunctionSignature() {
@@ -126,7 +116,7 @@ public class ORSignature {
     }
 
     public boolean isEmpty() {
-        return m_signature == null || m_signature.isEmpty();
+        return m_types.length == 0;
     }
 
     public boolean isMandatory(int index) {
