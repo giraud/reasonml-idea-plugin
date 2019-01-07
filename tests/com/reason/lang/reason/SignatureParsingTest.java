@@ -1,7 +1,7 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;

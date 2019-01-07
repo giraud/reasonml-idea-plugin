@@ -1,6 +1,5 @@
 package com.reason.ide.docs;
 
-import com.intellij.lang.Language;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -11,11 +10,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORSignature;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.signature.ORSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +59,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                         PsiLowerSymbol lowerSymbol = (PsiLowerSymbol) originalElement;
                         Map<LogicalPosition, ORSignature> signatures = lineSignatures.get(lowerSymbol.getText());
                         if (signatures != null && signatures.size() == 1) {
-                            return limitSignature(element.getLanguage(), signatures.values().iterator().next());
+                            return signatures.values().iterator().next().asString(element.getLanguage());
                         }
                     }
                 }
@@ -74,20 +73,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getHMSignature();
                 if (!signature.isEmpty()) {
-                    return limitSignature(element.getLanguage(), signature);
+                    return signature.asString(element.getLanguage());
                 }
             }
         }
 
         return super.getQuickNavigateInfo(element, originalElement);
-    }
-
-    @NotNull
-    private String limitSignature(Language lang, ORSignature signature) {
-        String signatureString = signature.asString(lang);
-        if (signatureString.length() > 1000) {
-            return signatureString.substring(0, 1000) + "...";
-        }
-        return signatureString;
     }
 }

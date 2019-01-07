@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.impl.PsiToken;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;

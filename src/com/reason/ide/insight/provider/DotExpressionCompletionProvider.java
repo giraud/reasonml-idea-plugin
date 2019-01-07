@@ -15,7 +15,7 @@ import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.PsiSignatureUtil;
+import com.reason.lang.core.signature.PsiSignatureUtil;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 

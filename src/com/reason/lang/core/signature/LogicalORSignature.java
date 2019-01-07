@@ -1,16 +1,17 @@
-package com.reason.lang.core;
+package com.reason.lang.core.signature;
 
 import com.intellij.openapi.editor.LogicalPosition;
+import com.reason.lang.core.signature.ORSignature;
 import org.jetbrains.annotations.NotNull;
 
-public class LogicalHMSignature {
+public class LogicalORSignature {
 
     @NotNull
     private final LogicalPosition m_logicalPosition;
     @NotNull
     private final ORSignature m_signature;
 
-    public LogicalHMSignature(@NotNull LogicalPosition position, @NotNull ORSignature signature) {
+    public LogicalORSignature(@NotNull LogicalPosition position, @NotNull ORSignature signature) {
         m_logicalPosition = position;
         m_signature = signature;
     }

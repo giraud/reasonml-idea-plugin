@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;

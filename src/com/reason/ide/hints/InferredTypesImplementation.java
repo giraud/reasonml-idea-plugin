@@ -2,8 +2,8 @@ package com.reason.ide.hints;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.LogicalPosition;
-import com.reason.lang.core.LogicalHMSignature;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.LogicalORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class InferredTypesImplementation implements InferredTypes {
 
-    private final Map<Integer, LogicalHMSignature> m_pos = new THashMap<>();
+    private final Map<Integer, LogicalORSignature> m_pos = new THashMap<>();
     private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> m_idents = new THashMap<>();
     private final Map<LogicalPosition, String> m_opens = new THashMap<>();
 
@@ -62,7 +62,7 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     @NotNull
-    public Collection<LogicalHMSignature> listTypesByLines() {
+    public Collection<LogicalORSignature> listTypesByLines() {
         return m_pos.values();
     }
 
@@ -94,9 +94,9 @@ public class InferredTypesImplementation implements InferredTypes {
 
                 idents.put(logicalPosition, new ORSignature(tokens[4]));
             } else {
-                LogicalHMSignature signature = m_pos.get(logicalPosition.line);
+                LogicalORSignature signature = m_pos.get(logicalPosition.line);
                 if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
-                    m_pos.put(logicalPosition.line, new LogicalHMSignature(logicalPosition, new ORSignature(tokens[4])));
+                    m_pos.put(logicalPosition.line, new LogicalORSignature(logicalPosition, new ORSignature(tokens[4])));
                 }
             }
         }

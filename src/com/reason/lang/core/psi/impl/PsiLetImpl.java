@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiLetStub;
@@ -181,7 +181,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                 }
 
                 ORSignature signature = hasInferredType() ? getInferredType() : getHMSignature();
-                String signatureText = (signature == ORSignature.EMPTY ? "" : ":   " + signature);
+                String signatureText = (signature == ORSignature.EMPTY ? "" : ":   " + signature.asString(getLanguage()));
 
                 String letName = letValueName.getText();
                 if (isFunction()) {
@@ -197,7 +197,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                 return null;
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return isFunction() ? Icons.FUNCTION : Icons.LET;
@@ -212,6 +212,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
 
     //region Compatibility
+    @SuppressWarnings("unused")
     @Nullable
     PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
         return null;

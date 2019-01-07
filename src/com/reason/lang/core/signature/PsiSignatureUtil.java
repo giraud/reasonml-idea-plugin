@@ -1,4 +1,4 @@
-package com.reason.lang.core;
+package com.reason.lang.core.signature;
 
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiExternal;
@@ -26,7 +26,8 @@ public class PsiSignatureUtil {
             ORSignature signature = val.getHMSignature();
             return signature.asString(element.getLanguage());
         } else if (element instanceof PsiModule) {
-            return ((PsiModule) element).getQualifiedName();
+            String qualifiedName = ((PsiModule) element).getQualifiedName();
+            return qualifiedName == null ? "" : qualifiedName;
         }
         return "";
     }

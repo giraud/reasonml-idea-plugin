@@ -2,7 +2,7 @@ package com.reason.lang.core.psi;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import org.jetbrains.annotations.NotNull;
 
 public interface PsiSignature extends PsiElement {

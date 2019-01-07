@@ -1,5 +1,6 @@
 package com.reason.lang.core;
 
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
 import org.junit.Test;

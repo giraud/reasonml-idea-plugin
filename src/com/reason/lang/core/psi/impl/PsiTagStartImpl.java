@@ -9,7 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.ORSignature;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;

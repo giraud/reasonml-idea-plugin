@@ -1,10 +1,12 @@
 package com.reason.ide.hints;
 
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.CompilerManager;
@@ -14,6 +16,9 @@ import com.reason.ide.FileManager;
 import com.reason.ide.ORProjectTracker;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
+import com.reason.ide.files.FileHelper;
+import com.reason.lang.ocaml.OclLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.FileSystems;
@@ -75,7 +80,8 @@ public class CmtiFileListener implements ProjectComponent {
         if (sourceFile == null) {
             LOG.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
         } else if (m_projectTracker.isOpen(sourceFile)) {
-            m_insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
+            Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
+            m_insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotateFile(m_project, lang, inferredTypes, sourceFile));
         }
     }
 

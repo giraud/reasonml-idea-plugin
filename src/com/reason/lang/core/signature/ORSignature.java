@@ -1,4 +1,4 @@
-package com.reason.lang.core;
+package com.reason.lang.core.signature;
 
 import com.intellij.lang.Language;
 import com.reason.lang.core.psi.PsiParameter;
@@ -108,7 +108,11 @@ public class ORSignature {
     }
 
     public String asString(Language lang) {
-        return buildSignature(lang == RmlLanguage.INSTANCE);
+        String sig = buildSignature(lang == RmlLanguage.INSTANCE);
+        if (sig.length() > 1000) {
+            return sig.substring(0, 1000) + "...";
+        }
+        return sig;
     }
 
     public boolean isFunctionSignature() {
