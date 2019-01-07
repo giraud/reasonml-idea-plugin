@@ -7,9 +7,9 @@ import org.jetbrains.annotations.Nullable;
 public interface PsiSignatureElement {
 
     @Nullable
-    PsiSignature getSignature();
+    PsiSignature getPsiSignature();
 
     @NotNull
-    ORSignature getHMSignature();
+    ORSignature getORSignature();
 
 }

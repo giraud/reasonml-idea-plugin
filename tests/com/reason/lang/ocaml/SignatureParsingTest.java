@@ -16,7 +16,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testLet() {
         PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
-        ORSignature signature = e.getHMSignature();
+        ORSignature signature = e.getORSignature();
         assertEquals("int", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
     }
@@ -24,7 +24,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testVal() {
         PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
 
-        ORSignature signature = e.getHMSignature();
+        ORSignature signature = e.getORSignature();
         assertEquals("'a option -> ('a -> 'b) -> 'b option", signature.asString(OclLanguage.INSTANCE));
         assertFalse(signature.isMandatory(0));
         assertTrue(signature.isMandatory(1));
@@ -34,14 +34,14 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testTrimming() {
         PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
-        PsiSignature signature = let.getSignature();
+        PsiSignature signature = let.getPsiSignature();
         assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString(OclLanguage.INSTANCE));
     }
 
-    public void testParsingRml() {
+    public void testParsingNamedParams() {
         PsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
 
-        ORSignature signature = let.getHMSignature();
+        ORSignature signature = let.getORSignature();
         assertEquals(3, signature.getTypes().length);
         assertEquals("v:length -> h:length -> rule", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
@@ -51,7 +51,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testOptionalFun() {
         PsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
 
-        ORSignature signature = let.getHMSignature();
+        ORSignature signature = let.getORSignature();
         assertEquals(3, signature.getTypes().length);
         assertEquals("int -> string option -> string", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
@@ -64,10 +64,10 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameterList());
 
-        assertTrue(parameters.get(0).getSignature().asHMSignature().isMandatory(0));
-        assertFalse(parameters.get(1).getSignature().asHMSignature().isMandatory(0));
-        assertTrue(parameters.get(2).getSignature().asHMSignature().isMandatory(0));
-        assertTrue(parameters.get(3).getSignature().asHMSignature().isMandatory(0));
+        assertTrue(parameters.get(0).getPsiSignature().asHMSignature().isMandatory(0));
+        assertFalse(parameters.get(1).getPsiSignature().asHMSignature().isMandatory(0));
+        assertTrue(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
+        assertTrue(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
     }
 
 }

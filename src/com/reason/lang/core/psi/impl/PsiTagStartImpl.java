@@ -37,7 +37,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
 
         TagPropertyImpl(PsiRecordField field, List<PsiAnnotation> annotations) {
             m_name = field.getName();
-            PsiSignature signature = field.getSignature();
+            PsiSignature signature = field.getPsiSignature();
             ORSignature hmSignature = signature == null ? ORSignature.EMPTY : signature.asHMSignature();
             m_type = hmSignature.toString();
             m_mandatory = hmSignature.isMandatory(0);
@@ -51,7 +51,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
 
         TagPropertyImpl(PsiParameter parameter) {
             m_name = parameter.getName();
-            PsiSignature signature = parameter.getSignature();
+            PsiSignature signature = parameter.getPsiSignature();
             ORSignature hmSignature = signature == null ? ORSignature.EMPTY : signature.asHMSignature();
             m_type = hmSignature.asString(parameter.getLanguage());
             m_mandatory = !parameter.hasDefaultValue() && hmSignature.isMandatory(0);

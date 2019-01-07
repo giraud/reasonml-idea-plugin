@@ -71,7 +71,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
             if (resolvedElement instanceof PsiSignatureElement) {
-                ORSignature signature = ((PsiSignatureElement) resolvedElement).getHMSignature();
+                ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {
                     return signature.asString(element.getLanguage());
                 }

@@ -1,6 +1,7 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.*;
 
@@ -16,7 +17,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testMandatoryVal() {
         PsiLet let = first(letExpressions(parseCode("let x:int = 1")));
 
-        ORSignature signature = let.getHMSignature();
+        ORSignature signature = let.getORSignature();
         assertEquals("int", signature.asString(RmlLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
     }
@@ -24,14 +25,14 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testTrimming() {
         PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
-        PsiSignature signature = let.getSignature();
+        PsiSignature signature = let.getPsiSignature();
         assertEquals("string => componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString(RmlLanguage.INSTANCE));
     }
 
     public void testParsingRml() {
         PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule;")));
 
-        ORSignature signature = let.getHMSignature();
+        ORSignature signature = let.getORSignature();
         assertEquals(3, signature.getTypes().length);
         assertEquals("(~v:length, ~h:length) => rule", signature.asString(RmlLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
@@ -41,7 +42,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     public void testOptionalFun() {
         PsiLet let = first(letExpressions(parseCode("let x:int => option(string) => string = (a,b) => c")));
 
-        ORSignature signature = let.getHMSignature();
+        ORSignature signature = let.getORSignature();
         assertTrue(signature.isMandatory(0));
         assertFalse(signature.isMandatory(1));
     }
@@ -52,12 +53,12 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameterList());
 
-        assertTrue(parameters.get(0).getSignature().asHMSignature().isMandatory(0));
-        assertFalse(parameters.get(1).getSignature().asHMSignature().isMandatory(0));
-        assertFalse(parameters.get(2).getSignature().asHMSignature().isMandatory(0));
-        assertEquals("bool=false", parameters.get(2).getSignature().asString(RmlLanguage.INSTANCE));
-        assertFalse(parameters.get(3).getSignature().asHMSignature().isMandatory(0));
-        assertEquals("float=?", parameters.get(3).getSignature().asString(RmlLanguage.INSTANCE));
+        assertTrue(parameters.get(0).getPsiSignature().asHMSignature().isMandatory(0));
+        assertFalse(parameters.get(1).getPsiSignature().asHMSignature().isMandatory(0));
+        assertFalse(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
+        assertEquals("bool=false", parameters.get(2).getPsiSignature().asString(RmlLanguage.INSTANCE));
+        assertFalse(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
+        assertEquals("float=?", parameters.get(3).getPsiSignature().asString(RmlLanguage.INSTANCE));
     }
 
     public void testJsObject() {
@@ -67,6 +68,14 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
-        assertEquals("{. \"__html\": string}", fields.get(0).getSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("{. \"__html\": string}", fields.get(0).getPsiSignature().asString(RmlLanguage.INSTANCE));
+    }
+
+    public void testExternalFun() {
+        PsiExternal e = first(externalExpressions(parseCode("external refToJsObj : reactRef => Js.t({..}) = \"%identity\";")));
+
+        ORSignature signature = e.getORSignature();
+        assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getPsiSignature(), PsiSignatureItem.class));
+        assertEquals("reactRef => Js.t({..})", signature.asString(RmlLanguage.INSTANCE));
     }
 }

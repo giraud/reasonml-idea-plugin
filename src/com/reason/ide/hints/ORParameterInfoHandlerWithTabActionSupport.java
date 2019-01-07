@@ -97,7 +97,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
             if (resolvedElement instanceof PsiNamedElement) {
                 PsiElement resolvedParent = resolvedElement.getParent();
                 if (resolvedParent instanceof PsiSignatureElement) {
-                    PsiSignature signature = ((PsiSignatureElement) resolvedParent).getSignature();
+                    PsiSignature signature = ((PsiSignatureElement) resolvedParent).getPsiSignature();
                     if (signature != null) {
                         context.setItemsToShow(new Object[]{signature.asHMSignature()});
                         context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);

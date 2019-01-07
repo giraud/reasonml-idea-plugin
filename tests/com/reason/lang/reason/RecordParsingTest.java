@@ -21,7 +21,7 @@ public class RecordParsingTest extends BaseParsingTestCase {
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals("a", fields.get(0).getName());
-        assertEquals("int", fields.get(0).getSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("int", fields.get(0).getPsiSignature().asString(RmlLanguage.INSTANCE));
     }
 
     public void testUsage() {
@@ -31,11 +31,11 @@ public class RecordParsingTest extends BaseParsingTestCase {
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertSize(3, fields);
         assertEquals("a", fields.get(0).getName());
-        assertNull(fields.get(0).getSignature());
+        assertNull(fields.get(0).getPsiSignature());
         assertEquals("b", fields.get(1).getName());
-        assertNull(fields.get(1).getSignature());
+        assertNull(fields.get(1).getPsiSignature());
         assertEquals("c", fields.get(2).getName());
-        assertNull(fields.get(2).getSignature());
+        assertNull(fields.get(2).getPsiSignature());
     }
 
     public void testMixin() {

@@ -84,14 +84,14 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
 
     @Nullable
     @Override
-    public PsiSignature getSignature() {
+    public PsiSignature getPsiSignature() {
         return findChildByClass(PsiSignature.class);
     }
 
     @NotNull
     @Override
-    public ORSignature getHMSignature() {
-        PsiSignature signature = getSignature();
+    public ORSignature getORSignature() {
+        PsiSignature signature = getPsiSignature();
         return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 
@@ -142,7 +142,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
                     }
                 }
 
-                String signature = getHMSignature().asString(getLanguage());
+                String signature = getORSignature().asString(getLanguage());
                 if (!signature.isEmpty()) {
                     aliasName += " :  " + signature;
                 }

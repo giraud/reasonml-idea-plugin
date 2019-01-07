@@ -75,7 +75,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     public void testSignature() {
         PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
-        assertEquals("(style, style) => style", let.getHMSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("(style, style) => style", let.getORSignature().asString(RmlLanguage.INSTANCE));
         assertEquals("(a, b) => { }", let.getBinding().getText());
     }
 
@@ -116,7 +116,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertTrue(e.isFunction());
         assertEquals("watchUrl", e.getName());
-        assertEquals("(url => unit) => watcherID", e.getSignature().getText());
+        assertEquals("(url => unit) => watcherID", e.getPsiSignature().getText());
     }
 
 }

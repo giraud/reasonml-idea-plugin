@@ -49,14 +49,14 @@ public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiNamedEleme
 
     @Override
     @Nullable
-    public PsiSignature getSignature() {
+    public PsiSignature getPsiSignature() {
         return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
     }
 
     @NotNull
     @Override
-    public ORSignature getHMSignature() {
-        PsiSignature signature = getSignature();
+    public ORSignature getORSignature() {
+        PsiSignature signature = getPsiSignature();
         return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 

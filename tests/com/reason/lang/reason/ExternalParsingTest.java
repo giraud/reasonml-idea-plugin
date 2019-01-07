@@ -12,7 +12,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     public void testSigature() {
         PsiExternal e = externalExpression(parseCode("external props : (string) => string;"), "props");
 
-        PsiSignature signature = e.getSignature();
+        PsiSignature signature = e.getPsiSignature();
         assertEquals("(string) => string", signature.getText());
         assertTrue(e.isFunction());
     }
@@ -20,7 +20,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     public void testWithString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getHMSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("ReasonReact.reactClass", e.getORSignature().asString(RmlLanguage.INSTANCE));
         assertFalse(e.isFunction());
         assertEquals("FormattedMessage", e.getExternalName());
     }
@@ -28,7 +28,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     public void testWithEmptyString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""), PsiExternal.class);
 
-        assertEquals("ReasonReact.reactClass", e.getHMSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("ReasonReact.reactClass", e.getORSignature().asString(RmlLanguage.INSTANCE));
         assertFalse(e.isFunction());
         assertEquals("", e.getExternalName());
     }
@@ -37,7 +37,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
         PsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
-        assertEquals("string => reactElement", e.getSignature().getText());
+        assertEquals("string => reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
 
@@ -45,7 +45,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
         PsiExternal e = firstOfType(parseCode("external array : array(reactElement) => reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("array", e.getName());
-        assertEquals("array(reactElement) => reactElement", e.getSignature().getText());
+        assertEquals("array(reactElement) => reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
 

@@ -35,14 +35,14 @@ public class PsiRecordField extends PsiToken<ORTypes> implements PsiNamedElement
     }
 
     @Nullable
-    public PsiSignature getSignature() {
+    public PsiSignature getPsiSignature() {
         return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
     }
 
     @NotNull
     @Override
-    public ORSignature getHMSignature() {
-        PsiSignature signature = getSignature();
+    public ORSignature getORSignature() {
+        PsiSignature signature = getPsiSignature();
         return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 

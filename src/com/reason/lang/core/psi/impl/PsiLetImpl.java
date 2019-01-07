@@ -64,14 +64,14 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     @Override
     @Nullable
-    public PsiSignature getSignature() {
+    public PsiSignature getPsiSignature() {
         return findChildByClass(PsiSignature.class);
     }
 
     @NotNull
     @Override
-    public ORSignature getHMSignature() {
-        PsiSignature signature = getSignature();
+    public ORSignature getORSignature() {
+        PsiSignature signature = getPsiSignature();
         return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 
@@ -108,7 +108,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         if (hasInferredType()) {
             return getInferredType().isFunctionSignature();
         } else {
-            ORSignature signature = getHMSignature();
+            ORSignature signature = getORSignature();
             if (signature != ORSignature.EMPTY) {
                 return signature.isFunctionSignature();
             }
@@ -180,7 +180,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                     return "_";
                 }
 
-                ORSignature signature = hasInferredType() ? getInferredType() : getHMSignature();
+                ORSignature signature = hasInferredType() ? getInferredType() : getORSignature();
                 String signatureText = (signature == ORSignature.EMPTY ? "" : ":   " + signature.asString(getLanguage()));
 
                 String letName = letValueName.getText();

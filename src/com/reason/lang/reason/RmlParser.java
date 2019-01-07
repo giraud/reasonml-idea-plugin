@@ -528,9 +528,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (state.isCurrentResolution(externalNamed)) {
-            state.advance();
-            state.add(mark(builder, signature, externalNamedSignature, m_types.C_SIG_EXPR).complete());
-            state.add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
+            state.updateCurrentResolution(externalNamedSignature).
+                    advance().
+                    add(mark(builder, signature, m_types.C_SIG_EXPR).complete()).
+                    add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(letNamed)) {
             state.advance();
             state.add(mark(builder, signature, letNamedSignature, m_types.C_SIG_EXPR).complete());
@@ -721,7 +722,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
         } else if (shouldStartExpression(state)) {
             state.add(mark(builder, state.currentContext(), genericExpression, builder.getTokenType()));
-        } else {
+        } else if (!state.isCurrentContext(signature)) {
             IElementType nextElementType = builder.lookAhead(1);
             if (nextElementType == m_types.ARROW) {
                 // Single (paren less) function parameters
@@ -1007,9 +1008,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(moduleNamed)) {
             state.updateCurrentResolution(moduleNamedEq).complete();
         } else if (state.isCurrentResolution(externalNamedSignature)) {
-            state.complete();
-            state.popEnd();
-            state.updateCurrentResolution(externalNamedSignatureEq);
+            state.complete().
+                    updateCurrentResolution(externalNamedSignatureEq);
         } else if (state.isCurrentResolution(clazzNamed) || state.isCurrentResolution(clazzConstructor)) {
             state.updateCurrentResolution(clazzNamedEq);
         }

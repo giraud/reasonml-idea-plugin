@@ -8,9 +8,9 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.icons.Icons;
-import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiValStub;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +39,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
         return elements.isEmpty() ? null : elements.iterator().next();
     }
 
+    @NotNull
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
@@ -70,14 +71,14 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
 
     @Nullable
     @Override
-    public PsiSignature getSignature() {
+    public PsiSignature getPsiSignature() {
         return findChildByClass(PsiSignature.class);
     }
 
     @NotNull
     @Override
-    public ORSignature getHMSignature() {
-        PsiSignature signature = getSignature();
+    public ORSignature getORSignature() {
+        PsiSignature signature = getPsiSignature();
         return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 
@@ -87,7 +88,14 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
             @NotNull
             @Override
             public String getPresentableText() {
-                return getName() + ": " + getHMSignature();
+                String valName = getName();
+
+                ORSignature signature = getORSignature();
+                if (!signature.isEmpty()) {
+                    valName += ": " + signature.asString(getLanguage());
+                }
+
+                return valName;
             }
 
             @Nullable

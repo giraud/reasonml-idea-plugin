@@ -25,5 +25,5 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
     Collection<PsiRecordField> getObjectFields();
 
     @Nullable
-    PsiSignature getSignature();
+    PsiSignature getPsiSignature();
 }

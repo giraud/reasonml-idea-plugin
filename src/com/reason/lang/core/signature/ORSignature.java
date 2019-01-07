@@ -45,7 +45,7 @@ public class ORSignature {
                     replaceAll(", \\)", "\\)").
                     replaceAll("=>", "->");
             SignatureType signatureType = new SignatureType();
-            signatureType.value = (isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
+            signatureType.value = normalizedValue; //(isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
             signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
             signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
 
@@ -84,20 +84,24 @@ public class ORSignature {
     }
 
     public ORSignature(@NotNull String signature) {
-        String normalized = signature.
-                trim().
-                replaceAll("\n", "").
-                replaceAll("\\s+", " ").
-                replaceAll("=>", "->");
+        if (signature.isEmpty()) {
+            m_types = new SignatureType[0];
+        } else {
+            String normalized = signature.
+                    trim().
+                    replaceAll("\n", "").
+                    replaceAll("\\s+", " ").
+                    replaceAll("=>", "->");
 
-        String[] items = normalized.split("->");
-        m_types = new SignatureType[items.length];
-        for (int i = 0; i < items.length; i++) {
-            String[] tokens = items[i].trim().split("=");
-            m_types[i] = new SignatureType();
-            m_types[i].value = tokens[0];
-            m_types[i].mandatory = !tokens[0].contains("option") && tokens.length == 1;
-            m_types[i].defaultValue = 2 == tokens.length ? tokens[1] : "";
+            String[] items = normalized.split("->");
+            m_types = new SignatureType[items.length];
+            for (int i = 0; i < items.length; i++) {
+                String[] tokens = items[i].trim().split("=");
+                m_types[i] = new SignatureType();
+                m_types[i].value = tokens[0];
+                m_types[i].mandatory = !tokens[0].contains("option") && tokens.length == 1;
+                m_types[i].defaultValue = 2 == tokens.length ? tokens[1] : "";
+            }
         }
     }
 
@@ -155,8 +159,9 @@ public class ORSignature {
         if (1 < m_types.length) {
             sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
         }
-
-        sb.append(m_types[m_types.length - 1]);
+        if (0 < m_types.length) {
+            sb.append(m_types[m_types.length - 1]);
+        }
 
         return sb.toString();
     }
