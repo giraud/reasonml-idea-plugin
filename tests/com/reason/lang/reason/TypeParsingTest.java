@@ -1,9 +1,8 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,4 +65,16 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals("| RegularArity('a)", e.getBinding().getText());
     }
 
+    public void testScope() {
+        PsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
+
+        PsiSignature signature = e.getPsiSignature();
+        List<PsiSignatureItem> signatureItems = ORUtil.findImmediateChildrenOfClass(signature, PsiSignatureItem.class);
+
+        assertSize(4, signatureItems);
+        assertEquals("reactClass", signatureItems.get(0).getText());
+        assertEquals("~props: Js.t({..})=?", signatureItems.get(1).getText());
+        assertEquals("array(reactElement)", signatureItems.get(2).getText());
+        assertEquals("reactElement", signatureItems.get(3).getText());
+    }
 }

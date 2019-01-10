@@ -18,6 +18,7 @@ public class ParserScope {
     private IElementType m_compositeElementType;
     private ParserScopeEnum m_context;
     private boolean m_isComplete = false;
+    private boolean m_isDummy = false; // Always drop
     private boolean m_isScope = false;
     private boolean m_scopeStart = false;
     @Nullable
@@ -62,7 +63,9 @@ public class ParserScope {
     }
 
     public void end() {
-        if (m_isComplete) {
+        if (m_isDummy) {
+            drop();
+        } else if (m_isComplete) {
             done();
         } else {
             drop();
@@ -80,7 +83,7 @@ public class ParserScope {
         }
     }
 
-    private void drop() {
+    public void drop() {
         if (m_mark != null) {
             m_mark.drop();
             m_mark = null;
@@ -90,6 +93,12 @@ public class ParserScope {
     @NotNull
     public ParserScope complete() {
         m_isComplete = true;
+        return this;
+    }
+
+    @NotNull
+    public ParserScope dummy() {
+        m_isDummy = true;
         return this;
     }
 

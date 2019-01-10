@@ -153,6 +153,15 @@ public class ParserState {
         return this;
     }
 
+    @NotNull
+    public ParserState popCancel() {
+        ParserScope scope = pop();
+        if (scope != null) {
+            scope.drop();
+        }
+        return this;
+    }
+
     @Nullable
     public ParserScope popEndUntilOneOfElementType(@NotNull ORTokenElementType... scopeElementTypes) {
         ParserScope scope = null;
@@ -292,4 +301,5 @@ public class ParserState {
         m_currentScope.setIsStart(true);
         return this;
     }
+
 }

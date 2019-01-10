@@ -839,7 +839,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
             return;
         }
 
-        if (state.isCurrentResolution(letNamedSignature)) {
+        if (state.isCurrentResolution(signatureItem) && state.previousTokenElementType == m_types.COLON) {
+            // a ReasonML signature is written like a function, but it's not
+            // : (x, y) => z  alias x => y => z
+            state.popCancel().
+                    add(markScope(builder, signatureParams, signature, m_types.LPAREN, m_types.LPAREN).dummy()).
+                    advance().
+                    add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
+        } else if (state.isCurrentResolution(letNamedSignature)) {
             state.add(markScope(builder, state.currentContext(), signatureScope, m_types.LPAREN, m_types.LPAREN)).
                     advance().
                     add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
