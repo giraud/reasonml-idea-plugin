@@ -1,6 +1,7 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.UnknownFileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +32,7 @@ public class CmtFileType implements FileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return null;
+        return UnknownFileType.INSTANCE.getIcon();
     }
 
     @Override

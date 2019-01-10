@@ -109,6 +109,9 @@
         <fileTypeFactory implementation="com.reason.ide.files.CmiFileTypeFactory"/>
         <fileTypeFactory implementation="com.reason.ide.files.CmtFileTypeFactory"/>
 
+        <fileType.fileViewProviderFactory filetype="cmt"
+                                          implementationClass="com.reason.ide.files.viewer.CmtFileViewProviderFactory"/>
+
         <!--
          | Parsers
          -->
