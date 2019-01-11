@@ -1,8 +1,10 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiLanguageConverter;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -22,5 +24,15 @@ public class PsiSignatureItemImpl extends PsiToken<ORTypes> implements PsiSignat
     @Override
     public String toString() {
         return "Signature item";
+    }
+
+    @NotNull
+    @Override
+    public String asText(@NotNull Language language) {
+        PsiElement firstChild = getFirstChild();
+        if (firstChild instanceof PsiLanguageConverter) {
+            return ((PsiLanguageConverter) firstChild).asText(language);
+        }
+        return getText();
     }
 }

@@ -60,6 +60,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 parseUnderscore(state);
             } else if (tokenType == m_types.ARROW) {
                 parseArrow(builder, state);
+            } else if (tokenType == m_types.OPTION) {
+                parseOption(builder, state);
             } else if (tokenType == m_types.TRY) {
                 parseTry(builder, state);
             } else if (tokenType == m_types.SWITCH) {
@@ -181,6 +183,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
             c = builder.rawTokenIndex();
         }
+    }
+
+    private void parseOption(PsiBuilder builder, ParserState state) {
+        state.add(mark(builder, option, m_types.C_OPTION));
     }
 
     private void parseRaw(PsiBuilder builder, ParserState state) {
@@ -839,7 +845,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
             return;
         }
 
-        if (state.isCurrentResolution(signatureItem) && state.previousTokenElementType == m_types.COLON) {
+        if (state.isCurrentResolution(option)) {
+            state.complete().
+                    add(markScope(builder, state.currentContext(), optionParameter, m_types.SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(signatureItem) && state.previousTokenElementType == m_types.COLON) {
             // a ReasonML signature is written like a function, but it's not
             // : (x, y) => z  alias x => y => z
             state.popCancel().
@@ -912,6 +921,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseRParen(@NotNull PsiBuilder builder, ParserState state) {
+        // pop intermediate constructions
         if (state.isCurrentResolution(signatureItem)) {
             state.popEnd();
         }
@@ -977,6 +987,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.updateCurrentCompositeElementType(m_types.C_FUN_EXPR);
                 state.complete();
             } else if (state.isCurrentResolution(genericExpression)) {
+                state.popEnd();
+            } else if (state.isCurrentResolution(option)) {
                 state.popEnd();
             }
 

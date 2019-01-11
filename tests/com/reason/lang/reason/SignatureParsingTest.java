@@ -2,8 +2,9 @@ package com.reason.lang.reason;
 
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
+import com.reason.lang.ocaml.OclLanguage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,4 +79,23 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertSize(2, ORUtil.findImmediateChildrenOfClass(e.getPsiSignature(), PsiSignatureItem.class));
         assertEquals("reactRef => Js.t({..})", signature.asString(RmlLanguage.INSTANCE));
     }
+
+    public void testExternalFun2() {
+        PsiExternal e = first(externalExpressions(parseCode("external requestAnimationFrame: (unit => unit) => animationFrameID = \"\";")));
+
+        ORSignature signature = e.getORSignature();
+        List<PsiSignatureItem> signatureItems = ORUtil.findImmediateChildrenOfClass(e.getPsiSignature(), PsiSignatureItem.class);
+        assertSize(2, signatureItems);
+        assertEquals("unit => unit", signatureItems.iterator().next().getText());
+        assertEquals("(unit => unit) => animationFrameID", signature.asString(RmlLanguage.INSTANCE));
+    }
+
+    public void testOption() {
+        PsiExternal e = first(externalExpressions(parseCode("external e : option(show) = \"\";")));
+
+        PsiSignatureItem sigItem = ORUtil.findImmediateChildrenOfClass(e.getPsiSignature(), PsiSignatureItem.class).iterator().next();
+        assertEquals("option(show)", sigItem.asText(RmlLanguage.INSTANCE));
+        assertEquals("show option", sigItem.asText(OclLanguage.INSTANCE));
+    }
+
 }

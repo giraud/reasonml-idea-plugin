@@ -35,6 +35,7 @@ public abstract class ORTypes {
     public IElementType C_JS_OBJECT_FIELD;
     public IElementType C_MACRO_RAW_BODY;
     public IElementType C_ML_INTERPOLATOR;
+    public IElementType C_OPTION;
     public IElementType C_RAW;
     public IElementType C_SIG_EXPR;
     public IElementType C_SIG_ITEM;
