@@ -6,12 +6,12 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.OCamlSdkType;
 import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.console.CliType;
 import com.reason.build.dune.DuneManager;
 import com.reason.ide.ORNotification;
-import com.reason.OCamlSDK;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -39,7 +39,7 @@ public class CompilerManager implements ApplicationComponent {
     public Compiler getCompiler(@NotNull Project project) {
         VirtualFile duneConfig = Platform.findBaseRoot(project).findChild("jbuild");
         if (duneConfig != null) {
-            Sdk projectSDK = OCamlSDK.getSDK(project);
+            Sdk projectSDK = OCamlSdkType.getSDK(project);
             if (projectSDK == null) {
                 Notifications.Bus.notify(new ORNotification("Dune",
                         "<html>Can't find sdk.\n"
