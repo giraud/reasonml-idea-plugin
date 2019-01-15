@@ -1,7 +1,8 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <sdkType implementation="com.reason.ide.sdk.OCamlSDK"/>
+        <sdkType implementation="com.reason.OCamlSDK"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
+        <moduleType id="ocamlModuleType" implementationClass="com.reason.OCamlModuleType"/>
     </extensions>
     <project-components>
         <component>

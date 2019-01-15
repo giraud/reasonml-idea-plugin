@@ -239,7 +239,7 @@
         <lang.refactoringSupport language="Reason"
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
 
-        <iconProvider implementation="com.reason.icons.IconProvider"/>
+        <iconProvider implementation="com.reason.ide.IconProvider"/>
 
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>

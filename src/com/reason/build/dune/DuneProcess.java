@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
 import com.reason.build.CompilerProcessLifecycle;
 import com.reason.ide.ORNotification;
-import com.reason.ide.sdk.OCamlSDK;
+import com.reason.OCamlSDK;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

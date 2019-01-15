@@ -1,7 +1,8 @@
-package com.reason.icons;
+package com.reason.ide;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.reason.Icons;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.OclInterfaceFile;
 import com.reason.ide.files.RmlFile;

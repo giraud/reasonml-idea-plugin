@@ -2,7 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.lang.dune.DuneLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

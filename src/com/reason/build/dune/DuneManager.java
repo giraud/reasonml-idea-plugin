@@ -12,7 +12,7 @@ import com.intellij.ui.content.Content;
 import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.ide.highlight.ORSyntaxHighlighter;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;

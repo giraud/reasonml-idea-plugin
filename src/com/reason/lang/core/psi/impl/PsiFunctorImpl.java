@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiFunctorBinding;

@@ -3,7 +3,7 @@ package com.reason.ide;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -5,7 +5,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;

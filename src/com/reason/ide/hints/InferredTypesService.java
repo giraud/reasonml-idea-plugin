@@ -18,7 +18,7 @@ import com.reason.hints.InsightManager;
 import com.reason.ide.FileManager;
 import com.reason.ide.docs.DocumentationProvider;
 import com.reason.ide.files.FileHelper;
-import com.reason.ide.sdk.OCamlSDK;
+import com.reason.OCamlSDK;
 import com.reason.lang.core.signature.LogicalORSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

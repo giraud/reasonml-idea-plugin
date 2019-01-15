@@ -11,7 +11,7 @@ import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.console.CliType;
 import com.reason.build.dune.DuneManager;
 import com.reason.ide.ORNotification;
-import com.reason.ide.sdk.OCamlSDK;
+import com.reason.OCamlSDK;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;

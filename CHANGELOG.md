@@ -16,18 +16,18 @@
 - :rocket: add basic highlighting for .mll and .mly
 - :bug: Fix record field parsing when multiple annotations are used
 - :house: Better completion (variants, signatures)
-- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) - Show Functor structure
+- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) - Show Functor structure
 - :bug: [#120](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/120) ![r](resources/icons/reason-file.png) - Incorrect highlighting of JSX being a function parameter
 
 ## 0.67.2 - 2018/11/16
 
 - :house: ![r](resources/icons/reason-file.png) Improve JSX parsing
-- :bug: [#116](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116) ![o](resources/icons/ocaml-file.png) - Structure panel: show items defined in modules
-- :bug: [#105](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105) ![o](resources/icons/ocaml-file.png) - Missing/incorrect structure info for function named "string"
+- :bug: [#116](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116) ![o](jps-shared/resources/icons/ocaml-file.png) - Structure panel: show items defined in modules
+- :bug: [#105](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105) ![o](jps-shared/resources/icons/ocaml-file.png) - Missing/incorrect structure info for function named "string"
 
 ## 0.67.1 - 2018/11/10
 
-- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o](resources/icons/ocaml-file.png) - "end" highlighted the same way as an unmatched parenthesis
+- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o](jps-shared/resources/icons/ocaml-file.png) - "end" highlighted the same way as an unmatched parenthesis
 - :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r](resources/icons/reason-file.png) - Function parsing is not correct
 
 ## 0.67 - 2018/10/27
@@ -46,7 +46,7 @@
 
 - :bug: Dune file were no more editable because of a change in the parser
 - :rocket: ![r](resources/icons/reason-file.png) Parameter info (when possible) using ctrl-p
-- :rocket: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
+- :rocket: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
 - :house: ![r](resources/icons/reason-file.png) JSX completion can find inner component modules
 - :house: improve parser (function parameters, variant constructor, signature)
 - :bug: Transform compiler and refmt to project component, to fix incorrectly shared confs
@@ -55,21 +55,21 @@
 
 - :rocket: ![r](resources/icons/reason-file.png) Js language injection in [%raw] blocks
 - :nail_care: ![r](resources/icons/reason-file.png) Better annotation parsing
-- :nail_care: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) Add missing keywords in highlighter
+- :nail_care: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) Add missing keywords in highlighter
 - :bug: [#67](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67) - Curly braces intentions are broken</li>
 
 ## 0.63 - 2018/09/20
 
 - :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) - Add dates to changelog
 - :bug: Renaming inner module should work
-- :bug: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) - Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
-- :bug: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) - Class names don't appear in Structure panel
+- :bug: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) - Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
+- :bug: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) - Class names don't appear in Structure panel
 - :bug: Fix a bug that prevent plugin to work with 2018.3-EAP
 
 ## 0.62.1 - 2018/09/06
 
 - :rocket: Add a 'make' button to the bs console</li>
-- :bug: ![o](resources/icons/ocaml-file.png) [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) - Awkward behavior when typing comments
+- :bug: ![o](jps-shared/resources/icons/ocaml-file.png) [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) - Awkward behavior when typing comments
 - :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Uncommenting nested comments is incorrect
 
 ## 0.61 - 2018/08/29
@@ -88,14 +88,14 @@
 ## 0.59.1 - 2018/07/25
 
 - :rocket: You can use 'Go to class' to find OCaml/ReasonMl modules
-- :bug: ![o](resources/icons/ocaml-file.png) [#78](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/78) Let symbol missing in structure panel
+- :bug: ![o](jps-shared/resources/icons/ocaml-file.png) [#78](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/78) Let symbol missing in structure panel
 - :bug: [#82](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/82) Exception for GoTo/Declaration of a function parameter
 - :bug: [#87](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/87) NullPointerException at com.reason.Platform.findBaseRootFromFile
 
 ## 0.59 - 2018/07/19
 
 - :rocket: [#71](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/71) Monorepo with multiple bs projects
-- :nail_care: ![o](resources/icons/ocaml-file.png) 'let _' is not shown in the structure panel
+- :nail_care: ![o](jps-shared/resources/icons/ocaml-file.png) 'let _' is not shown in the structure panel
 - :bug: Fix (again) property completion in JSX after rework on references has been done
 
 ## 0.58.1 - 2018/07/18
@@ -113,7 +113,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 - :rocket: Some record field completion
 - :bug: [#66](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/66) - Go To + module alias
-- :house: ![o](resources/icons/ocaml-file.png) Better module path resolution</li>
+- :house: ![o](jps-shared/resources/icons/ocaml-file.png) Better module path resolution</li>
 - :house: Improved parsers
             
 ## 0.56
@@ -125,7 +125,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 ## 0.55.1
 
 * :house: fix editor freeze when too many cmt/i files are updated
-* :house: ![o](resources/icons/ocaml-file.png) better completion
+* :house: ![o](jps-shared/resources/icons/ocaml-file.png) better completion
 
 ## 0.54
 
@@ -137,13 +137,13 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 ## 0.53
 
-* :rocket: ![r](resources/icons/reason-file.png) ![o](resources/icons/ocaml-file.png) improve parsers
+* :rocket: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) improve parsers
 * :rocket: ![r](resources/icons/reason-file.png) improve braces intention
 * :bug: [#65](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/65) refmt not working in .rei
 
 ## 0.52
 
-* :rocket: ![o](resources/icons/ocaml-file.png) Pair match in OCaml: struct/end and sig/end
+* :rocket: ![o](jps-shared/resources/icons/ocaml-file.png) Pair match in OCaml: struct/end and sig/end
 * :rocket: ![r](resources/icons/reason-file.png) [#53](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Implemented intentions
 * :nail_care: Add bool/char/int/float/string as keywords
 * :nail_care: [#64](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Handle warning message from bsb

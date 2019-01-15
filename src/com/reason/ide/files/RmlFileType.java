@@ -1,7 +1,7 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

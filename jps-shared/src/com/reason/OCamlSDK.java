@@ -1,9 +1,9 @@
-package com.reason.ide.sdk;
+package com.reason;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

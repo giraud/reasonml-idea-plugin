@@ -12,7 +12,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.util.ProcessingContext;
 import com.reason.Log;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;

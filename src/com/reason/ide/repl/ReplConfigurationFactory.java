@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.LayeredIcon;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

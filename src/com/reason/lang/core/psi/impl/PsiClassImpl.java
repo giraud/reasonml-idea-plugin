@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;

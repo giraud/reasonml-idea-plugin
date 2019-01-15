@@ -9,7 +9,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.icons.Icons;
+import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ModulePath;
