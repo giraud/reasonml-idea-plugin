@@ -3,7 +3,6 @@ package com.reason;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.reason.Icons;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,10 +14,11 @@ import java.util.regex.Pattern;
 
 public class OCamlSDK extends SdkType {
 
+    public static final String ID = "OCaml SDK";
     private static final Pattern VERSION_REGEXP = Pattern.compile(".*(\\d\\.\\d\\d).*");
 
     public OCamlSDK() {
-        super("OCaml SDK");
+        super(ID);
     }
 
     @Nullable
