@@ -32,13 +32,13 @@ public class OCamlSDK extends SdkType {
 
     @Override
     public Icon getIcon() {
-        return Icons.OCL_FILE;
+        return Icons.OCL_SDK;
     }
 
     @NotNull
     @Override
     public Icon getIconForAddAction() {
-        return Icons.OCL_FILE;
+        return Icons.OCL_SDK;
     }
 
     @Nullable

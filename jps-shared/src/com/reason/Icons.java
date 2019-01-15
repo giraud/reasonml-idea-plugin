@@ -15,6 +15,7 @@ public class Icons {
     public static final Icon YELLOW_FILE = getIcon("/icons/reason-file-yellow.png");
 
     public static final Icon OCL_MODULE = getIcon("/icons/ocaml-module.png");
+    public static final Icon OCL_SDK = getIcon("/icons/ocaml-sdk.png");
     public static final Icon OCL_FILE = getIcon("/icons/ocaml-file.png");
     public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/ocaml-file-blue.png");
     public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocaml-file-blue.png");
