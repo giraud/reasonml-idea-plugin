@@ -13,7 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.reason.OCamlSdkType;
+import com.reason.OCamlSdk;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
 import com.reason.ide.FileManager;
@@ -106,12 +106,12 @@ public class InferredTypesService {
     @NotNull
     private static Path getRelativeBuildPath(@NotNull Project project) {
         FileSystem fileSystem = FileSystems.getDefault();
-        return OCamlSdkType.getSDK(project) == null ? fileSystem.getPath("lib", "bs") : fileSystem.getPath("_build", "default");
+        return OCamlSdk.getSDK(project) == null ? fileSystem.getPath("lib", "bs") : fileSystem.getPath("_build", "default");
     }
 
     @NotNull
     private static VirtualFile getBasePath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return OCamlSdkType.getSDK(project) == null ? Platform.findBaseRootFromFile(project, sourceFile) : Platform.findBaseRoot(project);
+        return OCamlSdk.getSDK(project) == null ? Platform.findBaseRootFromFile(project, sourceFile) : Platform.findBaseRoot(project);
     }
 
 }

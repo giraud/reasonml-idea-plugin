@@ -10,7 +10,7 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.OCamlSdkType;
+import com.reason.OCamlSdk;
 import com.reason.Platform;
 import com.reason.build.CompilerProcessLifecycle;
 import com.reason.ide.ORNotification;
@@ -79,8 +79,8 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine() {
-        Sdk sdk = OCamlSdkType.getSDK(m_project);
-        if (sdk == null) {
+        Sdk odk = OCamlSdk.getSDK(m_project);
+        if (odk == null) {
             Notifications.Bus.notify(new ORNotification("Dune",
                     "<html>Can't find sdk.\n"
                             + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
@@ -92,10 +92,10 @@ public final class DuneProcess implements ProjectComponent, CompilerProcessLifec
         VirtualFile baseRoot = Platform.findBaseRoot(m_project);
         String workingDir = baseRoot.getPath();
 
-        GeneralCommandLine cli = new GeneralCommandLine(sdk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
+        GeneralCommandLine cli = new GeneralCommandLine(odk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
         Map<String, String> environment = cli.getParentEnvironment();
         String path = environment.get("PATH");
-        String newPath = sdk.getHomePath() + "/bin" + File.pathSeparator + path;
+        String newPath = odk.getHomePath() + "/bin" + File.pathSeparator + path;
         cli.withEnvironment("PATH", newPath);
         cli.setWorkDirectory(workingDir);
         cli.setRedirectErrorStream(true);

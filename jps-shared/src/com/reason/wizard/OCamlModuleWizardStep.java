@@ -9,7 +9,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.Messages;
-import com.reason.OCamlSDK;
+import com.reason.OCamlSdk;
 
 import javax.swing.*;
 
@@ -35,7 +35,7 @@ public class OCamlModuleWizardStep extends ModuleWizardStep {
     private void createUIComponents() {
         ProjectSdksModel model = new ProjectSdksModel();
         model.reset(ProjectManager.getInstance().getDefaultProject());
-        c_sdk = new JdkComboBox(model, sdkTypeId -> OCamlSDK.ID.equals(sdkTypeId.getName()));
+        c_sdk = new JdkComboBox(model, sdkTypeId -> OCamlSdk.ID.equals(sdkTypeId.getName()));
     }
 
     @Override

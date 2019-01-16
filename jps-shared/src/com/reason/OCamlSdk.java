@@ -12,22 +12,19 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OCamlSDK extends SdkType {
+public class OCamlSdk extends SdkType {
 
     public static final String ID = "OCaml SDK";
     private static final Pattern VERSION_REGEXP = Pattern.compile(".*(\\d\\.\\d\\d).*");
 
-    public OCamlSDK() {
+    public OCamlSdk() {
         super(ID);
     }
 
     @Nullable
     public static Sdk getSDK(@NotNull Project project) {
         Sdk projectSDK = ProjectRootManager.getInstance(project).getProjectSdk();
-        if (projectSDK != null && projectSDK.getSdkType().getName().equals("OCaml SDK")) {
-            return projectSDK;
-        }
-        return null;
+        return projectSDK != null && ID.equals(projectSDK.getSdkType().getName()) ? projectSDK : null;
     }
 
     @Override

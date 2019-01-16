@@ -6,7 +6,7 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.OCamlSdkType;
+import com.reason.OCamlSdk;
 import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.build.console.CliType;
@@ -39,8 +39,8 @@ public class CompilerManager implements ApplicationComponent {
     public Compiler getCompiler(@NotNull Project project) {
         VirtualFile duneConfig = Platform.findBaseRoot(project).findChild("jbuild");
         if (duneConfig != null) {
-            Sdk projectSDK = OCamlSdkType.getSDK(project);
-            if (projectSDK == null) {
+            Sdk odk = OCamlSdk.getSDK(project);
+            if (odk == null) {
                 Notifications.Bus.notify(new ORNotification("Dune",
                         "<html>Can't find sdk.\n"
                                 + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
