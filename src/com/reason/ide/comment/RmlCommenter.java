@@ -7,7 +7,7 @@ public class RmlCommenter implements Commenter {
     @Nullable
     @Override
     public String getLineCommentPrefix() {
-        return null;
+        return "//";
     }
 
     @Nullable

@@ -78,8 +78,9 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 %state WAITING_VALUE
 %state INITIAL
 %state IN_STRING
-%state IN_RML_COMMENT
-%state IN_OCL_COMMENT
+%state IN_REASON_ML_COMMENT
+%state IN_REASON_SL_COMMENT
+%state IN_OCAML_ML_COMMENT
 
 %%
 
@@ -181,8 +182,9 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
-    "/*" { yybegin(IN_RML_COMMENT); commentDepth = 1; tokenStart(); }
-    "(*" { yybegin(IN_OCL_COMMENT); commentDepth = 1; tokenStart(); }
+    "/*" { yybegin(IN_REASON_ML_COMMENT); commentDepth = 1; tokenStart(); }
+    "//" { yybegin(IN_REASON_SL_COMMENT); tokenStart(); }
+    "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
 
     "&&"  { return types.ANDAND; }
     "##"  { return types.SHARPSHARP; }
@@ -269,7 +271,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
 }
 
-<IN_RML_COMMENT> {
+<IN_REASON_ML_COMMENT> {
     "/*" { if (!inCommentString) commentDepth += 1; }
     "*/" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } } }
     "\"" { inCommentString = !inCommentString; }
@@ -277,7 +279,13 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
 }
 
-<IN_OCL_COMMENT> {
+<IN_REASON_SL_COMMENT> {
+    .         { }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return types.COMMENT; }
+}
+
+<IN_OCAML_ML_COMMENT> {
     "(*" { if (!inCommentString) commentDepth += 1; }
     "*)" { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } } }
     "\"" { inCommentString = !inCommentString; }
