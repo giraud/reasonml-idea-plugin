@@ -14,7 +14,7 @@ public class ORNotification extends Notification {
     private static final String REASON_ML_GROUP_DISPLAY = "Reason";
 
     public ORNotification(@Nullable String title, @Nullable String subtitle, @Nullable String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {
-        super(REASON_ML_GROUP_DISPLAY, /*getIcon(type), */"reason: " + title, /*subtitle, */content, type, listener);
+        super(REASON_ML_GROUP_DISPLAY, getIcon(type), "reason: " + title, subtitle, content, type, listener);
     }
 
     public ORNotification(@NotNull String title, @NotNull String content, @NotNull NotificationType type) {

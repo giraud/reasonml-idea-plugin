@@ -82,6 +82,9 @@
                 text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
             <add-to-group group-id="EditMenu" anchor="last"/>
         </action>
+        <action id="reason.actions.testData.Navigate" class="com.reason.ide.testAssistant.GotoTestDataAction"
+                text="Navigate to testdata" use-shortcut-of="GotoTest">
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -196,7 +199,7 @@
         <lang.documentationProvider language="Mly" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
 
         <!--
-         | Search
+         | Search / navigating
          -->
 
         <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
