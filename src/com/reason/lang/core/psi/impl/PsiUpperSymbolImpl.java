@@ -6,7 +6,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.RmlElementFactory;
+import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.reference.PsiUpperSymbolReference;
 import com.reason.lang.core.type.ORTypes;
@@ -37,7 +37,7 @@ public class PsiUpperSymbolImpl extends PsiToken<ORTypes> implements PsiUpperSym
     @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = RmlElementFactory.createModuleName(getProject(), newName);
+        PsiElement newNameIdentifier = ORElementFactory.createModuleName(getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {

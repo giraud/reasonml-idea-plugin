@@ -13,7 +13,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.RmlElementFactory;
+import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
@@ -46,7 +46,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
     @Override
     public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = RmlElementFactory.createModuleName(myElement.getProject(), newName);
+        PsiElement newNameIdentifier = ORElementFactory.createModuleName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {

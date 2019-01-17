@@ -11,8 +11,8 @@ import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RmlElementFactory {
-    private RmlElementFactory() {
+public class ORElementFactory {
+    private ORElementFactory() {
     }
 
     @Nullable

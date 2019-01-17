@@ -3,7 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.RmlElementFactory;
+import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.PsiLetName;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public class PsiLetNameImpl extends PsiToken<ORTypes> implements PsiLetName {
     @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = RmlElementFactory.createLetName(getProject(), newName);
+        PsiElement newNameIdentifier = ORElementFactory.createLetName(getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {

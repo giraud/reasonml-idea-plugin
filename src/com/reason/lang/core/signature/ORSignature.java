@@ -1,6 +1,8 @@
 package com.reason.lang.core.signature;
 
 import com.intellij.lang.Language;
+import com.reason.lang.PsiElementFactory;
+import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.reason.RmlLanguage;

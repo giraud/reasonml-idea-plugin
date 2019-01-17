@@ -13,7 +13,7 @@ import com.reason.Log;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFinder;
-import com.reason.lang.core.RmlElementFactory;
+import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclModulePathFinder;
@@ -48,7 +48,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @Override
     public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = RmlElementFactory.createLetName(myElement.getProject(), newName);
+        PsiElement newNameIdentifier = ORElementFactory.createLetName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {

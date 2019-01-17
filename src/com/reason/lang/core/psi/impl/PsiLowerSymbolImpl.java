@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.RmlElementFactory;
+import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.type.ORTypes;
@@ -35,7 +35,7 @@ public class PsiLowerSymbolImpl extends PsiToken<ORTypes> implements PsiLowerSym
     @NotNull
     @Override
     public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = RmlElementFactory.createLetName(getProject(), newName);
+        PsiElement newNameIdentifier = ORElementFactory.createLetName(getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {
