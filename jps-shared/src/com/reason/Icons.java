@@ -7,17 +7,18 @@ import static com.intellij.openapi.util.IconLoader.getIcon;
 public class Icons {
     public static final Icon BUCKLESCRIPT = getIcon("/icons/bucklescript.png");
 
+    public static final Icon RML_FILE = getIcon("/icons/reason-file.png");
+    public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reason-interface-file.png");
+    public static final Icon OCL_FILE = getIcon("/icons/ocaml-file.png");
+    public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/ocaml-interface-file.png");
     public static final Icon DUNE_FILE = getIcon("/icons/dune-file.png");
 
-    public static final Icon RML_FILE = getIcon("/icons/reason-file.png");
-    public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reason-file-blue.png");
+    public static final Icon RML_MODULE = getIcon("/icons/reason-module.png");
     public static final Icon BLUE_FILE = getIcon("/icons/reason-file-blue.png");
     public static final Icon YELLOW_FILE = getIcon("/icons/reason-file-yellow.png");
 
     public static final Icon OCL_MODULE = getIcon("/icons/ocaml-module.png");
     public static final Icon OCL_SDK = getIcon("/icons/ocaml-sdk.png");
-    public static final Icon OCL_FILE = getIcon("/icons/ocaml-file.png");
-    public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/ocaml-file-blue.png");
     public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocaml-file-blue.png");
     public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocaml-file-green.png");
 
