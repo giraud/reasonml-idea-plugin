@@ -2,9 +2,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <sdkType implementation="com.reason.OCamlSdk"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
-        <moduleType id="ocamlModuleType" implementationClass="com.reason.OCamlModuleType"/>
-        <moduleExtension implementation="com.reason.module.OCamlTestModuleExtensionImpl"/>
-        <moduleConfigurationEditorProvider implementation="com.reason.module.OCamlDefaultModuleEditorsProvider"/>
+        <!--<moduleType id="ocamlModuleType" implementationClass="com.reason.OCamlModuleType"/>-->
+        <!--<moduleExtension implementation="com.reason.module.OCamlTestModuleExtensionImpl"/>-->
+        <!--<moduleConfigurationEditorProvider implementation="com.reason.module.OCamlDefaultModuleEditorsProvider"/>-->
     </extensions>
     <project-components>
         <component>
