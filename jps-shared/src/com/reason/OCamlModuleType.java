@@ -5,7 +5,6 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.ui.LayeredIcon;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -30,13 +29,13 @@ public class OCamlModuleType extends ModuleType<OCamlModuleBuilder> {
     @NotNull
     @Override
     public String getName() {
-        return "OCaml";
+        return "OCaml module";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "Ocaml";
+        return "Ocaml modules are used for native development";
     }
 
     @Override
