@@ -10,6 +10,15 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.70 - 2019/01/18
+
+- :rocket: Handle single line comments in Reason files
+- :rocket: Completion on open/include
+- :rocket: Live templates for reason-react
+- :rocket: Naive navigation between code/test modules (must end by _test or _spec)
+- :nail_care: Add functor icon
+- :nail_care: Reworked files icons
+            
 ## 0.69.1 - 2018/12/17
 
 - :rocket: Automatically adds parenthesis for 'Some'

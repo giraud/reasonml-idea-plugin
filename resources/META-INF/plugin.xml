@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.69.1</version>
+    <version>0.70</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,12 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#121 - Show Functor structure</li>
-            <li>#120 - Incorrect highlighting of JSX being a function parameter</li>
+            <li>Handle single line comments in Reason files</li>
+            <li>Completion on open/include</li>
+            <li>Live templates for reason-react</li>
+            <li>Add functor icon</li>
+            <li>Reworked files icons</li>
+            <li>Naive navigation between code/test modules (must end by _test or _spec)</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
