@@ -73,11 +73,11 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     }
 
     @Override
-    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated runAfter) {
+    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         if (isDownloaded.get()) {
-            RincewindProcess.getInstance(m_project).types(sourceFile, getRincewindFile().getPath(), path.toString(), runAfter);
+            RincewindProcess.getInstance(m_project).types(sourceFile, getRincewindFile().getPath(), cmtPath.toString(), runAfter);
         } else {
-            BsQueryTypesService.getInstance(m_project).types(sourceFile, path.toString(), runAfter);
+            BsQueryTypesService.getInstance(m_project).types(sourceFile, cmtPath.toString(), runAfter);
         }
     }
 

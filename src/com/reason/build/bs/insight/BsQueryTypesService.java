@@ -30,7 +30,7 @@ public class BsQueryTypesService implements ProjectComponent {
         return project.getComponent(BsQueryTypesService.class);
     }
 
-    public void types(@NotNull VirtualFile sourceFile, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String cmtPath, @NotNull InsightManager.ProcessTerminated runAfter) {
         InferredTypesImplementation result;
 
         String basePath = ModuleConfiguration.getBasePath(m_project, sourceFile);
@@ -39,7 +39,7 @@ public class BsQueryTypesService implements ProjectComponent {
             return;
         }
 
-        ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(bscPath, cmiPath);
+        ProcessBuilder m_bscProcessBuilder = new ProcessBuilder(bscPath, cmtPath);
         m_bscProcessBuilder.directory(new File(basePath));
 
         Process bsc = null;

@@ -8,16 +8,19 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.OCamlSdk;
 import com.reason.Platform;
 import com.reason.hints.InsightManager;
-import com.reason.ide.FileManager;
 import com.reason.ide.docs.DocumentationProvider;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.lang.core.signature.LogicalORSignature;
 import org.jetbrains.annotations.NotNull;
@@ -43,15 +46,18 @@ public class InferredTypesService {
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    if (!FileHelper.isInterface(sourceFile.getFileType())) {
+                    FileType fileType = sourceFile.getFileType();
+                    if (FileHelper.isCompilable(fileType) && !FileHelper.isInterface(fileType)) {
                         InsightManager insightManager = project.getComponent(InsightManager.class);
-                        VirtualFile baseRoot = getBasePath(project, sourceFile);
-                        Path relativeBuildPath = getRelativeBuildPath(project);
-                        VirtualFile cmtiPath = FileManager.fromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt());
-                        if (cmtiPath == null) {
-                            LOG.warn("can't find file " + FileManager.pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, insightManager.useCmt()));
+
+                        // All file names are unique, use that to get the corresponding cmt
+                        String moduleName = ((FileBase) psiFile).asModuleName();
+                        PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, moduleName + ".cmt", GlobalSearchScope.allScope(project));
+
+                        if (cmtFiles.length == 1) {
+                            insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFiles[0].getVirtualFile().getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
                         } else {
-                            insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtiPath.getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
+                            LOG.info("File module for " + moduleName + ".cmt is NOT FOUND");
                         }
                     }
                 }
