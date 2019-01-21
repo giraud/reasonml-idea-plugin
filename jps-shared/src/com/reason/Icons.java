@@ -13,7 +13,11 @@ public class Icons {
     public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/ocaml-interface-file.png");
     public static final Icon DUNE_FILE = getIcon("/icons/dune-file.png");
 
-    public static final Icon RML_MODULE = getIcon("/icons/reason-module.png");
+    public static final Icon RML_FILE_MODULE = getIcon("/icons/reason-file-module.png");
+    public static final Icon RML_FILE_MODULE_INTERFACE = getIcon("/icons/reason-file-blue.png");
+    public static final Icon OCL_FILE_MODULE = getIcon("/icons/ocaml-file-module.png");
+    public static final Icon OCL_FILE_MODULE_INTERFACE = getIcon("/icons/ocaml-file-blue.png");
+
     public static final Icon BLUE_FILE = getIcon("/icons/reason-file-blue.png");
     public static final Icon YELLOW_FILE = getIcon("/icons/reason-file-yellow.png");
 

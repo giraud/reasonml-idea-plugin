@@ -3,10 +3,7 @@ package com.reason.ide;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.reason.Icons;
-import com.reason.ide.files.OclFile;
-import com.reason.ide.files.OclInterfaceFile;
-import com.reason.ide.files.RmlFile;
-import com.reason.ide.files.RmlInterfaceFile;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +42,23 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             return Icons.EXTERNAL;
         } else if (element instanceof PsiVal) {
             return Icons.VAL;
+        }
+        return null;
+    }
+
+    @Nullable
+    public static Icon getFileModuleIcon(@NotNull FileBase element) {
+        if (element instanceof OclFile) {
+            return Icons.OCL_FILE_MODULE;
+        }
+        if (element instanceof OclInterfaceFile) {
+            return Icons.OCL_FILE_MODULE_INTERFACE;
+        }
+        if (element instanceof RmlFile) {
+            return Icons.RML_FILE_MODULE;
+        }
+        if (element instanceof RmlInterfaceFile) {
+            return Icons.RML_FILE_MODULE_INTERFACE;
         }
         return null;
     }
