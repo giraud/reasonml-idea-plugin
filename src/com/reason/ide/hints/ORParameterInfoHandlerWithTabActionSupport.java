@@ -8,8 +8,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
+import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -141,7 +142,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
         TextRange paramRange = TextRange.EMPTY_RANGE;
 
-        context.setupUIComponentPresentation(signature.toString(),
+        context.setupUIComponentPresentation(signature.asString(OclLanguage.INSTANCE),
                 paramRange.getStartOffset(),
                 paramRange.getEndOffset(),
                 !context.isUIComponentEnabled(),
