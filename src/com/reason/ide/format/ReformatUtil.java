@@ -1,10 +1,7 @@
 package com.reason.ide.format;
 
 import com.intellij.psi.PsiFile;
-import com.reason.ide.files.OclFile;
-import com.reason.ide.files.OclInterfaceFile;
-import com.reason.ide.files.RmlFile;
-import com.reason.ide.files.RmlInterfaceFile;
+import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class ReformatUtil {
@@ -16,10 +13,12 @@ public class ReformatUtil {
     public static String getFormat(@Nullable PsiFile file) {
         String format = null;
 
-        if (file instanceof OclFile || file instanceof OclInterfaceFile) {
-            format = "ml";
-        } else if (file instanceof RmlFile || file instanceof RmlInterfaceFile) {
-            format = "re";
+        if (file != null) {
+            if (FileHelper.isOCaml(file.getFileType())) {
+                format = "ml";
+            } else if (FileHelper.isReason(file.getFileType())) {
+                format = "re";
+            }
         }
 
         return format;

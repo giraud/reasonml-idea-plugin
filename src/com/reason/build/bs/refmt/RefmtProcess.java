@@ -10,6 +10,7 @@ import com.reason.build.bs.ModuleConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public class RefmtProcess implements ProjectComponent {
 
@@ -51,7 +52,7 @@ public class RefmtProcess implements ProjectComponent {
         try {
             refmt = processBuilder.start();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(refmt.getOutputStream()));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(refmt.getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(refmt.getInputStream(), Charset.forName("UTF-8")));
             BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream()));
 
             writer.write(code);
