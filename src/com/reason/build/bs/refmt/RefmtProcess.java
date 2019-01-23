@@ -14,7 +14,9 @@ import java.nio.charset.Charset;
 
 public class RefmtProcess implements ProjectComponent {
 
-    private final static Logger LOG = Logger.getInstance("ReasonML.refmt");
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Logger LOG = Logger.getInstance("ReasonML.refmt");
+
     private final Project m_project;
 
     public RefmtProcess(Project project) {
@@ -51,9 +53,9 @@ public class RefmtProcess implements ProjectComponent {
         Process refmt = null;
         try {
             refmt = processBuilder.start();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(refmt.getOutputStream()));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(refmt.getInputStream(), Charset.forName("UTF-8")));
-            BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(refmt.getOutputStream(), UTF8));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(refmt.getInputStream(), UTF8));
+            BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream(), UTF8));
 
             writer.write(code);
             writer.flush();
@@ -62,10 +64,7 @@ public class RefmtProcess implements ProjectComponent {
             Streams.waitUntilReady(reader, errReader);
 
             StringBuilder msgBuffer = new StringBuilder();
-            if (errReader.ready()) {
-                errReader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
-                LOG.error(msgBuffer.toString());
-            } else {
+            if (!errReader.ready()) {
                 reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
                 String newText = msgBuffer.toString();
                 if (!code.isEmpty() && !newText.isEmpty()) { // additional protection
