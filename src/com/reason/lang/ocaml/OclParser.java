@@ -217,17 +217,23 @@ public class OclParser extends CommonParser<OclTypes> {
     private void parseAnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         // pop scopes until a known context is found
         ParserScopeEnum context = endUntilStartExpression(state);
+        if (state.isCurrentResolution(function)) {
+            state.popEnd();
+        }
 
         if (state.isCurrentContext(type)) {
             state.popEnd().popEnd().
                     advance().
                     add(mark(builder, type, m_types.EXP_TYPE)).
                     add(mark(builder, typeConstrName, m_types.TYPE_CONSTR_NAME));
-        } else if (context == let) {
+        } else if (state.isCurrentContext(let) || state.isCurrentContext(letBinding)) {
+            if (state.isCurrentContext(letBinding)) {
+                state.popEnd();
+            }
             state.popEnd().
                     advance().
                     add(mark(builder, let, m_types.LET_STMT));
-        } else if (context == moduleDeclaration) {
+        } else if (state.isCurrentContext(moduleDeclaration)) {
             state.popEnd().
                     advance();
             parseModule(builder, state);

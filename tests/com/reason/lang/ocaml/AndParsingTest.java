@@ -17,7 +17,7 @@ public class AndParsingTest extends BaseParsingTestCase {
     public void testLetChaining() {
         List<PsiLet> lets = new ArrayList(letExpressions(parseCode("let rec lx x = x + 1 and ly y = 3 + (lx y)")));
 
-        assertEquals(2, lets.size());
+        assertSize(2, lets);
         assertEquals("lx", lets.get(0).getName());
         assertEquals("ly", lets.get(1).getName());
     }
@@ -26,7 +26,7 @@ public class AndParsingTest extends BaseParsingTestCase {
         PsiFile file = parseCode("module rec X : sig end = struct end and Y : sig end = struct end");
         List<PsiModule> mods = new ArrayList(moduleExpressions(file));
 
-        assertEquals(2, mods.size());
+        assertSize(2, mods);
         assertEquals("X", mods.get(0).getName());
         assertEquals("Y", mods.get(1).getName());
     }
@@ -43,9 +43,17 @@ public class AndParsingTest extends BaseParsingTestCase {
     public void testTypeChaining() {
         Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}", true));
 
-        assertEquals(2, types.size());
+        assertSize(2, types);
         assertEquals("update", first(types).getName());
         assertEquals("self", second(types).getName());
+    }
+
+    public void testIssue135() {
+        List<PsiLet> lets = new ArrayList(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
+
+        assertSize(2, lets);
+        assertEquals("f1", lets.get(0).getName());
+        assertEquals("missing", lets.get(1).getName());
     }
 
 }
