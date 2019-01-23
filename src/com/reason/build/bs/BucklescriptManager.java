@@ -130,10 +130,10 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     }
 
     @Override
-    public void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
+    public void convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
         RefmtProcess refmt = RefmtProcess.getInstance(m_project);
         String oldText = document.getText();
-        String newText = refmt.convert(virtualFile, fromFormat, toFormat, oldText);
+        String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
         if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
             getApplication().runWriteAction(() -> {
                 CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup");
@@ -147,11 +147,11 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     }
 
     @Override
-    public void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document) {
+    public void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document) {
         RefmtProcess refmt = RefmtProcess.getInstance(m_project);
         String oldText = document.getText();
         if (!oldText.isEmpty()) {
-            String newText = refmt.run(sourceFile, format, oldText);
+            String newText = refmt.run(sourceFile, isInterface, format, oldText);
             if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
                 getApplication().runWriteAction(
                         () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));

@@ -14,9 +14,9 @@ public interface Bucklescript extends Compiler {
     @NotNull
     String getNamespace(@NotNull VirtualFile sourceFile);
 
-    void convert(@NotNull VirtualFile virtualFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
+    void convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
 
-    void refmt(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull Document document);
+    void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document);
 
     boolean isRefmtOnSaveEnabled();
 

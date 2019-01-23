@@ -9,6 +9,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
+import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class ReformatOnSave implements FileDocumentManagerListener {
@@ -40,7 +41,7 @@ public class ReformatOnSave implements FileDocumentManagerListener {
             VirtualFile virtualFile = file.getVirtualFile();
             String format = ReformatUtil.getFormat(file);
             if (format != null) {
-                m_bs.refmt(virtualFile, format, document);
+                m_bs.refmt(virtualFile, FileHelper.isInterface(file.getFileType()), format, document);
             }
         }
     }

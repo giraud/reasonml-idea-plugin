@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.BucklescriptManager;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.format.ReformatUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ public class ReformatAction extends AnAction {
             if (format != null) {
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {
-                    BucklescriptManager.getInstance(project).refmt(file.getVirtualFile(), format, document);
+                    BucklescriptManager.getInstance(project).refmt(file.getVirtualFile(), FileHelper.isInterface(file.getFileType()), format, document);
                 }
             }
         }

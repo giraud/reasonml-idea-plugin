@@ -30,12 +30,12 @@ public class RefmtProcess implements ProjectComponent {
     }
 
     @NotNull
-    public String run(@NotNull VirtualFile sourceFile, @NotNull String format, @NotNull String code) {
-        return convert(sourceFile, format, format, code);
+    public String run(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull String code) {
+        return convert(sourceFile, isInterface, format, format, code);
     }
 
     @NotNull
-    public String convert(@NotNull VirtualFile sourceFile, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
+    public String convert(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
         String refmtPath = ModuleConfiguration.getRefmtPath(m_project, sourceFile);
         if (refmtPath == null) {
             LOG.debug("No refmt binary found, reformat cancelled");
@@ -43,9 +43,9 @@ public class RefmtProcess implements ProjectComponent {
         }
 
         String columnsWidth = ModuleConfiguration.getRefmtWidth(m_project);
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--interface", Boolean.toString(isInterface), "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + "cols for project [" + m_project + "]");
+            LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
         }
 
         Process refmt = null;
@@ -56,11 +56,16 @@ public class RefmtProcess implements ProjectComponent {
             BufferedReader errReader = new BufferedReader(new InputStreamReader(refmt.getErrorStream()));
 
             writer.write(code);
+            writer.flush();
             writer.close();
+
             Streams.waitUntilReady(reader, errReader);
 
             StringBuilder msgBuffer = new StringBuilder();
-            if (!errReader.ready()) {
+            if (errReader.ready()) {
+                errReader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
+                LOG.error(msgBuffer.toString());
+            } else {
                 reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
                 String newText = msgBuffer.toString();
                 if (!code.isEmpty() && !newText.isEmpty()) { // additional protection

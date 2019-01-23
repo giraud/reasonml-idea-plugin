@@ -13,6 +13,7 @@ import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
+import static com.reason.ide.files.FileHelper.isInterface;
 
 public class ConvertAction extends AnAction {
     @Override
@@ -28,13 +29,13 @@ public class ConvertAction extends AnAction {
                 // convert ReasonML to OCaml
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {
-                    bucklescript.convert(file.getVirtualFile(), "re", "ml", document);
+                    bucklescript.convert(file.getVirtualFile(), isInterface(fileType), "re", "ml", document);
                 }
             } else if (FileHelper.isOCaml(fileType)) {
                 // convert OCaml to ReasonML
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {
-                    bucklescript.convert(file.getVirtualFile(), "ml", "re", document);
+                    bucklescript.convert(file.getVirtualFile(), isInterface(fileType), "ml", "re", document);
                 }
             }
         }
