@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.71 - 2019/01/23
+
+- :bug: [#136](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) - Unicode characters inside strings turn into question marks
+- :bug: [#135](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/135) ![o](jps-shared/resources/icons/ocaml-file.png) - Top-level declaration following "let f = function ... and" doesn't appear in the structure panel
+- :bug: [#109](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/109) ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) - Reformat interface
+- :house: - 2017.2 is the minimal idea version supported
+
 ## 0.70 - 2019/01/18
 
 - :rocket: Handle single line comments in Reason files
@@ -25,19 +32,19 @@
 - :rocket: add basic highlighting for .mll and .mly
 - :bug: Fix record field parsing when multiple annotations are used
 - :house: Better completion (variants, signatures)
-- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) - Show Functor structure
-- :bug: [#120](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/120) ![r](resources/icons/reason-file.png) - Incorrect highlighting of JSX being a function parameter
+- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) - Show Functor structure
+- :bug: [#120](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/120) ![r](jps-shared/resources/icons/reason-file.png) - Incorrect highlighting of JSX being a function parameter
 
 ## 0.67.2 - 2018/11/16
 
-- :house: ![r](resources/icons/reason-file.png) Improve JSX parsing
+- :house: ![r](jps-shared/resources/icons/reason-file.png) Improve JSX parsing
 - :bug: [#116](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116) ![o](jps-shared/resources/icons/ocaml-file.png) - Structure panel: show items defined in modules
 - :bug: [#105](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105) ![o](jps-shared/resources/icons/ocaml-file.png) - Missing/incorrect structure info for function named "string"
 
 ## 0.67.1 - 2018/11/10
 
 - :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o](jps-shared/resources/icons/ocaml-file.png) - "end" highlighted the same way as an unmatched parenthesis
-- :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r](resources/icons/reason-file.png) - Function parsing is not correct
+- :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r](jps-shared/resources/icons/reason-file.png) - Function parsing is not correct
 
 ## 0.67 - 2018/10/27
 
@@ -54,25 +61,25 @@
 ## 0.65.1 - 2018/10/18
 
 - :bug: Dune file were no more editable because of a change in the parser
-- :rocket: ![r](resources/icons/reason-file.png) Parameter info (when possible) using ctrl-p
-- :rocket: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
-- :house: ![r](resources/icons/reason-file.png) JSX completion can find inner component modules
+- :rocket: ![r](jps-shared/resources/icons/reason-file.png) Parameter info (when possible) using ctrl-p
+- :rocket: ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
+- :house: ![r](jps-shared/resources/icons/reason-file.png) JSX completion can find inner component modules
 - :house: improve parser (function parameters, variant constructor, signature)
 - :bug: Transform compiler and refmt to project component, to fix incorrectly shared confs
  
 ## 0.64 - 2018/10/08
 
-- :rocket: ![r](resources/icons/reason-file.png) Js language injection in [%raw] blocks
-- :nail_care: ![r](resources/icons/reason-file.png) Better annotation parsing
-- :nail_care: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) Add missing keywords in highlighter
+- :rocket: ![r](jps-shared/resources/icons/reason-file.png) Js language injection in [%raw] blocks
+- :nail_care: ![r](jps-shared/resources/icons/reason-file.png) Better annotation parsing
+- :nail_care: ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) Add missing keywords in highlighter
 - :bug: [#67](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67) - Curly braces intentions are broken</li>
 
 ## 0.63 - 2018/09/20
 
 - :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) - Add dates to changelog
 - :bug: Renaming inner module should work
-- :bug: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) - Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
-- :bug: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) - Class names don't appear in Structure panel
+- :bug: ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) - Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
+- :bug: ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) - Class names don't appear in Structure panel
 - :bug: Fix a bug that prevent plugin to work with 2018.3-EAP
 
 ## 0.62.1 - 2018/09/06
@@ -127,9 +134,9 @@ This release contains a big rewrite of how modules are referenced, it may break 
             
 ## 0.56
 
-- :rocket: ![r](resources/icons/reason-file.png) Go to symbol is working for external/let mainly
-- :rocket: ![r](resources/icons/reason-file.png) ctrl-hover on a lower symbol display its type (still wip, not working for all symbols)
-- :bug: ![r](resources/icons/reason-file.png) JSX attribute completion with reason-react 0.4.2 (from external to type)
+- :rocket: ![r](jps-shared/resources/icons/reason-file.png) Go to symbol is working for external/let mainly
+- :rocket: ![r](jps-shared/resources/icons/reason-file.png) ctrl-hover on a lower symbol display its type (still wip, not working for all symbols)
+- :bug: ![r](jps-shared/resources/icons/reason-file.png) JSX attribute completion with reason-react 0.4.2 (from external to type)
 
 ## 0.55.1
 
@@ -146,14 +153,14 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 ## 0.53
 
-* :rocket: ![r](resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) improve parsers
-* :rocket: ![r](resources/icons/reason-file.png) improve braces intention
+* :rocket: ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) improve parsers
+* :rocket: ![r](jps-shared/resources/icons/reason-file.png) improve braces intention
 * :bug: [#65](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/65) refmt not working in .rei
 
 ## 0.52
 
 * :rocket: ![o](jps-shared/resources/icons/ocaml-file.png) Pair match in OCaml: struct/end and sig/end
-* :rocket: ![r](resources/icons/reason-file.png) [#53](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Implemented intentions
+* :rocket: ![r](jps-shared/resources/icons/reason-file.png) [#53](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Implemented intentions
 * :nail_care: Add bool/char/int/float/string as keywords
 * :nail_care: [#64](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Handle warning message from bsb
 * :house: Protect against concurrent run of bsb compilation process
