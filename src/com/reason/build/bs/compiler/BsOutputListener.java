@@ -120,7 +120,7 @@ public class BsOutputListener implements RawProcessListener {
             }
 
             // Warning message ends with a blank new line
-            if (text.charAt(0) == '\n' && 4 < m_failedLine) {
+            if (!text.isEmpty() && text.charAt(0) == '\n' && 4 < m_failedLine) {
                 reset();
             } else {
                 if (4 < m_failedLine && 2 < text.length()) {
