@@ -15,6 +15,7 @@ import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             m_name = field.getName();
             PsiSignature signature = field.getPsiSignature();
             ORSignature hmSignature = signature == null ? ORSignature.EMPTY : signature.asHMSignature();
-            m_type = hmSignature.toString();
+            m_type = hmSignature.asString(RmlLanguage.INSTANCE);
             m_mandatory = hmSignature.isMandatory(0);
 
             for (PsiAnnotation annotation : annotations) {
