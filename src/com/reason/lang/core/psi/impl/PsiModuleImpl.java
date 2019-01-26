@@ -10,7 +10,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
-import com.reason.ide.files.FileBase;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.PsiFinder;
@@ -31,7 +30,8 @@ import static java.util.Collections.emptyList;
 
 public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiModule {
 
-    private ModulePath m_modulePath;
+    @Nullable
+    private ModulePath m_modulePath = null;
 
     //region Constructors
     public PsiModuleImpl(@NotNull ASTNode node, @NotNull ORTypes types) {
@@ -232,10 +232,10 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
                 return getName();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
-                return null;
+                return getPath().toString();
             }
 
             @NotNull
@@ -257,6 +257,8 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
                 parents.add(parent);
                 parent = PsiTreeUtil.getStubOrPsiParentOfType(parent, PsiModule.class);
             }
+
+            parents.add(getContainingFile());
 
             Collections.reverse(parents);
             m_modulePath = new ModulePath(parents);
@@ -317,8 +319,7 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
             return stub.getQualifiedName();
         }
 
-        String path = getPath().toString();
-        return ((FileBase) getContainingFile()).asModuleName() + (path.isEmpty() ? "" : "." + path) + "." + getName();
+        return getPath() + "." + getName();
     }
 
     @Nullable
