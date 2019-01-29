@@ -25,7 +25,7 @@ public class DuneFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getDescription() {
-        return "Dune configuration file (jbuilder)";
+        return "Dune configuration file";
     }
 
     @NotNull

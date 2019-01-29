@@ -8,6 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public class DuneFileTypeFactory extends FileTypeFactory {
     @Override
     public void createFileTypes(@NotNull FileTypeConsumer fileTypeConsumer) {
-        fileTypeConsumer.consume(DuneFileType.INSTANCE, new ExactFileNameMatcher("jbuild"));
+        fileTypeConsumer.consume(DuneFileType.INSTANCE, new ExactFileNameMatcher("jbuild"), new ExactFileNameMatcher("dune"), new ExactFileNameMatcher("dune-project"));
     }
 }
