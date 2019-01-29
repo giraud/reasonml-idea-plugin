@@ -45,7 +45,8 @@ public class ModuleConfiguration {
     }
 
     public static boolean isOnSaveEnabled(@NotNull Project project) {
-        return ReasonSettings.getInstance(project).refmtOnSave;
+        ReasonSettings reasonSettings = ReasonSettings.getInstance(project);
+        return reasonSettings.enabled && reasonSettings.refmtOnSave;
     }
 
     @Nullable

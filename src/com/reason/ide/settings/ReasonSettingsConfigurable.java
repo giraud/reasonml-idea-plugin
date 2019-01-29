@@ -19,6 +19,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     private JTextField f_columnWidth;
     private JCheckBox f_reformatOnSave;
     private TextFieldWithBrowseButton f_workingDir;
+    private JCheckBox f_enabled;
 
     public ReasonSettingsConfigurable(ReasonSettings settings) {
         m_settings = settings;
@@ -57,6 +58,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
 
     @Override
     public void apply() {
+        m_settings.enabled = f_enabled.isSelected();
         m_settings.location = f_bsLocation.getText().trim();
         m_settings.workingDir = f_workingDir.getText().trim();
         m_settings.refmtOnSave = f_reformatOnSave.isSelected();
@@ -65,15 +67,17 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
 
     @Override
     public boolean isModified() {
+        boolean sameEnabled = f_enabled.isSelected() == m_settings.enabled;
         boolean sameLocation = f_bsLocation.getText().equals(m_settings.location);
         boolean sameWorkingDir = f_workingDir.getText().equals(m_settings.workingDir);
         boolean sameRefmtOnSave = f_reformatOnSave.isSelected() == m_settings.refmtOnSave;
         boolean sameColWidth = f_columnWidth.getText().equals(m_settings.refmtWidth);
-        return !(sameLocation && sameWorkingDir && sameRefmtOnSave && sameColWidth);
+        return !(sameEnabled && sameLocation && sameWorkingDir && sameRefmtOnSave && sameColWidth);
     }
 
     @Override
     public void reset() {
+        f_enabled.setSelected(m_settings.enabled);
         f_bsLocation.setText(m_settings.location);
         f_workingDir.setText(m_settings.workingDir);
         f_columnWidth.setText(m_settings.refmtWidth);

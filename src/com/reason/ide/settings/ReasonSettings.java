@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 public class ReasonSettings implements PersistentStateComponent<ReasonSettings> {
     private Project m_project;
 
+    @SuppressWarnings("WeakerAccess")
+    public boolean enabled = true;
     @NotNull
     @SuppressWarnings("WeakerAccess")
     public String location = "";

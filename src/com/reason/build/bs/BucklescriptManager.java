@@ -19,6 +19,7 @@ import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.ORNotification;
+import com.reason.ide.settings.ReasonSettings;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,7 +86,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
-        if (!m_disabled) {
+        if (!m_disabled && ReasonSettings.getInstance(m_project).enabled) {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
@@ -148,13 +149,15 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document) {
-        RefmtProcess refmt = RefmtProcess.getInstance(m_project);
-        String oldText = document.getText();
-        if (!oldText.isEmpty()) {
-            String newText = refmt.run(sourceFile, isInterface, format, oldText);
-            if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
-                getApplication().runWriteAction(
-                        () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+        if (ReasonSettings.getInstance(m_project).enabled) {
+            RefmtProcess refmt = RefmtProcess.getInstance(m_project);
+            String oldText = document.getText();
+            if (!oldText.isEmpty()) {
+                String newText = refmt.run(sourceFile, isInterface, format, oldText);
+                if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
+                    getApplication().runWriteAction(
+                            () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+                }
             }
         }
     }
