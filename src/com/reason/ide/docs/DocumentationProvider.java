@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 public class DocumentationProvider extends AbstractDocumentationProvider {
 
-    public static final Key<Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
+    public static final Key<Map<LogicalPosition, ORSignature>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
 
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
@@ -51,17 +50,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         if (editor != null) {
             LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
-            Map<Integer, Map<String, Map<LogicalPosition, ORSignature>>> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
+            Map<LogicalPosition, ORSignature> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
             if (signaturesContext != null) {
-                Map<String, Map<LogicalPosition, ORSignature>> lineSignatures = signaturesContext.get(elementPosition.line);
-                if (lineSignatures != null) {
-                    if (originalElement instanceof PsiLowerSymbol) {
-                        PsiLowerSymbol lowerSymbol = (PsiLowerSymbol) originalElement;
-                        Map<LogicalPosition, ORSignature> signatures = lineSignatures.get(lowerSymbol.getText());
-                        if (signatures != null && signatures.size() == 1) {
-                            return signatures.values().iterator().next().asString(element.getLanguage());
-                        }
-                    }
+                ORSignature elementSignature = signaturesContext.get(elementPosition);
+                if (elementSignature != null) {
+                    return elementSignature.asString(element.getLanguage());
                 }
             }
         }

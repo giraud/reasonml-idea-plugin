@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.FileSystems;
-import java.util.Map;
 
 public class InferredTypesService {
 
@@ -81,7 +80,7 @@ public class InferredTypesService {
 
             PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
             if (psiFile != null) {
-                psiFile.putUserData(DocumentationProvider.SIGNATURE_CONTEXT, types.listTypesByIdents());
+                psiFile.putUserData(DocumentationProvider.SIGNATURE_CONTEXT, types.typesByIdents());
             }
         }
     }

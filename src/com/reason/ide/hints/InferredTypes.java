@@ -12,5 +12,5 @@ public interface InferredTypes {
     Map<Integer, String> signaturesByLines(Language lang);
 
     @NotNull
-    Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> listTypesByIdents();
+    Map<LogicalPosition, ORSignature> typesByIdents();
 }

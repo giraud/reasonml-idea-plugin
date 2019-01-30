@@ -23,7 +23,7 @@ public class InferredTypesImplementation implements InferredTypes {
     private final Map<String, Stack<OpenModule>> m_opens = new THashMap<>();
     private final Map<Integer, LogicalORSignature> m_vals = new THashMap<>();
 
-    private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> m_idents = new THashMap<>();
+    private final Map<LogicalPosition, ORSignature> m_idents = new THashMap<>();
 
     @NotNull
     public Map<Integer, String> signaturesByLines(Language lang) {
@@ -46,7 +46,7 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     @NotNull
-    public Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> listTypesByIdents() {
+    public Map<LogicalPosition, ORSignature> typesByIdents() {
         return m_idents;
     }
 
@@ -72,6 +72,8 @@ public class InferredTypesImplementation implements InferredTypes {
         } else if (IDENT.equals(entry)) {
             // Pattern :: name|qname|type
             String[] tokens = line.split("\\|", 3);
+            m_idents.put(start, new ORSignature(tokens[2]));
+
             if (!tokens[0].equals(tokens[1])) {
                 int lastDot = tokens[1].lastIndexOf(".");
                 String path = tokens[1].substring(0, lastDot);
