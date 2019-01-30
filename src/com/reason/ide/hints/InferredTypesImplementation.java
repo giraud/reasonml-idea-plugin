@@ -8,6 +8,7 @@ import com.reason.lang.core.signature.ORSignature;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +31,10 @@ public class InferredTypesImplementation implements InferredTypes {
 
         for (Stack<OpenModule> openStack : m_opens.values()) {
             for (OpenModule openModule : openStack) {
-                result.put(openModule.getLine(), openModule.getExposing());
+                String exposing = openModule.getExposing();
+                if (exposing != null) {
+                    result.put(openModule.getLine(), exposing);
+                }
             }
         }
 
@@ -99,8 +103,9 @@ public class InferredTypesImplementation implements InferredTypes {
             return m_position.line;
         }
 
+        @Nullable
         String getExposing() {
-            return "exposing: " + Joiner.join(", ", m_values);
+            return m_values.isEmpty() ? null : "exposing: " + Joiner.join(", ", m_values);
         }
 
         void addId(String id) {
