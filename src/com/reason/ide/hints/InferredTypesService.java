@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.FileSystems;
+import java.util.Map;
 
 public class InferredTypesService {
 
@@ -76,9 +77,9 @@ public class InferredTypesService {
             CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
             long timestamp = sourceFile.getTimeStamp();
 
-            //for (Map.Entry<LogicalPosition, String> openEntry : types.listOpensByLines().entrySet()) {
-            //    userData.put(sourceFile, openEntry.getKey(), openEntry.getValue(), timestamp);
-            //}
+            for (Map.Entry<Integer, String> openEntry : types.listOpensByLines().entrySet()) {
+                userData.put(sourceFile, openEntry.getKey(), openEntry.getValue(), timestamp);
+            }
 
             userData.putAll(sourceFile, types.signaturesByLines(OclLanguage.INSTANCE), timestamp);
 

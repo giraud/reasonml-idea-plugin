@@ -36,6 +36,16 @@ public class CodeLensView {
             return integerStringMap.get(line);
         }
 
+        synchronized void put(@NotNull VirtualFile file, @NotNull Integer line, @NotNull String signature, long timestamp) {
+            m_timestamps.put(file, timestamp);
+            Map<Integer, String> signaturesPerLine = m_signatures.get(file);
+            if (signaturesPerLine == null) {
+                signaturesPerLine = new THashMap<>();
+                m_signatures.put(file, signaturesPerLine);
+            }
+            signaturesPerLine.putIfAbsent(line, signature);
+        }
+
         synchronized void putAll(@NotNull VirtualFile file, @NotNull Map<Integer, String> signatures, long timestamp) {
             m_timestamps.put(file, timestamp);
             Map<Integer, String> signaturesPerLine = m_signatures.get(file);

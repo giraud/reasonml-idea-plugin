@@ -3,20 +3,25 @@ package com.reason.ide.hints;
 import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.util.containers.Stack;
 import com.reason.lang.core.signature.ORSignature;
 import gnu.trove.THashMap;
+import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Set;
 
 public class InferredTypesImplementation implements InferredTypes {
 
+    private static final String OPEN = "Op";
     private static final String VALUE = "Va";
     private static final String MODULE_GHOST = "Mg";
 
+    private final Map<String, Stack<OpenModule>> m_opens = new THashMap<>();
     private final Map<Integer, LogicalORSignature> m_pos = new THashMap<>();
+
     private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> m_idents = new THashMap<>();
-    private final Map<LogicalPosition, String> m_opens = new THashMap<>();
 
     private final Map<String, ORSignature> m_let = new THashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new THashMap<>();
@@ -52,8 +57,16 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     @NotNull
-    public Map<LogicalPosition, String> listOpensByLines() {
-        return new THashMap<>(m_opens);
+    public Map<Integer, String> listOpensByLines() {
+        Map<Integer, String> result = new THashMap<>();
+        for (Map.Entry<String, Stack<OpenModule>> entry : m_opens.entrySet()) {
+            String moduleName = entry.getKey();
+            Stack<OpenModule> stack = entry.getValue();
+            for (OpenModule openModule : stack) {
+                result.put(openModule.getLine(), openModule.getExposing());
+            }
+        }
+        return result;
     }
 
     @NotNull
@@ -71,7 +84,12 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     public void add(@NotNull String[] tokens) {
-        if (VALUE.equals(tokens[0])) {
+        if (OPEN.equals(tokens[0])) {
+            LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
+            Stack<OpenModule> openStack = new Stack<>();
+            openStack.push(new OpenModule(logicalPosition));
+            m_opens.put(tokens[2], openStack);
+        } else if (VALUE.equals(tokens[0])) {
             LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
             addVisibleSignature(logicalPosition, new ORSignature(tokens[3]));
         } else if (MODULE_GHOST.equals(tokens[0])) {
@@ -97,20 +115,37 @@ public class InferredTypesImplementation implements InferredTypes {
         return new LogicalPosition(line < 0 ? 0 : line, column < 0 ? 0 : column);
     }
 
-    public static class LogicalORSignature {
+    static class OpenModule {
+        @NotNull
+        private final LogicalPosition m_position;
+        private final Set<String> m_values = new THashSet<>();
 
+        OpenModule(LogicalPosition position) {
+            m_position = position;
+        }
+
+        Integer getLine() {
+            return m_position.line;
+        }
+
+        String getExposing() {
+            return "exposing lot of stuff";
+        }
+    }
+
+    static class LogicalORSignature {
         @NotNull
         private final LogicalPosition m_logicalPosition;
         @NotNull
         private final ORSignature m_signature;
 
-        public LogicalORSignature(@NotNull LogicalPosition position, @NotNull ORSignature signature) {
+        LogicalORSignature(@NotNull LogicalPosition position, @NotNull ORSignature signature) {
             m_logicalPosition = position;
             m_signature = signature;
         }
 
         @NotNull
-        public LogicalPosition getLogicalPosition() {
+        LogicalPosition getLogicalPosition() {
             return m_logicalPosition;
         }
 
