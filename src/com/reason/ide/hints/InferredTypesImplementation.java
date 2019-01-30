@@ -1,9 +1,9 @@
 package com.reason.ide.hints;
 
 import com.intellij.lang.Language;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.util.containers.Stack;
+import com.reason.Joiner;
 import com.reason.lang.core.signature.ORSignature;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
@@ -15,66 +15,29 @@ import java.util.Set;
 public class InferredTypesImplementation implements InferredTypes {
 
     private static final String OPEN = "Op";
-    private static final String VALUE = "Va";
     private static final String MODULE_GHOST = "Mg";
+    private static final String VALUE = "Va";
+    private static final String IDENT = "Id";
 
     private final Map<String, Stack<OpenModule>> m_opens = new THashMap<>();
-    private final Map<Integer, LogicalORSignature> m_pos = new THashMap<>();
+    private final Map<Integer, LogicalORSignature> m_vals = new THashMap<>();
 
     private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> m_idents = new THashMap<>();
-
-    private final Map<String, ORSignature> m_let = new THashMap<>();
-    private final Map<String, InferredTypesImplementation> m_modules = new THashMap<>();
-
-
-    public void addTypes(@NotNull String type) {
-        try {
-            if (type.startsWith("val")) {
-                int colonPos = type.indexOf(':');
-                if (0 < colonPos && colonPos < type.length()) {
-                    m_let.put(type.substring(4, colonPos - 1), new ORSignature(type.substring(colonPos + 1)));
-                }
-            } else if (type.startsWith("module")) {
-                int colonPos = type.indexOf(':');
-                if (0 <= colonPos) {
-                    int sigPos = type.indexOf("sig");
-                    InferredTypesImplementation moduleTypes = new InferredTypesImplementation();
-                    m_modules.put(type.substring(7, colonPos - 1), moduleTypes);
-                    int beginIndex = sigPos + 3;
-                    int endIndex = type.length() - 3;
-                    if (beginIndex < endIndex) {
-                        String sigTypes = type.substring(beginIndex, endIndex);
-                        String[] moduleSigTypes = sigTypes.trim().split("(?=module|val|type)");
-                        for (String moduleSigType : moduleSigTypes) {
-                            moduleTypes.addTypes(moduleSigType);
-                        }
-                    }
-                }
-            }
-        } catch (RuntimeException e) {
-            Logger.getInstance("ReasonML.types").error("Error while decoding type [" + type + "]", e);
-        }
-    }
-
-    @NotNull
-    public Map<Integer, String> listOpensByLines() {
-        Map<Integer, String> result = new THashMap<>();
-        for (Map.Entry<String, Stack<OpenModule>> entry : m_opens.entrySet()) {
-            String moduleName = entry.getKey();
-            Stack<OpenModule> stack = entry.getValue();
-            for (OpenModule openModule : stack) {
-                result.put(openModule.getLine(), openModule.getExposing());
-            }
-        }
-        return result;
-    }
 
     @NotNull
     public Map<Integer, String> signaturesByLines(Language lang) {
         Map<Integer, String> result = new THashMap<>();
-        for (Map.Entry<Integer, LogicalORSignature> entry : m_pos.entrySet()) {
+
+        for (Stack<OpenModule> openStack : m_opens.values()) {
+            for (OpenModule openModule : openStack) {
+                result.put(openModule.getLine(), openModule.getExposing());
+            }
+        }
+
+        for (Map.Entry<Integer, LogicalORSignature> entry : m_vals.entrySet()) {
             result.put(entry.getKey(), entry.getValue().getSignature().asString(lang));
         }
+
         return result;
     }
 
@@ -83,36 +46,44 @@ public class InferredTypesImplementation implements InferredTypes {
         return m_idents;
     }
 
-    public void add(@NotNull String[] tokens) {
-        if (OPEN.equals(tokens[0])) {
-            LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
-            Stack<OpenModule> openStack = new Stack<>();
-            openStack.push(new OpenModule(logicalPosition));
-            m_opens.put(tokens[2], openStack);
-        } else if (VALUE.equals(tokens[0])) {
-            LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
-            addVisibleSignature(logicalPosition, new ORSignature(tokens[3]));
-        } else if (MODULE_GHOST.equals(tokens[0])) {
-            LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
-            String signature = tokens[3].startsWith("type t = ") ? tokens[3].substring(9) : tokens[3];
-            addVisibleSignature(logicalPosition, new ORSignature(signature));
+    public void add(@NotNull String entry, @NotNull LogicalPosition start, @NotNull LogicalPosition end, @NotNull String line) {
+        if (OPEN.equals(entry)) {
+            // Pattern :: Name
+            Stack<OpenModule> openStack = m_opens.get(line);
+            if (openStack == null) {
+                openStack = new Stack<>();
+                m_opens.put(line, openStack);
+            }
+
+            openStack.push(new OpenModule(start, end));
+        } else if (VALUE.equals(entry)) {
+            // Pattern :: Name|type
+            String[] tokens = line.split("\\|", 2);
+            addVisibleSignature(start, new ORSignature(tokens[1]));
+        } else if (MODULE_GHOST.equals(entry)) {
+            // Pattern :: name|type
+            String[] tokens = line.split("\\|", 2);
+            String signature = tokens[1].startsWith("type t = ") ? tokens[1].substring(9) : tokens[1];
+            addVisibleSignature(start, new ORSignature(signature));
+        } else if (IDENT.equals(entry)) {
+            // Pattern :: name|qname|type
+            String[] tokens = line.split("\\|", 3);
+            if (!tokens[0].equals(tokens[1])) {
+                int lastDot = tokens[1].lastIndexOf(".");
+                String path = tokens[1].substring(0, lastDot);
+                Stack<OpenModule> openStack = m_opens.get(path);
+                if (openStack != null) {
+                    openStack.peek().addId(tokens[0]);
+                }
+            }
         }
     }
 
     private void addVisibleSignature(@NotNull LogicalPosition pos, @NotNull ORSignature signature) {
-        LogicalORSignature savedSignature = m_pos.get(pos.line);
+        LogicalORSignature savedSignature = m_vals.get(pos.line);
         if (savedSignature == null || pos.column < savedSignature.getLogicalPosition().column) {
-            m_pos.put(pos.line, new LogicalORSignature(pos, signature));
+            m_vals.put(pos.line, new LogicalORSignature(pos, signature));
         }
-    }
-
-    @NotNull
-    private LogicalPosition extractLogicalPosition(@NotNull String value) {
-        String[] loc = value.split(",");
-        String[] pos = loc[0].split("\\.");
-        int line = Integer.parseInt(pos[0]) - 1;
-        int column = Integer.parseInt(pos[1]);
-        return new LogicalPosition(line < 0 ? 0 : line, column < 0 ? 0 : column);
     }
 
     static class OpenModule {
@@ -120,8 +91,8 @@ public class InferredTypesImplementation implements InferredTypes {
         private final LogicalPosition m_position;
         private final Set<String> m_values = new THashSet<>();
 
-        OpenModule(LogicalPosition position) {
-            m_position = position;
+        OpenModule(LogicalPosition start, LogicalPosition end) {
+            m_position = start;
         }
 
         Integer getLine() {
@@ -129,7 +100,11 @@ public class InferredTypesImplementation implements InferredTypes {
         }
 
         String getExposing() {
-            return "exposing lot of stuff";
+            return "exposing: " + Joiner.join(", ", m_values);
+        }
+
+        void addId(String id) {
+            m_values.add(id);
         }
     }
 

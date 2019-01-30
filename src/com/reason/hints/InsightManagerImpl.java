@@ -8,7 +8,6 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.build.bs.insight.BsQueryTypesService;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -76,8 +75,6 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         if (isDownloaded.get()) {
             RincewindProcess.getInstance(m_project).types(sourceFile, getRincewindFile().getPath(), cmtPath.toString(), runAfter);
-        } else {
-            BsQueryTypesService.getInstance(m_project).types(sourceFile, cmtPath.toString(), runAfter);
         }
     }
 

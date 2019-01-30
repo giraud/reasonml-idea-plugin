@@ -66,10 +66,6 @@
             <implementation-class>com.reason.hints.RincewindProcess</implementation-class>
             <interface-class>com.reason.hints.RincewindProcess</interface-class>
         </component>
-        <component>
-            <implementation-class>com.reason.build.bs.insight.BsQueryTypesService</implementation-class>
-            <interface-class>com.reason.build.bs.insight.BsQueryTypesService</interface-class>
-        </component>
     </project-components>
 
     <actions>

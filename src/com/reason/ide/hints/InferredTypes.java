@@ -13,7 +13,4 @@ public interface InferredTypes {
 
     @NotNull
     Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> listTypesByIdents();
-
-    @NotNull
-    Map<Integer, String> listOpensByLines();
 }

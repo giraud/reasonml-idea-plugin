@@ -77,10 +77,6 @@ public class InferredTypesService {
             CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
             long timestamp = sourceFile.getTimeStamp();
 
-            for (Map.Entry<Integer, String> openEntry : types.listOpensByLines().entrySet()) {
-                userData.put(sourceFile, openEntry.getKey(), openEntry.getValue(), timestamp);
-            }
-
             userData.putAll(sourceFile, types.signaturesByLines(OclLanguage.INSTANCE), timestamp);
 
             PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);

@@ -3,6 +3,7 @@ package com.reason.hints;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
@@ -52,8 +53,14 @@ public class RincewindProcess implements ProjectComponent {
 
                 reader.lines().forEach(line -> {
                     if (!line.isEmpty()) {
-                        //System.out.println(line);
-                        types.add(line.split("\\|"));
+//                        System.out.println(line);
+                        int entryPos = line.indexOf("|");
+                        String entry = line.substring(0, entryPos);
+                        if (!"__".equals(entry)) {
+                            int locPos = line.indexOf("|", entryPos + 1);
+                            String[] loc = line.substring(entryPos + 1, locPos).split(",");
+                            types.add(entry, decodePosition(loc[0]), decodePosition(loc[1]), line.substring(locPos + 1));
+                        }
                     }
                 });
 
@@ -66,5 +73,13 @@ public class RincewindProcess implements ProjectComponent {
                 rincewind.destroy();
             }
         }
+    }
+
+    @NotNull
+    private LogicalPosition decodePosition(@NotNull String location) {
+        String[] pos = location.split("\\.");
+        int line = Integer.parseInt(pos[0]) - 1;
+        int column = Integer.parseInt(pos[1]);
+        return new LogicalPosition(line < 0 ? 0 : line, column < 0 ? 0 : column);
     }
 }
