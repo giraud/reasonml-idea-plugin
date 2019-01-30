@@ -1,6 +1,5 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.ObjectLongHashMap;
@@ -37,14 +36,14 @@ public class CodeLensView {
             return integerStringMap.get(line);
         }
 
-        synchronized void put(@NotNull VirtualFile file, @NotNull LogicalPosition position, @NotNull String signature/*Map of sig?*/, long timestamp) {
+        synchronized void putAll(@NotNull VirtualFile file, @NotNull Map<Integer, String> signatures, long timestamp) {
             m_timestamps.put(file, timestamp);
-            Map<Integer, String> integerStringMap = m_signatures.get(file);
-            if (integerStringMap == null) {
-                integerStringMap = new THashMap<>();
-                m_signatures.put(file, integerStringMap);
+            Map<Integer, String> signaturesPerLine = m_signatures.get(file);
+            if (signaturesPerLine == null) {
+                signaturesPerLine = new THashMap<>();
+                m_signatures.put(file, signaturesPerLine);
             }
-            integerStringMap.putIfAbsent(position.line, signature);
+            signaturesPerLine.putAll(signatures);
         }
 
         public synchronized void move(@NotNull VirtualFile file, int startLine, int direction, long timestamp) {

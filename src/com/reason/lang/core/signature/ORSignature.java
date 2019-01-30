@@ -1,10 +1,9 @@
 package com.reason.lang.core.signature;
 
 import com.intellij.lang.Language;
-import com.reason.lang.PsiElementFactory;
-import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
+import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
@@ -110,7 +109,7 @@ public class ORSignature {
     @NotNull
     @Override
     public String toString() {
-        throw new RuntimeException("Use asString(Language)");
+        return "!! " + asString(OclLanguage.INSTANCE);
     }
 
     public String asString(Language lang) {

@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightManagerImpl;
-import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.CmtFileType;
 import com.reason.ide.hints.CmtiFileListener;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +40,6 @@ class ORVirtualFileListener implements VirtualFileListener {
 
                 m_insightManager.downloadRincewindIfNeeded();
             }
-        } else if (fileType instanceof CmiFileType) {
-            m_cmtiFileListener.onChange(file);
         } else if (fileType instanceof CmtFileType) {
             m_cmtiFileListener.onChange(file);
         }

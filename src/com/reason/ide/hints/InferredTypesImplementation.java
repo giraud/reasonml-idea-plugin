@@ -1,16 +1,18 @@
 package com.reason.ide.hints;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.LogicalPosition;
-import com.reason.lang.core.signature.LogicalORSignature;
 import com.reason.lang.core.signature.ORSignature;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.Map;
 
 public class InferredTypesImplementation implements InferredTypes {
+
+    private static final String VALUE = "Va";
+    private static final String MODULE_GHOST = "Mg";
 
     private final Map<Integer, LogicalORSignature> m_pos = new THashMap<>();
     private final Map<Integer/*Line*/, Map<String/*ident*/, Map<LogicalPosition, ORSignature>>> m_idents = new THashMap<>();
@@ -18,6 +20,7 @@ public class InferredTypesImplementation implements InferredTypes {
 
     private final Map<String, ORSignature> m_let = new THashMap<>();
     private final Map<String, InferredTypesImplementation> m_modules = new THashMap<>();
+
 
     public void addTypes(@NotNull String type) {
         try {
@@ -48,22 +51,18 @@ public class InferredTypesImplementation implements InferredTypes {
         }
     }
 
-    public ORSignature getLetType(String name) {
-        return m_let.get(name);
-    }
-
-    public InferredTypes getModuleType(String name) {
-        return m_modules.get(name);
-    }
-
     @NotNull
     public Map<LogicalPosition, String> listOpensByLines() {
         return new THashMap<>(m_opens);
     }
 
     @NotNull
-    public Collection<LogicalORSignature> listTypesByLines() {
-        return m_pos.values();
+    public Map<Integer, String> signaturesByLines(Language lang) {
+        Map<Integer, String> result = new THashMap<>();
+        for (Map.Entry<Integer, LogicalORSignature> entry : m_pos.entrySet()) {
+            result.put(entry.getKey(), entry.getValue().getSignature().asString(lang));
+        }
+        return result;
     }
 
     @NotNull
@@ -72,41 +71,53 @@ public class InferredTypesImplementation implements InferredTypes {
     }
 
     public void add(@NotNull String[] tokens) {
-        if ("O".equals(tokens[0])) {
-            if (4 <= tokens.length) {
-                LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
-                m_opens.put(logicalPosition, "exposing " + tokens[3].replaceAll(tokens[2] + ".", ""));
-            }
-        } else if (5 <= tokens.length) {
+        if (VALUE.equals(tokens[0])) {
             LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
-            if ("I".equals(tokens[0])) {
-                Map<String, Map<LogicalPosition, ORSignature>> lines = m_idents.get(logicalPosition.line);
-                if (lines == null) {
-                    lines = new THashMap<>();
-                    m_idents.put(logicalPosition.line, lines);
-                }
+            addVisibleSignature(logicalPosition, new ORSignature(tokens[3]));
+        } else if (MODULE_GHOST.equals(tokens[0])) {
+            LogicalPosition logicalPosition = extractLogicalPosition(tokens[1]);
+            String signature = tokens[3].startsWith("type t = ") ? tokens[3].substring(9) : tokens[3];
+            addVisibleSignature(logicalPosition, new ORSignature(signature));
+        }
+    }
 
-                Map<LogicalPosition, ORSignature> idents = lines.get(tokens[3]);
-                if (idents == null) {
-                    idents = new THashMap<>();
-                    lines.put(tokens[3], idents);
-                }
-
-                idents.put(logicalPosition, new ORSignature(tokens[4]));
-            } else {
-                LogicalORSignature signature = m_pos.get(logicalPosition.line);
-                if (signature == null || logicalPosition.column < signature.getLogicalPosition().column) {
-                    m_pos.put(logicalPosition.line, new LogicalORSignature(logicalPosition, new ORSignature(tokens[4])));
-                }
-            }
+    private void addVisibleSignature(@NotNull LogicalPosition pos, @NotNull ORSignature signature) {
+        LogicalORSignature savedSignature = m_pos.get(pos.line);
+        if (savedSignature == null || pos.column < savedSignature.getLogicalPosition().column) {
+            m_pos.put(pos.line, new LogicalORSignature(pos, signature));
         }
     }
 
     @NotNull
-    private LogicalPosition extractLogicalPosition(@NotNull String encodedPos) {
-        String[] codedPos = encodedPos.split("\\.");
-        int line = Integer.parseInt(codedPos[0]);
-        int column = Integer.parseInt(codedPos[1]);
+    private LogicalPosition extractLogicalPosition(@NotNull String value) {
+        String[] loc = value.split(",");
+        String[] pos = loc[0].split("\\.");
+        int line = Integer.parseInt(pos[0]) - 1;
+        int column = Integer.parseInt(pos[1]);
         return new LogicalPosition(line < 0 ? 0 : line, column < 0 ? 0 : column);
     }
+
+    public static class LogicalORSignature {
+
+        @NotNull
+        private final LogicalPosition m_logicalPosition;
+        @NotNull
+        private final ORSignature m_signature;
+
+        public LogicalORSignature(@NotNull LogicalPosition position, @NotNull ORSignature signature) {
+            m_logicalPosition = position;
+            m_signature = signature;
+        }
+
+        @NotNull
+        public LogicalPosition getLogicalPosition() {
+            return m_logicalPosition;
+        }
+
+        @NotNull
+        public ORSignature getSignature() {
+            return m_signature;
+        }
+    }
+
 }

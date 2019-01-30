@@ -5,7 +5,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileTypes.FileType;
@@ -16,20 +15,15 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.reason.OCamlSdk;
-import com.reason.Platform;
 import com.reason.hints.InsightManager;
 import com.reason.ide.docs.DocumentationProvider;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.lang.core.signature.LogicalORSignature;
+import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Map;
 
 public class InferredTypesService {
 
@@ -82,13 +76,11 @@ public class InferredTypesService {
             CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
             long timestamp = sourceFile.getTimeStamp();
 
-            for (Map.Entry<LogicalPosition, String> openEntry : types.listOpensByLines().entrySet()) {
-                userData.put(sourceFile, openEntry.getKey(), openEntry.getValue(), timestamp);
-            }
+            //for (Map.Entry<LogicalPosition, String> openEntry : types.listOpensByLines().entrySet()) {
+            //    userData.put(sourceFile, openEntry.getKey(), openEntry.getValue(), timestamp);
+            //}
 
-            for (LogicalORSignature signatureEntry : types.listTypesByLines()) {
-                userData.put(sourceFile, signatureEntry.getLogicalPosition(), signatureEntry.getSignature().asString(lang), timestamp);
-            }
+            userData.putAll(sourceFile, types.signaturesByLines(OclLanguage.INSTANCE), timestamp);
 
             PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
             if (psiFile != null) {
@@ -108,16 +100,4 @@ public class InferredTypesService {
         }
         return userData;
     }
-
-    @NotNull
-    private static Path getRelativeBuildPath(@NotNull Project project) {
-        FileSystem fileSystem = FileSystems.getDefault();
-        return OCamlSdk.getSDK(project) == null ? fileSystem.getPath("lib", "bs") : fileSystem.getPath("_build", "default");
-    }
-
-    @NotNull
-    private static VirtualFile getBasePath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return OCamlSdk.getSDK(project) == null ? Platform.findBaseRootFromFile(project, sourceFile) : Platform.findBaseRoot(project);
-    }
-
 }
