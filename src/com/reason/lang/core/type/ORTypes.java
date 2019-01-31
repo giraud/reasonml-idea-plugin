@@ -42,6 +42,7 @@ public abstract class ORTypes {
     public IElementType C_TAG;
     public IElementType C_TAG_PROP_VALUE;
     public IElementType C_TAG_BODY;
+    public IElementType C_UNIT;
     public IElementType C_UNKNOWN_EXPR;
     public IElementType C_VARIANT_EXP;
     public IElementType C_VARIANT_CONSTRUCTOR;

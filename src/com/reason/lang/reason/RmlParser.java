@@ -894,10 +894,21 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     advance().
                     add(mark(builder, functionCall, functionParameter, m_types.C_FUN_PARAM));
         } else if (state.isCurrentResolution(functionParameter)) {
-            // might be a function inside a parameter
-            state.add(markScope(builder, maybeFunction, maybeFunction, m_types.C_UNKNOWN_EXPR, m_types.LPAREN))
-                    .add(mark(builder, maybeFunction, maybeFunctionParameters, m_types.C_UNKNOWN_EXPR))
-                    .add(mark(builder, maybeFunction, maybeFunctionParameter, m_types.C_UNKNOWN_EXPR));
+            IElementType nextTokenType = builder.rawLookup(1);
+            if (nextTokenType == m_types.RPAREN) {
+                // unit parameter
+                state.wrapWith(m_types.C_UNIT).advance();
+            } else {
+                // might be a function inside a parameter
+                state.add(markScope(builder, maybeFunction, maybeFunction, m_types.C_UNKNOWN_EXPR, m_types.LPAREN))
+                        .add(mark(builder, maybeFunction, maybeFunctionParameters, m_types.C_UNKNOWN_EXPR))
+                        .add(mark(builder, maybeFunction, maybeFunctionParameter, m_types.C_UNKNOWN_EXPR));
+            }
+        } else if (state.isCurrentResolution(functionParameters) && builder.rawLookup(1) == m_types.RPAREN) {
+            // it's a unit - as () - parameter
+            state.add(mark(builder, functionParameter, m_types.C_FUN_PARAM))
+                    .wrapWith(m_types.C_UNIT)
+                    .advance();
         } else {
             if (state.isCurrentResolution(external)) {
                 // overloading an operator

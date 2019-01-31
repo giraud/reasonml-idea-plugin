@@ -2,7 +2,6 @@ package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
-import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
 %%
@@ -149,7 +148,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "lsr"         { return types.LSR; }
     "asr"         { return types.ASR; }
 
-    "unit"        { return types.UNIT; }
+    "unit"        { return types.C_UNIT; }
     "ref"         { return types.REF; }
     "raise"       { return types.RAISE; }
     "method"      { return types.METHOD; }

@@ -62,6 +62,15 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertEquals("float=?", parameters.get(3).getPsiSignature().asString(RmlLanguage.INSTANCE));
     }
 
+    public void testUnitFunParameter() {
+        PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1", true)));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameterList());
+
+        assertSize(3, parameters);
+    }
+
     public void testJsObject() {
         PsiType psiType = first(typeExpressions(parseCode("type props = { [@bs.optional] dangerouslySetInnerHTML: {. \"__html\": string} };")));
 

@@ -554,6 +554,12 @@ public class OclParser extends CommonParser<OclTypes> {
             state.updateScopeToken(m_types.LPAREN);
         } else if (state.isCurrentResolution(functionParameters)) {
             state.add(markScope(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM, m_types.LPAREN));
+
+            IElementType nextTokenType = builder.rawLookup(1);
+            if (nextTokenType == m_types.RPAREN) {
+                // unit parameter
+                state.wrapWith(m_types.C_UNIT).advance();
+            }
         } else if (state.isCurrentResolution(moduleNamed)) {
             // This is a functor: module Make <(> ... )
             state.updateCurrentContext(functorDeclaration).

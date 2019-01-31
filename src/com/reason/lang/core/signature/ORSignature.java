@@ -120,6 +120,14 @@ public class ORSignature {
         return sig;
     }
 
+    public String asParameterInfo(Language lang) {
+        String sig = buildParameters();
+        if (sig.length() > 1000) {
+            return sig.substring(0, 1000) + "...";
+        }
+        return sig;
+    }
+
     public boolean isFunctionSignature() {
         return 1 < m_types.length;
     }
@@ -162,6 +170,21 @@ public class ORSignature {
         }
         if (0 < m_types.length) {
             sb.append(m_types[m_types.length - 1]);
+        }
+
+        return sb.toString();
+    }
+
+    @NotNull
+    private String buildParameters() {
+        StringBuilder sb = new StringBuilder();
+
+        String inputSeparator = ", ";
+        for (int i = 0; i < m_types.length - 1; i++) {
+            if (0 < i) {
+                sb.append(inputSeparator);
+            }
+            sb.append(m_types[i].value);
         }
 
         return sb.toString();

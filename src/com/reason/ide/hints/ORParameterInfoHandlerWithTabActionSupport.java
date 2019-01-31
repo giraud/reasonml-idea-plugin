@@ -106,10 +106,13 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                         PsiLet resolvedLet = (PsiLet) resolvedParent;
                         if (resolvedLet.isFunction()) {
                             // We don't have the real signature, we just display the function arguments
-                            Collection<PsiParameter> parameters = resolvedLet.getFunction().getParameterList();
-                            ORSignature hmSignature = new ORSignature(parameters);
-                            context.setItemsToShow(new Object[]{hmSignature});
-                            context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
+                            PsiFunction function = resolvedLet.getFunction();
+                            if (function != null) {
+                                Collection<PsiParameter> parameters = function.getParameterList();
+                                ORSignature hmSignature = new ORSignature(parameters);
+                                context.setItemsToShow(new Object[]{hmSignature});
+                                context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
+                            }
                         }
                     }
                 }
@@ -142,7 +145,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
         TextRange paramRange = TextRange.EMPTY_RANGE;
 
-        context.setupUIComponentPresentation(signature.asString(OclLanguage.INSTANCE),
+        context.setupUIComponentPresentation(signature.asParameterInfo(OclLanguage.INSTANCE),
                 paramRange.getStartOffset(),
                 paramRange.getEndOffset(),
                 !context.isUIComponentEnabled(),

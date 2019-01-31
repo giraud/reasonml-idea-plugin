@@ -1,8 +1,8 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +68,15 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertFalse(parameters.get(1).getPsiSignature().asHMSignature().isMandatory(0));
         assertTrue(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
         assertTrue(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
+    }
+
+    public void testUnitFunParameter() {
+        PsiLet e = first(letExpressions(parseCode("let x (a : int) () = a", true)));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameterList());
+
+        assertSize(2, parameters);
     }
 
 }
