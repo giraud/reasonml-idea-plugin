@@ -76,10 +76,12 @@ public class InferredTypesImplementation implements InferredTypes {
 
             if (!tokens[0].equals(tokens[1])) {
                 int lastDot = tokens[1].lastIndexOf(".");
-                String path = tokens[1].substring(0, lastDot);
-                Stack<OpenModule> openStack = m_opens.get(path);
-                if (openStack != null) {
-                    openStack.peek().addId(tokens[0]);
+                if (0 < lastDot) {
+                    String path = tokens[1].substring(0, lastDot);
+                    Stack<OpenModule> openStack = m_opens.get(path);
+                    if (openStack != null) {
+                        openStack.peek().addId(tokens[0]);
+                    }
                 }
             }
         }
