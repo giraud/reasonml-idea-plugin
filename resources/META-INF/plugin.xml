@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.71</version>
+    <version>0.72</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,10 +10,12 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#136 - Unicode characters inside strings turn into question marks</li>
-            <li>#135 - Top-level declaration following "let f = function ... and" doesn't appear in the structure panel</li>
-            <li>#109 - Reformat interface</li>
-            <li>2017.2 is the minimal idea version supported</li>
+            <li>Highlight of dune file</li>
+            <li>#126 - Function parameter info attempts to show return type</li>
+            <li>#122 - Make error locations in bucklescript tool window clickable</li>
+            <li>Use rincewind 0.4</li>
+            <li>Add a checkbox in Reason settings to disable bucklescript</li>
+            <li>Display module path in 'go to class' popup</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

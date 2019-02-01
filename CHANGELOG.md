@@ -10,6 +10,15 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.72 - 2019/02/01
+
+- :rocket: Highlight of dune file
+- :rocket: Add a checkbox in Reason settings to disable bucklescript
+- :nail_care: Display module path in 'go to class' popup
+- :bug: [#126](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/126) ![r](jps-shared/resources/icons/reason-file.png) - Function parameter info attempts to show return type
+- :bug: [#122](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/122) - Make error locations in bucklescript tool window clickable
+- :house: Use rincewind 0.4
+
 ## 0.71 - 2019/01/23
 
 - :bug: [#136](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r](jps-shared/resources/icons/reason-file.png) ![o](jps-shared/resources/icons/ocaml-file.png) - Unicode characters inside strings turn into question marks
