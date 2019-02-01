@@ -17,7 +17,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testEmptyTag() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>", true));
+        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>"));
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
@@ -27,7 +27,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testInnerClosingTag() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<div><div/></div>", true));
+        PsiTag e = (PsiTag) firstElement(parseCode("<div><div/></div>"));
 
         assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
         assertEquals("<div/>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
@@ -102,7 +102,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testProp03() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>", true));
+        PsiTag e = (PsiTag) firstElement(parseCode("<PageContentGrid height={computePageHeight(miniDashboardHeight)} title=\"X\"/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());

@@ -79,14 +79,6 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseWith(builder, state);
             } else if (tokenType == m_types.ARROBASE) {
                 parseArrobase(builder, state);
-            } else if (tokenType == m_types.STRING) {
-                parseString(builder, state);
-            } else if (tokenType == m_types.INT) {
-                parseInt(builder, state);
-            } else if (tokenType == m_types.BOOL) {
-                parseBool(builder, state);
-            } else if (tokenType == m_types.ARRAY) {
-                parseArray(builder, state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUNCTION || tokenType == m_types.FUN) {
@@ -218,7 +210,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseAnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         // pop scopes until a known context is found
-        ParserScopeEnum context = endUntilStartExpression(state);
+        endUntilStartExpression(state);
         if (state.isCurrentResolution(function)) {
             state.popEnd();
         }
@@ -242,7 +234,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private ParserScopeEnum endUntilStartExpression(ParserState state) {
+    private void endUntilStartExpression(ParserState state) {
         ParserScopeEnum context = state.currentContext();
         while (context != let && context != type && context != moduleDeclaration && context != assert_) {
             if (context == file || state.isInScopeExpression()) {
@@ -250,45 +242,6 @@ public class OclParser extends CommonParser<OclTypes> {
             }
             state.popEnd();
             context = state.currentContext();
-        }
-        return context;
-    }
-
-    private void parseString(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(annotationName)) {
-            state.endAny();
-        } else if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
-        }
-    }
-
-    private void parseInt(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
-        }
-    }
-
-    private void parseBool(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
-        }
-    }
-
-    private void parseArray(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            builder.remapCurrentToken(m_types.LIDENT);
-            transitionToLetNamed(builder, state);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
@@ -691,12 +644,6 @@ public class OclParser extends CommonParser<OclTypes> {
         }
 
         state.wrapWith(m_types.LOWER_SYMBOL);
-    }
-
-    private void transitionTo(PsiBuilder builder, ParserState state, ParserScopeEnum resolution, IElementType wrapper) {
-        builder.remapCurrentToken(m_types.LIDENT);
-        state.updateCurrentResolution(resolution).complete();
-        state.wrapWith(wrapper);
     }
 
     private void transitionToLetNamed(PsiBuilder builder, ParserState state) {

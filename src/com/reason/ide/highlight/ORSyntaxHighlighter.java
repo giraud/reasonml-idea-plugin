@@ -23,8 +23,7 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
     private static final Set<IElementType> RML_KEYWORD_TYPES = of(
-            RmlTypes.INSTANCE.BOOL, RmlTypes.INSTANCE.STRING, RmlTypes.INSTANCE.FLOAT, RmlTypes.INSTANCE.CHAR,
-            RmlTypes.INSTANCE.INT, RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN,
+            RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN,
             RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE, RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL,
             RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE, RmlTypes.INSTANCE.ENDIF, RmlTypes.INSTANCE.SWITCH,
             RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN,
@@ -36,7 +35,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             RmlTypes.INSTANCE.METHOD, RmlTypes.INSTANCE.MOD, RmlTypes.INSTANCE.NEW, RmlTypes.INSTANCE.NONREC,
             RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE, RmlTypes.INSTANCE.VIRTUAL, RmlTypes.INSTANCE.VAL,
             RmlTypes.INSTANCE.PUB, RmlTypes.INSTANCE.PRI, RmlTypes.INSTANCE.OBJECT, RmlTypes.INSTANCE.MUTABLE,
-            RmlTypes.INSTANCE.UNIT, RmlTypes.INSTANCE.LIST, RmlTypes.INSTANCE.ARRAY
+            RmlTypes.INSTANCE.UNIT, RmlTypes.INSTANCE.WITH
     );
 
     private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
@@ -57,8 +56,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES = of(
-            OclTypes.INSTANCE.BOOL, OclTypes.INSTANCE.STRING, OclTypes.INSTANCE.FLOAT, OclTypes.INSTANCE.CHAR,
-            OclTypes.INSTANCE.INT, OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN,
+            OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN,
             OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE, OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL,
             OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.ENDIF, OclTypes.INSTANCE.SWITCH,
             OclTypes.INSTANCE.TRY, OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN,
@@ -70,7 +68,6 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             OclTypes.INSTANCE.METHOD, OclTypes.INSTANCE.MOD, OclTypes.INSTANCE.NEW, OclTypes.INSTANCE.NONREC,
             OclTypes.INSTANCE.OR, OclTypes.INSTANCE.PRIVATE, OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.AS,
             OclTypes.INSTANCE.MUTABLE, OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL, OclTypes.INSTANCE.PRI,
-            OclTypes.INSTANCE.LIST, OclTypes.INSTANCE.ARRAY,
             // OCaml
             OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE,
             OclTypes.INSTANCE.RECORD, OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY,

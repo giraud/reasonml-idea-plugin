@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class OclMllParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.COMMENT);
-    private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING);
+    private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING_VALUE);
 
     private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclMllLanguage.class));
 

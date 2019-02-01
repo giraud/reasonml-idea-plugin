@@ -44,11 +44,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // special keywords that can be used as lower identifier in records
             if (tokenType == m_types.REF && state.isCurrentResolution(recordBinding)) {
                 parseLIdent(builder, state);
-            } else if (tokenType == m_types.LIST && state.isCurrentResolution(recordBinding)) {
-                parseLIdent(builder, state);
             } else if (tokenType == m_types.METHOD && state.isCurrentResolution(recordBinding)) {
-                parseLIdent(builder, state);
-            } else if (tokenType == m_types.STRING && state.isCurrentResolution(recordBinding)) {
                 parseLIdent(builder, state);
             }
             //
@@ -76,16 +72,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 parsePercent(builder, state);
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, state);
-            } else if (tokenType == m_types.STRING) {
-                parseString(builder, state);
             } else if (tokenType == m_types.RAW) {
                 parseRaw(builder, state);
-            } else if (tokenType == m_types.INT) {
-                parseInt(builder, state);
-            } else if (tokenType == m_types.BOOL) {
-                parseBool(builder, state);
-            } else if (tokenType == m_types.ARRAY) {
-                parseArray(builder, state);
             } else if (tokenType == m_types.STRING_VALUE) {
                 parseStringValue(builder, state);
             } else if (tokenType == m_types.PIPE) {
@@ -340,38 +328,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.popEnd();
             }
             state.add(mark(builder, patternMatch, m_types.PATTERN_MATCH_EXPR).complete());
-        }
-    }
-
-    private void parseString(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
-        }
-    }
-
-    private void parseInt(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
-        }
-    }
-
-    private void parseBool(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
-        }
-    }
-
-    private void parseArray(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(let)) {
-            transitionTo(builder, state, letNamed, m_types.C_LET_NAME);
-        } else if (state.isCurrentResolution(external)) {
-            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 

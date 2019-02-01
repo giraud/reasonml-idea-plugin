@@ -97,7 +97,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
 
     @NotNull
     private String getRealName() {
-        PsiElement name = findChildByType(m_types.STRING);
+        PsiElement name = findChildByType(m_types.STRING_VALUE);
         return name == null ? "" : name.getText();
     }
 

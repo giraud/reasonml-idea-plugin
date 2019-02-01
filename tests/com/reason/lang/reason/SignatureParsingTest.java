@@ -63,7 +63,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     }
 
     public void testUnitFunParameter() {
-        PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1", true)));
+        PsiLet e = first(letExpressions(parseCode("let x = (~color=\"red\", ~radius=1, ()) => 1")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameterList());

@@ -2,6 +2,7 @@ package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
+import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
 %%
@@ -158,14 +159,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "option"    { return types.OPTION; }
     "None"      { return types.NONE; }
     "Some"      { return types.SOME; }
-
-    "bool"      { return types.BOOL; }
-    "char"      { return types.CHAR; }
-    "string"    { return types.STRING; }
-    "int"       { return types.INT; }
-    "float"     { return types.FLOAT; }
-    "list"      { return types.LIST; }
-    "array"     { return types.ARRAY; }
 
     "false"     { return types.BOOL_VALUE; }
     "true"      { return types.BOOL_VALUE; }

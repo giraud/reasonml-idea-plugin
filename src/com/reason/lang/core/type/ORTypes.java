@@ -72,14 +72,6 @@ public abstract class ORTypes {
 
     // Token element types
 
-    public ORTokenElementType ARRAY;
-    public ORTokenElementType BOOL;
-    public ORTokenElementType CHAR;
-    public ORTokenElementType FLOAT;
-    public ORTokenElementType INT;
-    public ORTokenElementType LIST;
-    public ORTokenElementType STRING;
-
     public ORTokenElementType BOOL_VALUE;
     public ORTokenElementType STRING_VALUE;
     public ORTokenElementType FLOAT_VALUE;

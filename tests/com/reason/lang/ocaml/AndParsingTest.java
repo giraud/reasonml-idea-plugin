@@ -41,7 +41,7 @@ public class AndParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeChaining() {
-        Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}", true));
+        Collection<PsiType> types = typeExpressions(parseCode("type update = | NoUpdate and 'state self = {state: 'state;}"));
 
         assertSize(2, types);
         assertEquals("update", first(types).getName());

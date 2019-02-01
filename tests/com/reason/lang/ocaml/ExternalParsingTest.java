@@ -26,7 +26,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
     }
 
     public void testString() {
-        PsiExternal e = firstOfType(parseCode("external string : string -> reactElement = \"%identity\"", true), PsiExternal.class);
+        PsiExternal e = firstOfType(parseCode("external string : string -> reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);

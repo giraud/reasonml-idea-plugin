@@ -111,7 +111,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testSignatureB() {
-        FileBase file = parseCode("let watchUrl: (url => unit) => watcherID;", true);
+        FileBase file = parseCode("let watchUrl: (url => unit) => watcherID;");
         PsiLet e = first(letExpressions(file));
 
         assertTrue(e.isFunction());
