@@ -311,6 +311,7 @@
 
         <codeInsight.parameterInfo language="Reason"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>
+        <consoleFilterProvider implementation="com.reason.build.console.BsConsoleFilterProvider"/>
     </extensions>
 
 </idea-plugin>
