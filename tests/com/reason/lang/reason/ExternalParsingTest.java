@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignature;
 
 public class ExternalParsingTest extends BaseParsingTestCase {
@@ -37,6 +38,7 @@ public class ExternalParsingTest extends BaseParsingTestCase {
         PsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
         assertEquals("string => reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }

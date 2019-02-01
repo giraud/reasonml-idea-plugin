@@ -85,6 +85,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseInt(builder, state);
             } else if (tokenType == m_types.BOOL) {
                 parseBool(builder, state);
+            } else if (tokenType == m_types.ARRAY) {
+                parseArray(builder, state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
             } else if (tokenType == m_types.FUNCTION || tokenType == m_types.FUN) {
@@ -258,6 +260,8 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(let)) {
             builder.remapCurrentToken(m_types.LIDENT);
             transitionToLetNamed(builder, state);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
@@ -265,6 +269,8 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(let)) {
             builder.remapCurrentToken(m_types.LIDENT);
             transitionToLetNamed(builder, state);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
@@ -272,6 +278,17 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(let)) {
             builder.remapCurrentToken(m_types.LIDENT);
             transitionToLetNamed(builder, state);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
+        }
+    }
+
+    private void parseArray(@NotNull PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(let)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            transitionToLetNamed(builder, state);
+        } else if (state.isCurrentResolution(external)) {
+            transitionTo(builder, state, externalNamed, m_types.LOWER_SYMBOL);
         }
     }
 
@@ -674,6 +691,12 @@ public class OclParser extends CommonParser<OclTypes> {
         }
 
         state.wrapWith(m_types.LOWER_SYMBOL);
+    }
+
+    private void transitionTo(PsiBuilder builder, ParserState state, ParserScopeEnum resolution, IElementType wrapper) {
+        builder.remapCurrentToken(m_types.LIDENT);
+        state.updateCurrentResolution(resolution).complete();
+        state.wrapWith(wrapper);
     }
 
     private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
