@@ -3,25 +3,26 @@ package com.reason.lang.core.type;
 import com.intellij.psi.tree.IElementType;
 
 public abstract class ORTypes {
+
     // Composite element types
 
-    public IElementType EXTERNAL_STMT;
-    public IElementType LET_STMT;
-    public IElementType MODULE_STMT;
-    public IElementType CLASS_STMT;
-    public IElementType EXP_TYPE;
-    public IElementType VAL_EXPR;
-    public IElementType CLASS_PARAMS;
-    public IElementType CLASS_CONSTR;
-    public IElementType CLASS_FIELD;
-    public IElementType CLASS_METHOD;
-    public IElementType ANNOTATION_EXPR;
-    public IElementType EXCEPTION_EXPR;
-    public IElementType OPEN_STMT;
-    public IElementType INCLUDE_STMT;
-    public IElementType LET_BINDING;
-    public IElementType MACRO_EXPR;
-    public IElementType MACRO_NAME;
+    public IElementType C_CLASS_CONSTR;
+    public IElementType C_CLASS_FIELD;
+    public IElementType C_CLASS_METHOD;
+    public IElementType C_CLASS_PARAMS;
+    public IElementType C_CLASS_STMT;
+    public IElementType C_EXTERNAL_STMT;
+    public IElementType C_EXP_TYPE;
+    public IElementType C_LET_STMT;
+    public IElementType C_MODULE_STMT;
+    public IElementType C_VAL_EXPR;
+    public IElementType C_ANNOTATION_EXPR;
+    public IElementType C_EXCEPTION_EXPR;
+    public IElementType C_OPEN;
+    public IElementType C_INCLUDE;
+    public IElementType C_LET_BINDING;
+    public IElementType C_MACRO_EXPR;
+    public IElementType C_MACRO_NAME;
     public IElementType C_FUN_EXPR;
     public IElementType C_FUN_PARAMS;
     public IElementType C_FUN_PARAM;
@@ -46,29 +47,29 @@ public abstract class ORTypes {
     public IElementType C_UNKNOWN_EXPR;
     public IElementType C_VARIANT_EXP;
     public IElementType C_VARIANT_CONSTRUCTOR;
-    public IElementType MIXIN_FIELD;
-    public IElementType MODULE_PATH;
-    public IElementType ASSERT_STMT;
-    public IElementType SCOPED_EXPR;
-    public IElementType IF_STMT;
-    public IElementType BIN_CONDITION;
-    public IElementType PATTERN_MATCH_EXPR;
-    public IElementType INTERPOLATION_EXPR;
-    public IElementType TAG_START;
-    public IElementType TAG_CLOSE;
-    public IElementType TAG_PROPERTY;
-    public IElementType FUN_CALL_PARAMS;
-    public IElementType RECORD_EXPR;
-    public IElementType RECORD_FIELD;
-    public IElementType SWITCH_EXPR;
-    public IElementType MATCH_EXPR;
-    public IElementType TRY_EXPR;
-    public IElementType WITH_EXPR;
-    public IElementType TYPE_CONSTR_NAME;
+    public IElementType C_MIXIN_FIELD;
+    public IElementType C_MODULE_PATH;
+    public IElementType C_ASSERT_STMT;
+    public IElementType C_SCOPED_EXPR;
+    public IElementType C_IF_STMT;
+    public IElementType C_BIN_CONDITION;
+    public IElementType C_PATTERN_MATCH_EXPR;
+    public IElementType C_INTERPOLATION_EXPR;
+    public IElementType C_TAG_START;
+    public IElementType C_TAG_CLOSE;
+    public IElementType C_TAG_PROPERTY;
+    public IElementType C_FUN_CALL_PARAMS;
+    public IElementType C_RECORD_EXPR;
+    public IElementType C_RECORD_FIELD;
+    public IElementType C_SWITCH_EXPR;
+    public IElementType C_MATCH_EXPR;
+    public IElementType C_TRY_EXPR;
+    public IElementType C_WITH_EXPR;
+    public IElementType C_TYPE_CONSTR_NAME;
     public IElementType C_TYPE_BINDING;
-    public IElementType UPPER_SYMBOL;
-    public IElementType LOWER_SYMBOL;
-    public IElementType STRUCT_EXPR;
+    public IElementType C_UPPER_SYMBOL;
+    public IElementType C_LOWER_SYMBOL;
+    public IElementType C_STRUCT_EXPR;
 
     // Token element types
 

@@ -40,10 +40,10 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
     @Override
     void runInvoke(@NotNull Project project, @NotNull PsiLocalOpen parentElement) {
         PsiElement firstChild = parentElement.getFirstChild();
-        PsiElement psiElement = ORUtil.nextSiblingWithTokenType(firstChild, RmlTypes.INSTANCE.SCOPED_EXPR);
+        PsiElement psiElement = ORUtil.nextSiblingWithTokenType(firstChild, RmlTypes.INSTANCE.C_SCOPED_EXPR);
         if (psiElement != null) {
             String text = psiElement.getText();
-            String modulePath = ORUtil.getTextUntilTokenType(firstChild, RmlTypes.INSTANCE.SCOPED_EXPR);
+            String modulePath = ORUtil.getTextUntilTokenType(firstChild, RmlTypes.INSTANCE.C_SCOPED_EXPR);
             PsiElement newOpen = ORElementFactory.createExpression(project, "{ open " + modulePath.substring(0, modulePath.length() - 1) + "; " + text.substring(1, text.length() - 1) + "; }");
             PsiElement grandParentElement = parentElement.getParent();
             if (newOpen != null) {

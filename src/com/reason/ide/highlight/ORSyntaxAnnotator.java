@@ -27,12 +27,12 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
         IElementType elementType = element.getNode().getElementType();
 
-        if (elementType == m_types.UPPER_SYMBOL) {
+        if (elementType == m_types.C_UPPER_SYMBOL) {
             PsiUpperSymbol symbol = (PsiUpperSymbol) element;
             TextAttributes colorAttribute = globalScheme.getAttributes(symbol.isVariant() ? ORSyntaxHighlighter.VARIANT_NAME_ : ORSyntaxHighlighter.MODULE_NAME_);
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(colorAttribute);
-        } else if (elementType == m_types.MACRO_NAME) {
+        } else if (elementType == m_types.C_MACRO_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(ORSyntaxHighlighter.ANNOTATION_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);

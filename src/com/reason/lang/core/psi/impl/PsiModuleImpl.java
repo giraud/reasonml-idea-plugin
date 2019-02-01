@@ -292,7 +292,7 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
             PsiElement nextSibling = eq.getNextSibling();
             IElementType elementType = nextSibling == null ? null : nextSibling.getNode().getElementType();
             while (elementType != null && elementType != m_types.SEMI) {
-                if (elementType != TokenType.WHITE_SPACE && elementType != m_types.UPPER_SYMBOL && elementType != m_types.DOT) {
+                if (elementType != TokenType.WHITE_SPACE && elementType != m_types.C_UPPER_SYMBOL && elementType != m_types.DOT) {
                     isALias = false;
                     break;
                 }

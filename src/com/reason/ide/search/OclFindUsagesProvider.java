@@ -17,7 +17,7 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     public WordsScanner getWordsScanner() {
         return new DefaultWordsScanner(
                 new OclLexer(),
-                TokenSet.create(OclTypes.INSTANCE.UPPER_SYMBOL, OclTypes.INSTANCE.LOWER_SYMBOL, OclTypes.INSTANCE.C_LET_NAME),
+                TokenSet.create(OclTypes.INSTANCE.C_UPPER_SYMBOL, OclTypes.INSTANCE.C_LOWER_SYMBOL, OclTypes.INSTANCE.C_LET_NAME),
                 TokenSet.EMPTY,
                 TokenSet.EMPTY);
     }
