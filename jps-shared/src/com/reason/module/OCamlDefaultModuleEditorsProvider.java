@@ -12,6 +12,7 @@ public class OCamlDefaultModuleEditorsProvider implements ModuleConfigurationEdi
     public ModuleConfigurationEditor[] createEditors(ModuleConfigurationState state) {
         Module module = state.getRootModel().getModule();
         if (ModuleType.get(module) instanceof OCamlModuleType) {
+            // Find all folders containing dune file ?
             return new ModuleConfigurationEditor[]{
                     new OCamlContentEntriesEditor(module.getName(), state)
             };
