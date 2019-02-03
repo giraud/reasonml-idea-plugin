@@ -82,7 +82,7 @@ public class PsiFileHelper {
     }
 
     @Nullable
-    static PsiQualifiedNamedElement getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
+    public static PsiQualifiedNamedElement getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
         Collection<PsiModule> modules = getModuleExpressions(file);
         for (PsiModule module : modules) {
             if (name.equals(module.getName())) {

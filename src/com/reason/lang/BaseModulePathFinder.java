@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.PsiFinder;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;

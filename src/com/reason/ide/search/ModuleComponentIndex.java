@@ -10,12 +10,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class ModuleCompIndex extends StringStubIndexExtension<PsiModule> {
+public class ModuleComponentIndex extends StringStubIndexExtension<PsiModule> {
     private static final int VERSION = 1;
-    private static final ModuleCompIndex INSTANCE = new ModuleCompIndex();
+    private static final ModuleComponentIndex INSTANCE = new ModuleComponentIndex();
 
     @NotNull
-    public static ModuleCompIndex getInstance() {
+    public static ModuleComponentIndex getInstance() {
         return INSTANCE;
     }
 

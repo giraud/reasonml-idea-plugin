@@ -13,7 +13,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.awt.RelativePoint;
 import com.reason.ide.ORNotification;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.PsiFinder;
+import com.reason.ide.search.PsiFinder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

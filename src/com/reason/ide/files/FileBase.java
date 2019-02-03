@@ -3,10 +3,12 @@ package com.reason.ide.files;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.IconProvider;
 import com.reason.lang.ModuleHelper;
@@ -14,12 +16,12 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,17 +58,20 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
         return PsiFileHelper.getExpressions(this);
     }
 
-    @Nullable
-    public PsiNamedElement getTypeExpression(@NotNull String name) {
-        List<PsiType> expressions = PsiFileHelper.getTypeExpressions(this);
-        if (!expressions.isEmpty()) {
-            for (PsiType expression : expressions) {
-                if (name.equals(expression.getName())) {
-                    return expression;
+    @NotNull
+    public <T extends PsiNamedElement> Collection<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+
+        if (name != null) {
+            Collection<T> children = PsiTreeUtil.findChildrenOfType(this, clazz);
+            for (T child : children) {
+                if (name.equals(child.getName())) {
+                    result.add(child);
                 }
             }
         }
-        return null;
+
+        return result;
     }
 
     @Nullable
@@ -102,5 +107,10 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
                 return IconProvider.getFileModuleIcon(FileBase.this);
             }
         };
+    }
+
+    public boolean isInterface() {
+        FileType fileType = getFileType();
+        return fileType instanceof RmlInterfaceFileType || fileType instanceof OclInterfaceFileType;
     }
 }

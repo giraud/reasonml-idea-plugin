@@ -9,11 +9,11 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.signature.ORSignature;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
-import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -132,9 +132,9 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             if (tagName != null) {
                 FileBase reactDOMRe = psiFinder.findFileModule(project, "ReactDOMRe");
                 if (reactDOMRe != null) {
-                    PsiNamedElement props = reactDOMRe.getTypeExpression("props");
-                    if (props != null) {
-                        PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, PsiTypeBinding.class);
+                    Collection<PsiType> props = reactDOMRe.getExpressions("props", PsiType.class);
+                    if (props.size() == 1) {
+                        PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props.iterator().next(), PsiTypeBinding.class);
                         if (binding != null) {
                             PsiRecord record = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
                             if (record != null) {

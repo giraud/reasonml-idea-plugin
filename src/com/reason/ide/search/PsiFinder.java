@@ -1,4 +1,4 @@
-package com.reason.lang.core;
+package com.reason.ide.search;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
@@ -14,10 +14,9 @@ import com.reason.Log;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.*;
-import com.reason.ide.search.IndexKeys;
-import com.reason.ide.search.ModuleCompIndex;
-import com.reason.ide.search.ModuleFqnIndex;
-import com.reason.ide.search.ModuleIndex;
+import com.reason.lang.core.ORFileType;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +41,7 @@ public final class PsiFinder {
 
     @Nullable
     public PsiModule findComponent(@NotNull String fqn, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        ModuleCompIndex index = ModuleCompIndex.getInstance();
+        ModuleComponentIndex index = ModuleComponentIndex.getInstance();
 
         Collection<PsiModule> modules = index.get(fqn, project, scope);
         if (modules.isEmpty()) {
@@ -56,7 +55,7 @@ public final class PsiFinder {
 
     @NotNull
     public Collection<PsiModule> findComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
-        ModuleCompIndex index = ModuleCompIndex.getInstance();
+        ModuleComponentIndex index = ModuleComponentIndex.getInstance();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
         return index.getAllKeys(project).
@@ -222,7 +221,10 @@ public final class PsiFinder {
 
     @Nullable
     public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
-        return findFileModule(project, name, GlobalSearchScope.allScope(project));
+        //long start = System.currentTimeMillis();
+        FileBase fileModule = findFileModule(project, name, allScope(project));
+        //System.out.println("findFileModule perf: " + (System.currentTimeMillis() - start) + "ms");
+        return fileModule;
     }
 
     @Nullable

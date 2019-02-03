@@ -15,7 +15,7 @@ import com.intellij.util.ProcessingContext;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.RmlFile;
-import com.reason.lang.core.PsiFinder;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 

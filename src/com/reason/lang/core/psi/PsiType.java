@@ -13,6 +13,9 @@ import java.util.Collection;
 public interface PsiType extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
 
     @Nullable
+    PsiTypeConstrName getConstrName();
+
+    @Nullable
     PsiElement getBinding();
 
     @NotNull

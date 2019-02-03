@@ -11,7 +11,7 @@ import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
-import com.reason.lang.core.PsiFinder;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiNamedElement;

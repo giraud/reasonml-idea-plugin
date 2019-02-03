@@ -3,8 +3,8 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.BaseModulePathFinder;
-import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 

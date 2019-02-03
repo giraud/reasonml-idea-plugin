@@ -79,6 +79,12 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
     }
     //endregion
 
+    @Nullable
+    @Override
+    public PsiTypeConstrName getConstrName() {
+        return findChildByClass(PsiTypeConstrName.class);
+    }
+
     @Override
     @Nullable
     public PsiTypeBinding getBinding() {

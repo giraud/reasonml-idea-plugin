@@ -11,8 +11,8 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ArrayUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.IndexKeys;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class MlModuleContributor implements ChooseByNameContributor {
+public class ORModuleContributor implements ChooseByNameContributor {
     @NotNull
     @Override
     public NavigationItem[] getItemsByName(@NotNull String name, String pattern, @NotNull Project project, boolean includeNonProjectItems) {

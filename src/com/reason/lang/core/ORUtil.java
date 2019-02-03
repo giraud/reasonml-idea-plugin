@@ -29,7 +29,7 @@ public class ORUtil {
     }
 
     @NotNull
-    static String moduleNameToFileName(@NotNull String name) {
+    public static String moduleNameToFileName(@NotNull String name) {
         if (name.isEmpty()) {
             return name;
         }
