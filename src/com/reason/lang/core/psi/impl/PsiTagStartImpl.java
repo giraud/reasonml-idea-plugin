@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
@@ -23,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.intellij.psi.search.GlobalSearchScope.allScope;
 
 public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     public PsiTagStartImpl(@NotNull ASTNode node) {
@@ -130,7 +131,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             // no tag name, it's not a custom tag
             tagName = findChildByClass(PsiLowerSymbol.class);
             if (tagName != null) {
-                FileBase reactDOMRe = psiFinder.findFileModule(project, "ReactDOMRe");
+                FileBase reactDOMRe = psiFinder.findFileModule(project, "ReactDOMRe", allScope(project));
                 if (reactDOMRe != null) {
                     Collection<PsiType> props = reactDOMRe.getExpressions("props", PsiType.class);
                     if (props.size() == 1) {
@@ -152,7 +153,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             if (module == null) {
                 // If nothing found, look for an inner module in current file
                 String fileModuleName = ((FileBase) tagName.getContainingFile()).asModuleName();
-                module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), project, GlobalSearchScope.allScope(project));
+                module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), project, allScope(project));
             }
 
             if (module != null) {

@@ -6,20 +6,26 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class FileModuleData implements Comparable<FileModuleData> {
-    private String m_moduleName;
-    private boolean m_isInterface;
+    private final String m_moduleName;
+    private final boolean m_isInterface;
+    private final boolean m_isComponent;
 
-    public FileModuleData(String moduleName, boolean isInterface) {
+    public FileModuleData(String moduleName, boolean isInterface, boolean hasInterface) {
         m_moduleName = moduleName;
         m_isInterface = isInterface;
+        m_isComponent = hasInterface;
     }
 
-    public String getModuleName() {
+    String getModuleName() {
         return m_moduleName;
     }
 
-    public boolean isInterface() {
+    boolean isInterface() {
         return m_isInterface;
+    }
+
+    boolean isComponent() {
+        return m_isComponent;
     }
 
     @Override

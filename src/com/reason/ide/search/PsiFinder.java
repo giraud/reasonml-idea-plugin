@@ -216,15 +216,21 @@ public final class PsiFinder {
             }
         }
 
-        return file;
-    }
+        //Collection<VirtualFile> files = FileModuleIndexService.getService().getInterfaceFilesWithName(name, scope);
+        //if (files.isEmpty()) {
+        //    files = FileModuleIndexService.getService().getImplementationFilesWithName(name, scope);
+        //}
+        //
+        //Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+        //VirtualFile file2 = null;
+        //for (VirtualFile itfile : files) {
+        //    if (bucklescript.isDependency(itfile)) {
+        //        file2 = itfile;
+        //        break;
+        //    }
+        //}
 
-    @Nullable
-    public FileBase findFileModule(@NotNull Project project, @NotNull String name) {
-        //long start = System.currentTimeMillis();
-        FileBase fileModule = findFileModule(project, name, allScope(project));
-        //System.out.println("findFileModule perf: " + (System.currentTimeMillis() - start) + "ms");
-        return fileModule;
+        return file;
     }
 
     @Nullable
@@ -353,7 +359,7 @@ public final class PsiFinder {
             String alias = moduleReference.getAlias();
 
             if (alias != null) {
-                FileBase fileModule = findFileModule(project, alias);
+                FileBase fileModule = findFileModule(project, alias, scope);
                 if (fileModule != null) {
                     return fileModule;
                 }
@@ -377,7 +383,7 @@ public final class PsiFinder {
         // extract first token of path
         String[] names = moduleQName.split("\\.");
 
-        FileBase fileModule = findFileModule(project, names[0]);
+        FileBase fileModule = findFileModule(project, names[0], GlobalSearchScope.allScope(project));
         if (fileModule != null) {
             if (1 < names.length) {
                 PsiQualifiedNamedElement currentModule = fileModule;

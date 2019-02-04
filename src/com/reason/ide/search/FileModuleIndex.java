@@ -20,20 +20,22 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
 
     private static final ID<String, FileModuleData> NAME = ID.create("reason.index.fileModule");
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
-    private static final int VERSION = 3;
+    private static final int VERSION = 1;
 
     public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
         @Override
         public void save(@NotNull DataOutput out, FileModuleData value) throws IOException {
             out.writeBoolean(value.isInterface());
+            out.writeBoolean(value.isComponent());
             out.writeUTF(value.getModuleName());
         }
 
         @Override
         public FileModuleData read(@NotNull DataInput in) throws IOException {
             boolean isInterface = in.readBoolean();
+            boolean isComponent = in.readBoolean();
             String moduleName = in.readUTF();
-            return new FileModuleData(moduleName, isInterface);
+            return new FileModuleData(moduleName, isInterface, isComponent);
         }
     }
 
@@ -62,7 +64,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                 Map<String, FileModuleData> map = new HashMap<>();
                 FileBase psiFile = (FileBase) inputData.getPsiFile();
                 String moduleName = psiFile.asModuleName();
-                map.put(moduleName, new FileModuleData(moduleName, psiFile.isInterface()));
+                map.put(moduleName, new FileModuleData(moduleName, psiFile.isInterface(), psiFile.isComponent()));
                 return map;
             }
             return Collections.emptyMap();

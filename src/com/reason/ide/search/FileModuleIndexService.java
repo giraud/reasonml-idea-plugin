@@ -23,6 +23,14 @@ public class FileModuleIndexService {
         return ServiceManager.getService(FileModuleIndexService.class);
     }
 
+    public Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+        if (moduleName == null) {
+            return Collections.emptyList();
+        }
+
+        return FileBasedIndex.getInstance().getContainingFiles(m_index.getName(), moduleName, scope);
+    }
+
     public Collection<VirtualFile> getInterfaceFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();

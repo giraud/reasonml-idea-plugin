@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
@@ -88,7 +89,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         PsiElement prevSibling = myElement.getPrevSibling();
         if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
-            FileBase fileModule = psiFinder.findFileModule(project, m_referenceName);
+            FileBase fileModule = psiFinder.findFileModule(project, m_referenceName, GlobalSearchScope.allScope(project));
             if (fileModule != null) {
                 LOG.debug("  file", (PsiFile) fileModule);
                 return fileModule;
