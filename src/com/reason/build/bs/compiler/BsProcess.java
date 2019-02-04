@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.intellij.execution.process.ProcessOutputTypes.STDOUT;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
@@ -159,6 +160,9 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     public void terminated() {
+        if (m_bsb != null) {
+            m_bsb.notifyTextAvailable("Compilation ended", STDOUT);
+        }
         m_started.set(false);
     }
 
