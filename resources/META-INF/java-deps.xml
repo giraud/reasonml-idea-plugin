@@ -3,8 +3,8 @@
         <sdkType implementation="com.reason.OCamlSdk"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
         <moduleType id="ocamlModuleType" implementationClass="com.reason.OCamlModuleType"/>
-        <moduleExtension implementation="com.reason.module.OCamlTestModuleExtensionImpl"/>
         <moduleConfigurationEditorProvider implementation="com.reason.module.OCamlDefaultModuleEditorsProvider"/>
+        <projectStructure.sourceRootEditHandler implementation="com.reason.module.OCamlBinaryRootEditHandler"/>
     </extensions>
     <project-components>
         <component>

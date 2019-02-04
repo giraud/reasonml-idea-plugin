@@ -12,7 +12,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.module.OCamlTestModuleExtension;
 import com.reason.wizard.OCamlModuleWizardStep;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +31,6 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
 
     @Override
     public void setupRootModel(ModifiableRootModel rootModel) {
-        OCamlTestModuleExtension moduleExtension = rootModel.getModuleExtension(OCamlTestModuleExtension.class);
-        moduleExtension.setLevel("Test");
-
         //if (m_odk != null) {
         //    rootModel.setSdk(m_odk);
         //} else {
