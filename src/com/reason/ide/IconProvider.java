@@ -1,7 +1,9 @@
 package com.reason.ide;
 
+import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.BitUtil;
 import com.reason.Icons;
 import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
@@ -16,16 +18,16 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     public Icon getIcon(@NotNull PsiElement element, int flags) {
         if (element instanceof PsiFile) {
             if (element instanceof OclFile) {
-                return Icons.OCL_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.OCL_FILE_MODULE : Icons.OCL_FILE;
             }
             if (element instanceof OclInterfaceFile) {
-                return Icons.OCL_INTERFACE_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.OCL_FILE_MODULE_INTERFACE : Icons.OCL_INTERFACE_FILE;
             }
             if (element instanceof RmlFile) {
-                return Icons.RML_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.RML_FILE_MODULE : Icons.RML_FILE;
             }
             if (element instanceof RmlInterfaceFile) {
-                return Icons.RML_INTERFACE_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_INTERFACE_FILE;
             }
         } else if (element instanceof PsiModule) {
             return Icons.MODULE;

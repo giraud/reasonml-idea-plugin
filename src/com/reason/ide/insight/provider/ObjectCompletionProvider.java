@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
@@ -24,16 +23,11 @@ import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ObjectCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    @NotNull
-    private final Log m_debug;
-
-    public ObjectCompletionProvider() {
-        m_debug = new Log(Logger.getInstance("ReasonML.insight.object"));
-    }
+    private static final Log LOG = Log.create("insight.object");
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        m_debug.debug("RECORD expression completion");
+        LOG.debug("RECORD expression completion");
 
         Project project = parameters.getOriginalFile().getProject();
         PsiElement cursorElement = parameters.getPosition();

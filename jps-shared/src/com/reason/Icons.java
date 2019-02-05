@@ -42,6 +42,7 @@ public class Icons {
     public static final Icon EXTERNAL = getIcon("/nodes/enum.png");
     public static final Icon OBJECT = getIcon("/json/object.png");
 
+    public static final Icon VIRTUAL_NAMESPACE = getIcon("/actions/GroupByPackage.png");
     public static final Icon OPEN = getIcon("/objectBrowser/showModules.png");
     public static final Icon INCLUDE = getIcon("/objectBrowser/showModules.png");
 

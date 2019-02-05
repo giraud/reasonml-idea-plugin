@@ -15,12 +15,12 @@ public class Log {
     private static final String SEP = ": ";
     private final Logger m_log;
 
-    public Log(Logger log) {
-        m_log = log;
+    private Log(String name) {
+        m_log = Logger.getInstance("ReasonML." + name);
     }
 
-    public Log(String name) {
-        m_log = Logger.getInstance("ReasonML." + name);
+    public static Log create(String name) {
+        return new Log(name);
     }
 
     public boolean isDebugEnabled() {
@@ -141,5 +141,9 @@ public class Log {
 
     public void error(String message, Exception e) {
         m_log.error(message, e);
+    }
+
+    public void info(String msg) {
+        m_log.info(msg);
     }
 }

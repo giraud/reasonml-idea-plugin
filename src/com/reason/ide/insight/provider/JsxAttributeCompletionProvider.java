@@ -11,8 +11,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.util.ProcessingContext;
-import com.reason.Log;
 import com.reason.Icons;
+import com.reason.Log;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
@@ -28,8 +28,7 @@ import static java.util.stream.Collectors.toList;
 
 public class JsxAttributeCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    @NotNull
-    private static final Log LOG = new Log("insight.jsxAttribute");
+    private static final Log LOG = Log.create("insight.jsxAttribute");
 
     private final ModulePathFinder m_modulePathFinder;
 

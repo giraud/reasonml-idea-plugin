@@ -19,7 +19,8 @@ import java.io.InputStreamReader;
 
 public class RincewindProcess implements ProjectComponent {
 
-    private final static Log LOG = new Log("ReasonML.types.rincewind");
+    private final static Log LOG = Log.create("types.rincewind");
+
     private final Project m_project;
 
     RincewindProcess(Project project) {

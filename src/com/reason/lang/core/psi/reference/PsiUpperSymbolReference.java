@@ -32,12 +32,12 @@ import static java.util.stream.Collectors.toList;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
+    private static final Log LOG = Log.create("ref.upper");
+
     @Nullable
     private final String m_referenceName;
     @NotNull
     private final ORTypes m_types;
-
-    private static final Log LOG = new Log("ref.upper");
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
         super(element, ORUtil.getTextRangeForReference(element));

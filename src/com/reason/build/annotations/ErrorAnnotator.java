@@ -2,7 +2,6 @@ package com.reason.build.annotations;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
@@ -18,7 +17,7 @@ import java.util.Collection;
 
 public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Collection<ErrorAnnotator.BsbErrorAnnotation>> {
 
-    private final Log log = new Log(Logger.getInstance("ReasonML.build"));
+    private static final Log LOG = Log.create("build");
 
     @Nullable
     @Override
@@ -52,8 +51,8 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
                 int startOffset = editor.logicalPositionToOffset(annotation.start);
                 int endOffset = editor.logicalPositionToOffset(annotation.end);
                 if (0 <= startOffset && 0 <= endOffset && startOffset < endOffset) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("annotate " + startOffset + ":" + endOffset + " '" + annotation.message + "'");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + annotation.message + "'");
                     }
                     TextRangeInterval range = new TextRangeInterval(startOffset, endOffset);
                     if (annotation.isError) {

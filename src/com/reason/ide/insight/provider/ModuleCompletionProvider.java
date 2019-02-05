@@ -29,7 +29,7 @@ import java.util.List;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
-    private static final Log LOG = new Log("insight.module");
+    private static final Log LOG = Log.create("insight.module");
 
     private final ORTypes m_types;
 

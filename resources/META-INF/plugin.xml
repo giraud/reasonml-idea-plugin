@@ -211,6 +211,7 @@
         <stubIndex implementation="com.reason.ide.search.ExternalIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.FileModuleIndex"/>
+        <fileBasedIndex implementation="com.reason.ide.search.NamespaceIndex"/>
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>

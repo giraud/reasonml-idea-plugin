@@ -28,8 +28,7 @@ import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class DotExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    @NotNull
-    private final static Log LOG = new Log("insight.dot");
+    private final static Log LOG = Log.create("insight.dot");
 
     private final ModulePathFinder m_modulePathFinder;
 

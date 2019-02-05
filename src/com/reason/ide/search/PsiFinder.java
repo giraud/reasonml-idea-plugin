@@ -31,8 +31,7 @@ import static com.intellij.psi.search.GlobalSearchScope.allScope;
 public final class PsiFinder {
 
     private static final PsiFinder INSTANCE = new PsiFinder();
-
-    private final Log LOG = new Log("finder");
+    private static final Log LOG = Log.create("finder");
 
     @NotNull
     public static PsiFinder getInstance() {

@@ -57,6 +57,8 @@ repositories {
 dependencies {
     compile project('jps-builder')
     compile project('jps-shared')
+    compile 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+    runtime 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
 }
 
 project(':jps-builder') {

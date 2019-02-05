@@ -1,49 +1,61 @@
 package com.reason.build.bs;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Joiner;
+import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class BsConfig {
+import static com.reason.StringUtil.toFirstUpper;
+
+public class BsConfig {
 
     private static final Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
-    private static final Pattern NAME_REGEXP = Pattern.compile(".*\"name\":\\s*\"([^\"]*?)\".*");
     private static final Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
 
     private final static Logger LOG = Logger.getInstance("ReasonML.bsConfig");
 
     @NotNull
     private final Path m_basePath;
+    @NotNull private final String m_name;
     @NotNull
     private final String m_namespace;
     @NotNull
     private final Path[] m_deps;
     private final String m_rootBsPlatform;
+    private Set<String> m_sources;
 
-    private BsConfig(VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @Nullable Path[] deps) {
-        m_basePath = FileSystems.getDefault().getPath(rootFile.getPath());
+    private BsConfig(@Nullable VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @Nullable Path[] deps) {
+        m_basePath = rootFile == null ? null : FileSystems.getDefault().getPath(rootFile.getPath());
+        m_name = name;
         m_namespace = hasNamespace ? toNamespace(name) : "";
         m_rootBsPlatform = FileSystems.getDefault().getPath("node_modules", "bs-platform").toString();
         m_deps = deps == null ? new Path[]{} : deps;
     }
 
     @NotNull
-    String getNamespace() {
+    public String getNamespace() {
         return m_namespace;
+    }
+
+    public boolean hasNamespace() {
+        return !m_namespace.isEmpty();
     }
 
     boolean accept(@Nullable String canonicalPath) {
@@ -68,26 +80,80 @@ class BsConfig {
     }
 
     @NotNull
-    static BsConfig read(@NotNull VirtualFile bsconfig) {
+    public static BsConfig read(@NotNull VirtualFile file) {
         try {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(bsconfig.getInputStream()))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
                 // Quick and dirty code to read json values from bsconfig
                 StringBuilder content = new StringBuilder();
-                reader.lines().forEach(line -> content.append(line.trim()));
-
-                String jsonContent = content.toString();
-                String name = readName(jsonContent);
-                boolean hasNamespace = readNamespace(jsonContent);
-                Path[] deps = readDependencies(jsonContent);
-
-                // find location of bs dependencies, could be lib/ocaml or jscomp/runtime (depends on os)
-                VirtualFile rootFile = bsconfig.getParent();
-
-                return new BsConfig(rootFile, name, hasNamespace, deps);
+                reader.lines().forEach(content::append);
+                return read(file.getParent(), file.getPath(), content.toString());
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
+    }
+
+    @NotNull
+    public static BsConfig read(@Nullable VirtualFile rootFile, @NotNull String path, @NotNull String jsonWithComments) {
+        Set<String> sources = new THashSet<>();
+
+        String jsonContent = normaliseJson(jsonWithComments);
+        //System.out.println("NORMALISED");
+        //System.out.println(jsonContent);
+        //System.out.println("NORMALISED");
+        try {
+            JsonValue parse = Json.parse(jsonContent);
+            JsonObject object = parse.asObject();
+
+            String name = object.getString("name", "");
+
+            // read sources
+            JsonValue jsonSources = object.get("sources");
+            if (jsonSources.isString()) {
+                sources.add(jsonSources.asString());
+            } else if (jsonSources.isObject()) {
+                String src = parseSourceItem(jsonSources);
+                if (src != null) {
+                    sources.add(src);
+                }
+            } else if (jsonSources.isArray()) {
+                JsonArray jsonValues = jsonSources.asArray();
+                for (JsonValue jsonValue : jsonValues) {
+                    if (jsonValue.isString()) {
+                        sources.add(jsonValue.asString());
+                    } else if (jsonValue.isObject()) {
+                        String src = parseSourceItem(jsonValue);
+                        if (src != null) {
+                            sources.add(src);
+                        }
+                    }
+                }
+            }
+
+            boolean hasNamespace = readNamespace(jsonContent);
+            Path[] deps = readDependencies(jsonContent);
+
+            BsConfig bsConfig = new BsConfig(rootFile, name, hasNamespace, deps);
+            bsConfig.m_sources = sources;
+
+            return bsConfig;
+        } catch (Exception ex) {
+            System.out.println("EXCEPTION " + ex.getMessage());
+            System.out.println("json from " + path);
+            System.out.println(jsonContent);
+            throw ex;
+        }
+    }
+
+    @NotNull
+    private static String normaliseJson(@NotNull String jsonWithComments) {
+        return jsonWithComments.replaceAll("//.*\n", "").replaceAll("\n", " ").replaceAll("/\\*.*?\\*/", "");
+    }
+
+    @Nullable
+    private static String parseSourceItem(@NotNull JsonValue jsonSources) {
+        JsonObject sourceItem = jsonSources.asObject();
+        return sourceItem.getString("dir", null);
     }
 
     @Nullable
@@ -113,18 +179,6 @@ class BsConfig {
         return result == null ? null : result.toArray(new Path[0]);
     }
 
-    @NotNull
-    private static String readName(@NotNull String content) {
-        String result = "";
-
-        Matcher matcher = NAME_REGEXP.matcher(content);
-        if (matcher.matches()) {
-            result = matcher.group(1);
-        }
-
-        return result;
-    }
-
     private static boolean readNamespace(@NotNull String content) {
         boolean result = false;
 
@@ -141,24 +195,31 @@ class BsConfig {
         StringBuilder result = new StringBuilder(name.replaceAll("_", ""));
 
         String[] tokens = result.toString().split("[-@/]");
+        result = new StringBuilder(toFirstUpper(tokens[0]));
         if (1 < tokens.length) {
-            result = new StringBuilder(upperCaseFirst(tokens[0]));
             for (int i = 1; i < tokens.length; i++) {
-                result.append(upperCaseFirst(tokens[i]));
+                result.append(toFirstUpper(tokens[i]));
             }
         }
 
         return result.toString();
     }
 
-    @NotNull
-    private static String upperCaseFirst(@Nullable String value) {
-        if (value == null || value.isEmpty()) {
-            return "";
-        }
+    public Set<String> getSources() {
+        return m_sources;
+    }
 
-        String result = value.substring(0, 1).toUpperCase(Locale.getDefault());
-        result += value.substring(1);
-        return result;
+    public String getName() {
+        return m_name;
+    }
+
+    public boolean isInSources(@NotNull VirtualFile file) {
+        Path relativePath = m_basePath.relativize(new File(file.getPath()).toPath());
+        for (String source : m_sources) {
+            if (relativePath.startsWith(source)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

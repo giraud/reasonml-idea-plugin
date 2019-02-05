@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
@@ -26,16 +25,12 @@ import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
-    @NotNull
-    private final Log m_debug;
 
-    public JsxNameCompletionProvider() {
-        m_debug = new Log(Logger.getInstance("ReasonML.insight.jsxname"));
-    }
+    private static final Log LOG = Log.create("insight.jsxname");
 
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
-        m_debug.debug("JSX name expression completion");
+        LOG.debug("JSX name expression completion");
 
         PsiFinder psiFinder = PsiFinder.getInstance();
 
@@ -45,7 +40,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
 
         // Find all files that are components !
         Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation).stream().filter(FileBase::isComponent).collect(Collectors.toList());
-        m_debug.debug("Files found", files.size());
+        LOG.debug("Files found", files.size());
         for (FileBase file : files) {
             String moduleName = file.asModuleName();
             if (!fileModuleName.equals(moduleName) && file.isComponent()) {
@@ -59,14 +54,17 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         }
 
         Collection<PsiModule> innerModules = psiFinder.findComponents(project, GlobalSearchScope.allScope(project));
-        m_debug.debug("Inner modules found", innerModules.size());
+        LOG.debug("Inner modules found", innerModules.size());
         for (PsiModule module : innerModules) {
-            resultSet.addElement(LookupElementBuilder.
-                    create(module.getName()).
-                    withIcon(getProvidersIcon(module, 0)).
-                    withTypeText(((FileBase) module.getContainingFile()).asModuleName()).
-                    withInsertHandler((context, item) -> insertTagNameHandler(project, context, module.getName()))
-            );
+            String moduleName = module.getName();
+            if (moduleName != null) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(moduleName).
+                        withIcon(getProvidersIcon(module, 0)).
+                        withTypeText(((FileBase) module.getContainingFile()).asModuleName()).
+                        withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
+                );
+            }
 
         }
     }
