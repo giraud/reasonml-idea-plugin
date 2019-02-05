@@ -60,7 +60,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagPropWithParen() {
-        PsiTag tag = (PsiTag) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>"));
+        PsiTag tag = (PsiTag) firstElement(parseCode("<div style=(x) onFocus=a11y.onFocus/>", true));
 
         Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(tag, PsiTagProperty.class);
         assertEquals(2, properties.size());
@@ -72,11 +72,21 @@ public class JsxParsingTest extends BaseParsingTestCase {
     public void testTagPropsWithDot() {
         PsiTag e = (PsiTag) firstElement(parseCode("<a className=Styles.link href=h download=d>"));
 
-        List<PsiTagProperty> props = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class));
+        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
         assertSize(3, props);
         assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(0), PsiTagPropertyValue.class));
         assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(1), PsiTagPropertyValue.class));
         assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(2), PsiTagPropertyValue.class));
+
+    }
+
+    public void testTagPropsWithLocalOpen() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<Icon width=Dimensions.(3->px) height=Dimensions.(2->rem)>", true));
+
+        List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+        assertSize(2, props);
+        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(0), PsiTagPropertyValue.class));
+        assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(1), PsiTagPropertyValue.class));
 
     }
 

@@ -243,25 +243,50 @@ public final class PsiFinder {
         PsiFile[] filesByName = FilenameIndex.getFilesByName(project, name + "." + ext, scope);
         if (0 < filesByName.length) {
             LOG.debug("  found", filesByName);
-            for (PsiFile file : filesByName) {
+
+            int foundIndex = -1;
+            for (int i = 0; i < filesByName.length; i++) {
+                PsiFile file = filesByName[i];
                 if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
-                    result = (FileBase) file;
-                    LOG.debug("  resolved to", file);
-                    break;
+                    if (foundIndex == -1) {
+                        foundIndex = i;
+                    } else if (!file.getVirtualFile().getPath().contains("lib")) {
+                        foundIndex = i;
+                    }
                 }
+            }
+
+            if (0 <= foundIndex) {
+                result = (FileBase) filesByName[foundIndex];
             }
         }
 
         if (result == null) {
             // retry with lower case name
             filesByName = FilenameIndex.getFilesByName(project, ORUtil.moduleNameToFileName(name) + "." + ext, scope);
-            for (PsiFile file : filesByName) {
-                if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
-                    result = (FileBase) file;
-                    LOG.debug("  resolved to", file);
-                    break;
+            if (0 < filesByName.length) {
+                LOG.debug("  found", filesByName);
+
+                int foundIndex = -1;
+                for (int i = 0; i < filesByName.length; i++) {
+                    PsiFile file = filesByName[i];
+                    if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
+                        if (foundIndex == -1) {
+                            foundIndex = i;
+                        } else if (!file.getVirtualFile().getPath().contains("lib")) {
+                            foundIndex = i;
+                        }
+                    }
+                }
+
+                if (0 <= foundIndex) {
+                    result = (FileBase) filesByName[foundIndex];
                 }
             }
+        }
+
+        if (result != null && LOG.isDebugEnabled()) {
+            LOG.debug("  resolved to " + result.getVirtualFile());
         }
 
         return result;

@@ -961,10 +961,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
             ParserScope scope = state.getLatestScope();
             if (scope != null && (scope.isResolution(localOpen) || (scope.isResolution(jsxTagPropertyEqValue) && !scope.isScope()))) {
-                if (scope.isResolution(jsxTagPropertyEqValue)) {
+                if (scope.isResolution(localOpen)) {
                     state.popEnd();
                 }
-                state.popEnd();
+                if (state.isCurrentResolution(jsxTagPropertyEqValue)) {
+                    state.popEnd().popEnd();
+                }
             }
         }
     }
