@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import static java.lang.Integer.parseInt;
 
 public class BsConsoleFilter implements Filter {
-    private final static Pattern LINE_PATTERN = Pattern.compile("^\\s*(.+.(?:rei|re|mli|ml))\\s([0-9]+):([0-9]+)-.+$");
+    private final static Pattern LINE_PATTERN = Pattern.compile("^\\s*(.+.(?:rei|re|mli|ml))\\s([0-9]+):([0-9]+)[-0-9:\\s]*$");
 
     private final Project m_project;
 
