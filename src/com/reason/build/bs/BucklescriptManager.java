@@ -80,7 +80,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     //region Compiler
     @Override
     public void refresh(@NotNull VirtualFile bsConfigFile) {
-        BsConfig updatedConfig = BsConfig.read(bsConfigFile);
+        BsConfig updatedConfig = BsConfig.read(m_project, bsConfigFile);
         m_configs.put(bsConfigFile.getCanonicalPath(), updatedConfig);
     }
 

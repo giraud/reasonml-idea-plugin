@@ -1,37 +1,68 @@
 package com.reason.ide.search;
 
 import com.intellij.openapi.util.Comparing;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class FileModuleData implements Comparable<FileModuleData> {
+public class FileModuleData implements Comparable<FileModuleData>, IndexedFileModule {
     private final String m_namespace;
     private final String m_moduleName;
+    private final String m_path;
+    private final boolean m_isOCaml;
     private final boolean m_isInterface;
     private final boolean m_isComponent;
+    private VirtualFile m_virtualFile;
 
-    FileModuleData(String namespace, String moduleName, boolean isInterface, boolean hasInterface) {
+    FileModuleData(String path, String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean hasInterface) {
+        m_path = path;
         m_namespace = namespace;
         m_moduleName = moduleName;
+        m_isOCaml = isOCaml;
         m_isInterface = isInterface;
         m_isComponent = hasInterface;
     }
 
+    @Override
     public String getNamespace() {
         return m_namespace;
     }
 
-    String getModuleName() {
+    @Override
+    public String getModuleName() {
         return m_moduleName;
     }
 
-    boolean isInterface() {
+    @Override
+    public boolean isOCaml() {
+        return m_isOCaml;
+    }
+
+    @Override
+    public boolean isInterface() {
         return m_isInterface;
     }
 
-    boolean isComponent() {
+    @Override
+    public boolean isComponent() {
         return m_isComponent;
+    }
+
+    @Override
+    public String getPath() {
+        return m_path;
+    }
+
+    @Nullable
+    @Override
+    public VirtualFile getVirtualFile() {
+        return m_virtualFile;
+    }
+
+    public void setVirtualFile(@NotNull VirtualFile virtualFile) {
+        m_virtualFile = virtualFile;
     }
 
     @Override

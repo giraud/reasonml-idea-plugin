@@ -85,6 +85,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseFun(builder, state);
             } else if (tokenType == m_types.ASSERT) {
                 parseAssert(builder, state);
+            } else if (tokenType == m_types.RAISE) {
+                parseRaise(builder, state);
             }
             // do ... done
             else if (tokenType == m_types.DO) {
@@ -153,6 +155,13 @@ public class OclParser extends CommonParser<OclTypes> {
             }
 
             c = builder.rawTokenIndex();
+        }
+    }
+
+    private void parseRaise(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(external)) {
+            builder.remapCurrentToken(m_types.LIDENT);
+            state.wrapWith(m_types.C_LOWER_SYMBOL).updateCurrentResolution(externalNamed).complete();
         }
     }
 
@@ -455,6 +464,10 @@ public class OclParser extends CommonParser<OclTypes> {
             }
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);
+        } else if (state.isCurrentResolution(externalNamed) && state.previousTokenElementType == m_types.LPAREN) {
+            // external ( «=» ) = ...
+            builder.remapCurrentToken(m_types.LIDENT);
+            state.wrapWith(m_types.C_LOWER_SYMBOL);
         } else if (state.isCurrentResolution(externalNamedSignature)) {
             state.complete();
             state.popEnd();
@@ -514,6 +527,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(external)) {
             // Overloading an operator: external (...) = ...
             state.updateCurrentResolution(externalNamed).complete();
+            state.add(markScope(builder, localOpenScope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(val)) {
             // Overloading an operator: val (...) = ...
             state.updateCurrentResolution(valNamed).complete();

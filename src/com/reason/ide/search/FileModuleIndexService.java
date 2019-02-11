@@ -9,10 +9,7 @@ import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 public class FileModuleIndexService {
     private final FileModuleIndex m_index;
@@ -74,25 +71,25 @@ public class FileModuleIndexService {
         return files;
     }
 
-    public Collection<VirtualFile> getFilesWithoutNamespace(@NotNull Project project) {
-        Collection<VirtualFile> result = new ArrayList<>();
+    public Collection<IndexedFileModule> getFilesWithoutNamespace(@NotNull Project project) {
+        Collection<IndexedFileModule> result = new ArrayList<>();
 
         FileBasedIndex fileIndex = FileBasedIndex.getInstance();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         for (String key : fileIndex.getAllKeys(m_index.getName(), project)) {
-            final int valuesSize = fileIndex.getValues(m_index.getName(), key, scope).size();
+            List<FileModuleData> values = fileIndex.getValues(m_index.getName(), key, scope);
+            int valuesSize = values.size();
             if (valuesSize > 2) {
                 System.out.println("ERROR, size of " + key + " is " + valuesSize);
             } else {
-                fileIndex.processValues(m_index.getName(), key, null, (file, value) -> {
+                for (FileModuleData value : values) {
                     if (valuesSize == 1 || value.isInterface()) {
                         if (value.getNamespace().isEmpty() && !value.isComponent()) {
-                            result.add(file);
+                            result.add(value);
                         }
                     }
-                    return true;
-                }, scope);
+                }
             }
         }
 

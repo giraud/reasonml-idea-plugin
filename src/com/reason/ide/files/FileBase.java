@@ -50,7 +50,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
 
     @NotNull
     public String shortLocation(@NotNull Project project) {
-        return Platform.removeProjectDir(project, getVirtualFile()).replace("node_modules" + File.separator, "").replace(getName(), "");
+        return FileHelper.shortLocation(project, getVirtualFile().getPath());
     }
 
     @NotNull

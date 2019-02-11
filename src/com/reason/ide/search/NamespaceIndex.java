@@ -3,6 +3,7 @@ package com.reason.ide.search;
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
@@ -20,7 +21,7 @@ import java.util.Collections;
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
     private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
-    private static final int VERSION = 21;
+    private static final int VERSION = 1;
     private static final Log LOG = Log.create("index.namespace");
 
     @NotNull
@@ -46,7 +47,7 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                     return Collections.singletonMap(namespace, null);
                 }
             } else {
-                BsConfig configFile = BsConfig.read(dataFile);
+                BsConfig configFile = BsConfig.read(dataFile, PsiManager.getInstance(inputData.getProject()).findFile(dataFile), false);
                 if (configFile.hasNamespace()) {
                     VirtualFile baseRoot = Platform.findBaseRoot(inputData.getProject());
                     VirtualFile parent = dataFile.getParent();

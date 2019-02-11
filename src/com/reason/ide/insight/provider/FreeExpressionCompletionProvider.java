@@ -9,7 +9,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Iconable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
@@ -19,8 +18,11 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Icons;
 import com.reason.Log;
+import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleIndexService;
+import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.*;
@@ -59,15 +61,12 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                     withIcon(Icons.VIRTUAL_NAMESPACE));
         }
 
-        // Add file modules (not a component and without namespaces)
-        for (VirtualFile file : orFinder.getFilesWithoutNamespace(project)) {
-            FileBase psiFile = (FileBase) psiManager.findFile(file);
-            if (psiFile != null) {
-                resultSet.addElement(LookupElementBuilder.
-                        create(psiFile.asModuleName()).
-                        withTypeText(psiFile.shortLocation(project)).
-                        withIcon(PsiIconUtil.getProvidersIcon(psiFile, Iconable.ICON_FLAG_VISIBILITY)));
-            }
+        // Add file modules (that are not a component and without namespaces)
+        for (IndexedFileModule file : orFinder.getFilesWithoutNamespace(project)) {
+            resultSet.addElement(LookupElementBuilder.
+                    create(file.getModuleName()).
+                    withTypeText(FileHelper.shortLocation(project, file.getPath())).
+                    withIcon(IconProvider.getFileModuleIcon(file.isOCaml(), file.isInterface())));
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance();
@@ -121,10 +120,16 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         Collection<VirtualFile> pervasivesFile = orFinder.getInterfaceFilesWithName("Pervasives", GlobalSearchScope.allScope(project));
         FileBase pervasives = pervasivesFile == null ? null : (FileBase) psiManager.findFile(pervasivesFile.iterator().next());
         if (pervasives != null) {
-            for (PsiNamedElement expression : pervasives.getExpressions()) {
-                resultSet.addElement(LookupElementBuilder.create(expression).
-                        withTypeText(PsiSignatureUtil.getSignature(expression)).
-                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+            for (PsiNamedElement element : pervasives.getExpressions()) {
+                if (!(element instanceof PsiAnnotation)) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(element).
+                            withTypeText(PsiSignatureUtil.getSignature(element)).
+                            withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
+                    if (element instanceof PsiType) {
+                        expandType((PsiType) element, resultSet);
+                    }
+                }
             }
         }
     }

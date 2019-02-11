@@ -29,6 +29,8 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             if (element instanceof RmlInterfaceFile) {
                 return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_INTERFACE_FILE;
             }
+        } else if (element instanceof PsiException) {
+            return Icons.EXCEPTION;
         } else if (element instanceof PsiModule) {
             return Icons.MODULE;
         } else if (element instanceof PsiFunctor) {
@@ -50,18 +52,14 @@ public class IconProvider extends com.intellij.ide.IconProvider {
 
     @Nullable
     public static Icon getFileModuleIcon(@NotNull FileBase element) {
-        if (element instanceof OclFile) {
-            return Icons.OCL_FILE_MODULE;
-        }
-        if (element instanceof OclInterfaceFile) {
-            return Icons.OCL_FILE_MODULE_INTERFACE;
-        }
-        if (element instanceof RmlFile) {
-            return Icons.RML_FILE_MODULE;
-        }
-        if (element instanceof RmlInterfaceFile) {
-            return Icons.RML_FILE_MODULE_INTERFACE;
-        }
-        return null;
+        return getFileModuleIcon(FileHelper.isOCaml(element.getFileType()), FileHelper.isInterface(element.getFileType()));
     }
+
+    public static Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
+        if (isOCaml) {
+            return isInterface ? Icons.OCL_FILE_MODULE_INTERFACE : Icons.OCL_FILE_MODULE;
+        }
+        else return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
+    }
+
 }

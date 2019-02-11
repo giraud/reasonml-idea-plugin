@@ -3,6 +3,7 @@ package com.reason.lang.ocaml;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiScopedExpr;
 
 public class ExternalParsingTest extends BaseParsingTestCase {
     public ExternalParsingTest() {
@@ -44,4 +45,69 @@ public class ExternalParsingTest extends BaseParsingTestCase {
         assertEquals("reactElement array -> reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
+
+    public void testRaise() {
+        PsiExternal e = firstOfType(parseCode("external raise : exn -> 'a = \"%raise\""), PsiExternal.class);
+
+        assertEquals("raise", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
+        assertEquals("exn -> 'a", e.getPsiSignature().getText());
+        assertEquals("%raise", e.getExternalName());
+    }
+
+    public void testOperator1() {
+        PsiExternal e = firstOfType(parseCode("external ( = ) : 'a -> 'a -> bool = \"%equal\""), PsiExternal.class);
+
+        assertEquals("( = )", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+        assertEquals("%equal", e.getExternalName());
+    }
+
+    public void testOperator2() {
+        PsiExternal e = firstOfType(parseCode("external ( <> ) : 'a -> 'a -> bool = \"%notequal\""), PsiExternal.class);
+
+        assertEquals("( <> )", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+        assertEquals("%notequal", e.getExternalName());
+    }
+
+    public void testOperator3() {
+        PsiExternal e = firstOfType(parseCode("external ( < ) : 'a -> 'a -> bool = \"%lessthan\""), PsiExternal.class);
+
+        assertEquals("( < )", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+        assertEquals("%lessthan", e.getExternalName());
+    }
+
+    public void testOperator4() {
+        PsiExternal e = firstOfType(parseCode("external ( > ) : 'a -> 'a -> bool = \"%greaterthan\""), PsiExternal.class);
+
+        assertEquals("( > )", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+        assertEquals("%greaterthan", e.getExternalName());
+    }
+
+    public void testOperator5() {
+        PsiExternal e = firstOfType(parseCode("external ( <= ) : 'a -> 'a -> bool = \"%lessequal\""), PsiExternal.class);
+
+        assertEquals("( <= )", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+        assertEquals("%lessequal", e.getExternalName());
+    }
+
+    public void testOperator6() {
+        PsiExternal e = firstOfType(parseCode("external ( >= ) : 'a -> 'a -> bool = \"%greaterequal\""), PsiExternal.class);
+
+        assertEquals("( >= )", e.getName());
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+        assertEquals("%greaterequal", e.getExternalName());
+    }
+
 }

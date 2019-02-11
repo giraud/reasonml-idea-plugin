@@ -1,52 +1,42 @@
 package com.reason.build.bs;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.json.psi.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Joiner;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.reason.StringUtil.toFirstUpper;
 
 public class BsConfig {
 
-    private static final Pattern DEPS_REGEXP = Pattern.compile(".*\"bs-dependencies\":\\s*\\[(.*?)].*");
-    private static final Pattern NAMESPACE_REGEXP = Pattern.compile(".*\"namespace\":\\s*(true|false).*");
-
-    private final static Logger LOG = Logger.getInstance("ReasonML.bsConfig");
-
     @NotNull
     private final Path m_basePath;
-    @NotNull private final String m_name;
+    @NotNull
+    private final String m_name;
     @NotNull
     private final String m_namespace;
     @NotNull
-    private final Path[] m_deps;
+    private final List<Path> m_deps;
     private final String m_rootBsPlatform;
     private Set<String> m_sources;
 
-    private BsConfig(@Nullable VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @Nullable Path[] deps) {
+    private BsConfig(@Nullable VirtualFile rootFile, @NotNull String name, boolean hasNamespace, @Nullable List<Path> deps) {
         m_basePath = rootFile == null ? null : FileSystems.getDefault().getPath(rootFile.getPath());
         m_name = name;
         m_namespace = hasNamespace ? toNamespace(name) : "";
         m_rootBsPlatform = FileSystems.getDefault().getPath("node_modules", "bs-platform").toString();
-        m_deps = deps == null ? new Path[]{} : deps;
+        m_deps = deps == null ? new ArrayList<>() : deps;
     }
 
     @NotNull
@@ -80,114 +70,107 @@ public class BsConfig {
     }
 
     @NotNull
-    public static BsConfig read(@NotNull VirtualFile file) {
-        try {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-                // Quick and dirty code to read json values from bsconfig
-                StringBuilder content = new StringBuilder();
-                reader.lines().forEach(content::append);
-                return read(file.getParent(), file.getPath(), content.toString());
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    public static BsConfig read(@NotNull Project project, @NotNull VirtualFile bsConfigFromFile) {
+        return BsConfig.read(bsConfigFromFile.getParent(), PsiManager.getInstance(project).findFile(bsConfigFromFile), false);
     }
 
     @NotNull
-    public static BsConfig read(@Nullable VirtualFile rootFile, @NotNull String path, @NotNull String jsonWithComments) {
+    public static BsConfig read(@Nullable VirtualFile rootFile, @NotNull PsiFile jsonWithComments, boolean useExternal) {
         Set<String> sources = new THashSet<>();
 
-        String jsonContent = normaliseJson(jsonWithComments);
-        //System.out.println("NORMALISED");
-        //System.out.println(jsonContent);
-        //System.out.println("NORMALISED");
-        try {
-            JsonValue parse = Json.parse(jsonContent);
-            JsonObject object = parse.asObject();
+        JsonFile json = (JsonFile) jsonWithComments;
+        JsonValue topLevelValue = json.getTopLevelValue();
+        if (topLevelValue instanceof JsonObject) {
+            JsonObject top = (JsonObject) topLevelValue;
 
-            String name = object.getString("name", "");
-
-            // read sources
-            JsonValue jsonSources = object.get("sources");
-            if (jsonSources.isString()) {
-                sources.add(jsonSources.asString());
-            } else if (jsonSources.isObject()) {
-                String src = parseSourceItem(jsonSources);
-                if (src != null) {
-                    sources.add(src);
+            String name = "";
+            JsonProperty nameProp = top.findProperty("name");
+            if (nameProp != null) {
+                JsonValue value = nameProp.getValue();
+                if (value instanceof JsonStringLiteral) {
+                    name = ((JsonStringLiteral) value).getValue();
                 }
-            } else if (jsonSources.isArray()) {
-                JsonArray jsonValues = jsonSources.asArray();
-                for (JsonValue jsonValue : jsonValues) {
-                    if (jsonValue.isString()) {
-                        sources.add(jsonValue.asString());
-                    } else if (jsonValue.isObject()) {
-                        String src = parseSourceItem(jsonValue);
+            }
+
+            JsonProperty namespaceProp = top.findProperty("namespace");
+            boolean hasNamespace = namespaceProp != null;
+
+            List<Path> paths = new ArrayList<>();
+
+            if (useExternal) {
+                // bs-platform/bsconfig.json
+                JsonProperty extProp = top.findProperty("bs-external-includes");
+                JsonValue extIncludes = extProp == null ? null : extProp.getValue();
+                if (extIncludes instanceof JsonArray) {
+                    for (JsonValue item : ((JsonArray) extIncludes).getValueList()) {
+                        if (item instanceof JsonStringLiteral) {
+                            sources.add(((JsonStringLiteral) item).getValue());
+                        }
+                    }
+                }
+                sources.add("lib/ocaml");
+            } else {
+                JsonProperty srcProp = top.findProperty("sources");
+                if (srcProp != null) {
+                    JsonValue value = srcProp.getValue();
+                    if (value instanceof JsonStringLiteral) {
+                        sources.add(((JsonStringLiteral) value).getValue());
+                    } else if (value instanceof JsonObject) {
+                        String src = parseSourceItem((JsonObject) value);
                         if (src != null) {
                             sources.add(src);
+                        }
+                    } else if (value instanceof JsonArray) {
+                        for (JsonValue item : ((JsonArray) value).getValueList()) {
+                            if (item instanceof JsonStringLiteral) {
+                                sources.add(((JsonStringLiteral) item).getValue());
+                            } else if (item instanceof JsonObject) {
+                                String src = parseSourceItem((JsonObject) item);
+                                if (src != null) {
+                                    sources.add(src);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                JsonProperty depsProp = top.findProperty("bs-dependencies");
+                if (depsProp != null) {
+                    JsonValue value = depsProp.getValue();
+                    if (value instanceof JsonArray) {
+                        JsonArray values = (JsonArray) value;
+                        for (JsonValue item : values.getValueList()) {
+                            if (item instanceof JsonStringLiteral) {
+                                String itemValue = ((JsonStringLiteral) item).getValue();
+                                if (!itemValue.isEmpty()) {
+                                    paths.add(FileSystems.getDefault().getPath("node_modules", itemValue, "lib"));
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            boolean hasNamespace = readNamespace(jsonContent);
-            Path[] deps = readDependencies(jsonContent);
 
-            BsConfig bsConfig = new BsConfig(rootFile, name, hasNamespace, deps);
+            BsConfig bsConfig = new BsConfig(rootFile, name, hasNamespace, paths);
             bsConfig.m_sources = sources;
 
             return bsConfig;
-        } catch (Exception ex) {
-            System.out.println("EXCEPTION " + ex.getMessage());
-            System.out.println("json from " + path);
-            System.out.println(jsonContent);
-            throw ex;
         }
-    }
 
-    @NotNull
-    private static String normaliseJson(@NotNull String jsonWithComments) {
-        return jsonWithComments.replaceAll("//.*\n", "").replaceAll("\n", " ").replaceAll("/\\*.*?\\*/", "");
+        throw new RuntimeException("NOT A BSCONFIG");
     }
 
     @Nullable
-    private static String parseSourceItem(@NotNull JsonValue jsonSources) {
-        JsonObject sourceItem = jsonSources.asObject();
-        return sourceItem.getString("dir", null);
-    }
-
-    @Nullable
-    static Path[] readDependencies(@NotNull String content) {
-        List<Path> result = null;
-
-        Matcher matcher = DEPS_REGEXP.matcher(content);
-        if (matcher.matches()) {
-            String[] tokens = matcher.group(1).split(",");
-            result = new ArrayList<>();
-            for (String token1 : tokens) {
-                String token = token1.trim();
-                if (2 < token.length()) {
-                    result.add(FileSystems.getDefault().getPath("node_modules", token.substring(1, token.length() - 1), "lib"));
-                }
+    private static String parseSourceItem(JsonObject obj) {
+        JsonProperty srcProp = obj.findProperty("dir");
+        if (srcProp != null) {
+            JsonValue value = srcProp.getValue();
+            if (value instanceof JsonStringLiteral) {
+                return ((JsonStringLiteral) value).getValue();
             }
         }
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Dependencies found: [" + Joiner.join(", ", result) + "]");
-        }
-
-        return result == null ? null : result.toArray(new Path[0]);
-    }
-
-    private static boolean readNamespace(@NotNull String content) {
-        boolean result = false;
-
-        Matcher matcher = NAMESPACE_REGEXP.matcher(content);
-        if (matcher.matches()) {
-            result = Boolean.valueOf(matcher.group(1));
-        }
-
-        return result;
+        return null;
     }
 
     @NotNull
@@ -221,5 +204,9 @@ public class BsConfig {
             }
         }
         return false;
+    }
+
+    List<Path> getDependencies() {
+        return m_deps;
     }
 }

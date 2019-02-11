@@ -8,9 +8,9 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
-import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiExternalStub;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -63,12 +63,6 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
         PsiElement nameIdentifier = getNameIdentifier();
         if (nameIdentifier == null) {
             return "unknown";
-        }
-
-        if (nameIdentifier instanceof PsiScopedExpr) {
-            String text = nameIdentifier.getText();
-            int endIndex = text.length() - 2;
-            return endIndex <= 1 ? "" : text.substring(1, endIndex).trim();
         }
 
         return nameIdentifier.getText();

@@ -102,7 +102,7 @@ public class Platform {
     }
 
     @NotNull
-    private static String removeProjectDir(@NotNull Project project, @NotNull String path) {
+    public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
         try {
             VirtualFile baseRoot = Platform.findBaseRoot(project);
             Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
@@ -111,11 +111,6 @@ public class Platform {
         } catch (IllegalArgumentException e) {
             return path;
         }
-    }
-
-    @NotNull
-    public static String removeProjectDir(@NotNull Project project, @Nullable VirtualFile file) {
-        return file == null ? "" : removeProjectDir(project, file.getPath());
     }
 
     @Nullable

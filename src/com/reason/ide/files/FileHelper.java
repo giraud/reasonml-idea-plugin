@@ -1,7 +1,12 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.Project;
+import com.reason.Platform;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
 
 public class FileHelper {
     private FileHelper() {
@@ -29,5 +34,12 @@ public class FileHelper {
 
     public static boolean isInterface(@Nullable FileType fileType) {
         return fileType instanceof RmlInterfaceFileType || fileType instanceof OclInterfaceFileType;
+    }
+
+    @NotNull
+    public static String shortLocation(Project project, String path) {
+        String newPath = Platform.removeProjectDir(project, path).replace("node_modules" + File.separator, "");
+        int pos = newPath.lastIndexOf("/");
+        return 0 < pos ? newPath.substring(0, pos) : newPath;
     }
 }

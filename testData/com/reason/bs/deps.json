@@ -1,0 +1,7 @@
+{
+  "bs-dependencies": [
+    "bs-webapi",
+    "@glennsl/rebug",
+    "",
+  ],
+}
