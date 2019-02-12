@@ -4,12 +4,15 @@ import com.intellij.navigation.ChooseByNameContributor;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ArrayUtil;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
@@ -21,16 +24,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.intellij.psi.search.GlobalSearchScope.projectScope;
+
+// Implements the goto class
 public class ORModuleContributor implements ChooseByNameContributor {
     @NotNull
     @Override
     public NavigationItem[] getItemsByName(@NotNull String name, String pattern, @NotNull Project project, boolean includeNonProjectItems) {
         ArrayList<NavigationItem> items = new ArrayList<>();
 
-        GlobalSearchScope scope = includeNonProjectItems ? GlobalSearchScope.allScope(project) : GlobalSearchScope.projectScope(project);
-        FileBase fileModule = PsiFinder.getInstance().findFileModule(project, name, scope);
-        if (fileModule != null) {
-            items.add(new MlModuleNavigationItem(fileModule, fileModule.asModuleName()));
+        PsiManager psiManager = PsiManager.getInstance(project);
+        GlobalSearchScope scope = includeNonProjectItems ? allScope(project) : projectScope(project);
+
+        // Find all files with name
+        for (VirtualFile virtualFile : FileModuleIndexService.getService().getFilesWithName(name, scope)) {
+            FileBase fileModule = (FileBase) psiManager.findFile(virtualFile);
+            if (fileModule != null) {
+                items.add(new MlModuleNavigationItem(fileModule, fileModule.asModuleName()));
+            }
+
         }
 
         Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, name, scope, ORFileType.interfaceOrImplementation);

@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.indexing.FileBasedIndex;
+import com.reason.ide.files.FileHelper;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +29,26 @@ public class FileModuleIndexService {
         return FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project);
     }
 
+    @NotNull
     public Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();
         }
 
         return FileBasedIndex.getInstance().getContainingFiles(m_index.getName(), moduleName, scope);
+    }
+
+    @Nullable
+    public VirtualFile getFileWithName(String name, GlobalSearchScope scope) {
+        Collection<VirtualFile> filesWithName = getFilesWithName(name, scope);
+        if (1 < filesWithName.size()) {
+            for (VirtualFile virtualFile : filesWithName) {
+                if (FileHelper.isInterface(virtualFile.getFileType())) {
+                    return virtualFile;
+                }
+            }
+        }
+        return filesWithName.isEmpty() ? null : filesWithName.iterator().next();
     }
 
     public Collection<VirtualFile> getInterfaceFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
@@ -95,4 +110,5 @@ public class FileModuleIndexService {
 
         return result;
     }
+
 }
