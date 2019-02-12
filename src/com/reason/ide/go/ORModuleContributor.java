@@ -59,7 +59,7 @@ public class ORModuleContributor implements ChooseByNameContributor {
     public String[] getNames(@NotNull Project project, boolean includeNonProjectItems) {
         ArrayList<String> modules = new ArrayList<>();
 
-        Collection<String> fileModules = PsiFinder.getInstance().findFileModules(project, ORFileType.implementationOnly).stream().map(FileBase::asModuleName).collect(Collectors.toList());
+        Collection<String> fileModules = FileModuleIndexService.getService().getAllModules(project);
         Collection<String> allModuleNames = StubIndex.getInstance().getAllKeys(IndexKeys.MODULES, project);
 
         modules.addAll(fileModules);

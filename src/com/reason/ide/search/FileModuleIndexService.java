@@ -29,6 +29,10 @@ public class FileModuleIndexService {
         return FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project);
     }
 
+    public Collection<String> getAllModules(@NotNull Project project) {
+        return FileBasedIndex.getInstance().getAllKeys(m_index.getName(), project);
+    }
+
     @NotNull
     public Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
@@ -86,6 +90,7 @@ public class FileModuleIndexService {
         return files;
     }
 
+    @NotNull
     public Collection<IndexedFileModule> getFilesWithoutNamespace(@NotNull Project project) {
         Collection<IndexedFileModule> result = new ArrayList<>();
 
@@ -111,4 +116,21 @@ public class FileModuleIndexService {
         return result;
     }
 
+    public Collection<VirtualFile> getComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
+        Set<VirtualFile> files = new THashSet<>();
+        FileBasedIndex instance = FileBasedIndex.getInstance();
+
+        Collection<String> keys = instance.getAllKeys(m_index.getName(), project);
+        for (String key : keys) {
+            instance.processValues(m_index.getName(), key, null, (file, value) -> {
+                if (!value.isComponent()) {
+                    files.add(file);
+                }
+                return true;
+            }, scope, null);
+        }
+
+
+        return files;
+    }
 }

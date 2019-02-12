@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
 import com.reason.Icons;
 import com.reason.ide.files.*;
+import com.reason.ide.search.IndexedFileModule;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,5 +62,10 @@ public class IconProvider extends com.intellij.ide.IconProvider {
         }
         else return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
     }
+
+    public static Icon getFileModuleIcon(IndexedFileModule indexedFile) {
+        return getFileModuleIcon(indexedFile.isOCaml(), indexedFile.isInterface());
+    }
+
 
 }

@@ -13,7 +13,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
+import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
+import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiModule;
@@ -25,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ModuleCompletionProvider extends CompletionProvider<CompletionParameters> {
     private static final Log LOG = Log.create("insight.module");
@@ -53,15 +54,13 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
         PsiFinder psiFinder = PsiFinder.getInstance();
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation);
-            if (!files.isEmpty()) {
-                for (FileBase file : files) {
-                    resultSet.addElement(LookupElementBuilder.
-                            create(file.asModuleName()).
-                            withTypeText(file.shortLocation(project)).
-                            withIcon(PsiIconUtil.getProvidersIcon(file, 0))
-                    );
-                }
+            Collection<IndexedFileModule> files = FileModuleIndexService.getService().getFilesWithoutNamespace(project);
+            for (IndexedFileModule indexedFile : files) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(indexedFile.getModuleName()).
+                        withTypeText(indexedFile.getPath()).
+                        withIcon(IconProvider.getFileModuleIcon(indexedFile))
+                );
             }
         } else {
             PsiQualifiedNamedElement foundModule = psiFinder.findModuleFromQn(project, modulePath.toString());

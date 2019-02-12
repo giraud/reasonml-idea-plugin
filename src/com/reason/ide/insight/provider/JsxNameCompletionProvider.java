@@ -9,20 +9,21 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ProcessingContext;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.RmlFile;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
 
@@ -37,19 +38,23 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         RmlFile originalFile = (RmlFile) parameters.getOriginalFile();
         String fileModuleName = originalFile.asModuleName();
         Project project = originalFile.getProject();
+        PsiManager instance = PsiManager.getInstance(project);
 
         // Find all files that are components !
-        Collection<FileBase> files = psiFinder.findFileModules(project, interfaceOrImplementation).stream().filter(FileBase::isComponent).collect(Collectors.toList());
-        LOG.debug("Files found", files.size());
-        for (FileBase file : files) {
-            String moduleName = file.asModuleName();
-            if (!fileModuleName.equals(moduleName) && file.isComponent()) {
-                resultSet.addElement(LookupElementBuilder.
-                        create(file.asModuleName()).
-                        withIcon(getProvidersIcon(file, 0)).
-                        withTypeText(file.shortLocation(project)).
-                        withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
-                );
+        Collection<VirtualFile> components = FileModuleIndexService.getService().getComponents(project, GlobalSearchScope.allScope(project));
+        LOG.debug("Files found", components.size());
+        for (VirtualFile component : components) {
+            FileBase file = (FileBase) instance.findFile(component);
+            if (file != null) {
+                String moduleName = file.asModuleName();
+                if (!fileModuleName.equals(moduleName)) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(moduleName).
+                            withIcon(getProvidersIcon(file, 0)).
+                            withTypeText(file.shortLocation(project)).
+                            withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
+                    );
+                }
             }
         }
 
