@@ -8,11 +8,13 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.awt.RelativePoint;
 import com.reason.ide.ORNotification;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,21 +49,23 @@ public class GotoTestDataAction extends AnAction {
     private List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
         PsiFile file = context.getData(CommonDataKeys.PSI_FILE);
         if (file instanceof FileBase) {
-            FileBase relatedFile;
+            VirtualFile relatedFile;
 
             GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+            FileModuleIndexService moduleIndexService = FileModuleIndexService.getService();
+
             String[] tokens = splitModuleName(((FileBase) file).asModuleName());
             if (tokens.length == 1) {
-                relatedFile = PsiFinder.getInstance().findFileModule(project, tokens[0] + "_test", scope);
+                relatedFile = moduleIndexService.getFileWithName(tokens[0] + "_test", scope);
                 if (relatedFile == null) {
-                    relatedFile = PsiFinder.getInstance().findFileModule(project, tokens[0] + "_spec", scope);
+                    relatedFile = moduleIndexService.getFileWithName(tokens[0] + "_spec", scope);
                 }
             } else {
-                relatedFile = PsiFinder.getInstance().findFileModule(project, tokens[0], scope);
+                relatedFile = moduleIndexService.getFileWithName(tokens[0], scope);
             }
 
             if (relatedFile != null) {
-                return Collections.singletonList(relatedFile.getVirtualFile().getPath());
+                return Collections.singletonList(relatedFile.getPath());
             }
         }
 

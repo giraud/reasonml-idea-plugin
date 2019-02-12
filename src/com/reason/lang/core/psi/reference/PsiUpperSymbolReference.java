@@ -2,15 +2,14 @@ package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.psi.PsiReferenceBase;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ORElementFactory;
@@ -89,10 +88,10 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         PsiElement prevSibling = myElement.getPrevSibling();
         if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
-            FileBase fileModule = psiFinder.findFileModule(project, m_referenceName, GlobalSearchScope.allScope(project));
-            if (fileModule != null) {
-                LOG.debug("  file", (PsiFile) fileModule);
-                return fileModule;
+            VirtualFile fileWithName = FileModuleIndexService.getService().getFileWithName(m_referenceName, GlobalSearchScope.allScope(project));
+            if (fileWithName != null) {
+                LOG.debug("  file", fileWithName);
+                return PsiManager.getInstance(project).findFile(fileWithName);
             }
             // else it might be an inner module
         }

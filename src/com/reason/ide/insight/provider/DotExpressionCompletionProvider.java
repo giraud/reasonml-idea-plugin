@@ -5,7 +5,10 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -14,6 +17,7 @@ import com.intellij.util.PsiIconUtil;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.*;
@@ -59,9 +63,10 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
 
                 // Find file modules
 
-                FileBase fileModule = psiFinder.findFileModule(project, upperName, GlobalSearchScope.allScope(project));
+                VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(upperName, GlobalSearchScope.allScope(project));
+                FileBase fileModule = vFile == null ? null : (FileBase) PsiManager.getInstance(project).findFile(vFile);
                 LOG.debug("  file", upperName, fileModule);
-                if (fileModule != null) {
+                if (vFile != null) {
                     if (qualifiedNames.contains(fileModule.asModuleName())) {
                         Collection<PsiNamedElement> expressions = fileModule.getExpressions();
                         addExpressions(resultSet, expressions);

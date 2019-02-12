@@ -202,95 +202,6 @@ public final class PsiFinder {
         return inConfig.values();
     }
 
-    @Nullable
-    public FileBase findFileModule(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope) {
-        FileBase file = findFileModuleByExt(project, name, OclInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
-        if (file == null) {
-            file = findFileModuleByExt(project, name, RmlInterfaceFileType.INSTANCE.getDefaultExtension(), scope);
-            if (file == null) {
-                file = findFileModuleByExt(project, name, OclFileType.INSTANCE.getDefaultExtension(), scope);
-                if (file == null) {
-                    file = findFileModuleByExt(project, name, RmlFileType.INSTANCE.getDefaultExtension(), scope);
-                }
-            }
-        }
-
-        //Collection<VirtualFile> files = FileModuleIndexService.getService().getInterfaceFilesWithName(name, scope);
-        //if (files.isEmpty()) {
-        //    files = FileModuleIndexService.getService().getImplementationFilesWithName(name, scope);
-        //}
-        //
-        //Bucklescript bucklescript = BucklescriptManager.getInstance(project);
-        //VirtualFile file2 = null;
-        //for (VirtualFile itfile : files) {
-        //    if (bucklescript.isDependency(itfile)) {
-        //        file2 = itfile;
-        //        break;
-        //    }
-        //}
-
-        return file;
-    }
-
-    @Nullable
-    private FileBase findFileModuleByExt(@NotNull Project project, @NotNull String name, @NotNull String ext, GlobalSearchScope scope) {
-        LOG.debug("Find file module", name, ext);
-
-        FileBase result = null;
-        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
-
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, name + "." + ext, scope);
-        if (0 < filesByName.length) {
-            LOG.debug("  found", filesByName);
-
-            int foundIndex = -1;
-            for (int i = 0; i < filesByName.length; i++) {
-                PsiFile file = filesByName[i];
-                if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
-                    if (foundIndex == -1) {
-                        foundIndex = i;
-                    } else if (!file.getVirtualFile().getPath().contains("lib")) {
-                        foundIndex = i;
-                    }
-                }
-            }
-
-            if (0 <= foundIndex) {
-                result = (FileBase) filesByName[foundIndex];
-            }
-        }
-
-        if (result == null) {
-            // retry with lower case name
-            filesByName = FilenameIndex.getFilesByName(project, ORUtil.moduleNameToFileName(name) + "." + ext, scope);
-            if (0 < filesByName.length) {
-                LOG.debug("  found", filesByName);
-
-                int foundIndex = -1;
-                for (int i = 0; i < filesByName.length; i++) {
-                    PsiFile file = filesByName[i];
-                    if (file instanceof FileBase && bucklescript.isDependency(file.getVirtualFile())) {
-                        if (foundIndex == -1) {
-                            foundIndex = i;
-                        } else if (!file.getVirtualFile().getPath().contains("lib")) {
-                            foundIndex = i;
-                        }
-                    }
-                }
-
-                if (0 <= foundIndex) {
-                    result = (FileBase) filesByName[foundIndex];
-                }
-            }
-        }
-
-        if (result != null && LOG.isDebugEnabled()) {
-            LOG.debug("  resolved to " + result.getVirtualFile());
-        }
-
-        return result;
-    }
-
     @NotNull
     public Collection<FileBase> findFileModules(@NotNull Project project, @NotNull ORFileType fileType) {
         // All file names are unique in a project, we use the file name in the key
@@ -383,9 +294,9 @@ public final class PsiFinder {
             String alias = moduleReference.getAlias();
 
             if (alias != null) {
-                FileBase fileModule = findFileModule(project, alias, scope);
-                if (fileModule != null) {
-                    return fileModule;
+                VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(alias, scope);
+                if (vFile != null) {
+                    return (FileBase) PsiManager.getInstance(project).findFile(vFile);
                 }
 
                 modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, scope);
@@ -407,8 +318,9 @@ public final class PsiFinder {
         // extract first token of path
         String[] names = moduleQName.split("\\.");
 
-        FileBase fileModule = findFileModule(project, names[0], GlobalSearchScope.allScope(project));
-        if (fileModule != null) {
+        VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(names[0], allScope(project));
+        if (vFile != null) {
+            FileBase fileModule = (FileBase) PsiManager.getInstance(project).findFile(vFile);
             if (1 < names.length) {
                 PsiQualifiedNamedElement currentModule = fileModule;
                 for (int i = 1; i < names.length; i++) {

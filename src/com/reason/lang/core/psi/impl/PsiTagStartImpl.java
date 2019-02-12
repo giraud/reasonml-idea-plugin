@@ -2,12 +2,15 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
@@ -131,7 +134,8 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             // no tag name, it's not a custom tag
             tagName = findChildByClass(PsiLowerSymbol.class);
             if (tagName != null) {
-                FileBase reactDOMRe = psiFinder.findFileModule(project, "ReactDOMRe", allScope(project));
+                VirtualFile vFile = FileModuleIndexService.getService().getFileWithName("ReactDOMRe", allScope(project));
+                FileBase reactDOMRe = vFile == null ? null : (FileBase) PsiManager.getInstance(project).findFile(vFile);
                 if (reactDOMRe != null) {
                     Collection<PsiType> props = reactDOMRe.getExpressions("props", PsiType.class);
                     if (props.size() == 1) {
