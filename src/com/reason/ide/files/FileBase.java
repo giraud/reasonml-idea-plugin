@@ -59,6 +59,11 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
     }
 
     @NotNull
+    public Collection<PsiNamedElement> getExpressions(@Nullable String name) {
+        return PsiFileHelper.getExpressions(this, name);
+    }
+
+    @NotNull
     public <T extends PsiNamedElement> Collection<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 

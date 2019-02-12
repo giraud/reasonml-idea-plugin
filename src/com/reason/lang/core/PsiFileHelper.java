@@ -32,6 +32,21 @@ public class PsiFileHelper {
     }
 
     @NotNull
+    public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file, @NotNull String name) {
+        Collection<PsiNamedElement> result = new ArrayList<>();
+
+        PsiElement element = file.getFirstChild();
+        while (element != null) {
+            if (element instanceof PsiNamedElement && name.equals(((PsiNamedElement) element).getName())) {
+                result.add((PsiNamedElement) element);
+            }
+            element = element.getNextSibling();
+        }
+
+        return result;
+    }
+
+    @NotNull
     public static List<PsiType> getTypeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiType.class);
     }

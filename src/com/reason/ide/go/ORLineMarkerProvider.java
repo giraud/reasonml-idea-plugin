@@ -41,28 +41,23 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 }
             }
         } else if (element instanceof PsiLetName) {
-            Collection<VirtualFile> files = findRelatedFiles(containingFile, scope);
-            if (files.size() == 1) {
-                VirtualFile relatedFile = files.iterator().next();
-                FileBase psiFile = (FileBase) instance.findFile(relatedFile);
-                Collection<PsiLet> expressions = psiFile.getExpressions(element.getText(), PsiLet.class);
-                if (expressions.size() == 1) {
-                    PsiLet relatedLet = expressions.iterator().next();
-                    result.add(NavigationGutterIconBuilder.
-                            create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
-                            setAlignment(GutterIconRenderer.Alignment.RIGHT).
-                            setTargets(Collections.singleton(relatedLet.getNameIdentifier())).
-                            createLineMarkerInfo(element));
-                }
-            }
+            extractRelatedExpressions(element, result, scope, instance, containingFile);
         } else if (element instanceof PsiLowerSymbol && parent instanceof PsiVal && ((PsiNamedElement) parent).getNameIdentifier() == element) {
-            Collection<VirtualFile> files = findRelatedFiles(containingFile, scope);
-            if (files.size() == 1) {
-                VirtualFile relatedFile = files.iterator().next();
-                FileBase psiFile = (FileBase) instance.findFile(relatedFile);
-                Collection<PsiLet> expressions = psiFile.getExpressions(element.getText(), PsiLet.class);
+            extractRelatedExpressions(element, result, scope, instance, containingFile);
+        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiExternal && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+            extractRelatedExpressions(element, result, scope, instance, containingFile);
+        }
+    }
+
+    private void extractRelatedExpressions(@NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result, GlobalSearchScope scope, PsiManager instance, FileBase containingFile) {
+        Collection<VirtualFile> files = findRelatedFiles(containingFile, scope);
+        if (files.size() == 1) {
+            VirtualFile relatedFile = files.iterator().next();
+            FileBase psiFile = (FileBase) instance.findFile(relatedFile);
+            if (psiFile != null) {
+                Collection<PsiNamedElement> expressions = psiFile.getExpressions(element.getText());
                 if (expressions.size() == 1) {
-                    PsiLet relatedLet = expressions.iterator().next();
+                    PsiNamedElement relatedLet = expressions.iterator().next();
                     result.add(NavigationGutterIconBuilder.
                             create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
                             setAlignment(GutterIconRenderer.Alignment.RIGHT).

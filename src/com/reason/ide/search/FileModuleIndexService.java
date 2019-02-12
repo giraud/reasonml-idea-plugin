@@ -55,6 +55,7 @@ public class FileModuleIndexService {
         return filesWithName.isEmpty() ? null : filesWithName.iterator().next();
     }
 
+    @NotNull
     public Collection<VirtualFile> getInterfaceFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();

@@ -108,7 +108,6 @@ public class BsConfig {
                         }
                     }
                 }
-                sources.add("lib/ocaml");
             } else {
                 JsonProperty srcProp = top.findProperty("sources");
                 if (srcProp != null) {

@@ -118,7 +118,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         // Add pervasives expressions
         Collection<VirtualFile> pervasivesFile = orFinder.getInterfaceFilesWithName("Pervasives", GlobalSearchScope.allScope(project));
-        FileBase pervasives = pervasivesFile == null ? null : (FileBase) psiManager.findFile(pervasivesFile.iterator().next());
+        FileBase pervasives = pervasivesFile.isEmpty() ? null : (FileBase) psiManager.findFile(pervasivesFile.iterator().next());
         if (pervasives != null) {
             for (PsiNamedElement element : pervasives.getExpressions()) {
                 if (!(element instanceof PsiAnnotation)) {
