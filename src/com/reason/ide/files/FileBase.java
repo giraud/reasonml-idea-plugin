@@ -90,30 +90,6 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
         return PsiFileHelper.getModuleExpressions(this);
     }
 
-    @Override
-    public ItemPresentation getPresentation() {
-        return new ItemPresentation() {
-            @Override
-            public String getPresentableText() {
-                return asModuleName();
-            }
-
-            @Override
-            public String getLocationString() {
-                final PsiDirectory psiDirectory = getParent();
-                if (psiDirectory != null) {
-                    return psiDirectory.getVirtualFile().getPresentableUrl();
-                }
-                return null;
-            }
-
-            @Override
-            public Icon getIcon(final boolean open) {
-                return IconProvider.getFileModuleIcon(FileBase.this);
-            }
-        };
-    }
-
     public boolean isInterface() {
         FileType fileType = getFileType();
         return fileType instanceof RmlInterfaceFileType || fileType instanceof OclInterfaceFileType;

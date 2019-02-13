@@ -36,7 +36,7 @@ public class OclInterfaceFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.OCL_BLUE_FILE;
+        return Icons.OCL_INTERFACE_FILE;
     }
 
     @NotNull

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 
 public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -33,18 +34,17 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX name expression completion");
 
-        PsiFinder psiFinder = PsiFinder.getInstance();
-
         RmlFile originalFile = (RmlFile) parameters.getOriginalFile();
         String fileModuleName = originalFile.asModuleName();
         Project project = originalFile.getProject();
-        PsiManager instance = PsiManager.getInstance(project);
+        GlobalSearchScope scope = allScope(project);
+        PsiManager psiManager = PsiManager.getInstance(project);
 
         // Find all files that are components !
-        Collection<VirtualFile> components = FileModuleIndexService.getService().getComponents(project, GlobalSearchScope.allScope(project));
+        Collection<VirtualFile> components = FileModuleIndexService.getService().getComponents(project, scope);
         LOG.debug("Files found", components.size());
         for (VirtualFile component : components) {
-            FileBase file = (FileBase) instance.findFile(component);
+            FileBase file = (FileBase) psiManager.findFile(component);
             if (file != null) {
                 String moduleName = file.asModuleName();
                 if (!fileModuleName.equals(moduleName)) {
@@ -58,7 +58,8 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
             }
         }
 
-        Collection<PsiModule> innerModules = psiFinder.findComponents(project, GlobalSearchScope.allScope(project));
+        PsiFinder psiFinder = PsiFinder.getInstance();
+        Collection<PsiModule> innerModules = psiFinder.findComponents(project, scope);
         LOG.debug("Inner modules found", innerModules.size());
         for (PsiModule module : innerModules) {
             String moduleName = module.getName();

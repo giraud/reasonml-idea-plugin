@@ -8,10 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class JsxNameCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     @NotNull
     @Override

@@ -124,7 +124,7 @@ public class FileModuleIndexService {
         Collection<String> keys = instance.getAllKeys(m_index.getName(), project);
         for (String key : keys) {
             instance.processValues(m_index.getName(), key, null, (file, value) -> {
-                if (!value.isComponent()) {
+                if (value.isComponent()) {
                     files.add(file);
                 }
                 return true;
