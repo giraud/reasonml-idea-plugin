@@ -1,11 +1,12 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.search.PsiFinder;
 import com.reason.lang.BaseModulePathFinder;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiLocalOpen;
+import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiOpen;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,10 +22,8 @@ public class OclModulePathFinder extends BaseModulePathFinder {
 
         String path = extractPathName(element, OclTypes.INSTANCE);
         if (!path.isEmpty()) {
-            PsiQualifiedNamedElement moduleAlias = PsiFinder.getInstance().findModuleAlias(element.getProject(), path);
-            String modulePath = moduleAlias == null ? path : moduleAlias.getQualifiedName();
-            qualifiedNames.add(modulePath);
-            qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + modulePath);
+            qualifiedNames.add(path);
+            qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
         }
 
         // Walk backward until top of the file is reached, trying to find local opens and opens/includes
@@ -44,36 +43,13 @@ public class OclModulePathFinder extends BaseModulePathFinder {
                 qualifiedNames.addAll(withOpenQualifier);
 
                 qualifiedNames.add(openName);
-            } else if (item instanceof PsiModule) {
-                PsiModule module = (PsiModule) item;
-                String moduleName = module.getName();
-                String moduleAlias = findModuleAlias(element.getProject(), module.getAlias());
-
-                if (moduleAlias != null && !moduleAlias.equals(moduleName)) {
-                    // Replace module name in resolved paths with the module alias
-                    qualifiedNames = qualifiedNames.stream().map(name -> {
-                        if (name.equals(moduleName)) {
-                            return moduleAlias;
-                        } else if (name.startsWith(moduleName + ".")) {
-                            int length = moduleAlias.length();
-                            if (length <= moduleName.length()) {
-                                return moduleAlias + "." + moduleName.substring(length);
-                            }
-                        } else if (name.endsWith("." + moduleName)) {
-                            return name.replace("." + moduleName, "." + moduleAlias);
-                        }
-                        return name;
-                    }).collect(Collectors.toList());
-                }
             }
 
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
                 PsiElement parent = item.getParent();
                 if (parent instanceof PsiLocalOpen) {
-                    String localOpenName = ((PsiLocalOpen) parent).getName();
-                    String localOpenAlias = findModuleAlias(element.getProject(), localOpenName);
-                    qualifiedNames.add(localOpenAlias == null || localOpenAlias.equals(localOpenName) ? localOpenName : localOpenAlias);
+                    qualifiedNames.add(((PsiLocalOpen) parent).getName());
                 }
                 item = parent;
             } else {

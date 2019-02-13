@@ -131,9 +131,10 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 // TODO: if include => include
                 String name = expression.getName();
                 if (name != null) {
+                    String signature = PsiSignatureUtil.getSignature(expression);
                     resultSet.addElement(LookupElementBuilder.
                             create(name).
-                            withTypeText(PsiSignatureUtil.getSignature(expression)).
+                            withTypeText(signature).
                             withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
                     );
                 }
