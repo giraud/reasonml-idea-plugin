@@ -7,7 +7,6 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -81,11 +80,11 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 }
 
                 Collection<? extends PsiQualifiedNamedElement> resolvedModules = modules.stream().
+                        filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).
                         map(psiModule -> {
                             PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, psiModule.getQualifiedName());
                             return moduleAlias == null ? psiModule : moduleAlias;
                         }).
-                        filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).
                         collect(Collectors.toList());
                 LOG.debug("  resolved", resolvedModules);
 
@@ -130,12 +129,14 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
         for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include
-                resultSet.addElement(LookupElementBuilder.
-                        create(expression).
-                        withTypeText(PsiSignatureUtil.getSignature(expression)).
-                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                );
-
+                String name = expression.getName();
+                if (name != null) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(name).
+                            withTypeText(PsiSignatureUtil.getSignature(expression)).
+                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
+                    );
+                }
                 if (expression instanceof PsiType) {
                     PsiType eType = (PsiType) expression;
                     Collection<PsiVariantConstructor> variants = eType.getVariants();

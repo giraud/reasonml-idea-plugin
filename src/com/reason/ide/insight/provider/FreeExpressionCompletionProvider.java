@@ -54,7 +54,9 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         PsiManager psiManager = PsiManager.getInstance(project);
 
         // Add virtual namespaces
-        for (String namespace : orFinder.getNamespaces(project)) {
+        Collection<String> namespaces = orFinder.getNamespaces(project);
+        LOG.debug("  namespaces", namespaces);
+        for (String namespace : namespaces) {
             resultSet.addElement(LookupElementBuilder.
                     create(namespace).
                     withTypeText("Generated namespace").
@@ -62,7 +64,11 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
 
         // Add file modules (that are not a component and without namespaces)
-        for (IndexedFileModule file : orFinder.getFilesWithoutNamespace(project)) {
+        Collection<IndexedFileModule> filesWithoutNamespace = orFinder.getFilesWithoutNamespace(project);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("  files without namespaces", filesWithoutNamespace.size());
+        }
+        for (IndexedFileModule file : filesWithoutNamespace) {
             resultSet.addElement(LookupElementBuilder.
                     create(file.getModuleName()).
                     withTypeText(FileHelper.shortLocation(project, file.getPath())).

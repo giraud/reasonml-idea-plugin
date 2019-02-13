@@ -108,6 +108,7 @@ public class BsConfig {
                         }
                     }
                 }
+                sources.add("lib/ocaml"); // Because of Belt !
             } else {
                 JsonProperty srcProp = top.findProperty("sources");
                 if (srcProp != null) {
