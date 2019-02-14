@@ -19,10 +19,15 @@ public class BsConfigTest extends ParsingTestCase {
     }
 
     public void testName() {
-        myFile = createPsiFile("dummy", toJson("{'name': 'x'}"));
-        BsConfig bsConf = BsConfig.read(null, myFile, false);
+        BsConfig bsConf = BsConfig.read(null, createJson("{'name': 'x'}"), false);
 
         assertEquals("x", bsConf.getName());
+    }
+
+    public void testNamespace() {
+        assertTrue(BsConfig.read(null, createJson("{'name': 'x', 'namespace': true}"), false).hasNamespace());
+        assertFalse(BsConfig.read(null, createJson("{'name': 'x', 'namespace': false}"), false).hasNamespace());
+        assertFalse(BsConfig.read(null, createJson("{'name': 'x'}"), false).hasNamespace());
     }
 
     public void testJsonWithComment() throws IOException {
@@ -71,5 +76,9 @@ public class BsConfigTest extends ParsingTestCase {
     private PsiFile loadJson(String filename) throws IOException {
         String text = loadFile(filename);
         return createPsiFile("bsConfig", text);
+    }
+
+    private PsiFile createJson(String content) {
+        return createPsiFile("dummy", toJson(content));
     }
 }

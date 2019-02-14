@@ -92,8 +92,14 @@ public class BsConfig {
                 }
             }
 
+            boolean hasNamespace = false;
             JsonProperty namespaceProp = top.findProperty("namespace");
-            boolean hasNamespace = namespaceProp != null;
+            if (namespaceProp != null) {
+                JsonValue value = namespaceProp.getValue();
+                if (value instanceof JsonBooleanLiteral) {
+                    hasNamespace = ((JsonBooleanLiteral) value).getValue();
+                }
+            }
 
             List<Path> paths = new ArrayList<>();
 
