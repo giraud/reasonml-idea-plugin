@@ -314,16 +314,21 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
+        // By default, a pattern match
+        if (state.isCurrentResolution(patternMatchBody)) {
+            state.popEnd();
+        }
+        if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(variantConstructor)) {
+            state.popEnd();
+        }
+
         if (state.isCurrentResolution(typeNamedEq)) {
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
-        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
-            state.popEndUntilContext(typeBinding);
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+            state.updateCurrentResolution(typeNamedEqVariant).
+                    add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete());
+        } else if (state.isCurrentResolution(variant) && state.isCurrentContext(typeBinding)) {
+            state.popEndUntilResolution(typeNamedEqVariant).
+                    add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete());
         } else {
-            // By default, a pattern match
-            if (state.isCurrentResolution(patternMatchBody)) {
-                state.popEnd();
-            }
             if (state.isCurrentResolution(patternMatch)) {
                 state.popEnd();
             }
@@ -824,8 +829,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
             // Functor constraint :: module M = (..) : <(> .. ) =
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
-        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
-            // Variant params :: type t = | Variant <(> .. )
+        } else if (state.isCurrentResolution(variantConstructor)) {
+            // Variant params :: type t = | Variant «(» .. )
             state.add(markScope(builder, variantConstructor, m_types.C_FUN_PARAMS, m_types.LPAREN)).
                     advance().
                     add(mark(builder, variantConstructor, functionParameter, m_types.C_FUN_PARAM));
@@ -1026,7 +1031,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.previousTokenElementType == m_types.PIPE) {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
+            if (state.isCurrentContext(typeBinding)) {
+                state.add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
+            } else {
+                state.add(mark(builder, state.currentContext(), patternMatchVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
+            }
             return;
         } else {
             if (shouldStartExpression(state)) {
@@ -1044,8 +1053,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 } else if (nextElementType == m_types.PIPE) {
                     // We are parsing a variant
                     builder.remapCurrentToken(m_types.VARIANT_NAME);
-                    state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete()).
-                            add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
+                    state.updateCurrentResolution(typeNamedEqVariant).
+                            add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete()).
+                            add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
                     return;
                 }
             }
@@ -1080,19 +1090,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     .advance()
                     .add(mark(builder, function, functionBody, m_types.C_FUN_BODY).complete());
         } else if (state.isCurrentResolution(function)) {
-            // let x = ($ANY) < => > ...
+            // let x = ($ANY) « => » ...
             state.advance().add(mark(builder, state.currentContext(), functionBody, m_types.C_FUN_BODY).complete());
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
-            // functor :: module Make = (M) : R < => > ..
+            // functor :: module Make = (M) : R « => » ..
             state.advance().add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
-        } else {
-            state.advance();
-            IElementType nextTokenType = builder.getTokenType();
-            if (nextTokenType != m_types.LBRACE) {
-                if (state.isCurrentResolution(patternMatch)) {
-                    state.add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_SCOPED_EXPR));
-                }
-            }
+        } else if (state.isCurrentResolution(patternMatchVariant)) {
+            state.popEnd().advance().add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_SCOPED_EXPR));
         }
     }
 

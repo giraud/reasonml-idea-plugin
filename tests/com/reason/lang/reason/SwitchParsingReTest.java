@@ -42,4 +42,12 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
         assertEquals("switch (id) { | None => text | Some(i) => i }", function.getBody().getText());
     }
 
+    public void testReact() {
+        PsiFile psiFile = parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }", true);
+        assertSize(1, psiFile.getChildren());
+        PsiSwitch e = (PsiSwitch) psiFile.getChildren()[0];
+
+        assertEquals("(reasonStateUpdate)", e.getCondition().getText());
+        assertSize(2, e.getPatterns());
+    }
 }

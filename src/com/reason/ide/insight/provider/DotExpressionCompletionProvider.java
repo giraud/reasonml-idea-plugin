@@ -143,10 +143,13 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                     Collection<PsiVariantConstructor> variants = eType.getVariants();
                     if (!variants.isEmpty()) {
                         for (PsiVariantConstructor variant : variants) {
-                            resultSet.addElement(LookupElementBuilder.
-                                    create(variant).
-                                    withTypeText(eType.getName()).
-                                    withIcon(PsiIconUtil.getProvidersIcon(variant, 0)));
+                            String variantName = variant.getName();
+                            if (variantName != null) {
+                                resultSet.addElement(LookupElementBuilder.
+                                        create(variantName).
+                                        withTypeText(eType.getName()).
+                                        withIcon(PsiIconUtil.getProvidersIcon(variant, 0)));
+                            }
                         }
                     }
                 }

@@ -1,21 +1,18 @@
 package com.reason.ide.search;
 
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.Log;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
-import com.reason.ide.files.*;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import gnu.trove.THashMap;
@@ -66,10 +63,11 @@ public final class PsiFinder {
 
     @NotNull
     public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull ORFileType fileType) {
+        Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
+
         LOG.debug("Find modules, name", name);
 
-        Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
-        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+        FileModuleIndexService fileModuleIndex = FileModuleIndexService.getService();
 
         Collection<PsiModule> modules = ModuleIndex.getInstance().get(name, project, scope);
         if (modules.isEmpty()) {
@@ -77,35 +75,24 @@ public final class PsiFinder {
         } else {
             LOG.debug("  modules found", modules.size());
             for (PsiModule module : modules) {
-                boolean keepFile;
-
-                VirtualFile virtualFile = module.getContainingFile().getVirtualFile();
-                FileType moduleFileType = virtualFile.getFileType();
+                String filename = ((FileBase) module.getContainingFile()).asModuleName();
+                VirtualFile file;
 
                 if (fileType == ORFileType.implementationOnly) {
-                    keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
+                    Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
+                    file = implementations.isEmpty() ? null : implementations.iterator().next();
                 } else if (fileType == ORFileType.interfaceOnly) {
-                    keepFile = moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType;
+                    Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(filename, scope);
+                    file = interfaces.isEmpty() ? null : interfaces.iterator().next();
                 } else {
-                    // use interface if there is one, implementation otherwise ... always the case ????
-                    // we need a better way (cache through VirtualFileListener ?) to find that info
-                    if (moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType) {
-                        keepFile = true;
-                    } else {
-                        String nameWithoutExtension = virtualFile.getNameWithoutExtension();
-                        String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
-                                OclInterfaceFileType.INSTANCE.getDefaultExtension();
-                        Collection<VirtualFile> interfaceFiles = FilenameIndex
-                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, scope);
-                        keepFile = interfaceFiles.isEmpty();
-                    }
+                    file = fileModuleIndex.getFileWithName(filename, scope);
                 }
 
-                if (keepFile && bucklescript.isDependency(virtualFile)) {
+                if (file == null) {
+                    LOG.debug("    abandon", module);
+                } else {
                     LOG.debug("       keep", module);
                     inConfig.put(module.getQualifiedName(), module);
-                } else {
-                    LOG.debug("    abandon", module);
                 }
             }
         }
@@ -149,13 +136,14 @@ public final class PsiFinder {
     }
 
     private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull Project project, @NotNull String name, @NotNull ORFileType fileType, @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz) {
+        Map<String/*qn*/, T> inConfig = new THashMap<>();
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("Find " + debugName + " name", name);
         }
 
-        Map<String/*qn*/, T> inConfig = new THashMap<>();
-        Bucklescript bucklescript = BucklescriptManager.getInstance(project);
         GlobalSearchScope scope = allScope(project);
+        FileModuleIndexService fileModuleIndex = FileModuleIndexService.getService();
 
         Collection<T> items = StubIndex.getElements(indexKey, name, project, scope, clazz);
         if (items.isEmpty()) {
@@ -167,32 +155,20 @@ public final class PsiFinder {
                 LOG.debug("  " + debugName + " found", items.size(), items);
             }
             for (T item : items) {
-                boolean keepFile;
-
-                FileBase containingFile = (FileBase) item.getContainingFile();
-                VirtualFile virtualFile = containingFile.getVirtualFile();
-                FileType moduleFileType = virtualFile.getFileType();
+                String filename = ((FileBase) item.getContainingFile()).asModuleName();
+                VirtualFile file;
 
                 if (fileType == ORFileType.implementationOnly) {
-                    keepFile = moduleFileType instanceof RmlFileType || moduleFileType instanceof OclFileType;
+                    Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
+                    file = implementations.isEmpty() ? null : implementations.iterator().next();
                 } else if (fileType == ORFileType.interfaceOnly) {
-                    keepFile = moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType;
+                    Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(filename, scope);
+                    file = interfaces.isEmpty() ? null : interfaces.iterator().next();
                 } else {
-                    // use interface if there is one, implementation otherwise ... always the case ????
-                    // we need a better way (cache through VirtualFileListener ?) to find that info
-                    if (moduleFileType instanceof RmlInterfaceFileType || moduleFileType instanceof OclInterfaceFileType) {
-                        keepFile = true;
-                    } else {
-                        String nameWithoutExtension = virtualFile.getNameWithoutExtension();
-                        String extension = moduleFileType instanceof RmlFileType ? RmlInterfaceFileType.INSTANCE.getDefaultExtension() :
-                                OclInterfaceFileType.INSTANCE.getDefaultExtension();
-                        Collection<VirtualFile> interfaceFiles = FilenameIndex
-                                .getVirtualFilesByName(project, nameWithoutExtension + "." + extension, scope);
-                        keepFile = interfaceFiles.isEmpty();
-                    }
+                    file = fileModuleIndex.getFileWithName(filename, scope);
                 }
 
-                if (keepFile && bucklescript.isDependency(virtualFile)) {
+                if (file != null) {
                     LOG.debug("    keep (in config)", item);
                     inConfig.put(item.getQualifiedName(), item);
                 }
