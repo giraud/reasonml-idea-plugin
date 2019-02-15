@@ -1,7 +1,10 @@
-/.idea/
+.gradle/
+.idea/
+out/
+build/
 *.iml
-
-/build
+idea-flex.skeleton
+jflex-1.7.0.jar
 gradle-wrapper*
 gradlew*
 jps-builder/build
