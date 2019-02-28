@@ -49,14 +49,14 @@ public class OCamlSdk extends SdkType {
         return true;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getVersionString(@NotNull String sdkHome) {
         Matcher matcher = VERSION_REGEXP.matcher(sdkHome);
         if (matcher.matches()) {
             return matcher.group(1);
         }
-        return null;
+        return "unknown version";
     }
 
     @NotNull
