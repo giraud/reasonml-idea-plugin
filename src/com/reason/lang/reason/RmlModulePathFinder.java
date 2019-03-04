@@ -3,15 +3,11 @@ package com.reason.lang.reason;
 import com.intellij.psi.PsiElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiLocalOpen;
-import com.reason.lang.core.psi.PsiNamedElement;
-import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RmlModulePathFinder extends BaseModulePathFinder {
 
@@ -21,10 +17,9 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
         List<String> qualifiedNames = new ArrayList<>();
 
         String path = extractPathName(element, RmlTypes.INSTANCE);
-        if (!path.isEmpty()) {
-            qualifiedNames.add(path);
-            qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
-        }
+//        if (!path.isEmpty()) {
+//            qualifiedNames.add(path);
+//        }
 
         // Walk backward until top of the file is reached, trying to find local opens and opens/includes
         PsiElement item = element;
@@ -38,18 +33,18 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 break;
             } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
                 String openName = ((PsiNamedElement) item).getName();
-                // Add open value to all previous elements
-                List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + "." + name).collect(Collectors.toList());
-                qualifiedNames.addAll(withOpenQualifier);
-
-                qualifiedNames.add(openName);
+                qualifiedNames.add(openName + (path.isEmpty() ? "" : "." + path));
+            } else if (item instanceof PsiModule) {
+                if (path.equals(((PsiModule) item).getName())) {
+                    qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
+                }
             }
 
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
                 PsiElement parent = item.getParent();
                 if (parent instanceof PsiLocalOpen) {
-                    qualifiedNames.add(((PsiLocalOpen) parent).getName());
+                    qualifiedNames.add(((PsiLocalOpen) parent).getName() + (path.isEmpty() ? "" : "." + path));
                 }
                 item = parent;
             } else {
@@ -57,6 +52,7 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             }
         }
 
+        qualifiedNames.add(path);
         qualifiedNames.add("Pervasives");
         return qualifiedNames;
     }

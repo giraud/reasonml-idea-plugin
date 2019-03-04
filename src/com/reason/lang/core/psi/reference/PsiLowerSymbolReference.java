@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
@@ -86,23 +87,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Find potential paths of current element
         Map<String, Integer> potentialPaths = getPotentialPaths();
-
-        // Try to find let items
-
-        Collection<PsiLet> lets = psiFinder.findLets(project, m_referenceName, interfaceOrImplementation);
-        LOG.debug("  lets", lets);
-
-        if (!lets.isEmpty()) {
-            // Filter the lets, keep the ones with the same qualified name
-            List<PsiLet> filteredLets = lets.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
-            LOG.debug("  filtered lets", filteredLets);
-
-            if (!filteredLets.isEmpty()) {
-                result = filteredLets.get(0);
-                resultPosition = potentialPaths.get(((PsiLet) result).getQualifiedName());
-                LOG.debug("  Found intermediate result", (PsiLet) result, resultPosition);
-            }
-        }
+        LOG.debug("  potential paths", potentialPaths);
 
         // Try to find val items
 
@@ -114,8 +99,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             List<PsiVal> filteredVals = vals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
             LOG.debug("  filtered vals", filteredVals);
 
-            if (!filteredVals.isEmpty()) {
-                PsiVal valResult = filteredVals.get(0);
+            for (PsiVal valResult : filteredVals) {
                 Integer valPosition = potentialPaths.get(valResult.getQualifiedName());
                 if (valPosition < resultPosition) {
                     result = valResult;
@@ -123,6 +107,28 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                     LOG.debug("  Found intermediate result", valResult, resultPosition);
                 } else {
                     LOG.debug("  skip intermediate result", valResult, valPosition);
+                }
+            }
+        }
+
+        // Try to find let items
+
+        Collection<PsiLet> lets = psiFinder.findLets(project, m_referenceName, interfaceOrImplementation);
+        LOG.debug("  lets", lets);
+
+        if (!lets.isEmpty()) {
+            // Filter the lets, keep the ones with the same qualified name
+            List<PsiLet> filteredLets = lets.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+            LOG.debug("  filtered lets", filteredLets);
+
+            for (PsiLet letResult : filteredLets) {
+                Integer letPosition = potentialPaths.get(letResult.getQualifiedName());
+                if (letPosition < resultPosition) {
+                    result = letResult;
+                    resultPosition = letPosition;
+                    LOG.debug("  Found intermediate result", letResult, resultPosition);
+                } else {
+                    LOG.debug("  skip intermediate result", letResult, letPosition);
                 }
             }
         }
@@ -137,8 +143,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             List<PsiExternal> filteredExternals = externals.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
             LOG.debug("  filtered externals", filteredExternals);
 
-            if (!filteredExternals.isEmpty()) {
-                PsiExternal externalResult = filteredExternals.get(0);
+            for (PsiExternal externalResult : filteredExternals) {
                 Integer externalPosition = potentialPaths.get(externalResult.getQualifiedName());
                 if (externalPosition < resultPosition) {
                     result = externalResult;
@@ -160,8 +165,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             List<PsiType> filteredTypes = types.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
             LOG.debug("  filtered types", filteredTypes);
 
-            if (!filteredTypes.isEmpty()) {
-                PsiType typeResult = filteredTypes.get(0);
+            for (PsiType typeResult : filteredTypes) {
                 Integer typePosition = potentialPaths.get(typeResult.getQualifiedName());
                 if (typePosition < resultPosition) {
                     result = typeResult;
@@ -191,14 +195,23 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     private Map<String, Integer> getPotentialPaths() {
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
+        Project project = myElement.getProject();
+        PsiFinder psiFinder = PsiFinder.getInstance();
+
         Map<String, Integer> result = new THashMap<>();
 
         List<String> paths = modulePathFinder.extractPotentialPaths(myElement);
-        LOG.debug("  potential paths", paths);
+        List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
+                map(s -> {
+                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, s);
+                    return moduleAlias == null ? psiFinder.findModuleFromQn(project, s) : moduleAlias;
+                }).
+                filter(Objects::nonNull).
+                collect(toList());
 
         Integer position = 0;
-        for (String qName : paths) {
-            result.put(qName + "." + m_referenceName, position);
+        for (PsiQualifiedNamedElement module : aliasPaths) {
+            result.put(module.getQualifiedName() + "." + m_referenceName, position);
             position++;
         }
 
