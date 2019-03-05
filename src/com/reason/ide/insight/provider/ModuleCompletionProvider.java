@@ -19,7 +19,7 @@ import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -66,8 +66,8 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             PsiQualifiedNamedElement foundModule = psiFinder.findModuleFromQn(project, modulePath.toString());
             if (foundModule != null) {
                 LOG.debug("  Found module", foundModule);
-                Collection<PsiModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() : ((PsiModule) foundModule).getModules();
-                for (PsiModule module : modules) {
+                Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() : ((PsiInnerModule) foundModule).getModules();
+                for (PsiInnerModule module : modules) {
                     resultSet.addElement(LookupElementBuilder.
                             create(module).
                             withIcon(PsiIconUtil.getProvidersIcon(module, 0))

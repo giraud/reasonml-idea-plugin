@@ -111,9 +111,9 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
 
         String path;
 
-        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiInnerModule.class);
         if (parent != null) {
-            path = ((PsiModule) parent).getQualifiedName();
+            path = ((PsiInnerModule) parent).getQualifiedName();
         } else {
             path = ORUtil.fileNameToModuleName(getContainingFile());
         }

@@ -35,7 +35,7 @@ public class PsiElementFactory {
         } else if (type == types.C_TYPE_BINDING) {
             return new PsiTypeBinding(node);
         } else if (type == types.C_MODULE_STMT) {
-            return new PsiModuleImpl(node, types);
+            return new PsiInnerModuleImpl(node, types);
         } else if (type == types.C_CLASS_STMT) {
             return new PsiClassImpl(types, node);
         } else if (type == types.C_CLASS_PARAMS) {

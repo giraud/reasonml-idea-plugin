@@ -16,7 +16,7 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclModulePathFinder;
@@ -72,7 +72,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             return null;
         }
 
-        PsiModule parent = PsiTreeUtil.getParentOfType(myElement, PsiModule.class);
+        PsiInnerModule parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class);
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
@@ -101,18 +101,18 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         // Try to find a module from dependencies
 
-        Collection<PsiModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
+        Collection<PsiInnerModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
 
         LOG.debug("  modules", modules);
         if (LOG.isDebugEnabled()) {
-            for (PsiModule module : modules) {
+            for (PsiInnerModule module : modules) {
                 LOG.debug("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
             }
         }
 
         if (!modules.isEmpty()) {
             // Filter the modules, keep the ones with the same qualified name
-            Collection<PsiModule> filteredModules = modules.stream().
+            Collection<PsiInnerModule> filteredModules = modules.stream().
                     filter(module -> {
                         String moduleQn = module.getQualifiedName();
                         return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
@@ -124,7 +124,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                 return null;
             }
 
-            PsiModule moduleReference = filteredModules.iterator().next();
+            PsiInnerModule moduleReference = filteredModules.iterator().next();
             String moduleAlias = moduleReference.getAlias();
             if (moduleAlias != null) {
                 PsiQualifiedNamedElement moduleFromAlias = PsiFinder.getInstance().findModuleFromQn(project, moduleAlias);

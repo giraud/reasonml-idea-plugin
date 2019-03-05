@@ -73,8 +73,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             List<TreeElement> treeElements = new ArrayList<>();
             m_element.acceptChildren(new ElementVisitor(treeElements));
             return treeElements.toArray(new TreeElement[0]);
-        } else if (m_element instanceof PsiModule) {
-            List<TreeElement> treeElements = buildModuleStructure((PsiModule) m_element);
+        } else if (m_element instanceof PsiInnerModule) {
+            List<TreeElement> treeElements = buildModuleStructure((PsiInnerModule) m_element);
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
@@ -94,7 +94,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     @NotNull
-    private List<TreeElement> buildModuleStructure(PsiModule moduleElement) {
+    private List<TreeElement> buildModuleStructure(PsiInnerModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = moduleElement.getSignature();

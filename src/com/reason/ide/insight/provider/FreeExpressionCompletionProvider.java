@@ -83,7 +83,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         for (String path : paths) {
             PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(project, path);
             if (module != null) {
-                Collection<PsiNamedElement> expressions = (module instanceof FileBase) ? ((FileBase) module).getExpressions() : ((PsiModule) module).getExpressions();
+                Collection<PsiNamedElement> expressions = (module instanceof FileBase) ? ((FileBase) module).getExpressions() : ((PsiInnerModule) module).getExpressions();
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.
@@ -102,7 +102,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             item = cursorElement.getParent();
         }
         while (item != null) {
-            if (item instanceof PsiModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
+            if (item instanceof PsiInnerModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
                 PsiNamedElement element = (PsiNamedElement) item;
                 resultSet.addElement(LookupElementBuilder.
                         create(element).
@@ -116,7 +116,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
                 PsiElement parent = item.getParent();
-                item = parent instanceof PsiModule ? parent.getPrevSibling() : parent;
+                item = parent instanceof PsiInnerModule ? parent.getPrevSibling() : parent;
             } else {
                 item = prevItem;
             }

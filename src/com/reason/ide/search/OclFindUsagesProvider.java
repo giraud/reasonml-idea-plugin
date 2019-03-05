@@ -36,7 +36,7 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        if (element instanceof PsiUpperSymbol || element instanceof PsiModule) {
+        if (element instanceof PsiUpperSymbol || element instanceof PsiInnerModule) {
             return "module";
         }
         if (element instanceof PsiLowerSymbol) {

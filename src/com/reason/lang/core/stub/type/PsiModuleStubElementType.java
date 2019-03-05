@@ -4,8 +4,8 @@ import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.IndexKeys;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.impl.PsiModuleImpl;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.impl.PsiInnerModuleImpl;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
@@ -15,20 +15,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
+public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiInnerModule> {
 
     public PsiModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
+    public PsiInnerModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
         ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiModuleImpl(stub, this, types);
+        return new PsiInnerModuleImpl(stub, this, types);
     }
 
     @NotNull
-    public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
+    public PsiModuleStub createStub(@NotNull final PsiInnerModule psi, final StubElement parentStub) {
         return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isComponent());
     }
 

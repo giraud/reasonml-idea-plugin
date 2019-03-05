@@ -48,7 +48,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     public String getQualifiedName() {
         String path;
 
-        PsiModule parent = PsiTreeUtil.getParentOfType(this, PsiModule.class);
+        PsiInnerModule parent = PsiTreeUtil.getParentOfType(this, PsiInnerModule.class);
         if (parent != null) {
             path = parent.getQualifiedName();
         } else {

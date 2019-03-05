@@ -5,12 +5,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IntStubIndexExtension;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
-public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
+public class ModuleFqnIndex extends IntStubIndexExtension<PsiInnerModule> {
     private static final int VERSION = 3;
     private static final ModuleFqnIndex INSTANCE = new ModuleFqnIndex();
 
@@ -26,13 +26,13 @@ public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
 
     @NotNull
     @Override
-    public StubIndexKey<Integer, PsiModule> getKey() {
+    public StubIndexKey<Integer, PsiInnerModule> getKey() {
         return IndexKeys.MODULES_FQN;
     }
 
     @NotNull
     @Override
-    public Collection<PsiModule> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
-        return StubIndex.getElements(getKey(), integer, project, /*new JavaSourceFilterScope(scope) TODO*/scope, PsiModule.class);
+    public Collection<PsiInnerModule> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
+        return StubIndex.getElements(getKey(), integer, project, /*new JavaSourceFilterScope(scope) TODO*/scope, PsiInnerModule.class);
     }
 }

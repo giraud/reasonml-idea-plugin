@@ -2,8 +2,8 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.PsiFile;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class AndParsingTest extends BaseParsingTestCase {
 
     public void testModuleChaining() {
         PsiFile file = parseCode("module rec X: {} = {} and Y: {} = {};");
-        List<PsiModule> mods = new ArrayList(moduleExpressions(file));
+        List<PsiInnerModule> mods = new ArrayList(moduleExpressions(file));
 
         assertEquals(2, mods.size());
         assertEquals("X", mods.get(0).getName());

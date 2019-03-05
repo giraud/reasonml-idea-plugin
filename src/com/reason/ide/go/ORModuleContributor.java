@@ -16,13 +16,12 @@ import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.intellij.psi.search.GlobalSearchScope.projectScope;
@@ -46,8 +45,8 @@ public class ORModuleContributor implements ChooseByNameContributor {
 
         }
 
-        Collection<PsiModule> modules = PsiFinder.getInstance().findModules(project, name, scope, ORFileType.interfaceOrImplementation);
-        for (PsiModule element : modules) {
+        Collection<PsiInnerModule> modules = PsiFinder.getInstance().findModules(project, name, scope, ORFileType.interfaceOrImplementation);
+        for (PsiInnerModule element : modules) {
             items.add(new MlModuleNavigationItem(element, element.getName()));
         }
 

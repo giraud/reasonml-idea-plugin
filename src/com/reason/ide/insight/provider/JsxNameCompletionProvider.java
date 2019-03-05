@@ -18,7 +18,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.files.RmlFile;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -59,9 +59,9 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance();
-        Collection<PsiModule> innerModules = psiFinder.findComponents(project, scope);
+        Collection<PsiInnerModule> innerModules = psiFinder.findComponents(project, scope);
         LOG.debug("Inner modules found", innerModules.size());
-        for (PsiModule module : innerModules) {
+        for (PsiInnerModule module : innerModules) {
             String moduleName = module.getName();
             if (moduleName != null) {
                 resultSet.addElement(LookupElementBuilder.

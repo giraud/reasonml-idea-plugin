@@ -96,7 +96,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
     public void testLikeModule() {
         PsiFile file = parseCode("let module Repr = (val repr : S)");
-        PsiModule module = first(moduleExpressions(file));
+        PsiInnerModule module = first(moduleExpressions(file));
 
         assertEquals(1, file.getChildren().length);
         assertEquals("Repr", module.getName());

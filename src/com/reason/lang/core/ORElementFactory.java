@@ -4,8 +4,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ public class ORElementFactory {
     @Nullable
     public static PsiElement createModuleName(@NotNull Project project, String name) {
         FileBase file = createFileFromText(project, "module " + name + " = {};");
-        return ((PsiModule) file.getFirstChild()).getNameIdentifier();
+        return ((PsiInnerModule) file.getFirstChild()).getNameIdentifier();
     }
 
     @Nullable

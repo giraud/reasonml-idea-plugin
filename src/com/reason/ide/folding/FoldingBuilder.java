@@ -33,8 +33,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldLet(descriptors, (PsiLet) element);
             } else if (element instanceof PsiType) {
                 foldType(descriptors, (PsiType) element);
-            } else if (element instanceof PsiModule) {
-                foldModule(descriptors, (PsiModule) element);
+            } else if (element instanceof PsiInnerModule) {
+                foldModule(descriptors, (PsiInnerModule) element);
             } else if (element instanceof PsiFunctor) {
                 foldFunctor(descriptors, (PsiFunctor) element);
             } else {
@@ -75,7 +75,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, PsiModule module) {
+    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, PsiInnerModule module) {
         FoldingDescriptor foldSignature = fold(module.getSignature());
         if (foldSignature != null) {
             descriptors.add(foldSignature);

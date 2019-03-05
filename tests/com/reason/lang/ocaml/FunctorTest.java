@@ -4,7 +4,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiStruct;
 
@@ -34,7 +34,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctorInstanciation1() {
-        PsiModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
+        PsiInnerModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
         PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
 
         assertNotNull(struct);

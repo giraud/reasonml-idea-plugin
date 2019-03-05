@@ -32,7 +32,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             }
         } else if (element instanceof PsiException) {
             return Icons.EXCEPTION;
-        } else if (element instanceof PsiModule) {
+        } else if (element instanceof PsiInnerModule) {
             return Icons.MODULE;
         } else if (element instanceof PsiFunctor) {
             return Icons.FUNCTOR;
@@ -59,8 +59,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     public static Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
         if (isOCaml) {
             return isInterface ? Icons.OCL_FILE_MODULE_INTERFACE : Icons.OCL_FILE_MODULE;
-        }
-        else return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
+        } else return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
     }
 
     public static Icon getFileModuleIcon(IndexedFileModule indexedFile) {

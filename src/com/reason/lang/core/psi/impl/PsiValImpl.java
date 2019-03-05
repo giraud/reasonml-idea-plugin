@@ -59,7 +59,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
     public String getQualifiedName() {
         String path;
 
-        PsiModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
+        PsiInnerModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiInnerModule.class);
         if (parent != null) {
             path = parent.getQualifiedName();
         } else {

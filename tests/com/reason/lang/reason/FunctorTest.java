@@ -3,7 +3,7 @@ package com.reason.lang.reason;
 import com.intellij.psi.PsiFile;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 
 import java.util.Collection;
@@ -31,7 +31,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctorInstanciation1() {
-        PsiModule module = first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record; });")));
+        PsiInnerModule module = first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record; });")));
 
         assertNotNull(module.getBody());
     }

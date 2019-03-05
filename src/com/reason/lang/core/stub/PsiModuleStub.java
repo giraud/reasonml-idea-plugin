@@ -4,10 +4,10 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiModuleStub extends NamedStubBase<PsiModule> {
+public class PsiModuleStub extends NamedStubBase<PsiInnerModule> {
     private final String m_qname;
     private final boolean m_isComponent;
     private final String m_alias;
@@ -30,7 +30,9 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
         return m_qname;
     }
 
-    public boolean isComponent() { return m_isComponent; }
+    public boolean isComponent() {
+        return m_isComponent;
+    }
 
     public String getAlias() {
         return m_alias;

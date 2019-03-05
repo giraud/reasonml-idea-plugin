@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiModuleStub> {
+public interface PsiInnerModule extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiModuleStub> {
     @Nullable
     PsiSignature getSignature();
 
@@ -18,10 +18,10 @@ public interface PsiModule extends PsiNamedElement, PsiQualifiedNamedElement, Na
     PsiElement getBody();
 
     @NotNull
-    Collection<PsiModule> getModules();
+    Collection<PsiInnerModule> getModules();
 
     @Nullable
-    PsiModule getModule(@NotNull String name);
+    PsiInnerModule getModule(@NotNull String name);
 
     @NotNull
     Collection<PsiNamedElement> getExpressions();

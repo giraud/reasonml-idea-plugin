@@ -2,8 +2,8 @@ package com.reason.lang.core.signature;
 
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,8 +25,8 @@ public class PsiSignatureUtil {
             PsiVal val = (PsiVal) element;
             ORSignature signature = val.getORSignature();
             return signature.asString(element.getLanguage());
-        } else if (element instanceof PsiModule) {
-            String qualifiedName = ((PsiModule) element).getQualifiedName();
+        } else if (element instanceof PsiInnerModule) {
+            String qualifiedName = ((PsiInnerModule) element).getQualifiedName();
             return qualifiedName == null ? "" : qualifiedName;
         }
         return "";

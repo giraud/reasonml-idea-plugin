@@ -2,10 +2,10 @@ package com.reason.ide.search;
 
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 
-public class ModuleIndex extends StringStubIndexExtension<PsiModule> {
+public class ModuleIndex extends StringStubIndexExtension<PsiInnerModule> {
     private static final int VERSION = 10;
     private static final ModuleIndex INSTANCE = new ModuleIndex();
 
@@ -22,7 +22,7 @@ public class ModuleIndex extends StringStubIndexExtension<PsiModule> {
 
     @NotNull
     @Override
-    public StubIndexKey<String, PsiModule> getKey() {
+    public StubIndexKey<String, PsiInnerModule> getKey() {
         return IndexKeys.MODULES;
     }
 }

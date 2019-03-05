@@ -9,9 +9,9 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
-import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
@@ -158,7 +158,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     public String getQualifiedName() {
         String path;
 
-        PsiModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
+        PsiInnerModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiInnerModule.class);
         if (parent != null) {
             path = parent.getQualifiedName();
         } else {

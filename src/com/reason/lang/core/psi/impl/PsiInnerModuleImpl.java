@@ -28,17 +28,17 @@ import java.util.List;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.Collections.emptyList;
 
-public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiModule {
+public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiInnerModule {
 
     @Nullable
     private ModulePath m_modulePath = null;
 
     //region Constructors
-    public PsiModuleImpl(@NotNull ASTNode node, @NotNull ORTypes types) {
+    public PsiInnerModuleImpl(@NotNull ASTNode node, @NotNull ORTypes types) {
         super(types, node);
     }
 
-    public PsiModuleImpl(@NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType, @NotNull ORTypes types) {
+    public PsiInnerModuleImpl(@NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType, @NotNull ORTypes types) {
         super(types, stub, nodeType);
     }
     //endregion
@@ -89,16 +89,16 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
 
     @NotNull
     @Override
-    public Collection<PsiModule> getModules() {
+    public Collection<PsiInnerModule> getModules() {
         PsiElement body = getBody();
-        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiModule.class);
+        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiInnerModule.class);
     }
 
     @Nullable
     @Override
-    public PsiModule getModule(@NotNull String name) {
-        Collection<PsiModule> modules = getModules();
-        for (PsiModule module : modules) {
+    public PsiInnerModule getModule(@NotNull String name) {
+        Collection<PsiInnerModule> modules = getModules();
+        for (PsiInnerModule module : modules) {
             if (name.equals(module.getName())) {
                 return module;
             }
@@ -114,7 +114,7 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiModule moduleAlias = PsiFinder.getInstance().findModule(getProject(), alias, interfaceOrImplementation);
+            PsiInnerModule moduleAlias = PsiFinder.getInstance().findModule(getProject(), alias, interfaceOrImplementation);
             if (moduleAlias != null) {
                 result = moduleAlias.getExpressions();
             }
@@ -252,10 +252,10 @@ public class PsiModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
         if (m_modulePath == null) {
             List<PsiElement> parents = new ArrayList<>();
 
-            PsiModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiModule.class);
+            PsiInnerModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiInnerModule.class);
             while (parent != null) {
                 parents.add(parent);
-                parent = PsiTreeUtil.getStubOrPsiParentOfType(parent, PsiModule.class);
+                parent = PsiTreeUtil.getStubOrPsiParentOfType(parent, PsiInnerModule.class);
             }
 
             parents.add(getContainingFile());

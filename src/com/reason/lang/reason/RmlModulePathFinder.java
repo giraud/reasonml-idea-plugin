@@ -36,8 +36,8 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + "." + name).collect(Collectors.toList());
                 qualifiedNames.addAll(withOpenQualifier);
                 qualifiedNames.add(openName + pathExtension);
-            } else if (item instanceof PsiModule) {
-                if (path.equals(((PsiModule) item).getName())) {
+            } else if (item instanceof PsiInnerModule) {
+                if (path.equals(((PsiInnerModule) item).getName())) {
                     qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
                 }
             } else if (item instanceof PsiType && addTypes) {

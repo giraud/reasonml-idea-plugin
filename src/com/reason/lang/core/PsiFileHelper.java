@@ -52,8 +52,8 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static List<PsiModule> getModuleExpressions(@NotNull PsiFile file) {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiModule.class);
+    public static List<PsiInnerModule> getModuleExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInnerModule.class);
     }
 
     @NotNull
@@ -98,8 +98,8 @@ public class PsiFileHelper {
 
     @Nullable
     public static PsiQualifiedNamedElement getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
-        Collection<PsiModule> modules = getModuleExpressions(file);
-        for (PsiModule module : modules) {
+        Collection<PsiInnerModule> modules = getModuleExpressions(file);
+        for (PsiInnerModule module : modules) {
             if (name.equals(module.getName())) {
                 return module;
             }

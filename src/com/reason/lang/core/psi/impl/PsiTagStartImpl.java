@@ -161,7 +161,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
 
             if (module != null) {
-                Collection<PsiLet> expressions = (module instanceof FileBase) ? PsiFileHelper.getLetExpressions((PsiFile) module) : ((PsiModule) module).getLetExpressions();
+                Collection<PsiLet> expressions = (module instanceof FileBase) ? PsiFileHelper.getLetExpressions((PsiFile) module) : ((PsiInnerModule) module).getLetExpressions();
                 for (PsiLet expression : expressions) {
                     if ("make".equals(expression.getName())) {
                         PsiFunction function = expression.getFunction();

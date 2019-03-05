@@ -74,7 +74,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
 
                 // Find modules
 
-                Collection<PsiModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation);
+                Collection<PsiInnerModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
                 }
@@ -90,7 +90,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
 
                 for (PsiQualifiedNamedElement resolvedModule : resolvedModules) {
                     if (resolvedModule != null) {
-                        Collection<PsiNamedElement> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiModule) resolvedModule).getExpressions();
+                        Collection<PsiNamedElement> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiInnerModule) resolvedModule).getExpressions();
                         LOG.debug("  expressions", expressions);
                         addExpressions(resultSet, expressions);
                     }

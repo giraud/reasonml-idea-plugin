@@ -36,21 +36,21 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiModule findComponent(@NotNull String fqn, @NotNull Project project, @NotNull GlobalSearchScope scope) {
+    public PsiInnerModule findComponent(@NotNull String fqn, @NotNull Project project, @NotNull GlobalSearchScope scope) {
         ModuleComponentIndex index = ModuleComponentIndex.getInstance();
 
-        Collection<PsiModule> modules = index.get(fqn, project, scope);
+        Collection<PsiInnerModule> modules = index.get(fqn, project, scope);
         if (modules.isEmpty()) {
             return null;
         }
 
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
-        PsiModule module = modules.iterator().next();
+        PsiInnerModule module = modules.iterator().next();
         return bucklescript.isDependency(module.getContainingFile().getVirtualFile()) ? module : null;
     }
 
     @NotNull
-    public Collection<PsiModule> findComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
+    public Collection<PsiInnerModule> findComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
         ModuleComponentIndex index = ModuleComponentIndex.getInstance();
         Bucklescript bucklescript = BucklescriptManager.getInstance(project);
 
@@ -62,19 +62,19 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull ORFileType fileType) {
-        Map<String/*qn*/, PsiModule> inConfig = new THashMap<>();
+    public Collection<PsiInnerModule> findModules(@NotNull Project project, @NotNull String name, @NotNull GlobalSearchScope scope, @NotNull ORFileType fileType) {
+        Map<String/*qn*/, PsiInnerModule> inConfig = new THashMap<>();
 
         LOG.debug("Find modules, name", name);
 
         FileModuleIndexService fileModuleIndex = FileModuleIndexService.getService();
 
-        Collection<PsiModule> modules = ModuleIndex.getInstance().get(name, project, scope);
+        Collection<PsiInnerModule> modules = ModuleIndex.getInstance().get(name, project, scope);
         if (modules.isEmpty()) {
             LOG.debug("  No modules found");
         } else {
             LOG.debug("  modules found", modules.size());
-            for (PsiModule module : modules) {
+            for (PsiInnerModule module : modules) {
                 String filename = ((FileBase) module.getContainingFile()).asModuleName();
                 VirtualFile file;
 
@@ -101,13 +101,13 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
+    public Collection<PsiInnerModule> findModules(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
         return findModules(project, name, GlobalSearchScope.allScope(project), fileType);
     }
 
     @Nullable
-    public PsiModule findModule(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
-        Collection<PsiModule> modules = findModules(project, name, fileType);
+    public PsiInnerModule findModule(@NotNull Project project, @NotNull String name, @NotNull ORFileType fileType) {
+        Collection<PsiInnerModule> modules = findModules(project, name, fileType);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
         }
@@ -185,10 +185,10 @@ public final class PsiFinder {
         }
 
         GlobalSearchScope scope = allScope(project);
-        Collection<PsiModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, scope);
+        Collection<PsiInnerModule> modules = ModuleFqnIndex.getInstance().get(moduleQname.hashCode(), project, scope);
 
         if (!modules.isEmpty()) {
-            PsiModule moduleReference = modules.iterator().next();
+            PsiInnerModule moduleReference = modules.iterator().next();
             String alias = moduleReference.getAlias();
 
             if (alias != null) {
@@ -199,7 +199,7 @@ public final class PsiFinder {
 
                 modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), project, scope);
                 if (!modules.isEmpty()) {
-                    PsiModule next = modules.iterator().next();
+                    PsiInnerModule next = modules.iterator().next();
                     if (next != null) {
                         PsiQualifiedNamedElement nextModuleAlias = findModuleAlias(project, next.getQualifiedName());
                         return nextModuleAlias == null ? next : nextModuleAlias;
@@ -223,7 +223,7 @@ public final class PsiFinder {
                 PsiQualifiedNamedElement currentModule = fileModule;
                 for (int i = 1; i < names.length; i++) {
                     String innerModuleName = names[i];
-                    currentModule = currentModule instanceof FileBase ? PsiFileHelper.getModuleExpression((PsiFile) currentModule, innerModuleName) : ((PsiModule) currentModule).getModule(innerModuleName);
+                    currentModule = currentModule instanceof FileBase ? PsiFileHelper.getModuleExpression((PsiFile) currentModule, innerModuleName) : ((PsiInnerModule) currentModule).getModule(innerModuleName);
                     if (currentModule == null) {
                         return null;
                     }
