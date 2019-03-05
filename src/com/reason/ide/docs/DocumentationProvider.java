@@ -10,8 +10,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Platform;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
@@ -27,17 +27,37 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
-        if (element instanceof PsiUpperSymbol) {
+        if (element instanceof FileBase) {
+            PsiElement child = element.getFirstChild();
+            String text = "";
+
+            PsiElement nextSibling = child;
+            while (nextSibling instanceof PsiComment) {
+                String nextText = nextSibling.getText();
+                if (nextText.startsWith("(** ") || nextText.startsWith("/** ")) {
+                    text = nextText;
+                    nextSibling = null;
+                } else {
+                    // Not a special comment, try with next child until no more comments found
+                    nextSibling = PsiTreeUtil.nextVisibleLeaf(nextSibling);
+                }
+            }
+
+            String formattedComment = text.isEmpty() ? text : DocFormatter.format(element.getContainingFile(), text);
+            return formattedComment;
+        } else if (element instanceof PsiUpperSymbol) {
             element = element.getParent();
             PsiElement previousElement = element == null ? null : PsiTreeUtil.prevVisibleLeaf(element);
             if (previousElement instanceof PsiComment) {
                 return previousElement.getText();
             }
-        } else if (element instanceof PsiVal) {
-            PsiElement previousElement = PsiTreeUtil.prevVisibleLeaf(element);
-            if (previousElement instanceof PsiComment) {
-                String commentText = previousElement.getText();
-                return commentText.substring(3/* (** */, commentText.length() - 2 /* *) */).trim();
+        } else if (element instanceof PsiLowerSymbol) {
+            PsiElement parent = element.getParent();
+            if (parent instanceof PsiVal) {
+                PsiElement nextElement = PsiTreeUtil.nextVisibleLeaf(parent);
+                if (nextElement instanceof PsiComment && nextElement.getText().startsWith("(**")) {
+                    return DocFormatter.format(parent.getContainingFile(), nextElement.getText());
+                }
             }
         }
 
@@ -65,25 +85,6 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
-
-            if (resolvedElement instanceof FileBase) {
-                PsiElement child = resolvedElement.getFirstChild();
-                String text = "";
-
-                PsiElement nextSibling = child;
-                while (nextSibling instanceof PsiComment) {
-                    text = nextSibling.getText();
-                    if (text.startsWith("(** ")) {
-                        nextSibling = null;
-                    } else {
-                        // Not a special comment, try with next child until no more comments found
-                        nextSibling = PsiTreeUtil.nextVisibleLeaf(nextSibling);
-                    }
-                }
-
-                String formattedComment = text.startsWith("(**") ? OclDocFormatter.format(text) : text;
-                return formattedComment + "\n\n" + Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile().getVirtualFile().getPath());
-            }
 
             if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
                 resolvedElement = resolvedElement.getParent();
