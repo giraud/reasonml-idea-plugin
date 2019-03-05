@@ -51,7 +51,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
             LOG.debug("  module path", modulePath.toString());
         }
 
-        PsiFinder psiFinder = PsiFinder.getInstance();
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
             Collection<IndexedFileModule> files = FileModuleIndexService.getService().getFilesWithoutNamespace(project);
@@ -63,7 +63,7 @@ public class ModuleCompletionProvider extends CompletionProvider<CompletionParam
                 );
             }
         } else {
-            PsiQualifiedNamedElement foundModule = psiFinder.findModuleFromQn(project, modulePath.toString());
+            PsiQualifiedNamedElement foundModule = psiFinder.findModuleFromQn(modulePath.toString());
             if (foundModule != null) {
                 LOG.debug("  Found module", foundModule);
                 Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() : ((PsiInnerModule) foundModule).getModules();

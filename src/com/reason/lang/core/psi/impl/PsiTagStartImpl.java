@@ -125,8 +125,8 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     public List<TagProperty> getUnifiedPropertyList() {
         final List<TagProperty> result = new ArrayList<>();
 
-        PsiFinder psiFinder = PsiFinder.getInstance();
         Project project = getProject();
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         // find tag 'make' expression
         PsiElement tagName = findChildByClass(PsiUpperSymbol.class);
@@ -153,11 +153,11 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
         } else {
             // The tag is a custom component
-            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(project, tagName.getText());
+            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(tagName.getText());
             if (module == null) {
                 // If nothing found, look for an inner module in current file
                 String fileModuleName = ((FileBase) tagName.getContainingFile()).asModuleName();
-                module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), project, allScope(project));
+                module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), allScope(project));
             }
 
             if (module != null) {

@@ -4,19 +4,16 @@ import com.intellij.navigation.ChooseByNameContributor;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.util.ArrayUtil;
-import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.IndexKeys;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,20 +30,10 @@ public class ORModuleContributor implements ChooseByNameContributor {
     public NavigationItem[] getItemsByName(@NotNull String name, String pattern, @NotNull Project project, boolean includeNonProjectItems) {
         ArrayList<NavigationItem> items = new ArrayList<>();
 
-        PsiManager psiManager = PsiManager.getInstance(project);
         GlobalSearchScope scope = includeNonProjectItems ? allScope(project) : projectScope(project);
 
-        // Find all files with name
-        for (VirtualFile virtualFile : FileModuleIndexService.getService().getFilesWithName(name, scope)) {
-            FileBase fileModule = (FileBase) psiManager.findFile(virtualFile);
-            if (fileModule != null) {
-                items.add(new MlModuleNavigationItem(fileModule, fileModule.asModuleName()));
-            }
-
-        }
-
-        Collection<PsiInnerModule> modules = PsiFinder.getInstance().findModules(project, name, scope, ORFileType.interfaceOrImplementation);
-        for (PsiInnerModule element : modules) {
+        Collection<PsiModule> modules = PsiFinder.getInstance(project).findModules(name, ORFileType.interfaceOrImplementation, scope);
+        for (PsiModule element : modules) {
             items.add(new MlModuleNavigationItem(element, element.getName()));
         }
 

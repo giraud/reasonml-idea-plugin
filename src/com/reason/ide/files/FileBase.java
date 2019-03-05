@@ -5,12 +5,12 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedElement {
+public abstract class FileBase extends PsiFileBase implements PsiModule {
 
     @NotNull
     private final String m_moduleName;
@@ -82,6 +82,12 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedNamedE
     @NotNull
     public Collection<PsiInnerModule> getModules() {
         return PsiFileHelper.getModuleExpressions(this);
+    }
+
+    @Nullable
+    @Override
+    public String getAlias() {
+        return null;
     }
 
     public boolean isInterface() {

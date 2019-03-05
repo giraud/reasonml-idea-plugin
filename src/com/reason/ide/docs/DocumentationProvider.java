@@ -34,7 +34,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             PsiElement nextSibling = child;
             while (nextSibling instanceof PsiComment) {
                 String nextText = nextSibling.getText();
-                if (nextText.startsWith("(** ") || nextText.startsWith("/** ")) {
+                if (nextText.startsWith("(** ") || nextText.startsWith("/**")) {
                     text = nextText;
                     nextSibling = null;
                 } else {

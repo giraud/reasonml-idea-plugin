@@ -63,6 +63,9 @@
             <implementation-class>com.reason.hints.RincewindProcess</implementation-class>
             <interface-class>com.reason.hints.RincewindProcess</interface-class>
         </component>
+        <component>
+            <implementation-class>com.reason.ide.search.PsiFinder</implementation-class>
+        </component>
     </project-components>
 
     <actions>

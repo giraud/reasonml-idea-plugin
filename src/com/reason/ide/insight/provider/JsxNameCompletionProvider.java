@@ -58,8 +58,8 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
             }
         }
 
-        PsiFinder psiFinder = PsiFinder.getInstance();
-        Collection<PsiInnerModule> innerModules = psiFinder.findComponents(project, scope);
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
+        Collection<PsiInnerModule> innerModules = psiFinder.findComponents(scope);
         LOG.debug("Inner modules found", innerModules.size());
         for (PsiInnerModule module : innerModules) {
             String moduleName = module.getName();

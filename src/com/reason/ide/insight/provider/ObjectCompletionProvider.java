@@ -41,7 +41,7 @@ public class ObjectCompletionProvider extends CompletionProvider<CompletionParam
             if (lowerName != null) {
                 PsiLet let = null;
 
-                Collection<? extends PsiQualifiedNamedElement> lets = PsiFinder.getInstance().findLets(project, lowerName, interfaceOrImplementation);
+                Collection<? extends PsiQualifiedNamedElement> lets = PsiFinder.getInstance(project).findLets(lowerName, interfaceOrImplementation);
                 //Collection<PsiLet> filteredLets = lets;
                 if (!lets.isEmpty()) {
                     // TODO: Find the correct module path...

@@ -5,6 +5,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -114,7 +115,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiInnerModule moduleAlias = PsiFinder.getInstance().findModule(getProject(), alias, interfaceOrImplementation);
+            PsiModule moduleAlias = PsiFinder.getInstance(getProject()).findModule(alias, interfaceOrImplementation, GlobalSearchScope.allScope(getProject()));
             if (moduleAlias != null) {
                 result = moduleAlias.getExpressions();
             }

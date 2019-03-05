@@ -79,8 +79,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             return null;
         }
 
-        Project project = myElement.getProject();
-        PsiFinder psiFinder = PsiFinder.getInstance();
+        PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
         PsiNameIdentifierOwner result = null;
         int resultPosition = Integer.MAX_VALUE;
@@ -91,7 +90,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find val items
 
-        Collection<PsiVal> vals = psiFinder.findVals(project, m_referenceName, interfaceOrImplementation);
+        Collection<PsiVal> vals = psiFinder.findVals(m_referenceName, interfaceOrImplementation);
         LOG.debug("  vals", vals);
 
         if (!vals.isEmpty()) {
@@ -113,7 +112,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find let items
 
-        Collection<PsiLet> lets = psiFinder.findLets(project, m_referenceName, interfaceOrImplementation);
+        Collection<PsiLet> lets = psiFinder.findLets(m_referenceName, interfaceOrImplementation);
         LOG.debug("  lets", lets);
 
         if (!lets.isEmpty()) {
@@ -135,7 +134,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find external items
 
-        Collection<PsiExternal> externals = psiFinder.findExternals(project, m_referenceName, interfaceOrImplementation);
+        Collection<PsiExternal> externals = psiFinder.findExternals(m_referenceName, interfaceOrImplementation);
         LOG.debug("  externals", externals);
 
         if (!externals.isEmpty()) {
@@ -157,7 +156,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         // Try to find type items
 
-        Collection<PsiType> types = psiFinder.findTypes(project, m_referenceName, interfaceOrImplementation);
+        Collection<PsiType> types = psiFinder.findTypes(m_referenceName, interfaceOrImplementation);
         LOG.debug("  types", types);
 
         if (!types.isEmpty()) {
@@ -195,16 +194,15 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     private Map<String, Integer> getPotentialPaths() {
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
-        Project project = myElement.getProject();
-        PsiFinder psiFinder = PsiFinder.getInstance();
+        PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
         Map<String, Integer> result = new THashMap<>();
 
         List<String> paths = modulePathFinder.extractPotentialPaths(myElement, false);
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {
-                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, s);
-                    return moduleAlias == null ? psiFinder.findModuleFromQn(project, s) : moduleAlias;
+                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(s);
+                    return moduleAlias == null ? psiFinder.findModuleFromQn(s) : moduleAlias;
                 }).
                 filter(Objects::nonNull).
                 collect(toList());

@@ -5,9 +5,7 @@ import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -16,7 +14,6 @@ import com.intellij.util.PsiIconUtil;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.*;
@@ -58,23 +55,11 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);
 
-                PsiFinder psiFinder = PsiFinder.getInstance();
-
-                // Find file modules
-
-                VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(upperName, GlobalSearchScope.allScope(project));
-                FileBase fileModule = vFile == null ? null : (FileBase) PsiManager.getInstance(project).findFile(vFile);
-                LOG.debug("  file", upperName, fileModule);
-                if (vFile != null) {
-                    if (qualifiedNames.contains(fileModule.asModuleName())) {
-                        Collection<PsiNamedElement> expressions = fileModule.getExpressions();
-                        addExpressions(resultSet, expressions);
-                    }
-                }
+                PsiFinder psiFinder = PsiFinder.getInstance(project);
 
                 // Find modules
 
-                Collection<PsiInnerModule> modules = psiFinder.findModules(project, upperName, interfaceOrImplementation);
+                Collection<PsiModule> modules = psiFinder.findModules(upperName, interfaceOrImplementation, GlobalSearchScope.allScope(project));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
                 }
@@ -82,7 +67,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
                 Collection<? extends PsiQualifiedNamedElement> resolvedModules = modules.stream().
                         filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).
                         map(psiModule -> {
-                            PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, psiModule.getQualifiedName());
+                            PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(psiModule.getQualifiedName());
                             return moduleAlias == null ? psiModule : moduleAlias;
                         }).
                         collect(Collectors.toList());
@@ -101,10 +86,10 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             String lowerName = ((PsiLowerSymbol) previousElement).getName();
             if (lowerName != null) {
                 LOG.debug("  symbol", lowerName);
-                PsiFinder psiFinder = PsiFinder.getInstance();
+                PsiFinder psiFinder = PsiFinder.getInstance(project);
 
                 // try let
-                Collection<PsiLet> lets = psiFinder.findLets(project, lowerName, interfaceOrImplementation);
+                Collection<PsiLet> lets = psiFinder.findLets(lowerName, interfaceOrImplementation);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("  lets", lets.size(), lets.size() == 1 ? " (" + lets.iterator().next().getName() + ")" : "[" + Joiner.join(", ", lets) + "]");
                 }

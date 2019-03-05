@@ -75,13 +75,13 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                     withIcon(IconProvider.getFileModuleIcon(file.isOCaml(), file.isInterface())));
         }
 
-        PsiFinder psiFinder = PsiFinder.getInstance();
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
         List<String> paths = cursorElement == null ? emptyList() : m_modulePathFinder.extractPotentialPaths(cursorElement, false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)
         for (String path : paths) {
-            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(project, path);
+            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(path);
             if (module != null) {
                 Collection<PsiNamedElement> expressions = (module instanceof FileBase) ? ((FileBase) module).getExpressions() : ((PsiInnerModule) module).getExpressions();
                 for (PsiNamedElement expression : expressions) {

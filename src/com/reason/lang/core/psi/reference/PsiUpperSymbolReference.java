@@ -1,22 +1,18 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
-import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclModulePathFinder;
@@ -29,7 +25,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
@@ -48,7 +43,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     }
 
     @Override
-    public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
+    public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = ORElementFactory.createModuleName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
@@ -72,96 +67,57 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             return null;
         }
 
-        PsiInnerModule parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class);
-
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
+        PsiInnerModule parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class);
         if (parent != null && parent.getNameIdentifier() == myElement) {
             return null;
         }
 
-        Project project = myElement.getProject();
-        PsiFinder psiFinder = PsiFinder.getInstance();
         LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        List<String> potentialPaths = getPotentialPaths();
-
-        // Might be a file module, try that first
-
-        PsiElement prevSibling = myElement.getPrevSibling();
-        if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
-            VirtualFile fileWithName = FileModuleIndexService.getService().getFileWithName(m_referenceName, GlobalSearchScope.allScope(project));
-            if (fileWithName != null) {
-                LOG.debug("  file", fileWithName);
-                return PsiManager.getInstance(project).findFile(fileWithName);
-            }
-            // else it might be an inner module
-        }
-
-        // Try to find a module from dependencies
-
-        Collection<PsiInnerModule> modules = psiFinder.findModules(project, m_referenceName, interfaceOrImplementation);
-
-        LOG.debug("  modules", modules);
+        List<PsiQualifiedNamedElement> potentialPaths = getPotentialPaths();
+        LOG.debug("  potential paths", potentialPaths);
         if (LOG.isDebugEnabled()) {
-            for (PsiInnerModule module : modules) {
+            for (PsiQualifiedNamedElement module : potentialPaths) {
                 LOG.debug("    " + module.getContainingFile().getVirtualFile().getCanonicalPath() + " " + module.getQualifiedName());
             }
         }
 
-        if (!modules.isEmpty()) {
-            // Filter the modules, keep the ones with the same qualified name
-            Collection<PsiInnerModule> filteredModules = modules.stream().
-                    filter(module -> {
-                        String moduleQn = module.getQualifiedName();
-                        return m_referenceName.equals(moduleQn) || potentialPaths.contains(moduleQn);
-                    }).
-                    collect(toList());
-            LOG.debug("  filtered modules: ", filteredModules);
-
-            if (filteredModules.isEmpty()) {
-                return null;
-            }
-
-            PsiInnerModule moduleReference = filteredModules.iterator().next();
-            String moduleAlias = moduleReference.getAlias();
-            if (moduleAlias != null) {
-                PsiQualifiedNamedElement moduleFromAlias = PsiFinder.getInstance().findModuleFromQn(project, moduleAlias);
-                if (moduleFromAlias != null) {
-                    LOG.debug("    module alias resolved to file", moduleAlias);
-                    return moduleFromAlias;
-                }
-            }
-
+        if (!potentialPaths.isEmpty()) {
+            PsiModule moduleReference = (PsiModule) ((Collection<PsiQualifiedNamedElement>) potentialPaths).iterator().next();
             if (LOG.isDebugEnabled()) {
                 LOG.debug("»» " + moduleReference.getQualifiedName() + " / " + moduleReference.getAlias());
             }
 
-            return moduleReference.getNameIdentifier();
+            return moduleReference instanceof PsiInnerModule ? ((PsiInnerModule) moduleReference).getNameIdentifier() : moduleReference;
         }
 
         return null;
     }
 
-    private List<String> getPotentialPaths() {
+    private List<PsiQualifiedNamedElement> getPotentialPaths() {
+        PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
+
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-
-        Project project = myElement.getProject();
-        PsiFinder psiFinder = PsiFinder.getInstance();
-
         List<String> paths = modulePathFinder.extractPotentialPaths(myElement, true);
-        List<String> potentialPaths = paths.stream().
-                map(s -> {
-                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, s);
-                    return moduleAlias == null ? psiFinder.findModuleFromQn(project, s) : moduleAlias;
+
+        List<PsiQualifiedNamedElement> result = paths.stream().
+                map(path -> path + "." + m_referenceName).
+                map(qn -> {
+                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(qn);
+                    return moduleAlias == null ? psiFinder.findModuleFromQn(qn) : moduleAlias;
                 }).
                 filter(Objects::nonNull).
-                map(item -> item.getQualifiedName() + "." + m_referenceName).
                 collect(toList());
-        LOG.debug("  potential paths", potentialPaths);
 
-        return potentialPaths;
+        PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleFromQn(m_referenceName);
+        if (moduleAlias != null) {
+            result.add(moduleAlias);
+        }
+
+        return result;
     }
 
     @NotNull
