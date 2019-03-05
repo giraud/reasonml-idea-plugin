@@ -3,12 +3,14 @@ package com.reason.lang.core.psi.reference;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
-import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
@@ -144,8 +147,17 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     private List<String> getPotentialPaths() {
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
 
-        List<String> potentialPaths = modulePathFinder.extractPotentialPaths(myElement).stream().
-                map(item -> item + "." + m_referenceName).
+        Project project = myElement.getProject();
+        PsiFinder psiFinder = PsiFinder.getInstance();
+
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, true);
+        List<String> potentialPaths = paths.stream().
+                map(s -> {
+                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, s);
+                    return moduleAlias == null ? psiFinder.findModuleFromQn(project, s) : moduleAlias;
+                }).
+                filter(Objects::nonNull).
+                map(item -> item.getQualifiedName() + "." + m_referenceName).
                 collect(toList());
         LOG.debug("  potential paths", potentialPaths);
 

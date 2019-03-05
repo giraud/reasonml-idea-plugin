@@ -17,7 +17,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
 
     // Find the expression paths
     @NotNull
-    public List<String> extractPotentialPaths(@NotNull PsiElement element) {
+    public List<String> extractPotentialPaths(@NotNull PsiElement element, boolean addTypes) {
         List<String> qualifiedNames = new ArrayList<>();
 
         String path = extractPathName(element, OclTypes.INSTANCE);

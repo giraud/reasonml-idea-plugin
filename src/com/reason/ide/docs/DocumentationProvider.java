@@ -10,6 +10,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.Platform;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
@@ -63,6 +65,30 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
+
+            if (resolvedElement instanceof FileBase) {
+                PsiElement child = resolvedElement.getFirstChild();
+                String text = "";
+
+                PsiElement nextSibling = child;
+                while (nextSibling instanceof PsiComment) {
+                    text = nextSibling.getText();
+                    if (text.startsWith("(** ")) {
+                        nextSibling = null;
+                    } else {
+                        // Not a special comment, try with next child until no more comments found
+                        nextSibling = PsiTreeUtil.nextVisibleLeaf(nextSibling);
+                    }
+                }
+
+                String formattedComment = text.startsWith("(**") ? OclDocFormatter.format(text) : text;
+                return formattedComment + "\n\n" + Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile().getVirtualFile().getPath());
+            }
+
+            if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
+                resolvedElement = resolvedElement.getParent();
+            }
+
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {

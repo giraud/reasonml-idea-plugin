@@ -200,7 +200,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         Map<String, Integer> result = new THashMap<>();
 
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement);
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, false);
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(project, s);

@@ -6,5 +6,5 @@ import com.intellij.psi.PsiElement;
 
 public interface ModulePathFinder {
     @NotNull
-    List<String> extractPotentialPaths(@NotNull PsiElement element);
+    List<String> extractPotentialPaths(@NotNull PsiElement element, boolean addTypes);
 }

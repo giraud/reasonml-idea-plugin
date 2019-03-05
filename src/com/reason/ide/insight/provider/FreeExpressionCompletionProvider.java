@@ -76,7 +76,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance();
-        List<String> paths = cursorElement == null ? emptyList() : m_modulePathFinder.extractPotentialPaths(cursorElement);
+        List<String> paths = cursorElement == null ? emptyList() : m_modulePathFinder.extractPotentialPaths(cursorElement, false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)

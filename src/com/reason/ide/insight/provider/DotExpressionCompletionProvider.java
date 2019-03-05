@@ -53,7 +53,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
                 // Find potential module paths, and filter the result
-                final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement);
+                final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement, false);
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);
