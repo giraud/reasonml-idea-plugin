@@ -43,8 +43,9 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 }
             }
 
-            String formattedComment = text.isEmpty() ? text : DocFormatter.format(element.getContainingFile(), text);
-            return formattedComment;
+            if (!text.isEmpty()) {
+                return DocFormatter.format(element.getContainingFile(), text);
+            }
         } else if (element instanceof PsiUpperSymbol) {
             element = element.getParent();
             PsiElement previousElement = element == null ? null : PsiTreeUtil.prevVisibleLeaf(element);
