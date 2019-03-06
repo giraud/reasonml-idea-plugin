@@ -135,7 +135,7 @@
         <lang.syntaxHighlighterFactory language="Mll"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- OCaml - yacc -->
-        <lang.parserDefinition language="Mly" implementationClass="com.reason.lang.extra.OclMlyParserDefinition"/>
+        <lang.parserDefinition language="Mly" implementationClass="com.reason.lang.ocamlyacc.OclYaccParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Mly"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>
         <!-- Dune -->

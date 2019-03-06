@@ -1,0 +1,20 @@
+{
+  parserClass="com.reason.lang.ocamlyacc.OclYaccParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Simple"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.simpleplugin.psi"
+  psiImplPackage="com.simpleplugin.psi.impl"
+
+  elementTypeHolderClass="com.simpleplugin.psi.SimpleTypes"
+  elementTypeClass="com.simpleplugin.psi.SimpleElementType"
+  tokenTypeClass="com.simpleplugin.psi.SimpleTokenType"
+}
+
+simpleFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY
