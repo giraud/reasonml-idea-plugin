@@ -10,9 +10,13 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
+import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
+import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +41,10 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldModule(descriptors, (PsiInnerModule) element);
             } else if (element instanceof PsiFunctor) {
                 foldFunctor(descriptors, (PsiFunctor) element);
+            } else if (element instanceof OclYaccHeader) {
+                foldHeader(descriptors, (OclYaccHeader) element);
+            } else if (element instanceof OclYaccRule) {
+                foldRule(descriptors, (OclYaccRule) element);
             } else {
                 if (types.COMMENT == element.getNode().getElementType()) {
                     FoldingDescriptor fold = fold(element);
@@ -91,6 +99,20 @@ public class FoldingBuilder extends FoldingBuilderEx {
         FoldingDescriptor foldBinding = fold(functor.getBinding());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
+        }
+    }
+
+    private void foldHeader(@NotNull List<FoldingDescriptor> descriptors, OclYaccHeader root) {
+        FoldingDescriptor fold = fold(ORUtil.findImmediateFirstChildOfType(root, OclYaccLazyTypes.OCAML_LAZY_NODE));
+        if (fold != null) {
+            descriptors.add(fold);
+        }
+    }
+
+    private void foldRule(@NotNull List<FoldingDescriptor> descriptors, OclYaccRule root) {
+        FoldingDescriptor fold = fold(ORUtil.findImmediateFirstChildOfClass(root, OclYaccRuleBody.class));
+        if (fold != null) {
+            descriptors.add(fold);
         }
     }
 

@@ -2,7 +2,7 @@ package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.reason.Icons;
-import com.reason.lang.extra.OclMlgLanguage;
+import com.reason.lang.ocamlyacc.OclYaccLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +13,7 @@ public class MlyFileType extends LanguageFileType {
     static final String EXTENSION = "mly";
 
     private MlyFileType() {
-        super(OclMlgLanguage.INSTANCE);
+        super(OclYaccLanguage.INSTANCE);
     }
 
     @NotNull

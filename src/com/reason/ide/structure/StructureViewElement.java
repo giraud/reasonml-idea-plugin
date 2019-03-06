@@ -9,7 +9,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
+import com.reason.lang.ocamlyacc.OclYaccTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -88,6 +94,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
+        } else if (m_element instanceof OclYaccHeader) {
+            List<TreeElement> treeElements = buildYaccHeaderStructure((OclYaccHeader) m_element);
+            if (!treeElements.isEmpty()) {
+                return treeElements.toArray(new TreeElement[0]);
+            }
         }
 
         return EMPTY_ARRAY;
@@ -133,6 +144,17 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
+    private List<TreeElement> buildYaccHeaderStructure(OclYaccHeader root) {
+        List<TreeElement> treeElements = new ArrayList<>();
+
+        PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
+        if (rootElement != null) {
+            rootElement.acceptChildren(new ElementVisitor(treeElements));
+        }
+
+        return treeElements;
+    }
+
     static class ElementVisitor extends PsiElementVisitor {
         private final List<TreeElement> m_treeElements;
 
@@ -142,12 +164,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void visitElement(PsiElement element) {
-            if (element instanceof PsiLet) {
-                PsiLet let = (PsiLet) element;
-                if (let.getName() != null && !let.getName().isEmpty()) {
-                    m_treeElements.add(new StructureViewElement(element));
-                }
-            } else if (element instanceof PsiStructuredElement) {
+            if (element instanceof PsiStructuredElement) {
                 m_treeElements.add(new StructureViewElement(element));
             }
         }

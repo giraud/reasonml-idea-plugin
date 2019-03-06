@@ -1,7 +1,12 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.PsiBuilderFactory;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.ILazyParseableElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserScopeEnum;
@@ -19,6 +24,16 @@ public class OclParser extends CommonParser<OclTypes> {
 
     public OclParser() {
         super(OclTypes.INSTANCE);
+    }
+
+    public static ASTNode parseOcamlNode(ILazyParseableElementType root, ASTNode chameleon) {
+        PsiElement parentElement = chameleon.getTreeParent().getPsi();
+        Project project = parentElement.getProject();
+
+        PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getText());
+        OclParser parser = new OclParser();
+
+        return parser.parse(root, builder).getFirstChildNode();
     }
 
     @Override

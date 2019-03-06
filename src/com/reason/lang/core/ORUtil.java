@@ -174,6 +174,12 @@ public class ORUtil {
     }
 
     @Nullable
+    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
+        List<PsiElement> children = findImmediateChildrenOfType(element, elementType);
+        return children.isEmpty() ? null : children.get(0);
+    }
+
+    @Nullable
     public static <T extends PsiElement> T findImmediateFirstChildOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
         PsiElement child = element.getFirstChild();
 

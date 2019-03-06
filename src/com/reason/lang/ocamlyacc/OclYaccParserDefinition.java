@@ -13,9 +13,6 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.MlyFile;
-import com.reason.lang.PsiElementFactory;
-import com.reason.lang.ocaml.OclLexer;
-import com.reason.lang.ocaml.OclParser;
 import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,6 +67,6 @@ public class OclYaccParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(@NotNull ASTNode node) {
-        return PsiElementFactory.createElement(OclTypes.INSTANCE, node);
+        return OclYaccTypes.Factory.createElement(node);
     }
 }
