@@ -173,7 +173,7 @@
         <lang.commenter language="OCamlP4" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Mlg" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Mll" implementationClass="com.reason.ide.comment.OclCommenter"/>
-        <lang.commenter language="Mly" implementationClass="com.reason.ide.comment.OclCommenter"/>
+        <lang.commenter language="Mly" implementationClass="com.reason.ide.comment.MlyCommenter"/>
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="Reason" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>

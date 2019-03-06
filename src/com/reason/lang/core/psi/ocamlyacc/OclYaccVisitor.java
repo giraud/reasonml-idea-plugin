@@ -29,7 +29,7 @@ public class OclYaccVisitor extends PsiElementVisitor {
     }
 
     public void visitTrailer(@NotNull OclYaccTrailer o) {
-        visitPsiElement(o);
+        visitPsiStructuredElement(o);
     }
 
     public void visitPsiStructuredElement(@NotNull PsiStructuredElement o) {

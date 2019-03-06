@@ -13,13 +13,11 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.MlyFile;
-import com.reason.lang.ocaml.OclTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class OclYaccParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.COMMENT);
-    private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING_VALUE);
+    private static final TokenSet COMMENTS = TokenSet.create(OclYaccTypes.COMMENT);
 
     private static final IFileElementType FILE = new IFileElementType(Language.findInstance(OclYaccLanguage.class));
 
@@ -41,7 +39,7 @@ public class OclYaccParserDefinition implements ParserDefinition {
 
     @NotNull
     public TokenSet getStringLiteralElements() {
-        return STRINGS;
+        return TokenSet.EMPTY;
     }
 
     @NotNull

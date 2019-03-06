@@ -149,12 +149,13 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     public static boolean rule(PsiBuilder b, int l) {
         if (!recursion_guard_(b, l, "rule")) return false;
         if (!nextTokenIs(b, IDENT)) return false;
-        boolean r;
-        Marker m = enter_section_(b);
-        r = consumeTokens(b, 0, IDENT, COLON);
+        boolean r, p;
+        Marker m = enter_section_(b, l, _NONE_, RULE, null);
+        r = consumeTokens(b, 2, IDENT, COLON);
+        p = r; // pin = 2
         r = r && rule_body(b, l + 1);
-        exit_section_(b, m, RULE, r);
-        return r;
+        exit_section_(b, l, m, r, p, null);
+        return r || p;
     }
 
     /* ********************************************************** */
@@ -399,37 +400,49 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     /* ********************************************************** */
-    // header? declarations SECTION_SEPARATOR rules (SECTION_SEPARATOR trailer)?
+    // COMMENT* header? declarations SECTION_SEPARATOR rules (SECTION_SEPARATOR trailer)?
     static boolean yacc(PsiBuilder b, int l) {
         if (!recursion_guard_(b, l, "yacc")) return false;
         boolean r;
         Marker m = enter_section_(b);
         r = yacc_0(b, l + 1);
+        r = r && yacc_1(b, l + 1);
         r = r && declarations(b, l + 1);
         r = r && consumeToken(b, SECTION_SEPARATOR);
         r = r && rules(b, l + 1);
-        r = r && yacc_4(b, l + 1);
+        r = r && yacc_5(b, l + 1);
         exit_section_(b, m, null, r);
         return r;
     }
 
-    // header?
+    // COMMENT*
     private static boolean yacc_0(PsiBuilder b, int l) {
         if (!recursion_guard_(b, l, "yacc_0")) return false;
+        while (true) {
+            int c = current_position_(b);
+            if (!consumeToken(b, COMMENT)) break;
+            if (!empty_element_parsed_guard_(b, "yacc_0", c)) break;
+        }
+        return true;
+    }
+
+    // header?
+    private static boolean yacc_1(PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_1")) return false;
         header(b, l + 1);
         return true;
     }
 
     // (SECTION_SEPARATOR trailer)?
-    private static boolean yacc_4(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc_4")) return false;
-        yacc_4_0(b, l + 1);
+    private static boolean yacc_5(PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_5")) return false;
+        yacc_5_0(b, l + 1);
         return true;
     }
 
     // SECTION_SEPARATOR trailer
-    private static boolean yacc_4_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc_4_0")) return false;
+    private static boolean yacc_5_0(PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_5_0")) return false;
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, SECTION_SEPARATOR);

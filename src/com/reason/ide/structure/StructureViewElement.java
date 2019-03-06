@@ -15,6 +15,7 @@ import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiStructuredElement;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
+import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,6 +100,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
+        } else if (m_element instanceof OclYaccTrailer) {
+            List<TreeElement> treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
+            if (!treeElements.isEmpty()) {
+                return treeElements.toArray(new TreeElement[0]);
+            }
         }
 
         return EMPTY_ARRAY;
@@ -145,6 +151,17 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     private List<TreeElement> buildYaccHeaderStructure(OclYaccHeader root) {
+        List<TreeElement> treeElements = new ArrayList<>();
+
+        PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
+        if (rootElement != null) {
+            rootElement.acceptChildren(new ElementVisitor(treeElements));
+        }
+
+        return treeElements;
+    }
+
+    private List<TreeElement> buildYaccTrailerStructure(OclYaccTrailer root) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);

@@ -16,7 +16,7 @@
   psiImplUtilClass="com.reason.lang.ocamlyacc.OclYaccPsiImplUtil"
 }
 
-yacc ::= header? declarations SECTION_SEPARATOR rules (SECTION_SEPARATOR trailer)?
+yacc ::= COMMENT* header? declarations SECTION_SEPARATOR rules (SECTION_SEPARATOR trailer)?
 
 header ::= HEADER_START OCAML_LAZY_NODE HEADER_STOP {
     implements="com.reason.lang.core.psi.PsiStructuredElement"
@@ -40,7 +40,7 @@ private constr ::= IDENT
 private symbol ::= IDENT
 
 private rules ::= rule+
-rule ::= IDENT COLON rule_body {
+rule ::= IDENT COLON rule_body { pin=2
     implements="com.reason.lang.core.psi.PsiStructuredElement"
     methods=[getPresentation]
 }
@@ -48,4 +48,7 @@ rule_body ::= PIPE? rule_pattern (PIPE rule_pattern)* SEMI
 rule_pattern ::= symbol* LBRACE semantic_action RBRACE
 private semantic_action ::= OCAML_LAZY_NODE
 
-trailer ::= OCAML_LAZY_NODE
+trailer ::= OCAML_LAZY_NODE {
+   implements="com.reason.lang.core.psi.PsiStructuredElement"
+   methods=[getPresentation]
+}

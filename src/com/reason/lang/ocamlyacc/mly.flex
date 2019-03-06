@@ -18,6 +18,7 @@ import static com.intellij.psi.TokenType.*;
   private int tokenStartIndex;
   private CharSequence quotedStringId;
   private int braceDepth;
+  private boolean rulesDone = false;
 
    public YaccLexer() {
       this((java.io.Reader)null);
@@ -37,6 +38,8 @@ import static com.intellij.psi.TokenType.*;
 %state INITIAL
 %state IN_HEADER
 %state IN_SEMANTIC_ACTION
+%state IN_COMMENT
+%state IN_TRAILER
 
 EOL=\n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
@@ -56,25 +59,27 @@ IDENT=[A-Za-z_0-9]
 
     "%{"           { yybegin(IN_HEADER); tokenStart(); return OclYaccTypes.HEADER_START; }
     "%}"           { return OclYaccTypes.HEADER_STOP; }
-    "{"           { yybegin(IN_SEMANTIC_ACTION); braceDepth = 1; tokenStart(); return OclYaccTypes.LBRACE; }
-    "}"           { return OclYaccTypes.RBRACE; }
+    "{"            { yybegin(IN_SEMANTIC_ACTION); braceDepth = 1; tokenStart(); return OclYaccTypes.LBRACE; }
+    "}"            { return OclYaccTypes.RBRACE; }
 
-    "%%"           {return OclYaccTypes.SECTION_SEPARATOR; }
+    "%%"           { if (rulesDone) { yybegin(IN_TRAILER); } rulesDone = true; return OclYaccTypes.SECTION_SEPARATOR; }
 
-    "%token"      {return OclYaccTypes.TOKEN; }
-    "%start"      {return OclYaccTypes.START; }
-    "%type"       {return OclYaccTypes.TYPE; }
-    "%left"       {return OclYaccTypes.LEFT; }
-    "%right"      {return OclYaccTypes.RIGHT; }
+    "%token"       {return OclYaccTypes.TOKEN; }
+    "%start"       {return OclYaccTypes.START; }
+    "%type"        {return OclYaccTypes.TYPE; }
+    "%left"        {return OclYaccTypes.LEFT; }
+    "%right"       {return OclYaccTypes.RIGHT; }
 
-    "."           { return OclYaccTypes.DOT; }
-    ":"           { return OclYaccTypes.COLON; }
-    ";"           { return OclYaccTypes.SEMI; }
-    "|"           { return OclYaccTypes.PIPE; }
-    "<"           { return OclYaccTypes.LT; }
-    ">"           { return OclYaccTypes.GT; }
+    "."            { return OclYaccTypes.DOT; }
+    ":"            { return OclYaccTypes.COLON; }
+    ";"            { return OclYaccTypes.SEMI; }
+    "|"            { return OclYaccTypes.PIPE; }
+    "<"            { return OclYaccTypes.LT; }
+    ">"            { return OclYaccTypes.GT; }
 
-    {IDENT}+      { return OclYaccTypes.IDENT; }
+    "/*"           { yybegin(IN_COMMENT); tokenStart(); }
+
+    {IDENT}+       { return OclYaccTypes.IDENT; }
     /*[^\ \t\f]     { return OclYaccTypes.ATOM; }*/
 }
 
@@ -88,6 +93,18 @@ IDENT=[A-Za-z_0-9]
 <IN_SEMANTIC_ACTION> {
     "{"       { braceDepth += 1; }
     "}"       { braceDepth -= 1; if(braceDepth == 0) { yypushback(1); tokenEnd(); yybegin(INITIAL); return OclYaccTypes.OCAML_LAZY_NODE; } }
+    .         { }
+    {NEWLINE} { }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.OCAML_LAZY_NODE; }
+}
+
+<IN_COMMENT> {
+    .         { }
+    {NEWLINE} { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.COMMENT; }
+    <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.COMMENT; }
+}
+
+<IN_TRAILER> {
     .         { }
     {NEWLINE} { }
     <<EOF>>   { yybegin(INITIAL); tokenEnd(); return OclYaccTypes.OCAML_LAZY_NODE; }

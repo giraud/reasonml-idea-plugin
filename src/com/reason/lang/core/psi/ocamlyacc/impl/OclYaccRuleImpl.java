@@ -10,6 +10,7 @@ import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccVisitor;
 import com.reason.lang.ocamlyacc.OclYaccPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OclYaccRuleImpl extends ASTWrapperPsiElement implements OclYaccRule {
 
@@ -27,9 +28,9 @@ public class OclYaccRuleImpl extends ASTWrapperPsiElement implements OclYaccRule
     }
 
     @Override
-    @NotNull
+    @Nullable
     public OclYaccRuleBody getRuleBody() {
-        return findNotNullChildByClass(OclYaccRuleBody.class);
+        return findChildByClass(OclYaccRuleBody.class);
     }
 
     public ItemPresentation getPresentation() {

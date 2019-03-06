@@ -16,6 +16,7 @@ public interface OclYaccTypes extends OclYaccLazyTypes {
     IElementType TRAILER = new OclYaccElementType("TRAILER");
 
     IElementType COLON = new OclYaccTokenType("COLON");
+    IElementType COMMENT = new OclYaccTokenType("COMMENT");
     IElementType DOT = new OclYaccTokenType("DOT");
     IElementType GT = new OclYaccTokenType("GT");
     IElementType HEADER_START = new OclYaccTokenType("HEADER_START");

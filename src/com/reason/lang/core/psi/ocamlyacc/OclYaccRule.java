@@ -3,11 +3,11 @@ package com.reason.lang.core.psi.ocamlyacc;
 
 import com.intellij.navigation.ItemPresentation;
 import com.reason.lang.core.psi.PsiStructuredElement;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface OclYaccRule extends PsiStructuredElement {
 
-    @NotNull
+    @Nullable
     OclYaccRuleBody getRuleBody();
 
     ItemPresentation getPresentation();

@@ -32,6 +32,8 @@ class YaccLexer implements FlexLexer {
     public static final int INITIAL = 2;
     public static final int IN_HEADER = 4;
     public static final int IN_SEMANTIC_ACTION = 6;
+    public static final int IN_COMMENT = 8;
+    public static final int IN_TRAILER = 10;
 
     /**
      * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -40,7 +42,7 @@ class YaccLexer implements FlexLexer {
      * l is of the form l = 2*k, k a non negative integer
      */
     private static final int[] ZZ_LEXSTATE = {
-            0, 0, 1, 1, 2, 2, 3, 3
+            0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5
     };
 
     /**
@@ -62,10 +64,10 @@ class YaccLexer implements FlexLexer {
 
     /* The ZZ_CMAP_A table has 320 entries */
     static final char[] ZZ_CMAP_A = zzUnpackCMap(
-            "\11\0\1\3\1\1\1\35\1\36\1\2\22\0\1\3\4\0\1\5\10\0\1\27\1\0\12\4\1\30\1\31" +
-                    "\1\33\1\0\1\34\2\0\32\4\4\0\1\4\1\0\1\16\3\4\1\13\1\23\1\25\1\26\1\24\1\4" +
-                    "\1\12\1\22\1\4\1\14\1\11\1\21\1\4\1\17\1\15\1\10\4\4\1\20\1\4\1\6\1\32\1\7" +
-                    "\7\0\1\35\242\0\2\35\26\0");
+            "\11\0\1\3\1\1\1\37\1\40\1\2\22\0\1\3\4\0\1\5\4\0\1\36\3\0\1\27\1\35\12\4\1" +
+                    "\30\1\31\1\33\1\0\1\34\2\0\32\4\4\0\1\4\1\0\1\16\3\4\1\13\1\23\1\25\1\26\1" +
+                    "\24\1\4\1\12\1\22\1\4\1\14\1\11\1\21\1\4\1\17\1\15\1\10\4\4\1\20\1\4\1\6\1" +
+                    "\32\1\7\7\0\1\37\242\0\2\37\26\0");
 
     /**
      * Translates DFA states to action switch labels.
@@ -73,13 +75,14 @@ class YaccLexer implements FlexLexer {
     private static final int[] ZZ_ACTION = zzUnpackAction();
 
     private static final String ZZ_ACTION_PACKED_0 =
-            "\4\0\1\1\1\2\1\3\1\4\1\2\1\5\1\6" +
-                    "\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\2" +
-                    "\1\15\1\16\1\17\1\20\1\21\1\22\5\0\1\23" +
-                    "\13\0\1\24\2\0\1\25\1\26\1\27\1\30";
+            "\6\0\1\1\1\2\1\3\1\4\1\2\1\5\1\6" +
+                    "\1\7\1\10\1\11\1\12\1\13\1\14\1\2\1\15" +
+                    "\1\2\1\15\1\16\1\17\1\20\1\2\1\21\1\22" +
+                    "\1\23\4\0\1\24\1\0\1\25\14\0\1\26\2\0" +
+                    "\1\27\1\30\1\31\1\32";
 
     private static int[] zzUnpackAction() {
-        int[] result = new int[49];
+        int[] result = new int[56];
         int offset = 0;
         offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
         return result;
@@ -104,16 +107,16 @@ class YaccLexer implements FlexLexer {
     private static final int[] ZZ_ROWMAP = zzUnpackRowMap();
 
     private static final String ZZ_ROWMAP_PACKED_0 =
-            "\0\0\0\37\0\76\0\135\0\174\0\174\0\233\0\272" +
-                    "\0\331\0\174\0\174\0\174\0\174\0\174\0\174\0\174" +
-                    "\0\174\0\174\0\370\0\u0117\0\174\0\174\0\174\0\174" +
-                    "\0\174\0\u0136\0\u0155\0\u0174\0\u0193\0\370\0\174\0\u01b2" +
-                    "\0\u01d1\0\u01f0\0\u020f\0\u022e\0\u024d\0\u026c\0\u028b\0\u02aa" +
-                    "\0\u02c9\0\u02e8\0\174\0\u0307\0\u0326\0\174\0\174\0\174" +
-                    "\0\174";
+            "\0\0\0\41\0\102\0\143\0\204\0\245\0\306\0\306" +
+                    "\0\347\0\u0108\0\u0129\0\306\0\306\0\306\0\306\0\306" +
+                    "\0\306\0\306\0\306\0\u014a\0\306\0\u016b\0\u018c\0\306" +
+                    "\0\306\0\306\0\u01ad\0\306\0\306\0\306\0\u01ce\0\u01ef" +
+                    "\0\u0210\0\u0231\0\306\0\u016b\0\306\0\u01ad\0\u0252\0\u0273" +
+                    "\0\u0294\0\u02b5\0\u02d6\0\u02f7\0\u0318\0\u0339\0\u035a\0\u037b" +
+                    "\0\u039c\0\306\0\u03bd\0\u03de\0\306\0\306\0\306\0\306";
 
     private static int[] zzUnpackRowMap() {
-        int[] result = new int[49];
+        int[] result = new int[56];
         int offset = 0;
         offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
         return result;
@@ -136,21 +139,23 @@ class YaccLexer implements FlexLexer {
     private static final int[] ZZ_TRANS = zzUnpackTrans();
 
     private static final String ZZ_TRANS_PACKED_0 =
-            "\37\5\1\6\3\7\1\10\1\11\1\12\1\13\17\10" +
-                    "\1\14\1\15\1\16\1\17\1\20\1\21\1\6\1\7" +
-                    "\2\22\1\23\2\22\1\24\27\22\2\6\2\22\1\23" +
-                    "\3\22\1\25\1\26\25\22\2\6\40\0\3\7\32\0" +
-                    "\1\7\4\0\1\10\3\0\17\10\15\0\1\27\1\30" +
-                    "\1\31\1\32\4\0\1\33\1\0\1\34\2\0\1\35" +
-                    "\15\0\1\22\1\36\43\0\1\37\40\0\1\40\6\0" +
-                    "\1\41\26\0\1\42\52\0\1\43\25\0\1\44\35\0" +
-                    "\1\45\45\0\1\46\33\0\1\47\45\0\1\50\34\0" +
-                    "\1\51\26\0\1\52\36\0\1\53\42\0\1\54\45\0" +
-                    "\1\55\20\0\1\56\42\0\1\57\32\0\1\60\36\0" +
-                    "\1\61\26\0";
+            "\41\7\1\10\3\11\1\12\1\13\1\14\1\15\17\12" +
+                    "\1\16\1\17\1\20\1\21\1\22\1\23\1\24\2\10" +
+                    "\1\11\2\25\1\26\2\25\1\27\31\25\2\10\2\25" +
+                    "\1\26\3\25\1\30\1\31\27\25\2\10\1\25\1\32" +
+                    "\1\33\34\25\2\10\2\25\1\26\34\25\2\10\42\0" +
+                    "\3\11\34\0\1\11\4\0\1\12\3\0\17\12\17\0" +
+                    "\1\34\1\35\1\36\1\37\4\0\1\40\1\0\1\41" +
+                    "\2\0\1\42\54\0\1\43\3\0\1\25\1\44\45\0" +
+                    "\1\45\32\0\1\32\1\46\47\0\1\47\6\0\1\50" +
+                    "\30\0\1\51\54\0\1\52\27\0\1\53\37\0\1\54" +
+                    "\47\0\1\55\35\0\1\56\47\0\1\57\36\0\1\60" +
+                    "\30\0\1\61\40\0\1\62\44\0\1\63\47\0\1\64" +
+                    "\22\0\1\65\44\0\1\66\34\0\1\67\40\0\1\70" +
+                    "\30\0";
 
     private static int[] zzUnpackTrans() {
-        int[] result = new int[837];
+        int[] result = new int[1023];
         int offset = 0;
         offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
         return result;
@@ -188,11 +193,12 @@ class YaccLexer implements FlexLexer {
     private static final int[] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
     private static final String ZZ_ATTRIBUTE_PACKED_0 =
-            "\4\0\2\11\3\1\11\11\2\1\5\11\5\0\1\11" +
-                    "\13\0\1\11\2\0\4\11";
+            "\6\0\2\11\3\1\10\11\1\1\1\11\2\1\3\11" +
+                    "\1\1\3\11\4\0\1\11\1\0\1\11\14\0\1\11" +
+                    "\2\0\4\11";
 
     private static int[] zzUnpackAttribute() {
-        int[] result = new int[49];
+        int[] result = new int[56];
         int offset = 0;
         offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
         return result;
@@ -271,6 +277,7 @@ class YaccLexer implements FlexLexer {
     private int tokenStartIndex;
     private CharSequence quotedStringId;
     private int braceDepth;
+    private boolean rulesDone = false;
 
     public YaccLexer() {
         this(null);
@@ -541,14 +548,28 @@ class YaccLexer implements FlexLexer {
                         tokenEnd();
                         return OclYaccTypes.OCAML_LAZY_NODE;
                     }  // fall though
-                    case 50:
+                    case 57:
                         break;
                     case IN_SEMANTIC_ACTION: {
                         yybegin(INITIAL);
                         tokenEnd();
                         return OclYaccTypes.OCAML_LAZY_NODE;
                     }  // fall though
-                    case 51:
+                    case 58:
+                        break;
+                    case IN_COMMENT: {
+                        yybegin(INITIAL);
+                        tokenEnd();
+                        return OclYaccTypes.COMMENT;
+                    }  // fall though
+                    case 59:
+                        break;
+                    case IN_TRAILER: {
+                        yybegin(INITIAL);
+                        tokenEnd();
+                        return OclYaccTypes.OCAML_LAZY_NODE;
+                    }  // fall though
+                    case 60:
                         break;
                     default:
                         return null;
@@ -560,25 +581,25 @@ class YaccLexer implements FlexLexer {
                         yypushback(1);
                     }
                     // fall through
-                    case 25:
+                    case 27:
                         break;
                     case 2: {
                         return BAD_CHARACTER;
                     }
                     // fall through
-                    case 26:
+                    case 28:
                         break;
                     case 3: {
                         return WHITE_SPACE;
                     }
                     // fall through
-                    case 27:
+                    case 29:
                         break;
                     case 4: {
                         return OclYaccTypes.IDENT;
                     }
                     // fall through
-                    case 28:
+                    case 30:
                         break;
                     case 5: {
                         yybegin(IN_SEMANTIC_ACTION);
@@ -587,60 +608,60 @@ class YaccLexer implements FlexLexer {
                         return OclYaccTypes.LBRACE;
                     }
                     // fall through
-                    case 29:
+                    case 31:
                         break;
                     case 6: {
                         return OclYaccTypes.RBRACE;
                     }
                     // fall through
-                    case 30:
+                    case 32:
                         break;
                     case 7: {
                         return OclYaccTypes.DOT;
                     }
                     // fall through
-                    case 31:
+                    case 33:
                         break;
                     case 8: {
                         return OclYaccTypes.COLON;
                     }
                     // fall through
-                    case 32:
+                    case 34:
                         break;
                     case 9: {
                         return OclYaccTypes.SEMI;
                     }
                     // fall through
-                    case 33:
+                    case 35:
                         break;
                     case 10: {
                         return OclYaccTypes.PIPE;
                     }
                     // fall through
-                    case 34:
+                    case 36:
                         break;
                     case 11: {
                         return OclYaccTypes.LT;
                     }
                     // fall through
-                    case 35:
+                    case 37:
                         break;
                     case 12: {
                         return OclYaccTypes.GT;
                     }
                     // fall through
-                    case 36:
+                    case 38:
                         break;
                     case 13: {
                     }
                     // fall through
-                    case 37:
+                    case 39:
                         break;
                     case 14: {
                         braceDepth += 1;
                     }
                     // fall through
-                    case 38:
+                    case 40:
                         break;
                     case 15: {
                         braceDepth -= 1;
@@ -652,66 +673,85 @@ class YaccLexer implements FlexLexer {
                         }
                     }
                     // fall through
-                    case 39:
+                    case 41:
                         break;
                     case 16: {
+                        yybegin(INITIAL);
+                        tokenEnd();
+                        return OclYaccTypes.COMMENT;
+                    }
+                    // fall through
+                    case 42:
+                        break;
+                    case 17: {
+                        if (rulesDone) {
+                            yybegin(IN_TRAILER);
+                        }
+                        rulesDone = true;
                         return OclYaccTypes.SECTION_SEPARATOR;
                     }
                     // fall through
-                    case 40:
+                    case 43:
                         break;
-                    case 17: {
+                    case 18: {
                         yybegin(IN_HEADER);
                         tokenStart();
                         return OclYaccTypes.HEADER_START;
                     }
                     // fall through
-                    case 41:
+                    case 44:
                         break;
-                    case 18: {
+                    case 19: {
                         return OclYaccTypes.HEADER_STOP;
                     }
                     // fall through
-                    case 42:
+                    case 45:
                         break;
-                    case 19: {
+                    case 20: {
+                        yybegin(IN_COMMENT);
+                        tokenStart();
+                    }
+                    // fall through
+                    case 46:
+                        break;
+                    case 21: {
                         yypushback(2);
                         tokenEnd();
                         yybegin(INITIAL);
                         return OclYaccTypes.OCAML_LAZY_NODE;
                     }
                     // fall through
-                    case 43:
+                    case 47:
                         break;
-                    case 20: {
+                    case 22: {
                         return OclYaccTypes.TYPE;
                     }
                     // fall through
-                    case 44:
+                    case 48:
                         break;
-                    case 21: {
+                    case 23: {
                         return OclYaccTypes.LEFT;
                     }
                     // fall through
-                    case 45:
+                    case 49:
                         break;
-                    case 22: {
+                    case 24: {
                         return OclYaccTypes.TOKEN;
                     }
                     // fall through
-                    case 46:
+                    case 50:
                         break;
-                    case 23: {
+                    case 25: {
                         return OclYaccTypes.START;
                     }
                     // fall through
-                    case 47:
+                    case 51:
                         break;
-                    case 24: {
+                    case 26: {
                         return OclYaccTypes.RIGHT;
                     }
                     // fall through
-                    case 48:
+                    case 52:
                         break;
                     default:
                         zzScanError(ZZ_NO_MATCH);
