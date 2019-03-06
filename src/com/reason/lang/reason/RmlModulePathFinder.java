@@ -33,12 +33,12 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
                 String openName = ((PsiNamedElement) item).getName();
                 // Add open value to all previous elements
-                List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + "." + name).collect(Collectors.toList());
+                List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
                 qualifiedNames.addAll(withOpenQualifier);
                 qualifiedNames.add(openName + pathExtension);
             } else if (item instanceof PsiInnerModule) {
                 if (path.equals(((PsiInnerModule) item).getName())) {
-                    qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + "." + path);
+                    qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + pathExtension);
                 }
             } else if (item instanceof PsiType && addTypes) {
                 qualifiedNames.add(((PsiType) item).getQualifiedName() + pathExtension);
@@ -58,6 +58,7 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
 
         qualifiedNames.add(path);
         qualifiedNames.add("Pervasives");
+
         return qualifiedNames;
     }
 
