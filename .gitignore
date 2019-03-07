@@ -4,7 +4,7 @@ out/
 build/
 *.iml
 idea-flex.skeleton
-jflex-1.7.0.jar
+jflex-*.jar
 gradle-wrapper*
 gradlew*
 jps-builder/build
