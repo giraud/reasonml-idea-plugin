@@ -3,7 +3,7 @@
 out/
 build/
 *.iml
-idea-flex.skeleton
+idea-flex*.skeleton
 jflex-*.jar
 gradle-wrapper*
 gradlew*
