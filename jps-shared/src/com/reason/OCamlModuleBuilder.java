@@ -31,11 +31,7 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
 
     @Override
     public void setupRootModel(ModifiableRootModel rootModel) {
-        //if (m_odk != null) {
-        //    rootModel.setSdk(m_odk);
-        //} else {
-        //    rootModel.inheritSdk();
-        //}
+        rootModel.inheritSdk();
 
         ContentEntry contentEntry = doAddContentEntry(rootModel);
         if (contentEntry != null) {
@@ -58,7 +54,8 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
     @Nullable
     @Override
     public ModuleWizardStep getCustomOptionsStep(WizardContext context, Disposable parentDisposable) {
-        return new OCamlModuleWizardStep(context);
+        //return new OCamlModuleWizardStep(context);
+        return null;
     }
 
     @Override
