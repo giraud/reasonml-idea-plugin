@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.73-beta01</version>
+    <version>0.73</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,7 +10,12 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Work In Progress...</li>
+            <li>#149 - ReasonML confused by .mly (yacc) files; structure panel shows most of the grammar on one very long line</li>
+            <li>A new file based index</li>
+            <li>Display a message at the end of the compilation</li>
+            <li>Implement a (basic) related line marker</li>
+            <li>Introduce a new OCaml module</li>
+            <li>Remove basic OCaml types detection in lexer</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

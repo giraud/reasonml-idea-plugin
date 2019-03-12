@@ -10,6 +10,15 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.73 - 2019/03/12
+
+- :bug: [#149](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/149) ![o](jps-shared/resources/icons/ocaml-file.png) - ReasonML confused by .mly (yacc) files; structure panel shows most of the grammar on one very long line
+- A new file based index
+- Display a message at the end of the compilation
+- Implement a (basic) related line marker
+- Introduce a new OCaml module
+- Remove basic OCaml types detection in lexer</li>
+
 ## 0.72 - 2019/02/01
 
 - :rocket: Highlight of dune file
