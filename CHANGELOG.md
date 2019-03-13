@@ -12,12 +12,12 @@
 
 ## 0.73 - 2019/03/12
 
+- :rocket: Implement a (basic) related line marker
+- :rocket: Introduce a new OCaml module
+- :nail_care: Display a message at the end of the compilation
 - :bug: [#149](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/149) ![o](jps-shared/resources/icons/ocaml-file.png) - ReasonML confused by .mly (yacc) files; structure panel shows most of the grammar on one very long line
-- A new file based index
-- Display a message at the end of the compilation
-- Implement a (basic) related line marker
-- Introduce a new OCaml module
-- Remove basic OCaml types detection in lexer</li>
+- :house: A new file based index
+- :house: Remove basic OCaml types detection in lexer
 
 ## 0.72 - 2019/02/01
 
