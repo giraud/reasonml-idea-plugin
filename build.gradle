@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version "0.3.11"
+    id 'org.jetbrains.intellij' version "0.3.12"
 }
 
 allprojects {
@@ -28,18 +28,8 @@ allprojects {
         updateSinceUntilBuild = false
     }
 
-    test {
-//        useJUnit {
-//            exclude compilationPackages
-//        }
-        testLogging {
-            exceptionFormat = 'full'
-        }
-    }
-
     runIde {
         //systemProperty "reasonReformatOnSave", "true"
-//        jvmArgs = ['-agentpath:T:\\opt\\yjp-2017.02-b66\\bin\\win64\\yjpagent.dll']
         jvmArgs = ['-Dcompiler.process.debug.port=5005']
     }
 
@@ -55,14 +45,7 @@ repositories {
 }
 
 dependencies {
-    compile project('jps-builder')
-    compile project('jps-shared')
-}
-
-project(':jps-builder') {
-    dependencies {
-        compile project(':jps-shared')
-    }
+    compile project('jps-plugin')
 }
 
 apply plugin: 'idea'
@@ -74,7 +57,4 @@ idea {
     module {
         generatedSourceDirs += file('gen')
     }
-}
-
-compileJava {
 }

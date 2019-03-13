@@ -12,7 +12,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.wizard.OCamlModuleWizardStep;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
