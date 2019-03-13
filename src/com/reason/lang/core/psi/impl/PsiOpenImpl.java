@@ -4,18 +4,16 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiStructuredElement;
-import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen, PsiStructuredElement {
+public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
 
     //region Constructors
     public PsiOpenImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -23,32 +21,11 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen, PsiStruct
     }
     //endregion
 
-    @Nullable
-    public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiUpperSymbol.class);
-    }
-
+    @NotNull
     @Override
-    public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier == null) {
-            return "";
-        }
-
-        StringBuilder sbName = new StringBuilder(nameIdentifier.getText());
-        PsiUpperSymbol nextSibling = PsiTreeUtil.getNextSiblingOfType(nameIdentifier, PsiUpperSymbol.class);
-        while (nextSibling != null) {
-            sbName.append(".").append(nextSibling.getText());
-            nextSibling = PsiTreeUtil.getNextSiblingOfType(nextSibling, PsiUpperSymbol.class);
-        }
-
-        return sbName.toString();
-    }
-
-    @Nullable
-    @Override
-    public PsiElement setName(@NotNull String s) throws IncorrectOperationException {
-        return null;  // TODO implement method
+    public String getQualifiedName() {
+        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        return firstChild == null ? "" : ORUtil.getTextUntilTokenType(firstChild, null);
     }
 
     @Override
@@ -57,7 +34,7 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen, PsiStruct
             @Nullable
             @Override
             public String getPresentableText() {
-                return getName();
+                return getQualifiedName();
             }
 
             @Nullable
@@ -77,6 +54,6 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen, PsiStruct
     @Nullable
     @Override
     public String toString() {
-        return "Open " + getName();
+        return "Open " + getQualifiedName();
     }
 }

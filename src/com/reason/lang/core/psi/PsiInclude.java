@@ -1,4 +1,4 @@
 package com.reason.lang.core.psi;
 
-public interface PsiInclude extends PsiNamedElement, PsiStructuredElement {
+public interface PsiInclude extends PsiQualifiedElement, PsiStructuredElement {
 }

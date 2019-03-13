@@ -230,7 +230,7 @@ public final class PsiFinder implements ProjectComponent {
     }
 
     @Nullable
-    public PsiQualifiedNamedElement findModuleFromQn(@Nullable String moduleQName) {
+    public PsiModule findModuleFromQn(@Nullable String moduleQName) {
         if (moduleQName == null) {
             return null;
         }
@@ -242,7 +242,7 @@ public final class PsiFinder implements ProjectComponent {
         if (vFile != null) {
             FileBase fileModule = (FileBase) PsiManager.getInstance(m_project).findFile(vFile);
             if (1 < names.length) {
-                PsiQualifiedNamedElement currentModule = fileModule;
+                PsiModule currentModule = fileModule;
                 for (int i = 1; i < names.length; i++) {
                     String innerModuleName = names[i];
                     currentModule = currentModule instanceof FileBase ? PsiFileHelper.getModuleExpression((PsiFile) currentModule, innerModuleName) : ((PsiInnerModule) currentModule).getModule(innerModuleName);

@@ -96,13 +96,25 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
             }
         }
 
-        // Add all local expressions (let and module name)
+        // Add all local expressions
         PsiElement item = cursorElement == null ? null : cursorElement.getPrevSibling();
         if (item == null && cursorElement != null) {
             item = cursorElement.getParent();
         }
+
         while (item != null) {
-            if (item instanceof PsiInnerModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
+            if (item instanceof PsiInclude) {
+                PsiModule moduleFromQn = psiFinder.findModuleFromQn(((PsiInclude) item).getQualifiedName());
+                for (PsiNamedElement element : moduleFromQn.getExpressions()) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(element).
+                            withTypeText(PsiSignatureUtil.getSignature(element)).
+                            withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
+                    if (item instanceof PsiType) {
+                        expandType((PsiType) item, resultSet);
+                    }
+                }
+            } else if (item instanceof PsiInnerModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
                 PsiNamedElement element = (PsiNamedElement) item;
                 resultSet.addElement(LookupElementBuilder.
                         create(element).

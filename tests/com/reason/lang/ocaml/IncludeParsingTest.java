@@ -8,11 +8,15 @@ public class IncludeParsingTest extends BaseParsingTestCase {
         super("", "ml", new OclParserDefinition());
     }
 
-    public void testInclude() {
+    public void testOne() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt")));
 
-        assertNotNull(e);
-        assertEquals("Belt", e.getName());
+        assertEquals("Belt", e.getQualifiedName());
     }
 
+    public void testPath() {
+        PsiInclude e = first(includeExpressions(parseCode("include Belt.Array")));
+
+        assertEquals("Belt.Array", e.getQualifiedName());
+    }
 }

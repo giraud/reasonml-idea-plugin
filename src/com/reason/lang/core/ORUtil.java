@@ -91,7 +91,7 @@ public class ORUtil {
         return found;
     }
 
-    public static String getTextUntilTokenType(@NotNull PsiElement root, @NotNull IElementType elementType) {
+    public static String getTextUntilTokenType(@NotNull PsiElement root, @Nullable IElementType elementType) {
         String text = root.getText();
 
         PsiElement sibling = root.getNextSibling();

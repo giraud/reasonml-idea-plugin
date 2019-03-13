@@ -2,8 +2,8 @@ package com.reason.lang.core;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,10 +18,20 @@ public class PsiFileHelper {
 
     @NotNull
     public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file) {
-        Collection<PsiNamedElement> result = new ArrayList<>();
+        ArrayList<PsiNamedElement> result = new ArrayList<>();
+
+        PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
 
         PsiElement element = file.getFirstChild();
         while (element != null) {
+            if (element instanceof PsiInclude) {
+                // Recursively include everything from referenced module
+                PsiInclude include = (PsiInclude) element;
+                PsiModule includedModule = psiFinder.findModuleFromQn(include.getQualifiedName());
+                if (includedModule != null) {
+                    result.addAll(includedModule.getExpressions());
+                }
+            }
             if (element instanceof PsiNamedElement) {
                 result.add((PsiNamedElement) element);
             }
@@ -97,7 +107,7 @@ public class PsiFileHelper {
     }
 
     @Nullable
-    public static PsiQualifiedNamedElement getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
+    public static PsiInnerModule getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
         Collection<PsiInnerModule> modules = getModuleExpressions(file);
         for (PsiInnerModule module : modules) {
             if (name.equals(module.getName())) {
@@ -105,6 +115,5 @@ public class PsiFileHelper {
             }
         }
         return null;
-
     }
 }
