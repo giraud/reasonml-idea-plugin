@@ -56,7 +56,7 @@ public class ORSignature {
     }
 
     public ORSignature(Collection<PsiParameter> parameters) {
-        m_types = new SignatureType[parameters.size()];
+        m_types = new SignatureType[parameters.size() + 1];
         int i = 0;
         for (PsiParameter item : parameters) {
             String[] tokens = item.getText().split("=");
@@ -71,9 +71,16 @@ public class ORSignature {
             i++;
         }
 
+
+        SignatureType signatureType = new SignatureType();
+        signatureType.value = "'a";
+        signatureType.mandatory = false /* we don't know */;
+        signatureType.defaultValue = "";
+        m_types[i] = signatureType;
+
         StringBuilder sb = new StringBuilder();
         sb.append("(");
-        for (int j = 0; j < m_types.length; j++) {
+        for (int j = 0; j < m_types.length - 1; j++) {
             SignatureType m_type = m_types[j];
             if (0 < j) {
                 sb.append(", ");
@@ -109,7 +116,7 @@ public class ORSignature {
     @NotNull
     @Override
     public String toString() {
-        return "!! " + asString(OclLanguage.INSTANCE);
+        return asString(OclLanguage.INSTANCE);
     }
 
     public String asString(Language lang) {
