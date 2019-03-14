@@ -284,7 +284,7 @@
         <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
-        <compileServer.plugin classpath="jps-builder.jar;jps-shared.jar"/>
+        <compileServer.plugin classpath="jps-plugin.jar"/>
 
         <languageInjector implementation="com.reason.ide.JsInjector"/>
 
