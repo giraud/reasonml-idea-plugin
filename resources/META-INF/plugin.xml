@@ -148,6 +148,8 @@
         <lang.syntaxHighlighterFactory language="Dune"
                                        implementationClass="com.reason.ide.highlight.DuneSyntaxHighlighterFactory"/>
 
+        <lang.parserDefinition language="" implementationClass="com.reason.lang.odoc.ODocParserDefinition"/>
+
         <!--
          | Structure / folding / comments
          -->

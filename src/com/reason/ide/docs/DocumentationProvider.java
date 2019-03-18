@@ -44,7 +44,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             }
 
             if (!text.isEmpty()) {
-                return DocFormatter.format(element.getContainingFile(), text);
+                return DocFormatter.format(element.getContainingFile(), element, text);
             }
         } else if (element instanceof PsiUpperSymbol) {
             element = element.getParent();
@@ -57,7 +57,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (parent instanceof PsiVal) {
                 PsiElement nextElement = PsiTreeUtil.nextVisibleLeaf(parent);
                 if (nextElement instanceof PsiComment && nextElement.getText().startsWith("(**")) {
-                    return DocFormatter.format(parent.getContainingFile(), nextElement.getText());
+                    return DocFormatter.format(parent.getContainingFile(), parent, nextElement.getText());
                 }
             }
         }
