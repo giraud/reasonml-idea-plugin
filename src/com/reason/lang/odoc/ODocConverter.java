@@ -1,6 +1,5 @@
 package com.reason.lang.odoc;
 
-import com.intellij.lang.documentation.DocumentationMarkup;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +28,7 @@ public class ODocConverter {
                     break;
                 }
 
-                System.out.println(tokenType.toString() + " : " + m_lexer.yytext());
+                //System.out.println(tokenType.toString() + " : " + m_lexer.yytext());
 
                 if (!m_paragraphStarted && tokenType != ODocTypes.NEW_LINE && tokenType != TokenType.WHITE_SPACE) {
                     m_paragraphStarted = true;

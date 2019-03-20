@@ -31,7 +31,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
                 qualifiedNames.add(((FileBase) item).asModuleName());
                 break;
             } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
-                String openName = ((PsiNamedElement) item).getName();
+                String openName = ((PsiQualifiedElement) item).getQualifiedName();
                 // Add open value to all previous elements
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
                 qualifiedNames.addAll(withOpenQualifier);

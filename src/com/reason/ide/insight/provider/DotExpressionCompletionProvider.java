@@ -1,7 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
@@ -9,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Joiner;
 import com.reason.Log;
@@ -26,23 +23,18 @@ import java.util.stream.Collectors;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
-public class DotExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class DotExpressionCompletionProvider {
 
     private final static Log LOG = Log.create("insight.dot");
 
-    private final ModulePathFinder m_modulePathFinder;
-
-    public DotExpressionCompletionProvider(ModulePathFinder modulePathFinder) {
-        m_modulePathFinder = modulePathFinder;
+    private DotExpressionCompletionProvider() {
     }
 
-    @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull ModulePathFinder modulePathFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("DOT expression completion");
 
-        Project project = parameters.getOriginalFile().getProject();
-        PsiElement cursorElement = parameters.getPosition();
-        PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(cursorElement);
+        Project project = element.getProject();
+        PsiElement dotLeaf = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
         if (previousElement instanceof PsiUpperSymbol) {
@@ -50,7 +42,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
                 // Find potential module paths, and filter the result
-                final List<String> qualifiedNames = m_modulePathFinder.extractPotentialPaths(cursorElement, false);
+                final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, false);
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);
@@ -110,7 +102,7 @@ public class DotExpressionCompletionProvider extends CompletionProvider<Completi
         }
     }
 
-    private void addExpressions(@NotNull CompletionResultSet resultSet, Collection<PsiNamedElement> expressions) {
+    private static void addExpressions(@NotNull CompletionResultSet resultSet, Collection<PsiNamedElement> expressions) {
         for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include

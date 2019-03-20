@@ -1,7 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -10,10 +8,8 @@ import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.LayeredIcon;
-import com.intellij.util.ProcessingContext;
 import com.reason.Icons;
 import com.reason.Log;
-import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -26,23 +22,17 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class JsxAttributeCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class JsxAttributeCompletionProvider {
 
     private static final Log LOG = Log.create("insight.jsxAttribute");
 
-    private final ModulePathFinder m_modulePathFinder;
-
-    public JsxAttributeCompletionProvider(ModulePathFinder modulePathFinder) {
-        m_modulePathFinder = modulePathFinder;
+    private JsxAttributeCompletionProvider() {
     }
 
-    @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX attribute completion");
 
-        PsiElement originalPosition = parameters.getOriginalPosition();
-
-        PsiTagStart tag = PsiTreeUtil.getParentOfType(originalPosition, PsiTagStart.class);
+        PsiTagStart tag = PsiTreeUtil.getParentOfType(element, PsiTagStart.class);
         if (tag != null) {
             List<PsiTagStart.TagProperty> attributes = tag.getUnifiedPropertyList();
 
@@ -64,11 +54,12 @@ public class JsxAttributeCompletionProvider extends CompletionProvider<Completio
 
             // Now populate the dialog
             for (PsiTagStart.TagProperty attribute : attributes) {
-                if (!usedNames.contains(attribute.getName())) {
+                String attributeName = attribute.getName();
+                if (attributeName != null && !usedNames.contains(attributeName)) {
                     boolean mandatory = attribute.isMandatory();
                     Icon icon = mandatory ? LayeredIcon.create(Icons.ATTRIBUTE, Icons.OVERLAY_MANDATORY) : Icons.ATTRIBUTE;
                     resultSet.addElement(LookupElementBuilder.
-                            create(attribute.getName()).
+                            create(attributeName).
                             withBoldness(mandatory).
                             withTypeText(attribute.getType(), true).
                             withIcon(icon).

@@ -1,7 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -11,10 +9,10 @@ import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.ProcessingContext;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Icons;
 import com.reason.Log;
@@ -32,23 +30,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
+public class FreeExpressionCompletionProvider {
 
-public class FreeExpressionCompletionProvider extends CompletionProvider<CompletionParameters> {
+    private static final Log LOG = Log.create("insight.free");
 
-    private final Log LOG = Log.create("insight.free");
-    private final ModulePathFinder m_modulePathFinder;
-
-    public FreeExpressionCompletionProvider(ModulePathFinder modulePathFinder) {
-        m_modulePathFinder = modulePathFinder;
-    }
-
-    @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull ModulePathFinder m_modulePathFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("FREE expression completion");
 
-        Project project = parameters.getOriginalFile().getProject();
-        PsiElement cursorElement = parameters.getOriginalPosition();
+        Project project = element.getProject();
 
         FileModuleIndexService orFinder = FileModuleIndexService.getService();
         PsiManager psiManager = PsiManager.getInstance(project);
@@ -76,7 +65,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance(project);
-        List<String> paths = cursorElement == null ? emptyList() : m_modulePathFinder.extractPotentialPaths(cursorElement, false);
+        List<String> paths = m_modulePathFinder.extractPotentialPaths(element, false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)
@@ -90,36 +79,38 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
                                 create(expression).
                                 withTypeText(PsiSignatureUtil.getSignature(expression)).
                                 withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
-                                withInsertHandler(this::insertExpression));
+                                withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
                     }
                 }
             }
         }
 
         // Add all local expressions
-        PsiElement item = cursorElement == null ? null : cursorElement.getPrevSibling();
-        if (item == null && cursorElement != null) {
-            item = cursorElement.getParent();
+        PsiElement item = element.getPrevSibling();
+        if (item == null) {
+            item = element.getParent();
         }
 
         while (item != null) {
             if (item instanceof PsiInclude) {
                 PsiModule moduleFromQn = psiFinder.findModuleFromQn(((PsiInclude) item).getQualifiedName());
-                for (PsiNamedElement element : moduleFromQn.getExpressions()) {
-                    resultSet.addElement(LookupElementBuilder.
-                            create(element).
-                            withTypeText(PsiSignatureUtil.getSignature(element)).
-                            withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
-                    if (item instanceof PsiType) {
-                        expandType((PsiType) item, resultSet);
+                if (moduleFromQn != null) {
+                    for (PsiNamedElement expression : moduleFromQn.getExpressions()) {
+                        resultSet.addElement(LookupElementBuilder.
+                                create(expression).
+                                withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
+                        if (item instanceof PsiType) {
+                            expandType((PsiType) item, resultSet);
+                        }
                     }
                 }
             } else if (item instanceof PsiInnerModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal || item instanceof PsiException || item instanceof PsiVal) {
-                PsiNamedElement element = (PsiNamedElement) item;
+                PsiNamedElement expression = (PsiNamedElement) item;
                 resultSet.addElement(LookupElementBuilder.
-                        create(element).
-                        withTypeText(PsiSignatureUtil.getSignature(element)).
-                        withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
+                        create(expression).
+                        withTypeText(PsiSignatureUtil.getSignature(expression)).
+                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                 if (item instanceof PsiType) {
                     expandType((PsiType) item, resultSet);
                 }
@@ -136,23 +127,26 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
 
         // Add pervasives expressions
         Collection<VirtualFile> pervasivesFile = orFinder.getInterfaceFilesWithName("Pervasives", GlobalSearchScope.allScope(project));
-        FileBase pervasives = pervasivesFile.isEmpty() ? null : (FileBase) psiManager.findFile(pervasivesFile.iterator().next());
-        if (pervasives != null) {
-            for (PsiNamedElement element : pervasives.getExpressions()) {
-                if (!(element instanceof PsiAnnotation)) {
-                    resultSet.addElement(LookupElementBuilder.
-                            create(element).
-                            withTypeText(PsiSignatureUtil.getSignature(element)).
-                            withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
-                    if (element instanceof PsiType) {
-                        expandType((PsiType) element, resultSet);
+        PsiFile file = psiManager.findFile(pervasivesFile.iterator().next());
+        if (file instanceof FileBase) {
+            FileBase pervasives = pervasivesFile.isEmpty() ? null : (FileBase) file;
+            if (pervasives != null) {
+                for (PsiNamedElement expression : pervasives.getExpressions()) {
+                    if (!(expression instanceof PsiAnnotation)) {
+                        resultSet.addElement(LookupElementBuilder.
+                                create(expression).
+                                withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                        if (expression instanceof PsiType) {
+                            expandType((PsiType) expression, resultSet);
+                        }
                     }
                 }
             }
         }
     }
 
-    private void expandType(@NotNull PsiType type, @NotNull CompletionResultSet resultSet) {
+    private static void expandType(@NotNull PsiType type, @NotNull CompletionResultSet resultSet) {
         Collection<PsiVariantConstructor> variants = type.getVariants();
         if (!variants.isEmpty()) {
             for (PsiVariantConstructor variant : variants) {
@@ -164,7 +158,7 @@ public class FreeExpressionCompletionProvider extends CompletionProvider<Complet
         }
     }
 
-    private void insertExpression(@NotNull InsertionContext insertionContext, LookupElement element) {
+    private static void insertExpression(@NotNull InsertionContext insertionContext, LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
         if (psiElement instanceof PsiLet) {
             PsiLet let = (PsiLet) psiElement;

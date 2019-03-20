@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.73</version>
+    <version>0.74-beta01</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,12 +10,8 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#149 - ReasonML confused by .mly (yacc) files; structure panel shows most of the grammar on one very long line</li>
-            <li>A new file based index</li>
-            <li>Display a message at the end of the compilation</li>
-            <li>Implement a (basic) related line marker</li>
-            <li>Introduce a new OCaml module</li>
-            <li>Remove basic OCaml types detection in lexer</li>
+            <li>ODoc formatting when displaying doc (ctrl+q)</li>
+            <li>Upgraded minimal supported version of intellij product to 173</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
@@ -26,7 +22,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="172"/>
+    <idea-version since-build="173"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -147,8 +143,6 @@
         <lang.parserDefinition language="Dune" implementationClass="com.reason.lang.dune.DuneParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Dune"
                                        implementationClass="com.reason.ide.highlight.DuneSyntaxHighlighterFactory"/>
-
-        <lang.parserDefinition language="" implementationClass="com.reason.lang.odoc.ODocParserDefinition"/>
 
         <!--
          | Structure / folding / comments

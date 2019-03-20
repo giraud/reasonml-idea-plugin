@@ -240,20 +240,23 @@ public final class PsiFinder implements ProjectComponent {
 
         VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(names[0], allScope(m_project));
         if (vFile != null) {
-            FileBase fileModule = (FileBase) PsiManager.getInstance(m_project).findFile(vFile);
-            if (1 < names.length) {
-                PsiModule currentModule = fileModule;
-                for (int i = 1; i < names.length; i++) {
-                    String innerModuleName = names[i];
-                    currentModule = currentModule instanceof FileBase ? PsiFileHelper.getModuleExpression((PsiFile) currentModule, innerModuleName) : ((PsiInnerModule) currentModule).getModule(innerModuleName);
-                    if (currentModule == null) {
-                        return null;
+            PsiFile file = PsiManager.getInstance(m_project).findFile(vFile);
+            if (file instanceof FileBase) {
+                FileBase fileModule = (FileBase) file;
+                if (1 < names.length) {
+                    PsiModule currentModule = fileModule;
+                    for (int i = 1; i < names.length; i++) {
+                        String innerModuleName = names[i];
+                        currentModule = currentModule instanceof FileBase ? PsiFileHelper.getModuleExpression((PsiFile) currentModule, innerModuleName) : ((PsiInnerModule) currentModule).getModule(innerModuleName);
+                        if (currentModule == null) {
+                            return null;
+                        }
                     }
+                    return currentModule;
                 }
-                return currentModule;
-            }
 
-            return fileModule;
+                return fileModule;
+            }
         }
 
         return null;

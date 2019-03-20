@@ -21,7 +21,7 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
     intellij {
         plugins = [
-                "PsiViewer:2018.1.2" // always have psi viewer installed in sandbox
+                "PsiViewer:3.28.93" // always have psi viewer installed in sandbox
         ]
         pluginName 'reasonml-plugin-idea'
         version ideaVersion

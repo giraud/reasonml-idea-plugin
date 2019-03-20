@@ -1,8 +1,6 @@
 package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -10,9 +8,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.ProcessingContext;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.RmlFile;
@@ -26,19 +24,23 @@ import java.util.Collection;
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
 
-public class JsxNameCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class JsxNameCompletionProvider {
 
     private static final Log LOG = Log.create("insight.jsxname");
 
-    @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext processingContext, @NotNull CompletionResultSet resultSet) {
+    private JsxNameCompletionProvider() {
+    }
+
+    public static void addCompletions(@NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("JSX name expression completion");
 
-        RmlFile originalFile = (RmlFile) parameters.getOriginalFile();
+        RmlFile originalFile = (RmlFile) element.getContainingFile();
         String fileModuleName = originalFile.asModuleName();
         Project project = originalFile.getProject();
         GlobalSearchScope scope = allScope(project);
         PsiManager psiManager = PsiManager.getInstance(project);
+
+        // TODO: use psiFinder to get all unified PsiModule that are components
 
         // Find all files that are components !
         Collection<VirtualFile> components = FileModuleIndexService.getService().getComponents(project, scope);
@@ -58,6 +60,7 @@ public class JsxNameCompletionProvider extends CompletionProvider<CompletionPara
             }
         }
 
+        // Find all inner modules that are components
         PsiFinder psiFinder = PsiFinder.getInstance(project);
         Collection<PsiInnerModule> innerModules = psiFinder.findComponents(scope);
         LOG.debug("Inner modules found", innerModules.size());

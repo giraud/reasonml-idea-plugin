@@ -1,13 +1,11 @@
 package com.reason.ide.insight.provider;
 
-import com.intellij.codeInsight.completion.CompletionParameters;
-import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.util.ProcessingContext;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
@@ -21,17 +19,18 @@ import java.util.Collection;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
-public class ObjectCompletionProvider extends CompletionProvider<CompletionParameters> {
+public class ObjectCompletionProvider {
 
     private static final Log LOG = Log.create("insight.object");
 
-    @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet resultSet) {
-        LOG.debug("RECORD expression completion");
+    private ObjectCompletionProvider() {
+    }
 
-        Project project = parameters.getOriginalFile().getProject();
-        PsiElement cursorElement = parameters.getPosition();
-        PsiElement sharpSharpElement = cursorElement.getPrevSibling();
+    public static void addCompletions(@NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+        LOG.debug("OBJECT expression completion");
+
+        Project project = element.getProject();
+        PsiElement sharpSharpElement = PsiTreeUtil.prevVisibleLeaf(element);
         PsiElement previousElement = sharpSharpElement == null ? null : sharpSharpElement.getPrevSibling();
 
         if (previousElement instanceof PsiLowerSymbol) {

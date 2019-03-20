@@ -27,6 +27,10 @@ public class Log {
         return m_log.isDebugEnabled();
     }
 
+    public boolean isTraceEnabled() {
+        return m_log.isTraceEnabled();
+    }
+
     public void debug(String comment) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment);
