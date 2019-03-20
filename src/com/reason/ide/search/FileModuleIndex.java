@@ -2,6 +2,7 @@ package com.reason.ide.search;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.hash.HashMap;
 import com.intellij.util.indexing.*;
@@ -73,39 +74,45 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
     public DataIndexer<String, FileModuleData, FileContent> getIndexer() {
         return inputData -> {
             if (FileHelper.isReason(inputData.getFileType()) || FileHelper.isOCaml(inputData.getFileType())) {
-                Map<String, FileModuleData> map = new HashMap<>();
-                FileBase psiFile = (FileBase) inputData.getPsiFile();
+                PsiFile inputPsiFile = inputData.getPsiFile();
+                if (inputPsiFile instanceof FileBase) {
+                    FileBase psiFile = (FileBase) inputPsiFile;
+                    Map<String, FileModuleData> map = new HashMap<>();
 
-                String namespace = "";
-                VirtualFile bsConfigFromFile = Platform.findBsConfigFromFile(inputData.getProject(), inputData.getFile());
-                String path = inputData.getFile().getPath();
-                if (bsConfigFromFile != null) {
-                    VirtualFile parent = bsConfigFromFile.getParent();
-                    boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-                    PsiManager psiManager = PsiManager.getInstance(inputData.getProject());
+                    String namespace = "";
+                    VirtualFile bsConfigFromFile = Platform.findBsConfigFromFile(inputData.getProject(), inputData.getFile());
+                    String path = inputData.getFile().getPath();
+                    if (bsConfigFromFile != null) {
+                        VirtualFile parent = bsConfigFromFile.getParent();
+                        boolean useExternalAsSource = "bs-platform".equals(parent.getName());
+                        PsiManager psiManager = PsiManager.getInstance(inputData.getProject());
 
-                    BsConfig bsConfig = BsConfig.read(parent, psiManager.findFile(bsConfigFromFile), useExternalAsSource);
-                    if (!bsConfig.isInSources(inputData.getFile())) {
-                        LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsConfigFromFile);
-                        return Collections.emptyMap();
+                        PsiFile configFile = psiManager.findFile(bsConfigFromFile);
+                        if (configFile != null) {
+                            BsConfig bsConfig = BsConfig.read(parent, configFile, useExternalAsSource);
+                            if (!bsConfig.isInSources(inputData.getFile())) {
+                                LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsConfigFromFile);
+                                return Collections.emptyMap();
+                            }
+
+                            //System.out.println("Indexing " + inputData.getFile() + " / sources: [" + Joiner.join(", ", bsConfig.getSources()) + "] / bsconf: " + bsConfigFromFile);
+                            namespace = bsConfig.getNamespace();
+                        }
+                    }
+                    String moduleName = psiFile.asModuleName();
+
+                    FileModuleData value = new FileModuleData(path, namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("indexing " + Platform.removeProjectDir(inputData.getProject(), path) + ": " + value);
                     }
 
-//                    System.out.println("Indexing " + inputData.getFile() + " / sources: [" + Joiner.join(", ", bsConfig.getSources()) + "] / bsconf: " + bsConfigFromFile);
-                    namespace = bsConfig.getNamespace();
-                }
-                String moduleName = psiFile.asModuleName();
+                    map.put(moduleName, value);
+                    if (!namespace.isEmpty()) {
+                        map.put(namespace + "_" + moduleName, value);
+                    }
 
-                FileModuleData value = new FileModuleData(path, namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("indexing " + Platform.removeProjectDir(inputData.getProject(), path) + ": " + value);
+                    return map;
                 }
-
-                map.put(moduleName, value);
-                if (!namespace.isEmpty()) {
-                    map.put(namespace + "_" + moduleName, value);
-                }
-
-                return map;
             }
             return Collections.emptyMap();
         };
