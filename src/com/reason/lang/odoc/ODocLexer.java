@@ -24,6 +24,7 @@ public class ODocLexer implements FlexLexer {
   public static final int YYINITIAL = 0;
   public static final int INITIAL = 2;
   public static final int IN_CODE = 4;
+  public static final int IN_MARKUP = 6;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -32,7 +33,7 @@ public class ODocLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = { 
-     0,  0,  1,  1,  2, 2
+     0,  0,  1,  1,  2,  2,  3, 3
   };
 
   /** 
@@ -54,8 +55,9 @@ public class ODocLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\3\1\1\1\11\1\12\1\2\22\0\1\3\7\0\1\5\1\7\1\6\60\0\1\4\1\0\1\10\47"+
-    "\0\1\11\242\0\2\11\26\0");
+    "\11\0\1\3\1\1\1\25\1\26\1\2\22\0\1\3\1\20\6\0\1\6\1\10\1\7\2\0\1\24\2\0\12"+
+    "\4\1\13\40\0\1\11\1\0\1\14\4\0\1\15\2\0\1\17\3\0\1\16\2\0\1\22\2\0\1\21\5"+
+    "\0\1\23\5\0\1\12\1\0\1\5\7\0\1\25\242\0\2\25\26\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -63,11 +65,14 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\0\1\2\1\1\2\3\1\4\1\5"+
-    "\2\1\2\6\1\7\1\10\1\11\1\1\1\12\1\13";
+    "\4\0\1\1\1\2\2\3\1\4\1\5\1\2\1\6"+
+    "\1\7\1\6\1\10\1\2\2\11\1\12\1\13\1\6"+
+    "\1\14\1\0\1\15\1\16\1\17\1\0\1\20\1\21"+
+    "\1\22\1\23\2\0\1\24\1\25\1\26\1\16\2\17"+
+    "\1\27\1\30\1\31";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[19];
+    int [] result = new int[42];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -92,12 +97,15 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\13\0\26\0\41\0\54\0\41\0\67\0\102"+
-    "\0\41\0\115\0\130\0\41\0\143\0\41\0\41\0\41"+
-    "\0\156\0\54\0\54";
+    "\0\0\0\27\0\56\0\105\0\134\0\163\0\134\0\212"+
+    "\0\241\0\134\0\270\0\317\0\134\0\346\0\163\0\375"+
+    "\0\134\0\u0114\0\134\0\134\0\134\0\134\0\u012b\0\134"+
+    "\0\u0142\0\u0159\0\u0170\0\134\0\134\0\134\0\134\0\u0187"+
+    "\0\u019e\0\u01b5\0\134\0\134\0\u01cc\0\134\0\u01e3\0\134"+
+    "\0\u01fa\0\u0211";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[19];
+    int [] result = new int[42];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -120,15 +128,24 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\13\4\1\5\1\6\1\7\1\10\1\11\1\12\1\13"+
-    "\3\5\1\10\2\14\1\15\1\14\1\16\3\14\1\17"+
-    "\2\20\13\0\1\5\4\0\5\5\2\0\1\6\14\0"+
-    "\1\10\6\0\1\10\1\5\4\0\1\5\1\21\3\5"+
-    "\1\0\1\5\4\0\2\5\1\22\2\5\2\0\1\14"+
-    "\11\0\1\5\4\0\1\5\1\23\3\5\1\0";
+    "\27\5\1\6\1\7\1\10\1\11\1\6\1\12\1\13"+
+    "\1\14\1\6\1\15\1\16\1\17\1\20\11\6\1\11"+
+    "\2\21\1\22\6\21\1\23\2\21\1\24\10\21\2\25"+
+    "\2\21\1\22\2\21\1\26\17\21\2\25\27\0\1\6"+
+    "\3\0\1\6\1\0\1\6\1\0\1\6\2\0\13\6"+
+    "\2\0\1\7\30\0\1\11\22\0\1\11\1\6\3\0"+
+    "\1\6\1\0\1\6\1\27\1\6\2\0\13\6\11\0"+
+    "\1\30\22\0\1\31\4\0\1\32\1\33\2\0\1\34"+
+    "\1\35\1\36\1\37\1\40\1\0\1\41\1\42\2\0"+
+    "\1\6\3\0\1\6\1\43\1\6\1\0\1\6\2\0"+
+    "\13\6\2\0\1\21\34\0\1\44\22\0\1\45\1\31"+
+    "\21\0\1\45\1\0\1\46\1\47\1\32\22\0\1\32"+
+    "\13\0\1\50\35\0\1\51\26\0\1\52\7\0\1\42"+
+    "\22\0\1\42\3\0\1\45\22\0\1\45\1\0\1\46"+
+    "\30\0\1\51\22\0\1\51\3\0\1\52\22\0\1\52";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[121];
+    int [] result = new int[552];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -166,11 +183,13 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\1\1\0\1\11\1\1\1\11\2\1\1\11"+
-    "\2\1\1\11\1\1\3\11\3\1";
+    "\4\0\1\11\1\1\1\11\2\1\1\11\2\1\1\11"+
+    "\3\1\1\11\1\1\4\11\1\0\1\11\2\1\1\0"+
+    "\4\11\2\0\1\1\2\11\1\1\1\11\1\1\1\11"+
+    "\2\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[19];
+    int [] result = new int[42];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -228,6 +247,7 @@ public class ODocLexer implements FlexLexer {
   /* user code: */
   private int tokenStartIndex;
   private int codeDepth;
+  private IElementType tag;
 
    public ODocLexer() {
       this((java.io.Reader)null);
@@ -249,7 +269,7 @@ public class ODocLexer implements FlexLexer {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  ODocLexer(java.io.Reader in) {
+  public ODocLexer(java.io.Reader in) {
     this.zzReader = in;
   }
 
@@ -501,7 +521,11 @@ public class ODocLexer implements FlexLexer {
             case IN_CODE: {
               yybegin(INITIAL); tokenEnd(); return ODocTypes.CODE;
             }  // fall though
-            case 20: break;
+            case 43: break;
+            case IN_MARKUP: {
+              yybegin(INITIAL); tokenEnd(); return tag;
+            }  // fall though
+            case 44: break;
             default:
         return null;
         }
@@ -509,60 +533,130 @@ public class ODocLexer implements FlexLexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { return ODocTypes.ATOM;
-            } 
-            // fall through
-          case 12: break;
-          case 2: 
             { yybegin(INITIAL); yypushback(1);
             } 
             // fall through
-          case 13: break;
+          case 26: break;
+          case 2: 
+            { return ODocTypes.ATOM;
+            } 
+            // fall through
+          case 27: break;
           case 3: 
             { return ODocTypes.NEW_LINE;
             } 
             // fall through
-          case 14: break;
+          case 28: break;
           case 4: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 15: break;
+          case 29: break;
           case 5: 
-            { yybegin(IN_CODE); codeDepth = 1; tokenStart();
+            { return ODocTypes.RBRACE;
             } 
             // fall through
-          case 16: break;
+          case 30: break;
           case 6: 
-            { 
-            } 
-            // fall through
-          case 17: break;
-          case 7: 
-            { codeDepth += 1;
-            } 
-            // fall through
-          case 18: break;
-          case 8: 
-            { codeDepth -= 1; if (codeDepth == 0) { yybegin(INITIAL); tokenEnd(); return ODocTypes.CODE; }
-            } 
-            // fall through
-          case 19: break;
-          case 9: 
             { return BAD_CHARACTER;
             } 
             // fall through
-          case 20: break;
+          case 31: break;
+          case 7: 
+            { yybegin(IN_CODE); codeDepth = 1; tokenStart();
+            } 
+            // fall through
+          case 32: break;
+          case 8: 
+            { return ODocTypes.COLON;
+            } 
+            // fall through
+          case 33: break;
+          case 9: 
+            { 
+            } 
+            // fall through
+          case 34: break;
           case 10: 
+            { codeDepth += 1;
+            } 
+            // fall through
+          case 35: break;
+          case 11: 
+            { codeDepth -= 1; if (codeDepth == 0) { yybegin(INITIAL); tokenEnd(); return ODocTypes.CODE; }
+            } 
+            // fall through
+          case 36: break;
+          case 12: 
+            { yybegin(INITIAL); tokenEnd(); return tag;
+            } 
+            // fall through
+          case 37: break;
+          case 13: 
             { return ODocTypes.END;
             } 
             // fall through
-          case 21: break;
-          case 11: 
+          case 38: break;
+          case 14: 
+            { return ODocTypes.SECTION;
+            } 
+            // fall through
+          case 39: break;
+          case 15: 
+            { return ODocTypes.PRE_START;
+            } 
+            // fall through
+          case 40: break;
+          case 16: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.BOLD; tokenStart();
+            } 
+            // fall through
+          case 41: break;
+          case 17: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.ITALIC; tokenStart();
+            } 
+            // fall through
+          case 42: break;
+          case 18: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.EMPHASIS; tokenStart();
+            } 
+            // fall through
+          case 43: break;
+          case 19: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.CROSS_REF; tokenStart();
+            } 
+            // fall through
+          case 44: break;
+          case 20: 
+            { return ODocTypes.LIST_ITEM;
+            } 
+            // fall through
+          case 45: break;
+          case 21: 
+            { return ODocTypes.PRE_END;
+            } 
+            // fall through
+          case 46: break;
+          case 22: 
             { return ODocTypes.START;
             } 
             // fall through
-          case 22: break;
+          case 47: break;
+          case 23: 
+            { return ODocTypes.LINK;
+            } 
+            // fall through
+          case 48: break;
+          case 24: 
+            { return ODocTypes.O_LIST;
+            } 
+            // fall through
+          case 49: break;
+          case 25: 
+            { return ODocTypes.U_LIST;
+            } 
+            // fall through
+          case 50: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

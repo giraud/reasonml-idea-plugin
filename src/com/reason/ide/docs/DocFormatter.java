@@ -8,12 +8,9 @@ import com.reason.lang.odoc.ODocConverter;
 import com.reason.lang.odoc.ODocLexer;
 import org.jetbrains.annotations.NotNull;
 
-class DocFormatter {
+import static com.reason.lang.odoc.ODocMarkup.*;
 
-    public static final String HEADER_START = "<div style=\"padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE\">";
-    public static final String HEADER_END = "</div>";
-    public static final String CONTENT_START = "<div style=\"\">";
-    public static final String CONTENT_END = "</div>";
+class DocFormatter {
 
     static String format(@NotNull PsiFile file, PsiElement element, @NotNull String text) {
         if (file instanceof FileBase) {

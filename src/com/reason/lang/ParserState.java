@@ -19,7 +19,7 @@ public class ParserState {
     public IElementType previousTokenElementType;
     public boolean dontMove = false;
 
-    ParserState(PsiBuilder builder, ParserScope rootScope) {
+    public ParserState(PsiBuilder builder, ParserScope rootScope) {
         m_builder = builder;
         m_rootScope = rootScope;
         m_currentScope = rootScope;

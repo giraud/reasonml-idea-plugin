@@ -5,16 +5,13 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignatureElement;
+import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.signature.ORSignature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +22,15 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     public static final Key<Map<LogicalPosition, ORSignature>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
 
+    public static boolean isSpecialComment(@Nullable PsiElement element) {
+        if (element == null) {
+            return false;
+        }
+
+        String nextText = element.getText();
+        return (nextText.startsWith("(**") || nextText.startsWith("/**")) && nextText.charAt(3) != '*';
+    }
+
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
         if (element instanceof FileBase) {
@@ -33,9 +39,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
             PsiElement nextSibling = child;
             while (nextSibling instanceof PsiComment) {
-                String nextText = nextSibling.getText();
-                if (nextText.startsWith("(** ") || nextText.startsWith("/**")) {
-                    text = nextText;
+                if (isSpecialComment(nextSibling)) {
+                    text = nextSibling.getText();
                     nextSibling = null;
                 } else {
                     // Not a special comment, try with next child until no more comments found
@@ -46,23 +51,60 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (!text.isEmpty()) {
                 return DocFormatter.format(element.getContainingFile(), element, text);
             }
-        } else if (element instanceof PsiUpperSymbol) {
+        } else if (element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol) {
             element = element.getParent();
-            PsiElement previousElement = element == null ? null : PsiTreeUtil.prevVisibleLeaf(element);
-            if (previousElement instanceof PsiComment) {
-                return previousElement.getText();
+            if (element instanceof PsiTypeConstrName) {
+                element = element.getParent();
             }
-        } else if (element instanceof PsiLowerSymbol) {
-            PsiElement parent = element.getParent();
-            if (parent instanceof PsiVal) {
-                PsiElement nextElement = PsiTreeUtil.nextVisibleLeaf(parent);
-                if (nextElement instanceof PsiComment && nextElement.getText().startsWith("(**")) {
-                    return DocFormatter.format(parent.getContainingFile(), parent, nextElement.getText());
-                }
+
+            // Try to find a comment just below
+            PsiElement belowComment = findBelowComment(element);
+            if (belowComment != null) {
+                return isSpecialComment(belowComment)
+                        ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
+                        : belowComment.getText();
+            }
+
+            // else try to find a comment just above
+            PsiElement aboveComment = findAboveComment(element);
+            if (aboveComment != null) {
+                return isSpecialComment(aboveComment)
+                        ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText())
+                        : aboveComment.getText();
             }
         }
 
         return super.generateDoc(element, originalElement);
+    }
+
+    @Nullable
+    private PsiElement findAboveComment(@Nullable PsiElement element) {
+        if (element == null) {
+            return null;
+        }
+
+        PsiElement prevSibling = element.getPrevSibling();
+        PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
+        if (prevPrevSibling instanceof PsiComment && prevSibling instanceof PsiWhiteSpace && prevSibling.getTextLength() == 1) {
+            return prevPrevSibling;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private PsiElement findBelowComment(@Nullable PsiElement element) {
+        if (element == null) {
+            return null;
+        }
+
+        PsiElement nextSibling = element.getNextSibling();
+        PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
+        if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getTextLength() == 1) {
+            return nextNextSibling;
+        }
+
+        return null;
     }
 
     @Nullable

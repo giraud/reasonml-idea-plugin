@@ -54,7 +54,7 @@ public class ParserScope {
         return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
 
-    static ParserScope markRoot(@NotNull PsiBuilder builder) {
+    public static ParserScope markRoot(@NotNull PsiBuilder builder) {
         return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
     }
 
