@@ -39,7 +39,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLetName.class);
+        return findChildByClass(PsiLowerSymbol.class);
     }
 
     @Nullable

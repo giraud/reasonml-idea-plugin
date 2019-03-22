@@ -17,14 +17,14 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     public WordsScanner getWordsScanner() {
         return new DefaultWordsScanner(
                 new OclLexer(),
-                TokenSet.create(OclTypes.INSTANCE.C_UPPER_SYMBOL, OclTypes.INSTANCE.C_LOWER_SYMBOL, OclTypes.INSTANCE.C_LET_NAME),
+                TokenSet.create(OclTypes.INSTANCE.C_UPPER_SYMBOL, OclTypes.INSTANCE.C_LOWER_SYMBOL),
                 TokenSet.EMPTY,
                 TokenSet.EMPTY);
     }
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiLetName || element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol;
+        return element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol;
     }
 
     @Nullable
@@ -42,7 +42,7 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
         if (element instanceof PsiLowerSymbol) {
             return "symbol";
         }
-        if (element instanceof PsiLetName) {
+        if (element instanceof PsiLet) {
             return "let";
         }
         if (element instanceof PsiVal) {

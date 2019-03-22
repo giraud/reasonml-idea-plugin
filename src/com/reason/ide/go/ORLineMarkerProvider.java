@@ -44,9 +44,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     }
                 }
             }
-        } else if (element instanceof PsiLetName) {
-            PsiElement nameIdentifier = ((PsiLetName) element).getNameIdentifier();
-            extractRelatedExpressions(nameIdentifier, result, scope, instance, containingFile);
+        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiLet && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+            extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
         } else if (element instanceof PsiLowerSymbol && parent instanceof PsiVal && ((PsiNamedElement) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
         } else if (element instanceof PsiLowerSymbol && parent instanceof PsiExternal && ((PsiNamedElement) parent).getNameIdentifier() == element) {

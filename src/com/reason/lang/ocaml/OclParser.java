@@ -677,7 +677,6 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
         state.updateCurrentResolution(letNamed).complete();
-        state.wrapWith(m_types.C_LET_NAME);
         IElementType nextTokenType = builder.getTokenType();
         if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
             state.add(mark(builder, letBinding, letNamedBinding, m_types.C_LET_BINDING).complete())

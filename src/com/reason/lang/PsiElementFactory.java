@@ -50,8 +50,6 @@ public class PsiElementFactory {
             return new PsiModulePath(node);
         } else if (type == types.C_LET_STMT) {
             return new PsiLetImpl(types, node);
-        } else if (type == types.C_LET_NAME) {
-            return new PsiLetNameImpl(types, node);
         } else if (type == types.C_VAL_EXPR) {
             return new PsiValImpl(types, node);
         } else if (type == types.C_ANNOTATION_EXPR) {
