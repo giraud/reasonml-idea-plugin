@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.reason.lang.core.ORUtil;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.util.Collection;
 
 import static java.util.Collections.emptyList;

@@ -43,7 +43,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     }
 
     public void testReact() {
-        PsiFile psiFile = parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }", true);
+        PsiFile psiFile = parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }");
         assertSize(1, psiFile.getChildren());
         PsiSwitch e = (PsiSwitch) psiFile.getChildren()[0];
 

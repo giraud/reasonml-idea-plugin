@@ -1045,8 +1045,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 }
             }
 
+            IElementType nextElementType = builder.lookAhead(1);
             if (!state.isCurrentResolution(modulePath)) {
-                IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.DOT) {
                     // We are parsing a module path
                     state.add(mark(builder, modulePath, m_types.C_UPPER_SYMBOL));
@@ -1058,6 +1058,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
                             add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
                     return;
                 }
+            } else if (nextElementType == m_types.LPAREN) {
+                // Also a variant, but with a constructor
+                state.popEnd();
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
+                state.updateCurrentResolution(typeNamedEqVariant).
+                        add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete()).
+                        add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
             }
         }
 

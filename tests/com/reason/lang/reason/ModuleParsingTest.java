@@ -49,4 +49,8 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals("{ let watchUrl: (url => unit) => watcherID; }", module.getBody().getText());
     }
 
+    public void testModuleOpenVariant() {
+        PsiFile file = parseCode("ModelActions.UserCapabilitiesLoaded( UserCapabilitiesBuilder.( ) ),");
+        assertEquals(3, file.getChildren().length);
+    }
 }
