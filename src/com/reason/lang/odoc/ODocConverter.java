@@ -43,7 +43,7 @@ public class ODocConverter {
                     m_builder.append("<p>");
                 }
 
-                if (tokenType == ODocTypes.START || tokenType == ODocTypes.END) {
+                if (tokenType == ODocTypes.OCL_START || tokenType == ODocTypes.OCL_END || tokenType == ODocTypes.RML_START || tokenType == ODocTypes.RML_END) {
                     // skip
                 } else if (tokenType == ODocTypes.CODE) {
                     m_builder.append(CODE_START).append(extract(m_lexer.yytext(), 1, 1)).append(CODE_END);

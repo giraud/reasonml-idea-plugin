@@ -4,8 +4,10 @@ import com.intellij.psi.tree.IElementType;
 
 public interface ODocTypes {
 
-  IElementType START = new ODocTokenType("START");
-  IElementType END = new ODocTokenType("END");
+  IElementType OCL_START = new ODocTokenType("OCL_START");
+  IElementType OCL_END = new ODocTokenType("OCL_END");
+  IElementType RML_START = new ODocTokenType("RML_START");
+  IElementType RML_END = new ODocTokenType("RML_END");
   IElementType NEW_LINE = new ODocTokenType("NEW_LINE");
   IElementType ATOM = new ODocTokenType("ATOM");
   IElementType CODE = new ODocTokenType("CODE");

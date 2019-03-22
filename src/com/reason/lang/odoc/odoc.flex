@@ -53,25 +53,27 @@ INPUT_CHARACTER = [^\r\n\ \t\f\[\{\}\*]
 }
 
 <INITIAL> {
-    "(**"                 { return ODocTypes.START; }
-    "*)"                  { return ODocTypes.END; }
-    "["                   { yybegin(IN_CODE); codeDepth = 1; tokenStart(); }
-    "{{:"                 { return ODocTypes.LINK; }
-    "{[" {WHITE_SPACE}* {EOL}?                  { return ODocTypes.PRE_START; }
-    "]}"                  { return ODocTypes.PRE_END; }
-    "{b"                  { yybegin(IN_MARKUP); tag = ODocTypes.BOLD; tokenStart(); }
-    "{i"                  { yybegin(IN_MARKUP); tag = ODocTypes.ITALIC; tokenStart(); }
-    "{e"                  { yybegin(IN_MARKUP); tag = ODocTypes.EMPHASIS; tokenStart(); }
-    "{!"                  { yybegin(IN_MARKUP); tag = ODocTypes.CROSS_REF; tokenStart(); }
-    "{ol" {WHITE_SPACE}*  { return ODocTypes.O_LIST; }
-    "{ul" {WHITE_SPACE}*  { return ODocTypes.U_LIST; }
-    "{-" {WHITE_SPACE}*   { return ODocTypes.LIST_ITEM; }
-    "{" {DIGITS} {WHITE_SPACE}* { return ODocTypes.SECTION; }
-    ":"                   { return ODocTypes.COLON; }
-    "}"                   { return ODocTypes.RBRACE; }
-    {WHITE_SPACE}         { return WHITE_SPACE; }
-    {EOL}                 { return ODocTypes.NEW_LINE; }
-    {INPUT_CHARACTER}+    { return ODocTypes.ATOM; }
+    "(**"                         { return ODocTypes.OCL_START; }
+    "*)"                          { return ODocTypes.OCL_END; }
+    "/**"                         { return ODocTypes.RML_START; }
+    "*/"                          { return ODocTypes.RML_END; }
+    "["                           { yybegin(IN_CODE); codeDepth = 1; tokenStart(); }
+    "{{:"                         { return ODocTypes.LINK; }
+    "{[" {WHITE_SPACE}* {EOL}?    { return ODocTypes.PRE_START; }
+    "]}"                          { return ODocTypes.PRE_END; }
+    "{b"                          { yybegin(IN_MARKUP); tag = ODocTypes.BOLD; tokenStart(); }
+    "{i"                          { yybegin(IN_MARKUP); tag = ODocTypes.ITALIC; tokenStart(); }
+    "{e"                          { yybegin(IN_MARKUP); tag = ODocTypes.EMPHASIS; tokenStart(); }
+    "{!"                          { yybegin(IN_MARKUP); tag = ODocTypes.CROSS_REF; tokenStart(); }
+    "{ol" {WHITE_SPACE}*          { return ODocTypes.O_LIST; }
+    "{ul" {WHITE_SPACE}*          { return ODocTypes.U_LIST; }
+    "{-" {WHITE_SPACE}*           { return ODocTypes.LIST_ITEM; }
+    "{" {DIGITS} {WHITE_SPACE}*   { return ODocTypes.SECTION; }
+    ":"                           { return ODocTypes.COLON; }
+    "}"                           { return ODocTypes.RBRACE; }
+    {WHITE_SPACE}                 { return WHITE_SPACE; }
+    {EOL}                         { return ODocTypes.NEW_LINE; }
+    {INPUT_CHARACTER}+            { return ODocTypes.ATOM; }
 }
 
 <IN_CODE> {

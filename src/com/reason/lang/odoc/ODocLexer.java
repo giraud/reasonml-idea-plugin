@@ -55,9 +55,9 @@ public class ODocLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\3\1\1\1\25\1\26\1\2\22\0\1\3\1\20\6\0\1\6\1\10\1\7\2\0\1\24\2\0\12"+
-    "\4\1\13\40\0\1\11\1\0\1\14\4\0\1\15\2\0\1\17\3\0\1\16\2\0\1\22\2\0\1\21\5"+
-    "\0\1\23\5\0\1\12\1\0\1\5\7\0\1\25\242\0\2\25\26\0");
+    "\11\0\1\3\1\1\1\26\1\27\1\2\22\0\1\3\1\21\6\0\1\6\1\10\1\7\2\0\1\25\1\0\1"+
+    "\11\12\4\1\14\40\0\1\12\1\0\1\15\4\0\1\16\2\0\1\20\3\0\1\17\2\0\1\23\2\0\1"+
+    "\22\5\0\1\24\5\0\1\13\1\0\1\5\7\0\1\26\242\0\2\26\26\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -66,13 +66,13 @@ public class ODocLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\4\0\1\1\1\2\2\3\1\4\1\5\1\2\1\6"+
-    "\1\7\1\6\1\10\1\2\2\11\1\12\1\13\1\6"+
-    "\1\14\1\0\1\15\1\16\1\17\1\0\1\20\1\21"+
-    "\1\22\1\23\2\0\1\24\1\25\1\26\1\16\2\17"+
-    "\1\27\1\30\1\31";
+    "\1\2\1\7\1\6\1\10\1\2\2\11\1\12\1\13"+
+    "\1\6\1\14\1\0\1\15\1\16\1\0\1\17\1\20"+
+    "\1\0\1\21\1\22\1\23\1\24\2\0\1\25\1\26"+
+    "\1\27\1\30\1\17\2\20\1\31\1\32\1\33";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[42];
+    int [] result = new int[46];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -97,15 +97,15 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\27\0\56\0\105\0\134\0\163\0\134\0\212"+
-    "\0\241\0\134\0\270\0\317\0\134\0\346\0\163\0\375"+
-    "\0\134\0\u0114\0\134\0\134\0\134\0\134\0\u012b\0\134"+
-    "\0\u0142\0\u0159\0\u0170\0\134\0\134\0\134\0\134\0\u0187"+
-    "\0\u019e\0\u01b5\0\134\0\134\0\u01cc\0\134\0\u01e3\0\134"+
-    "\0\u01fa\0\u0211";
+    "\0\0\0\30\0\60\0\110\0\140\0\170\0\140\0\220"+
+    "\0\250\0\140\0\300\0\330\0\360\0\140\0\u0108\0\170"+
+    "\0\u0120\0\140\0\u0138\0\140\0\140\0\140\0\140\0\u0150"+
+    "\0\140\0\140\0\u0168\0\u0180\0\u0198\0\u01b0\0\140\0\140"+
+    "\0\140\0\140\0\u01c8\0\u01e0\0\u01f8\0\140\0\140\0\140"+
+    "\0\u0210\0\140\0\u0228\0\140\0\u0240\0\u0258";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[42];
+    int [] result = new int[46];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -128,24 +128,26 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\27\5\1\6\1\7\1\10\1\11\1\6\1\12\1\13"+
-    "\1\14\1\6\1\15\1\16\1\17\1\20\11\6\1\11"+
-    "\2\21\1\22\6\21\1\23\2\21\1\24\10\21\2\25"+
-    "\2\21\1\22\2\21\1\26\17\21\2\25\27\0\1\6"+
-    "\3\0\1\6\1\0\1\6\1\0\1\6\2\0\13\6"+
-    "\2\0\1\7\30\0\1\11\22\0\1\11\1\6\3\0"+
-    "\1\6\1\0\1\6\1\27\1\6\2\0\13\6\11\0"+
-    "\1\30\22\0\1\31\4\0\1\32\1\33\2\0\1\34"+
-    "\1\35\1\36\1\37\1\40\1\0\1\41\1\42\2\0"+
-    "\1\6\3\0\1\6\1\43\1\6\1\0\1\6\2\0"+
-    "\13\6\2\0\1\21\34\0\1\44\22\0\1\45\1\31"+
-    "\21\0\1\45\1\0\1\46\1\47\1\32\22\0\1\32"+
-    "\13\0\1\50\35\0\1\51\26\0\1\52\7\0\1\42"+
-    "\22\0\1\42\3\0\1\45\22\0\1\45\1\0\1\46"+
-    "\30\0\1\51\22\0\1\51\3\0\1\52\22\0\1\52";
+    "\30\5\1\6\1\7\1\10\1\11\1\6\1\12\1\13"+
+    "\1\14\1\6\1\15\1\16\1\17\1\20\1\21\11\6"+
+    "\1\11\2\22\1\23\7\22\1\24\2\22\1\25\10\22"+
+    "\2\26\2\22\1\23\2\22\1\27\20\22\2\26\30\0"+
+    "\1\6\3\0\1\6\1\0\1\6\1\0\2\6\2\0"+
+    "\13\6\2\0\1\7\31\0\1\11\23\0\1\11\1\6"+
+    "\3\0\1\6\1\0\1\6\1\30\2\6\2\0\13\6"+
+    "\11\0\1\31\1\32\16\0\1\6\3\0\1\6\1\0"+
+    "\1\6\1\33\2\6\2\0\13\6\5\0\1\34\5\0"+
+    "\1\35\1\36\2\0\1\37\1\40\1\41\1\42\1\43"+
+    "\1\0\1\44\1\45\2\0\1\6\3\0\1\6\1\46"+
+    "\1\6\1\0\2\6\2\0\13\6\2\0\1\22\35\0"+
+    "\1\47\27\0\1\50\23\0\1\51\1\34\22\0\1\51"+
+    "\1\0\1\52\1\53\1\35\23\0\1\35\14\0\1\54"+
+    "\36\0\1\55\27\0\1\56\7\0\1\45\23\0\1\45"+
+    "\3\0\1\51\23\0\1\51\1\0\1\52\31\0\1\55"+
+    "\23\0\1\55\3\0\1\56\23\0\1\56";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[552];
+    int [] result = new int[624];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -183,13 +185,13 @@ public class ODocLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\4\0\1\11\1\1\1\11\2\1\1\11\2\1\1\11"+
-    "\3\1\1\11\1\1\4\11\1\0\1\11\2\1\1\0"+
-    "\4\11\2\0\1\1\2\11\1\1\1\11\1\1\1\11"+
-    "\2\1";
+    "\4\0\1\11\1\1\1\11\2\1\1\11\3\1\1\11"+
+    "\3\1\1\11\1\1\4\11\1\0\2\11\1\0\2\1"+
+    "\1\0\4\11\2\0\1\1\3\11\1\1\1\11\1\1"+
+    "\1\11\2\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[42];
+    int [] result = new int[46];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -521,11 +523,11 @@ public class ODocLexer implements FlexLexer {
             case IN_CODE: {
               yybegin(INITIAL); tokenEnd(); return ODocTypes.CODE;
             }  // fall though
-            case 43: break;
+            case 47: break;
             case IN_MARKUP: {
               yybegin(INITIAL); tokenEnd(); return tag;
             }  // fall though
-            case 44: break;
+            case 48: break;
             default:
         return null;
         }
@@ -536,127 +538,137 @@ public class ODocLexer implements FlexLexer {
             { yybegin(INITIAL); yypushback(1);
             } 
             // fall through
-          case 26: break;
+          case 28: break;
           case 2: 
             { return ODocTypes.ATOM;
             } 
             // fall through
-          case 27: break;
+          case 29: break;
           case 3: 
             { return ODocTypes.NEW_LINE;
             } 
             // fall through
-          case 28: break;
+          case 30: break;
           case 4: 
             { return WHITE_SPACE;
             } 
             // fall through
-          case 29: break;
+          case 31: break;
           case 5: 
             { return ODocTypes.RBRACE;
             } 
             // fall through
-          case 30: break;
+          case 32: break;
           case 6: 
             { return BAD_CHARACTER;
             } 
             // fall through
-          case 31: break;
+          case 33: break;
           case 7: 
             { yybegin(IN_CODE); codeDepth = 1; tokenStart();
             } 
             // fall through
-          case 32: break;
+          case 34: break;
           case 8: 
             { return ODocTypes.COLON;
             } 
             // fall through
-          case 33: break;
+          case 35: break;
           case 9: 
             { 
             } 
             // fall through
-          case 34: break;
+          case 36: break;
           case 10: 
             { codeDepth += 1;
             } 
             // fall through
-          case 35: break;
+          case 37: break;
           case 11: 
             { codeDepth -= 1; if (codeDepth == 0) { yybegin(INITIAL); tokenEnd(); return ODocTypes.CODE; }
             } 
             // fall through
-          case 36: break;
+          case 38: break;
           case 12: 
             { yybegin(INITIAL); tokenEnd(); return tag;
             } 
             // fall through
-          case 37: break;
-          case 13: 
-            { return ODocTypes.END;
-            } 
-            // fall through
-          case 38: break;
-          case 14: 
-            { return ODocTypes.SECTION;
-            } 
-            // fall through
           case 39: break;
-          case 15: 
-            { return ODocTypes.PRE_START;
+          case 13: 
+            { return ODocTypes.OCL_END;
             } 
             // fall through
           case 40: break;
-          case 16: 
-            { yybegin(IN_MARKUP); tag = ODocTypes.BOLD; tokenStart();
+          case 14: 
+            { return ODocTypes.RML_END;
             } 
             // fall through
           case 41: break;
-          case 17: 
-            { yybegin(IN_MARKUP); tag = ODocTypes.ITALIC; tokenStart();
+          case 15: 
+            { return ODocTypes.SECTION;
             } 
             // fall through
           case 42: break;
-          case 18: 
-            { yybegin(IN_MARKUP); tag = ODocTypes.EMPHASIS; tokenStart();
+          case 16: 
+            { return ODocTypes.PRE_START;
             } 
             // fall through
           case 43: break;
-          case 19: 
-            { yybegin(IN_MARKUP); tag = ODocTypes.CROSS_REF; tokenStart();
+          case 17: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.BOLD; tokenStart();
             } 
             // fall through
           case 44: break;
-          case 20: 
-            { return ODocTypes.LIST_ITEM;
+          case 18: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.ITALIC; tokenStart();
             } 
             // fall through
           case 45: break;
-          case 21: 
-            { return ODocTypes.PRE_END;
+          case 19: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.EMPHASIS; tokenStart();
             } 
             // fall through
           case 46: break;
-          case 22: 
-            { return ODocTypes.START;
+          case 20: 
+            { yybegin(IN_MARKUP); tag = ODocTypes.CROSS_REF; tokenStart();
             } 
             // fall through
           case 47: break;
-          case 23: 
-            { return ODocTypes.LINK;
+          case 21: 
+            { return ODocTypes.LIST_ITEM;
             } 
             // fall through
           case 48: break;
-          case 24: 
-            { return ODocTypes.O_LIST;
+          case 22: 
+            { return ODocTypes.PRE_END;
             } 
             // fall through
           case 49: break;
-          case 25: 
-            { return ODocTypes.U_LIST;
+          case 23: 
+            { return ODocTypes.OCL_START;
             } 
             // fall through
           case 50: break;
+          case 24: 
+            { return ODocTypes.RML_START;
+            } 
+            // fall through
+          case 51: break;
+          case 25: 
+            { return ODocTypes.LINK;
+            } 
+            // fall through
+          case 52: break;
+          case 26: 
+            { return ODocTypes.O_LIST;
+            } 
+            // fall through
+          case 53: break;
+          case 27: 
+            { return ODocTypes.U_LIST;
+            } 
+            // fall through
+          case 54: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
