@@ -31,17 +31,19 @@ public class ReformatOnSave implements FileDocumentManagerListener {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Before document saving (" + m_project.getName() + ", autoSave=" + m_bs.isRefmtOnSaveEnabled() + ")");
-        }
-
         // verify this document is part of the project
         PsiFile file = m_documentManager.getCachedPsiFile(document);
         if (file != null && m_bs.isRefmtOnSaveEnabled()) {
             VirtualFile virtualFile = file.getVirtualFile();
-            String format = ReformatUtil.getFormat(file);
-            if (format != null) {
-                m_bs.refmt(virtualFile, FileHelper.isInterface(file.getFileType()), format, document);
+            if (FileHelper.isReason(file.getFileType())) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Before document saving (" + m_project.getName() + ", autoSave=" + m_bs.isRefmtOnSaveEnabled() + ")");
+                }
+
+                String format = ReformatUtil.getFormat(file);
+                if (format != null) {
+                    m_bs.refmt(virtualFile, FileHelper.isInterface(file.getFileType()), format, document);
+                }
             }
         }
     }
