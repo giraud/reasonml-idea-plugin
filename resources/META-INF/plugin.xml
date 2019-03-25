@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.74-beta01</version>
+    <version>0.74</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,7 +10,12 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>ODoc formatting when displaying doc (ctrl+q)</li>
+            <li>#153 - Structure panel for let fn and let (..)</li>
+            <li>#148 - Don't auto-reformat ml/mli files</li>
+            <li>Redesign completion provider</li>
+            <li>#150 - Include expressions from include keyword</li>
+            <li>#151 - Fix parameters hints (is empty)</li>
+            <li>ODoc formatting when displaying doc (ctrl+q) - limitation: element must be resolved, and only a subset of syntax is supported</li>
             <li>Upgraded minimal supported version of intellij product to 173</li>
         </ul>
 

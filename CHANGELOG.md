@@ -10,6 +10,16 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.74 - 2019/03/25
+
+- :rocket: ODoc formatting when displaying special comments (ctrl+q), with the following limitation: element must be resolved, and only a subset of syntax is supported
+- :bug: [#153](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/153) - Structure panel for let fn and let (..)
+- :bug: [#151](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/151) - Fix parameters hints (is empty)
+- :bug: [#150](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/150) - Include expressions from include keyword
+- :bug: [#148](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/148) - Don't auto-reformat ml/mli files
+- :house: Redesign completion provider
+- :house: Upgraded minimal supported version of intellij product to 173
+
 ## 0.73 - 2019/03/12
 
 - :rocket: Implement a (basic) related line marker
