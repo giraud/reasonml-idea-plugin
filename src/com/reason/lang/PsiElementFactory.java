@@ -67,7 +67,7 @@ public class PsiElementFactory {
         } else if (type == types.C_MACRO_RAW_BODY) {
             return new PsiRawBody(types, node);
         } else if (type == types.C_SCOPED_EXPR) {
-            return new PsiScopedExpr(node);
+            return new PsiScopedExpr(types, node);
         } else if (type == types.LOCAL_OPEN) {
             return new PsiLocalOpen(node, types);
         } else if (type == types.C_PATTERN_MATCH_EXPR) {

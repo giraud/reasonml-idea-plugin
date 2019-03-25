@@ -47,9 +47,10 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testScopeWithLIdent() {
-        PsiLet let = first(letExpressions(parseCode("let l p = Js.log p; returnObj")));
+        PsiLet e = first(letExpressions(parseCode("let fn p = Js.log p; returnObj")));
 
-        assertTrue(let.isFunction());
+        assertTrue(e.isFunction());
+        assertEquals("fn", e.getName());
     }
 
     public void testRecord() {

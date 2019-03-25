@@ -168,16 +168,31 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return path + "." + getName();
     }
 
+    //region PsiStructuredElement
+    @Override
+    public boolean canBeDisplayed() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        if (nameIdentifier != null) {
+            return true;
+        }
+
+        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        return scope != null && !scope.isEmpty();
+    }
+
     @Nullable
     @Override
     public ItemPresentation getPresentation() {
+        final PsiLet let = this;
+
         return new ItemPresentation() {
             @NotNull
             @Override
             public String getPresentableText() {
                 PsiElement letValueName = getNameIdentifier();
                 if (letValueName == null) {
-                    return "_";
+                    PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(let, PsiScopedExpr.class);
+                    return scope == null || scope.isEmpty() ? "_" : scope.getText();
                 }
 
                 ORSignature signature = hasInferredType() ? getInferredType() : getORSignature();
@@ -204,6 +219,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
             }
         };
     }
+    //endregion
 
     @Nullable
     @Override

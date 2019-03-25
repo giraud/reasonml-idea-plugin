@@ -18,7 +18,9 @@ import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +72,25 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 return presentation;
             }
         }
-        throw new RuntimeException("Unknown presentation");
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return "Unknown presentation for element " + m_element.getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return null;
+            }
+        };
     }
 
     @NotNull
@@ -182,7 +202,9 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         @Override
         public void visitElement(PsiElement element) {
             if (element instanceof PsiStructuredElement) {
-                m_treeElements.add(new StructureViewElement(element));
+                if (((PsiStructuredElement) element).canBeDisplayed()) {
+                    m_treeElements.add(new StructureViewElement(element));
+                }
             }
         }
     }

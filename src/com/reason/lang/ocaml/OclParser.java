@@ -676,13 +676,13 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
-        state.updateCurrentResolution(letNamed).complete();
-        IElementType nextTokenType = builder.getTokenType();
-        if (nextTokenType != m_types.EQ && nextTokenType != m_types.COLON) {
+        state.updateCurrentResolution(letNamed).complete().
+                wrapWith(m_types.C_LOWER_SYMBOL);
+        IElementType tokenType = builder.getTokenType();
+        if (tokenType != m_types.EQ && tokenType != m_types.COLON) {
             state.add(mark(builder, letBinding, letNamedBinding, m_types.C_LET_BINDING).complete())
                     .add(mark(builder, function, m_types.C_FUN_EXPR).complete())
                     .add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
-//                        .add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
         }
 
     }
