@@ -71,23 +71,26 @@ public class ORProjectTracker implements ProjectComponent {
                     @Override
                     public void rootsChanged(ModuleRootEvent event) {
                         ApplicationManager.getApplication().invokeLater(() -> {
-                            Sdk projectSdk = ProjectRootManager.getInstance((Project) event.getSource()).getProjectSdk();
-                            if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdk) {
-                                // Hack to get ocaml sources indexed like java sources
-                                // Find a better way to do it !!
-                                VirtualFile[] ocamlSources = projectSdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
-                                VirtualFile[] javaSources = projectSdk.getRootProvider().getFiles(OrderRootType.SOURCES);
-                                boolean equals = ArrayUtil.equals(ocamlSources, javaSources, (Equality<VirtualFile>) (v1, v2) -> v1.getPath().equals(v2.getPath()));
+                            Project project = (Project) event.getSource();
+                            if (!project.isDisposed()) {
+                                Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+                                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdk) {
+                                    // Hack to get ocaml sources indexed like java sources
+                                    // Find a better way to do it !!
+                                    VirtualFile[] ocamlSources = projectSdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
+                                    VirtualFile[] javaSources = projectSdk.getRootProvider().getFiles(OrderRootType.SOURCES);
+                                    boolean equals = ArrayUtil.equals(ocamlSources, javaSources, (Equality<VirtualFile>) (v1, v2) -> v1.getPath().equals(v2.getPath()));
 
-                                if (!equals) {
-                                    SdkModificator sdkModificator = projectSdk.getSdkModificator();
+                                    if (!equals) {
+                                        SdkModificator sdkModificator = projectSdk.getSdkModificator();
 
-                                    sdkModificator.removeRoots(OrderRootType.SOURCES);
-                                    for (VirtualFile root : ocamlSources) {
-                                        sdkModificator.addRoot(root, OrderRootType.SOURCES);
+                                        sdkModificator.removeRoots(OrderRootType.SOURCES);
+                                        for (VirtualFile root : ocamlSources) {
+                                            sdkModificator.addRoot(root, OrderRootType.SOURCES);
+                                        }
+
+                                        sdkModificator.commitChanges();
                                     }
-
-                                    sdkModificator.commitChanges();
                                 }
                             }
                         });
