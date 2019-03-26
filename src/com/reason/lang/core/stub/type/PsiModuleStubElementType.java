@@ -3,7 +3,7 @@ package com.reason.lang.core.stub.type;
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
-import com.reason.ide.search.IndexKeys;
+import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.impl.PsiInnerModuleImpl;
 import com.reason.lang.core.stub.PsiModuleStub;

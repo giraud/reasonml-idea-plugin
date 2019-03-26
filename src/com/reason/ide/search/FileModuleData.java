@@ -16,7 +16,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
     private final boolean m_isComponent;
     private VirtualFile m_virtualFile;
 
-    FileModuleData(String path, String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean hasInterface) {
+    public FileModuleData(String path, String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean hasInterface) {
         m_path = path;
         m_namespace = namespace;
         m_moduleName = moduleName;

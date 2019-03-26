@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {
         super("", "ml", new OclParserDefinition());
@@ -166,5 +167,15 @@ public class LetParsingTest extends BaseParsingTestCase {
         Collection<PsiLet> lets = letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n" + "let x =  1"));
 
         assertSize(2, lets);
+    }
+
+    public void testQualifiedName() {
+        PsiLet root = first(letExpressions(parseCode("let root = x")));
+        PsiLet inner = PsiTreeUtil.findChildOfType(first(letExpressions(parseCode("let root = let inner = x in inner"))), PsiLet.class);
+        PsiModule mod = first(moduleExpressions(parseCode("module M = struct let m = 1 end")));
+
+        assertEquals("Dummy.root", root.getQualifiedName());
+        assertEquals("Dummy.root.inner", inner.getQualifiedName());
+        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions().iterator().next()).getQualifiedName());
     }
 }

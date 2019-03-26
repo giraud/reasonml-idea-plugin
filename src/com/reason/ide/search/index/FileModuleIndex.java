@@ -1,4 +1,4 @@
-package com.reason.ide.search;
+package com.reason.ide.search.index;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -14,6 +14,7 @@ import com.reason.Platform;
 import com.reason.build.bs.BsConfig;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
+import com.reason.ide.search.FileModuleData;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -24,7 +25,6 @@ import java.util.Map;
 
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
 
-    private static final ID<String, FileModuleData> NAME = ID.create("reason.index.fileModule");
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
     private static final int VERSION = 1;
     private static final Log LOG = Log.create("index.file");
@@ -60,7 +60,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
     @NotNull
     @Override
     public ID<String, FileModuleData> getName() {
-        return NAME;
+        return IndexKeys.FILE_MODULE;
     }
 
     @NotNull

@@ -16,6 +16,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
 
         assertEquals(1, modules.size());
         assertEquals("M", first(modules).getName());
+        assertEquals("Dummy.M", first(modules).getQualifiedName());
     }
 
     public void testAlias() {

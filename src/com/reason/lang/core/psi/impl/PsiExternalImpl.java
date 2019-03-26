@@ -9,7 +9,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiExternalStub;
 import com.reason.lang.core.type.ORTypes;
@@ -46,16 +49,11 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     @Nullable
     @Override
     public String getQualifiedName() {
-        String path;
-
-        PsiInnerModule parent = PsiTreeUtil.getParentOfType(this, PsiInnerModule.class);
-        if (parent != null) {
-            path = parent.getQualifiedName();
-        } else {
-            path = ORUtil.fileNameToModuleName(getContainingFile());
+        PsiExternalStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
         }
-
-        return path + "." + getName();
+        return ORUtil.getQualifiedName(this);
     }
 
     @Override
@@ -160,7 +158,7 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     @Nullable
     @Override
     public String toString() {
-        return "External" + (isFunction() ? ".f " : " ") + getQualifiedName();
+        return "external " + getQualifiedName();
     }
 
     //region Compatibility

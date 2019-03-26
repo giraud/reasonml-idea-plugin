@@ -10,6 +10,12 @@ public class ExternalParsingTest extends BaseParsingTestCase {
         super("", "ml", new OclParserDefinition());
     }
 
+    public void testQualifiedName() {
+        PsiExternal e = firstOfType(parseCode("external ee : int = \"\""), PsiExternal.class);
+
+        assertEquals("Dummy.ee", e.getQualifiedName());
+    }
+
     public void testWithString() {
         PsiExternal e = firstOfType(parseCode("external reactIntlJsReactClass : ReasonReact.reactClass = \"FormattedMessage\""), PsiExternal.class);
 

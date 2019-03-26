@@ -109,16 +109,7 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
             return stub.getQualifiedName();
         }
 
-        String path;
-
-        PsiElement parent = PsiTreeUtil.getParentOfType(this, PsiInnerModule.class);
-        if (parent != null) {
-            path = ((PsiInnerModule) parent).getQualifiedName();
-        } else {
-            path = ORUtil.fileNameToModuleName(getContainingFile());
-        }
-
-        return path + "." + getName();
+        return ORUtil.getQualifiedName(this);
     }
 
     @Override

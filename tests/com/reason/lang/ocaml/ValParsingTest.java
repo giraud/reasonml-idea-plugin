@@ -11,6 +11,11 @@ public class ValParsingTest extends BaseParsingTestCase {
         super("", "ml", new OclParserDefinition());
     }
 
+    public void testQualifiedName() {
+        PsiVal val = first(valExpressions(parseCode("val x = 1")));
+        assertEquals("Dummy.x", val.getQualifiedName());
+    }
+
     public void testConstant() {
         PsiVal val = first(valExpressions(parseCode("val x = 1")));
         assertInstanceOf(val.getNameIdentifier(), PsiLowerSymbol.class);

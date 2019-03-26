@@ -13,6 +13,11 @@ import com.reason.Log;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
+import com.reason.ide.search.index.IndexKeys;
+import com.reason.ide.search.index.ModuleComponentIndex;
+import com.reason.ide.search.index.ModuleFqnIndex;
+import com.reason.ide.search.index.ModuleIndex;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
@@ -155,7 +160,8 @@ public final class PsiFinder implements ProjectComponent {
     }
 
     private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType, @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz, @NotNull GlobalSearchScope scope) {
-        Map<String/*qn*/, T> inConfig = new THashMap<>();
+        Map<String/*qn*/, T> implNames = new THashMap<>();
+        Map<String/*qn*/, T> intfNames = new THashMap<>();
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Find " + debugName + " name", name);
@@ -173,27 +179,54 @@ public final class PsiFinder implements ProjectComponent {
                 LOG.debug("  " + debugName + " found", items.size(), items);
             }
             for (T item : items) {
+                String itemQName = item.getQualifiedName();
+
                 String filename = ((FileBase) item.getContainingFile()).asModuleName();
                 VirtualFile file;
 
                 if (fileType == ORFileType.implementationOnly) {
                     Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
-                    file = implementations.isEmpty() ? null : implementations.iterator().next();
+                    if (!implementations.isEmpty()) {
+                        implNames.put(itemQName, item);
+                    }
                 } else if (fileType == ORFileType.interfaceOnly) {
                     Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(filename, scope);
-                    file = interfaces.isEmpty() ? null : interfaces.iterator().next();
+                    if (!interfaces.isEmpty()) {
+                        intfNames.put(itemQName, item);
+                    }
                 } else {
                     file = fileModuleIndex.getFileWithName(filename, scope);
-                }
-
-                if (file != null) {
-                    LOG.debug("    keep (in config)", item);
-                    inConfig.put(item.getQualifiedName(), item);
+                    if (file != null) {
+                        if (FileHelper.isInterface(file.getFileType())) {
+                            if (((FileBase) item.getContainingFile()).isInterface()) {
+                                intfNames.put(itemQName, item);
+                            }
+                        } else {
+                            if (!((FileBase) item.getContainingFile()).isInterface()) {
+                                implNames.put(itemQName, item);
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        return inConfig.values();
+        List<T> result = new ArrayList<>();
+        result.addAll(intfNames.values());
+        for (Map.Entry<String, T> entry : implNames.entrySet()) {
+            if (!intfNames.containsKey(entry.getKey())) {
+                result.add(entry.getValue());
+            }
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("    keep (in config)");
+            for (T item : result) {
+                LOG.debug("      " + item.getQualifiedName() + " " + item.getContainingFile().getVirtualFile().getPath());
+            }
+        }
+
+        return result;
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package com.reason.ide.search;
+package com.reason.ide.search.index;
 
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 
 public class TypeIndex extends StringStubIndexExtension<PsiType> {
-    private static final int VERSION = 5;
+    private static final int VERSION = 6;
 
     @Override
     public int getVersion() {

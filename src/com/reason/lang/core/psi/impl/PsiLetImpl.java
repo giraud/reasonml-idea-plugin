@@ -156,16 +156,12 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     @Nullable
     @Override
     public String getQualifiedName() {
-        String path;
-
-        PsiInnerModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiInnerModule.class);
-        if (parent != null) {
-            path = parent.getQualifiedName();
-        } else {
-            path = ORUtil.fileNameToModuleName(getContainingFile());
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
         }
 
-        return path + "." + getName();
+        return ORUtil.getQualifiedName(this);
     }
 
     //region PsiStructuredElement

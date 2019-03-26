@@ -14,6 +14,7 @@ import com.reason.Icons;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ModulePath;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
@@ -320,7 +321,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
             return stub.getQualifiedName();
         }
 
-        return getPath() + "." + getName();
+        return ORUtil.getQualifiedName(this);
     }
 
     @Nullable

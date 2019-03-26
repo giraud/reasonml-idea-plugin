@@ -206,16 +206,16 @@
          | Search / navigating
          -->
 
-        <stubIndex implementation="com.reason.ide.search.ModuleIndex"/>
-        <stubIndex implementation="com.reason.ide.search.ModuleFqnIndex"/>
-        <stubIndex implementation="com.reason.ide.search.ModuleComponentIndex"/>
-        <stubIndex implementation="com.reason.ide.search.LetIndex"/>
-        <stubIndex implementation="com.reason.ide.search.ValIndex"/>
-        <stubIndex implementation="com.reason.ide.search.TypeIndex"/>
-        <stubIndex implementation="com.reason.ide.search.ExternalIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleFqnIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleComponentIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
 
-        <fileBasedIndex implementation="com.reason.ide.search.FileModuleIndex"/>
-        <fileBasedIndex implementation="com.reason.ide.search.NamespaceIndex"/>
+        <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
+        <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>

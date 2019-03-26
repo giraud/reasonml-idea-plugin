@@ -1,9 +1,14 @@
-package com.reason.ide.search;
+package com.reason.ide.search.index;
 
 import com.intellij.psi.stubs.StubIndexKey;
+import com.intellij.util.indexing.ID;
+import com.reason.ide.search.FileModuleData;
 import com.reason.lang.core.psi.*;
 
 public class IndexKeys {
+
+    public static final ID<String, FileModuleData> FILE_MODULE = ID.create("reason.index.fileModule");
+
     public static final StubIndexKey<String, PsiInnerModule> MODULES = StubIndexKey.createIndexKey("reason.module");
     public static final StubIndexKey<Integer, PsiInnerModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
     public static final StubIndexKey<String, PsiInnerModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");

@@ -1,4 +1,4 @@
-package com.reason.ide.search;
+package com.reason.ide.search.index;
 
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;

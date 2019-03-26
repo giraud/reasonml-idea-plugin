@@ -1,12 +1,12 @@
-package com.reason.ide.search;
+package com.reason.ide.search.index;
 
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 
-public class LetIndex extends StringStubIndexExtension<PsiLet> {
-    private static final int VERSION = 4;
+public class ValIndex extends StringStubIndexExtension<PsiVal> {
+    private static final int VERSION = 5;
 
     @Override
     public int getVersion() {
@@ -15,7 +15,7 @@ public class LetIndex extends StringStubIndexExtension<PsiLet> {
 
     @NotNull
     @Override
-    public StubIndexKey<String, PsiLet> getKey() {
-        return IndexKeys.LETS;
+    public StubIndexKey<String, PsiVal> getKey() {
+        return IndexKeys.VALS;
     }
 }

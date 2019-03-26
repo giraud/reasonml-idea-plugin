@@ -1,11 +1,11 @@
-package com.reason.ide.search;
+package com.reason.ide.search.index;
 
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.PsiExternal;
 import org.jetbrains.annotations.NotNull;
 
-public class ValIndex extends StringStubIndexExtension<PsiVal> {
+public class ExternalIndex extends StringStubIndexExtension<PsiExternal> {
     private static final int VERSION = 4;
 
     @Override
@@ -15,7 +15,7 @@ public class ValIndex extends StringStubIndexExtension<PsiVal> {
 
     @NotNull
     @Override
-    public StubIndexKey<String, PsiVal> getKey() {
-        return IndexKeys.VALS;
+    public StubIndexKey<String, PsiExternal> getKey() {
+        return IndexKeys.EXTERNALS;
     }
 }

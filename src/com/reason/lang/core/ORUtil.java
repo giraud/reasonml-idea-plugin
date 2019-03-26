@@ -10,6 +10,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -205,5 +206,26 @@ public class ORUtil {
         }
 
         return null;
+    }
+
+    @NotNull
+    public static String getQualifiedName(@NotNull PsiNamedElement element) {
+        String path = "";
+
+        PsiElement parent = element.getParent();
+        while (parent != null) {
+            if (parent instanceof PsiQualifiedElement) {
+                path = ((PsiQualifiedElement) parent).getQualifiedName();
+                parent = null;
+            } else {
+                if (parent instanceof PsiNamedElement) {
+                    path = ((PsiNamedElement) parent).getName();
+                }
+                parent = parent.getParent();
+            }
+        }
+
+        return ORUtil.fileNameToModuleName(element.getContainingFile()) + (path == null || path.isEmpty() ? "" : "." + path) + "." + element.getName();
+
     }
 }

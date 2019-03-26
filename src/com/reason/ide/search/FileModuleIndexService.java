@@ -6,6 +6,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.ide.files.FileHelper;
+import com.reason.ide.search.index.FileModuleIndex;
+import com.reason.ide.search.index.NamespaceIndex;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

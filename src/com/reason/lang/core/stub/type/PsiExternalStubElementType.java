@@ -2,7 +2,8 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
-import com.reason.ide.search.IndexKeys;
+import com.intellij.util.io.StringRef;
+import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
 import com.reason.lang.core.stub.PsiExternalStub;
@@ -29,17 +30,22 @@ public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub
 
     @NotNull
     public PsiExternalStub createStub(@NotNull PsiExternal psi, StubElement parentStub) {
-        return new PsiExternalStub(parentStub, this, psi.getName(), psi.isFunction());
+        return new PsiExternalStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.isFunction());
     }
 
     public void serialize(@NotNull PsiExternalStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFunction());
     }
 
     @NotNull
     public PsiExternalStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
-        return new PsiExternalStub(parentStub, this, dataStream.readName(), dataStream.readBoolean());
+        StringRef name = dataStream.readName();
+        String qname = dataStream.readUTFFast();
+        boolean isFunction = dataStream.readBoolean();
+
+        return new PsiExternalStub(parentStub, this, name, qname, isFunction);
     }
 
     public void indexStub(@NotNull PsiExternalStub stub, @NotNull IndexSink sink) {

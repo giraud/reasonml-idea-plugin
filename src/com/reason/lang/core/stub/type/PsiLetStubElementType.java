@@ -2,7 +2,8 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
-import com.reason.ide.search.IndexKeys;
+import com.intellij.util.io.StringRef;
+import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
 import com.reason.lang.core.stub.PsiLetStub;
@@ -29,17 +30,22 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
 
     @NotNull
     public PsiLetStub createStub(@NotNull PsiLet psi, StubElement parentStub) {
-        return new PsiLetStub(parentStub, this, psi.getName(), psi.isFunction());
+        return new PsiLetStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.isFunction());
     }
 
     public void serialize(@NotNull PsiLetStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFunction());
     }
 
     @NotNull
     public PsiLetStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
-        return new PsiLetStub(parentStub, this, dataStream.readName(), dataStream.readBoolean());
+        StringRef name = dataStream.readName();
+        String qname = dataStream.readUTFFast();
+        boolean isFunction = dataStream.readBoolean();
+
+        return new PsiLetStub(parentStub, this, name, qname, isFunction);
     }
 
     public void indexStub(@NotNull PsiLetStub stub, @NotNull IndexSink sink) {
