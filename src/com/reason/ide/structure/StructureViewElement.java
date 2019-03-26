@@ -10,10 +10,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiClass;
-import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
@@ -56,11 +53,17 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public String getAlphaSortKey() {
+        String name = null;
+
         if (m_element instanceof PsiNamedElement) {
-            String name = ((PsiNamedElement) m_element).getName();
-            return name == null ? "" : name;
+            name = ((PsiNamedElement) m_element).getName();
+        } else if (m_element instanceof PsiOpen) {
+            name = ((PsiOpen) m_element).getQualifiedName();
+        } else if (m_element instanceof PsiInclude) {
+            name = ((PsiInclude) m_element).getQualifiedName();
         }
-        return "";
+
+        return name == null ? "" : name;
     }
 
     @NotNull
