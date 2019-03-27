@@ -8,6 +8,7 @@ import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.util.PsiIconUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -23,14 +24,20 @@ import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private final PsiElement m_element;
+    private final PsiElement m_viewElement;
 
-    StructureViewElement(PsiElement element) {
+    StructureViewElement(@NotNull PsiElement element) {
+        this(null, element);
+    }
+
+    StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element) {
         m_element = element;
+        m_viewElement = viewElement;
     }
 
     @Override
     public Object getValue() {
-        return m_element;
+        return m_viewElement == null ? m_element : m_viewElement;
     }
 
     @Override
@@ -54,13 +61,14 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @Override
     public String getAlphaSortKey() {
         String name = null;
+        PsiElement element = m_viewElement == null ? m_element : m_viewElement;
 
-        if (m_element instanceof PsiNamedElement) {
-            name = ((PsiNamedElement) m_element).getName();
-        } else if (m_element instanceof PsiOpen) {
-            name = ((PsiOpen) m_element).getQualifiedName();
-        } else if (m_element instanceof PsiInclude) {
-            name = ((PsiInclude) m_element).getQualifiedName();
+        if (element instanceof PsiNamedElement) {
+            name = ((PsiNamedElement) element).getName();
+        } else if (element instanceof PsiOpen) {
+            name = ((PsiOpen) element).getQualifiedName();
+        } else if (element instanceof PsiInclude) {
+            name = ((PsiInclude) element).getQualifiedName();
         }
 
         return name == null ? "" : name;
@@ -69,12 +77,34 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public ItemPresentation getPresentation() {
+        if (m_viewElement != null) {
+            return new ItemPresentation() {
+                @Override
+                public String getPresentableText() {
+                    return m_viewElement.getText();
+                }
+
+                @Nullable
+                @Override
+                public String getLocationString() {
+                    return m_element instanceof PsiNamedElement ? ((PsiNamedElement) m_element).getName() : "";
+                }
+
+                @Nullable
+                @Override
+                public Icon getIcon(boolean unused) {
+                    return PsiIconUtil.getProvidersIcon(m_element, 0);
+                }
+            };
+        }
+
         if (m_element instanceof NavigationItem) {
             ItemPresentation presentation = ((NavigationItem) m_element).getPresentation();
             if (presentation != null) {
                 return presentation;
             }
         }
+
         return new ItemPresentation() {
             @Nullable
             @Override
@@ -206,6 +236,18 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         public void visitElement(PsiElement element) {
             if (element instanceof PsiStructuredElement) {
                 if (((PsiStructuredElement) element).canBeDisplayed()) {
+                    if (element instanceof PsiLet) {
+                        PsiLet let = (PsiLet) element;
+                        if (let.isScopeIdentifier()) {
+                            // it's a tuple! add each element of the tuple separately
+                            for (PsiElement child : let.getScopeChildren()) {
+                                if (child instanceof PsiLowerSymbol) {
+                                    m_treeElements.add(new StructureViewElement(child, element));
+                                }
+                            }
+                            return;
+                        }
+                    }
                     m_treeElements.add(new StructureViewElement(element));
                 }
             }

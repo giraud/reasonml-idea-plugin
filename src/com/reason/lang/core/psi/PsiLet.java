@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.reason.lang.core.stub.PsiLetStub;
@@ -26,4 +27,9 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
 
     @Nullable
     PsiSignature getPsiSignature();
+
+    boolean isScopeIdentifier();
+
+    @NotNull
+    Collection<PsiElement> getScopeChildren();
 }

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
@@ -55,6 +56,29 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return this;
     }
     //endregion
+
+
+    @Override
+    public boolean isScopeIdentifier() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class) != null;
+    }
+
+    @NotNull
+    @Override
+    public Collection<PsiElement> getScopeChildren() {
+        Collection<PsiElement> result = new ArrayList<>();
+
+        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        if (scope != null) {
+            for (PsiElement element : scope.getChildren()) {
+                if (element.getNode().getElementType() != m_types.COMMA) {
+                    result.add(element);
+                }
+            }
+        }
+
+        return result;
+    }
 
     @Override
     @Nullable
@@ -116,10 +140,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
         if (m_types instanceof RmlTypes) {
             PsiLetBinding binding = findChildByClass(PsiLetBinding.class);
-            if (binding == null) {
-                return false;
-            }
-            return binding.getFirstChild() instanceof PsiFunction;
+            return binding != null && binding.getFirstChild() instanceof PsiFunction;
         }
 
         return PsiTreeUtil.findChildOfType(this, PsiFunction.class) != null;
