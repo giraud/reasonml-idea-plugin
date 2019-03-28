@@ -10,7 +10,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Joiner;
 import com.reason.Log;
+import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
+import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
 import com.reason.lang.core.psi.*;
@@ -38,22 +41,34 @@ public class DotExpressionCompletionProvider {
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
         if (previousElement instanceof PsiUpperSymbol) {
-            // Expression of module
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
+                PsiFinder psiFinder = PsiFinder.getInstance(project);
+                GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+
                 // Find potential module paths, and filter the result
                 final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, false);
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);
 
-                PsiFinder psiFinder = PsiFinder.getInstance(project);
+                // Might be a virtual namespace
+
+                Collection<IndexedFileModule> modulesForNamespace = psiFinder.findModulesForNamespace(upperName, interfaceOrImplementation, scope);
+                LOG.debug("  found namespace files", modulesForNamespace);
+
+                for (IndexedFileModule file : modulesForNamespace) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(file.getModuleName()).
+                            withTypeText(FileHelper.shortLocation(project, file.getPath())).
+                            withIcon(IconProvider.getFileModuleIcon(file.isOCaml(), file.isInterface())));
+                }
 
                 // Find modules
 
-                Collection<PsiModule> modules = psiFinder.findModules(upperName, interfaceOrImplementation, GlobalSearchScope.allScope(project));
+                Collection<PsiModule> modules = psiFinder.findModules(upperName, interfaceOrImplementation, scope);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getName() + ")" : "");
+                    LOG.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getQualifiedName() + ")" : "");
                 }
 
                 Collection<? extends PsiQualifiedNamedElement> resolvedModules = modules.stream().

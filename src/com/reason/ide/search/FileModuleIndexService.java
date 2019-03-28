@@ -119,6 +119,32 @@ public class FileModuleIndexService {
         return result;
     }
 
+    public Collection<IndexedFileModule> getFilesForNamespace(@NotNull String namespace, boolean includeComponents, @NotNull GlobalSearchScope scope) {
+        Collection<IndexedFileModule> result = new ArrayList<>();
+
+        FileBasedIndex fileIndex = FileBasedIndex.getInstance();
+
+        if (scope.getProject() != null) {
+            for (String key : fileIndex.getAllKeys(m_index.getName(), scope.getProject())) {
+                List<FileModuleData> values = fileIndex.getValues(m_index.getName(), key, scope);
+                int valuesSize = values.size();
+                if (valuesSize > 2) {
+                    System.out.println("ERROR, size of " + key + " is " + valuesSize);
+                } else {
+                    for (FileModuleData value : values) {
+                        if (valuesSize == 1 || value.isInterface()) {
+                            if (namespace.equals(value.getNamespace())) {
+                                result.add(value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
     public Collection<VirtualFile> getComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
         Set<VirtualFile> files = new THashSet<>();
         FileBasedIndex instance = FileBasedIndex.getInstance();

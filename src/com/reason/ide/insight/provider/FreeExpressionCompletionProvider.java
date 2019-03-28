@@ -127,18 +127,20 @@ public class FreeExpressionCompletionProvider {
 
         // Add pervasives expressions
         Collection<VirtualFile> pervasivesFile = orFinder.getInterfaceFilesWithName("Pervasives", GlobalSearchScope.allScope(project));
-        PsiFile file = psiManager.findFile(pervasivesFile.iterator().next());
-        if (file instanceof FileBase) {
-            FileBase pervasives = pervasivesFile.isEmpty() ? null : (FileBase) file;
-            if (pervasives != null) {
-                for (PsiNamedElement expression : pervasives.getExpressions()) {
-                    if (!(expression instanceof PsiAnnotation)) {
-                        resultSet.addElement(LookupElementBuilder.
-                                create(expression).
-                                withTypeText(PsiSignatureUtil.getSignature(expression)).
-                                withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
-                        if (expression instanceof PsiType) {
-                            expandType((PsiType) expression, resultSet);
+        if (!pervasivesFile.isEmpty()) {
+            PsiFile file = psiManager.findFile(pervasivesFile.iterator().next());
+            if (file instanceof FileBase) {
+                FileBase pervasives = pervasivesFile.isEmpty() ? null : (FileBase) file;
+                if (pervasives != null) {
+                    for (PsiNamedElement expression : pervasives.getExpressions()) {
+                        if (!(expression instanceof PsiAnnotation)) {
+                            resultSet.addElement(LookupElementBuilder.
+                                    create(expression).
+                                    withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                    withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                            if (expression instanceof PsiType) {
+                                expandType((PsiType) expression, resultSet);
+                            }
                         }
                     }
                 }

@@ -294,4 +294,8 @@ public final class PsiFinder implements ProjectComponent {
 
         return null;
     }
+
+    public Collection<IndexedFileModule> findModulesForNamespace(String namespace, ORFileType fileType, GlobalSearchScope scope) {
+        return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
+    }
 }
