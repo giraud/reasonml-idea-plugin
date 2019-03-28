@@ -65,7 +65,15 @@ public class RefmtProcess implements ProjectComponent {
 
             StringBuilder msgBuffer = new StringBuilder();
             if (!errReader.ready()) {
-                reader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
+                final boolean[] empty = {true};
+                reader.lines().forEach(line -> {
+                    if (empty[0]) {
+                        empty[0] = false;
+                    } else {
+                        msgBuffer.append('\n');
+                    }
+                    msgBuffer.append(line);
+                });
                 String newText = msgBuffer.toString();
                 if (!code.isEmpty() && !newText.isEmpty()) { // additional protection
                     return newText;
