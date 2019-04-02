@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiQualifiedElement;
@@ -225,7 +226,6 @@ public class ORUtil {
             }
         }
 
-        return ORUtil.fileNameToModuleName(element.getContainingFile()) + (path == null || path.isEmpty() ? "" : "." + path) + "." + element.getName();
-
+        return ((FileBase) element.getContainingFile()).getQualifiedName() + (path == null || path.isEmpty() ? "" : "." + path) + "." + element.getName();
     }
 }

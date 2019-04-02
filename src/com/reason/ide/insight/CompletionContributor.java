@@ -34,7 +34,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                     // Special case, we use the previous sibling instead
                     element = PsiTreeUtil.prevVisibleLeaf(element);
                 } else if (element instanceof PsiWhiteSpace && CompletionUtils.getPrevNodeType(element) == types.DOT) {
-                    element = PsiTreeUtil.prevVisibleLeaf(element);
+                    //element = PsiTreeUtil.prevVisibleLeaf(element);
                 }
 
                 PsiElement parent = element == null ? null : element.getParent();

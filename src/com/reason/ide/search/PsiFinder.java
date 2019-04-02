@@ -9,6 +9,7 @@ import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
+import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Log;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
@@ -297,5 +298,24 @@ public final class PsiFinder implements ProjectComponent {
 
     public Collection<IndexedFileModule> findModulesForNamespace(String namespace, ORFileType fileType, GlobalSearchScope scope) {
         return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
+    }
+
+    @NotNull
+    public String findNamespace(@NotNull PsiModule psiModule, @NotNull GlobalSearchScope scope) {
+        FileBase file = psiModule instanceof PsiInnerModule ? (FileBase) psiModule.getContainingFile() : (FileBase) psiModule;
+        String path = file.getVirtualFile().getPath();
+
+        List<FileModuleData> values = FileBasedIndex.getInstance().getValues(IndexKeys.FILE_MODULE, file.asModuleName(), scope);
+        if (!values.isEmpty()) {
+            for (FileModuleData value : values) {
+                if (!value.getNamespace().isEmpty()) {
+                    if (value.getPath().equals(path)) {
+                        return value.getNamespace();
+                    }
+                }
+            }
+        }
+
+        return "";
     }
 }

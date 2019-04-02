@@ -103,6 +103,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
                 ", moduleName='" + m_moduleName + '\'' +
                 ", isInterface=" + m_isInterface +
                 ", isComponent=" + m_isComponent +
+                ", " + m_path +
                 '}';
     }
 }

@@ -22,7 +22,7 @@ import java.util.Collections;
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
     private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final Log LOG = Log.create("index.namespace");
 
     @NotNull

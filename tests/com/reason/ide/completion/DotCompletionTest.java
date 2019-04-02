@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BasicCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class DotCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();

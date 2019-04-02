@@ -26,7 +26,7 @@ import java.util.Map;
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
 
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final Log LOG = Log.create("index.file");
 
     public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
@@ -108,7 +108,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
 
                     map.put(moduleName, value);
                     if (!namespace.isEmpty()) {
-                        map.put(namespace + "_" + moduleName, value);
+                        map.put(namespace + "." + moduleName, value);
                     }
 
                     return map;

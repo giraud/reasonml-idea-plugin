@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 
 public class ModuleIndex extends StringStubIndexExtension<PsiInnerModule> {
-    private static final int VERSION = 10;
+    private static final int VERSION = 11;
     private static final ModuleIndex INSTANCE = new ModuleIndex();
 
     @NotNull

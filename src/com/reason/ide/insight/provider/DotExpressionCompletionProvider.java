@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
@@ -55,13 +56,17 @@ public class DotExpressionCompletionProvider {
                 // Might be a virtual namespace
 
                 Collection<IndexedFileModule> modulesForNamespace = psiFinder.findModulesForNamespace(upperName, interfaceOrImplementation, scope);
-                LOG.debug("  found namespace files", modulesForNamespace);
+                if (!modulesForNamespace.isEmpty()) {
+                    LOG.debug("  found namespace files", modulesForNamespace);
 
-                for (IndexedFileModule file : modulesForNamespace) {
-                    resultSet.addElement(LookupElementBuilder.
-                            create(file.getModuleName()).
-                            withTypeText(FileHelper.shortLocation(project, file.getPath())).
-                            withIcon(IconProvider.getFileModuleIcon(file.isOCaml(), file.isInterface())));
+                    for (IndexedFileModule file : modulesForNamespace) {
+                        resultSet.addElement(LookupElementBuilder.
+                                create(file.getModuleName()).
+                                withTypeText(FileHelper.shortLocation(project, file.getPath())).
+                                withIcon(IconProvider.getFileModuleIcon(file.isOCaml(), file.isInterface())));
+                    }
+
+                    return;
                 }
 
                 // Find modules
@@ -72,11 +77,19 @@ public class DotExpressionCompletionProvider {
                 }
 
                 Collection<? extends PsiQualifiedNamedElement> resolvedModules = modules.stream().
-                        filter(psiModule -> qualifiedNames.contains(psiModule.getQualifiedName())).
                         map(psiModule -> {
-                            PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(psiModule.getQualifiedName());
-                            return moduleAlias == null ? psiModule : moduleAlias;
+                            String namespace = psiFinder.findNamespace(psiModule, scope);
+                            String moduleQname = namespace.isEmpty() ? psiModule.getQualifiedName() : namespace + "." + psiModule.getQualifiedName();
+                            LOG.debug(moduleQname + " " + psiModule.getContainingFile().getVirtualFile().getPath());
+
+                            if (qualifiedNames.contains(moduleQname)) {
+                                PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(moduleQname);
+                                return moduleAlias == null ? psiModule : moduleAlias;
+                            }
+
+                            return null;
                         }).
+                        filter(Objects::nonNull).
                         collect(Collectors.toList());
                 LOG.debug("  resolved", resolvedModules);
 
