@@ -30,12 +30,12 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                 PsiElement position = parameters.getPosition();
                 PsiElement originalPosition = parameters.getOriginalPosition();
                 PsiElement element = originalPosition == null ? position : originalPosition;
-                if (element.getNode().getElementType() == types.SEMI) {
-                    // Special case, we use the previous sibling instead
+                /*if (element.getNode().getElementType() == types.SEMI) {
+                    // Special case, we use the previous sibling instead (because the dot is not part of the composite element)
                     element = PsiTreeUtil.prevVisibleLeaf(element);
                 } else if (element instanceof PsiWhiteSpace && CompletionUtils.getPrevNodeType(element) == types.DOT) {
-                    //element = PsiTreeUtil.prevVisibleLeaf(element);
-                }
+                    element = PsiTreeUtil.prevVisibleLeaf(element);
+                }*/
 
                 PsiElement parent = element == null ? null : element.getParent();
                 PsiElement grandParent = parent == null ? null : parent.getParent();

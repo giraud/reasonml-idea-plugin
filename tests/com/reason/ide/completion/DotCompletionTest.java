@@ -2,27 +2,38 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class DotCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @NotNull
-    @Override
-    protected String getTestDataPath() {
-        return "testData/com/reason/ide/completion";
-    }
 
     public void testModuleLetCompletion() {
-        myFixture.configureByFiles("BasicCompletion_usage.re", "BasicCompletion_definition.re");
+        myFixture.configureByText("A.re", "let x = 1;");
+        myFixture.configureByText("B.re", "A.<caret>;");
+
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
-        assertTrue(strings.contains("x"));
-        assertEquals(1, strings.size());
+
+        assertSameElements(strings, "x");
+    }
+
+    public void testBeforeCaret() {
+        myFixture.configureByText("A.re", "type x;");
+        myFixture.configureByText("B.re", "A.<caret>;");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "x");
+    }
+
+    public void testEndOfFile() {
+        myFixture.configureByText("A.re", "type x;");
+        myFixture.configureByText("B.re", "A.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertSameElements(strings, "x");
     }
 }
