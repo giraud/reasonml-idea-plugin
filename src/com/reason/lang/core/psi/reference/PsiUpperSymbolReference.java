@@ -101,7 +101,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, true);
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, true, true);
 
         List<PsiQualifiedNamedElement> result = paths.stream().
                 map(path -> path + "." + m_referenceName).

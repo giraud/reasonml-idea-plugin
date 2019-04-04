@@ -48,7 +48,7 @@ public class DotExpressionCompletionProvider {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, false);
+                final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, true,false);
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);

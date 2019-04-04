@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FreeExpressionCompletionProvider {
 
@@ -41,6 +42,7 @@ public class FreeExpressionCompletionProvider {
 
         FileModuleIndexService orFinder = FileModuleIndexService.getService();
         PsiManager psiManager = PsiManager.getInstance(project);
+        String containingFilePath = element.getContainingFile().getVirtualFile().getPath();
 
         // Add virtual namespaces
         Collection<String> namespaces = orFinder.getNamespaces(project);
@@ -53,10 +55,14 @@ public class FreeExpressionCompletionProvider {
         }
 
         // Add file modules (that are not a component and without namespaces)
-        Collection<IndexedFileModule> filesWithoutNamespace = orFinder.getFilesWithoutNamespace(project);
+        Collection<IndexedFileModule> filesWithoutNamespace = orFinder.getFilesWithoutNamespace(project).
+                stream().
+                filter(indexedFileModule -> !containingFilePath.equals(indexedFileModule.getPath())).
+                collect(Collectors.toList());
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  files without namespaces", filesWithoutNamespace.size());
+            LOG.debug("  files without namespaces", filesWithoutNamespace);
         }
+
         for (IndexedFileModule file : filesWithoutNamespace) {
             resultSet.addElement(LookupElementBuilder.
                     create(file.getModuleName()).
@@ -65,7 +71,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance(project);
-        List<String> paths = m_modulePathFinder.extractPotentialPaths(element, false);
+        List<String> paths = m_modulePathFinder.extractPotentialPaths(element, false,false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)

@@ -14,7 +14,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
 
     // Find the expression paths
     @NotNull
-    public List<String> extractPotentialPaths(@NotNull PsiElement element, boolean addTypes) {
+    public List<String> extractPotentialPaths(@NotNull PsiElement element, boolean include, boolean addTypes) {
         List<String> qualifiedNames = new ArrayList<>();
 
         String path = extractPathName(element, OclTypes.INSTANCE);
@@ -30,7 +30,7 @@ public class OclModulePathFinder extends BaseModulePathFinder {
             if (item instanceof FileBase) {
                 qualifiedNames.add(((FileBase) item).asModuleName());
                 break;
-            } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
+            } else if (item instanceof PsiOpen || (include && item instanceof PsiInclude)) {
                 String openName = ((PsiQualifiedElement) item).getQualifiedName();
                 // Add open value to all previous elements
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
