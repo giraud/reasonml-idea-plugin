@@ -14,17 +14,19 @@ public class IncludeCompletionTest extends LightPlatformCodeInsightFixtureTestCa
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
+        assertSize(2, strings);
         assertSameElements(strings, "A", "x");
     }
 
     public void testIncludeEOF() {
         myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", "include A;\n<caret>");
+        myFixture.configureByText("B.re", "include A;\nlet y = 2;\n<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "A", "x");
+        assertSize(3, strings);
+        assertSameElements(strings, "A", "y", "x");
     }
 
 }
