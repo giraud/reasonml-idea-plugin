@@ -1,8 +1,10 @@
 package com.reason.build.annotations;
 
-import java.util.*;
+import com.intellij.util.containers.ConcurrentMultiMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public interface ErrorsManager {
 
@@ -12,6 +14,9 @@ public interface ErrorsManager {
 
     @NotNull
     Collection<OutputInfo> getErrors(@NotNull String filePath);
+
+    @NotNull
+    ConcurrentMultiMap<String, OutputInfo> getAllErrors();
 
     void clearErrors();
 }

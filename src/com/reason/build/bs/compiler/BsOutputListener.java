@@ -7,6 +7,10 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.problems.Problem;
+import com.intellij.problems.WolfTheProblemSolver;
 import com.reason.build.annotations.ErrorsManager;
 import com.reason.build.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
@@ -14,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +85,24 @@ public class BsOutputListener implements RawProcessListener {
         ApplicationManager.getApplication().invokeLater(() -> {
             if (!m_project.isDisposed()) {
                 // When build is done, we need to refresh editors to be notified of latest modifications
+
+                /* */
+                WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(m_project);
+                Collection<Problem> problems = new ArrayList<>();
+
+                for (Map.Entry<String, Collection<OutputInfo>> entry : m_errorsManager.getAllErrors().entrySet()) {
+                    String path = entry.getKey();
+                    VirtualFile fileByUrl = VirtualFileManager.getInstance().findFileByUrl("file://" + path);
+                    if (fileByUrl != null) {
+                        for (OutputInfo info : entry.getValue()) {
+                            problems.add(problemSolver.convertToProblem(fileByUrl, info.lineStart, info.colStart, new String[]{info.message}));
+                        }
+                        problemSolver.reportProblems(fileByUrl, problems);
+
+                    }
+                }
+
+                /* */
                 DaemonCodeAnalyzer.getInstance(m_project).restart();
                 EditorFactory.getInstance().refreshAllEditors();
                 InferredTypesService.queryForSelectedTextEditor(m_project);
@@ -222,7 +246,8 @@ public class BsOutputListener implements RawProcessListener {
     }
 
     @NotNull
-    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
+    private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String
+            colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(line);
@@ -237,7 +262,8 @@ public class BsOutputListener implements RawProcessListener {
     }
 
     @NotNull
-    private OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String colStart, @Nullable String lineEnd, @Nullable String colEnd) {
+    private OutputInfo addInfo(@NotNull String path, @NotNull String lineStart, @NotNull String
+            colStart, @Nullable String lineEnd, @Nullable String colEnd) {
         OutputInfo info = new OutputInfo();
         info.path = path;
         info.lineStart = parseInt(lineStart);

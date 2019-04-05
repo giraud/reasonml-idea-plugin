@@ -36,6 +36,12 @@ public class ErrorsManagerImpl implements ErrorsManager, ProjectComponent {
         return m_errorsByFile.get(filePath);
     }
 
+    @NotNull
+    @Override
+    public ConcurrentMultiMap<String, OutputInfo> getAllErrors() {
+        return m_errorsByFile;
+    }
+
     @Override
     public void clearErrors() {
         m_errorsByFile.clear();

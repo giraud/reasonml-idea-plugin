@@ -24,9 +24,6 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
     @Nullable
     @Override
     public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
-        WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(file.getProject());
-        problemSolver.clearProblems(file.getVirtualFile());
-
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
             return file.getProject().getComponent(ErrorsManager.class).getErrors(filePath);
@@ -69,7 +66,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
                         holder.createWarningAnnotation(range, annotation.message);
                     }
 
-                    problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.start.line, annotation.start.column, new String[] {annotation.message}));
+                    problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.start.line, annotation.start.column, new String[]{annotation.message}));
                 }
             }
         }

@@ -161,7 +161,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
 
     public void terminated() {
         if (m_bsb != null) {
-            m_bsb.notifyTextAvailable("Compilation ended", STDOUT);
+            m_bsb.notifyTextAvailable("Compilation ended\n", STDOUT);
         }
         m_started.set(false);
     }
