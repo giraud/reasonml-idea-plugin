@@ -7,14 +7,19 @@ import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.reason.lang.ModulePathFinder.Includes.containingFile;
+import static com.reason.lang.ModulePathFinder.Includes.includedModules;
+
 
 public class RmlModulePathFinder extends BaseModulePathFinder {
 
     // Find the expression paths
     @NotNull
-    public List<String> extractPotentialPaths(@NotNull PsiElement element, boolean include, boolean addTypes) {
+    public List<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes) {
         List<String> qualifiedNames = new ArrayList<>();
 
         String path = extractPathName(element, RmlTypes.INSTANCE);
@@ -27,10 +32,10 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 break; // There must be a problem with the parser
             }
 
-            if (item instanceof FileBase) {
+            if (item instanceof FileBase && include.contains(containingFile)) {
                 qualifiedNames.add(((FileBase) item).asModuleName());
                 break;
-            } else if (item instanceof PsiOpen || (include && item instanceof PsiInclude)) {
+            } else if (item instanceof PsiOpen || (include.contains(includedModules) && item instanceof PsiInclude)) {
                 String openName = ((PsiQualifiedElement) item).getQualifiedName();
                 // Add open value to all previous elements
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
@@ -56,7 +61,9 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             }
         }
 
-        qualifiedNames.add(path);
+        if (!path.isEmpty()) {
+            qualifiedNames.add(path);
+        }
         qualifiedNames.add("Pervasives");
 
         return qualifiedNames;

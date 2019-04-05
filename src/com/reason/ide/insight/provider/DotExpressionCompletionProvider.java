@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.reason.lang.ModulePathFinder.includeALl;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class DotExpressionCompletionProvider {
@@ -48,7 +49,7 @@ public class DotExpressionCompletionProvider {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, true,false);
+                final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, includeALl,false);
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);

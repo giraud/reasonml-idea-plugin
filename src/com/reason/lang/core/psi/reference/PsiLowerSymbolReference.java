@@ -1,7 +1,6 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
@@ -28,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static com.reason.lang.ModulePathFinder.includeALl;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
@@ -198,7 +198,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         Map<String, Integer> result = new THashMap<>();
 
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, true,false);
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeALl,false);
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(s);

@@ -28,6 +28,7 @@ import com.reason.lang.core.signature.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,14 +36,13 @@ public class FreeExpressionCompletionProvider {
 
     private static final Log LOG = Log.create("insight.free");
 
-    public static void addCompletions(@NotNull ModulePathFinder m_modulePathFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull ModulePathFinder m_modulePathFinder, @NotNull String containingFilePath, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
 
         FileModuleIndexService orFinder = FileModuleIndexService.getService();
         PsiManager psiManager = PsiManager.getInstance(project);
-        String containingFilePath = element.getContainingFile().getVirtualFile().getPath();
 
         // Add virtual namespaces
         Collection<String> namespaces = orFinder.getNamespaces(project);
@@ -71,7 +71,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance(project);
-        List<String> paths = m_modulePathFinder.extractPotentialPaths(element, false,false);
+        List<String> paths = m_modulePathFinder.extractPotentialPaths(element, EnumSet.noneOf(ModulePathFinder.Includes.class), false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)

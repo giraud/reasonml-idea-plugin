@@ -82,7 +82,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
                 if (element != null) {
                     LOG.debug("Nothing found, free expression");
-                    FreeExpressionCompletionProvider.addCompletions(modulePathFinder, element, result);
+                    FreeExpressionCompletionProvider.addCompletions(modulePathFinder,  parameters.getOriginalFile().getVirtualFile().getPath(), element, result);
                 }
             }
         });
