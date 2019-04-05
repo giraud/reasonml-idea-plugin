@@ -7,6 +7,8 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
+import com.intellij.problems.Problem;
+import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiFile;
 import com.reason.Log;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +24,9 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
     @Nullable
     @Override
     public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
+        WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(file.getProject());
+        problemSolver.clearProblems(file.getVirtualFile());
+
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
             return file.getProject().getComponent(ErrorsManager.class).getErrors(filePath);
@@ -43,6 +48,9 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
 
     @Override
     public void apply(@NotNull PsiFile file, @NotNull Collection<BsbErrorAnnotation> annotationResult, @NotNull AnnotationHolder holder) {
+        WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(file.getProject());
+        Collection<Problem> problems = new ArrayList<>();
+
         FileEditorManager fem = FileEditorManager.getInstance(file.getProject());
         TextEditor selectedEditor = (TextEditor) fem.getSelectedEditor(file.getVirtualFile());
         if (selectedEditor != null) {
@@ -60,9 +68,13 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
                     } else {
                         holder.createWarningAnnotation(range, annotation.message);
                     }
+
+                    problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.start.line, annotation.start.column, new String[] {annotation.message}));
                 }
             }
         }
+
+        problemSolver.reportProblems(file.getVirtualFile(), problems);
     }
 
     static class BsbErrorAnnotation {
