@@ -93,10 +93,10 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
 
     @NotNull
     @Override
-    public Collection<PsiVariantConstructor> getVariants() {
+    public Collection<PsiVariant> getVariants() {
         PsiTypeBinding binding = getBinding();
         if (binding != null) {
-            return PsiTreeUtil.findChildrenOfType(binding, PsiVariantConstructor.class);
+            return PsiTreeUtil.findChildrenOfType(binding, PsiVariant.class);
         }
         return emptyList();
     }

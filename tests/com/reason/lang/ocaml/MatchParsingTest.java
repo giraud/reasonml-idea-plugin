@@ -56,7 +56,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
         PsiPatternMatch psiPatternMatch = patterns.iterator().next();
-        PsiVariantConstructor variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiVariantConstructor.class);
+        PsiVariant variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiVariant.class);
         assertEquals(OclTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
     }
 

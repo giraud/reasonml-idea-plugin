@@ -125,7 +125,7 @@ public class PsiElementFactory {
         } else if (type == types.C_JS_OBJECT_FIELD) {
             return new PsiJsObjectField(node);
         } else if (type == types.C_VARIANT_CONSTRUCTOR) {
-            return new PsiVariantConstructor(node);
+            return new PsiVariant(node);
         } else if (type == types.C_RAW) {
             return new PsiRaw(node);
         } else if (type == types.C_SIG_ITEM) {

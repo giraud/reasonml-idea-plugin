@@ -10,9 +10,9 @@ import java.util.Collection;
 
 import static java.util.Collections.emptyList;
 
-public class PsiVariantConstructor extends ASTWrapperPsiElement {
+public class PsiVariant extends ASTWrapperPsiElement {
 
-    public PsiVariantConstructor(@NotNull ASTNode node) {
+    public PsiVariant(@NotNull ASTNode node) {
         super(node);
     }
 

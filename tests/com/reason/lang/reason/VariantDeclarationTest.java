@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVariantConstructor;
+import com.reason.lang.core.psi.PsiVariant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.C_VARIANT_EXP);
         assertEquals(2, children.size());
 
-        List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
+        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
         assertEquals(2, variants.size());
         assertEquals("Black", variants.get(0).getName());
         assertEquals("White", variants.get(1).getName());
@@ -33,7 +33,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.C_VARIANT_EXP);
         assertEquals(2, children.size());
 
-        List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
+        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
         assertEquals(2, variants.size());
         assertEquals("Black", variants.get(0).getName());
         assertEquals("White", variants.get(1).getName());
@@ -45,7 +45,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.C_VARIANT_EXP);
         assertEquals(2, children.size());
 
-        List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
+        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
         assertEquals(2, variants.size());
         assertEquals("Hex", variants.get(0).getName());
         assertEquals(1, variants.get(0).getParameterList().size());
@@ -59,7 +59,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.C_VARIANT_EXP);
         assertEquals(3, children.size());
 
-        List<PsiVariantConstructor> variants = new ArrayList<>(e.getVariants());
+        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
         assertEquals(3, variants.size());
         assertEquals("Cannot", variants.get(0).getName());
         assertEquals(1, variants.get(0).getParameterList().size());
