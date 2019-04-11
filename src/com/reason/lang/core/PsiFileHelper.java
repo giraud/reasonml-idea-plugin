@@ -67,6 +67,11 @@ public class PsiFileHelper {
     }
 
     @NotNull
+    public static List<PsiFunctor> getFunctorExpressions(@NotNull PsiFile file) {
+        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiFunctor.class);
+    }
+
+    @NotNull
     public static List<PsiClass> getClassExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiClass.class);
     }

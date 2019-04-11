@@ -44,7 +44,7 @@ public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiNamedEleme
     @Nullable
     @Override
     public String toString() {
-        return "Function parameter " + getName();
+        return "Parameter " + getName();
     }
 
     @Override

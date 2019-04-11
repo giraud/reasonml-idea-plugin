@@ -108,6 +108,8 @@ public class PsiElementFactory {
             return new PsiFunctorImpl(types, node);
         } else if (type == types.C_FUNCTOR_PARAMS) {
             return new PsiParametersImpl(types, node);
+        } else if (type == types.C_FUNCTOR_PARAM) {
+            return new PsiParameterImpl(types, node);
         } else if (type == types.C_FUNCTOR_BINDING) {
             return new PsiFunctorBinding(types, node);
         } else if (type == types.C_FUN_EXPR) {

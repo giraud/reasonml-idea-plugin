@@ -1,6 +1,5 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.stub.type.*;
 import com.reason.lang.core.type.ORCompositeElementType;
 import com.reason.lang.core.type.ORTokenElementType;
@@ -32,6 +31,7 @@ public class OclTypes extends ORTypes {
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", OclLanguage.INSTANCE);
         C_FUNCTOR_CONSTRAINTS = new ORCompositeElementType("C_FUNCTOR_CONSTRAINTS", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", OclLanguage.INSTANCE);
+        C_FUNCTOR_PARAM = new ORCompositeElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", OclLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);

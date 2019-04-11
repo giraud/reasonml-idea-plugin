@@ -6,15 +6,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiFunctorBinding;
-import com.reason.lang.core.psi.PsiParameters;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
 
@@ -28,16 +26,22 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     }
 
-    @Nullable
-    @Override
-    public String getQualifiedName() {
-        return null;
-    }
-
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
         return nameIdentifier == null ? "" : nameIdentifier.getText();
+    }
+
+    @Nullable
+    @Override
+    public String getQualifiedName() {
+        /*
+        PsiFunctorStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+        */
+        return ORUtil.getQualifiedName(this);
     }
 
     @Nullable
@@ -52,10 +56,16 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorBinding.class);
     }
 
+    @NotNull
+    @Override
+    public Collection<PsiParameter> getParameters() {
+        return ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
+    }
+
     @Nullable
     @Override
-    public PsiParameters getParameters() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
+    public PsiElement getReturnType() {
+        return null;
     }
 
     public ItemPresentation getPresentation() {

@@ -312,8 +312,8 @@ public class OclParser extends CommonParser<OclTypes> {
         }
 
         if (state.isCurrentResolution(functorNamedColon)) {
-            // A functor like:
-            // module Make (M : Input) : S <with> type input = M.t
+            // A functor with return signature
+            // module Make (M : Input) : S |>with<| type input = M.t
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.WITH));
         } else if (!state.isCurrentResolution(moduleNamedColon)) {
             if (state.isCurrentContext(try_)) {
@@ -366,6 +366,9 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.updateCurrentResolution(moduleNamedSignature);
                 state.add(markScope(builder, state.currentContext(), moduleSignature, m_types.C_SIG_EXPR, m_types.SIG));
             }
+        } else if (state.isCurrentResolution(functorParamColon)) {
+            state.updateCurrentResolution(functorParamColonSignature).
+                    add(markScope(builder, state.currentContext(), functorParamColonSignature, m_types.C_SIG_EXPR, m_types.SIG).complete());
         }
     }
 
@@ -437,6 +440,8 @@ public class OclParser extends CommonParser<OclTypes> {
             state.advance().
                     add(mark(builder, signature, letNamedSignature, m_types.C_SIG_EXPR).complete()).
                     add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
+        } else if (state.isCurrentResolution(functorParam)) {
+            state.updateCurrentResolution(functorParamColon);
         }
     }
 
@@ -562,11 +567,14 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.wrapWith(m_types.C_UNIT).advance();
             }
         } else if (state.isCurrentResolution(moduleNamed)) {
-            // This is a functor: module Make <(> ... )
+            // This is a functor
+            //   module Make <(> ... )
             state.updateCurrentContext(functorDeclaration).
                     updateCurrentResolution(functorNamed).
                     updateCurrentCompositeElementType(m_types.C_FUNCTOR).
-                    add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN));
+                    add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)).
+                    advance().
+                    add(mark(builder, state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM).complete());
         } else {
             state.add(markScope(builder, scope, paren, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         }

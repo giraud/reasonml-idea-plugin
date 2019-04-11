@@ -54,6 +54,11 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
+    protected Collection<PsiFunctor> functorExpressions(@NotNull PsiFile file) {
+        return PsiFileHelper.getFunctorExpressions(file);
+    }
+
+    @NotNull
     protected Collection<PsiClass> classExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getClassExpressions(file);
     }

@@ -5,9 +5,11 @@ import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiNamedElement;
+import com.reason.lang.core.psi.PsiParameter;
 
 import java.util.Collection;
 
+@SuppressWarnings("ConstantConditions")
 public class FunctorTest extends BaseParsingTestCase {
     public FunctorTest() {
         super("", "re", new RmlParserDefinition());
@@ -26,8 +28,30 @@ public class FunctorTest extends BaseParsingTestCase {
         assertEquals(1, expressions.size());
         PsiFunctor functor = (PsiFunctor) first(expressions);
 
-        assertEquals("(M: Input)", functor.getParameters().getText());
+        assertEquals("M: Input", first(functor.getParameters()).getText());
+        //assertEquals("S with type input = M.t", functor.getReturnType().getText());
         assertEquals("{}", functor.getBinding().getText());
+    }
+
+    public void testSignature() {
+        Collection<PsiFunctor> functors = functorExpressions(parseCode(
+                "module GlobalBindings = (M: {\n" +
+                        "           let relation_classes: list(string);\n" +
+                        "           let morphisms: list(string);\n" +
+                        "           let arrow: evars => evars;\n" +
+                        "         },\n" +
+                        "       ) => {\n" +
+                        "  open M;\n" +
+                        "};"));
+
+        assertEquals(1, functors.size());
+        PsiFunctor functor = first(functors);
+        assertEquals("GlobalBindings", functor.getName());
+        assertEquals("Dummy.GlobalBindings", functor.getQualifiedName());
+        Collection<PsiParameter> parameters = functor.getParameters();
+        assertSize(1, parameters);
+        assertEquals("M", first(parameters).getName());
+        assertNotNull(functor.getBinding());
     }
 
     public void testModuleFunctorInstanciation1() {

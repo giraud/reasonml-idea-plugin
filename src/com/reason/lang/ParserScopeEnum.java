@@ -115,10 +115,14 @@ public enum ParserScopeEnum {
     functorDeclaration,
     functorNamed,
     functorNamedEq,
+    functorNamedEqParamsArrow,
     functorDeclarationParams,
     functorParams,
-    functorNamedEqColon,
+    functorParam,
+    functorParamColon,
+    functorParamColonSignature,
     functorNamedColon,
+    functorNamedEqColon,
     functorConstraints,
     functorBinding,
 
@@ -132,5 +136,5 @@ public enum ParserScopeEnum {
     typeBinding, signatureScope, recordFieldAnnotation, signatureParams, option, optionParameter, patternMatchVariant,
     name,
 
-    variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, localObjectOpen,
+    variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, localObjectOpen
 }

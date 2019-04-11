@@ -138,7 +138,11 @@ public class ORUtil {
     }
 
     @NotNull
-    public static <T> List<T> findImmediateChildrenOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+    public static <T> List<T> findImmediateChildrenOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz) {
+        if (element == null) {
+            return Collections.emptyList();
+        }
+
         PsiElement child = element.getFirstChild();
         if (child == null) {
             return Collections.emptyList();
