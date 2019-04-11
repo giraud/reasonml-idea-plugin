@@ -48,7 +48,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void downloadRincewindIfNeeded() {
-        if (!isDownloaded.get()) {
+        if (!isDownloaded.get() && !m_project.isDisposed()) {
             ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project));
         }
     }

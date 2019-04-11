@@ -45,6 +45,10 @@ public class RincewindDownloader extends Task.Backgroundable {
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
+        if (myProject.isDisposed()) {
+            return;
+        }
+
         InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getComponent(InsightManager.class);
         if (!insightManager.isDownloaded.get() && !insightManager.isDownloading.compareAndSet(false, true)) {
             // We are already in the process of downloading
