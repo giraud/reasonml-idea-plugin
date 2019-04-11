@@ -10,6 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.75 - 2019/04/11
+
+- :bug: [#154](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/154) - Remove unwanted end of line after reformat
+- :bug: [#153](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/153) - Split tuple items in structure view for let expressions
+- :bug: [#152](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/152) - Add a check to prevent exception
+- :house: Fix alpha sort on open/include in structure view
+- :house: Improved OCaml parser
+
 ## 0.74 - 2019/03/25
 
 - :rocket: ODoc formatting when displaying special comments (ctrl+q), with the following limitation: element must be resolved, and only a subset of syntax is supported
