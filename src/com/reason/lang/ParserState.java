@@ -16,7 +16,10 @@ public class ParserState {
 
     private ParserScope m_currentScope;
     @Nullable
-    public IElementType previousTokenElementType;
+    public IElementType previousElementType2;
+    @Nullable
+    public IElementType previousElementType1;
+
     public boolean dontMove = false;
 
     public ParserState(PsiBuilder builder, ParserScope rootScope) {

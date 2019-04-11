@@ -1,12 +1,10 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiElement;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVariant;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
@@ -18,52 +16,40 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
     public void testBasic() {
         PsiType e = first(typeExpressions(parseCode("type color = | Black | White")));
 
-        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
-        assertEquals(2, children.size());
-
-        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
-        assertEquals(2, variants.size());
-        assertEquals("Black", variants.get(0).getName());
-        assertEquals("White", variants.get(1).getName());
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals(2, declarations.size());
+        assertEquals("Black", declarations.get(0).getVariant().getName());
+        assertEquals("White", declarations.get(1).getVariant().getName());
     }
 
     public void testBasic2() {
         PsiType e = first(typeExpressions(parseCode("type color = Black | White")));
 
-        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
-        assertEquals(2, children.size());
-
-        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
-        assertEquals(2, variants.size());
-        assertEquals("Black", variants.get(0).getName());
-        assertEquals("White", variants.get(1).getName());
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals(2, declarations.size());
+        assertEquals("Black", declarations.get(0).getVariant().getName());
+        assertEquals("White", declarations.get(1).getVariant().getName());
     }
 
     public void testConstructor() {
         PsiType e = first(typeExpressions(parseCode("type color = | Hex of string | Rgb of int * int * int")));
 
-        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
-        assertEquals(2, children.size());
-
-        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
-        assertEquals(2, variants.size());
-        assertEquals("Hex", variants.get(0).getName());
-        assertEquals(1, variants.get(0).getParameterList().size());
-        assertEquals("Rgb", variants.get(1).getName());
-        assertEquals(3, variants.get(1).getParameterList().size());
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals(2, declarations.size());
+        assertEquals("Hex", declarations.get(0).getVariant().getName());
+        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals("Rgb", declarations.get(1).getVariant().getName());
+        assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
     public void testMixed() {
         PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot of reason | Loose | Strict")));
 
-        List<PsiElement> children = ORUtil.findImmediateChildrenOfType(e.getBinding(), OclTypes.INSTANCE.C_VARIANT_EXP);
-        assertEquals(3, children.size());
-
-        List<PsiVariant> variants = new ArrayList<>(e.getVariants());
-        assertEquals(3, variants.size());
-        assertEquals("Cannot", variants.get(0).getName());
-        assertEquals(1, variants.get(0).getParameterList().size());
-        assertEquals("Loose", variants.get(1).getName());
-        assertEquals("Strict", variants.get(2).getName());
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals(3, declarations.size());
+        assertEquals("Cannot", declarations.get(0).getVariant().getName());
+        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals("Loose", declarations.get(1).getVariant().getName());
+        assertEquals("Strict", declarations.get(2).getVariant().getName());
     }
 }

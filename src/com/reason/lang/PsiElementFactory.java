@@ -68,8 +68,10 @@ public class PsiElementFactory {
             return new PsiRawBody(types, node);
         } else if (type == types.C_SCOPED_EXPR) {
             return new PsiScopedExpr(types, node);
-        } else if (type == types.LOCAL_OPEN) {
-            return new PsiLocalOpen(node, types);
+        } else if (type == types.C_LOCAL_OPEN) {
+            return new PsiLocalOpen(node);
+        } else if (type == types.C_PATTERN_MATCH_BODY) {
+            return new PsiPatternMatchBody(node);
         } else if (type == types.C_PATTERN_MATCH_EXPR) {
             return new PsiPatternMatch(node);
         } else if (type == types.C_RECORD_EXPR) {
@@ -124,6 +126,8 @@ public class PsiElementFactory {
             return new PsiJsObject(node);
         } else if (type == types.C_JS_OBJECT_FIELD) {
             return new PsiJsObjectField(node);
+        } else if (type == types.C_VARIANT_DECL) {
+            return new PsiVariantDeclaration(node);
         } else if (type == types.C_VARIANT_CONSTRUCTOR) {
             return new PsiVariant(node);
         } else if (type == types.C_RAW) {

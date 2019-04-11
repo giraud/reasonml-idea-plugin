@@ -23,12 +23,6 @@ public class PsiVariant extends ASTWrapperPsiElement {
     }
 
     @NotNull
-    public Collection<PsiParameter> getParameterList() {
-        PsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
-        return parameters == null ? emptyList() : ORUtil.findImmediateChildrenOfClass(parameters, PsiParameter.class);
-    }
-
-    @NotNull
     @Override
     public String toString() {
         return getClass().getSimpleName() + " " + getName();

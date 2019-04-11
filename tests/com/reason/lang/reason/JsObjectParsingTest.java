@@ -44,7 +44,7 @@ public class JsObjectParsingTest extends BaseParsingTestCase {
 
         PsiLetBinding binding = e.getBinding();
         PsiFunctionCallParams call = PsiTreeUtil.findChildOfType(binding, PsiFunctionCallParams.class);
-        PsiLocalOpen open = ORUtil.findImmediateFirstChildOfClass(call, PsiLocalOpen.class);
+        PsiLocalOpen open = PsiTreeUtil.findChildOfType(call, PsiLocalOpen.class);
         PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(open, PsiJsObject.class);
         assertNotNull(jsObject);
     }

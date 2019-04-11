@@ -42,7 +42,7 @@ public class RmlTypes extends ORTypes {
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
-        C_VARIANT_EXP = new ORCompositeElementType("C_VARIANT_EXP", RmlLanguage.INSTANCE);
+        C_VARIANT_DECL = new ORCompositeElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
         C_MODULE_STMT = new PsiModuleStubElementType("C_MODULE_STMT", RmlLanguage.INSTANCE);
@@ -58,6 +58,7 @@ public class RmlTypes extends ORTypes {
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", RmlLanguage.INSTANCE);
         C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);
+        C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", RmlLanguage.INSTANCE);
         C_IF_STMT = new ORCompositeElementType("C_IF_STMT", RmlLanguage.INSTANCE);
         C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", RmlLanguage.INSTANCE);
@@ -90,7 +91,7 @@ public class RmlTypes extends ORTypes {
         FUN = new ORTokenElementType("FUN", RmlLanguage.INSTANCE);
         FUNCTOR = new ORTokenElementType("FUNCTOR", RmlLanguage.INSTANCE);
         IF = new ORTokenElementType("IF", RmlLanguage.INSTANCE);
-        LOCAL_OPEN = new ORTokenElementType("LOCAL_OPEN", RmlLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", RmlLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", RmlLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", RmlLanguage.INSTANCE);
         ARROBASE = new ORTokenElementType("ARROBASE", RmlLanguage.INSTANCE);

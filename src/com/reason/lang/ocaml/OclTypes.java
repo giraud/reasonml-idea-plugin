@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.stub.type.*;
 import com.reason.lang.core.type.ORCompositeElementType;
 import com.reason.lang.core.type.ORTokenElementType;
@@ -45,7 +46,7 @@ public class OclTypes extends ORTypes {
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", OclLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", OclLanguage.INSTANCE);
-        C_VARIANT_EXP = new ORCompositeElementType("C_VARIANT_EXP", OclLanguage.INSTANCE);
+        C_VARIANT_DECL = new ORCompositeElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
@@ -60,6 +61,7 @@ public class OclTypes extends ORTypes {
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
         C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
+        C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
         C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", OclLanguage.INSTANCE);
         C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", OclLanguage.INSTANCE);
@@ -91,7 +93,7 @@ public class OclTypes extends ORTypes {
         FUNCTOR = new ORTokenElementType("FUNCTOR", OclLanguage.INSTANCE);
         IF = new ORTokenElementType("IF", OclLanguage.INSTANCE);
         EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", OclLanguage.INSTANCE);
-        LOCAL_OPEN = new ORTokenElementType("LOCAL_OPEN", OclLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", OclLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", OclLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", OclLanguage.INSTANCE);

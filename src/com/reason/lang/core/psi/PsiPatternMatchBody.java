@@ -2,20 +2,17 @@ package com.reason.lang.core.psi;
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiLocalOpen extends ASTWrapperPsiElement {
+public class PsiPatternMatchBody extends ASTWrapperPsiElement {
 
-    public PsiLocalOpen(@NotNull ASTNode node) {
+    public PsiPatternMatchBody(@NotNull ASTNode node) {
         super(node);
     }
 
     @NotNull
     @Override
     public String toString() {
-        return "Local open";
+        return "Pattern match body";
     }
-
 }

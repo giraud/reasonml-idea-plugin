@@ -6,6 +6,7 @@ public abstract class ORTypes {
 
     // Composite element types
 
+    public IElementType C_ASSERT_STMT;
     public IElementType C_CLASS_CONSTR;
     public IElementType C_CLASS_FIELD;
     public IElementType C_CLASS_METHOD;
@@ -34,8 +35,12 @@ public abstract class ORTypes {
     public IElementType C_JS_OBJECT;
     public IElementType C_JS_OBJECT_FIELD;
     public IElementType C_MACRO_RAW_BODY;
+    public IElementType C_MIXIN_FIELD;
     public IElementType C_ML_INTERPOLATOR;
+    public IElementType C_MODULE_PATH;
     public IElementType C_OPTION;
+    public IElementType C_PATTERN_MATCH_BODY;
+    public IElementType C_PATTERN_MATCH_EXPR;
     public IElementType C_RAW;
     public IElementType C_SIG_EXPR;
     public IElementType C_SIG_ITEM;
@@ -44,15 +49,11 @@ public abstract class ORTypes {
     public IElementType C_TAG_BODY;
     public IElementType C_UNIT;
     public IElementType C_UNKNOWN_EXPR;
-    public IElementType C_VARIANT_EXP;
+    public IElementType C_VARIANT_DECL;
     public IElementType C_VARIANT_CONSTRUCTOR;
-    public IElementType C_MIXIN_FIELD;
-    public IElementType C_MODULE_PATH;
-    public IElementType C_ASSERT_STMT;
     public IElementType C_SCOPED_EXPR;
     public IElementType C_IF_STMT;
     public IElementType C_BIN_CONDITION;
-    public IElementType C_PATTERN_MATCH_EXPR;
     public IElementType C_INTERPOLATION_EXPR;
     public IElementType C_TAG_START;
     public IElementType C_TAG_CLOSE;
@@ -130,7 +131,7 @@ public abstract class ORTypes {
 
     public ORTokenElementType GENERIC_COND;
     public ORTokenElementType EXCEPTION_NAME;
-    public ORTokenElementType LOCAL_OPEN;
+    public ORTokenElementType C_LOCAL_OPEN;
     public ORTokenElementType PROPERTY_NAME;
     public ORTokenElementType SHARPSHARP;
     public ORTokenElementType ARROBASE;

@@ -27,8 +27,6 @@ public enum ParserScopeEnum {
     moduleSignature,
     moduleBinding,
 
-    modulePath,
-
     let,
     letNamed,
     letNamedEq,
@@ -131,5 +129,8 @@ public enum ParserScopeEnum {
     clazzNamedConstructor, record, mixin,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
     patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction,
-    variantConstructor, variantConstructorParameter, variantConstructorParameters, typeBinding, signatureScope, recordFieldAnnotation, signatureParams, option, optionParameter, patternMatchVariant, variant, name
+    typeBinding, signatureScope, recordFieldAnnotation, signatureParams, option, optionParameter, patternMatchVariant,
+    name,
+
+    variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, localObjectOpen,
 }

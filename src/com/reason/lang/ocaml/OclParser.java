@@ -39,10 +39,12 @@ public class OclParser extends CommonParser<OclTypes> {
     @Override
     protected void parseFile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         IElementType tokenType = null;
+        state.previousElementType1 = null;
 
         int c = current_position_(builder);
         while (true) {
-            state.previousTokenElementType = tokenType;
+            state.previousElementType2 = state.previousElementType1;
+            state.previousElementType1 = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
@@ -208,7 +210,8 @@ public class OclParser extends CommonParser<OclTypes> {
                     advance().
                     add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(patternMatch)) {
-            state.add(mark(builder, patternMatch, patternMatchBody, m_types.C_SCOPED_EXPR));
+            state.advance().
+                    add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_PATTERN_MATCH_BODY).complete());
         } else if (state.isCurrentResolution(matchWith)) {
             state.advance()
                     .add(mark(builder, matchException, m_types.C_SCOPED_EXPR));
@@ -271,13 +274,13 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(typeNamedEq)) {
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+            state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             state.popEnd();
-            state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+            state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
         } else if (state.isCurrentContext(variantConstructor)) {
             state.popEndWhileContext(variantConstructor);
-            state.popEnd().add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete());
+            state.popEnd().add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
         } else {
             // By default, a pattern match
             if (state.isCurrentResolution(patternMatchBody)) {
@@ -375,8 +378,10 @@ public class OclParser extends CommonParser<OclTypes> {
             state.advance();
             state.add(mark(builder, recordField, m_types.C_RECORD_FIELD));
         } else {
+            boolean isImplicitScope = state.isCurrentContext(functionBody);
+
             // A SEMI operator ends the previous expression
-            if (!state.isInScopeExpression()) {
+            if (!isImplicitScope && !state.isInScopeExpression()) {
                 state.popEnd();
             }
         }
@@ -456,7 +461,7 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEnd().
                     updateCurrentResolution(typeNamedEq).
                     advance().
-                    add(mark(builder, state.currentContext(), typeNamedEq, m_types.C_TYPE_BINDING).complete());
+                    add(mark(builder, typeBinding, typeNamedEq, m_types.C_TYPE_BINDING).complete());
         } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
             state.popEndUntilContext(let);
             state.updateCurrentResolution(letNamedEq);
@@ -479,7 +484,7 @@ public class OclParser extends CommonParser<OclTypes> {
             }
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);
-        } else if (state.isCurrentResolution(externalNamed) && state.previousTokenElementType == m_types.LPAREN) {
+        } else if (state.isCurrentResolution(externalNamed) && state.previousElementType1 == m_types.LPAREN) {
             // external ( «=» ) = ...
             builder.remapCurrentToken(m_types.LIDENT);
             state.wrapWith(m_types.C_LOWER_SYMBOL);
@@ -508,8 +513,8 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseOf(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(variantConstructor)) {
-            // Variant params :: type t = | Variant <(> .. )
+        if (state.isCurrentResolution(typeNamedEqVariant)) {
+            // Variant params :: type t = | Variant «of» ..
             state.add(mark(builder, variantConstructor, variantConstructorParameters, m_types.C_FUN_PARAMS).complete()).
                     advance().
                     add(mark(builder, variantConstructor, variantConstructorParameter, m_types.C_FUN_PARAM).complete());
@@ -533,12 +538,9 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLParen(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
-            // Detecting a local open : M1.M2(...)
-            state.updateCurrentResolution(localOpen);
-            state.updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
-            state.complete();
-            state.add(markScope(builder, localOpenScope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
+            // Detecting a local open : M1.M2.<(> .. )
+            state.add(markScope(builder, localOpenScope, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
         } else if (state.isCurrentResolution(external)) {
             // Overloading an operator: external (...) = ...
             state.updateCurrentResolution(externalNamed).complete();
@@ -596,7 +598,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseRBrace(ParserState state) {
-        if (state.isCurrentResolution(recordField) && state.previousTokenElementType != m_types.SEMI) {
+        if (state.isCurrentResolution(recordField) && state.previousElementType1 != m_types.SEMI) {
             state.complete();
         }
 
@@ -641,14 +643,15 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLIdent(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(modulePath)) {
+        /*
+        (state.isCurrentResolution(modulePath)) {
             if (state.isCurrentContext(genericExpression)) {
                 state.updateCurrentResolution(genericExpression);
             } else {
                 state.popEnd();
             }
         }
-
+*/
         if (state.isCurrentResolution(typeConstrName)) {
             state.updateCurrentResolution(typeNamed);
             state.complete();
@@ -704,28 +707,28 @@ public class OclParser extends CommonParser<OclTypes> {
             builder.remapCurrentToken(m_types.EXCEPTION_NAME);
         } else if (state.isCurrentResolution(module)) {
             state.updateCurrentResolution(moduleNamed);
-        } else if (state.previousTokenElementType == m_types.PIPE) {
-            builder.remapCurrentToken(m_types.VARIANT_NAME);
-            state.add(mark(builder, variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
+        } else if (state.isCurrentResolution(typeNamedEq)) {
+            // Might be a variant without a pipe
+            IElementType nextTokenType = builder.lookAhead(1);
+            if (nextTokenType == m_types.OF || nextTokenType == m_types.PIPE) {
+                // type t = «X» | ..   or   type t = «X» of ..
+                state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
+                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+                return;
+            }
+        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
+            // Declaring a variant
+            // type t = | «X» ..
+            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
             return;
-        } else {
-            if (!state.isCurrentResolution(modulePath)) {
-                IElementType nextElementType = builder.lookAhead(1);
-                if (nextElementType == m_types.DOT) {
-                    if (state.isCurrentContext(moduleDeclaration)) {
-                        // module X = <|>Path.Functor(...)
-                        state.add(mark(builder, moduleInstanciation, modulePath, m_types.C_MODULE_PATH/*?*/));
-                    } else {
-                        // We are parsing a module path
-                        ParserScopeEnum newContext = state.currentContext() == functionBody ? genericExpression : state.currentContext();
-                        state.add(mark(builder, newContext, modulePath, m_types.C_MODULE_PATH));
-                    }
-                } else if (nextElementType == m_types.PIPE) {
-                    builder.remapCurrentToken(m_types.VARIANT_NAME);
-                    state.add(mark(builder, typeNamedEqVariant, m_types.C_VARIANT_EXP).complete()).
-                            add(mark(builder, variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
-                    return;
-                }
+        } else if (state.isCurrentResolution(patternMatch)) {
+            IElementType nextTokenType = builder.lookAhead(1);
+            if (nextTokenType != m_types.DOT) {
+                // Pattern matching a variant
+                // match c with | «X» ..
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
+                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+                return;
             }
         }
 
@@ -767,7 +770,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseException(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.previousTokenElementType != m_types.PIPE) {
+        if (state.previousElementType1 != m_types.PIPE) {
             endLikeSemi(state);
             state.add(mark(builder, exception, m_types.C_EXCEPTION_EXPR));
         }
@@ -805,12 +808,12 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void endLikeSemi(ParserState state) {
-        if (state.previousTokenElementType != m_types.EQ && state.previousTokenElementType != m_types.RIGHT_ARROW &&
-                state.previousTokenElementType != m_types.TRY && state.previousTokenElementType != m_types.SEMI &&
-                state.previousTokenElementType != m_types.THEN && state.previousTokenElementType != m_types.ELSE &&
-                state.previousTokenElementType != m_types.IN && state.previousTokenElementType != m_types.LPAREN &&
-                state.previousTokenElementType != m_types.DO && state.previousTokenElementType != m_types.STRUCT &&
-                state.previousTokenElementType != m_types.SIG && state.previousTokenElementType != m_types.COLON) {
+        if (state.previousElementType1 != m_types.EQ && state.previousElementType1 != m_types.RIGHT_ARROW &&
+                state.previousElementType1 != m_types.TRY && state.previousElementType1 != m_types.SEMI &&
+                state.previousElementType1 != m_types.THEN && state.previousElementType1 != m_types.ELSE &&
+                state.previousElementType1 != m_types.IN && state.previousElementType1 != m_types.LPAREN &&
+                state.previousElementType1 != m_types.DO && state.previousElementType1 != m_types.STRUCT &&
+                state.previousElementType1 != m_types.SIG && state.previousElementType1 != m_types.COLON) {
             ParserScope parserScope = state.popEndUntilStartScope();
             while (parserScope.isContext(function) || parserScope.isContext(match)) {
                 state.popEnd();

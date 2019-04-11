@@ -24,6 +24,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     @Override
     protected void parseFile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         IElementType tokenType = null;
+        state.previousElementType1 = null;
 
         //long parseStart = System.currentTimeMillis();
 
@@ -35,7 +36,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             //break;
             //}
 
-            state.previousTokenElementType = tokenType;
+            state.previousElementType2 = state.previousElementType1;
+            state.previousElementType1 = tokenType;
             tokenType = builder.getTokenType();
             if (tokenType == null) {
                 break;
@@ -197,7 +199,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseDot(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(maybeFunctionParameter) && state.previousTokenElementType == m_types.LPAREN) {
+        if (state.isCurrentResolution(maybeFunctionParameter) && state.previousElementType1 == m_types.LPAREN) {
             // yes it should be function
             state.popEnd(); // discard
             ParserScope paramsScope = state.pop();
@@ -210,7 +212,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseDotDotDot(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.previousTokenElementType == m_types.LBRACE) {
+        if (state.previousElementType1 == m_types.LBRACE) {
             // Mixin:  ... { <...> x ...
             state.updateCurrentContext(recordUsage).updateCurrentResolution(recordBinding).updateCurrentCompositeElementType(m_types.C_RECORD_EXPR)
                     .add(mark(builder, recordUsage, mixin, m_types.C_MIXIN_FIELD));
@@ -249,9 +251,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(functionBody)) {
             // a function is part of something else, close it first
             state.popEnd().popEnd();
-        } else if (state.isCurrentResolution(modulePath)) {
+        } /*else if (state.isCurrentResolution(modulePath)) {
             state.complete().popEnd();
-        }
+        }*/
 
         if (state.isCurrentResolution(functionParameterNamedSignatureItem)) {
             state.complete().
@@ -318,16 +320,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(patternMatchBody)) {
             state.popEnd();
         }
-        if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(variantConstructor)) {
+        if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(typeNamedEqVariant)) {
             state.popEnd();
         }
 
         if (state.isCurrentResolution(typeNamedEq)) {
-            state.updateCurrentResolution(typeNamedEqVariant).
-                    add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete());
+            state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
         } else if (state.isCurrentResolution(variant) && state.isCurrentContext(typeBinding)) {
             state.popEndUntilResolution(typeNamedEqVariant).
-                    add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete());
+                    add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_DECL).complete());
         } else {
             if (state.isCurrentResolution(patternMatch)) {
                 state.popEnd();
@@ -602,10 +603,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseLIdent(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(modulePath)) {
-            state.popEnd();
-        }
-
         if (state.isCurrentResolution(maybeRecord)) {
             // Maybe a record, we must check
             IElementType nextTokenType = builder.lookAhead(1);
@@ -631,7 +628,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // LET <LIDENT> ...
             state.updateCurrentResolution(letNamed).complete();
         } else if (state.isCurrentResolution(letNamedEq)) {
-            if (state.previousTokenElementType == m_types.EQ) {
+            if (state.previousElementType1 == m_types.EQ) {
                 // let x = <c> => ...
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
@@ -700,7 +697,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 // It is complete only if we find a comma in the scope
                 if (state.isInScopeExpression() && !state.isCurrentContext(jsObject) && !state.isCurrentContext(functorConstraints) &&
                         !state.isCurrentContext(maybeFunction) && !state.isCurrentResolution(patternMatchConstructor) &&
-                        state.previousTokenElementType != m_types.DOT) {
+                        state.previousElementType1 != m_types.DOT) {
                     state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
                 }
             }
@@ -747,9 +744,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseLBrace(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
-            state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
-            state.complete();
+        if (state.previousElementType1 == m_types.DOT && state.previousElementType2 == m_types.UIDENT) {
+            // Local open a js object
+            // Xxx.«{» .. }
+            state.add(markScope(builder, localOpen, localObjectOpen, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
         }
 
         if (state.isCurrentResolution(typeNamedEq)) {
@@ -793,7 +791,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEnd();
         }
 
-        if (state.isCurrentResolution(jsxTagPropertyEq)) {
+        if (state.isCurrentResolution(jsxTagPropertyEq) || state.isCurrentResolution(localObjectOpen)) {
             state.popEnd();
         }
     }
@@ -807,7 +805,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(option)) {
             state.complete().
                     add(markScope(builder, state.currentContext(), optionParameter, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        } else if (state.isCurrentResolution(signatureItem) && state.previousTokenElementType == m_types.COLON) {
+        } else if (state.isCurrentResolution(signatureItem) && state.previousElementType1 == m_types.COLON) {
             // a ReasonML signature is written like a function, but it's not
             // : (x, y) => z  alias x => y => z
             state.popCancel().
@@ -818,7 +816,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.add(markScope(builder, state.currentContext(), signatureScope, m_types.LPAREN, m_types.LPAREN)).
                     advance().
                     add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
-        } else if (state.isCurrentResolution(moduleNamedEq) && state.previousTokenElementType != m_types.UIDENT) {
+        } else if (state.isCurrentResolution(moduleNamedEq) && state.previousElementType1 != m_types.UIDENT) {
             // This is a functor :: module M = <(> .. )
             state.updateCurrentContext(functorDeclaration).
                     updateCurrentResolution(functorNamedEq).
@@ -827,15 +825,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
             // Functor constraint :: module M = (..) : <(> .. ) =
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
-        } else if (state.isCurrentResolution(variantConstructor)) {
-            // Variant params :: type t = | Variant «(» .. )
+        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
+            // Variant params
+            // type t = | Variant «(» .. )
             state.add(markScope(builder, variantConstructor, m_types.C_FUN_PARAMS, m_types.LPAREN)).
                     advance().
                     add(mark(builder, variantConstructor, functionParameter, m_types.C_FUN_PARAM));
-        } else if (state.isCurrentResolution(modulePath) && state.previousTokenElementType == m_types.DOT) {
-            state.updateCurrentResolution(localOpen).updateCurrentCompositeElementType(m_types.LOCAL_OPEN);
-            state.complete();
-            state.add(markScope(builder, paren, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
+            state.add(markScope(builder, localOpen, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.add(markScope(builder, state.currentContext(), scope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(clazzNamedParameters)) {
@@ -846,7 +843,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(patternMatch)) {
             // | Some <(> ... ) =>     It's a constructor
             state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
-        } else if (state.previousTokenElementType == m_types.LIDENT) {
+        } else if (state.previousElementType1 == m_types.LIDENT) {
             // calling a function
             state.
                     add(markScope(builder, functionCall, functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)).
@@ -882,7 +879,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.add(mark(builder, genericExpression, m_types.LPAREN));
             }
 
-            if (state.previousTokenElementType == m_types.LIDENT) {
+            if (state.previousElementType1 == m_types.LIDENT) {
                 state.add(markScope(builder, paren, functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN));
             } else {
                 state.add(markScope(builder, paren, m_types.C_SCOPED_EXPR, m_types.LPAREN));
@@ -963,10 +960,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
 
             ParserScope scope = state.getLatestScope();
-            if (scope != null && (scope.isResolution(localOpen) || (scope.isResolution(jsxTagPropertyEqValue) && !scope.isScope()))) {
-                if (scope.isResolution(localOpen)) {
-                    state.popEnd();
-                }
+            if (scope != null && ((scope.isResolution(jsxTagPropertyEqValue) && !scope.isScope()))) {
                 if (state.isCurrentResolution(jsxTagPropertyEqValue)) {
                     state.popEnd().popEnd();
                 }
@@ -1024,17 +1018,24 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
         } else if (state.isCurrentResolution(module)) {
             state.updateCurrentResolution(moduleNamed);
-        } else if ((state.isCurrentResolution(jsxStartTag) || state.isCurrentResolution(jsxTagClose)) && state.previousTokenElementType == m_types.DOT) {
+        } else if ((state.isCurrentResolution(jsxStartTag) || state.isCurrentResolution(jsxTagClose)) && state.previousElementType1 == m_types.DOT) {
             // a namespaced custom component
             builder.remapCurrentToken(m_types.TAG_NAME);
-        } else if (state.previousTokenElementType == m_types.PIPE) {
-            builder.remapCurrentToken(m_types.VARIANT_NAME);
-            if (state.isCurrentContext(typeBinding)) {
-                state.add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
-            } else {
-                state.add(mark(builder, state.currentContext(), patternMatchVariant, m_types.C_VARIANT_CONSTRUCTOR).complete());
-            }
+        } else if (state.isCurrentResolution(typeNamedEqVariant)) {
+            // Declaring a variant
+            // type t = | «X» ..
+            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
             return;
+        }  else if (state.isCurrentResolution(patternMatch)) {
+            IElementType nextElementType = builder.lookAhead(1);
+            if (nextElementType != m_types.DOT) {
+                // Defining a pattern match
+                // switch (c) { | «X» .. }
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
+                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR).updateCurrentResolution(patternMatchVariant);
+
+                return;
+            }
         } else {
             if (shouldStartExpression(state)) {
                 IElementType tokenType = builder.getTokenType();
@@ -1044,25 +1045,19 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
 
             IElementType nextElementType = builder.lookAhead(1);
-            if (!state.isCurrentResolution(modulePath)) {
-                if (nextElementType == m_types.DOT) {
-                    // We are parsing a module path
-                    state.add(mark(builder, modulePath, m_types.C_UPPER_SYMBOL));
-                } else if (nextElementType == m_types.PIPE) {
-                    // We are parsing a variant
-                    builder.remapCurrentToken(m_types.VARIANT_NAME);
-                    state.updateCurrentResolution(typeNamedEqVariant).
-                            add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete()).
-                            add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
-                    return;
-                }
-            } else if (nextElementType == m_types.LPAREN) {
+            if (!state.isCurrentResolution(moduleNamedEq) && nextElementType == m_types.LPAREN) {
                 // Also a variant, but with a constructor
                 state.popEnd();
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
                 state.updateCurrentResolution(typeNamedEqVariant).
-                        add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_EXP).complete()).
+                        add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_DECL).complete()).
                         add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
+            } else if (state.isCurrentResolution(typeNamedEq) && nextElementType == m_types.PIPE) {
+                // We are declaring a variant without a pipe before
+                // type t = «X» | ..
+                state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
+                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+                return;
             }
         }
 
@@ -1101,7 +1096,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // functor :: module Make = (M) : R « => » ..
             state.advance().add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
         } else if (state.isCurrentResolution(patternMatchVariant)) {
-            state.popEnd().advance().add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_SCOPED_EXPR));
+            state.advance().add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_PATTERN_MATCH_BODY).complete());
         }
     }
 
