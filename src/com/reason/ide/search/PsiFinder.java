@@ -26,10 +26,7 @@ import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
@@ -64,15 +61,26 @@ public final class PsiFinder implements ProjectComponent {
     }
 
     @NotNull
-    public Collection<PsiInnerModule> findComponents(@NotNull GlobalSearchScope scope) {
+    public Collection<PsiModule> findComponents(@NotNull GlobalSearchScope scope) {
+        FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
         ModuleComponentIndex index = ModuleComponentIndex.getInstance();
+        PsiManager psiManager = PsiManager.getInstance(scope.getProject());
         Bucklescript bucklescript = BucklescriptManager.getInstance(m_project);
 
-        return index.getAllKeys(m_project).
+        List<PsiModule> result = fileModuleIndexService.getComponents(scope.getProject(), scope).
+                stream().
+                filter(bucklescript::isDependency).
+                map(vFile -> (FileBase) psiManager.findFile(vFile)).
+                filter(Objects::nonNull).
+                collect(Collectors.toList());
+
+        result.addAll(index.getAllKeys(m_project).
                 stream().
                 map(key -> index.getUnique(key, m_project, scope)).
                 filter(module -> module != null && bucklescript.isDependency(module.getContainingFile().getVirtualFile())).
-                collect(Collectors.toList());
+                collect(Collectors.toList()));
+
+        return result;
     }
 
     @NotNull
