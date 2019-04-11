@@ -7,9 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public interface PsiFunction extends PsiElement {
+    @NotNull
+    Collection<PsiParameter> getParameters();
+
     @Nullable
     PsiFunctionBody getBody();
-
-    @NotNull
-    Collection<PsiParameter> getParameterList();
 }

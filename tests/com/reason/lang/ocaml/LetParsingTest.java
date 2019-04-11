@@ -119,7 +119,7 @@ public class LetParsingTest extends BaseParsingTestCase {
         PsiLetBinding binding = e.getBinding();
         assertInstanceOf(binding.getFirstChild(), PsiFunction.class);
         PsiFunction function = (PsiFunction) binding.getFirstChild();
-        assertEquals("{o_loc; o_name; o_items; _}", function.getParameterList().iterator().next().getText());
+        assertEquals("{o_loc; o_name; o_items; _}", first(function.getParameters()).getText());
         assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)", function.getBody().getText());
     }
 
@@ -178,4 +178,5 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("Dummy.root.inner", inner.getQualifiedName());
         assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions().iterator().next()).getQualifiedName());
     }
+
 }

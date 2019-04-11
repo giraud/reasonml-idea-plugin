@@ -136,5 +136,5 @@ public enum ParserScopeEnum {
     typeBinding, signatureScope, recordFieldAnnotation, signatureParams, option, optionParameter, patternMatchVariant,
     name,
 
-    variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, localObjectOpen
+    variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
 }

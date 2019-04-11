@@ -70,6 +70,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseStar(builder, state);
             } else if (tokenType == m_types.COLON) {
                 parseColon(builder, state);
+            } else if (tokenType == m_types.QUESTION_MARK) {
+                parseQuestionMark(builder, state);
             } else if (tokenType == m_types.LIDENT) {
                 parseLIdent(builder, state);
             } else if (tokenType == m_types.UIDENT) {
@@ -445,6 +447,16 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
+    private void parseQuestionMark(@NotNull PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
+            // Start of a new optional parameter
+            //    .. ( xxx |>?<|yyy ) ..
+            state.complete().
+                    popEnd().
+                    add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM));
+        }
+    }
+
     private void parseFun(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentContext(letBinding)) {
             state.add(markScope(builder, function, m_types.C_FUN_EXPR, m_types.FUN).complete());
@@ -490,7 +502,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);
         } else if (state.isCurrentResolution(externalNamed) && state.previousElementType1 == m_types.LPAREN) {
-            // external ( «=» ) = ...
+            // external ( |>=<| ) = ...
             builder.remapCurrentToken(m_types.LIDENT);
             state.wrapWith(m_types.C_LOWER_SYMBOL);
         } else if (state.isCurrentResolution(externalNamedSignature)) {
@@ -509,7 +521,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.advance();
                 state.add(mark(builder, functionBody, m_types.C_FUN_BODY).complete());
             }
-        } else if (state.isCurrentResolution(functionParameter)) {
+        } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
             state.complete().
                     popEndUntilResolution(function).
                     advance().
@@ -556,15 +568,28 @@ public class OclParser extends CommonParser<OclTypes> {
             state.add(markScope(builder, valNamedSymbol, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.add(markScope(builder, state.currentContext(), clazzConstructor, m_types.C_CLASS_CONSTR, m_types.LPAREN));
-        } else if (state.isCurrentResolution(functionParameter)) {
-            state.updateScopeToken(m_types.LPAREN);
         } else if (state.isCurrentResolution(functionParameters)) {
-            state.add(markScope(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM, m_types.LPAREN));
+            // Start of the first parameter
+            //     let f |>(<| .. ) = ..
+            state.add(mark(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM)).
+                    add(markScope(builder, state.currentContext(), functionParameter, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression() && state.previousElementType1 != m_types.QUESTION_MARK) {
+            // Start of a new parameter
+            //    let f xxx |>(<| ..tuple ) = ..
+            state.complete().popEnd().
+                    add(mark(builder, state.currentContext(), functionParameter, m_types.C_FUN_PARAM)).
+                    add(markScope(builder, state.currentContext(), functionParameter, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(functionParameters)) {
+            state.add(mark(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM));
 
             IElementType nextTokenType = builder.rawLookup(1);
             if (nextTokenType == m_types.RPAREN) {
                 // unit parameter
-                state.wrapWith(m_types.C_UNIT).advance();
+                state.add(mark(builder, state.currentContext(), unit, m_types.C_UNIT).
+                        complete()).
+                        advance().
+                        advance().
+                        popEnd();
             }
         } else if (state.isCurrentResolution(moduleNamed)) {
             // This is a functor
@@ -651,15 +676,6 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLIdent(@NotNull PsiBuilder builder, ParserState state) {
-        /*
-        (state.isCurrentResolution(modulePath)) {
-            if (state.isCurrentContext(genericExpression)) {
-                state.updateCurrentResolution(genericExpression);
-            } else {
-                state.popEnd();
-            }
-        }
-*/
         if (state.isCurrentResolution(typeConstrName)) {
             state.updateCurrentResolution(typeNamed);
             state.complete();
@@ -679,6 +695,8 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(functionParameters)) {
             state.add(mark(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM));
         } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
+            // Start of a new parameter
+            //    .. ( xxx |>yyy<| ) ..
             state.complete().popEnd().
                     add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM));
         }

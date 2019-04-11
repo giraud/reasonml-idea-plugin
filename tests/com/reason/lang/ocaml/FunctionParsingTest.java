@@ -4,7 +4,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiParameters;
+
+import java.util.Collection;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends BaseParsingTestCase {
@@ -17,7 +20,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         assertTrue(e.isFunction());
         PsiFunction function = e.getFunction();
-        assertEquals(2, function.getParameterList().size());
+        assertSize(2, function.getParameters());
         assertNotNull(function.getBody());
     }
 
@@ -26,7 +29,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         assertTrue(e.isFunction());
         PsiFunction function = e.getFunction();
-        assertEquals(1, function.getParameterList().size());
+        assertSize(1, function.getParameters());
         assertNotNull(function.getBody());
     }
 
@@ -46,4 +49,15 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals("(_, info as ei)", PsiTreeUtil.findChildOfType(function, PsiParameters.class).getText());
         assertEquals("x", function.getBody().getText());
     }
+
+    public void testComplexParams() {
+        Collection<PsiNamedElement> expressions = expressions(parseCode("let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
+
+        assertSize(1, expressions);
+        PsiLet let = (PsiLet) first(expressions);
+        assertTrue(let.isFunction());
+        assertSize(4, let.getFunction().getParameters());
+        assertEquals("let x = 1", let.getFunction().getBody().getText());
+    }
+
 }

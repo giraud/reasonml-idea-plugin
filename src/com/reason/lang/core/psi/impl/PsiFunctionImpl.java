@@ -21,16 +21,15 @@ public class PsiFunctionImpl extends PsiToken<ORTypes> implements PsiFunction {
     }
 
     @Override
-    @Nullable
-    public PsiFunctionBody getBody() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctionBody.class);
+    @NotNull
+    public Collection<PsiParameter> getParameters() {
+        return ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
     }
 
     @Override
-    @NotNull
-    public Collection<PsiParameter> getParameterList() {
-        PsiParameters parameters = ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class);
-        return parameters == null ? emptyList() : ORUtil.findImmediateChildrenOfClass(parameters, PsiParameter.class);
+    @Nullable
+    public PsiFunctionBody getBody() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctionBody.class);
     }
 
     @NotNull

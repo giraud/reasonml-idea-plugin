@@ -166,7 +166,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
                     if ("make".equals(expression.getName())) {
                         PsiFunction function = expression.getFunction();
                         if (function != null) {
-                            function.getParameterList().
+                            function.getParameters().
                                     stream().
                                     filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName())).
                                     forEach(p -> result.add(new TagPropertyImpl(p)));

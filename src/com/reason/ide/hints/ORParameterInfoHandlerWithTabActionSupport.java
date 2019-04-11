@@ -108,7 +108,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
                             // We don't have the real signature, we just display the function arguments
                             PsiFunction function = resolvedLet.getFunction();
                             if (function != null) {
-                                Collection<PsiParameter> parameters = function.getParameterList();
+                                Collection<PsiParameter> parameters = function.getParameters();
                                 ORSignature hmSignature = new ORSignature(parameters);
                                 context.setItemsToShow(new Object[]{hmSignature});
                                 context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
