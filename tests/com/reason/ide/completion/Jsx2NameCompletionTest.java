@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class JsxNameCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class Jsx2NameCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
 
     @NotNull
     @Override

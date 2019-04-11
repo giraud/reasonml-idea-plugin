@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ComponentTest extends BaseParsingTestCase {
-    public ComponentTest() {
+public class ComponentTestJsx2 extends BaseParsingTestCase {
+    public ComponentTestJsx2() {
         super("component", "re", new RmlParserDefinition());
     }
 

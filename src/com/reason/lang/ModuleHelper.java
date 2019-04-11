@@ -2,6 +2,7 @@ package com.reason.lang;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,18 @@ public class ModuleHelper {
 
         PsiElement componentDef = null;
         PsiLet makeDef = null;
+
+        // JSX 3
+
+        // Try to find a react.component attribute
+        List<PsiAnnotation> annotations = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiAnnotation.class);
+        for (PsiAnnotation annotation : annotations) {
+            if ("@react.component".equals(annotation.getName())) {
+                return true;
+            }
+        }
+
+        // JSX 2
 
         // Try to find if it's a proxy to a react class
         List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class);
