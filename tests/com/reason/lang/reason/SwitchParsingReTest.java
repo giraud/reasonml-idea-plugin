@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class SwitchParsingReTest extends BaseParsingTestCase {
     public SwitchParsingReTest() {
         super("", "re", new RmlParserDefinition());
@@ -27,7 +28,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     }
 
     public void testPatternTokenType() {
-        PsiFile psiFile = parseCode("switch (action) { | Incr => counter + 1 }", true);
+        PsiFile psiFile = parseCode("switch (action) { | Incr => counter + 1 }");
 
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);

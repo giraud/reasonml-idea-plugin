@@ -31,7 +31,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testFunctionLetBinding2() {
-        PsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"", true)));
+        PsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
 
         assertTrue(e.isFunction());
         PsiFunction function = e.getFunction();
