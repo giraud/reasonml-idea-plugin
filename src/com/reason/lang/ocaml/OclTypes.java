@@ -10,19 +10,25 @@ public class OclTypes extends ORTypes {
     public static final OclTypes INSTANCE = new OclTypes();
 
     private OclTypes() {
-        // Composite element types
+        // Stubbed element types
 
         C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", OclLanguage.INSTANCE);
         C_LET_STMT = new PsiLetStubElementType("C_LET_STMT", OclLanguage.INSTANCE);
         C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
         C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", OclLanguage.INSTANCE);
         C_MODULE_STMT = new PsiModuleStubElementType("C_MODULE_STMT", OclLanguage.INSTANCE);
+        C_VARIANT_DECL = new PsiVariantDeclarationStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
+
+        // Composite element types
 
         C_ANNOTATION_EXPR = new ORCompositeElementType("C_ANNOTATION_EXPR", OclLanguage.INSTANCE);
+        C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
+        C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", OclLanguage.INSTANCE);
+        C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", OclLanguage.INSTANCE);
+        C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
+        C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
         C_EXCEPTION_EXPR = new ORCompositeElementType("C_EXCEPTION_EXPR", OclLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
-        C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
-        C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
         C_FUN_PARAM = new ORCompositeElementType("C_FUNC_PARAM", OclLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", OclLanguage.INSTANCE);
@@ -34,8 +40,11 @@ public class OclTypes extends ORTypes {
         C_FUNCTOR_PARAM = new ORCompositeElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", OclLanguage.INSTANCE);
+        C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
+        C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
+        C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_RAW = new ORCompositeElementType("C_RAW", OclLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", OclLanguage.INSTANCE);
@@ -46,19 +55,12 @@ public class OclTypes extends ORTypes {
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", OclLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", OclLanguage.INSTANCE);
-        C_VARIANT_DECL = new ORCompositeElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
-        C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
-        C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
-        C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
-        C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", OclLanguage.INSTANCE);
-        C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", OclLanguage.INSTANCE);
-        C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
-        C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
         C_OPEN = new ORCompositeElementType("C_OPEN", OclLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", OclLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
         C_IF_STMT = new ORCompositeElementType("C_IF_STMT", OclLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
+        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
         C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);
@@ -75,7 +77,8 @@ public class OclTypes extends ORTypes {
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", OclLanguage.INSTANCE);
         C_WITH_EXPR = new ORCompositeElementType("C_WITH_EXPR", OclLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
-        C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
+        C_VARIANT = new ORCompositeElementType("C_VARIANT", OclLanguage.INSTANCE);
+        C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", OclLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", OclLanguage.INSTANCE);
 

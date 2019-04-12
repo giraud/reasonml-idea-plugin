@@ -15,9 +15,10 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
+        OclTypes types = OclTypes.INSTANCE;
         return new DefaultWordsScanner(
                 new OclLexer(),
-                TokenSet.create(OclTypes.INSTANCE.C_UPPER_SYMBOL, OclTypes.INSTANCE.C_LOWER_SYMBOL),
+                TokenSet.create(types.C_UPPER_SYMBOL, types.C_LOWER_SYMBOL, types.C_VARIANT),
                 TokenSet.EMPTY,
                 TokenSet.EMPTY);
     }
@@ -36,7 +37,10 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        if (element instanceof PsiUpperSymbol || element instanceof PsiInnerModule) {
+        if (element instanceof PsiUpperSymbol)  {
+            return ((PsiUpperSymbol) element).isVariant() ? "variant" : "module";
+        }
+        if (element instanceof PsiInnerModule) {
             return "module";
         }
         if (element instanceof PsiLowerSymbol) {

@@ -4,7 +4,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.ocaml.OclTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +26,8 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
         assertNotNull(switch_);
 
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
-        assertEquals(2, patterns.size());
+        assertSize(2, patterns);
+        assertEmpty(PsiTreeUtil.findChildrenOfType(switch_, PsiVariantDeclaration.class));
     }
 
     public void testPatternTokenType() {
@@ -34,8 +37,9 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
         assertSize(1, patterns);
         PsiPatternMatch psiPatternMatch = patterns.iterator().next();
-        PsiVariant variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiVariant.class);
-        assertEquals(RmlTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
+        PsiPatternMatch patternMatch = patterns.iterator().next();
+        PsiUpperSymbol variant = ORUtil.findImmediateFirstChildOfClass(patternMatch, PsiUpperSymbol.class);
+        assertTrue(variant.isVariant());
         assertEquals("Incr", variant.getText());
         assertEquals("counter + 1", psiPatternMatch.getBody().getText());
     }
@@ -70,4 +74,5 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
         assertEquals("(reasonStateUpdate)", e.getCondition().getText());
         assertSize(2, e.getPatterns());
     }
+
 }

@@ -19,5 +19,5 @@ public interface PsiType extends PsiNamedElement, PsiQualifiedNamedElement, Navi
     PsiElement getBinding();
 
     @NotNull
-    Collection<PsiVariant> getVariants();
+    Collection<PsiVariantDeclaration> getVariants();
 }

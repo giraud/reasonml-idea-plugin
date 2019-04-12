@@ -737,23 +737,25 @@ public class OclParser extends CommonParser<OclTypes> {
             // Might be a variant without a pipe
             IElementType nextTokenType = builder.lookAhead(1);
             if (nextTokenType == m_types.OF || nextTokenType == m_types.PIPE) {
-                // type t = «X» | ..   or   type t = «X» of ..
+                // type t = |>X<| | ..   or   type t = |>X<| of ..
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
                 state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
-                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+                state.wrapWith(m_types.C_VARIANT);
                 return;
             }
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             // Declaring a variant
-            // type t = | «X» ..
-            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+            // type t = | |>X<| ..
+            builder.remapCurrentToken(m_types.VARIANT_NAME);
+            state.wrapWith(m_types.C_VARIANT);
             return;
         } else if (state.isCurrentResolution(patternMatch)) {
             IElementType nextTokenType = builder.lookAhead(1);
             if (nextTokenType != m_types.DOT) {
                 // Pattern matching a variant
-                // match c with | «X» ..
+                // match c with | |>X<| ..
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
-                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+                state.wrapWith(m_types.C_VARIANT);
                 return;
             }
         }

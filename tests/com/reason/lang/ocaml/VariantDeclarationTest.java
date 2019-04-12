@@ -19,7 +19,9 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getName());
+        assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals("White", declarations.get(1).getVariant().getName());
+        assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
     public void testBasic2() {
@@ -28,7 +30,9 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Black", declarations.get(0).getVariant().getName());
+        assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals("White", declarations.get(1).getVariant().getName());
+        assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
     public void testConstructor() {
@@ -37,8 +41,10 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(2, declarations.size());
         assertEquals("Hex", declarations.get(0).getVariant().getName());
+        assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals(1, declarations.get(0).getParameterList().size());
         assertEquals("Rgb", declarations.get(1).getVariant().getName());
+        assertTrue(declarations.get(1).getVariant().isVariant());
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
@@ -48,6 +54,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
         assertEquals(3, declarations.size());
         assertEquals("Cannot", declarations.get(0).getVariant().getName());
+        assertTrue(declarations.get(0).getVariant().isVariant());
         assertEquals(1, declarations.get(0).getParameterList().size());
         assertEquals("Loose", declarations.get(1).getVariant().getName());
         assertEquals("Strict", declarations.get(2).getVariant().getName());

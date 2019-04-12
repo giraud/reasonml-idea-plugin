@@ -15,10 +15,7 @@ import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.index.IndexKeys;
-import com.reason.ide.search.index.ModuleComponentIndex;
-import com.reason.ide.search.index.ModuleFqnIndex;
-import com.reason.ide.search.index.ModuleIndex;
+import com.reason.ide.search.index.*;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
@@ -236,6 +233,21 @@ public final class PsiFinder implements ProjectComponent {
         }
 
         return result;
+    }
+
+
+    @Nullable
+    public PsiQualifiedNamedElement findVariant(@Nullable String qname, @NotNull GlobalSearchScope scope ) {
+        if (qname == null) {
+            return null;
+        }
+
+        Collection<PsiVariantDeclaration> variants = VariantFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        if (variants.isEmpty()) {
+            return null;
+        }
+
+        return variants.iterator().next();
     }
 
     @Nullable

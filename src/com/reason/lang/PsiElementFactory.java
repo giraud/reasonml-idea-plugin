@@ -35,7 +35,7 @@ public class PsiElementFactory {
         } else if (type == types.C_TYPE_BINDING) {
             return new PsiTypeBinding(node);
         } else if (type == types.C_MODULE_STMT) {
-            return new PsiInnerModuleImpl(node, types);
+            return new PsiInnerModuleImpl(types, node);
         } else if (type == types.C_CLASS_STMT) {
             return new PsiClassImpl(types, node);
         } else if (type == types.C_CLASS_PARAMS) {
@@ -129,9 +129,9 @@ public class PsiElementFactory {
         } else if (type == types.C_JS_OBJECT_FIELD) {
             return new PsiJsObjectField(node);
         } else if (type == types.C_VARIANT_DECL) {
-            return new PsiVariantDeclaration(node);
-        } else if (type == types.C_VARIANT_CONSTRUCTOR) {
-            return new PsiVariant(node);
+            return new PsiVariantDeclaration(types, node);
+        } else if (type == types.C_VARIANT) {
+            return new PsiUpperSymbolImpl(types, node);
         } else if (type == types.C_RAW) {
             return new PsiRaw(node);
         } else if (type == types.C_SIG_ITEM) {
@@ -141,10 +141,8 @@ public class PsiElementFactory {
             ASTNode parentNode = node.getTreeParent();
             if (parentNode != null && parentNode.getElementType() == types.C_FUN_PARAMS) {
                 return new PsiParameterImpl(types, node);
-            } else {
-                // Remove the unknown node by its children
-
             }
+            // Remove the unknown node by its children
         }
 
         return new PsiToken<>(types, node);

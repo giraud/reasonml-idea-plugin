@@ -155,9 +155,9 @@ public class FreeExpressionCompletionProvider {
     }
 
     private static void expandType(@NotNull PsiType type, @NotNull CompletionResultSet resultSet) {
-        Collection<PsiVariant> variants = type.getVariants();
+        Collection<PsiVariantDeclaration> variants = type.getVariants();
         if (!variants.isEmpty()) {
-            for (PsiVariant variant : variants) {
+            for (PsiVariantDeclaration variant : variants) {
                 resultSet.addElement(LookupElementBuilder.
                         create(variant).
                         withTypeText(type.getName()).

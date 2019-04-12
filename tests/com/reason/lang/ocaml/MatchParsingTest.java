@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
@@ -58,11 +59,11 @@ public class MatchParsingTest extends BaseParsingTestCase {
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
         Collection<PsiPatternMatch> patterns = PsiTreeUtil.findChildrenOfType(switch_, PsiPatternMatch.class);
         assertSize(1, patterns);
-        PsiPatternMatch psiPatternMatch = patterns.iterator().next();
-        PsiVariant variant = PsiTreeUtil.findChildOfType(psiPatternMatch, PsiVariant.class);
-        assertEquals(OclTypes.INSTANCE.VARIANT_NAME, variant.getFirstChild().getNode().getElementType());
+        PsiPatternMatch patternMatch = patterns.iterator().next();
+        PsiUpperSymbol variant = ORUtil.findImmediateFirstChildOfClass(patternMatch, PsiUpperSymbol.class);
+        assertTrue(variant.isVariant());
         assertEquals("Incr", variant.getText());
-        assertEquals("counter + 1", psiPatternMatch.getBody().getText());
+        assertEquals("counter + 1", patternMatch.getBody().getText());
     }
 
     public void testPatternMatch() {

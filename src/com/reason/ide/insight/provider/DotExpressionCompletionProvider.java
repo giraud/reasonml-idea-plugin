@@ -146,9 +146,9 @@ public class DotExpressionCompletionProvider {
                 }
                 if (expression instanceof PsiType) {
                     PsiType eType = (PsiType) expression;
-                    Collection<PsiVariant> variants = eType.getVariants();
+                    Collection<PsiVariantDeclaration> variants = eType.getVariants();
                     if (!variants.isEmpty()) {
-                        for (PsiVariant variant : variants) {
+                        for (PsiVariantDeclaration variant : variants) {
                             String variantName = variant.getName();
                             if (variantName != null) {
                                 resultSet.addElement(LookupElementBuilder.

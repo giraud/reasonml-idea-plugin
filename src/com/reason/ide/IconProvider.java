@@ -38,7 +38,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             return Icons.FUNCTOR;
         } else if (element instanceof PsiType) {
             return Icons.TYPE;
-        } else if (element instanceof PsiVariant) {
+        } else if (element instanceof PsiVariantDeclaration) {
             return Icons.VARIANT;
         } else if (element instanceof PsiLet) {
             PsiLet let = (PsiLet) element;

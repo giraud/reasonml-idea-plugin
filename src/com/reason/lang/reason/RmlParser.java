@@ -851,7 +851,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
             state.add(markScope(builder, binaryCondition, m_types.C_BIN_CONDITION, m_types.LPAREN).complete());
         } else if (state.isCurrentResolution(patternMatch)) {
-            // | Some <(> ... ) =>     It's a constructor
+            // I's a constructor
+            // | Some |>(<| .. ) =>     It's a constructor
             state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
         } else if (state.previousElementType1 == m_types.LIDENT) {
             // calling a function
@@ -1035,16 +1036,17 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.TAG_NAME);
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             // Declaring a variant
-            // type t = | «X» ..
-            state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+            // type t = | |>X<| ..
+            builder.remapCurrentToken(m_types.VARIANT_NAME);
+            state.wrapWith(m_types.C_VARIANT);
             return;
         } else if (state.isCurrentResolution(patternMatch)) {
             IElementType nextElementType = builder.lookAhead(1);
             if (nextElementType != m_types.DOT) {
                 // Defining a pattern match
-                // switch (c) { | «X» .. }
+                // switch (c) { | |>X<| .. }
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
-                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR).updateCurrentResolution(patternMatchVariant);
+                state.wrapWith(m_types.C_VARIANT).updateCurrentResolution(patternMatchVariant);
 
                 return;
             }
@@ -1063,12 +1065,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
                 state.updateCurrentResolution(typeNamedEqVariant).
                         add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_DECL).complete()).
-                        add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR).complete());
+                        add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT).complete());
             } else if (state.isCurrentResolution(typeNamedEq) && nextElementType == m_types.PIPE) {
                 // We are declaring a variant without a pipe before
-                // type t = «X» | ..
+                // type t = |>X<| | ..
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
                 state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
-                state.wrapWith(m_types.C_VARIANT_CONSTRUCTOR);
+                state.wrapWith(m_types.C_VARIANT);
                 return;
             }
         }

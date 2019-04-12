@@ -36,7 +36,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     private ModulePath m_modulePath = null;
 
     //region Constructors
-    public PsiInnerModuleImpl(@NotNull ASTNode node, @NotNull ORTypes types) {
+    public PsiInnerModuleImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
@@ -64,6 +64,17 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         return this;
     }
     //endregion
+
+    @Nullable
+    @Override
+    public String getQualifiedName() {
+        PsiModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
+    }
 
     @Nullable
     public PsiElement getBody() {
@@ -311,17 +322,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         }
 
         return null;
-    }
-
-    @Nullable
-    @Override
-    public String getQualifiedName() {
-        PsiModuleStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.getQualifiedName();
-        }
-
-        return ORUtil.getQualifiedName(this);
     }
 
     @Nullable
