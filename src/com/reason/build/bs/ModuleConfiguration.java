@@ -44,11 +44,6 @@ public class ModuleConfiguration {
         return result;
     }
 
-    public static boolean isOnSaveEnabled(@NotNull Project project) {
-        ReasonSettings reasonSettings = ReasonSettings.getInstance(project);
-        return reasonSettings.enabled && reasonSettings.refmtOnSave;
-    }
-
     @Nullable
     private static String getRefmtBin(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull String root) {
         String binary = Platform.getBinaryPath(project, sourceFile, root + "/refmt3.exe");
@@ -61,22 +56,11 @@ public class ModuleConfiguration {
     @NotNull
     private static String getBsPlatformLocation(@NotNull Project project) {
         ReasonSettings settings = ReasonSettings.getInstance(project);
-        String bsbLocation = settings == null ? "" : settings.location.replace('\\', '/');
+        String bsbLocation = settings == null ? "" : settings.getLocation().replace('\\', '/');
         if (bsbLocation.isEmpty()) {
             bsbLocation = LOCAL_BS_PLATFORM;
         }
         return bsbLocation;
-    }
-
-    @NotNull
-    public static String getRefmtWidth(@NotNull Project project) {
-        return ReasonSettings.getInstance(project).refmtWidth;
-    }
-
-    @NotNull
-    public static String getWorkingDir(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        String workingDir = ReasonSettings.getInstance(project).workingDir;
-        return workingDir.isEmpty() ? getBasePath(project, sourceFile) : workingDir;
     }
 
     @NotNull

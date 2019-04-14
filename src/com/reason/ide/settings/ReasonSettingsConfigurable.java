@@ -58,30 +58,30 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
 
     @Override
     public void apply() {
-        m_settings.enabled = f_enabled.isSelected();
-        m_settings.location = f_bsLocation.getText().trim();
-        m_settings.workingDir = f_workingDir.getText().trim();
-        m_settings.refmtOnSave = f_reformatOnSave.isSelected();
-        m_settings.refmtWidth = f_columnWidth.getText().trim();
+        m_settings.setEnabled(f_enabled.isSelected());
+        m_settings.setLocation(f_bsLocation.getText().trim());
+        m_settings.setWorkingDir(f_workingDir.getText().trim());
+        m_settings.setRefmtOnSave(f_reformatOnSave.isSelected());
+        m_settings.setRefmtWidth(f_columnWidth.getText().trim());
     }
 
     @Override
     public boolean isModified() {
-        boolean sameEnabled = f_enabled.isSelected() == m_settings.enabled;
-        boolean sameLocation = f_bsLocation.getText().equals(m_settings.location);
-        boolean sameWorkingDir = f_workingDir.getText().equals(m_settings.workingDir);
-        boolean sameRefmtOnSave = f_reformatOnSave.isSelected() == m_settings.refmtOnSave;
-        boolean sameColWidth = f_columnWidth.getText().equals(m_settings.refmtWidth);
+        boolean sameEnabled = f_enabled.isSelected() == m_settings.isEnabled();
+        boolean sameLocation = f_bsLocation.getText().equals(m_settings.getLocation());
+        boolean sameWorkingDir = f_workingDir.getText().equals(m_settings.getWorkingDir());
+        boolean sameRefmtOnSave = f_reformatOnSave.isSelected() == m_settings.isRefmtOnSave();
+        boolean sameColWidth = f_columnWidth.getText().equals(m_settings.getRefmtWidth());
         return !(sameEnabled && sameLocation && sameWorkingDir && sameRefmtOnSave && sameColWidth);
     }
 
     @Override
     public void reset() {
-        f_enabled.setSelected(m_settings.enabled);
-        f_bsLocation.setText(m_settings.location);
-        f_workingDir.setText(m_settings.workingDir);
-        f_columnWidth.setText(m_settings.refmtWidth);
-        f_reformatOnSave.setSelected(m_settings.refmtOnSave);
+        f_enabled.setSelected(m_settings.isEnabled());
+        f_bsLocation.setText(m_settings.getLocation());
+        f_workingDir.setText(m_settings.getWorkingDir());
+        f_columnWidth.setText(m_settings.getRefmtWidth());
+        f_reformatOnSave.setSelected(m_settings.isRefmtOnSave());
     }
 
 }

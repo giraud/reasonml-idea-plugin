@@ -86,7 +86,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
-        if (!m_disabled && ReasonSettings.getInstance(m_project).enabled) {
+        if (!m_disabled && ReasonSettings.getInstance(m_project).isEnabled()) {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
@@ -149,7 +149,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document) {
-        if (ReasonSettings.getInstance(m_project).enabled) {
+        if (ReasonSettings.getInstance(m_project).isEnabled()) {
             RefmtProcess refmt = RefmtProcess.getInstance(m_project);
             String oldText = document.getText();
             if (!oldText.isEmpty()) {
@@ -160,11 +160,6 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean isRefmtOnSaveEnabled() {
-        return RefmtProcess.getInstance(m_project).isOnSaveEnabled();
     }
 
     @Nullable

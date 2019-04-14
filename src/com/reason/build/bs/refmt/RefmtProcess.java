@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Streams;
 import com.reason.build.bs.ModuleConfiguration;
+import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -27,10 +28,6 @@ public class RefmtProcess implements ProjectComponent {
         return project.getComponent(RefmtProcess.class);
     }
 
-    public boolean isOnSaveEnabled() {
-        return ModuleConfiguration.isOnSaveEnabled(m_project);
-    }
-
     @NotNull
     public String run(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull String code) {
         return convert(sourceFile, isInterface, format, format, code);
@@ -44,7 +41,7 @@ public class RefmtProcess implements ProjectComponent {
             return code;
         }
 
-        String columnsWidth = ModuleConfiguration.getRefmtWidth(m_project);
+        String columnsWidth = ReasonSettings.getInstance(m_project).getRefmtWidth();
         ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--interface", Boolean.toString(isInterface), "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");

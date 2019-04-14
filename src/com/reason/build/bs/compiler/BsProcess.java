@@ -13,6 +13,7 @@ import com.reason.build.CompilerProcessLifecycle;
 import com.reason.build.bs.ModuleConfiguration;
 import com.reason.build.console.CliType;
 import com.reason.ide.ORNotification;
+import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,7 +125,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
             if (!sourceFile.getPath().contains("node_modules")) {
                 Notifications.Bus.notify(new ORNotification("Bsb",
                         "<html>Can't find bsb.\n"
-                                + "Working directory is '" + ModuleConfiguration.getWorkingDir(m_project, sourceFile) + "'.\n"
+                                + "Working directory is '" + ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile) + "'.\n"
                                 + "Be sure that bsb is installed and reachable from that directory, "
                                 + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
                         ERROR, URL_OPENING_LISTENER));
@@ -145,7 +146,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
 
         }
 
-        cli.withWorkDirectory(ModuleConfiguration.getWorkingDir(m_project, sourceFile));
+        cli.withWorkDirectory(ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile));
         cli.withEnvironment("NINJA_ANSI_FORCED", "1");
 
         return cli;

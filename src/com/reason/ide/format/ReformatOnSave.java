@@ -10,6 +10,7 @@ import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileHelper;
+import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 
 public class ReformatOnSave implements FileDocumentManagerListener {
@@ -31,13 +32,15 @@ public class ReformatOnSave implements FileDocumentManagerListener {
      */
     @Override
     public void beforeDocumentSaving(@NotNull Document document) {
-        // verify this document is part of the project
         PsiFile file = m_documentManager.getCachedPsiFile(document);
-        if (file != null && m_bs.isRefmtOnSaveEnabled()) {
+        ReasonSettings reasonSettings = ReasonSettings.getInstance(m_project);
+
+        // Verify this document is part of the project
+        if (file != null && reasonSettings.isRefmtOnSaveEnabled()) {
             VirtualFile virtualFile = file.getVirtualFile();
             if (FileHelper.isReason(file.getFileType())) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Before document saving (" + m_project.getName() + ", autoSave=" + m_bs.isRefmtOnSaveEnabled() + ")");
+                    LOG.debug("Before document saving (" + m_project.getName() + ", autoSave=" + reasonSettings.isRefmtOnSaveEnabled() + ")");
                 }
 
                 String format = ReformatUtil.getFormat(file);

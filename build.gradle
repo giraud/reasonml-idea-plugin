@@ -29,7 +29,7 @@ allprojects {
     }
 
     runIde {
-        //systemProperty "reasonReformatOnSave", "true"
+        systemProperty "refmtWidth", "120"
         jvmArgs = ['-Dcompiler.process.debug.port=5005']
     }
 
