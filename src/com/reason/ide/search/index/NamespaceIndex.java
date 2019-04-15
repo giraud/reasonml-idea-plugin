@@ -38,7 +38,8 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
             VirtualFile dataFile = inputData.getFile();
             if (inputData.getFileType() instanceof DuneFileType) {
                 DuneFile duneFile = (DuneFile) inputData.getPsiFile();
-                PsiElement nextSibling = duneFile.getFirstChild().getNextSibling(); // todo: better
+                PsiElement firstChild = duneFile.getFirstChild();
+                PsiElement nextSibling = firstChild == null ? null : firstChild.getNextSibling(); // todo: better
                 if (nextSibling != null && nextSibling.getNode().getElementType() == DuneTypes.INSTANCE.LIBRARY) {
                     VirtualFile parent = dataFile.getParent();
                     String namespace = StringUtil.toFirstUpper(parent.getName());
