@@ -1,13 +1,11 @@
 .gradle/
 .idea/
 out/
-build/
+./build/
 *.iml
 idea-flex*.skeleton
 jflex-*.jar
 gradle-wrapper*
 gradlew*
-jps-builder/build
-jps-builder/out
-jps-shared/build
-jps-shared/out
+jps-plugin/build
+jps-plugin/out

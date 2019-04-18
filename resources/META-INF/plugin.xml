@@ -266,7 +266,7 @@
 
         <externalAnnotator language="Reason" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
         <externalAnnotator language="OCaml" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
-        <problemFileHighlightFilter implementation="com.reason.build.annotations.FileHighlighterFilter"/>
+        <problemFileHighlightFilter implementation="com.reason.build.annotations.ErrorFileHighlighter"/>
 
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
