@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
+import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,15 +55,17 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 element = element.getParent();
             }
 
-            // Try to find a comment just below
-            PsiElement belowComment = findBelowComment(element);
-            if (belowComment != null) {
-                return isSpecialComment(belowComment)
-                        ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
-                        : belowComment.getText();
+            // Try to find a comment just below (OCaml only)
+            if (element.getLanguage() == OclLanguage.INSTANCE) {
+                PsiElement belowComment = findBelowComment(element);
+                if (belowComment != null) {
+                    return isSpecialComment(belowComment)
+                            ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
+                            : belowComment.getText();
+                }
             }
 
-            // else try to find a comment just above
+            // Else try to find a comment just above
             PsiElement aboveComment = findAboveComment(element);
             if (aboveComment != null) {
                 return isSpecialComment(aboveComment)
@@ -82,7 +85,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         PsiElement prevSibling = element.getPrevSibling();
         PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
-        if (prevPrevSibling instanceof PsiComment && prevSibling instanceof PsiWhiteSpace && prevSibling.getTextLength() == 1) {
+        if (prevPrevSibling instanceof PsiComment && prevSibling instanceof PsiWhiteSpace && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
             return prevPrevSibling;
         }
 
@@ -97,7 +100,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         PsiElement nextSibling = element.getNextSibling();
         PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
-        if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getTextLength() == 1) {
+        if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
             return nextNextSibling;
         }
 

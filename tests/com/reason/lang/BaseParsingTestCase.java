@@ -88,7 +88,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
         return fileModule.getFirstChild();
     }
 
-    protected <T extends PsiElement> T first(@NotNull Collection<T> collection) {
+    public static <T extends PsiElement> T first(@NotNull Collection<T> collection) {
         return collection.iterator().next();
     }
 
