@@ -212,6 +212,7 @@
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantFqnIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ExceptionIndex"/>
 
         <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
         <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
