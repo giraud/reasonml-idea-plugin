@@ -8,6 +8,7 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.build.bs.compiler.BsProcess;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -68,7 +69,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @NotNull
     @Override
     public String getRincewindFilename() {
-        return "rincewind_" + getOsPrefix() + OCAML_VERSION + "-" + RINCEWIND_VERSION + ".exe";
+        return "rincewind_" + getOsPrefix() + BsProcess.getInstance(m_project).getOCamlVersion() + "-" + RINCEWIND_VERSION + ".exe";
     }
 
     @Override

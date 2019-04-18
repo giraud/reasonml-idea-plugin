@@ -21,6 +21,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.intellij.execution.process.ProcessOutputTypes.STDOUT;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -167,17 +169,14 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         m_started.set(false);
     }
 
-    @SuppressWarnings("unused")
     @NotNull
-    private String getMajorVersion(@NotNull VirtualFile sourceFile) {
+    public String getOCamlVersion() {
         Process p = null;
         try {
-            p = Runtime.getRuntime().exec(ModuleConfiguration.getBsbPath(m_project, sourceFile) + " -version");
+            p = Runtime.getRuntime().exec(ModuleConfiguration.getBscPath(m_project) + " -version");
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String[] numbers = reader.readLine().split("\\.");
-            return numbers[0];
+            return ocamlVersionExtractor(reader.readLine());
         } catch (@NotNull InterruptedException | IOException e) {
             return "";
         } finally {
@@ -187,4 +186,14 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         }
     }
 
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile("BuckleScript (\\d\\.\\d.\\d) \\(Using OCaml(\\d\\.\\d+).+\\)");
+
+    @NotNull
+    static String ocamlVersionExtractor(@NotNull String line) {
+        Matcher matcher = BS_VERSION_REGEXP.matcher(line);
+        if (matcher.matches()) {
+            return matcher.group(2);
+        }
+        return "4.02";
+    }
 }

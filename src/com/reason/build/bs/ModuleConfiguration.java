@@ -27,8 +27,8 @@ public class ModuleConfiguration {
     }
 
     @Nullable
-    public static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        String bsbPath = getBsbPath(project, sourceFile);
+    public static String getBscPath(@NotNull Project project) {
+        String bsbPath = getBsbPath(project, Platform.findBaseRoot(project));
         return bsbPath == null ? null : bsbPath.replace("bsb.exe", "bsc.exe");
     }
 
