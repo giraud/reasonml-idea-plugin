@@ -15,7 +15,10 @@ import com.reason.build.bs.Bucklescript;
 import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.index.*;
+import com.reason.ide.search.index.IndexKeys;
+import com.reason.ide.search.index.ModuleComponentIndex;
+import com.reason.ide.search.index.ModuleFqnIndex;
+import com.reason.ide.search.index.VariantFqnIndex;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
@@ -82,8 +85,12 @@ public final class PsiFinder implements ProjectComponent {
 
     @NotNull
     public Collection<PsiModule> findModules(@NotNull String name, @NotNull ORFileType fileType, @NotNull GlobalSearchScope scope) {
-        List<PsiModule> result = new ArrayList<>();
-        LOG.debug("Find modules, name", name);
+        Map<String/*qn*/, PsiModule> implNames = new THashMap<>();
+        Map<String/*qn*/, PsiModule> intfNames = new THashMap<>();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Find modules with name", name);
+        }
 
         VirtualFile file;
 
@@ -101,34 +108,67 @@ public final class PsiFinder implements ProjectComponent {
         if (file == null) {
             LOG.debug("  No file module found");
         } else {
-            LOG.debug("  file module found", file);
-            result.add((PsiModule) PsiManager.getInstance(m_project).findFile(file));
+            LOG.debug("  File module found", file);
+            Map<String, PsiModule> map = FileHelper.isInterface(file.getFileType()) ? intfNames : implNames;
+            FileBase psiFileModule = (FileBase) PsiManager.getInstance(m_project).findFile(file);
+            if (psiFileModule != null) {
+                map.put(psiFileModule.asModuleName(), psiFileModule);
+            }
         }
 
-        Collection<PsiInnerModule> modules = ModuleIndex.getInstance().get(name, m_project, scope);
-        if (modules.isEmpty()) {
-            LOG.debug("  No inner modules found");
+        Collection<PsiInnerModule> items = StubIndex.getElements(IndexKeys.MODULES, name, m_project, scope, PsiInnerModule.class);
+        if (items.isEmpty()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("  No inner module found");
+            }
         } else {
-            LOG.debug("  inner modules found", modules.size());
-            for (PsiInnerModule module : modules) {
-                String filename = ((FileBase) module.getContainingFile()).asModuleName();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("  Inner modules found", items.size(), items);
+            }
+            for (PsiInnerModule item : items) {
+                String itemQName = item.getQualifiedName();
+
+                String filename = ((FileBase) item.getContainingFile()).asModuleName();
 
                 if (fileType == ORFileType.implementationOnly) {
                     Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
-                    file = implementations.isEmpty() ? null : implementations.iterator().next();
+                    if (!implementations.isEmpty()) {
+                        implNames.put(itemQName, item);
+                    }
                 } else if (fileType == ORFileType.interfaceOnly) {
                     Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(filename, scope);
-                    file = interfaces.isEmpty() ? null : interfaces.iterator().next();
+                    if (!interfaces.isEmpty()) {
+                        intfNames.put(itemQName, item);
+                    }
                 } else {
                     file = fileModuleIndex.getFileWithName(filename, scope);
+                    if (file != null) {
+                        if (FileHelper.isInterface(file.getFileType())) {
+                            if (((FileBase) item.getContainingFile()).isInterface()) {
+                                intfNames.put(itemQName, item);
+                            }
+                        } else {
+                            if (!((FileBase) item.getContainingFile()).isInterface()) {
+                                implNames.put(itemQName, item);
+                            }
+                        }
+                    }
                 }
+            }
+        }
 
-                if (file == null) {
-                    LOG.debug("    abandon", module);
-                } else {
-                    LOG.debug("       keep", module);
-                    result.add(module);
-                }
+        List<PsiModule> result = new ArrayList<>();
+        result.addAll(intfNames.values());
+        for (Map.Entry<String, PsiModule> entry : implNames.entrySet()) {
+            if (!intfNames.containsKey(entry.getKey())) {
+                result.add(entry.getValue());
+            }
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("    keep (in config)");
+            for (PsiModule item : result) {
+                LOG.debug("      " + item.getQualifiedName() + " " + item.getContainingFile().getVirtualFile().getPath());
             }
         }
 
@@ -237,7 +277,7 @@ public final class PsiFinder implements ProjectComponent {
 
 
     @Nullable
-    public PsiQualifiedNamedElement findVariant(@Nullable String qname, @NotNull GlobalSearchScope scope ) {
+    public PsiQualifiedNamedElement findVariant(@Nullable String qname, @NotNull GlobalSearchScope scope) {
         if (qname == null) {
             return null;
         }
