@@ -26,7 +26,7 @@ import java.util.Map;
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
 
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
-    private static final int VERSION = 2;
+    private static final int VERSION = 4;
     private static final Log LOG = Log.create("index.file");
 
     public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
@@ -38,6 +38,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             out.writeUTF(value.getPath());
             out.writeUTF(value.getNamespace());
             out.writeUTF(value.getModuleName());
+            out.writeUTF(value.getFullname());
         }
 
         @Override
@@ -48,7 +49,8 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             String path = in.readUTF();
             String namespace = in.readUTF();
             String moduleName = in.readUTF();
-            return new FileModuleData(path, namespace, moduleName, isOCaml, isInterface, isComponent);
+            String fullname = in.readUTF();
+            return new FileModuleData(path, fullname, namespace, moduleName, isOCaml, isInterface, isComponent);
         }
     }
 
@@ -101,7 +103,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                     }
                     String moduleName = psiFile.asModuleName();
 
-                    FileModuleData value = new FileModuleData(path, namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
+                    FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("indexing " + Platform.removeProjectDir(inputData.getProject(), path) + ": " + value);
                     }

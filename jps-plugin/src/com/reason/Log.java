@@ -91,13 +91,19 @@ public class Log {
         }
     }
 
+    public void debug(@NotNull String comment, @NotNull String t, @Nullable VirtualFile t1) {
+        if (m_log.isDebugEnabled()) {
+            debug(comment + SEP + t, t1);
+        }
+    }
+
     public void debug(@NotNull String comment, @Nullable VirtualFile t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getCanonicalPath() + " "));
         }
     }
 
-    public void debug(String comment, @Nullable Collection<? extends Object> t) {
+    public void debug(String comment, @Nullable Collection<?> t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
         }
@@ -149,5 +155,9 @@ public class Log {
 
     public void info(String msg) {
         m_log.info(msg);
+    }
+
+    public void warn(String msg) {
+        m_log.warn(msg);
     }
 }

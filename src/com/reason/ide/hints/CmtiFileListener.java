@@ -3,10 +3,9 @@ package com.reason.ide.hints;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiManager;
+import com.reason.Log;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.CompilerManager;
@@ -26,7 +25,7 @@ import java.nio.file.Path;
 
 public class CmtiFileListener implements ProjectComponent {
 
-    private final static Logger LOG = Logger.getInstance("ReasonML.vfs");
+    private final static Log LOG = Log.create("hints.vfs");
 
     @NotNull
     private final Project m_project;

@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 
 public class RincewindProcess implements ProjectComponent {
 
-    private final static Log LOG = Log.create("types.rincewind");
+    private final static Log LOG = Log.create("hints.rincewind");
 
     private final Project m_project;
 
@@ -54,7 +54,9 @@ public class RincewindProcess implements ProjectComponent {
 
                 reader.lines().forEach(line -> {
                     if (!line.isEmpty()) {
-//                        System.out.println(line);
+                        if (LOG.isTraceEnabled()) {
+                            LOG.debug(line);
+                        }
                         int entryPos = line.indexOf("|");
                         String entry = line.substring(0, entryPos);
                         if (!"__".equals(entry)) {

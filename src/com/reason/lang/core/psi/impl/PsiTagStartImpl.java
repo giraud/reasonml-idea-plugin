@@ -134,7 +134,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             // no tag name, it's not a custom tag
             tagName = findChildByClass(PsiLowerSymbol.class);
             if (tagName != null) {
-                VirtualFile vFile = FileModuleIndexService.getService().getFileWithName("ReactDOMRe", allScope(project));
+                VirtualFile vFile = FileModuleIndexService.getService().getFile("ReactDOMRe", allScope(project));
                 FileBase reactDOMRe = vFile == null ? null : (FileBase) PsiManager.getInstance(project).findFile(vFile);
                 if (reactDOMRe != null) {
                     Collection<PsiType> props = reactDOMRe.getExpressions("props", PsiType.class);

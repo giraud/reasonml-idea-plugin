@@ -15,7 +15,6 @@ import com.intellij.ui.awt.RelativePoint;
 import com.reason.ide.ORNotification;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
-import com.reason.ide.search.PsiFinder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,12 +55,12 @@ public class GotoTestDataAction extends AnAction {
 
             String[] tokens = splitModuleName(((FileBase) file).asModuleName());
             if (tokens.length == 1) {
-                relatedFile = moduleIndexService.getFileWithName(tokens[0] + "_test", scope);
+                relatedFile = moduleIndexService.getFile(tokens[0] + "_test", scope);
                 if (relatedFile == null) {
-                    relatedFile = moduleIndexService.getFileWithName(tokens[0] + "_spec", scope);
+                    relatedFile = moduleIndexService.getFile(tokens[0] + "_spec", scope);
                 }
             } else {
-                relatedFile = moduleIndexService.getFileWithName(tokens[0], scope);
+                relatedFile = moduleIndexService.getFile(tokens[0], scope);
             }
 
             if (relatedFile != null) {

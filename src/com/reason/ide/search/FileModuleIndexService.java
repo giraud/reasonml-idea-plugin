@@ -36,6 +36,15 @@ public class FileModuleIndexService {
     }
 
     @NotNull
+    public List<FileModuleData> getValues(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+        if (moduleName == null) {
+            return Collections.emptyList();
+        }
+
+        return FileBasedIndex.getInstance().getValues(m_index.getName(), moduleName, scope);
+    }
+
+    @NotNull
     public Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();
@@ -45,8 +54,8 @@ public class FileModuleIndexService {
     }
 
     @Nullable
-    public VirtualFile getFileWithName(String name, GlobalSearchScope scope) {
-        Collection<VirtualFile> filesWithName = getFilesWithName(name, scope);
+    public VirtualFile getFile(String moduleName, GlobalSearchScope scope) {
+        Collection<VirtualFile> filesWithName = getFilesWithName(moduleName, scope);
         if (1 < filesWithName.size()) {
             for (VirtualFile virtualFile : filesWithName) {
                 if (FileHelper.isInterface(virtualFile.getFileType())) {
@@ -55,6 +64,25 @@ public class FileModuleIndexService {
             }
         }
         return filesWithName.isEmpty() ? null : filesWithName.iterator().next();
+    }
+
+    @NotNull
+    public String getFilename(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+        List<FileModuleData> values = getValues(moduleName, scope);
+        if (1 < values.size()) {
+            for (FileModuleData value : values) {
+                if (value.isInterface()) {
+                    return value.getFullname();
+                }
+            }
+        }
+
+        if (values.isEmpty()) {
+            return "";
+        }
+
+        FileModuleData firstValue = values.iterator().next();
+        return firstValue.getFullname();
     }
 
     @NotNull

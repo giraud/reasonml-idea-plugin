@@ -102,7 +102,7 @@ public final class PsiFinder implements ProjectComponent {
             Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(name, scope);
             file = interfaces.isEmpty() ? null : interfaces.iterator().next();
         } else {
-            file = fileModuleIndex.getFileWithName(name, scope);
+            file = fileModuleIndex.getFile(name, scope);
         }
 
         if (file == null) {
@@ -141,7 +141,7 @@ public final class PsiFinder implements ProjectComponent {
                         intfNames.put(itemQName, item);
                     }
                 } else {
-                    file = fileModuleIndex.getFileWithName(filename, scope);
+                    file = fileModuleIndex.getFile(filename, scope);
                     if (file != null) {
                         if (FileHelper.isInterface(file.getFileType())) {
                             if (((FileBase) item.getContainingFile()).isInterface()) {
@@ -241,7 +241,7 @@ public final class PsiFinder implements ProjectComponent {
                         intfNames.put(itemQName, item);
                     }
                 } else {
-                    file = fileModuleIndex.getFileWithName(filename, scope);
+                    file = fileModuleIndex.getFile(filename, scope);
                     if (file != null) {
                         if (FileHelper.isInterface(file.getFileType())) {
                             if (((FileBase) item.getContainingFile()).isInterface()) {
@@ -304,7 +304,7 @@ public final class PsiFinder implements ProjectComponent {
             String alias = moduleReference.getAlias();
 
             if (alias != null) {
-                VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(alias, scope);
+                VirtualFile vFile = FileModuleIndexService.getService().getFile(alias, scope);
                 if (vFile != null) {
                     return (FileBase) PsiManager.getInstance(m_project).findFile(vFile);
                 }
@@ -332,7 +332,7 @@ public final class PsiFinder implements ProjectComponent {
         // extract first token of path
         String[] names = moduleQName.split("\\.");
 
-        VirtualFile vFile = FileModuleIndexService.getService().getFileWithName(names[0], allScope(m_project));
+        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], allScope(m_project));
         if (vFile != null) {
             PsiFile file = PsiManager.getInstance(m_project).findFile(vFile);
             if (file instanceof FileBase) {

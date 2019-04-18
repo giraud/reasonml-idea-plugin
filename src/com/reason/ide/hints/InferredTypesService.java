@@ -2,7 +2,6 @@ package com.reason.ide.hints;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -15,10 +14,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.reason.Log;
 import com.reason.hints.InsightManager;
 import com.reason.ide.docs.DocumentationProvider;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
+import com.reason.ide.search.FileModuleIndexService;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,7 @@ import java.nio.file.FileSystems;
 
 public class InferredTypesService {
 
-    private static final Logger LOG = Logger.getInstance("ReasonML.types.inferredService");
+    private static final Log LOG = Log.create("hints.inferredTypes");
 
     private InferredTypesService() {
     }
@@ -46,12 +47,19 @@ public class InferredTypesService {
 
                         // All file names are unique, use that to get the corresponding cmt
                         String moduleName = ((FileBase) psiFile).asModuleName();
-                        PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, moduleName + ".cmt", GlobalSearchScope.allScope(project));
+
+                        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+                        String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
+                        LOG.debug("Cmt", filename);
+
+                        PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
 
                         if (cmtFiles.length == 1) {
                             insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFiles[0].getVirtualFile().getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
                         } else {
-                            LOG.info("File module for " + moduleName + ".cmt is NOT FOUND");
+                            if (LOG.isDebugEnabled()) {
+                                LOG.info("File module for " + filename + ".cmt is NOT FOUND");
+                            }
                         }
                     }
                 }

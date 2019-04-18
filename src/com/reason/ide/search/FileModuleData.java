@@ -10,29 +10,56 @@ import java.util.Objects;
 public class FileModuleData implements Comparable<FileModuleData>, IndexedFileModule {
     private final String m_namespace;
     private final String m_moduleName;
+    private final String m_fullname;
     private final String m_path;
     private final boolean m_isOCaml;
     private final boolean m_isInterface;
     private final boolean m_isComponent;
-    private VirtualFile m_virtualFile;
 
-    public FileModuleData(String path, String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean hasInterface) {
-        m_path = path;
+    public FileModuleData(@NotNull VirtualFile file, @NotNull String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean isComponent) {
         m_namespace = namespace;
         m_moduleName = moduleName;
         m_isOCaml = isOCaml;
         m_isInterface = isInterface;
-        m_isComponent = hasInterface;
+        m_isComponent = isComponent;
+
+        m_path = file.getPath();
+        String filename = file.getNameWithoutExtension();
+        m_fullname = namespace.isEmpty() ? filename : filename + "-" + namespace;
     }
 
+    public FileModuleData(String path, String fullname, String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean isComponent) {
+        m_path = path;
+        m_fullname = fullname;
+        m_namespace = namespace;
+        m_moduleName = moduleName;
+        m_isOCaml = isOCaml;
+        m_isInterface = isInterface;
+        m_isComponent = isComponent;
+    }
+
+    @NotNull
     @Override
     public String getNamespace() {
         return m_namespace;
     }
 
+    @NotNull
     @Override
     public String getModuleName() {
         return m_moduleName;
+    }
+
+    @NotNull
+    @Override
+    public String getPath() {
+        return m_path;
+    }
+
+    @NotNull
+    @Override
+    public String getFullname() {
+        return m_fullname;
     }
 
     @Override
@@ -48,21 +75,6 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
     @Override
     public boolean isComponent() {
         return m_isComponent;
-    }
-
-    @Override
-    public String getPath() {
-        return m_path;
-    }
-
-    @Nullable
-    @Override
-    public VirtualFile getVirtualFile() {
-        return m_virtualFile;
-    }
-
-    public void setVirtualFile(@NotNull VirtualFile virtualFile) {
-        m_virtualFile = virtualFile;
     }
 
     @Override
