@@ -7,10 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class Jsx2PropertyCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     @NotNull
     @Override

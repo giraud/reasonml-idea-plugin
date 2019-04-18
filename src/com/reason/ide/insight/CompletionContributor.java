@@ -4,10 +4,9 @@ import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.reason.Log;
 import com.reason.ide.insight.provider.DotExpressionCompletionProvider;
@@ -30,14 +29,8 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                 PsiElement position = parameters.getPosition();
                 PsiElement originalPosition = parameters.getOriginalPosition();
                 PsiElement element = originalPosition == null ? position : originalPosition;
-                /*if (element.getNode().getElementType() == types.SEMI) {
-                    // Special case, we use the previous sibling instead (because the dot is not part of the composite element)
-                    element = PsiTreeUtil.prevVisibleLeaf(element);
-                } else if (element instanceof PsiWhiteSpace && CompletionUtils.getPrevNodeType(element) == types.DOT) {
-                    element = PsiTreeUtil.prevVisibleLeaf(element);
-                }*/
-
-                PsiElement parent = element == null ? null : element.getParent();
+                IElementType prevNodeType = CompletionUtils.getPrevNodeType(element);
+                PsiElement parent = element.getParent();
                 PsiElement grandParent = parent == null ? null : parent.getParent();
 
                 if (LOG.isTraceEnabled()) {
@@ -49,9 +42,14 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                     LOG.debug("                   file: " + parameters.getOriginalFile());
                 }
 
+                // A comment, stop completion
+                if (element instanceof PsiComment) {
+                    LOG.debug("comment, stop");
+                    return;
+                }
+
                 // Just after an open/include keyword
-                IElementType prevNodeType = element == null ? null : CompletionUtils.getPrevNodeType(element);
-                if (element != null && (prevNodeType == types.OPEN || prevNodeType == types.INCLUDE)) {
+                if (prevNodeType == types.OPEN || prevNodeType == types.INCLUDE) {
                     LOG.debug("previous keyword is OPEN/INCLUDE");
                     ModuleCompletionProvider.addCompletions(types, element, result);
                     return;
@@ -63,27 +61,25 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                 }
 
                 // Just after a DOT
-                if (element != null && prevNodeType == types.DOT) {
+                if (prevNodeType == types.DOT) {
                     LOG.debug("previous element is DOT");
                     DotExpressionCompletionProvider.addCompletions(modulePathFinder, element, result);
                     return;
                 }
 
-                if (element != null && prevNodeType == types.SHARPSHARP) {
+                if (prevNodeType == types.SHARPSHARP) {
                     LOG.debug("previous element is SHARPSHARP");
                     ObjectCompletionProvider.addCompletions(element, result);
                     return;
                 }
 
                 // Specific completion contributors
-                if (element != null && addSpecificCompletions(types, element, parent, grandParent, result)) {
+                if (addSpecificCompletions(types, element, parent, grandParent, result)) {
                     return;
                 }
 
-                if (element != null) {
-                    LOG.debug("Nothing found, free expression");
-                    FreeExpressionCompletionProvider.addCompletions(modulePathFinder,  parameters.getOriginalFile().getVirtualFile().getPath(), element, result);
-                }
+                LOG.debug("Nothing found, free expression");
+                FreeExpressionCompletionProvider.addCompletions(modulePathFinder, parameters.getOriginalFile().getVirtualFile().getPath(), element, result);
             }
         });
     }
