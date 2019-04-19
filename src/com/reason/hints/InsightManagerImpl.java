@@ -15,7 +15,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.reason.Platform.*;
+import static com.reason.Platform.getOsPrefix;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
@@ -69,7 +69,8 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @NotNull
     @Override
     public String getRincewindFilename() {
-        return "rincewind_" + getOsPrefix() + BsProcess.getInstance(m_project).getOCamlVersion() + "-" + RINCEWIND_VERSION + ".exe";
+        String ocamlVersion = BsProcess.getInstance(m_project).getOCamlVersion();
+        return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + getAppVersion(ocamlVersion) + ".exe";
     }
 
     @Override
@@ -79,4 +80,12 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
         }
     }
 
+    private String getAppVersion(String ocamlVersion) {
+        switch (ocamlVersion) {
+            case "4.02":
+                return "0.4";
+            default:
+                return "0.5-dev";
+        }
+    }
 }

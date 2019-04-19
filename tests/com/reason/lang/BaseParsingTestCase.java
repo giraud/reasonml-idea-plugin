@@ -108,7 +108,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected PsiFile parseFile(String name, boolean print) throws IOException {
+    protected PsiFile parseFile(String name, @SuppressWarnings("SameParameterValue") boolean print) throws IOException {
         String text = loadFile(name + "." + myFileExt);
         return parseCode(text, print);
     }

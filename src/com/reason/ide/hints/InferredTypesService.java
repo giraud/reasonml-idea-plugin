@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
@@ -49,16 +50,18 @@ public class InferredTypesService {
                         String moduleName = ((FileBase) psiFile).asModuleName();
 
                         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-                        String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
-                        LOG.debug("Cmt", filename);
+                        if (!DumbService.isDumb(project)) {
+                            String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
+                            LOG.debug("Cmt", filename);
 
-                        PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
+                            PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
 
-                        if (cmtFiles.length == 1) {
-                            insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFiles[0].getVirtualFile().getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
-                        } else {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.info("File module for " + filename + ".cmt is NOT FOUND");
+                            if (cmtFiles.length == 1) {
+                                insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFiles[0].getVirtualFile().getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
+                            } else {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.info("File module for " + filename + ".cmt is NOT FOUND");
+                                }
                             }
                         }
                     }

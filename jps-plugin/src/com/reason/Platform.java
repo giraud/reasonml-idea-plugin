@@ -15,8 +15,6 @@ import java.util.Map;
 
 public class Platform {
 
-    public static final String RINCEWIND_VERSION = "0.5-dev";
-
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
     private Platform() {
