@@ -324,6 +324,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
         if (state.isCurrentResolution(typeNamedEq)) {
             state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
+        } else if (state.isCurrentResolution(tryBodyWith)) {
+            // Start of a try handler
+            //   try (..) { |>|<| .. }
+            state.add(mark(builder, state.currentContext(), tryBodyWithHandler, m_types.C_TRY_HANDLER).complete());
         } else if (state.isCurrentResolution(variant) && state.isCurrentContext(typeBinding)) {
             state.popEndUntilResolution(typeNamedEqVariant).
                     add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_DECL).complete());
@@ -752,6 +756,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
         if (state.isCurrentResolution(typeNamedEq)) {
             state.add(markScope(builder, recordBinding, m_types.C_RECORD_EXPR, m_types.LBRACE));
+        } else if (state.isCurrentResolution(tryBody)) {
+            // A try expression
+            //   try (..) |>{<| .. }
+            state.updateCurrentResolution(tryBodyWith).
+                    add(markScope(builder, state.currentContext(), tryBodyWith, m_types.C_TRY_HANDLERS, m_types.LBRACE));
         } else if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedSignature)) {
             state.add(markScope(builder, moduleBinding, m_types.C_SCOPED_EXPR, m_types.LBRACE));
         } else if (state.isCurrentResolution(letNamedEq)) {
@@ -812,9 +821,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(option)) {
             state.complete().
                     add(markScope(builder, state.currentContext(), optionParameter, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(try_)) {
+            // Valid try expression
+            //   try |>(<| .. ) with ..
+            state.updateCurrentResolution(tryBody).
+                    complete().
+                    add(markScope(builder, state.currentContext(), tryBody, m_types.C_TRY_BODY, m_types.LPAREN));
         } else if (state.isCurrentResolution(signatureItem) && state.previousElementType1 == m_types.COLON) {
-            // a ReasonML signature is written like a function, but it's not
-            // : (x, y) => z  alias x => y => z
+            // A ReasonML signature is written like a function, but it's not
+            //   (x, y) => z  alias x => y => z
             state.popCancel().
                     add(markScope(builder, signatureParams, signature, m_types.LPAREN, m_types.LPAREN).dummy()).
                     advance().
@@ -1081,16 +1096,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseSwitch(@NotNull PsiBuilder builder, ParserState state) {
         boolean inScope = state.isScopeTokenElementType(m_types.LBRACE);
-        state.
-                add(mark(builder, switch_, m_types.C_SWITCH_EXPR).complete().setIsStart(inScope)).
+        state.add(mark(builder, switch_, m_types.C_SWITCH_EXPR).complete().setIsStart(inScope)).
                 advance().
                 add(mark(builder, switchBinaryCondition, m_types.C_BIN_CONDITION).complete());
     }
 
     private void parseTry(@NotNull PsiBuilder builder, ParserState state) {
-        state.add(mark(builder, try_, m_types.C_TRY_EXPR).complete()).
-                advance().
-                add(mark(builder, tryScope, m_types.C_SCOPED_EXPR).complete());
+        state.add(mark(builder, try_, m_types.C_TRY_EXPR));
     }
 
     private void parseArrow(@NotNull PsiBuilder builder, ParserState state) {

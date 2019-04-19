@@ -66,7 +66,9 @@ public abstract class ORTypes {
     public IElementType C_SWITCH_EXPR;
     public IElementType C_MATCH_EXPR;
     public IElementType C_TRY_EXPR;
-    public IElementType C_WITH_EXPR;
+    public IElementType C_TRY_BODY;
+    public IElementType C_TRY_HANDLERS;
+    public IElementType C_TRY_HANDLER;
     public IElementType C_TYPE_CONSTR_NAME;
     public IElementType C_TYPE_BINDING;
     public IElementType C_UPPER_SYMBOL;

@@ -15,10 +15,7 @@ import com.reason.lang.core.psi.PsiQualifiedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class ORUtil {
 
@@ -129,7 +126,11 @@ public class ORUtil {
     }
 
     @Nullable
-    public static <T> T nextSiblingOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
+    public static <T> T nextSiblingOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz) {
+        if (element == null) {
+            return null;
+        }
+
         PsiElement nextSibling = element.getNextSibling();
         while (nextSibling != null && !(nextSibling.getClass().isAssignableFrom(clazz))) {
             nextSibling = nextSibling.getNextSibling();
@@ -161,8 +162,8 @@ public class ORUtil {
     }
 
     @NotNull
-    public static List<PsiElement> findImmediateChildrenOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
-        PsiElement child = element.getFirstChild();
+    public static Collection<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull IElementType elementType) {
+        PsiElement child = element == null ? null : element.getFirstChild();
         if (child == null) {
             return Collections.emptyList();
         }
@@ -181,8 +182,8 @@ public class ORUtil {
 
     @Nullable
     public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
-        List<PsiElement> children = findImmediateChildrenOfType(element, elementType);
-        return children.isEmpty() ? null : children.get(0);
+        Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
+        return children.isEmpty() ? null : children.iterator().next();
     }
 
     @Nullable

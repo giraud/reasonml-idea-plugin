@@ -71,7 +71,7 @@ public class ParserState {
         return this;
     }
 
-    public void endUntilResolution(@NotNull ParserScopeEnum resolution) {
+    public ParserState endUntilResolution(@NotNull ParserScopeEnum resolution) {
         if (!m_scopes.isEmpty()) {
             ParserScope scope = m_scopes.peek();
             while (scope != null && !scope.isResolution(resolution)) {
@@ -79,7 +79,7 @@ public class ParserState {
                 scope = getLatestScope();
             }
         }
-
+        return this;
     }
 
     @Nullable

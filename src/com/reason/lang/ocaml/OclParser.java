@@ -302,8 +302,9 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseTry(@NotNull PsiBuilder builder, ParserState state) {
-        state.add(mark(builder, try_, m_types.C_TRY_EXPR).complete())
-                .add(mark(builder, try_, tryScope, m_types.C_SCOPED_EXPR).complete());
+        state.add(mark(builder, try_, m_types.C_TRY_EXPR).complete()).
+                advance().
+                add(mark(builder, try_, tryBody, m_types.C_TRY_BODY).complete());
     }
 
     private void parseWith(@NotNull PsiBuilder builder, ParserState state) {
@@ -315,14 +316,17 @@ public class OclParser extends CommonParser<OclTypes> {
 
         if (state.isCurrentResolution(functorNamedColon)) {
             // A functor with return signature
-            // module Make (M : Input) : S |>with<| type input = M.t
+            //    module Make (M : Input) : S |>with<| type input = M.t
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.WITH));
         } else if (!state.isCurrentResolution(moduleNamedColon)) {
+            // A try handler
+            //   try .. |>with<| ..
             if (state.isCurrentContext(try_)) {
-                state.endUntilResolution(try_);
-                state.updateCurrentResolution(tryWith);
-                state.advance();
-                state.add(mark(builder, try_, tryWithScope, m_types.C_SCOPED_EXPR).complete());
+                state.endUntilResolution(try_).
+                        updateCurrentResolution(tryBodyWith).
+                        advance().
+                        add(mark(builder, state.currentContext(), tryBodyWith, m_types.C_TRY_HANDLERS).complete()).
+                        add(mark(builder, state.currentContext(), tryBodyWithHandler, m_types.C_TRY_HANDLER).complete());
             } else if (state.isCurrentContext(matchBinaryCondition)) {
                 state.popEndUntilContext(match);
                 state.updateCurrentResolution(matchWith).setStart();
