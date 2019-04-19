@@ -5,7 +5,9 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.build.bs.compiler.BsProcess;
@@ -49,8 +51,16 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void downloadRincewindIfNeeded() {
-        if (!isDownloaded.get() && !m_project.isDisposed()) {
-            ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project));
+        if (!isDownloaded.get()) {
+            ProgressManager.getInstance().run(
+                    new Task.Backgroundable(m_project, "Download Rincewind") {
+                        @Override
+                        public void run(@NotNull ProgressIndicator indicator) {
+                            if (!getProject().isDisposed()) {
+                                RincewindDownloader.getInstance(getProject());
+                            }
+                        }
+                    });
         }
     }
 
