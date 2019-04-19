@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.reference;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
@@ -100,7 +101,9 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
     }
 
     private List<PsiQualifiedNamedElement> getPotentialPaths() {
-        PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
+        Project project = myElement.getProject();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
         List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeALl, true);
@@ -108,9 +111,14 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         List<PsiQualifiedNamedElement> result = paths.stream().
                 map(path -> path + "." + m_referenceName).
                 map(qn -> {
-                    PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, GlobalSearchScope.allScope(myElement.getProject()));
+                    PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, scope);
                     if (variant != null) {
                         return variant;
+                    }
+
+                    PsiQualifiedNamedElement exception = psiFinder.findException(qn, scope);
+                    if (exception != null) {
+                        return exception;
                     }
 
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(qn);

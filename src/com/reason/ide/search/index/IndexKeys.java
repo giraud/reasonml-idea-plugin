@@ -18,6 +18,7 @@ public class IndexKeys {
     public static final StubIndexKey<String, PsiExternal> EXTERNALS = StubIndexKey.createIndexKey("reason.external");
     public static final StubIndexKey<String, PsiType> TYPES = StubIndexKey.createIndexKey("reason.type");
     public static final StubIndexKey<String, PsiException> EXCEPTIONS = StubIndexKey.createIndexKey("reason.exception");
+    public static final StubIndexKey<Integer,PsiException> EXCEPTIONS_FQN = StubIndexKey.createIndexKey("reason.exception.fqn");
 
     private IndexKeys() {
     }

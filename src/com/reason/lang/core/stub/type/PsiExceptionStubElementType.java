@@ -29,23 +29,31 @@ public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionSt
 
     @NotNull
     public PsiExceptionStub createStub(@NotNull final PsiException psi, final StubElement parentStub) {
-        return new PsiExceptionStub(parentStub, this, psi.getName());
+        return new PsiExceptionStub(parentStub, this, psi.getName(), psi.getQualifiedName());
     }
 
     public void serialize(@NotNull final PsiExceptionStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
+        dataStream.writeUTFFast(stub.getQualifiedName());
     }
 
     @NotNull
     public PsiExceptionStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
-        return new PsiExceptionStub(parentStub, this, name);
+        String qname = dataStream.readUTFFast();
+
+        return new PsiExceptionStub(parentStub, this, name, qname);
     }
 
     public void indexStub(@NotNull final PsiExceptionStub stub, @NotNull final IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.EXCEPTIONS, name);
+        }
+
+        String fqn = stub.getQualifiedName();
+        if (fqn != null) {
+            sink.occurrence(IndexKeys.EXCEPTIONS_FQN, fqn.hashCode());
         }
     }
 

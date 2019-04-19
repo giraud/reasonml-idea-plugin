@@ -9,12 +9,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiExceptionStub extends NamedStubBase<PsiException> {
 
-    public PsiExceptionStub(StubElement parent, @NotNull IStubElementType elementType, String name) {
+    private final String m_qname;
+
+    public PsiExceptionStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname) {
         super(parent, elementType, name);
+        m_qname = qname;
     }
 
-    public PsiExceptionStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name) {
+    public PsiExceptionStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname) {
         super(parent, elementType, name);
+        m_qname = qname;
+    }
+
+    public String getQualifiedName() {
+        return m_qname;
     }
 
 }
