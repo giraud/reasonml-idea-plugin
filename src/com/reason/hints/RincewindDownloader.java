@@ -47,18 +47,21 @@ public class RincewindDownloader extends Task.Backgroundable {
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
         if (myProject.isDisposed()) {
+            LOG.debug("Project is disposed, can't download rincewind");
             return;
         }
 
         InsightManagerImpl insightManager = (InsightManagerImpl) myProject.getComponent(InsightManager.class);
         if (!insightManager.isDownloaded.get() && !insightManager.isDownloading.compareAndSet(false, true)) {
             // We are already in the process of downloading
+            LOG.debug("Already downloading, abort");
             return;
         }
 
         try {
             File targetFile = insightManager.getRincewindFile();
             if (targetFile == null) {
+                LOG.debug("No target file, abort downloading");
                 return;
             }
 

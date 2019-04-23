@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.hints.InsightManager;
 import com.reason.ide.docs.DocumentationProvider;
@@ -52,15 +53,16 @@ public class InferredTypesService {
                         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
                         if (!DumbService.isDumb(project)) {
                             String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
-                            LOG.debug("Cmt", filename);
-
                             PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
 
                             if (cmtFiles.length == 1) {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + "), querying types");
+                                }
                                 insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFiles[0].getVirtualFile().getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
                             } else {
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.info("File module for " + filename + ".cmt is NOT FOUND");
+                                    LOG.debug("File module for " + filename + ".cmt is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
                                 }
                             }
                         }

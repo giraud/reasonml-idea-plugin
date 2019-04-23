@@ -5,11 +5,10 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.extensions.PluginId;
-import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Log;
 import com.reason.build.bs.compiler.BsProcess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.reason.Platform.getOsPrefix;
 
 public class InsightManagerImpl implements InsightManager, ProjectComponent {
+
+    private static final Log LOG = Log.create("hints.insight");
 
     @NotNull
     public AtomicBoolean isDownloaded = new AtomicBoolean(false);
@@ -52,16 +53,9 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void downloadRincewindIfNeeded() {
-        if (!isDownloaded.get()) {
-            ProgressManager.getInstance().run(
-                    new Task.Backgroundable(m_project, "Download Rincewind") {
-                        @Override
-                        public void run(@NotNull ProgressIndicator indicator) {
-                            if (!getProject().isDisposed()) {
-                                RincewindDownloader.getInstance(getProject());
-                            }
-                        }
-                    });
+        if (!isDownloaded.get() && !m_project.isDisposed()) {
+            LOG.debug("Downloading rincewind in background");
+            ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project));
         }
     }
 
@@ -92,6 +86,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         if (isDownloaded.get()) {
             File rincewindFile = getRincewindFile();
+            LOG.debug("rincewind", rincewindFile);
             if (rincewindFile != null) {
                 RincewindProcess.getInstance(m_project).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
             }

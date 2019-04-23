@@ -7,6 +7,7 @@ import com.intellij.psi.PsiQualifiedNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -100,6 +101,12 @@ public class Log {
     public void debug(@NotNull String comment, @Nullable VirtualFile t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getCanonicalPath() + " "));
+        }
+    }
+
+    public void debug(@NotNull String comment, @Nullable File t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "<NULL>" : t.getPath() + " "));
         }
     }
 
