@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.build.bs.compiler.BsProcess;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -64,33 +65,40 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
         }
     }
 
-    @NotNull
+    @Nullable
     @Override
     public File getRincewindFile() {
-        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
-        if (plugin != null) {
-            String rincewindFilename = getRincewindFilename();
-            return new File(plugin.getPath(), rincewindFilename);
+        String filename = getRincewindFilename();
+        if (filename == null) {
+            return null;
         }
 
-        return new File(System.getProperty("java.io.tmpdir"), getRincewindFilename());
+        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
+        if (plugin != null) {
+            return new File(plugin.getPath(), filename);
+        }
+
+        return new File(System.getProperty("java.io.tmpdir"), filename);
     }
 
-    @NotNull
+    @Nullable
     @Override
     public String getRincewindFilename() {
         String ocamlVersion = BsProcess.getInstance(m_project).getOCamlVersion();
-        return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + getAppVersion(ocamlVersion) + ".exe";
+        return ocamlVersion == null ? null : "rincewind_" + getOsPrefix() + ocamlVersion + "-" + getAppVersion(ocamlVersion) + ".exe";
     }
 
     @Override
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         if (isDownloaded.get()) {
-            RincewindProcess.getInstance(m_project).types(sourceFile, getRincewindFile().getPath(), cmtPath.toString(), runAfter);
+            File rincewindFile = getRincewindFile();
+            if (rincewindFile != null) {
+                RincewindProcess.getInstance(m_project).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+            }
         }
     }
 
-    private String getAppVersion(String ocamlVersion) {
+    private String getAppVersion(@NotNull String ocamlVersion) {
         switch (ocamlVersion) {
             case "4.02":
                 return "0.4";

@@ -5,12 +5,12 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.reason.Log;
 import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,9 +28,9 @@ public class RincewindDownloader extends Task.Backgroundable {
     private static final double TOTAL_BYTES = 5_000_000.0;
     private static final int BUFFER_SIZE = 1024;
     private static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
+    private static final Log LOG = Log.create("hints");
 
     private static RincewindDownloader INSTANCE;
-    private final Logger m_log = Logger.getInstance("ReasonML");
 
     public static RincewindDownloader getInstance(@NotNull Project project) {
         if (INSTANCE == null) {
@@ -40,7 +40,8 @@ public class RincewindDownloader extends Task.Backgroundable {
     }
 
     private RincewindDownloader(@Nullable Project project) {
-        super(project, "Downloading rincewind binary");
+        //noinspection DialogTitleCapitalization
+        super(project, "Downloading Rincewind binary");
     }
 
     @Override
@@ -57,8 +58,11 @@ public class RincewindDownloader extends Task.Backgroundable {
 
         try {
             File targetFile = insightManager.getRincewindFile();
+            if (targetFile == null) {
+                return;
+            }
 
-            m_log.info("Downloading " + targetFile.getName() + "...");
+            LOG.info("Downloading " + targetFile.getName() + "...");
             indicator.setFraction(0.0);
 
             try {
@@ -108,7 +112,7 @@ public class RincewindDownloader extends Task.Backgroundable {
                 }
 
                 insightManager.isDownloaded.set(true);
-                m_log.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
+                LOG.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
 
                 Notifications.Bus.notify(new ORNotification("Reason", "Downloaded " + targetFile, NotificationType.INFORMATION));
 

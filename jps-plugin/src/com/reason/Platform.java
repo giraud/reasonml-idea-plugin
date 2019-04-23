@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -42,9 +44,9 @@ public class Platform {
         VirtualFile baseDir = m_baseDirs.get(project);
         if (baseDir == null) {
             baseDir = project.getBaseDir();
-            if (baseDir.findChild("node_modules") == null) {
+            if (baseDir.findChild("package.json") == null) {
                 // try to find it one level deeper
-                baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("node_modules") != null).findFirst().orElse(baseDir);
+                baseDir = Arrays.stream(baseDir.getChildren()).filter(file -> file.findChild("package.json") != null).findFirst().orElse(baseDir);
             }
             m_baseDirs.put(project, baseDir);
         }
@@ -87,15 +89,20 @@ public class Platform {
             return null;
         }
 
-        File file = new File(relativeBinaryPath);
-        if (file.isAbsolute()) {
-            return file.exists() ? relativeBinaryPath : null;
+        try {
+            URI resource = new URI(relativeBinaryPath);
+            if (resource.isAbsolute()) {
+                File file = new File(resource.getAuthority() + resource.getPath());
+                return file.exists() ? file.getPath() : null;
+            }
+
+            VirtualFile baseDir = Platform.findBaseRootFromFile(project, sourceFile);
+            VirtualFile absoluteBinary = baseDir.findFileByRelativePath(relativeBinaryPath);
+
+            return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
+        } catch (URISyntaxException e) {
+            return null;
         }
-
-        VirtualFile baseDir = Platform.findBaseRootFromFile(project, sourceFile);
-        VirtualFile absoluteBinary = baseDir.findFileByRelativePath(relativeBinaryPath);
-
-        return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
     }
 
     @NotNull

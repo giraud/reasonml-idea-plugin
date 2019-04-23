@@ -169,7 +169,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         m_started.set(false);
     }
 
-    @NotNull
+    @Nullable
     public String getOCamlVersion() {
         Process p = null;
         try {
@@ -178,7 +178,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             return ocamlVersionExtractor(reader.readLine());
         } catch (@NotNull InterruptedException | IOException e) {
-            return "";
+            return null;
         } finally {
             if (p != null) {
                 p.destroy();

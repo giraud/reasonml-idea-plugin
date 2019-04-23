@@ -53,7 +53,7 @@ public class ORProjectTracker implements ProjectComponent {
             if (!getOsPrefix().isEmpty()) {
                 InsightManagerImpl insightManager = (InsightManagerImpl) InsightManagerImpl.getInstance(m_project);
                 File rincewindFile = insightManager.getRincewindFile();
-                if (rincewindFile.exists()) {
+                if (rincewindFile != null && rincewindFile.exists()) {
                     m_log.info("Found " + rincewindFile);
                     insightManager.isDownloaded.set(true);
                 } else {

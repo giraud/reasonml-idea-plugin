@@ -58,7 +58,7 @@ public class ModuleConfiguration {
         ReasonSettings settings = ReasonSettings.getInstance(project);
         String bsbLocation = settings == null ? "" : settings.getLocation().replace('\\', '/');
         if (bsbLocation.isEmpty()) {
-            bsbLocation = LOCAL_BS_PLATFORM;
+            bsbLocation = Platform.findBaseRoot(project) + "/" + LOCAL_BS_PLATFORM;
         }
         return bsbLocation;
     }
