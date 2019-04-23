@@ -159,6 +159,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 parseVal(builder, state);
             } else if (tokenType == m_types.PUB) {
                 parsePub(builder, state);
+            } else if (tokenType == m_types.EXCEPTION) {
+                parseException(builder, state);
             }
 
             if (state.dontMove) {
@@ -436,6 +438,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEndUntilStartScope();
             state.add(mark(builder, module, m_types.C_MODULE_STMT));
         }
+    }
+
+    private void parseException(PsiBuilder builder, ParserState state) {
+        state.popEndUntilStartScope();
+        state.add(mark(builder, exception, m_types.C_EXCEPTION_EXPR));
     }
 
     private void parseClass(@NotNull PsiBuilder builder, ParserState state) {
@@ -1055,7 +1062,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
             state.wrapWith(m_types.C_VARIANT);
             return;
-        } else if (state.isCurrentResolution(patternMatch)) {
+        } else if (state.isCurrentResolution(exception)) {
+            // Declaring an exception
+            //   exception |>Ex<| ..
+            state.complete().updateCurrentResolution(exceptionNamed);
+            builder.remapCurrentToken(m_types.EXCEPTION_NAME);
+        }
+        else if (state.isCurrentResolution(patternMatch)) {
             IElementType nextElementType = builder.lookAhead(1);
             if (nextElementType != m_types.DOT) {
                 // Defining a pattern match

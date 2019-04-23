@@ -1,4 +1,4 @@
-package com.reason.ide.insight;
+package com.reason.ide;
 
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.reason.ide.search.PsiFinder;
@@ -21,4 +21,5 @@ public class PsiFinderTest extends LightPlatformCodeInsightFixtureTestCase {
         assertSize(1, modules);
         assertEquals("let api = 1", modules.iterator().next().getExpressions().iterator().next().getText());
     }
+
 }
