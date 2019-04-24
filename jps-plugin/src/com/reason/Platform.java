@@ -92,7 +92,8 @@ public class Platform {
         try {
             URI resource = new URI(relativeBinaryPath);
             if (resource.isAbsolute()) {
-                File file = new File(resource.getAuthority() + resource.getPath());
+                String authority = resource.getAuthority();
+                File file = new File((authority == null ? "" : authority) + resource.getPath());
                 return file.exists() ? file.getPath() : null;
             }
 
