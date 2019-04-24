@@ -1067,8 +1067,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             //   exception |>Ex<| ..
             state.complete().updateCurrentResolution(exceptionNamed);
             builder.remapCurrentToken(m_types.EXCEPTION_NAME);
-        }
-        else if (state.isCurrentResolution(patternMatch)) {
+        } else if (state.isCurrentResolution(patternMatch)) {
             IElementType nextElementType = builder.lookAhead(1);
             if (nextElementType != m_types.DOT) {
                 // Defining a pattern match
@@ -1089,11 +1088,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
             IElementType nextElementType = builder.lookAhead(1);
             if (!state.isCurrentResolution(moduleNamedEq) && nextElementType == m_types.LPAREN) {
                 // Also a variant, but with a constructor
-                state.popEnd();
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
-                state.updateCurrentResolution(typeNamedEqVariant).
-                        add(mark(builder, state.currentContext(), variant, m_types.C_VARIANT_DECL).complete()).
-                        add(mark(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT).complete());
+                state.wrapWith(m_types.C_VARIANT);
+                return;
             } else if (state.isCurrentResolution(typeNamedEq) && nextElementType == m_types.PIPE) {
                 // We are declaring a variant without a pipe before
                 // type t = |>X<| | ..

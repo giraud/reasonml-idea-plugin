@@ -8,8 +8,8 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class VariantDeclarationTest extends BaseParsingTestCase {
-    public VariantDeclarationTest() {
+public class VariantDeclarationParsingTest extends BaseParsingTestCase {
+    public VariantDeclarationParsingTest() {
         super("", "re", new RmlParserDefinition());
     }
 
