@@ -26,7 +26,7 @@ import java.util.Map;
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
 
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
     private static final Log LOG = Log.create("index.file");
 
     public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public class ModuleComponentIndex extends StringStubIndexExtension<PsiInnerModule> {
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
     private static final ModuleComponentIndex INSTANCE = new ModuleComponentIndex();
 
     @NotNull
