@@ -10,6 +10,13 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.76 - 2019/04/24
+
+- :rocket: Support for ocaml 4.0.6 (Bs 6+)
+- :bug: [#165](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/165) - Autocompletion inside comments</li>
+- :bug: [#161](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/161) - Indexing exception</li>
+- :bug: [#160](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/160) - Autocompletion is not using module interface</li>
+
 ## 0.75.1 - 2019/04/16
 
 - :bug: [#154](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/154) - Remove unwanted end of line after reformat

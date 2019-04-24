@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.75.1</version>
+    <version>0.76</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,11 +10,10 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#154 - Remove unwanted end of line after reformat</li>
-            <li>#153 - split tuple items in structure view for let expressions</li>
-            <li>#152 - Add a check to prevent exception</li>
-            <li>fix alpha sort on open/include in structure view</li>
-            <li>Improved OCaml parser</li>
+            <li>#165 - Autocompletion inside comments</li>
+            <li>#161 - Indexing exception</li>
+            <li>#160 - Autocompletion is not using module interface</li>
+            <li>Support for ocaml 4.0.6 (Bs 6+)</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
