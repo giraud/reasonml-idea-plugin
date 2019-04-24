@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.76.1</version>
+    <version>0.76.2</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,6 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
+            <li>#168 - Can't find bsb</li>
             <li>#165 - Autocompletion inside comments</li>
             <li>#161 - Indexing exception</li>
             <li>#160 - Autocompletion is not using module interface</li>
