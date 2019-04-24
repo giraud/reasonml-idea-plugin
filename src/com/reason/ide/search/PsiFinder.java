@@ -287,7 +287,7 @@ public final class PsiFinder implements ProjectComponent {
     }
 
     @Nullable
-    public PsiQualifiedNamedElement findException(@Nullable String qname, @NotNull GlobalSearchScope scope) {
+    public PsiQualifiedNamedElement findException(@Nullable String qname, ORFileType fileType, @NotNull GlobalSearchScope scope) {
         if (qname == null) {
             return null;
         }
@@ -297,7 +297,23 @@ public final class PsiFinder implements ProjectComponent {
             return null;
         }
 
-        return items.iterator().next();
+        if (items.size() == 1) {
+            return items.iterator().next();
+        }
+
+        if (items.size() == 2) {
+            boolean useInterface = fileType == ORFileType.interfaceOrImplementation || fileType == ORFileType.interfaceOnly;
+            Iterator<PsiException> itException = items.iterator();
+            PsiException first = itException.next();
+            boolean isInterface = FileHelper.isInterface(first.getContainingFile().getFileType());
+            if ((useInterface && isInterface) || (!useInterface && !isInterface)) {
+                return first;
+            }
+            return itException.next();
+        }
+
+        LOG.debug("Incorrect size for retrieved exception items", items);
+        return null;
     }
 
     @Nullable

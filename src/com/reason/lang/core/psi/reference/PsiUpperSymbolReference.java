@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.reason.lang.ModulePathFinder.includeALl;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
@@ -113,7 +114,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                         return variant;
                     }
 
-                    PsiQualifiedNamedElement exception = psiFinder.findException(qn, scope);
+                    PsiQualifiedNamedElement exception = psiFinder.findException(qn, interfaceOrImplementation, scope);
                     if (exception != null) {
                         return exception;
                     }
