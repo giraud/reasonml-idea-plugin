@@ -99,7 +99,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
                             console.attachToProcess(bscProcess);
                         }
                         process.startNotify();
-                        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+                        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded(sourceFile);
                     } else {
                         process.terminated();
                     }

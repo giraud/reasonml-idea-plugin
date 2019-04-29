@@ -9,6 +9,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
 import com.reason.ide.ORNotification;
@@ -31,17 +32,19 @@ public class RincewindDownloader extends Task.Backgroundable {
     private static final Log LOG = Log.create("hints");
 
     private static RincewindDownloader INSTANCE;
+    private final VirtualFile m_sourceFile;
 
-    public static RincewindDownloader getInstance(@NotNull Project project) {
+    public static RincewindDownloader getInstance(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         if (INSTANCE == null) {
-            INSTANCE = new RincewindDownloader(project);
+            INSTANCE = new RincewindDownloader(project, sourceFile);
         }
         return INSTANCE;
     }
 
-    private RincewindDownloader(@Nullable Project project) {
+    private RincewindDownloader(@Nullable Project project, @NotNull VirtualFile sourceFile) {
         //noinspection DialogTitleCapitalization
         super(project, "Downloading Rincewind binary");
+        m_sourceFile = sourceFile;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class RincewindDownloader extends Task.Backgroundable {
         }
 
         try {
-            File targetFile = insightManager.getRincewindFile();
+            File targetFile = insightManager.getRincewindFile(m_sourceFile);
             if (targetFile == null) {
                 LOG.debug("No target file, abort downloading");
                 return;
@@ -82,7 +85,7 @@ public class RincewindDownloader extends Task.Backgroundable {
 
                 FileOutputStream partFileOut = new FileOutputStream(partFile);
 
-                java.net.URL url = new URL(DOWNLOAD_URL + insightManager.getRincewindFilename());
+                java.net.URL url = new URL(DOWNLOAD_URL + insightManager.getRincewindFilename(m_sourceFile));
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(true);

@@ -17,13 +17,13 @@ public interface InsightManager {
 
     boolean useCmt();
 
-    void downloadRincewindIfNeeded();
+    void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile);
 
     @Nullable
-    File getRincewindFile();
+    File getRincewindFile(@NotNull VirtualFile sourceFile);
 
     @Nullable
-    String getRincewindFilename();
+    String getRincewindFilename(@NotNull VirtualFile sourceFile);
 
     void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated callback);
 

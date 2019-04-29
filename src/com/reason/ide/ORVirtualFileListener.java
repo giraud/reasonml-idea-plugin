@@ -38,7 +38,7 @@ class ORVirtualFileListener implements VirtualFileListener {
 //                    m_compiler.refresh(file);
 //                }
 
-                m_insightManager.downloadRincewindIfNeeded();
+                m_insightManager.downloadRincewindIfNeeded(file);
             }
         } else if (fileType instanceof CmtFileType) {
             m_cmtiFileListener.onChange(file);

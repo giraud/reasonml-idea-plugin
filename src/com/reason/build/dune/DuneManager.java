@@ -48,7 +48,7 @@ public class DuneManager implements Compiler, ProjectComponent {
                     console.attachToProcess(handler);
                 }
                 process.startNotify();
-                InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded();
+                InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded(file);
             } else {
                 process.terminated();
             }

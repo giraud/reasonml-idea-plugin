@@ -5,17 +5,20 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Streams;
-import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.nio.charset.Charset;
+
+import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
+import static com.reason.Platform.LOCAL_BS_PLATFORM;
+import static com.reason.Platform.UTF8;
 
 public class RefmtProcess implements ProjectComponent {
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final Logger LOG = Logger.getInstance("ReasonML.refmt");
 
     private final Project m_project;
@@ -35,7 +38,7 @@ public class RefmtProcess implements ProjectComponent {
 
     @NotNull
     public String convert(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
-        String refmtPath = ModuleConfiguration.getRefmtPath(m_project, sourceFile);
+        String refmtPath = getRefmtPath(m_project, sourceFile);
         if (refmtPath == null) {
             LOG.debug("No refmt binary found, reformat cancelled");
             return code;
@@ -88,13 +91,27 @@ public class RefmtProcess implements ProjectComponent {
         return code;
     }
 
-    //region Compatibility
-    @Override
-    public void initComponent() { // For compatibility with idea#143
+    @Nullable
+    private String getRefmtPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
+
+        String result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib");
+        if (result == null) {
+            result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/bin");
+        }
+
+        return result;
     }
 
-    @Override
-    public void disposeComponent() { // For compatibility with idea#143
+    @Nullable
+    private String getRefmtBin(@NotNull String path) {
+        VirtualFileManager vfManager = VirtualFileManager.getInstance();
+
+        VirtualFile binary = vfManager.findFileByUrl(path + "/refmt3.exe");
+        if (binary == null) {
+            binary = vfManager.findFileByUrl(path + "/refmt.exe");
+        }
+
+        return binary == null ? null : binary.getPath();
     }
-    //endregion
 }

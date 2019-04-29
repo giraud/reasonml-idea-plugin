@@ -8,9 +8,9 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Platform;
 import com.reason.build.CompilerProcessLifecycle;
-import com.reason.build.bs.ModuleConfiguration;
 import com.reason.build.console.CliType;
 import com.reason.ide.ORNotification;
 import com.reason.ide.settings.ReasonSettings;
@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import static com.intellij.execution.process.ProcessOutputTypes.STDOUT;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
+import static com.reason.Platform.LOCAL_BS_PLATFORM;
 
 public final class BsProcess implements CompilerProcessLifecycle, ProjectComponent {
 
@@ -120,18 +122,28 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     @Nullable
-    private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
-        String bsbPath = ModuleConfiguration.getBsbPath(m_project, sourceFile);
+    private static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
+        VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
+        VirtualFile bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsb.exe");
         if (bsbPath == null) {
-            if (!sourceFile.getPath().contains("node_modules")) {
-                Notifications.Bus.notify(new ORNotification("Bsb",
-                        "<html>Can't find bsb.\n"
-                                + "Working directory is '" + ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile) + "'.\n"
-                                + "Be sure that bsb is installed and reachable from that directory, "
-                                + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
-                        ERROR, URL_OPENING_LISTENER));
-            }
+            bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsb.exe");
+        }
+
+        return bsbPath == null ? null : bsbPath.getCanonicalPath();
+    }
+
+    @Nullable
+    private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
+        String bsbPath = getBsbPath(m_project, sourceFile);
+        if (bsbPath == null) {
+            Notifications.Bus.notify(new ORNotification("Bsb",
+                    "<html>Can't find bsb.\n"
+                            + "Working directory is '" + ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile) + "'.\n"
+                            + "Be sure that bsb is installed and reachable from that directory, "
+                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
+                    ERROR, URL_OPENING_LISTENER));
             return null;
         }
 
@@ -170,20 +182,26 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     @Nullable
-    public String getOCamlVersion() {
-        Process p = null;
-        try {
-            p = Runtime.getRuntime().exec(ModuleConfiguration.getBscPath(m_project) + " -version");
-            p.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            return ocamlVersionExtractor(reader.readLine());
-        } catch (@NotNull InterruptedException | IOException e) {
-            return null;
-        } finally {
-            if (p != null) {
-                p.destroy();
+    public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
+        String bsb = getBsbPath(m_project, sourceFile);
+        String bsc = bsb == null ? null : bsb.replace("bsb.exe", "bsc.exe");
+        if (bsc != null) {
+            Process p = null;
+            try {
+                p = Runtime.getRuntime().exec(bsc + " -version");
+                p.waitFor();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                return ocamlVersionExtractor(reader.readLine());
+            } catch (@NotNull InterruptedException | IOException e) {
+                return null;
+            } finally {
+                if (p != null) {
+                    p.destroy();
+                }
             }
         }
+
+        return "4.02";
     }
 
     private static final Pattern BS_VERSION_REGEXP = Pattern.compile("BuckleScript (\\d\\.\\d.\\d)[^ ]* \\(Using OCaml(\\d\\.\\d+).+\\)");

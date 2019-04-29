@@ -30,7 +30,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     private final Project m_project;
 
-    private InsightManagerImpl(Project project) {
+    private InsightManagerImpl(@NotNull Project project) {
         m_project = project;
     }
 
@@ -52,17 +52,17 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     }
 
     @Override
-    public void downloadRincewindIfNeeded() {
+    public void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile) {
         if (!isDownloaded.get() && !m_project.isDisposed()) {
             LOG.debug("Downloading rincewind in background");
-            ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project));
+            ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project, sourceFile));
         }
     }
 
     @Nullable
     @Override
-    public File getRincewindFile() {
-        String filename = getRincewindFilename();
+    public File getRincewindFile(@NotNull VirtualFile sourceFile) {
+        String filename = getRincewindFilename(sourceFile);
         if (filename == null) {
             return null;
         }
@@ -77,15 +77,15 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Nullable
     @Override
-    public String getRincewindFilename() {
-        String ocamlVersion = BsProcess.getInstance(m_project).getOCamlVersion();
+    public String getRincewindFilename(@NotNull VirtualFile sourceFile) {
+        String ocamlVersion = BsProcess.getInstance(m_project).getOCamlVersion(sourceFile);
         return ocamlVersion == null ? null : "rincewind_" + getOsPrefix() + ocamlVersion + "-" + getAppVersion(ocamlVersion) + ".exe";
     }
 
     @Override
     public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
         if (isDownloaded.get()) {
-            File rincewindFile = getRincewindFile();
+            File rincewindFile = getRincewindFile(sourceFile);
             LOG.debug("rincewind", rincewindFile);
             if (rincewindFile != null) {
                 RincewindProcess.getInstance(m_project).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);

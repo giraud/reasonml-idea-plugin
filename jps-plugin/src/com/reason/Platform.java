@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -16,6 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Platform {
+
+    public static final String LOCAL_BS_PLATFORM = "/node_modules/bs-platform";
+    public static final Charset UTF8 = Charset.forName("UTF-8");
 
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
@@ -81,29 +83,6 @@ public class Platform {
         }
 
         return parent;
-    }
-
-    @Nullable
-    public static String getBinaryPath(@NotNull Project project, @NotNull VirtualFile sourceFile, @Nullable String relativeBinaryPath) {
-        if (relativeBinaryPath == null) {
-            return null;
-        }
-
-        try {
-            URI resource = new URI(relativeBinaryPath);
-            if (resource.isAbsolute()) {
-                String authority = resource.getAuthority();
-                File file = new File((authority == null ? "" : authority) + resource.getPath());
-                return file.exists() ? file.getPath() : null;
-            }
-
-            VirtualFile baseDir = Platform.findBaseRootFromFile(project, sourceFile);
-            VirtualFile absoluteBinary = baseDir.findFileByRelativePath(relativeBinaryPath);
-
-            return absoluteBinary == null ? null : absoluteBinary.getCanonicalPath();
-        } catch (URISyntaxException e) {
-            return null;
-        }
     }
 
     @NotNull

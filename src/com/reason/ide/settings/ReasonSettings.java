@@ -6,10 +6,9 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static com.reason.build.bs.ModuleConfiguration.getBasePath;
 
 @State(
         name = "ReasonSettings",
@@ -87,9 +86,8 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
 
     @NotNull
     public String getWorkingDir(@NotNull VirtualFile sourceFile) {
-        return m_workingDir.isEmpty() ? getBasePath(m_project, sourceFile) : m_workingDir;
+        return m_workingDir.isEmpty() ? Platform.findBaseRootFromFile(m_project, sourceFile).getPath() : m_workingDir;
     }
-
 
     public boolean isRefmtOnSave() {
         return m_refmtOnSave;

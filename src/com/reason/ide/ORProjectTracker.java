@@ -48,22 +48,6 @@ public class ORProjectTracker implements ProjectComponent {
 
     @Override
     public void projectOpened() {
-        if (SystemInfo.is64Bit) {
-            // Try to locate Rincewind
-            if (!getOsPrefix().isEmpty()) {
-                InsightManagerImpl insightManager = (InsightManagerImpl) InsightManagerImpl.getInstance(m_project);
-                File rincewindFile = insightManager.getRincewindFile();
-                if (rincewindFile != null && rincewindFile.exists()) {
-                    m_log.info("Found " + rincewindFile);
-                    insightManager.isDownloaded.set(true);
-                } else {
-                    insightManager.downloadRincewindIfNeeded();
-                }
-            }
-        } else {
-            m_log.info("32Bit system detected, can't use rincewind");
-        }
-
         m_messageBusConnection = m_project.getMessageBus().connect();
 
         m_messageBusConnection.subscribe(PROJECT_ROOTS,

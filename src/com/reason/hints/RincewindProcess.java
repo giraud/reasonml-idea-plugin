@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
+import com.reason.Platform;
 import com.reason.Streams;
-import com.reason.build.bs.ModuleConfiguration;
 import com.reason.ide.ORNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class RincewindProcess implements ProjectComponent {
         LOG.debug("Looking for types for file", sourceFile);
 
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(ModuleConfiguration.getBasePath(m_project, sourceFile)));
+        processBuilder.directory(new File(Platform.findBaseRootFromFile(m_project, sourceFile).getPath()));
 
         Process rincewind = null;
         try {
