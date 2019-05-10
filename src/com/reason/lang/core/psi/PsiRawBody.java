@@ -50,6 +50,18 @@ public class PsiRawBody extends ASTWrapperPsiElement implements PsiLanguageInjec
     @NotNull
     public TextRange getMacroTextRange() {
         IElementType elementType = getNode().getFirstChildNode().getElementType();
-        return elementType == m_types.STRING_VALUE ? new TextRange(1, getTextLength() - 1) : new TextRange(2, getTextLength() - 2);
+        if (elementType == m_types.STRING_VALUE) {
+            int max = getTextLength() - 1;
+            if (1 < max) {
+                return new TextRange(1, max);
+            }
+        } else {
+            int max = getTextLength() - 2;
+            if (2 < max) {
+                return new TextRange(2, max);
+            }
+        }
+
+        return getTextRange();
     }
 }
