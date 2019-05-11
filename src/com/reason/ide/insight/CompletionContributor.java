@@ -69,7 +69,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
                 if (prevNodeType == types.SHARPSHARP) {
                     LOG.debug("previous element is SHARPSHARP");
-                    ObjectCompletionProvider.addCompletions(element, result);
+                    ObjectCompletionProvider.addCompletions(types, element, result);
                     return;
                 }
 

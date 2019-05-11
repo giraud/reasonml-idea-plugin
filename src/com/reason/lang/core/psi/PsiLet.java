@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifiedNamedElement, PsiNamedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
 
@@ -20,10 +21,15 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
 
     boolean isObject();
 
+    boolean isJsObject();
+
     boolean isFunction();
 
     @NotNull
     Collection<PsiRecordField> getObjectFields();
+
+    @NotNull
+    Collection<PsiJsObjectField> getJsObjectFieldsForPath(List<String> path);
 
     @Nullable
     PsiSignature getPsiSignature();
