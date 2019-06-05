@@ -103,9 +103,12 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                         String lookingFor = path.get(prev);
 
                         // fieldName that is referencing current let { "fieldName": currentLet };
-                        String fieldName = ((PsiJsObjectField) element.getParent()).getName();
-                        if (fieldName != null && fieldName.equals(lookingFor)) {
-                            fields.addAll(getJsObjectFields(let, visited, path, offset));
+                        PsiElement elementParent = element.getParent();
+                        if (elementParent instanceof PsiJsObjectField) {
+                            String fieldName = ((PsiJsObjectField) element.getParent()).getName();
+                            if (fieldName != null && fieldName.equals(lookingFor)) {
+                                fields.addAll(getJsObjectFields(let, visited, path, offset));
+                            }
                         }
                     }
                 }
