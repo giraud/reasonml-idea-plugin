@@ -7,10 +7,11 @@ import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiTypeElementProvider;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
@@ -138,8 +139,10 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
             if (resolvedElement instanceof PsiTypeConstrName) {
                 PsiType type = (PsiType) resolvedElement.getParent();
+                String desc = "type <b>" + resolvedElement.getText() + "</b>";
+                String path = ORUtil.getQualifiedPath(type);
 
-                return "<span style='font-style:italic'>" + Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile()) + "</span><br/>Type <b>" + resolvedElement.getText() + "</b><br/><pre style='white-space:pre-wrap'><code>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</code></pre>";
+                return "[<i>" + type.getContainingFile() + "</i>] " + path + "<br/>" + desc + "<hr/><pre style='white-space:pre-wrap'><code>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</code></pre>";
             }
 
             if (resolvedElement instanceof PsiSignatureElement) {
@@ -147,7 +150,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 if (!signature.isEmpty()) {
                     String sig = signature.asString(element.getLanguage());
                     if (resolvedElement instanceof PsiQualifiedNamedElement) {
-                        return ((PsiQualifiedNamedElement) resolvedElement).getQualifiedName() + "<br/>" + sig;
+                        String elementType = PsiTypeElementProvider.getType(resolvedElement);
+                        String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
+                        String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
+
+                        return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + "<hr/>" + sig;
                     }
                     return sig;
                 }
@@ -155,9 +162,10 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
             // No signature found, but resolved
             if (resolvedElement instanceof PsiQualifiedNamedElement) {
-                String type = PsiTypeElementProvider.getType(resolvedElement);
-                String desc = (type == null ? "" : type + " ") + ((PsiQualifiedNamedElement) resolvedElement).getQualifiedName();
-                return "<span style='font-style:italic'>" +Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile()) + "</span><br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<br/>unknown signature");
+                String elementType = PsiTypeElementProvider.getType(resolvedElement);
+                String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
+                String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
+                return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<hr/>unknown signature");
             }
         }
 

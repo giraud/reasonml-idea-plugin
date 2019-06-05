@@ -215,7 +215,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getQualifiedName(@NotNull PsiNamedElement element) {
+    public static String getQualifiedPath(@NotNull PsiNamedElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();
@@ -231,6 +231,11 @@ public class ORUtil {
             }
         }
 
-        return ((FileBase) element.getContainingFile()).getQualifiedName() + (path == null || path.isEmpty() ? "" : "." + path) + "." + element.getName();
+        return ((FileBase) element.getContainingFile()).getQualifiedName() + (path == null || path.isEmpty() ? "" : "." + path);
+    }
+
+    @NotNull
+    public static String getQualifiedName(@NotNull PsiNamedElement element) {
+        return getQualifiedPath(element) + "." + element.getName();
     }
 }
