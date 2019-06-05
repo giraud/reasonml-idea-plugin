@@ -9,6 +9,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
@@ -138,13 +139,25 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof PsiTypeConstrName) {
                 PsiType type = (PsiType) resolvedElement.getParent();
 
-                return "<span style='font-style:italic'>[" + Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile()) + "]</span><br/>Type <b>" + resolvedElement.getText() + "</b><br/><pre style='white-space:pre-wrap'><code>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</code></pre>";
+                return "<span style='font-style:italic'>" + Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile()) + "</span><br/>Type <b>" + resolvedElement.getText() + "</b><br/><pre style='white-space:pre-wrap'><code>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</code></pre>";
             }
+
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {
-                    return signature.asString(element.getLanguage());
+                    String sig = signature.asString(element.getLanguage());
+                    if (resolvedElement instanceof PsiQualifiedNamedElement) {
+                        return ((PsiQualifiedNamedElement) resolvedElement).getQualifiedName() + "<br/>" + sig;
+                    }
+                    return sig;
                 }
+            }
+
+            // No signature found, but resolved
+            if (resolvedElement instanceof PsiQualifiedNamedElement) {
+                String type = PsiTypeElementProvider.getType(resolvedElement);
+                String desc = (type == null ? "" : type + " ") + ((PsiQualifiedNamedElement) resolvedElement).getQualifiedName();
+                return "<span style='font-style:italic'>" +Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile()) + "</span><br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<br/>unknown signature");
             }
         }
 
