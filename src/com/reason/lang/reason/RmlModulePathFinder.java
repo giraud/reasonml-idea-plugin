@@ -39,7 +39,15 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             if (item instanceof FileBase && include.contains(containingFile)) {
                 qualifiedNames.add(((FileBase) item).asModuleName());
                 break;
-            } else if (item instanceof PsiOpen || (include.contains(includedModules) && item instanceof PsiInclude)) {
+            }
+            else if (item instanceof PsiLocalOpen) {
+                String openName = extractPathName(item, RmlTypes.INSTANCE);
+                // Add local open value to all previous elements
+                List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
+                qualifiedNames.addAll(withOpenQualifier);
+                qualifiedNames.add(openName);
+            }
+            else if (item instanceof PsiOpen || (include.contains(includedModules) && item instanceof PsiInclude)) {
                 String openName = ((PsiQualifiedElement) item).getQualifiedName();
                 // Add open value to all previous elements
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
@@ -55,11 +63,7 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
 
             PsiElement prevItem = item.getPrevSibling();
             if (prevItem == null) {
-                PsiElement parent = item.getParent();
-                if (parent instanceof PsiLocalOpen) {
-                    qualifiedNames.add(((PsiLocalOpen) parent).getName() + pathExtension);
-                }
-                item = parent;
+                item = item.getParent();
             } else {
                 item = prevItem;
             }
