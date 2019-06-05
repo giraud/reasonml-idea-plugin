@@ -117,13 +117,14 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         PsiFile psiFile = originalElement.getContainingFile();
         TextEditor editor = (TextEditor) FileEditorManager.getInstance(originalElement.getProject()).getSelectedEditor(psiFile.getVirtualFile());
 
+        String inferredType = "";
         if (editor != null) {
             LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
             Map<LogicalPosition, ORSignature> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
             if (signaturesContext != null) {
                 ORSignature elementSignature = signaturesContext.get(elementPosition);
                 if (elementSignature != null) {
-                    return elementSignature.asString(element.getLanguage());
+                    inferredType = elementSignature.asString(element.getLanguage());
                 }
             }
         }
@@ -166,7 +167,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 String elementType = PsiTypeElementProvider.getType(resolvedElement);
                 String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
                 String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
-                return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<hr/>unknown signature");
+                return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<hr/>" + (inferredType.isEmpty() ? "<i>unknown signature</i>" : "<i>inferred:</i> " + inferredType));
             }
         }
 
