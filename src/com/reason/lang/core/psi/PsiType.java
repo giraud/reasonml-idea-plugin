@@ -20,4 +20,6 @@ public interface PsiType extends PsiNamedElement, PsiQualifiedNamedElement, Navi
 
     @NotNull
     Collection<PsiVariantDeclaration> getVariants();
+
+    boolean isAbstract();
 }

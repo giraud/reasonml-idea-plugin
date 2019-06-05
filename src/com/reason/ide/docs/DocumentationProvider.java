@@ -142,7 +142,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 String desc = "type <b>" + resolvedElement.getText() + "</b>";
                 String path = ORUtil.getQualifiedPath(type);
 
-                return "[<i>" + type.getContainingFile() + "</i>] " + path + "<br/>" + desc + "<hr/><pre style='white-space:pre-wrap'><code>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</code></pre>";
+                String typeBinding = type.isAbstract() ? "<i>This is an abstract type</i>" : "<pre style='white-space:pre-wrap'>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</pre>";
+                return "[<i>" + type.getContainingFile() + "</i>] " + path + "<br/>" + desc + "<hr/>" + typeBinding;
             }
 
             if (resolvedElement instanceof PsiSignatureElement) {

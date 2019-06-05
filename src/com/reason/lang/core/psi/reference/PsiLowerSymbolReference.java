@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
@@ -71,11 +70,15 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             return null;
         }
 
-        PsiNamedElement parent = PsiTreeUtil.getParentOfType(myElement, PsiLet.class, PsiExternal.class, PsiVal.class, PsiType.class);
+        PsiElement parent = myElement.getParent();
+        if (parent instanceof PsiTypeConstrName) {
+            parent = parent.getParent();
+        }
+        PsiNamedElement namedParent = parent instanceof PsiNamedElement ? (PsiNamedElement) parent : null;
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        if (parent != null && parent.getNameIdentifier() == myElement) {
+        if (namedParent != null && namedParent.getNameIdentifier() == myElement) {
             return null;
         }
 
@@ -168,6 +171,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                 Integer typePosition = potentialPaths.get(typeResult.getQualifiedName());
                 if (typePosition < resultPosition) {
                     result = typeResult;
+                    resultPosition = typePosition;
                     LOG.debug("  Found intermediate result", typeResult, resultPosition);
                 } else {
                     LOG.debug("  skip intermediate result", typeResult, typePosition);
@@ -179,7 +183,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("»» " + result + " " + result.getNameIdentifier());
         }
 
-        return result == null ? result : result.getNameIdentifier();
+        return result == null ? null : result.getNameIdentifier();
     }
 
     @NotNull
@@ -198,7 +202,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         Map<String, Integer> result = new THashMap<>();
 
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeALl,false);
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeALl, false);
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(s);

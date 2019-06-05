@@ -25,6 +25,10 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
         String path = extractPathName(element, RmlTypes.INSTANCE);
         String pathExtension = path.isEmpty() ? "" : "." + path;
 
+        if (!path.isEmpty()) {
+            qualifiedNames.add(path);
+        }
+
         // Walk backward until top of the file is reached, trying to find local opens and opens/includes
         PsiElement item = element;
         while (item != null) {
@@ -61,9 +65,6 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
             }
         }
 
-        if (!path.isEmpty()) {
-            qualifiedNames.add(path);
-        }
         qualifiedNames.add("Pervasives");
 
         return qualifiedNames;
