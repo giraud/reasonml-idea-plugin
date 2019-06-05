@@ -262,7 +262,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     add(mark(builder, functionParameter, m_types.C_FUN_PARAM));
         }
 
-        if (state.isCurrentResolution(signatureItem) && !state.isCurrentContext(recordSignature)) {
+        if ((state.isCurrentResolution(signatureItem) || state.isCurrentResolution(signatureItemEq)) && !state.isCurrentContext(recordSignature)) {
             state.popEnd();
             state.advance();
             state.add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
@@ -842,7 +842,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     advance().
                     add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(letNamedSignature)) {
-            state.add(markScope(builder, state.currentContext(), signatureScope, m_types.LPAREN, m_types.LPAREN)).
+            // A signature on a let definition
+            //   let x : |>(<| .. )
+            state.add(markScope(builder, signatureScope, signatureScope, m_types.LPAREN, m_types.LPAREN)).
                     advance().
                     add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(moduleNamedEq) && state.previousElementType1 != m_types.UIDENT) {
@@ -873,7 +875,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.complete();
             state.add(markScope(builder, binaryCondition, m_types.C_BIN_CONDITION, m_types.LPAREN).complete());
         } else if (state.isCurrentResolution(patternMatch)) {
-            // I's a constructor
+            // It's a constructor
             // | Some |>(<| .. ) =>     It's a constructor
             state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
         } else if (state.previousElementType1 == m_types.LIDENT) {
@@ -1032,6 +1034,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     updateCurrentResolution(externalNamedSignatureEq);
         } else if (state.isCurrentResolution(clazzNamed) || state.isCurrentResolution(clazzConstructor)) {
             state.updateCurrentResolution(clazzNamedEq);
+        } else if (state.isCurrentResolution(signatureItem)) {
+            state.updateCurrentResolution(signatureItemEq);
         }
     }
 

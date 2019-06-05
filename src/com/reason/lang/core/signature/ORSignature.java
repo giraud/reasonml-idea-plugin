@@ -167,6 +167,9 @@ public class ORSignature {
             }
             SignatureType type = m_types[i];
             sb.append(type.value);
+            if (!type.mandatory && !type.defaultValue.isEmpty()) {
+                sb.append("=").append(type.defaultValue);
+            }
         }
 
         if (reason && 2 < m_types.length) {

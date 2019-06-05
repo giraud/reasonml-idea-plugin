@@ -130,13 +130,19 @@ public enum ParserScopeEnum {
     tryBodyWith,
     tryBodyWithHandler,
 
+    signature,
+    signatureScope,
+    signatureParams,
+    signatureItem,
+    signatureItemEq,
+
     valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
     moduleInstanciation, moduleNamedColonWith, moduleNamedWithType, doLoop, letBinding, scope,
-    moduleNamedSignatureEq, array, signature, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
+    moduleNamedSignatureEq, array,  objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin,
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
-    patternMatchConstructor, maybeRecordUsage, recordUsage, signatureItem, letNamedBindingFunction,
-    typeBinding, signatureScope, recordFieldAnnotation, signatureParams, option, optionParameter, patternMatchVariant,
+    patternMatchConstructor, maybeRecordUsage, recordUsage, letNamedBindingFunction,
+    typeBinding, recordFieldAnnotation, option, optionParameter, patternMatchVariant,
     name, variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
 }

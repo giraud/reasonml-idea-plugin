@@ -107,4 +107,10 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertEquals("show option", sigItem.asText(OclLanguage.INSTANCE));
     }
 
+    public void testDefaultOptional() {
+        PsiLet let = first(letExpressions(parseCode("let createAction: (string, payload, ~meta: 'meta=?, unit) => opaqueFsa;")));
+        ORSignature signature = let.getORSignature();
+        assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa", signature.asString(RmlLanguage.INSTANCE));
+    }
+
 }
