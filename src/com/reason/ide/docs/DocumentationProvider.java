@@ -7,8 +7,10 @@ import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
@@ -133,6 +135,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 resolvedElement = resolvedElement.getParent();
             }
 
+            if (resolvedElement instanceof PsiTypeConstrName) {
+                PsiType type = (PsiType) resolvedElement.getParent();
+
+                return "<span style='font-style:italic'>[" + Platform.removeProjectDir(resolvedElement.getProject(), resolvedElement.getContainingFile()) + "]</span><br/>Type <b>" + resolvedElement.getText() + "</b><br/><pre style='white-space:pre-wrap'><code>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</code></pre>";
+            }
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {

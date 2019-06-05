@@ -3,6 +3,7 @@ package com.reason;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -95,6 +96,12 @@ public class Platform {
         } catch (IllegalArgumentException e) {
             return path;
         }
+    }
+
+    @NotNull
+    public static String removeProjectDir(@NotNull Project project, @NotNull PsiFile file) {
+        VirtualFile virtualFile = file.getVirtualFile();
+        return (virtualFile == null) ? "" : removeProjectDir(project, virtualFile.getPath());
     }
 
     @Nullable

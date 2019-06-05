@@ -7,6 +7,7 @@ import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.odoc.ODocConverter;
 import com.reason.lang.odoc.ODocLexer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.reason.lang.odoc.ODocMarkup.*;
 
@@ -32,5 +33,15 @@ class DocFormatter {
         sb.append(HEADER_END);
 
         return sb.toString();
+    }
+
+    @NotNull
+    static String escapeCodeForHtml(@Nullable PsiElement code) {
+        if (code == null) {
+            return "";
+        }
+
+        String s = code.getText().replaceAll("<", "&lt;");
+        return s;
     }
 }
