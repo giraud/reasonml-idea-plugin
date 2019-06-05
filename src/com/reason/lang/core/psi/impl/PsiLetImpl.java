@@ -38,7 +38,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     //endregion
 
     @NotNull
-    private static List<PsiJsObjectField> _getJsObjectFields(@NotNull PsiElement parent, @NotNull WeakHashMap<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
+    private static List<PsiJsObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
         List<PsiJsObjectField> fields = new ArrayList<>();
         PsiElement prevParent = null;
         boolean isAdding = false;
@@ -46,7 +46,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         // depth first elements
         Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(parent, PsiJsObjectField.class, PsiLowerSymbol.class);
         for (PsiElement element : elements) {
-            if (visited.get(element) != null) continue;
+            if (visited.containsKey(element)) {
+                continue;
+            }
             visited.put(element, true);
 
             // { "fieldName": currentLet } - element is "fieldName"
@@ -80,7 +82,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
             }
             // { "fieldName": currentLet } - element is currentLet
             else if (element instanceof PsiLowerSymbol) {
-                if (path.size() == 0) continue;
+                if (path.isEmpty()) {
+                    continue;
+                }
 
                 String name = ((PsiLowerSymbol) element).getName();
 
@@ -88,8 +92,12 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                     Collection<PsiLet> lets = PsiFinder.getInstance(element.getProject()).findLets(name, ORFileType.interfaceOrImplementation);
                     if (!lets.isEmpty()) {
                         PsiLet let = lets.iterator().next();
-                        if (let == null) continue;
-                        if (let == parent) continue;
+                        if (let == null) {
+                            continue;
+                        }
+                        if (let == parent) {
+                            continue;
+                        }
 
                         int prev = offset > 0 ? offset - 1 : 0;
                         String lookingFor = path.get(prev);
@@ -97,7 +105,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                         // fieldName that is referencing current let { "fieldName": currentLet };
                         String fieldName = ((PsiJsObjectField) element.getParent()).getName();
                         if (fieldName != null && fieldName.equals(lookingFor)) {
-                            fields.addAll(_getJsObjectFields(let, visited, path, offset));
+                            fields.addAll(getJsObjectFields(let, visited, path, offset));
                         }
                     }
                 }
@@ -182,7 +190,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
 
     @Override
-    public boolean isObject() {
+    public boolean isRecord() {
         return findChildByClass(PsiRecord.class) != null;
     }
 
@@ -193,15 +201,15 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     @NotNull
     @Override
-    public Collection<PsiRecordField> getObjectFields() {
+    public Collection<PsiRecordField> getRecordFields() {
         return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
     }
 
     @NotNull
     @Override
-    public Collection<PsiJsObjectField> getJsObjectFieldsForPath(List<String> path) {
+    public Collection<PsiJsObjectField> getJsObjectFieldsForPath(@NotNull List<String> path) {
         WeakHashMap<PsiElement, Boolean> visited = new WeakHashMap<>();
-        return _getJsObjectFields(this, visited, new ArrayList<>(path), 0);
+        return getJsObjectFields(this, visited, new ArrayList<>(path), 0);
     }
 
     @Override

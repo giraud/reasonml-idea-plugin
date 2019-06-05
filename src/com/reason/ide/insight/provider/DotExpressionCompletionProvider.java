@@ -118,7 +118,7 @@ public class DotExpressionCompletionProvider {
                 // need filtering
 
                 for (PsiLet expression : lets) {
-                    for (PsiRecordField recordField : expression.getObjectFields()) {
+                    for (PsiRecordField recordField : expression.getRecordFields()) {
                         resultSet.addElement(
                                 LookupElementBuilder.
                                         create(recordField).

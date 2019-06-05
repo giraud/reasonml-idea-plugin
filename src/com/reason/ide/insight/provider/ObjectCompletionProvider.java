@@ -63,8 +63,8 @@ public class ObjectCompletionProvider {
 
         if (let == null) return;
 
-        if (let.isObject()) {
-            Collection<PsiRecordField> fields = let.getObjectFields();
+        if (let.isRecord()) {
+            Collection<PsiRecordField> fields = let.getRecordFields();
             for (PsiRecordField field : fields) {
                 String name = field.getName();
                 if (name != null) {

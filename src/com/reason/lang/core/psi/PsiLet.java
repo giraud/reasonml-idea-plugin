@@ -19,17 +19,17 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
     @Nullable
     PsiFunction getFunction();
 
-    boolean isObject();
+    boolean isRecord();
 
     boolean isJsObject();
 
     boolean isFunction();
 
     @NotNull
-    Collection<PsiRecordField> getObjectFields();
+    Collection<PsiRecordField> getRecordFields();
 
     @NotNull
-    Collection<PsiJsObjectField> getJsObjectFieldsForPath(List<String> path);
+    Collection<PsiJsObjectField> getJsObjectFieldsForPath(@NotNull List<String> path);
 
     @Nullable
     PsiSignature getPsiSignature();
