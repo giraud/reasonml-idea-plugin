@@ -4,10 +4,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 
-public class ResolveLetElementTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ResolveExternalElementTest extends LightPlatformCodeInsightFixtureTestCase {
 
     public void testLocalOpenWithParens() {
-        myFixture.configureByText("A.re", "module A1 = { let a = 3; };");
+        myFixture.configureByText("A.re", "module A1 = { external a : int = \"\"; };");
         myFixture.configureByText("B.re", "let b = A.(A1.a<caret>);");
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
@@ -15,7 +15,7 @@ public class ResolveLetElementTest extends LightPlatformCodeInsightFixtureTestCa
     }
 
     public void testLocalOpenWithParens2() {
-        myFixture.configureByText("A.re", "module A1 = { let a = 3; };");
+        myFixture.configureByText("A.re", "module A1 = { external a : int = \"\"; };");
         myFixture.configureByText("B.re", "let a = A.A1.(a<caret>);");
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
@@ -23,7 +23,7 @@ public class ResolveLetElementTest extends LightPlatformCodeInsightFixtureTestCa
     }
 
     public void testLocalOpenWithPipeFirst() {
-        myFixture.configureByText("A.re", "module A1 = { let add = x => x + 3; };");
+        myFixture.configureByText("A.re", "module A1 = { external add : int => int = \"\"; };");
         myFixture.configureByText("B.re", "let x = A.A1.(x->add<caret>);");
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();

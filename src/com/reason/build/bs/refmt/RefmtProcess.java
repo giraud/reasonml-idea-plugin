@@ -80,7 +80,7 @@ public class RefmtProcess implements ProjectComponent {
                 }
             }
         } catch (@NotNull IOException | RuntimeException e) {
-            LOG.error(e.getMessage());
+            LOG.warn(e.getMessage());
         } finally {
             if (refmt != null) {
                 refmt.destroyForcibly();
