@@ -62,7 +62,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             m_mandatory = !parameter.hasDefaultValue() && hmSignature.isMandatory(0);
         }
 
-        TagPropertyImpl(String name, String type, boolean mandatory) {
+        TagPropertyImpl(@Nullable String name, String type, boolean mandatory) {
             m_name = name;
             m_type = type;
             m_mandatory = mandatory;

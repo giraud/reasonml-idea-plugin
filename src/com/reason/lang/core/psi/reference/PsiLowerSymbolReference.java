@@ -179,6 +179,33 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             }
         }
 
+        // Try to find type fields !
+
+        Collection<PsiRecordField> recordFields = psiFinder.findRecordFields(m_referenceName, interfaceOrImplementation);
+        LOG.debug("  record fields", types);
+
+        if (!recordFields.isEmpty()) {
+            // Filter the fields, keep the ones with the same qualified name
+            List<PsiRecordField> filteredFields = recordFields.stream().filter(element -> {
+                String pn = element.getPathName();
+                return m_referenceName.equals(pn) || potentialPaths.containsKey(pn);
+            }).collect(toList());
+            LOG.debug("  filtered fields", filteredFields);
+
+            for (PsiRecordField fieldResult : filteredFields) {
+                Integer fieldPosition = potentialPaths.get(fieldResult.getPathName());
+                if (fieldPosition != null) {
+                    if (fieldPosition < resultPosition) {
+                        result = fieldResult;
+                        resultPosition = fieldPosition;
+                        LOG.debug("  Found intermediate result", fieldResult, resultPosition);
+                    } else {
+                        LOG.debug("  skip intermediate result", fieldResult, fieldPosition);
+                    }
+                }
+            }
+        }
+
         if (result != null && LOG.isDebugEnabled()) {
             LOG.debug("»» " + result + " " + result.getNameIdentifier());
         }

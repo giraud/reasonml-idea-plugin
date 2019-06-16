@@ -4,6 +4,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
+import com.reason.lang.core.psi.impl.PsiRecordFieldImpl;
 import com.reason.lang.core.stub.PsiLetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

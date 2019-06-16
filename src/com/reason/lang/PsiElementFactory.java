@@ -79,7 +79,7 @@ public class PsiElementFactory {
         } else if (type == types.C_MIXIN_FIELD) {
             return new PsiMixinField(node);
         } else if (type == types.C_RECORD_FIELD) {
-            return new PsiRecordField(types, node);
+            return new PsiRecordFieldImpl(types, node);
         } else if (type == types.C_INTERPOLATION_EXPR) {
             return new PsiInterpolation(node);
         } else if (type == types.C_SIG_EXPR) {

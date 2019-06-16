@@ -19,6 +19,7 @@ public class OclTypes extends ORTypes {
         C_MODULE_STMT = new PsiModuleStubElementType("C_MODULE_STMT", OclLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
         C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", OclLanguage.INSTANCE);
+        C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
 
         // Composite element types
 
@@ -57,7 +58,6 @@ public class OclTypes extends ORTypes {
         C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
         C_RAW = new ORCompositeElementType("C_RAW", OclLanguage.INSTANCE);
         C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", OclLanguage.INSTANCE);
-        C_RECORD_FIELD = new ORCompositeElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
         C_SIG_EXPR = new ORCompositeElementType("C_SIG_EXPR", OclLanguage.INSTANCE);
         C_SIG_ITEM = new ORCompositeElementType("C_SIG_ITEM", OclLanguage.INSTANCE);
         C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);

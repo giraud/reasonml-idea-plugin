@@ -59,12 +59,17 @@ public final class PsiFinder implements ProjectComponent {
 
     @NotNull
     public Collection<PsiModule> findComponents(@NotNull GlobalSearchScope scope) {
+        Project project = scope.getProject();
+        if (project == null) {
+            return Collections.emptyList();
+        }
+
         FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
         ModuleComponentIndex index = ModuleComponentIndex.getInstance();
-        PsiManager psiManager = PsiManager.getInstance(scope.getProject());
+        PsiManager psiManager = PsiManager.getInstance(project);
         Bucklescript bucklescript = BucklescriptManager.getInstance(m_project);
 
-        List<PsiModule> result = fileModuleIndexService.getComponents(scope.getProject(), scope).
+        List<PsiModule> result = fileModuleIndexService.getComponents(project, scope).
                 stream().
                 filter(bucklescript::isDependency).
                 map(vFile -> (FileBase) psiManager.findFile(vFile)).
@@ -154,8 +159,7 @@ public final class PsiFinder implements ProjectComponent {
             }
         }
 
-        List<PsiModule> result = new ArrayList<>();
-        result.addAll(intfNames.values());
+        List<PsiModule> result = new ArrayList<>(intfNames.values());
         for (Map.Entry<String, PsiModule> entry : implNames.entrySet()) {
             if (!intfNames.containsKey(entry.getKey())) {
                 result.add(entry.getValue());
@@ -195,6 +199,11 @@ public final class PsiFinder implements ProjectComponent {
     @NotNull
     public Collection<PsiType> findTypes(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("types", name, fileType, IndexKeys.TYPES, PsiType.class, allScope(m_project));
+    }
+
+    @NotNull
+    public Collection<PsiRecordField> findRecordFields(@NotNull String name, @NotNull ORFileType fileType) {
+        return findLowerSymbols("record fields", name, fileType, IndexKeys.RECORD_FIELDS, PsiRecordField.class, allScope(m_project));
     }
 
     @NotNull
@@ -254,8 +263,7 @@ public final class PsiFinder implements ProjectComponent {
             }
         }
 
-        List<T> result = new ArrayList<>();
-        result.addAll(intfNames.values());
+        List<T> result = new ArrayList<>(intfNames.values());
         for (Map.Entry<String, T> entry : implNames.entrySet()) {
             if (!intfNames.containsKey(entry.getKey())) {
                 result.add(entry.getValue());
@@ -295,7 +303,7 @@ public final class PsiFinder implements ProjectComponent {
                 String qualifiedName = variant.getQualifiedName();
                 return qualifiedName != null && qualifiedName.startsWith(path);
             }).collect(Collectors.toList());
-        };
+        }
 
         return variants;
     }
@@ -396,7 +404,7 @@ public final class PsiFinder implements ProjectComponent {
         return null;
     }
 
-    public Collection<IndexedFileModule> findModulesForNamespace(String namespace, ORFileType fileType, GlobalSearchScope scope) {
+    public Collection<IndexedFileModule> findModulesForNamespace(String namespace, GlobalSearchScope scope) {
         return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
     }
 

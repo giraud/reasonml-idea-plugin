@@ -56,7 +56,7 @@ public class DotExpressionCompletionProvider {
 
                 // Might be a virtual namespace
 
-                Collection<IndexedFileModule> modulesForNamespace = psiFinder.findModulesForNamespace(upperName, interfaceOrImplementation, scope);
+                Collection<IndexedFileModule> modulesForNamespace = psiFinder.findModulesForNamespace(upperName, scope);
                 if (!modulesForNamespace.isEmpty()) {
                     LOG.debug("  found namespace files", modulesForNamespace);
 
