@@ -54,9 +54,7 @@ public class RincewindProcess implements ProjectComponent {
 
                 reader.lines().forEach(line -> {
                     if (!line.isEmpty()) {
-                        if (LOG.isTraceEnabled()) {
-                            LOG.debug(line);
-                        }
+                        LOG.trace(line);
                         int entryPos = line.indexOf("|");
                         String entry = line.substring(0, entryPos);
                         if (!"__".equals(entry)) {

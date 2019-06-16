@@ -167,4 +167,9 @@ public class Log {
     public void warn(String msg) {
         m_log.warn(msg);
     }
+
+    public void trace(String msg) {
+        if (m_log.isTraceEnabled())
+            m_log.trace(msg);
+    }
 }
