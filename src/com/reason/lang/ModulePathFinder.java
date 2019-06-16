@@ -12,7 +12,7 @@ public interface ModulePathFinder {
         includedModules
     }
 
-    EnumSet<Includes> includeALl = EnumSet.of(Includes.containingFile, Includes.includedModules);
+    EnumSet<Includes> includeAll = EnumSet.of(Includes.containingFile, Includes.includedModules);
 
     @NotNull
     List<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes);

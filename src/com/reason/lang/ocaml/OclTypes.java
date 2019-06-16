@@ -17,7 +17,7 @@ public class OclTypes extends ORTypes {
         C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
         C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", OclLanguage.INSTANCE);
         C_MODULE_STMT = new PsiModuleStubElementType("C_MODULE_STMT", OclLanguage.INSTANCE);
-        C_VARIANT_DECL = new PsiVariantDeclarationStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
+        C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
         C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", OclLanguage.INSTANCE);
 
         // Composite element types

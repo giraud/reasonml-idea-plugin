@@ -174,7 +174,13 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 String elementType = PsiTypeElementProvider.getType(resolvedElement);
                 String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
                 String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
-                return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<hr/>" + (inferredType.isEmpty() ? "<i>unknown signature</i>" : "<i>inferred:</i> " + inferredType));
+
+                String sig = inferredType.isEmpty() ? "<i>unknown signature</i>" : "<i>inferred:</i> " + inferredType;
+                if (resolvedElement instanceof PsiVariantDeclaration) {
+                    sig = "type " + ((PsiType) resolvedElement.getParent().getParent()).getName();
+                }
+
+                return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<hr/>" + sig);
             }
         }
 

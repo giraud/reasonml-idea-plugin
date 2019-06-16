@@ -21,10 +21,11 @@ import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static com.reason.lang.ModulePathFinder.includeALl;
+import static com.reason.lang.ModulePathFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
@@ -104,14 +105,21 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeALl, true);
+        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, true);
 
         List<PsiQualifiedNamedElement> result = paths.stream().
-                map(path -> path + "." + m_referenceName).
-                map(qn -> {
+                map(path -> {
+                    String qn = path + "." + m_referenceName;
                     PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, scope);
                     if (variant != null) {
                         return variant;
+                    }
+
+                    // Trying to resolve variant from name,
+                    // Variant might be locally open with module name only - and not including type name... qn can't be used
+                    Collection<PsiVariantDeclaration> variants = psiFinder.findVariantByName(path, m_referenceName, scope);
+                    if (variants.size() == 1) {
+                        return variants.iterator().next();
                     }
 
                     PsiQualifiedNamedElement exception = psiFinder.findException(qn, interfaceOrImplementation, scope);

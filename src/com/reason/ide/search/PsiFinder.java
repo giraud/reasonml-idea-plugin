@@ -279,11 +279,25 @@ public final class PsiFinder implements ProjectComponent {
         }
 
         Collection<PsiVariantDeclaration> variants = VariantFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
-        if (variants.isEmpty()) {
-            return null;
+        return variants.isEmpty() ? null : variants.iterator().next();
+    }
+
+    @NotNull
+    public Collection<PsiVariantDeclaration> findVariantByName(@Nullable String path, @Nullable String name, @NotNull GlobalSearchScope scope) {
+        if (name == null) {
+            return Collections.emptyList();
         }
 
-        return variants.iterator().next();
+        Collection<PsiVariantDeclaration> variants = VariantIndex.getInstance().get(name, m_project, scope);
+        if (!variants.isEmpty() && path != null) {
+            // Keep variants that have correct path
+            return variants.stream().filter(variant -> {
+                String qualifiedName = variant.getQualifiedName();
+                return qualifiedName != null && qualifiedName.startsWith(path);
+            }).collect(Collectors.toList());
+        };
+
+        return variants;
     }
 
     @Nullable

@@ -14,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class PsiVariantDeclarationStubElementType extends IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
+public class PsiVariantStubElementType extends IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
 
-    public PsiVariantDeclarationStubElementType(@NotNull String name, Language language) {
+    public PsiVariantStubElementType(@NotNull String name, Language language) {
         super(name, language);
     }
 
@@ -45,6 +45,11 @@ public class PsiVariantDeclarationStubElementType extends IStubElementType<PsiVa
     }
 
     public void indexStub(@NotNull final PsiVariantDeclarationStub stub, @NotNull final IndexSink sink) {
+        String name = stub.getName();
+        if (name != null) {
+            sink.occurrence(IndexKeys.VARIANTS, name);
+        }
+
         String fqn = stub.getQualifiedName();
         if (fqn != null) {
             sink.occurrence(IndexKeys.VARIANTS_FQN, fqn.hashCode());

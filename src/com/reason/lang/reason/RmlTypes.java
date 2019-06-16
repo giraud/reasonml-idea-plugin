@@ -17,7 +17,7 @@ public class RmlTypes extends ORTypes {
         C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", RmlLanguage.INSTANCE);
         C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", RmlLanguage.INSTANCE);
         C_MODULE_STMT = new PsiModuleStubElementType("C_MODULE_STMT", RmlLanguage.INSTANCE);
-        C_VARIANT_DECL = new PsiVariantDeclarationStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
+        C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
         C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", RmlLanguage.INSTANCE);
 
         // Composite element types
