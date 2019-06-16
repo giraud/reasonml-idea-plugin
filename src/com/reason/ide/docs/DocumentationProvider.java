@@ -7,6 +7,7 @@ import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
@@ -133,6 +134,12 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
+
+            if (resolvedElement instanceof FileBase) {
+                FileBase resolvedFile = (FileBase) resolvedElement;
+                String relative_path = Platform.removeProjectDir(resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
+                return relative_path + "<br/>" + resolvedElement.getContainingFile();
+            }
 
             if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
                 resolvedElement = resolvedElement.getParent();
