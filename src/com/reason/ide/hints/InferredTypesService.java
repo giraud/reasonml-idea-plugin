@@ -1,6 +1,6 @@
 package com.reason.ide.hints;
 
-import com.intellij.lang.Language;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -13,20 +13,17 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.hints.InsightManager;
-import com.reason.ide.docs.DocumentationProvider;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.FileModuleIndexService;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.FileSystems;
+
+import static com.reason.ide.FileManager.findCmtFileFromSource;
 
 public class InferredTypesService {
 
@@ -42,30 +39,27 @@ public class InferredTypesService {
                 Document document = selectedTextEditor.getDocument();
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
                 if (psiFile != null) {
+                    // Try to get the inferred types cached at the psi file user data
                     VirtualFile sourceFile = psiFile.getVirtualFile();
-                    FileType fileType = sourceFile.getFileType();
-                    if (FileHelper.isCompilable(fileType) && !FileHelper.isInterface(fileType)) {
-                        InsightManager insightManager = project.getComponent(InsightManager.class);
+                    Application application = ApplicationManager.getApplication();
 
-                        // All file names are unique, use that to get the corresponding cmt
-                        String moduleName = ((FileBase) psiFile).asModuleName();
+                    InferredTypes signatures = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+                    if (signatures == null) {
+                        FileType fileType = sourceFile.getFileType();
+                        if (FileHelper.isCompilable(fileType) && !FileHelper.isInterface(fileType)) {
+                            InsightManager insightManager = project.getComponent(InsightManager.class);
 
-                        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-                        if (!DumbService.isDumb(project)) {
-                            String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
-                            PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
-
-                            if (cmtFiles.length == 1) {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + "), querying types");
-                                }
-                                insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFiles[0].getVirtualFile().getPath()), types -> ApplicationManager.getApplication().runReadAction(() -> annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile)));
-                            } else {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("File module for " + filename + ".cmt is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
+                            if (!DumbService.isDumb(project)) {
+                                LOG.debug("Reading files from file");
+                                PsiFile cmtFile = findCmtFileFromSource(project, (FileBase) psiFile);
+                                if (cmtFile != null) {
+                                    insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath()), types -> application.runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
                                 }
                             }
                         }
+                    } else {
+                        LOG.debug("Signatures found in user data cache");
+                        application.runReadAction(() -> annotatePsiExpressions(project, signatures, sourceFile));
                     }
                 }
             }
@@ -74,11 +68,19 @@ public class InferredTypesService {
         }
     }
 
-    static void annotateFile(@NotNull Project project, @NotNull Language lang, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
-        ApplicationManager.getApplication().runWriteAction(() -> annotatePsiExpressions(project, lang, types, sourceFile));
+    public static void annotateFile(@NotNull Project project, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
+        if (types == null || sourceFile == null) {
+            return;
+        }
+
+        PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
+        if (psiFile != null) {
+            LOG.debug("Updating signatures in user data cache for psi file", sourceFile);
+            psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, types);
+        }
     }
 
-    private static void annotatePsiExpressions(@NotNull Project project, @NotNull Language lang, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
+    private static void annotatePsiExpressions(@NotNull Project project, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
         if (types == null || sourceFile == null) {
             return;
         }
@@ -93,7 +95,7 @@ public class InferredTypesService {
 
             PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
             if (psiFile != null) {
-                psiFile.putUserData(DocumentationProvider.SIGNATURE_CONTEXT, types.typesByIdents());
+                psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, types);
             }
         }
     }

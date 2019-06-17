@@ -2,8 +2,15 @@ package com.reason.ide;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.reason.Joiner;
+import com.reason.Log;
 import com.reason.Platform;
 import com.reason.build.bs.BucklescriptManager;
+import com.reason.ide.files.FileBase;
+import com.reason.ide.search.FileModuleIndexService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +20,31 @@ import java.nio.file.Path;
 
 public class FileManager {
 
+    private static final Log LOG = Log.create("file");
+
     private FileManager() {
+    }
+
+    @Nullable
+    public static PsiFile findCmtFileFromSource(@NotNull Project project, @NotNull FileBase file) {
+        // All file names are unique, use that to get the corresponding cmt
+        String moduleName = file.asModuleName();
+
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
+        PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
+
+        if (cmtFiles.length == 1) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + ")");
+            }
+            return cmtFiles[0];
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("File module for " + filename + ".cmt is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
+        }
+        return null;
     }
 
     @NotNull

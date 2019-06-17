@@ -53,11 +53,13 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     @Override
     public void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile) {
-        if (!isDownloaded.get() && !m_project.isDisposed()) {
+        if (!isDownloaded.get()) {
             File rincewind = getRincewindFile(sourceFile);
             if (rincewind == null || !rincewind.exists()) {
-                LOG.debug("Downloading rincewind in background");
-                ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project, sourceFile));
+                if (!m_project.isDisposed()) {
+                    LOG.debug("Downloading rincewind in background");
+                    ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project, sourceFile));
+                }
             } else {
                 isDownloaded.compareAndSet(false, true);
             }

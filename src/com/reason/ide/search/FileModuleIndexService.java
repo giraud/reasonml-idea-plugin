@@ -78,7 +78,7 @@ public class FileModuleIndexService {
         }
 
         if (values.isEmpty()) {
-            return "";
+            return "<EMPTY>";
         }
 
         FileModuleData firstValue = values.iterator().next();

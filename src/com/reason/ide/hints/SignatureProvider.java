@@ -1,7 +1,11 @@
 package com.reason.ide.hints;
 
+import com.intellij.openapi.util.Key;
+
 // just an experiment, cancelled for now
 public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
+
+    public static final Key<InferredTypes> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
 
     //@NotNull
     //@Override

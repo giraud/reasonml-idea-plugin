@@ -1,15 +1,22 @@
 package com.reason.ide;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.reason.build.CompilerManager;
 import com.reason.build.console.CliType;
+import com.reason.hints.InsightManager;
+import com.reason.hints.InsightManagerImpl;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
 import com.reason.ide.hints.InferredTypesService;
@@ -17,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,20 +43,37 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded(file);
+
         FileType fileType = file.getFileType();
-        if (FileHelper.isCompilable(fileType)) {
-            FileEditor selectedEditor = source.getSelectedEditor(file);
-            Document document = FileDocumentManager.getInstance().getDocument(file);
-            if (selectedEditor != null && document != null) {
-                PropertyChangeListener propertyChangeListener = new ORPropertyChangeListener(file);
-                selectedEditor.addPropertyChangeListener(propertyChangeListener);
-                Disposer.register(selectedEditor, () -> selectedEditor.removePropertyChangeListener(propertyChangeListener));
+        if (FileHelper.isCompilable(fileType) && !DumbService.isDumb(m_project)) {
+            PsiFile psiFile = PsiManager.getInstance(m_project).findFile(file);
+            if (psiFile != null) {
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    // Query types and update psi cache
+                    PsiFile cmtFile = FileManager.findCmtFileFromSource(m_project, (FileBase) psiFile);
+                    if (cmtFile != null) {
+                        Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
 
-                document.addDocumentListener(new ORDocumentEventListener(), selectedEditor);
+                        m_project.
+                                getComponent(InsightManager.class).
+                                queryTypes(file, cmtPath, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, file));
+                    }
+                });
             }
-
-            m_openedFiles.add(file);
         }
+
+        FileEditor selectedEditor = source.getSelectedEditor(file);
+        Document document = FileDocumentManager.getInstance().getDocument(file);
+        if (selectedEditor != null && document != null) {
+            PropertyChangeListener propertyChangeListener = new ORPropertyChangeListener(file);
+            selectedEditor.addPropertyChangeListener(propertyChangeListener);
+            Disposer.register(selectedEditor, () -> selectedEditor.removePropertyChangeListener(propertyChangeListener));
+
+            document.addDocumentListener(new ORDocumentEventListener(), selectedEditor);
+        }
+
+        m_openedFiles.add(file);
     }
 
     @Override

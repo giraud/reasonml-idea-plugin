@@ -23,7 +23,7 @@ public class InferredTypesImplementation implements InferredTypes {
     private final Map<String, Stack<OpenModule>> m_opens = new THashMap<>();
     private final Map<Integer, LogicalORSignature> m_vals = new THashMap<>();
 
-    private final Map<LogicalPosition, ORSignature> m_idents = new THashMap<>();
+    private final Map<LogicalPosition, ORSignature> m_signatures = new THashMap<>();
 
     @NotNull
     public Map<Integer, String> signaturesByLines(Language lang) {
@@ -45,9 +45,14 @@ public class InferredTypesImplementation implements InferredTypes {
         return result;
     }
 
+    @Override
+    public ORSignature getSignatureByPosition(@NotNull LogicalPosition elementPosition) {
+        return m_signatures.get(elementPosition);
+    }
+
     @NotNull
     public Map<LogicalPosition, ORSignature> typesByIdents() {
-        return m_idents;
+        return m_signatures;
     }
 
     public void add(@NotNull String entry, @NotNull LogicalPosition start, @NotNull LogicalPosition end, @NotNull String line) {
@@ -64,15 +69,17 @@ public class InferredTypesImplementation implements InferredTypes {
             // Pattern :: Name|type
             String[] tokens = line.split("\\|", 2);
             addVisibleSignature(start, new ORSignature(tokens[1]));
+            m_signatures.put(start, new ORSignature(tokens[1]));
         } else if (MODULE_GHOST.equals(entry)) {
             // Pattern :: name|type
             String[] tokens = line.split("\\|", 2);
             String signature = tokens[1].startsWith("type t = ") ? tokens[1].substring(9) : tokens[1];
             addVisibleSignature(start, new ORSignature(signature));
+            m_signatures.put(start, new ORSignature(signature));
         } else if (IDENT.equals(entry)) {
             // Pattern :: name|qname|type
             String[] tokens = line.split("\\|", 3);
-            m_idents.put(start, new ORSignature(tokens[2]));
+            m_signatures.put(start, new ORSignature(tokens[2]));
 
             if (!tokens[0].equals(tokens[1])) {
                 int lastDot = tokens[1].lastIndexOf(".");

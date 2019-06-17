@@ -4,11 +4,13 @@ import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.TextEditor;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.Log;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.hints.InferredTypes;
+import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -23,7 +25,7 @@ import java.util.Map;
 
 public class DocumentationProvider extends AbstractDocumentationProvider {
 
-    public static final Key<Map<LogicalPosition, ORSignature>> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
+    private static final Log LOG = Log.create("doc");
 
     public static boolean isSpecialComment(@Nullable PsiElement element) {
         if (element == null) {
@@ -120,17 +122,16 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         String inferredType = "";
         if (editor != null) {
-            LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
-            Map<LogicalPosition, ORSignature> signaturesContext = psiFile.getUserData(SIGNATURE_CONTEXT);
+            InferredTypes signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
             if (signaturesContext != null) {
-                ORSignature elementSignature = signaturesContext.get(elementPosition);
+                LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
+                ORSignature elementSignature = signaturesContext.getSignatureByPosition(elementPosition);
                 if (elementSignature != null) {
                     inferredType = elementSignature.asString(element.getLanguage());
                 }
             }
         }
 
-        // No inferred type, look at the reference and use its signature if present
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
