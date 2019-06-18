@@ -1,5 +1,6 @@
 package com.reason.ide.hints;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
@@ -17,7 +18,6 @@ import com.reason.Log;
 import com.reason.hints.InsightManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,13 +53,21 @@ public class InferredTypesService {
                                 LOG.debug("Reading files from file");
                                 PsiFile cmtFile = findCmtFileFromSource(project, (FileBase) psiFile);
                                 if (cmtFile != null) {
-                                    insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath()), types -> application.runReadAction(() -> annotatePsiExpressions(project, types, sourceFile)));
+                                    insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath()), types -> {
+                                        application.runReadAction(() -> {
+                                            annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile);
+                                            annotateFile(project, types, sourceFile);
+                                        });
+                                    });
                                 }
                             }
                         }
                     } else {
                         LOG.debug("Signatures found in user data cache");
-                        application.runReadAction(() -> annotatePsiExpressions(project, signatures, sourceFile));
+                        application.runReadAction(() -> {
+                            annotatePsiExpressions(project, psiFile.getLanguage(), signatures, sourceFile);
+                            annotateFile(project, signatures, sourceFile);
+                        });
                     }
                 }
             }
@@ -80,7 +88,7 @@ public class InferredTypesService {
         }
     }
 
-    private static void annotatePsiExpressions(@NotNull Project project, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
+    private static void annotatePsiExpressions(@NotNull Project project, @NotNull Language lang, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
         if (types == null || sourceFile == null) {
             return;
         }
@@ -91,12 +99,7 @@ public class InferredTypesService {
             CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
             long timestamp = sourceFile.getTimeStamp();
 
-            userData.putAll(sourceFile, types.signaturesByLines(OclLanguage.INSTANCE), timestamp);
-
-            PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
-            if (psiFile != null) {
-                psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, types);
-            }
+            userData.putAll(sourceFile, types.signaturesByLines(lang), timestamp);
         }
     }
 

@@ -8,6 +8,7 @@ import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Unified signature between OCaml and Reason.
@@ -15,7 +16,7 @@ import java.util.Collection;
  */
 public class ORSignature {
 
-    public static final ORSignature EMPTY = new ORSignature("");
+    public static final ORSignature EMPTY = new ORSignature(true, Collections.emptyList());
     private static final String REASON_SEPARATOR = " => ";
     private static final String OCAML_SEPARATOR = " -> ";
 
@@ -89,28 +90,6 @@ public class ORSignature {
         }
         sb.append(")").append(REASON_SEPARATOR).append("'a");
         sb.toString(); /* TODO */
-    }
-
-    public ORSignature(@NotNull String signature) {
-        if (signature.isEmpty()) {
-            m_types = new SignatureType[0];
-        } else {
-            String normalized = signature.
-                    trim().
-                    replaceAll("\n", "").
-                    replaceAll("\\s+", " ").
-                    replaceAll("=>", "->");
-
-            String[] items = normalized.split("->");
-            m_types = new SignatureType[items.length];
-            for (int i = 0; i < items.length; i++) {
-                String[] tokens = items[i].trim().split("=");
-                m_types[i] = new SignatureType();
-                m_types[i].value = tokens[0];
-                m_types[i].mandatory = !tokens[0].contains("option") && tokens.length == 1;
-                m_types[i].defaultValue = 2 == tokens.length ? tokens[1] : "";
-            }
-        }
     }
 
     @NotNull

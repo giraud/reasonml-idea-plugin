@@ -2,9 +2,15 @@ package com.reason.ide.hints;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.Stack;
 import com.reason.Joiner;
+import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
+import com.reason.lang.ocaml.OclLanguage;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +32,7 @@ public class InferredTypesImplementation implements InferredTypes {
     private final Map<LogicalPosition, ORSignature> m_signatures = new THashMap<>();
 
     @NotNull
-    public Map<Integer, String> signaturesByLines(Language lang) {
+    public Map<Integer, String> signaturesByLines(@NotNull Language lang) {
         Map<Integer, String> result = new THashMap<>();
 
         for (Stack<OpenModule> openStack : m_opens.values()) {
@@ -50,12 +56,7 @@ public class InferredTypesImplementation implements InferredTypes {
         return m_signatures.get(elementPosition);
     }
 
-    @NotNull
-    public Map<LogicalPosition, ORSignature> typesByIdents() {
-        return m_signatures;
-    }
-
-    public void add(@NotNull String entry, @NotNull LogicalPosition start, @NotNull LogicalPosition end, @NotNull String line) {
+    public void add(@NotNull Project project, @NotNull String entry, @NotNull LogicalPosition start, @NotNull String line) {
         if (OPEN.equals(entry)) {
             // Pattern :: Name
             Stack<OpenModule> openStack = m_opens.get(line);
@@ -64,22 +65,38 @@ public class InferredTypesImplementation implements InferredTypes {
                 m_opens.put(line, openStack);
             }
 
-            openStack.push(new OpenModule(start, end));
+            openStack.push(new OpenModule(start));
         } else if (VALUE.equals(entry)) {
             // Pattern :: Name|type
             String[] tokens = line.split("\\|", 2);
-            addVisibleSignature(start, new ORSignature(tokens[1]));
-            m_signatures.put(start, new ORSignature(tokens[1]));
+
+            PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + tokens[1]);
+            PsiSignature parsedSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
+            if (parsedSignature != null) {
+                ORSignature orSignature = parsedSignature.asHMSignature();
+                addVisibleSignature(start, orSignature);
+                m_signatures.put(start, orSignature);
+            }
         } else if (MODULE_GHOST.equals(entry)) {
             // Pattern :: name|type
             String[] tokens = line.split("\\|", 2);
             String signature = tokens[1].startsWith("type t = ") ? tokens[1].substring(9) : tokens[1];
-            addVisibleSignature(start, new ORSignature(signature));
-            m_signatures.put(start, new ORSignature(signature));
-        } else if (IDENT.equals(entry)) {
-            // Pattern :: name|qname|type
+            PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + signature);
+            PsiSignature parsedSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
+            if (parsedSignature != null) {
+                ORSignature orSignature = parsedSignature.asHMSignature();
+                addVisibleSignature(start, orSignature);
+                m_signatures.put(start, orSignature);
+            }        } else if (IDENT.equals(entry)) {
+            // Pattern :: name|qName|type
             String[] tokens = line.split("\\|", 3);
-            m_signatures.put(start, new ORSignature(tokens[2]));
+
+            PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + tokens[2]);
+            PsiSignature parsedSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
+            if (parsedSignature != null) {
+                ORSignature orSignature = parsedSignature.asHMSignature();
+                m_signatures.put(start, orSignature);
+            }
 
             if (!tokens[0].equals(tokens[1])) {
                 int lastDot = tokens[1].lastIndexOf(".");
@@ -106,7 +123,7 @@ public class InferredTypesImplementation implements InferredTypes {
         private final LogicalPosition m_position;
         private final Set<String> m_values = new THashSet<>();
 
-        OpenModule(LogicalPosition start, LogicalPosition end) {
+        OpenModule(LogicalPosition start) {
             m_position = start;
         }
 
