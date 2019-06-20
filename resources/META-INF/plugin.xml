@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>reasonml</id>
     <name>ReasonML</name>
-    <version>0.77</version>
+    <version>0.78</version>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
     <description><![CDATA[
@@ -10,8 +10,11 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#166 - Indexing of Js.t</li>
-            <li>Some quick doc improvement on resolved elements for ReasonML (ctrl+hover)</li>
+            <li>Resolving variants with locally open path</li>
+            <li>Index and resolve record fields</li>
+            <li>Quick doc improvement on resolved elements for ReasonML (ctrl+hover)</li>
+            <li>Rincewind no more downloaded if already present</li>
+            <li>Some type conversion work started (partial implementation)
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

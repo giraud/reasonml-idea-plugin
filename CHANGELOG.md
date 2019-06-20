@@ -10,6 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.78 - 2019/06/20
+
+- :nail_care: Quick doc improvement on resolved elements for ReasonML (ctrl+hover)
+- :house: Some type conversion work started (partial implementation)
+- :house: Resolving variants with locally open path
+- :house: Index and resolve record fields
+- :house: Rincewind no more downloaded if already present
+
 ## 0.77 - 2019/06/05
 
 - :bug: [#166](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/166) - Indexing of Js.t
