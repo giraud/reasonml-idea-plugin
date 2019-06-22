@@ -80,7 +80,7 @@ public class CmtiFileListener implements ProjectComponent {
             LOG.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
         } else if (m_projectTracker.isOpen(sourceFile)) {
             Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
-            m_insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, sourceFile));
+            m_insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, lang, inferredTypes, sourceFile));
         }
     }
 

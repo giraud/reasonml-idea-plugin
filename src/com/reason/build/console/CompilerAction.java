@@ -33,12 +33,12 @@ abstract class CompilerAction extends DumbAwareAction {
             VirtualFile baseDir = Platform.findBaseRoot(project);
             ConsoleView console = BucklescriptManager.getInstance(project).getBsbConsole();
             console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-            compiler.run(baseDir, cliType);
+            compiler.run(baseDir, cliType, null);
         } else {
             Document document = editor.getDocument();
             PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
             if (psiFile != null) {
-                compiler.run(psiFile.getVirtualFile(), cliType);
+                compiler.run(psiFile.getVirtualFile(), cliType, null);
             }
         }
     }

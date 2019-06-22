@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.build.annotations.ErrorsManager;
 import com.reason.ide.highlight.ORSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,10 @@ public class OREditorLinePainter extends EditorLinePainter {
             return null;
         }
 
+        if (project.getComponent(ErrorsManager.class).hasErrors(file)) {
+            return null;
+        }
+
         Document document = FileDocumentManager.getInstance().getDocument(file);
         if (document == null) {
             return null;
@@ -35,7 +40,7 @@ public class OREditorLinePainter extends EditorLinePainter {
 
         Collection<LineExtensionInfo> info = null;
 
-        String signature = data.get(file, lineNumber, document.getModificationStamp());
+        String signature = data.get(file, lineNumber);
         if (signature != null) {
             EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
             TextAttributes codeLens = globalScheme.getAttributes(ORSyntaxHighlighter.CODE_LENS_);

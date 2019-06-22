@@ -160,6 +160,10 @@ public class Log {
         m_log.error(message, e);
     }
 
+    public void error(String msg) {
+        m_log.error(msg);
+    }
+
     public void info(String msg) {
         m_log.info(msg);
     }
@@ -169,7 +173,8 @@ public class Log {
     }
 
     public void trace(String msg) {
-        if (m_log.isTraceEnabled())
+        if (m_log.isTraceEnabled()) {
             m_log.trace(msg);
+        }
     }
 }

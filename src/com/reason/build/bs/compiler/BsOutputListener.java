@@ -3,14 +3,10 @@ package com.reason.build.bs.compiler;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.problems.Problem;
-import com.intellij.problems.WolfTheProblemSolver;
+import com.reason.Log;
 import com.reason.build.annotations.ErrorsManager;
 import com.reason.build.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
@@ -18,9 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +23,8 @@ import static java.lang.Integer.parseInt;
 
 public class BsOutputListener implements RawProcessListener {
 
-    private static final Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
+    private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n");
+    private static final Log LOG = Log.create("build");
 
     enum BuildStatus {
         fine,
@@ -41,8 +36,6 @@ public class BsOutputListener implements RawProcessListener {
     private final Project m_project;
     private final ErrorsManager m_errorsManager;
     private final BsProcess m_compiler;
-    @NotNull
-    private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
     private BuildStatus m_status;
@@ -51,11 +44,10 @@ public class BsOutputListener implements RawProcessListener {
     private OutputInfo m_latestInfo = null;
     private String m_previousText;
 
-    BsOutputListener(Project project, BsProcess bsc) {
+    BsOutputListener(@NotNull Project project, @NotNull BsProcess bsc) {
         m_project = project;
         m_errorsManager = project.getComponent(ErrorsManager.class);
         m_compiler = bsc;
-        m_log = Logger.getInstance("ReasonML.build");
     }
 
     @Override
@@ -85,24 +77,6 @@ public class BsOutputListener implements RawProcessListener {
         ApplicationManager.getApplication().invokeLater(() -> {
             if (!m_project.isDisposed()) {
                 // When build is done, we need to refresh editors to be notified of latest modifications
-
-                /* */
-                WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(m_project);
-                Collection<Problem> problems = new ArrayList<>();
-
-                for (Map.Entry<String, Collection<OutputInfo>> entry : m_errorsManager.getAllErrors().entrySet()) {
-                    String path = entry.getKey();
-                    VirtualFile fileByUrl = VirtualFileManager.getInstance().findFileByUrl("file://" + path);
-                    if (fileByUrl != null) {
-                        for (OutputInfo info : entry.getValue()) {
-                            problems.add(problemSolver.convertToProblem(fileByUrl, info.lineStart, info.colStart, new String[]{info.message}));
-                        }
-                        problemSolver.reportProblems(fileByUrl, problems);
-
-                    }
-                }
-
-                /* */
                 DaemonCodeAnalyzer.getInstance(m_project).restart();
                 EditorFactory.getInstance().refreshAllEditors();
                 InferredTypesService.queryForSelectedTextEditor(m_project);
@@ -212,7 +186,7 @@ public class BsOutputListener implements RawProcessListener {
                     String[] end = positions[1].split(":");
                     OutputInfo info = addInfo(path, start[0], start[1], end.length == 1 ? start[0] : end[0], end[end.length - 1]);
                     if (info.colStart < 0 || info.colEnd < 0) {
-                        m_log.error("Can't decode columns for [" + text + "]");
+                        LOG.error("Can't decode columns for [" + text + "]");
                         return null;
                     }
                     return info;
@@ -235,7 +209,7 @@ public class BsOutputListener implements RawProcessListener {
                 String colEnd = matcher.group(4);
                 OutputInfo info = addInfo(path, line, colStart, colEnd);
                 if (info.colStart < 0 || info.colEnd < 0) {
-                    m_log.error("Can't decode columns for [" + text + "]");
+                    LOG.error("Can't decode columns for [" + text + "]");
                     return null;
                 }
                 return info;

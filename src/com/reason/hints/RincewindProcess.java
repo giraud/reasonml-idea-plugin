@@ -60,7 +60,7 @@ public class RincewindProcess implements ProjectComponent {
                         if (!"__".equals(entry)) {
                             int locPos = line.indexOf("|", entryPos + 1);
                             String[] loc = line.substring(entryPos + 1, locPos).split(",");
-                            types.add(m_project, entry, decodePosition(loc[0]), line.substring(locPos + 1));
+                            types.add(m_project, entry, decodePosition(loc[0]), decodePosition(loc[1]), line.substring(locPos + 1));
                         }
                     }
                 });

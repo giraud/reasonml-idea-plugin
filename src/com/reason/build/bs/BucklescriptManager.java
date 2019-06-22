@@ -85,14 +85,14 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
     }
 
     @Override
-    public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
+    public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!m_disabled && ReasonSettings.getInstance(m_project).isEnabled()) {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
                 BsProcess process = BsProcess.getInstance(m_project);
                 if (process.start()) {
-                    ProcessHandler bscProcess = process.recreate(sourceFile, cliType);
+                    ProcessHandler bscProcess = process.recreate(sourceFile, cliType, onProcessTerminated);
                     if (bscProcess != null) {
                         ConsoleView console = getBsbConsole();
                         if (console != null) {

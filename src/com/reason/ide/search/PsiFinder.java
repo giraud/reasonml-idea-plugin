@@ -112,8 +112,9 @@ public final class PsiFinder implements ProjectComponent {
         } else {
             LOG.debug("  File module found", file);
             Map<String, PsiModule> map = FileHelper.isInterface(file.getFileType()) ? intfNames : implNames;
-            FileBase psiFileModule = (FileBase) PsiManager.getInstance(m_project).findFile(file);
-            if (psiFileModule != null) {
+            PsiFile psiFile = PsiManager.getInstance(m_project).findFile(file);
+            if (psiFile instanceof FileBase) {
+                FileBase psiFileModule = (FileBase) psiFile;
                 map.put(psiFileModule.asModuleName(), psiFileModule);
             }
         }
@@ -354,7 +355,8 @@ public final class PsiFinder implements ProjectComponent {
             if (alias != null) {
                 VirtualFile vFile = FileModuleIndexService.getService().getFile(alias, scope);
                 if (vFile != null) {
-                    return (FileBase) PsiManager.getInstance(m_project).findFile(vFile);
+                    PsiFile psiFile = PsiManager.getInstance(m_project).findFile(vFile);
+                    return psiFile instanceof FileBase ? (PsiQualifiedNamedElement) psiFile : null;
                 }
 
                 modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), m_project, scope);

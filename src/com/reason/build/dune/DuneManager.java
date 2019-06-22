@@ -9,10 +9,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
+import com.reason.Icons;
 import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManagerImpl;
-import com.reason.Icons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +38,7 @@ public class DuneManager implements Compiler, ProjectComponent {
     }
 
     @Override
-    public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
+    public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         DuneProcess process = DuneProcess.getInstance(m_project);
         if (process.start()) {
             ProcessHandler handler = process.recreate();

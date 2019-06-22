@@ -1,7 +1,9 @@
 package com.reason.ide;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.*;
@@ -55,9 +57,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
                     if (cmtFile != null) {
                         Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
 
-                        m_project.
-                                getComponent(InsightManager.class).
-                                queryTypes(file, cmtPath, inferredTypes -> InferredTypesService.annotateFile(m_project, inferredTypes, file));
+                        queryTypes(file, cmtPath, psiFile.getLanguage());
                     }
                 });
             }
@@ -74,6 +74,12 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         }
 
         m_openedFiles.add(file);
+    }
+
+    private void queryTypes(@NotNull VirtualFile file, @NotNull Path cmtPath, @NotNull Language language) {
+        m_project.
+                getComponent(InsightManager.class).
+                queryTypes(file, cmtPath, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, language, inferredTypes, file));
     }
 
     @Override
@@ -110,7 +116,23 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         public void propertyChange(@NotNull PropertyChangeEvent evt) {
             if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE/* or always, but add debounce */) {
                 // Document is saved, run the compiler !!
-                CompilerManager.getInstance().getCompiler(m_project).run(m_file, CliType.standard);
+                CompilerManager.getInstance().
+                        getCompiler(m_project).
+                        run(m_file, CliType.standard, () -> ApplicationManager.getApplication().runReadAction(() -> {
+                            InferredTypesService.clearTypes(m_project, m_file);
+                            PsiFile psiFile = PsiManager.getInstance(m_project).findFile(m_file);
+                            if (psiFile instanceof FileBase) {
+                                ApplicationManager.getApplication().invokeLater(() -> {
+                                    // Query types and update psi cache
+                                    PsiFile cmtFile = FileManager.findCmtFileFromSource(m_project, (FileBase) psiFile);
+                                    if (cmtFile != null) {
+                                        Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
+                                        queryTypes(m_file, cmtPath, psiFile.getLanguage());
+                                        //EditorFactory.getInstance().refreshAllEditors();
+                                    }
+                                });
+                            }
+                        }));
             }
         }
     }
@@ -134,9 +156,12 @@ public class ORFileEditorListener implements FileEditorManagerListener {
                 if (userData != null) {
                     VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                     if (file != null) {
-                        int startLine = document.getLineNumber(event.getOffset());
-                        int direction = newLineCount - m_oldLinesCount;
-                        userData.move(file, startLine, direction, file.getTimeStamp());
+                        TextEditor editor = (TextEditor) FileEditorManager.getInstance(m_project).getSelectedEditor(file);
+                        if (editor != null) {
+                            LogicalPosition cursorPosition = editor.getEditor().offsetToLogicalPosition(event.getOffset());
+                            int direction = newLineCount - m_oldLinesCount;
+                            userData.move(file, cursorPosition, direction);
+                        }
                     }
                 }
             }

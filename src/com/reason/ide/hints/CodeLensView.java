@@ -1,10 +1,9 @@
 package com.reason.ide.hints;
 
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.containers.ObjectLongHashMap;
 import gnu.trove.THashMap;
-import gnu.trove.TObjectLongHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,27 +17,17 @@ public class CodeLensView {
 
     public static class CodeLensInfo {
         @NotNull
-        Map<VirtualFile, Map<Integer, String>> m_signatures = new THashMap<>();
-        private final TObjectLongHashMap<VirtualFile> m_timestamps = new ObjectLongHashMap<>();
+        Map<VirtualFile, Map<Integer, InferredTypes.LogicalPositionSignature>> m_signatures = new THashMap<>();
 
         @Nullable
-        public synchronized String get(@NotNull VirtualFile file, int line, long currentTimestamp) {
-            long timestamp = m_timestamps.get(file);
-            if (timestamp != -1 && timestamp < currentTimestamp) {
-                return null;
-            }
-
-            Map<Integer, String> integerStringMap = m_signatures.get(file);
-            if (integerStringMap == null) {
-                return null;
-            }
-
-            return integerStringMap.get(line);
+        public synchronized String get(@NotNull VirtualFile file, int line) {
+            Map<Integer, InferredTypes.LogicalPositionSignature> result = m_signatures.get(file);
+            InferredTypes.LogicalPositionSignature sig = result == null ? null : result.get(line);
+            return sig == null ? null : sig.signature;
         }
 
-        synchronized void putAll(@NotNull VirtualFile file, @NotNull Map<Integer, String> signatures, long timestamp) {
-            m_timestamps.put(file, timestamp);
-            Map<Integer, String> signaturesPerLine = m_signatures.get(file);
+        synchronized void putAll(@NotNull VirtualFile file, @NotNull Map<Integer, InferredTypes.LogicalPositionSignature> signatures) {
+            Map<Integer, InferredTypes.LogicalPositionSignature> signaturesPerLine = m_signatures.get(file);
             if (signaturesPerLine == null) {
                 signaturesPerLine = new THashMap<>();
                 m_signatures.put(file, signaturesPerLine);
@@ -46,24 +35,35 @@ public class CodeLensView {
             signaturesPerLine.putAll(signatures);
         }
 
-        public synchronized void move(@NotNull VirtualFile file, int startLine, int direction, long timestamp) {
-            m_timestamps.put(file, timestamp);
-            Map<Integer, String> signaturesByLine = m_signatures.get(file);
+        public synchronized void move(@NotNull VirtualFile file, LogicalPosition cursorPosition, int direction) {
+            Map<Integer, InferredTypes.LogicalPositionSignature> signaturesByLine = m_signatures.get(file);
             if (signaturesByLine != null) {
-                Map<Integer, String> signatures = new THashMap<>();
-                for (Map.Entry<Integer, String> signatureEntry : signaturesByLine.entrySet()) {
+                int startLine = cursorPosition.line;
+                Map<Integer, InferredTypes.LogicalPositionSignature> signatures = new THashMap<>();
+                for (Map.Entry<Integer, InferredTypes.LogicalPositionSignature> signatureEntry : signaturesByLine.entrySet()) {
                     Integer line = signatureEntry.getKey();
-                    signatures.put((startLine <= line) ? line + direction : line, signatureEntry.getValue());
+                    InferredTypes.LogicalPositionSignature value = signatureEntry.getValue();
+                    if (startLine == line) {
+                        if (cursorPosition.column < value.colEnd) {
+                            signatures.put(line + direction, value);
+                        } else {
+                            signatures.put(line, value);
+                        }
+                    } else if (startLine < line) {
+                        signatures.put(line + direction, value);
+
+                    } else {
+                        signatures.put(line, value);
+                    }
                 }
                 m_signatures.put(file, signatures);
             }
         }
 
         synchronized void clearInternalData(@NotNull VirtualFile virtualFile) {
-            m_timestamps.remove(virtualFile);
-            Map<Integer, String> integerStringMap = m_signatures.get(virtualFile);
-            if (integerStringMap != null) {
-                integerStringMap.clear();
+            Map<Integer, InferredTypes.LogicalPositionSignature> signaturesPerFile = m_signatures.get(virtualFile);
+            if (signaturesPerFile != null) {
+                signaturesPerFile.clear();
             }
         }
     }

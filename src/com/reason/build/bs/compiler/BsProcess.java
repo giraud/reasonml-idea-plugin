@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Platform;
+import com.reason.build.Compiler;
 import com.reason.build.CompilerProcessLifecycle;
 import com.reason.build.console.CliType;
 import com.reason.ide.ORNotification;
@@ -38,6 +39,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     @Nullable
     private BsProcessHandler m_bsb;
     private RawProcessListener m_outputListener;
+
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
@@ -50,7 +52,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
         if (sourceFile != null) {
-            create(sourceFile, CliType.make);
+            create(sourceFile, CliType.make, null);
         }
     }
 
@@ -71,9 +73,9 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     @Nullable
-    public ProcessHandler create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
+    public ProcessHandler create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
-            return createProcessHandler(sourceFile, cliType);
+            return createProcessHandler(sourceFile, cliType, onProcessTerminated);
         } catch (ExecutionException e) {
             // Don't log when first time execution
         }
@@ -82,9 +84,9 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     @Nullable
-    public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
+    public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
-            return createProcessHandler(sourceFile, cliType);
+            return createProcessHandler(sourceFile, cliType, onProcessTerminated);
         } catch (ExecutionException e) {
             Notifications.Bus.notify(new ORNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
         }
@@ -93,11 +95,11 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     }
 
     @Nullable
-    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) throws ExecutionException {
+    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
-            m_bsb = new BsProcessHandler(cli);
+            m_bsb = new BsProcessHandler(cli, onProcessTerminated);
             if (m_outputListener == null) {
                 addListener(new BsOutputListener(m_project, this));
             } else {
@@ -177,6 +179,7 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     public void terminated() {
         if (m_bsb != null) {
             m_bsb.notifyTextAvailable("Compilation ended\n", STDOUT);
+            m_bsb = null;
         }
         m_started.set(false);
     }

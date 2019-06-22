@@ -9,8 +9,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public interface InferredTypes {
+
+    class LogicalPositionSignature {
+        String signature;
+        int colStart;
+        int colEnd;
+    }
+
     @NotNull
-    Map<Integer, String> signaturesByLines(@NotNull Language lang);
+    Map<Integer, LogicalPositionSignature> signaturesByLines(@NotNull Language lang);
 
     @Nullable
     ORSignature getSignatureByPosition(@NotNull LogicalPosition elementPosition);

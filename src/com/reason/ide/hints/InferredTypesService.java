@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 import static com.reason.ide.FileManager.findCmtFileFromSource;
 
@@ -32,13 +33,18 @@ public class InferredTypesService {
     private InferredTypesService() {
     }
 
+    public static void clearTypes(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
+        userData.clearInternalData(sourceFile);
+    }
+
     public static void queryForSelectedTextEditor(@NotNull Project project) {
         try {
             Editor selectedTextEditor = FileEditorManager.getInstance(project).getSelectedTextEditor();
             if (selectedTextEditor != null) {
                 Document document = selectedTextEditor.getDocument();
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-                if (psiFile != null) {
+                if (psiFile instanceof FileBase) {
                     // Try to get the inferred types cached at the psi file user data
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     Application application = ApplicationManager.getApplication();
@@ -53,21 +59,15 @@ public class InferredTypesService {
                                 LOG.debug("Reading files from file");
                                 PsiFile cmtFile = findCmtFileFromSource(project, (FileBase) psiFile);
                                 if (cmtFile != null) {
-                                    insightManager.queryTypes(sourceFile, FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath()), types -> {
-                                        application.runReadAction(() -> {
-                                            annotatePsiExpressions(project, psiFile.getLanguage(), types, sourceFile);
-                                            annotateFile(project, types, sourceFile);
-                                        });
-                                    });
+                                    Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
+                                    insightManager.queryTypes(sourceFile, cmtPath,
+                                            types -> application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), types, sourceFile)));
                                 }
                             }
                         }
                     } else {
                         LOG.debug("Signatures found in user data cache");
-                        application.runReadAction(() -> {
-                            annotatePsiExpressions(project, psiFile.getLanguage(), signatures, sourceFile);
-                            annotateFile(project, signatures, sourceFile);
-                        });
+                        application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), signatures, sourceFile));
                     }
                 }
             }
@@ -76,31 +76,25 @@ public class InferredTypesService {
         }
     }
 
-    public static void annotateFile(@NotNull Project project, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
+    public static void annotatePsiFile(@NotNull Project project, @NotNull Language lang, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
         if (types == null || sourceFile == null) {
             return;
+        }
+
+        LOG.debug("Updating signatures in user data cache for file", sourceFile);
+
+        TextEditor selectedEditor = (TextEditor) FileEditorManager.getInstance(project).getSelectedEditor(sourceFile);
+        if (selectedEditor != null) {
+            CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
+            userData.clearInternalData(sourceFile);
+            userData.putAll(sourceFile, types.signaturesByLines(lang));
         }
 
         PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
         if (psiFile != null) {
-            LOG.debug("Updating signatures in user data cache for psi file", sourceFile);
             psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, types);
         }
-    }
 
-    private static void annotatePsiExpressions(@NotNull Project project, @NotNull Language lang, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
-        if (types == null || sourceFile == null) {
-            return;
-        }
-
-        TextEditor selectedEditor = (TextEditor) FileEditorManager.getInstance(project).getSelectedEditor(sourceFile);
-
-        if (selectedEditor != null) {
-            CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
-            long timestamp = sourceFile.getTimeStamp();
-
-            userData.putAll(sourceFile, types.signaturesByLines(lang), timestamp);
-        }
     }
 
     @NotNull

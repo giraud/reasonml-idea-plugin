@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -30,20 +31,25 @@ public class FileManager {
         // All file names are unique, use that to get the corresponding cmt
         String moduleName = file.asModuleName();
 
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
-        PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
+        if (!DumbService.isDumb(project)) {
+            GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+            String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
+            PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
 
-        if (cmtFiles.length == 1) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + ")");
+            if (cmtFiles.length == 1) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + ")");
+                }
+                return cmtFiles[0];
             }
-            return cmtFiles[0];
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("File module for " + filename + ".cmt is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
+            }
+        } else {
+            LOG.info("Cant find cmt while reindexing");
         }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("File module for " + filename + ".cmt is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
-        }
         return null;
     }
 

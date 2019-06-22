@@ -13,6 +13,7 @@ import com.reason.build.console.CliType;
 import com.reason.build.dune.DuneManager;
 import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -26,7 +27,7 @@ public class CompilerManager implements ApplicationComponent {
         }
 
         @Override
-        public void run(@NotNull VirtualFile file, @NotNull CliType cliType) {
+        public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
             //nothing
         }
     };

@@ -19,14 +19,14 @@ import java.util.Collection;
 
 public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Collection<ErrorAnnotator.BsbErrorAnnotation>> {
 
-    private static final Log LOG = Log.create("build");
+    private static final Log LOG = Log.create("annotator");
 
     @Nullable
     @Override
     public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
-            return file.getProject().getComponent(ErrorsManager.class).getErrors(filePath);
+            return file.getProject().getComponent(ErrorsManager.class).getInfo(filePath);
         }
         return null;
     }
@@ -62,11 +62,10 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
                     TextRangeInterval range = new TextRangeInterval(startOffset, endOffset);
                     if (annotation.isError) {
                         holder.createErrorAnnotation(range, annotation.message);
+                        problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.start.line, annotation.start.column, new String[]{annotation.message}));
                     } else {
                         holder.createWarningAnnotation(range, annotation.message);
                     }
-
-                    problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.start.line, annotation.start.column, new String[]{annotation.message}));
                 }
             }
         }
