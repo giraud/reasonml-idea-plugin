@@ -10,7 +10,7 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.78 - 2019/06/20
+## 0.78.1 - 2019/06/24
 
 - :nail_care: Quick doc improvement on resolved elements for ReasonML (ctrl+hover)
 - :house: Some type conversion work started (partial implementation)
