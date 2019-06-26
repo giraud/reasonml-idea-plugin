@@ -14,7 +14,6 @@ public class ExceptionIndex extends StringStubIndexExtension<PsiException> {
         return INSTANCE;
     }
 
-
     @Override
     public int getVersion() {
         return super.getVersion() + VERSION;

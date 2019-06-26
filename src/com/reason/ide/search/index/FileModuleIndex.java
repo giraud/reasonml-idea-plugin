@@ -28,6 +28,12 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
     private static final int VERSION = 5;
     private static final Log LOG = Log.create("index.file");
+    private static final FileModuleIndex INSTANCE = new FileModuleIndex();
+
+    @NotNull
+    public static FileModuleIndex getInstance() {
+        return INSTANCE;
+    }
 
     public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
         @Override

@@ -15,12 +15,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class FileModuleIndexService {
+    @NotNull
     private final FileModuleIndex m_index;
+    @NotNull
     private final NamespaceIndex m_nsIndex;
 
-    public FileModuleIndexService(@NotNull FileModuleIndex index, @NotNull NamespaceIndex nsIndex) {
-        m_index = index;
-        m_nsIndex = nsIndex;
+    public FileModuleIndexService(/*@NotNull FileModuleIndex index, @NotNull NamespaceIndex nsIndex*/) {
+        m_index = FileModuleIndex.getInstance();
+        m_nsIndex = NamespaceIndex.getInstance();
     }
 
     public static FileModuleIndexService getService() {
