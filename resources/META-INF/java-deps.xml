@@ -1,12 +1,4 @@
 <idea-plugin>
-    <project-components>
-        <component>
-            <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.build.dune.DuneProcess</implementation-class>
-        </component>
-    </project-components>
     <extensions defaultExtensionNs="com.intellij">
         <sdkType implementation="com.reason.OCamlSdk"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
@@ -16,6 +8,11 @@
 
         <orderRootType implementation="com.reason.OCamlSourcesOrderRootType"/>
         <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
+
+        <!-- Dune -->
+
+        <projectService serviceImplementation="com.reason.build.dune.DuneProcess"/>
+        <projectService serviceImplementation="com.reason.build.dune.DuneManager"/>
 
         <!-- Gutter icons -->
 

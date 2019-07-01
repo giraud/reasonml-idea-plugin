@@ -50,7 +50,7 @@ public class CompilerManager implements ApplicationComponent {
                         ERROR, URL_OPENING_LISTENER));
                 return DUMMY_COMPILER;
             }
-            return DuneManager.getInstance(project);
+            return ServiceManager.getService(project, DuneManager.class);
         } else {
             return ServiceManager.getService(project, Bucklescript.class);
         }

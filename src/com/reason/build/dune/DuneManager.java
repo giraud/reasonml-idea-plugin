@@ -2,7 +2,6 @@ package com.reason.build.dune;
 
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -19,15 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class DuneManager implements Compiler, ProjectComponent {
+public class DuneManager implements Compiler {
 
     @NotNull
     private final Project m_project;
-
-    @NotNull
-    public static Compiler getInstance(@NotNull Project project) {
-        return project.getComponent(DuneManager.class);
-    }
 
     DuneManager(@NotNull Project project) {
         m_project = project;
@@ -40,7 +34,7 @@ public class DuneManager implements Compiler, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-        DuneProcess process = DuneProcess.getInstance(m_project);
+        DuneProcess process = ServiceManager.getService(m_project, DuneProcess.class);
         if (process.start()) {
             ProcessHandler handler = process.recreate();
             if (handler != null) {
@@ -74,20 +68,4 @@ public class DuneManager implements Compiler, ProjectComponent {
 
         return console;
     }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "Dune";
-    }
-
-    //region Compatibility
-    @Override
-    public void initComponent() { // For compatibility with idea#143
-    }
-
-    @Override
-    public void disposeComponent() { // For compatibility with idea#143
-    }
-    //endregion
 }

@@ -6,7 +6,6 @@ import com.intellij.execution.process.KillableColoredProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -24,20 +23,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class DuneProcess implements ProjectComponent, CompilerProcessLifecycle {
+public final class DuneProcess implements CompilerProcessLifecycle {
 
+    @NotNull
     private final Project m_project;
     @NotNull
     private final ProcessListener m_outputListener;
-    private final AtomicBoolean m_started = new AtomicBoolean(false);
     @Nullable
     private KillableColoredProcessHandler m_processHandler;
+    private final AtomicBoolean m_started = new AtomicBoolean(false);
 
-    public static DuneProcess getInstance(Project project) {
-        return project.getComponent(DuneProcess.class);
-    }
-
-    DuneProcess(Project project) {
+    DuneProcess(@NotNull Project project) {
         m_project = project;
         m_outputListener = new DuneOutputListener(m_project, this);
     }
