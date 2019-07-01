@@ -6,8 +6,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.problems.Problem;
 import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiFile;
@@ -17,31 +15,48 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Collection<ErrorAnnotator.BsbErrorAnnotation>> {
+public class ErrorAnnotator extends ExternalAnnotator<Collection<ErrorAnnotator.BsbErrorAnnotation>, Collection<ErrorAnnotator.BsbErrorAnnotation>> {
 
     private static final Log LOG = Log.create("annotator");
 
     @Nullable
     @Override
-    public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
+    public Collection<ErrorAnnotator.BsbErrorAnnotation> collectInformation(@NotNull PsiFile file, @NotNull Editor editor, boolean hasErrors) {
+        List<BsbErrorAnnotation> result = null;
+
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
-            return ServiceManager.getService(file.getProject(), ErrorsManager.class).getInfo(filePath);
+            ErrorsManager service = ServiceManager.getService(file.getProject(), ErrorsManager.class);
+            Collection<OutputInfo> collectedInfo = service.getInfo(filePath);
+
+            result = new ArrayList<>();
+
+            for (OutputInfo info : collectedInfo) {
+                LogicalPosition start = new LogicalPosition(info.lineStart < 1 ? 0 : info.lineStart - 1, info.colStart < 1 ? 0 : info.colStart - 1);
+                LogicalPosition end = new LogicalPosition(info.lineEnd < 1 ? 0 : info.lineEnd - 1, info.colEnd < 1 ? 0 : info.colEnd - 1);
+                String message = info.message.replace('\n', ' ').replaceAll("\\s+", " ").trim();
+
+                int startOffset = editor.logicalPositionToOffset(start);
+                int endOffset = editor.logicalPositionToOffset(end);
+                if (0 <= startOffset && 0 <= endOffset && startOffset < endOffset) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
+                    }
+                    TextRangeInterval range = new TextRangeInterval(startOffset, endOffset);
+                    result.add(new BsbErrorAnnotation(info.isError, message, range, start));
+                }
+            }
         }
-        return null;
+
+        return result;
     }
 
     @Nullable
     @Override
-    public Collection<BsbErrorAnnotation> doAnnotate(@NotNull Collection<OutputInfo> collectedInfo) {
-        Collection<BsbErrorAnnotation> result = new ArrayList<>();
-
-        for (OutputInfo info : collectedInfo) {
-            result.add(new BsbErrorAnnotation(info.lineStart - 1, info.colStart - 1, info.lineEnd - 1, info.colEnd, info.message, info.isError));
-        }
-
-        return result;
+    public Collection<BsbErrorAnnotation> doAnnotate(@NotNull Collection<BsbErrorAnnotation> collectedInfo) {
+        return collectedInfo.isEmpty() ? null : collectedInfo;
     }
 
     @Override
@@ -49,25 +64,12 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
         WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(file.getProject());
         Collection<Problem> problems = new ArrayList<>();
 
-        FileEditorManager fem = FileEditorManager.getInstance(file.getProject());
-        TextEditor selectedEditor = (TextEditor) fem.getSelectedEditor(file.getVirtualFile());
-        if (selectedEditor != null) {
-            Editor editor = selectedEditor.getEditor();
-            for (BsbErrorAnnotation annotation : annotationResult) {
-                int startOffset = editor.logicalPositionToOffset(annotation.start);
-                int endOffset = editor.logicalPositionToOffset(annotation.end);
-                if (0 <= startOffset && 0 <= endOffset && startOffset < endOffset) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + annotation.message + "'");
-                    }
-                    TextRangeInterval range = new TextRangeInterval(startOffset, endOffset);
-                    if (annotation.isError) {
-                        holder.createErrorAnnotation(range, annotation.message);
-                        problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.start.line, annotation.start.column, new String[]{annotation.message}));
-                    } else {
-                        holder.createWarningAnnotation(range, annotation.message);
-                    }
-                }
+        for (BsbErrorAnnotation annotation : annotationResult) {
+            if (annotation.isError) {
+                holder.createErrorAnnotation(annotation.range, annotation.message);
+                problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.startPos.line, annotation.startPos.column, new String[]{annotation.message}));
+            } else {
+                holder.createWarningAnnotation(annotation.range, annotation.message);
             }
         }
 
@@ -75,16 +77,16 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
     }
 
     static class BsbErrorAnnotation {
-        LogicalPosition start;
-        LogicalPosition end;
-        String message;
-        boolean isError;
+        final boolean isError;
+        final String message;
+        final TextRangeInterval range;
+        private final LogicalPosition startPos;
 
-        BsbErrorAnnotation(int lineStart, int startOffset, int lineEnd, int endOffset, String rawMessage, boolean isError) {
-            start = new LogicalPosition(lineStart < 0 ? 0 : lineStart, startOffset < 0 ? 0 : startOffset);
-            end = new LogicalPosition(lineEnd < 0 ? 0 : lineEnd, endOffset < 0 ? 0 : endOffset);
-            message = rawMessage.replace('\n', ' ').replaceAll("\\s+", " ").trim();
+        BsbErrorAnnotation(boolean isError, String message, TextRangeInterval textRange, LogicalPosition startPos) {
             this.isError = isError;
+            this.message = message;
+            this.range = textRange;
+            this.startPos = startPos;
         }
     }
 }
