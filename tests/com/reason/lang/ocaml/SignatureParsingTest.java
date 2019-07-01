@@ -82,4 +82,11 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertEquals("()", parameters.get(1).getText());
     }
 
+    public void testSignatureItems() {
+        PsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;", true)));
+        ORSignature signature = e.getORSignature();
+
+        assertEquals(2, signature.getTypes().length);
+    }
+
 }

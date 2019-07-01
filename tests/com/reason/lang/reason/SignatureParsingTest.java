@@ -113,5 +113,4 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa", signature.asString(RmlLanguage.INSTANCE));
     }
 
-    // < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element
 }

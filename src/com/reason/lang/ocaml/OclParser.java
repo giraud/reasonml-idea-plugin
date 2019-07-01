@@ -140,6 +140,12 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (tokenType == m_types.RARRAY) {
                 parseRArray(state);
             }
+            // < ... >
+            else if (tokenType == m_types.LT) {
+                parseLt(builder, state);
+            } else if (tokenType == m_types.GT) {
+                parseGt(state);
+            }
             // Starts expression
             else if (tokenType == m_types.OPEN) {
                 parseOpen(builder, state);
@@ -192,6 +198,18 @@ public class OclParser extends CommonParser<OclTypes> {
         state.popEndUntilContext(array);
         if (state.isCurrentResolution(array)) {
             state.popEnd();
+        }
+    }
+
+    private void parseLt(@NotNull PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(signatureItem)) {
+            state.add(markScope(builder, jsObject, m_types.C_SCOPED_EXPR, m_types.LT));
+        }
+    }
+
+    private void parseGt(ParserState state) {
+        if (state.isCurrentResolution(jsObject)) {
+            state.complete().popEnd();
         }
     }
 

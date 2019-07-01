@@ -24,6 +24,7 @@ public class ORSignature {
     private final SignatureType[] m_types;
 
     public static class SignatureType {
+        PsiSignatureItem item;
         String value;
         boolean mandatory = false;
         @NotNull
@@ -47,6 +48,7 @@ public class ORSignature {
                     replaceAll(", \\)", "\\)").
                     replaceAll("=>", "->");
             SignatureType signatureType = new SignatureType();
+            signatureType.item = item;
             signatureType.value = normalizedValue; //(isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
             signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
             signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
