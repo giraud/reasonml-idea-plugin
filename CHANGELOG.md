@@ -10,6 +10,12 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.78.2 - 2019/07/02
+
+- :bug: [#173](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/173) - Fixed exception in Webstorm: gutter icons are only available in java-based IDE
+- :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) - Fixed exceptions in 2019.2 EAP
+- :house: Jetbrains recommendation: moving project components to service components. Expected faster startup</li>
+
 ## 0.78.1 - 2019/06/24
 
 - :nail_care: Quick doc improvement on resolved elements for ReasonML (ctrl+hover)
