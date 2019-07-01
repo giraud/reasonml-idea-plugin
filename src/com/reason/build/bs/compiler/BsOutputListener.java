@@ -3,6 +3,7 @@ package com.reason.build.bs.compiler;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
@@ -34,7 +35,6 @@ public class BsOutputListener implements RawProcessListener {
 
     @NotNull
     private final Project m_project;
-    private final ErrorsManager m_errorsManager;
     private final BsProcess m_compiler;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
@@ -46,14 +46,13 @@ public class BsOutputListener implements RawProcessListener {
 
     BsOutputListener(@NotNull Project project, @NotNull BsProcess bsc) {
         m_project = project;
-        m_errorsManager = project.getComponent(ErrorsManager.class);
         m_compiler = bsc;
     }
 
     @Override
     public void startNotified(@NotNull ProcessEvent event) {
         m_bsbInfo.clear();
-        m_errorsManager.clearErrors();
+        ServiceManager.getService(m_project, ErrorsManager.class).clearErrors();
         m_previousText = "";
     }
 
@@ -63,12 +62,10 @@ public class BsOutputListener implements RawProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
-        if (m_compiler != null) {
-            m_compiler.terminated();
-        }
+        m_compiler.terminated();
 
         if (!m_bsbInfo.isEmpty()) {
-            m_errorsManager.addAllInfo(m_bsbInfo);
+            ServiceManager.getService(m_project, ErrorsManager.class).addAllInfo(m_bsbInfo);
         }
 
         reset();

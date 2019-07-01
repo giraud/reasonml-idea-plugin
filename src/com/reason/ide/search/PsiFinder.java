@@ -1,6 +1,6 @@
 package com.reason.ide.search;
 
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -12,7 +12,6 @@ import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Log;
 import com.reason.build.bs.Bucklescript;
-import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.index.*;
@@ -28,19 +27,19 @@ import java.util.stream.Collectors;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 
-public final class PsiFinder implements ProjectComponent {
+public final class PsiFinder {
 
     private static final Log LOG = Log.create("finder");
 
     @NotNull
     private final Project m_project;
 
-    public PsiFinder(@NotNull Project project) {
-        m_project = project;
+    public static PsiFinder getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, PsiFinder.class);
     }
 
-    public static PsiFinder getInstance(@NotNull Project project) {
-        return project.getComponent(PsiFinder.class);
+    public PsiFinder(@NotNull Project project) {
+        m_project = project;
     }
 
     @Nullable
@@ -52,9 +51,10 @@ public final class PsiFinder implements ProjectComponent {
             return null;
         }
 
-        Bucklescript bucklescript = BucklescriptManager.getInstance(m_project);
         PsiInnerModule module = modules.iterator().next();
-        return bucklescript.isDependency(module.getContainingFile().getVirtualFile()) ? module : null;
+        return ServiceManager.
+                getService(m_project, Bucklescript.class).
+                isDependency(module.getContainingFile().getVirtualFile()) ? module : null;
     }
 
     @NotNull
@@ -67,7 +67,7 @@ public final class PsiFinder implements ProjectComponent {
         FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
         ModuleComponentIndex index = ModuleComponentIndex.getInstance();
         PsiManager psiManager = PsiManager.getInstance(project);
-        Bucklescript bucklescript = BucklescriptManager.getInstance(m_project);
+        Bucklescript bucklescript = ServiceManager.getService(m_project, Bucklescript.class);
 
         List<PsiModule> result = fileModuleIndexService.getComponents(project, scope).
                 stream().

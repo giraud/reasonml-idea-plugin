@@ -3,6 +3,7 @@ package com.reason.build.dune;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -12,7 +13,7 @@ import com.intellij.ui.content.Content;
 import com.reason.Icons;
 import com.reason.build.Compiler;
 import com.reason.build.console.CliType;
-import com.reason.hints.InsightManagerImpl;
+import com.reason.hints.InsightManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +49,7 @@ public class DuneManager implements Compiler, ProjectComponent {
                     console.attachToProcess(handler);
                 }
                 process.startNotify();
-                InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded(file);
+                ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(file);
             } else {
                 process.terminated();
             }

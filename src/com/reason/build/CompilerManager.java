@@ -3,12 +3,13 @@ package com.reason.build;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.OCamlSdk;
 import com.reason.Platform;
-import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.Bucklescript;
 import com.reason.build.console.CliType;
 import com.reason.build.dune.DuneManager;
 import com.reason.ide.ORNotification;
@@ -51,7 +52,7 @@ public class CompilerManager implements ApplicationComponent {
             }
             return DuneManager.getInstance(project);
         } else {
-            return BucklescriptManager.getInstance(project);
+            return ServiceManager.getService(project, Bucklescript.class);
         }
     }
 }

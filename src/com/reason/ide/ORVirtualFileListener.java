@@ -1,11 +1,11 @@
 package com.reason.ide;
 
 import com.intellij.json.JsonFileType;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import com.reason.hints.InsightManager;
-import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.files.CmtFileType;
 import com.reason.ide.hints.CmtiFileListener;
 import org.jetbrains.annotations.NotNull;
@@ -15,12 +15,10 @@ import org.jetbrains.annotations.NotNull;
  */
 class ORVirtualFileListener implements VirtualFileListener {
 
-    private final CmtiFileListener m_cmtiFileListener;
-    private final InsightManager m_insightManager;
+    private final Project m_project;
 
     ORVirtualFileListener(@NotNull Project project) {
-        m_cmtiFileListener = CmtiFileListener.getInstance(project);
-        m_insightManager = InsightManagerImpl.getInstance(project);
+        m_project = project;
     }
 
     @Override
@@ -34,14 +32,10 @@ class ORVirtualFileListener implements VirtualFileListener {
 
         if (fileType instanceof JsonFileType) {
             if (file.getName().equals("bsconfig.json")) {
-//                if (m_compiler != null) {
-//                    m_compiler.refresh(file);
-//                }
-
-                m_insightManager.downloadRincewindIfNeeded(file);
+                ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(file);
             }
         } else if (fileType instanceof CmtFileType) {
-            m_cmtiFileListener.onChange(file);
+            ServiceManager.getService(m_project, CmtiFileListener.class).onChange(file);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -9,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.Platform;
-import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,7 @@ public class FileManager {
     @NotNull
     public static String toRelativeSourceName(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull Path relativePath) {
         String sourcePath = relativePath.toString();
-        String namespace = BucklescriptManager.getInstance(project).getNamespace(sourceFile);
+        String namespace = ServiceManager.getService(project, Bucklescript.class).getNamespace(sourceFile);
         if (!namespace.isEmpty()) {
             sourcePath = sourcePath.replace("-" + namespace, "");
         }
@@ -78,7 +79,7 @@ public class FileManager {
     }
 
     @Nullable
-    public static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
+    private static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
         Path baseRootPath = FileSystems.getDefault().getPath(baseRoot.getPath());
         Path relativePath;
         try {
@@ -93,7 +94,7 @@ public class FileManager {
             relativeBuildPath = relativeBuildPath.resolve(relativeParent);
         }
 
-        String namespace = BucklescriptManager.getInstance(project).getNamespace(sourceFile);
+        String namespace = ServiceManager.getService(project, Bucklescript.class).getNamespace(sourceFile);
         return relativeBuildPath.resolve(sourceFile.getNameWithoutExtension() + (namespace.isEmpty() ? "" : "-" + namespace) + (useCmt ? ".cmt" : ".cmi"));
     }
 

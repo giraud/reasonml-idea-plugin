@@ -1,5 +1,6 @@
 package com.reason.ide.hints;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorLinePainter;
 import com.intellij.openapi.editor.LineExtensionInfo;
@@ -29,7 +30,7 @@ public class OREditorLinePainter extends EditorLinePainter {
             return null;
         }
 
-        if (project.getComponent(ErrorsManager.class).hasErrors(file)) {
+        if (ServiceManager.getService(project, ErrorsManager.class).hasErrors(file)) {
             return null;
         }
 

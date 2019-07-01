@@ -2,6 +2,7 @@ package com.reason.ide;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.event.DocumentEvent;
@@ -17,7 +18,6 @@ import com.intellij.psi.PsiManager;
 import com.reason.build.CompilerManager;
 import com.reason.build.console.CliType;
 import com.reason.hints.InsightManager;
-import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
@@ -45,7 +45,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
     @Override
     public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded(file);
+        ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(file);
 
         FileType fileType = file.getFileType();
         if (FileHelper.isCompilable(fileType) && !DumbService.isDumb(m_project)) {
@@ -77,8 +77,8 @@ public class ORFileEditorListener implements FileEditorManagerListener {
     }
 
     private void queryTypes(@NotNull VirtualFile file, @NotNull Path cmtPath, @NotNull Language language) {
-        m_project.
-                getComponent(InsightManager.class).
+        ServiceManager.
+                getService(m_project, InsightManager.class).
                 queryTypes(file, cmtPath, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, language, inferredTypes, file));
     }
 

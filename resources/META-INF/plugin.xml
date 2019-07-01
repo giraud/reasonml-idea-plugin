@@ -10,11 +10,7 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>Resolving variants with locally open path</li>
-            <li>Index and resolve record fields</li>
-            <li>Quick doc improvement on resolved elements for ReasonML (ctrl+hover)</li>
-            <li>Rincewind no more downloaded if already present</li>
-            <li>Some type conversion work started (partial implementation)
+            <li>Jetbrains recommendation: moving project components to service components: expected faster startup</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
@@ -39,36 +35,7 @@
 
     <project-components>
         <component>
-            <interface-class>com.reason.build.annotations.ErrorsManager</interface-class>
-            <implementation-class>com.reason.build.annotations.ErrorsManagerImpl</implementation-class>
-        </component>
-        <component>
             <implementation-class>com.reason.ide.ORProjectTracker</implementation-class>
-        </component>
-        <component>
-            <interface-class>com.reason.build.bs.Bucklescript</interface-class>
-            <implementation-class>com.reason.build.bs.BucklescriptManager</implementation-class>
-        </component>
-        <component>
-            <interface-class>com.reason.hints.InsightManager</interface-class>
-            <implementation-class>com.reason.hints.InsightManagerImpl</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.ide.hints.CmtiFileListener</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.build.bs.refmt.RefmtProcess</implementation-class>
-        </component>
-        <component>
-            <interface-class>com.reason.build.bs.compiler.BsProcess</interface-class>
-            <implementation-class>com.reason.build.bs.compiler.BsProcess</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.hints.RincewindProcess</implementation-class>
-            <interface-class>com.reason.hints.RincewindProcess</interface-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.ide.search.PsiFinder</implementation-class>
         </component>
     </project-components>
 
@@ -221,6 +188,8 @@
         <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
 
+        <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>
+
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCamlP4" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
@@ -244,8 +213,33 @@
                              instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
 
         <!--
+         | Compiler
+         -->
+
+        <projectService serviceImplementation="com.reason.build.bs.compiler.BsProcess"/>
+
+        <projectService serviceInterface="com.reason.build.bs.Bucklescript"
+                        serviceImplementation="com.reason.build.bs.BucklescriptImpl"/>
+
+        <!--
+         | Insight
+         -->
+
+        <projectService serviceInterface="com.reason.build.annotations.ErrorsManager"
+                        serviceImplementation="com.reason.build.annotations.ErrorsManagerImpl"/>
+
+        <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->
+        <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
+        <projectService serviceImplementation="com.reason.ide.hints.CmtiFileListener"/>
+        <projectService serviceImplementation="com.reason.hints.RincewindProcess"/>
+        <projectService serviceInterface="com.reason.hints.InsightManager"
+                        serviceImplementation="com.reason.hints.InsightManagerImpl"/>
+
+        <!--
          | Others
          -->
+
+        <projectService serviceImplementation="com.reason.build.bs.refmt.RefmtProcess"/>
 
         <internalFileTemplate name="Reason Module"/>
         <internalFileTemplate name="OCaml Module"/>
@@ -284,9 +278,6 @@
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
         <completion.contributor language="Mly"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
-
-        <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->
-        <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
 
         <!-- Specifies semicolon-separated list of paths which should be added to the classpath of the compile server -->
         <compileServer.plugin classpath="jps-plugin.jar"/>

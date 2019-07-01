@@ -3,7 +3,7 @@ package com.reason.hints;
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
@@ -19,12 +19,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.reason.Platform.getOsPrefix;
 
-public class InsightManagerImpl implements InsightManager, ProjectComponent {
+public class InsightManagerImpl implements InsightManager {
 
     private static final Log LOG = Log.create("hints.insight");
 
     @NotNull
-    public AtomicBoolean isDownloaded = new AtomicBoolean(false);
+    AtomicBoolean isDownloaded = new AtomicBoolean(false);
     @NotNull
     AtomicBoolean isDownloading = new AtomicBoolean(false);
 
@@ -32,18 +32,6 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
 
     private InsightManagerImpl(@NotNull Project project) {
         m_project = project;
-    }
-
-    public static InsightManager getInstance(Project project) {
-        return project.getComponent(InsightManager.class);
-    }
-
-    @Override
-    public void initComponent() { // For compatibility with idea#143
-    }
-
-    @Override
-    public void disposeComponent() { // For compatibility with idea#143
     }
 
     @Override
@@ -85,7 +73,7 @@ public class InsightManagerImpl implements InsightManager, ProjectComponent {
     @Nullable
     @Override
     public String getRincewindFilename(@NotNull VirtualFile sourceFile) {
-        String ocamlVersion = BsProcess.getInstance(m_project).getOCamlVersion(sourceFile);
+        String ocamlVersion = ServiceManager.getService(m_project, BsProcess.class).getOCamlVersion(sourceFile);
         return ocamlVersion == null ? null : "rincewind_" + getOsPrefix() + ocamlVersion + "-" + getAppVersion(ocamlVersion) + ".exe";
     }
 

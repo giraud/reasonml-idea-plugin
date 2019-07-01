@@ -2,11 +2,12 @@ package com.reason.ide.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.Bucklescript;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.format.ReformatUtil;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,9 @@ public class ReformatAction extends AnAction {
             if (format != null) {
                 Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
                 if (document != null) {
-                    BucklescriptManager.getInstance(project).refmt(file.getVirtualFile(), FileHelper.isInterface(file.getFileType()), format, document);
+                    ServiceManager.
+                            getService(project, Bucklescript.class).
+                            refmt(file.getVirtualFile(), FileHelper.isInterface(file.getFileType()), format, document);
                 }
             }
         }

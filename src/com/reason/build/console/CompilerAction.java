@@ -2,6 +2,7 @@ package com.reason.build.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -13,7 +14,7 @@ import com.intellij.psi.PsiFile;
 import com.reason.Platform;
 import com.reason.build.Compiler;
 import com.reason.build.CompilerManager;
-import com.reason.build.bs.BucklescriptManager;
+import com.reason.build.bs.Bucklescript;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -31,7 +32,7 @@ abstract class CompilerAction extends DumbAwareAction {
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         if (editor == null) {
             VirtualFile baseDir = Platform.findBaseRoot(project);
-            ConsoleView console = BucklescriptManager.getInstance(project).getBsbConsole();
+            ConsoleView console = ServiceManager.getService(project, Bucklescript.class).getBsbConsole();
             console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             compiler.run(baseDir, cliType, null);
         } else {

@@ -1,7 +1,7 @@
 package com.reason.build.bs.refmt;
 
 
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,18 +17,18 @@ import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
 import static com.reason.Platform.LOCAL_BS_PLATFORM;
 import static com.reason.Platform.UTF8;
 
-public class RefmtProcess implements ProjectComponent {
+public class RefmtProcess {
 
     private static final Logger LOG = Logger.getInstance("ReasonML.refmt");
 
     private final Project m_project;
 
-    public RefmtProcess(Project project) {
-        m_project = project;
+    public static RefmtProcess getInstance(Project project) {
+        return ServiceManager.getService(project, RefmtProcess.class);
     }
 
-    public static RefmtProcess getInstance(Project project) {
-        return project.getComponent(RefmtProcess.class);
+    public RefmtProcess(Project project) {
+        m_project = project;
     }
 
     @NotNull

@@ -2,7 +2,7 @@ package com.reason.hints;
 
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -17,18 +17,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
-public class RincewindProcess implements ProjectComponent {
+public class RincewindProcess {
 
     private final static Log LOG = Log.create("hints.rincewind");
 
     private final Project m_project;
 
-    RincewindProcess(Project project) {
-        m_project = project;
+    public static RincewindProcess getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, RincewindProcess.class);
     }
 
-    public static RincewindProcess getInstance(Project project) {
-        return project.getComponent(RincewindProcess.class);
+    RincewindProcess(Project project) {
+        m_project = project;
     }
 
     public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {

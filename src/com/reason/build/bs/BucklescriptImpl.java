@@ -5,7 +5,7 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
@@ -17,7 +17,7 @@ import com.reason.Platform;
 import com.reason.build.bs.compiler.BsProcess;
 import com.reason.build.bs.refmt.RefmtProcess;
 import com.reason.build.console.CliType;
-import com.reason.hints.InsightManagerImpl;
+import com.reason.hints.InsightManager;
 import com.reason.ide.ORNotification;
 import com.reason.ide.settings.ReasonSettings;
 import gnu.trove.THashMap;
@@ -30,40 +30,15 @@ import java.util.Map;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
-public class BucklescriptManager implements Bucklescript, ProjectComponent {
+public class BucklescriptImpl implements Bucklescript {
 
     private final Project m_project;
-
-    private boolean m_disabled;
     private final Map<String, BsConfig> m_configs = new THashMap<>();
 
-    private BucklescriptManager(Project project) {
+    private Boolean m_disabled = null; // Never call directly, use isDisabled()
+
+    private BucklescriptImpl(@NotNull Project project) {
         m_project = project;
-    }
-
-    /**
-     * Returns the bucklescript instance for the specified project.
-     *
-     * @param project the project for which the bucklescript is requested.
-     * @return the bucklescript instance.
-     */
-    public static Bucklescript getInstance(Project project) {
-        return project.getComponent(Bucklescript.class);
-    }
-
-    @Override
-    @NotNull
-    public String getComponentName() {
-        return "reason.bucklescript";
-    }
-
-    @Override
-    public void projectOpened() {
-        m_disabled = Boolean.getBoolean("reasonBsbDisabled");
-        if (m_disabled) {
-            // But you should NEVER do that
-            Notifications.Bus.notify(new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
-        }
     }
 
     @NotNull
@@ -86,11 +61,11 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
 
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!m_disabled && ReasonSettings.getInstance(m_project).isEnabled()) {
+        if (!isDisabled() && ReasonSettings.getInstance(m_project).isEnabled()) {
             VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
             if (bsConfigFile != null) {
                 getOrRefreshBsConfig(bsConfigFile);
-                BsProcess process = BsProcess.getInstance(m_project);
+                BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
                 if (process.start()) {
                     ProcessHandler bscProcess = process.recreate(sourceFile, cliType, onProcessTerminated);
                     if (bscProcess != null) {
@@ -99,7 +74,7 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
                             console.attachToProcess(bscProcess);
                         }
                         process.startNotify();
-                        InsightManagerImpl.getInstance(m_project).downloadRincewindIfNeeded(sourceFile);
+                        ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(sourceFile);
                     } else {
                         process.terminated();
                     }
@@ -179,13 +154,15 @@ public class BucklescriptManager implements Bucklescript, ProjectComponent {
         return console;
     }
 
-    //region Compatibility
-    @Override
-    public void initComponent() { // For compatibility with idea#143
-    }
+    private boolean isDisabled() {
+        if (m_disabled == null) {
+            m_disabled = Boolean.getBoolean("reasonBsbDisabled");
+            if (m_disabled) {
+                // But you should NEVER do that
+                Notifications.Bus.notify(new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
+            }
+        }
 
-    @Override
-    public void disposeComponent() { // For compatibility with idea#143
+        return m_disabled;
     }
-    //endregion
 }

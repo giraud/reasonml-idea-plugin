@@ -3,6 +3,7 @@ package com.reason.ide.hints;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -53,7 +54,7 @@ public class InferredTypesService {
                     if (signatures == null) {
                         FileType fileType = sourceFile.getFileType();
                         if (FileHelper.isCompilable(fileType) && !FileHelper.isInterface(fileType)) {
-                            InsightManager insightManager = project.getComponent(InsightManager.class);
+                            InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
 
                             if (!DumbService.isDumb(project)) {
                                 LOG.debug("Reading files from file");

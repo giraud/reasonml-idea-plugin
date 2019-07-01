@@ -4,6 +4,7 @@ import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
@@ -35,7 +36,6 @@ public class DuneOutputListener implements ProcessListener {
 
     @NotNull
     private final Project m_project;
-    private final ErrorsManager m_errorsManager;
     private final CompilerProcessLifecycle m_compilerLifecycle;
     @NotNull
     private final Logger m_log;
@@ -44,9 +44,8 @@ public class DuneOutputListener implements ProcessListener {
     @Nullable
     private OutputInfo m_latestInfo = null;
 
-    DuneOutputListener(Project project, CompilerProcessLifecycle compilerLifecycle) {
+    DuneOutputListener(@NotNull Project project, CompilerProcessLifecycle compilerLifecycle) {
         m_project = project;
-        m_errorsManager = project.getComponent(ErrorsManager.class);
         m_compilerLifecycle = compilerLifecycle;
         m_log = Logger.getInstance("ReasonML.build");
     }
@@ -54,8 +53,7 @@ public class DuneOutputListener implements ProcessListener {
     @Override
     public void startNotified(@NotNull ProcessEvent event) {
         m_bsbInfo.clear();
-        m_errorsManager.clearErrors();
-        //m_previousText = "";
+        ServiceManager.getService(m_project, ErrorsManager.class).clearErrors();
     }
 
     @Override
@@ -67,7 +65,7 @@ public class DuneOutputListener implements ProcessListener {
         m_compilerLifecycle.terminated();
 
         if (!m_bsbInfo.isEmpty()) {
-            m_errorsManager.addAllInfo(m_bsbInfo);
+            ServiceManager.getService(m_project, ErrorsManager.class).addAllInfo(m_bsbInfo);
         }
 
         reset();

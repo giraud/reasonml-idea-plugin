@@ -2,13 +2,13 @@ package com.reason.ide.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.build.bs.Bucklescript;
-import com.reason.build.bs.BucklescriptManager;
 import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public class ConvertAction extends AnAction {
         Project project = e.getProject();
 
         if (project != null && file != null) {
-            Bucklescript bucklescript = BucklescriptManager.getInstance(project);
+            Bucklescript bucklescript = ServiceManager.getService(project, Bucklescript.class);
             FileType fileType = file.getFileType();
 
             if (FileHelper.isReason(fileType)) {

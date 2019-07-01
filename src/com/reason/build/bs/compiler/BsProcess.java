@@ -5,7 +5,6 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -31,7 +30,7 @@ import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
 import static com.reason.Platform.LOCAL_BS_PLATFORM;
 
-public final class BsProcess implements CompilerProcessLifecycle, ProjectComponent {
+public final class BsProcess implements CompilerProcessLifecycle {
 
     @NotNull
     private final Project m_project;
@@ -43,10 +42,6 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
-    public static BsProcess getInstance(Project project) {
-        return project.getComponent(BsProcess.class);
-    }
-
     public BsProcess(@NotNull Project project) {
         m_project = project;
         VirtualFile baseRoot = Platform.findBaseRoot(project);
@@ -54,11 +49,6 @@ public final class BsProcess implements CompilerProcessLifecycle, ProjectCompone
         if (sourceFile != null) {
             create(sourceFile, CliType.make, null);
         }
-    }
-
-    @Override
-    public void projectClosed() {
-        killIt();
     }
 
     // Wait for the tool window to be ready before starting the process

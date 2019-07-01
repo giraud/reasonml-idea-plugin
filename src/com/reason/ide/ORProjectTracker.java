@@ -3,7 +3,6 @@ package com.reason.ide;
 import com.intellij.AppTopics;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -12,27 +11,20 @@ import com.intellij.openapi.roots.ModuleRootEvent;
 import com.intellij.openapi.roots.ModuleRootListener;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.OCamlSdk;
 import com.reason.OCamlSourcesOrderRootType;
-import com.reason.hints.InsightManagerImpl;
 import com.reason.ide.format.ReformatOnSave;
 import gnu.trove.Equality;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-
 import static com.intellij.ProjectTopics.PROJECT_ROOTS;
-import static com.reason.Platform.getOsPrefix;
 
 public class ORProjectTracker implements ProjectComponent {
-
-    private final Logger m_log = Logger.getInstance("ReasonML");
 
     private final Project m_project;
     @Nullable
@@ -59,7 +51,7 @@ public class ORProjectTracker implements ProjectComponent {
                             if (!project.isDisposed()) {
                                 Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
                                 if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdk) {
-                                    // Hack to get ocaml sources indexed like java sources
+                                    // Hack to get OCaml sources indexed like java sources
                                     // Find a better way to do it !!
                                     VirtualFile[] ocamlSources = projectSdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
                                     VirtualFile[] javaSources = projectSdk.getRootProvider().getFiles(OrderRootType.SOURCES);

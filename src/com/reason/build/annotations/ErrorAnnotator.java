@@ -2,6 +2,7 @@ package com.reason.build.annotations;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
@@ -26,7 +27,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<OutputInfo>, Co
     public Collection<OutputInfo> collectInformation(@NotNull PsiFile file) {
         String filePath = file.getVirtualFile().getCanonicalPath();
         if (filePath != null) {
-            return file.getProject().getComponent(ErrorsManager.class).getInfo(filePath);
+            return ServiceManager.getService(file.getProject(), ErrorsManager.class).getInfo(filePath);
         }
         return null;
     }
