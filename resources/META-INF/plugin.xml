@@ -197,10 +197,6 @@
         <lang.findUsagesProvider language="Mly" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
 
         <gotoClassContributor implementation="com.reason.ide.go.ORModuleContributor"/>
-        <codeInsight.lineMarkerProvider language="Reason"
-                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="OCaml"
-                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
 
         <!--
          | Settings

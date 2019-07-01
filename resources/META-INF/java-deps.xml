@@ -1,4 +1,12 @@
 <idea-plugin>
+    <project-components>
+        <component>
+            <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>com.reason.build.dune.DuneProcess</implementation-class>
+        </component>
+    </project-components>
     <extensions defaultExtensionNs="com.intellij">
         <sdkType implementation="com.reason.OCamlSdk"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
@@ -8,13 +16,12 @@
 
         <orderRootType implementation="com.reason.OCamlSourcesOrderRootType"/>
         <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
+
+        <!-- Gutter icons -->
+
+        <codeInsight.lineMarkerProvider language="Reason"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="OCaml"
+                                        implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
     </extensions>
-    <project-components>
-        <component>
-            <implementation-class>com.reason.build.dune.DuneManager</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.reason.build.dune.DuneProcess</implementation-class>
-        </component>
-    </project-components>
 </idea-plugin>
