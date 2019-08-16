@@ -1,11 +1,36 @@
 package com.reason.ide.hints;
 
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.util.Key;
+import com.reason.ide.EditorPosition;
+import com.reason.lang.core.signature.ORSignature;
+import org.jetbrains.annotations.Nullable;
 
 // just an experiment, cancelled for now
 public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
 
-    public static final Key<InferredTypes> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
+    public static class InferredTypesWithLines {
+        private InferredTypes m_types;
+        private EditorPosition m_editorPosition;
+        private InferredTypes types;
+
+        InferredTypesWithLines(InferredTypes types, String[] lines) {
+            m_types = types;
+            m_editorPosition = new EditorPosition(lines);
+        }
+
+        @Nullable
+        public ORSignature getSignatureByOffset(int textOffset) {
+            LogicalPosition elementPosition = m_editorPosition.getPositionFromOffset(textOffset);
+            return m_types.getSignatureByPosition(elementPosition);
+        }
+
+        public InferredTypes getTypes() {
+            return m_types;
+        }
+    }
+
+    public static final Key<InferredTypesWithLines> SIGNATURE_CONTEXT = Key.create("REASONML_SIGNATURE_CONTEXT");
 
     //@NotNull
     //@Override
