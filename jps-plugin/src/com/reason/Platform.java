@@ -18,6 +18,7 @@ import java.util.Map;
 public class Platform {
 
     public static final String LOCAL_BS_PLATFORM = "/node_modules/bs-platform";
+    public static final String LOCAL_NODE_MODULES_BIN = "/node_modules/.bin";
     public static final Charset UTF8 = Charset.forName("UTF-8");
 
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
