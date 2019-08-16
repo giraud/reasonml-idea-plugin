@@ -29,6 +29,7 @@ import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENE
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
 import static com.reason.Platform.LOCAL_BS_PLATFORM;
+import static com.reason.Platform.LOCAL_NODE_MODULES_BIN;
 
 public final class BsProcess implements CompilerProcessLifecycle {
 
@@ -119,8 +120,9 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
         VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
         VirtualFile bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsb.exe");
+
         if (bsbPath == null) {
-            bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsb.exe");
+            bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsb");
         }
 
         return bsbPath == null ? null : bsbPath.getCanonicalPath();
