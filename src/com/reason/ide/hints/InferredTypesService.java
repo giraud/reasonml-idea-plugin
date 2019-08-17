@@ -45,7 +45,7 @@ public class InferredTypesService {
             if (selectedTextEditor != null) {
                 Document document = selectedTextEditor.getDocument();
                 PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-                if (psiFile instanceof FileBase) {
+                if (psiFile instanceof FileBase && !FileHelper.isInterface(psiFile.getFileType())) {
                     // Try to get the inferred types cached at the psi file user data
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     Application application = ApplicationManager.getApplication();
