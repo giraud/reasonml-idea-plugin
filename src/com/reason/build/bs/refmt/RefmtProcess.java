@@ -81,7 +81,7 @@ public class RefmtProcess {
                 }
             }
         } catch (@NotNull IOException | RuntimeException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
         } finally {
             if (refmt != null) {
                 refmt.destroyForcibly();
@@ -96,14 +96,13 @@ public class RefmtProcess {
     private String getRefmtPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
-        String result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN);
-
-        if (result == null) {
-            result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib");
-        }
+        String result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib");
 
         if (result == null) {
             result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/bin");
+            if (result == null) {
+                result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN);
+            }
         }
 
         return result;
@@ -113,16 +112,15 @@ public class RefmtProcess {
     private String getRefmtBin(@NotNull String path) {
         VirtualFileManager vfManager = VirtualFileManager.getInstance();
 
-        VirtualFile binary = vfManager.findFileByUrl(path + "/bsrefmt");
+        VirtualFile binary = vfManager.findFileByUrl(path + "/refmt.exe");
 
         if (binary == null) {
             binary = vfManager.findFileByUrl(path + "/refmt3.exe");
+            if (binary == null) {
+                binary = vfManager.findFileByUrl(path + "/bsrefmt");
+            }
         }
 
-        if (binary == null) {
-            binary = vfManager.findFileByUrl(path + "/refmt.exe");
-        }
-
-        return binary == null ? null : binary.getPath();
+        return binary == null ? null : binary.getCanonicalPath();
     }
 }
