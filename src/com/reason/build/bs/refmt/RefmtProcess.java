@@ -15,6 +15,7 @@ import java.io.*;
 
 import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
 import static com.reason.Platform.LOCAL_BS_PLATFORM;
+import static com.reason.Platform.LOCAL_NODE_MODULES_BIN;
 import static com.reason.Platform.UTF8;
 
 public class RefmtProcess {
@@ -95,7 +96,12 @@ public class RefmtProcess {
     private String getRefmtPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
-        String result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib");
+        String result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN);
+
+        if (result == null) {
+            result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib");
+        }
+
         if (result == null) {
             result = getRefmtBin(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/bin");
         }
@@ -107,7 +113,12 @@ public class RefmtProcess {
     private String getRefmtBin(@NotNull String path) {
         VirtualFileManager vfManager = VirtualFileManager.getInstance();
 
-        VirtualFile binary = vfManager.findFileByUrl(path + "/refmt3.exe");
+        VirtualFile binary = vfManager.findFileByUrl(path + "/bsrefmt");
+
+        if (binary == null) {
+            binary = vfManager.findFileByUrl(path + "/refmt3.exe");
+        }
+
         if (binary == null) {
             binary = vfManager.findFileByUrl(path + "/refmt.exe");
         }
