@@ -10,7 +10,7 @@
     <change-notes><![CDATA[
         <ul>
             <li>#177 - Exception: "Access is allowed from event dispatch thread only."</li>
-            <li>#172 - 2019.2 error
+            <li>#172 - 2019.2 error</li>
             <li>Try to ook up bsb and refmt in node_modules/.bin dir to improve support of monorepo.</li>
         </ul>
 
