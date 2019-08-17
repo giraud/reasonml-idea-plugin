@@ -93,7 +93,7 @@ public class InferredTypesService {
         }
 
         PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
-        if (psiFile != null) {
+        if (psiFile != null && !FileHelper.isInterface(psiFile.getFileType())) {
             String[] lines = psiFile.getText().split("\n");
             psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, new SignatureProvider.InferredTypesWithLines(types, lines));
         }
