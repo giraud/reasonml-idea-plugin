@@ -9,9 +9,9 @@
 
     <change-notes><![CDATA[
         <ul>
-            <li>#173 - Fixed exception in Webstorm: gutter icons are only available in java-based IDE</li>
-            <li>#172 - Fixed exceptions in 2019.2 EAP</li>
-            <li>Jetbrains recommendation: moving project components to service components. Expected faster startup</li>
+            <li>#177 - Exception: "Access is allowed from event dispatch thread only."</li>
+            <li>#172 - 2019.2 error
+            <li>Try to ook up bsb and refmt in node_modules/.bin dir to improve support of monorepo.</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
