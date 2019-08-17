@@ -66,7 +66,7 @@ public class CmtiFileListener {
         VirtualFile sourceFile = FileManager.toSource(m_project, file, relativeCmti);
         if (sourceFile == null) {
             LOG.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
-        } else if (m_projectTracker.isOpen(sourceFile)) {
+        } else if (m_projectTracker.isOpen(sourceFile) && !FileHelper.isInterface(sourceFile.getFileType())) {
             Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
             insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, lang, inferredTypes, sourceFile));
         }
