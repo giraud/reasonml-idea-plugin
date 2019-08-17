@@ -50,7 +50,8 @@ public class InferredTypesService {
                     VirtualFile sourceFile = psiFile.getVirtualFile();
                     Application application = ApplicationManager.getApplication();
 
-                    InferredTypes signatures = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+                    SignatureProvider.InferredTypesWithLines sigContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+                    InferredTypes signatures = sigContext == null ? null : sigContext.getTypes();
                     if (signatures == null) {
                         FileType fileType = sourceFile.getFileType();
                         if (FileHelper.isCompilable(fileType) && !FileHelper.isInterface(fileType)) {
@@ -93,9 +94,9 @@ public class InferredTypesService {
 
         PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
         if (psiFile != null) {
-            psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, types);
+            String[] lines = psiFile.getText().split("\n");
+            psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, new SignatureProvider.InferredTypesWithLines(types, lines));
         }
-
     }
 
     @NotNull

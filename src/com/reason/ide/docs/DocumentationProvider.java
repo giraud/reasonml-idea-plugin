@@ -1,15 +1,11 @@
 package com.reason.ide.docs;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Log;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.hints.InferredTypes;
 import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
@@ -20,8 +16,6 @@ import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class DocumentationProvider extends AbstractDocumentationProvider {
 
@@ -118,17 +112,13 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
     @Override
     public String getQuickNavigateInfo(PsiElement element, @NotNull PsiElement originalElement) {
         PsiFile psiFile = originalElement.getContainingFile();
-        TextEditor editor = (TextEditor) FileEditorManager.getInstance(originalElement.getProject()).getSelectedEditor(psiFile.getVirtualFile());
 
         String inferredType = "";
-        if (editor != null) {
-            InferredTypes signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
-            if (signaturesContext != null) {
-                LogicalPosition elementPosition = editor.getEditor().offsetToLogicalPosition(originalElement.getTextOffset());
-                ORSignature elementSignature = signaturesContext.getSignatureByPosition(elementPosition);
-                if (elementSignature != null) {
-                    inferredType = elementSignature.asString(element.getLanguage());
-                }
+        SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+        if (signaturesContext != null) {
+            ORSignature elementSignature = signaturesContext.getSignatureByOffset(originalElement.getTextOffset());
+            if (elementSignature != null) {
+                inferredType = elementSignature.asString(element.getLanguage());
             }
         }
 
