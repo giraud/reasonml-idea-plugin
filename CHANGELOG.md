@@ -10,7 +10,7 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.78.3 - 2019/08/17
+## 0.78.4 - 2019/08/17
 
 - :bug: [#177](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/177) - Exception: "Access is allowed from event dispatch thread only."
 - :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) - 2019.2 error
