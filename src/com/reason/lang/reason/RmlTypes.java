@@ -82,6 +82,8 @@ public class RmlTypes extends ORTypes {
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
         C_VARIANT = new ORCompositeElementType("C_VARIANT", RmlLanguage.INSTANCE);
         C_VARIANT_CONSTRUCTOR = new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
+        C_WHILE = new ORCompositeElementType("C_WHILE", RmlLanguage.INSTANCE);
+        C_WHILE_CONDITION = new ORCompositeElementType("C_WHILE_CONDITION", RmlLanguage.INSTANCE);
 
         // Token element types
 

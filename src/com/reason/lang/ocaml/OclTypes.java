@@ -83,6 +83,8 @@ public class OclTypes extends ORTypes {
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", OclLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", OclLanguage.INSTANCE);
+        C_WHILE = new ORCompositeElementType("C_WHILE", OclLanguage.INSTANCE);
+        C_WHILE_CONDITION = new ORCompositeElementType("C_WHILE_CONDITION", OclLanguage.INSTANCE);
 
         // Token element types
 

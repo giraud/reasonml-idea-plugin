@@ -107,6 +107,10 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (tokenType == m_types.RAISE) {
                 parseRaise(builder, state);
             }
+            // while ... do ... done
+            else if (tokenType == m_types.WHILE) {
+                parseWhile(builder, state);
+            }
             // do ... done
             else if (tokenType == m_types.DO) {
                 parseDo(builder, state);
@@ -213,12 +217,30 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
+    private void parseWhile(@NotNull PsiBuilder builder, ParserState state) {
+        state.add(markScope(builder, whileLoop, m_types.C_WHILE, m_types.WHILE));
+        state.advance();
+        state.add(mark(builder, whileLoop, whileConditionLoop, m_types.C_WHILE_CONDITION));
+    }
+
     private void parseDo(@NotNull PsiBuilder builder, ParserState state) {
-        state.add(markScope(builder, doLoop, m_types.C_SCOPED_EXPR, m_types.DO));
+        if (state.isCurrentResolution(whileConditionLoop)) {
+            state.complete().popEnd();
+            state.add(markScope(builder, doLoop, whileDoLoop, m_types.C_SCOPED_EXPR, m_types.DO));
+        }
+        else {
+            state.add(markScope(builder, doLoop, m_types.C_SCOPED_EXPR, m_types.DO));
+        }
     }
 
     private void parseDone(ParserState state) {
-        state.popEndUntilStartScope();
+        state.popEndUntilContext(doLoop);
+        if (state.isCurrentResolution(whileDoLoop)) {
+            state.advance().
+                    popEndUntilContext(whileLoop).
+                    complete().
+                    popEnd();
+        }
         if (state.isCurrentResolution(doLoop)) {
             state.popEnd();
         }

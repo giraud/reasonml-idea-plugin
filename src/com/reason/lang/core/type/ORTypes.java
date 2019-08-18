@@ -74,6 +74,8 @@ public abstract class ORTypes {
     public IElementType C_UPPER_SYMBOL;
     public IElementType C_LOWER_SYMBOL;
     public IElementType C_STRUCT_EXPR;
+    public IElementType C_WHILE;
+    public IElementType C_WHILE_CONDITION;
 
     // Token element types
 

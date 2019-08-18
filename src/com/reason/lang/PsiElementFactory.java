@@ -136,6 +136,8 @@ public class PsiElementFactory {
             return new PsiRaw(node);
         } else if (type == types.C_SIG_ITEM) {
             return new PsiSignatureItemImpl(types, node);
+        } else if (type == types.C_WHILE) {
+            return new PsiWhile(types, node);
         } else if (type == types.C_UNKNOWN_EXPR) {
             // Try to resolve something from the parent context
             ASTNode parentNode = node.getTreeParent();
