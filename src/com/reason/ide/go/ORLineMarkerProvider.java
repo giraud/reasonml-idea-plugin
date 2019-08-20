@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
@@ -36,11 +37,15 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     Collection<PsiType> expressions = psiFile.getExpressions(element.getText(), PsiType.class);
                     if (expressions.size() == 1) {
                         PsiType relatedType = expressions.iterator().next();
-                        result.add(NavigationGutterIconBuilder.
-                                create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
-                                setAlignment(GutterIconRenderer.Alignment.RIGHT).
-                                setTargets(Collections.singleton(relatedType.getConstrName().getFirstChild().getFirstChild())).
-                                createLineMarkerInfo(element));
+                        PsiElement symbol = PsiTreeUtil.findChildOfType(element, PsiLowerSymbol.class);
+                        PsiElement relatedSymbol = PsiTreeUtil.findChildOfType(relatedType, PsiLowerSymbol.class);
+                        if (symbol != null && relatedSymbol != null) {
+                            result.add(NavigationGutterIconBuilder.
+                                    create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
+                                    setAlignment(GutterIconRenderer.Alignment.RIGHT).
+                                    setTargets(Collections.singleton(relatedSymbol.getFirstChild())).
+                                    createLineMarkerInfo(symbol.getFirstChild()));
+                        }
                     }
                 }
             }
