@@ -379,10 +379,29 @@ public final class PsiFinder {
             return null;
         }
 
+        GlobalSearchScope scope = allScope(m_project);
+
+        // Try qn directly
+        Collection<PsiInnerModule> modules = ModuleFqnIndex.getInstance().get(moduleQName.hashCode(), m_project, scope);
+        if (!modules.isEmpty()) {
+            if (modules.size() == 1) {
+                return modules.iterator().next();
+            }
+
+            for (PsiInnerModule module : modules) {
+                if (((FileBase) module.getContainingFile()).isInterface()) {
+                    return module;
+                }
+            }
+        }
+
+
+        // Qn not working, maybe because of aliases... try to navigate to each module
+
         // extract first token of path
         String[] names = moduleQName.split("\\.");
 
-        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], allScope(m_project));
+        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], scope);
         if (vFile != null) {
             PsiFile file = PsiManager.getInstance(m_project).findFile(vFile);
             if (file instanceof FileBase) {
