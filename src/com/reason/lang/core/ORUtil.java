@@ -3,10 +3,7 @@ package com.reason.lang.core;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.TokenType;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -231,7 +228,12 @@ public class ORUtil {
             }
         }
 
-        return ((FileBase) element.getContainingFile()).getQualifiedName() + (path == null || path.isEmpty() ? "" : "." + path);
+        try {
+            PsiFile containingFile = element.getContainingFile(); // Fail in 2019.2... ?
+            return ((FileBase) containingFile).getQualifiedName() + (path == null || path.isEmpty() ? "" : "." + path);
+        } catch (PsiInvalidElementAccessException e) {
+            return path == null ? "" : path;
+        }
     }
 
     @NotNull
