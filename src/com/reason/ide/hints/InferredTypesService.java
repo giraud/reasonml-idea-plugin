@@ -54,7 +54,7 @@ public class InferredTypesService {
                     InferredTypes signatures = sigContext == null ? null : sigContext.getTypes();
                     if (signatures == null) {
                         FileType fileType = sourceFile.getFileType();
-                        if (FileHelper.isCompilable(fileType) && !FileHelper.isInterface(fileType)) {
+                        if (FileHelper.isCompilable(fileType)) {
                             InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
 
                             if (!DumbService.isDumb(project)) {
@@ -63,13 +63,13 @@ public class InferredTypesService {
                                 if (cmtFile != null) {
                                     Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
                                     insightManager.queryTypes(sourceFile, cmtPath,
-                                            types -> application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), types, sourceFile)));
+                                            types -> application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), sourceFile, types)));
                                 }
                             }
                         }
                     } else {
                         LOG.debug("Signatures found in user data cache");
-                        application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), signatures, sourceFile));
+                        application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), sourceFile, signatures));
                     }
                 }
             }
@@ -78,8 +78,12 @@ public class InferredTypesService {
         }
     }
 
-    public static void annotatePsiFile(@NotNull Project project, @NotNull Language lang, @Nullable InferredTypes types, @Nullable VirtualFile sourceFile) {
+    public static void annotatePsiFile(@NotNull Project project, @NotNull Language lang, @Nullable VirtualFile sourceFile, @Nullable InferredTypes types) {
         if (types == null || sourceFile == null) {
+            return;
+        }
+
+        if (FileHelper.isInterface(sourceFile.getFileType())) {
             return;
         }
 

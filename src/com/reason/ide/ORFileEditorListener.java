@@ -79,7 +79,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
     private void queryTypes(@NotNull VirtualFile file, @NotNull Path cmtPath, @NotNull Language language) {
         ServiceManager.
                 getService(m_project, InsightManager.class).
-                queryTypes(file, cmtPath, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, language, inferredTypes, file));
+                queryTypes(file, cmtPath, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, language, file, inferredTypes));
     }
 
     @Override

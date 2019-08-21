@@ -395,7 +395,6 @@ public final class PsiFinder {
             }
         }
 
-
         // Qn not working, maybe because of aliases... try to navigate to each module
 
         // extract first token of path
