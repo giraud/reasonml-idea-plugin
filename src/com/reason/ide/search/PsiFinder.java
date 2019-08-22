@@ -131,7 +131,8 @@ public final class PsiFinder {
             for (PsiInnerModule item : items) {
                 String itemQName = item.getQualifiedName();
 
-                String filename = ((FileBase) item.getContainingFile()).asModuleName();
+                FileBase itemFile = ((FileBase) item.getContainingFile());
+                String filename = itemFile.asModuleName();
 
                 if (fileType == ORFileType.implementationOnly) {
                     Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
@@ -144,14 +145,14 @@ public final class PsiFinder {
                         intfNames.put(itemQName, item);
                     }
                 } else {
-                    file = fileModuleIndex.getFile(filename, scope);
-                    if (file != null) {
-                        if (FileHelper.isInterface(file.getFileType())) {
-                            if (((FileBase) item.getContainingFile()).isInterface()) {
+                    Collection<VirtualFile> resolvedFiles = fileModuleIndex.getFilesWithName(filename, scope);
+                    for (VirtualFile resolvedFile : resolvedFiles) {
+                        if (FileHelper.isInterface(resolvedFile.getFileType())) {
+                            if (itemFile.isInterface()) {
                                 intfNames.put(itemQName, item);
                             }
                         } else {
-                            if (!((FileBase) item.getContainingFile()).isInterface()) {
+                            if (!itemFile.isInterface()) {
                                 implNames.put(itemQName, item);
                             }
                         }
