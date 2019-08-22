@@ -186,7 +186,8 @@ public final class BsProcess implements CompilerProcessLifecycle {
                 p = Runtime.getRuntime().exec(bsc + " -version");
                 p.waitFor();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                return ocamlVersionExtractor(reader.readLine());
+                String line = reader.readLine();
+                return line == null ? null : ocamlVersionExtractor(line);
             } catch (@NotNull InterruptedException | IOException e) {
                 return null;
             } finally {
