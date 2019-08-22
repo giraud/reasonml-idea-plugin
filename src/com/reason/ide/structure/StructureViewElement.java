@@ -30,7 +30,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         this(null, element);
     }
 
-    StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element) {
+    private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element) {
         m_element = element;
         m_viewElement = viewElement;
     }
@@ -167,13 +167,22 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     private List<TreeElement> buildModuleStructure(PsiInnerModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
-        PsiElement rootElement = moduleElement.getSignature();
+        PsiSignature moduleSignature = moduleElement.getSignature();
+        PsiElement rootElement = moduleSignature;
         if (rootElement == null) {
             rootElement = moduleElement.getBody();
         }
 
         if (rootElement != null) {
             rootElement.acceptChildren(new ElementVisitor(treeElements));
+        }
+
+        // Process body if there is a signature
+        if (moduleSignature != null) {
+            rootElement = moduleElement.getBody();
+            if (rootElement != null) {
+                treeElements.add(new StructureModuleImplView(rootElement));
+            }
         }
 
         return treeElements;
@@ -254,4 +263,70 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         }
     }
 
+    static class StructureModuleImplView implements StructureViewTreeElement, SortableTreeElement {
+
+        final PsiElement m_rootElement;
+
+        StructureModuleImplView(PsiElement rootElement) {
+            m_rootElement = rootElement;
+        }
+
+        @NotNull
+        @Override
+        public ItemPresentation getPresentation() {
+            return new ItemPresentation() {
+                @Nullable
+                @Override
+                public String getPresentableText() {
+                    return "Implementation";
+                }
+
+                @Nullable
+                @Override
+                public String getLocationString() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public Icon getIcon(boolean unused) {
+                    return null;
+                }
+            };
+        }
+
+        @NotNull
+        @Override
+        public TreeElement[] getChildren() {
+            List<TreeElement> treeElements = new ArrayList<>();
+            m_rootElement.acceptChildren(new ElementVisitor(treeElements));
+            return treeElements.toArray(new TreeElement[0]);
+        }
+
+        @Override
+        public Object getValue() {
+            return m_rootElement;
+        }
+
+        @Override
+        public void navigate(boolean requestFocus) {
+
+        }
+
+        @Override
+        public boolean canNavigate() {
+            return false;
+        }
+
+        @Override
+        public boolean canNavigateToSource() {
+            return false;
+        }
+
+        @NotNull
+        @Override
+        public String getAlphaSortKey() {
+            return "implementation";
+        }
+    }
 }
