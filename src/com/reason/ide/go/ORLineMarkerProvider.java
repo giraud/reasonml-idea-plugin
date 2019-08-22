@@ -55,6 +55,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
         } else if (element instanceof PsiLowerSymbol && parent instanceof PsiExternal && ((PsiNamedElement) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
+        } else if (element instanceof PsiUpperSymbol && parent instanceof PsiInnerModule && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+            extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
         }
     }
 
