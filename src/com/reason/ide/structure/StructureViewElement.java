@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.PsiIconUtil;
+import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -290,7 +291,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 @Nullable
                 @Override
                 public Icon getIcon(boolean unused) {
-                    return null;
+                    return Icons.MODULE;
                 }
             };
         }
@@ -326,7 +327,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         @NotNull
         @Override
         public String getAlphaSortKey() {
-            return "implementation";
+            return "zzzzImplementation";
         }
     }
 }
