@@ -70,6 +70,7 @@ public class RincewindDownloader extends Task.Backgroundable {
             }
 
             LOG.info("Downloading " + targetFile.getName() + "...");
+            indicator.setIndeterminate(false);
             indicator.setFraction(0.0);
 
             try {
