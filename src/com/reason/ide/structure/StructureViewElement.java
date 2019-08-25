@@ -279,7 +279,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 @Nullable
                 @Override
                 public String getPresentableText() {
-                    return "Implementation";
+                    return "(impl)";
                 }
 
                 @Nullable
@@ -291,7 +291,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                 @Nullable
                 @Override
                 public Icon getIcon(boolean unused) {
-                    return Icons.MODULE;
+                    return null;
                 }
             };
         }
