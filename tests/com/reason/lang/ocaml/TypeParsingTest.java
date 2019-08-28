@@ -2,6 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
@@ -47,6 +48,12 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals(2, fields.size());
         assertEquals("kind", fields.get(0).getName());
         assertEquals("pos", fields.get(1).getName());
+    }
+
+    public void testChainDef() {
+        FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
+
+        assertEquals(1, file.getChildren().length);
     }
 
     public void testTypeParameterized() {

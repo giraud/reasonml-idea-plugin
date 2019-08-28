@@ -513,9 +513,18 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentContext(signature)) {
             state.popEndWhileContext(signature);
         } else if (state.isCurrentResolution(typeNamedEq)) {
-            // Functor constraints
-            state.popEndUntilStartScope().complete();
-            state.popEnd();
+            IElementType nextElementType = builder.lookAhead(1);
+            if (nextElementType == m_types.STRUCT) {
+                // Functor constraints
+                // module M (..) : S with type x = y |>=<| struct .. end
+                state.popEndUntilStartScope().complete();
+                state.popEnd();
+            }
+            else {
+                // Must be multiple declaration
+                // type x = y |>=<| ...
+                // This is not correctly parsed, just to avoid to break next instructions
+            }
         }
 
         if (state.isCurrentResolution(typeNamed)) {
