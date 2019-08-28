@@ -8,14 +8,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class ParserScope {
 
-    ORTokenElementType scopeTokenElementType;
-
     @NotNull
     private final PsiBuilder m_builder;
     private final int m_offset;
 
     private ParserScopeEnum m_resolution;
     private IElementType m_compositeElementType;
+    private ORTokenElementType m_scopeTokenElementType;
     private ParserScopeEnum m_context;
     private boolean m_isComplete = false;
     private boolean m_isDummy = false; // Always drop
@@ -31,7 +30,7 @@ public class ParserScope {
         m_context = context;
         m_resolution = resolution;
         m_compositeElementType = compositeElementType;
-        this.scopeTokenElementType = scopeTokenElementType;
+        m_scopeTokenElementType = scopeTokenElementType;
     }
 
     public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull IElementType compositeElementType) {
@@ -117,12 +116,12 @@ public class ParserScope {
     }
 
     boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
-        return this.scopeTokenElementType == tokenElementType;
+        return m_scopeTokenElementType == tokenElementType;
     }
 
     void setScopeTokenType(@NotNull ORTokenElementType tokenElementType) {
-        this.scopeTokenElementType = tokenElementType;
-        this.m_isScope = true;
+        m_scopeTokenElementType = tokenElementType;
+        m_isScope = true;
     }
 
     @NotNull
@@ -161,5 +160,9 @@ public class ParserScope {
 
     public boolean isScope() {
         return m_isScope;
+    }
+
+    public ORTokenElementType getScopeTokenElementType() {
+        return m_scopeTokenElementType;
     }
 }

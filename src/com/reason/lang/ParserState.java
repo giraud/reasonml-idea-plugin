@@ -88,7 +88,7 @@ public class ParserState {
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && scope.scopeTokenElementType != scopeElementType) {
+            while (scope != null && scope.getScopeTokenElementType() != scopeElementType) {
                 popEnd();
                 scope = getLatestScope();
             }
@@ -171,7 +171,7 @@ public class ParserState {
 
         if (!m_scopes.isEmpty()) {
             scope = m_scopes.peek();
-            while (scope != null && !ArrayUtil.contains(scope.scopeTokenElementType, scopeElementTypes)) {
+            while (scope != null && !ArrayUtil.contains(scope.getScopeTokenElementType(), scopeElementTypes)) {
                 popEnd();
                 scope = getLatestScope();
             }

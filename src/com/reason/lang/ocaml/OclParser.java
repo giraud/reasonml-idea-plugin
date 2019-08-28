@@ -661,6 +661,8 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(let)) {
             // we are processing an infix operator or a desconstruction (tuple) : let (..<)>
             state.updateCurrentResolution(letNamed).complete();
+        } else if (state.isCurrentResolution(moduleNamedColon)) { // ?
+            state.popEnd();
         }
     }
 

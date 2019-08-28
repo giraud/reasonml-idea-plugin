@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiInnerModule;
 
@@ -44,6 +45,13 @@ public class ModuleParsingTest extends BaseParsingTestCase {
 
         assertEquals(2, expressions(file).size());
         assertEquals("Constraint", first(moduleExpressions(file)).getName());
+    }
+
+    public void testModuleSig3() {
+        FileBase file = parseCode("module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id", true);
+
+        assertEquals(2, expressions(file).size());
+        assertEquals("Branch", first(moduleExpressions(file)).getName());
     }
 
     public void testModuleChaining() {
