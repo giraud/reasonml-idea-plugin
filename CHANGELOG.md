@@ -10,11 +10,21 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.79 - 2019/08/28
+
+- :bug: [#176](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176)  - Functions missing in structure panel after "while+match" code
+- :bug: [#170](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/170)  - Functions in struct in "module : sig ... end = struct ... end" not shown in Structure panel
+- :rocket: Add line marker for inner module
+- :nail_care: Don't annotate interface file
+- :house: Improve module resolution when it's only found in implementation file
+- :house: Better dot completion for inner module in impl file
+- :house: Remove the perf warning for LineMarker
+
 ## 0.78.4 - 2019/08/17
 
 - :bug: [#177](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/177) - Exception: "Access is allowed from event dispatch thread only."
 - :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) - 2019.2 error
-- :house: Try to ook up bsb and refmt in node_modules/.bin dir to improve support of monorepo. Thanks to [@Coobaha](https://github.com/Coobaha)
+- :house: Try to look up bsb and refmt in node_modules/.bin dir to improve support of monorepo. Thanks to [@Coobaha](https://github.com/Coobaha)
 
 ## 0.78.2 - 2019/07/02
 
