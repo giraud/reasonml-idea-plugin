@@ -3,24 +3,6 @@
     <name>ReasonML</name>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
-    <description><![CDATA[
-      Add support for ReasonML language. Also add support for OCaml, and Dune.
-    ]]></description>
-
-    <change-notes><![CDATA[
-        <ul>
-            <li>#177 - Exception: "Access is allowed from event dispatch thread only."</li>
-            <li>#172 - 2019.2 error</li>
-            <li>Try to ook up bsb and refmt in node_modules/.bin dir to improve support of monorepo.</li>
-        </ul>
-
-        <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
-
-        <p/>
-        <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-    ]]>
-    </change-notes>
-
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="173"/>
 

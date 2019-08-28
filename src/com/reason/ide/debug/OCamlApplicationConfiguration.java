@@ -9,13 +9,12 @@ import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.SettingsEditor;
-import com.reason.lang.core.psi.PsiInnerModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration, PsiInnerModule> {
+public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration/*, PsiInnerModule*/> {
 
     public OCamlApplicationConfiguration(String name, @NotNull OCamlModuleBasedConfiguration configurationModule, @NotNull ConfigurationFactory factory) {
         super(name, configurationModule, factory);
