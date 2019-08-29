@@ -100,6 +100,10 @@ let jsComponent =
     
   Now, they have incompatible implementations, and different goals. 
 
+- Modules from `node_modules` folder are not resolved (GoTo is not working on `Array.sort`)?
+
+  Ensure that `node_modules` folder is not exlucded from IDE index.
+
 ## Development
 
 This project is heavily inspired by :
