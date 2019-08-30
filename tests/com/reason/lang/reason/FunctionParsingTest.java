@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
@@ -106,6 +107,15 @@ public class FunctionParsingTest extends BaseParsingTestCase {
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertSize(10, function.getParameters());
+    }
+
+    public void testParameterAnonFunction() {
+        FileBase e = parseCode("describe('a', () => test('b', () => true));");
+
+        List<PsiFunction> funcs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiFunction.class));
+        assertSize(2, funcs);
+        assertEquals("() => test('b', () => true)", funcs.get(0).getText());
+        assertEquals("() => true", funcs.get(1).getText());
     }
 
     public void testRecordFunction() {

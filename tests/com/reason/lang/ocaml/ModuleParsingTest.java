@@ -48,7 +48,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleSig3() {
-        FileBase file = parseCode("module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id", true);
+        FileBase file = parseCode("module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
 
         assertEquals(2, expressions(file).size());
         assertEquals("Branch", first(moduleExpressions(file)).getName());

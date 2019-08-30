@@ -857,11 +857,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     advance().
                     add(mark(builder, state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM).complete());
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
-            // Functor constraint :: module M = (..) : <(> .. ) =
+            // Functor constraint :: module M = (..) : |>(<| .. ) =
             state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
             // Variant params
-            // type t = | Variant «(» .. )
+            // type t = | Variant |>(<| .. )
             state.add(markScope(builder, variantConstructor, m_types.C_FUN_PARAMS, m_types.LPAREN)).
                     advance().
                     add(mark(builder, variantConstructor, functionParameter, m_types.C_FUN_PARAM));
@@ -887,8 +887,19 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(functionParameter)) {
             IElementType nextTokenType = builder.rawLookup(1);
             if (nextTokenType == m_types.RPAREN) {
-                // unit parameter
-                state.wrapWith(m_types.C_UNIT).advance();
+                IElementType nexNextTokenType = builder.lookAhead(2);
+                if (nexNextTokenType == m_types.ARROW) {
+                    // Function in parameter
+                    state.add(mark(builder, function, m_types.C_FUN_EXPR).complete()).
+                            add(mark(builder, function, functionParameters, m_types.C_UNKNOWN_EXPR).complete()).
+                            add(mark(builder, function, functionParameter, m_types.C_UNIT).complete()).
+                            advance().
+                            advance();
+
+                } else {
+                    // unit parameter
+                    state.wrapWith(m_types.C_UNIT).advance();
+                }
             } else {
                 // might be a function inside a parameter
                 state.add(markScope(builder, maybeFunction, maybeFunction, m_types.C_UNKNOWN_EXPR, m_types.LPAREN))

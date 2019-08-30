@@ -39,6 +39,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldType(descriptors, (PsiType) element);
             } else if (element instanceof PsiInnerModule) {
                 foldModule(descriptors, (PsiInnerModule) element);
+            } else if (element instanceof PsiFunction) {
+                foldFunction(descriptors, (PsiFunction) element);
             } else if (element instanceof PsiFunctor) {
                 foldFunctor(descriptors, (PsiFunctor) element);
             } else if (element instanceof OclYaccHeader) {
@@ -92,6 +94,13 @@ public class FoldingBuilder extends FoldingBuilderEx {
         FoldingDescriptor foldBody = fold(module.getBody());
         if (foldBody != null) {
             descriptors.add(foldBody);
+        }
+    }
+
+    private void foldFunction(@NotNull List<FoldingDescriptor> descriptors, PsiFunction func) {
+        FoldingDescriptor foldBinding = fold(func.getBody());
+        if (foldBinding != null) {
+            descriptors.add(foldBinding);
         }
     }
 
