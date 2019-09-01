@@ -235,9 +235,6 @@
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
-        <additionalTextAttributes scheme="Default" file="colorSchemes/ReasonDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ReasonDarcula.xml"/>
-
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
 
