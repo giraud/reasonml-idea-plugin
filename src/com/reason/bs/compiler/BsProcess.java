@@ -1,4 +1,4 @@
-package com.reason.build.bs.compiler;
+package com.reason.bs.compiler;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;

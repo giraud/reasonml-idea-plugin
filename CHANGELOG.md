@@ -10,7 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.79 - 2019/08/28
+## [Unreleased]
+
+- :house: rework Bs output listener, add test
+
+## [0.79] - 2019/08/28
 
 - :bug: [#176](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176)  - Functions missing in structure panel after "while+match" code
 - :bug: [#170](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/170)  - Functions in struct in "module : sig ... end = struct ... end" not shown in Structure panel
@@ -425,3 +429,6 @@ This release contains a big rewrite of how modules are referenced, it may break 
 ## 0.22
 
 * :rocket: Parse Bsb super errors and use them to annotate source code
+
+[Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...HEAD
+[0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79

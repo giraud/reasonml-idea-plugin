@@ -195,7 +195,7 @@
          | Compiler
          -->
 
-        <projectService serviceImplementation="com.reason.build.bs.compiler.BsProcess"/>
+        <projectService serviceImplementation="com.reason.bs.compiler.BsProcess"/>
 
         <projectService serviceInterface="com.reason.build.bs.Bucklescript"
                         serviceImplementation="com.reason.build.bs.BucklescriptImpl"/>

@@ -1,4 +1,4 @@
-package com.reason.build.bs.compiler;
+package com.reason.bs.compiler;
 
 import com.intellij.execution.process.ProcessListener;
 import org.jetbrains.annotations.NotNull;
