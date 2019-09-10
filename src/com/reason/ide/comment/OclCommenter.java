@@ -45,25 +45,45 @@ public class OclCommenter implements Commenter, CustomUncommenter {
     @Nullable
     @Override
     public TextRange findMaximumCommentedRange(@NotNull CharSequence text) {
-        // copied and adapted com.intellij.codeInsight.generation.CommentByBlockCommentHandler.getSelectedComments
         TextRange commentedRange = null;
 
-        String prefix = getBlockCommentPrefix();
-        String suffix = getBlockCommentSuffix();
-
+        // trim start & end
         int selectionStart = 0;
         selectionStart = CharArrayUtil.shiftForward(text, selectionStart, " \t\n");
+
         int selectionEnd = text.length() - 1;
         selectionEnd = CharArrayUtil.shiftBackward(text, selectionEnd, " \t\n") + 1;
-        boolean b = CharArrayUtil.regionMatches(text, selectionEnd - suffix.length(), suffix);
-        if (selectionEnd - selectionStart >= prefix.length() + suffix.length() &&
-                CharArrayUtil.regionMatches(text, selectionStart, prefix) &&
-                CharArrayUtil.regionMatches(text, selectionEnd - suffix.length(), suffix)) {
-            commentedRange = new TextRange(selectionStart, selectionEnd);
+
+        // Find how many distinct comments in text
+        boolean commentStart = CharArrayUtil.regionMatches(text, selectionStart, "(*");
+        if (commentStart) {
+            int commentCount = 0;
+            int nestedComment = 0;
+            for (int i = selectionStart; i < selectionEnd; i++) {
+                char c = text.charAt(i);
+                if (c == '(') {
+                    char c2 = text.charAt(i + 1);
+                    if (c2 == '*') {
+                        nestedComment++;
+                    }
+                } else if (c == '*') {
+                    char c2 = text.charAt(i + 1);
+                    if (c2 == ')') {
+                        nestedComment--;
+                        if (nestedComment == 0) {
+                            commentCount++;
+                        }
+                    }
+                }
+            }
+
+            if (commentCount == 1 && selectionEnd - selectionStart >= 2 + 2 &&
+                    CharArrayUtil.regionMatches(text, selectionEnd - 2, "*)")) {
+                commentedRange = new TextRange(selectionStart, selectionEnd);
+            }
         }
 
         return commentedRange;
-
     }
 
     @NotNull
@@ -71,10 +91,11 @@ public class OclCommenter implements Commenter, CustomUncommenter {
     public Collection<? extends Couple<TextRange>> getCommentRangesToDelete(@NotNull CharSequence text) {
         Collection<Couple<TextRange>> ranges = new ArrayList<>();
 
-        int start = getNearest((String) text, "(*", 0);
+        // should use nearest after all pairs (* *)
+
+        int start = getNearest((String) text);
         TextRange prefixRange = expandRange(text, start, start + 2);
 
-        // should use nearest after all pairs (* *)
         int end = ((String) text).lastIndexOf("*)");
         TextRange suffixRange = expandRange(text, end, end + 2);
 
@@ -99,8 +120,8 @@ public class OclCommenter implements Commenter, CustomUncommenter {
         return new TextRange(delOffset1, delOffset2);
     }
 
-    private static int getNearest(String text, @NotNull String pattern, int position) {
-        int result = text.indexOf(pattern, position);
+    private static int getNearest(String text) {
+        int result = text.indexOf("(*", 0);
         return result == -1 ? text.length() : result;
     }
 }
