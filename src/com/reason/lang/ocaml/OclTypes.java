@@ -42,6 +42,9 @@ public class OclTypes extends ORTypes {
         C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new ORCompositeElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
+        C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", OclLanguage.INSTANCE);
+        C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", OclLanguage.INSTANCE);
+        C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", OclLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", OclLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
@@ -79,7 +82,6 @@ public class OclTypes extends ORTypes {
         C_IF_STMT = new ORCompositeElementType("C_IF_STMT", OclLanguage.INSTANCE);
         C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", OclLanguage.INSTANCE);
         C_SWITCH_EXPR = new ORCompositeElementType("C_SWITCH_EXPR", OclLanguage.INSTANCE);
-        C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", OclLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
         C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", OclLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", OclLanguage.INSTANCE);

@@ -82,6 +82,8 @@ public class PsiElementFactory {
             return new PsiRecordFieldImpl(types, node);
         } else if (type == types.C_INTERPOLATION_EXPR) {
             return new PsiInterpolation(node);
+        } else if (type == types.C_INTERPOLATION_REF) {
+            return new PsiInterpolationReference(node);
         } else if (type == types.C_SIG_EXPR) {
             return new PsiSignatureImpl(types, node);
         } else if (type == types.C_TAG) {

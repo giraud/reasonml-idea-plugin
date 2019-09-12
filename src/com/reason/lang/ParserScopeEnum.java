@@ -99,8 +99,9 @@ public enum ParserScopeEnum {
     patternMatch,
 
     multilineStart,
-    interpolationStart,
     interpolationString,
+    interpolationPart,
+    interpolationReference,
 
     genericExpression,
 

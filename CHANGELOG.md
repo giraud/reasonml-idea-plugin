@@ -13,6 +13,7 @@
 ## [Unreleased]
 
 - :house: rework Bs output listener, add test
+- :nail_care: ![r] Better parsing/highlighting of js template string
 
 ## [0.79] - 2019/08/28
 
@@ -432,3 +433,4 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 [Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...HEAD
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
+[r]: jps-shared/resources/icons/reason-file.png

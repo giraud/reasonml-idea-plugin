@@ -46,6 +46,8 @@ public class RmlTypes extends ORTypes {
         C_IF_STMT = new ORCompositeElementType("C_IF_STMT", RmlLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", RmlLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
+        C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", RmlLanguage.INSTANCE);
+        C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", RmlLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", RmlLanguage.INSTANCE);
         C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", RmlLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", RmlLanguage.INSTANCE);

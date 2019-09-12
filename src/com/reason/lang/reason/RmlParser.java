@@ -43,124 +43,140 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 break;
             }
 
-            // special keywords that can be used as lower identifier in records
-            if (tokenType == m_types.REF && state.isCurrentResolution(recordBinding)) {
-                parseLIdent(builder, state);
-            } else if (tokenType == m_types.METHOD && state.isCurrentResolution(recordBinding)) {
-                parseLIdent(builder, state);
-            }
-            //
-            else if (tokenType == m_types.SEMI) {
-                parseSemi(state);
-            } else if (tokenType == m_types.EQ) {
-                parseEq(builder, state);
-            } else if (tokenType == m_types.UNDERSCORE) {
-                parseUnderscore(state);
-            } else if (tokenType == m_types.ARROW) {
-                parseArrow(builder, state);
-            } else if (tokenType == m_types.OPTION) {
-                parseOption(builder, state);
-            } else if (tokenType == m_types.TRY) {
-                parseTry(builder, state);
-            } else if (tokenType == m_types.SWITCH) {
-                parseSwitch(builder, state);
-            } else if (tokenType == m_types.LIDENT) {
-                parseLIdent(builder, state);
-            } else if (tokenType == m_types.UIDENT) {
-                parseUIdent(builder, state);
-            } else if (tokenType == m_types.ARROBASE) {
-                parseArrobase(builder, state);
-            } else if (tokenType == m_types.PERCENT) {
-                parsePercent(builder, state);
-            } else if (tokenType == m_types.COLON) {
-                parseColon(builder, state);
-            } else if (tokenType == m_types.RAW) {
-                parseRaw(builder, state);
-            } else if (tokenType == m_types.STRING_VALUE) {
-                parseStringValue(builder, state);
-            } else if (tokenType == m_types.PIPE) {
-                parsePipe(builder, state);
-            } else if (tokenType == m_types.TILDE) {
-                parseTilde(builder, state);
-            } else if (tokenType == m_types.COMMA) {
-                parseComma(builder, state);
-            } else if (tokenType == m_types.AND) {
-                parseAnd(builder, state);
-            } else if (tokenType == m_types.FUN) {
-                parseFun(builder, state);
-            } else if (tokenType == m_types.ASSERT) {
-                parseAssert(builder, state);
-            } else if (tokenType == m_types.IF) {
-                parseIf(builder, state);
-            } else if (tokenType == m_types.DOT) {
-                parseDot(builder, state);
-            } else if (tokenType == m_types.DOTDOTDOT) {
-                parseDotDotDot(builder, state);
-            }
-            // ( ... )
-            else if (tokenType == m_types.LPAREN) {
-                parseLParen(builder, state);
-            } else if (tokenType == m_types.RPAREN) {
-                parseRParen(builder, state);
-            }
-            // { ... }
-            else if (tokenType == m_types.LBRACE) {
-                parseLBrace(builder, state);
-            } else if (tokenType == m_types.RBRACE) {
-                parseRBrace(state);
-            }
-            // [ ... ]
-            // [> ... ]
-            else if (tokenType == m_types.LBRACKET) {
-                parseLBracket(builder, state);
-            } else if (tokenType == m_types.BRACKET_GT) {
-                parseBracketGt(builder, state);
-            } else if (tokenType == m_types.RBRACKET) {
-                parseRBracket(builder, state);
-            }
-            // < ... >
-            else if (tokenType == m_types.LT) {
-                parseLt(builder, state);
-            } else if (tokenType == m_types.TAG_LT_SLASH) {
-                parseLtSlash(builder, state);
-            } else if (tokenType == m_types.GT) {
-                parseGt(builder, state);
-            } else if (tokenType == m_types.TAG_AUTO_CLOSE) {
-                parseGtAutoClose(builder, state);
-            }
-            // {| ... |}
-            else if (tokenType == m_types.ML_STRING_OPEN) {
-                parseMlStringOpen(builder, state);
-            } else if (tokenType == m_types.ML_STRING_CLOSE) {
-                parseMlStringClose(state);
-            }
-            // {j| ... |j}
-            else if (tokenType == m_types.JS_STRING_OPEN) {
-                parseJsStringOpen(builder, state);
-            } else if (tokenType == m_types.JS_STRING_CLOSE) {
-                parseJsStringClose(state);
-            }
-            // Starts an expression
-            else if (tokenType == m_types.OPEN) {
-                parseOpen(builder, state);
-            } else if (tokenType == m_types.INCLUDE) {
-                parseInclude(builder, state);
-            } else if (tokenType == m_types.EXTERNAL) {
-                parseExternal(builder, state);
-            } else if (tokenType == m_types.TYPE) {
-                parseType(builder, state);
-            } else if (tokenType == m_types.MODULE) {
-                parseModule(builder, state);
-            } else if (tokenType == m_types.CLASS) {
-                parseClass(builder, state);
-            } else if (tokenType == m_types.LET) {
-                parseLet(builder, state);
-            } else if (tokenType == m_types.VAL) {
-                parseVal(builder, state);
-            } else if (tokenType == m_types.PUB) {
-                parsePub(builder, state);
-            } else if (tokenType == m_types.EXCEPTION) {
-                parseException(builder, state);
+            // special analyse when inside an interpolation string
+            if (state.isCurrentContext(interpolationString)) {
+                if (tokenType == m_types.JS_STRING_CLOSE) {
+                    parseJsStringClose(state);
+                } else if (tokenType == m_types.DOLLAR) {
+                    if (state.isCurrentResolution(interpolationPart)) {
+                        state.popEnd();
+                        state.updateCurrentResolution(interpolationReference);
+                    }
+                } else if (state.isCurrentResolution(interpolationReference)) {
+                    state.wrapWith(m_types.C_INTERPOLATION_REF);
+                    state.updateCurrentResolution(interpolationString);
+                } else if (state.currentResolution() != interpolationPart) {
+                    state.add(mark(builder, interpolationString, interpolationPart, m_types.C_INTERPOLATION_PART).complete());
+                }
+            } else {
+
+                // special keywords that can be used as lower identifier in records
+                if (tokenType == m_types.REF && state.isCurrentResolution(recordBinding)) {
+                    parseLIdent(builder, state);
+                } else if (tokenType == m_types.METHOD && state.isCurrentResolution(recordBinding)) {
+                    parseLIdent(builder, state);
+                }
+                //
+                else if (tokenType == m_types.SEMI) {
+                    parseSemi(state);
+                } else if (tokenType == m_types.EQ) {
+                    parseEq(builder, state);
+                } else if (tokenType == m_types.UNDERSCORE) {
+                    parseUnderscore(state);
+                } else if (tokenType == m_types.ARROW) {
+                    parseArrow(builder, state);
+                } else if (tokenType == m_types.OPTION) {
+                    parseOption(builder, state);
+                } else if (tokenType == m_types.TRY) {
+                    parseTry(builder, state);
+                } else if (tokenType == m_types.SWITCH) {
+                    parseSwitch(builder, state);
+                } else if (tokenType == m_types.LIDENT) {
+                    parseLIdent(builder, state);
+                } else if (tokenType == m_types.UIDENT) {
+                    parseUIdent(builder, state);
+                } else if (tokenType == m_types.ARROBASE) {
+                    parseArrobase(builder, state);
+                } else if (tokenType == m_types.PERCENT) {
+                    parsePercent(builder, state);
+                } else if (tokenType == m_types.COLON) {
+                    parseColon(builder, state);
+                } else if (tokenType == m_types.RAW) {
+                    parseRaw(builder, state);
+                } else if (tokenType == m_types.STRING_VALUE) {
+                    parseStringValue(builder, state);
+                } else if (tokenType == m_types.PIPE) {
+                    parsePipe(builder, state);
+                } else if (tokenType == m_types.TILDE) {
+                    parseTilde(builder, state);
+                } else if (tokenType == m_types.COMMA) {
+                    parseComma(builder, state);
+                } else if (tokenType == m_types.AND) {
+                    parseAnd(builder, state);
+                } else if (tokenType == m_types.FUN) {
+                    parseFun(builder, state);
+                } else if (tokenType == m_types.ASSERT) {
+                    parseAssert(builder, state);
+                } else if (tokenType == m_types.IF) {
+                    parseIf(builder, state);
+                } else if (tokenType == m_types.DOT) {
+                    parseDot(builder, state);
+                } else if (tokenType == m_types.DOTDOTDOT) {
+                    parseDotDotDot(builder, state);
+                }
+                // ( ... )
+                else if (tokenType == m_types.LPAREN) {
+                    parseLParen(builder, state);
+                } else if (tokenType == m_types.RPAREN) {
+                    parseRParen(builder, state);
+                }
+                // { ... }
+                else if (tokenType == m_types.LBRACE) {
+                    parseLBrace(builder, state);
+                } else if (tokenType == m_types.RBRACE) {
+                    parseRBrace(state);
+                }
+                // [ ... ]
+                // [> ... ]
+                else if (tokenType == m_types.LBRACKET) {
+                    parseLBracket(builder, state);
+                } else if (tokenType == m_types.BRACKET_GT) {
+                    parseBracketGt(builder, state);
+                } else if (tokenType == m_types.RBRACKET) {
+                    parseRBracket(builder, state);
+                }
+                // < ... >
+                else if (tokenType == m_types.LT) {
+                    parseLt(builder, state);
+                } else if (tokenType == m_types.TAG_LT_SLASH) {
+                    parseLtSlash(builder, state);
+                } else if (tokenType == m_types.GT) {
+                    parseGt(builder, state);
+                } else if (tokenType == m_types.TAG_AUTO_CLOSE) {
+                    parseGtAutoClose(builder, state);
+                }
+                // {| ... |}
+                else if (tokenType == m_types.ML_STRING_OPEN) {
+                    parseMlStringOpen(builder, state);
+                } else if (tokenType == m_types.ML_STRING_CLOSE) {
+                    parseMlStringClose(state);
+                }
+                // {j| ... |j}
+                else if (tokenType == m_types.JS_STRING_OPEN) {
+                    parseJsStringOpen(builder, state);
+                }
+                // Starts an expression
+                else if (tokenType == m_types.OPEN) {
+                    parseOpen(builder, state);
+                } else if (tokenType == m_types.INCLUDE) {
+                    parseInclude(builder, state);
+                } else if (tokenType == m_types.EXTERNAL) {
+                    parseExternal(builder, state);
+                } else if (tokenType == m_types.TYPE) {
+                    parseType(builder, state);
+                } else if (tokenType == m_types.MODULE) {
+                    parseModule(builder, state);
+                } else if (tokenType == m_types.CLASS) {
+                    parseClass(builder, state);
+                } else if (tokenType == m_types.LET) {
+                    parseLet(builder, state);
+                } else if (tokenType == m_types.VAL) {
+                    parseVal(builder, state);
+                } else if (tokenType == m_types.PUB) {
+                    parsePub(builder, state);
+                } else if (tokenType == m_types.EXCEPTION) {
+                    parseException(builder, state);
+                }
             }
 
             if (state.dontMove) {
@@ -395,9 +411,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.endAny();
         }
 
-        state.add(markScope(builder, interpolationStart, m_types.C_SCOPED_EXPR, m_types.JS_STRING_OPEN));
-        state.advance();
-        state.add(mark(builder, interpolationString, m_types.C_INTERPOLATION_EXPR).complete());
+        state.add(markScope(builder, interpolationString, m_types.C_INTERPOLATION_EXPR, m_types.JS_STRING_OPEN));
     }
 
     private void parseJsStringClose(ParserState state) {

@@ -3,12 +3,13 @@ package com.reason.ide.highlight;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.PsiInterpolation;
+import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -47,8 +48,11 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         } else if (elementType == m_types.PROPERTY_NAME) {
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.MARKUP_ATTRIBUTE_));
-        } else if (element instanceof PsiInterpolation) {
+        } else if (elementType == m_types.C_INTERPOLATION_PART) {
             TextAttributes scheme = globalScheme.getAttributes(ORSyntaxHighlighter.STRING_);
+            holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
+        } else if (element instanceof PsiInterpolationReference) {
+            TextAttributes scheme = globalScheme.getAttributes(DefaultLanguageHighlighterColors.IDENTIFIER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
         }
     }

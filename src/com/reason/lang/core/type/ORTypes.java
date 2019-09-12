@@ -57,6 +57,8 @@ public abstract class ORTypes {
     public IElementType C_IF_STMT;
     public IElementType C_BIN_CONDITION;
     public IElementType C_INTERPOLATION_EXPR;
+    public IElementType C_INTERPOLATION_PART;
+    public IElementType C_INTERPOLATION_REF;
     public IElementType C_TAG_START;
     public IElementType C_TAG_CLOSE;
     public IElementType C_TAG_PROPERTY;

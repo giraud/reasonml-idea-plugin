@@ -304,5 +304,4 @@ public class ParserState {
         m_currentScope.setIsStart(true);
         return this;
     }
-
 }
