@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.Platform;
-import com.reason.build.bs.Bucklescript;
+import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
 import org.jetbrains.annotations.NotNull;

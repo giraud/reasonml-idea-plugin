@@ -11,8 +11,8 @@
 
         <!-- Dune -->
 
-        <projectService serviceImplementation="com.reason.build.dune.DuneProcess"/>
-        <projectService serviceImplementation="com.reason.build.dune.DuneManager"/>
+        <projectService serviceImplementation="com.reason.dune.DuneProcess"/>
+        <projectService serviceImplementation="com.reason.dune.DuneManager"/>
 
         <!-- Gutter icons -->
 

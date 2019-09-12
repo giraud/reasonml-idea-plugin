@@ -11,7 +11,7 @@ import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
 import com.reason.Platform;
-import com.reason.build.bs.BsConfig;
+import com.reason.bs.BsConfig;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleData;

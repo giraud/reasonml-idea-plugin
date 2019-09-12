@@ -10,7 +10,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.build.annotations.ErrorsManager;
+import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.highlight.ORSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

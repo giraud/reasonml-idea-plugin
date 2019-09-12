@@ -11,7 +11,7 @@ import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Log;
-import com.reason.build.bs.Bucklescript;
+import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.index.*;

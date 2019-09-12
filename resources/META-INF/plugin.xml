@@ -12,7 +12,7 @@
 
     <application-components>
         <component>
-            <implementation-class>com.reason.build.CompilerManager</implementation-class>
+            <implementation-class>com.reason.ide.CompilerManager</implementation-class>
         </component>
     </application-components>
 
@@ -23,8 +23,8 @@
     </project-components>
 
     <actions>
-        <action id="reason.actions.make" class="com.reason.build.console.MakeAction" text="Bsb -make"/>
-        <action id="reason.actions.makeWorld" class="com.reason.build.console.MakeWorldAction"
+        <action id="reason.actions.make" class="com.reason.ide.console.MakeAction" text="Bsb -make"/>
+        <action id="reason.actions.makeWorld" class="com.reason.ide.console.MakeWorldAction"
                 text="bsb -clean-world -make-world"/>
         <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
@@ -195,17 +195,17 @@
          | Compiler
          -->
 
-        <projectService serviceImplementation="com.reason.bs.compiler.BsProcess"/>
+        <projectService serviceImplementation="com.reason.bs.BsProcess"/>
 
-        <projectService serviceInterface="com.reason.build.bs.Bucklescript"
-                        serviceImplementation="com.reason.build.bs.BucklescriptImpl"/>
+        <projectService serviceInterface="com.reason.bs.Bucklescript"
+                        serviceImplementation="com.reason.bs.BucklescriptImpl"/>
 
         <!--
          | Insight
          -->
 
-        <projectService serviceInterface="com.reason.build.annotations.ErrorsManager"
-                        serviceImplementation="com.reason.build.annotations.ErrorsManagerImpl"/>
+        <projectService serviceInterface="com.reason.ide.annotations.ErrorsManager"
+                        serviceImplementation="com.reason.ide.annotations.ErrorsManagerImpl"/>
 
         <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
@@ -218,7 +218,7 @@
          | Others
          -->
 
-        <projectService serviceImplementation="com.reason.build.bs.refmt.RefmtProcess"/>
+        <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
 
         <internalFileTemplate name="Reason Module"/>
         <internalFileTemplate name="OCaml Module"/>
@@ -238,9 +238,9 @@
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
 
-        <externalAnnotator language="Reason" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
-        <externalAnnotator language="OCaml" implementationClass="com.reason.build.annotations.ErrorAnnotator"/>
-        <problemFileHighlightFilter implementation="com.reason.build.annotations.ErrorFileHighlighter"/>
+        <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
+        <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
+        <problemFileHighlightFilter implementation="com.reason.ide.annotations.ErrorFileHighlighter"/>
 
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
@@ -292,11 +292,11 @@
          -->
 
         <toolWindow id="Bucklescript" anchor="bottom" icon="/icons/bucklescript.png"
-                    factoryClass="com.reason.build.console.BsToolWindowFactory"/>
+                    factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="Reason"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>
-        <consoleFilterProvider implementation="com.reason.build.console.BsConsoleFilterProvider"/>
+        <consoleFilterProvider implementation="com.reason.ide.console.BsConsoleFilterProvider"/>
     </extensions>
 
 </idea-plugin>

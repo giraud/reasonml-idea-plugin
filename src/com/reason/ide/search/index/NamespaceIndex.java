@@ -11,7 +11,7 @@ import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
 import com.reason.Platform;
 import com.reason.StringUtil;
-import com.reason.build.bs.BsConfig;
+import com.reason.bs.BsConfig;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.DuneFileType;
 import com.reason.lang.dune.DuneTypes;

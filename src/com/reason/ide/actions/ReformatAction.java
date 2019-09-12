@@ -7,7 +7,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.reason.build.bs.Bucklescript;
+import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.format.ReformatUtil;
 import org.jetbrains.annotations.NotNull;
