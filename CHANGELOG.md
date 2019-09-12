@@ -433,4 +433,4 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 [Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...HEAD
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
-[r]: jps-shared/resources/icons/reason-file.png
+[r]: jps-plugin/resources/icons/reason-file.png
