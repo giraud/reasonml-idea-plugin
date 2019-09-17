@@ -1,6 +1,7 @@
 package com.reason.ide.docs;
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Log;
@@ -14,6 +15,7 @@ import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
+import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -176,5 +178,22 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         }
 
         return super.getQuickNavigateInfo(element, originalElement);
+    }
+
+    @Nullable
+    @Override
+    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement) {
+        // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
+        // functionName(<caret>) ==> functionName<caret>()
+        if (contextElement != null && contextElement.getParent() instanceof PsiFunctionCallParams && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
+            PsiElement prevSibling = contextElement.getParent().getPrevSibling();
+            if (prevSibling != null) {
+                PsiReference reference = prevSibling.getReference();
+                if (reference != null) {
+                    return reference.resolve();
+                }
+            }
+        }
+        return null;
     }
 }

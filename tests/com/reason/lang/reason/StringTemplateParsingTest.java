@@ -19,7 +19,7 @@ public class StringTemplateParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiLet e = first(letExpressions(parseCode("let _ = {j|this is a $var Template string|j}", true)));
+        PsiLet e = first(letExpressions(parseCode("let _ = {j|this is a $var Template string|j}")));
         PsiLetBinding binding = e.getBinding();
         PsiInterpolation inter = (PsiInterpolation) binding.getFirstChild();
 

@@ -1,5 +1,6 @@
 package com.reason.ide.doc;
 
+import com.intellij.codeInsight.documentation.actions.ShowQuickDocInfoAction;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.reason.ide.docs.DocumentationProvider;
 import com.reason.ide.files.FileBase;
@@ -15,6 +16,14 @@ public class ShowDocTest extends LightPlatformCodeInsightFixtureTestCase {
 
         String doc = new DocumentationProvider().generateDoc(e.getNameIdentifier(), e.getNameIdentifier().getFirstChild());
         assertNotNull(doc);
+    }
+
+    public void testGH_155() {
+        myFixture.configureByText("Mod.re", "/** add 1 */\nlet fn = x => x + 1;");
+        myFixture.configureByText("Doc.re", "Mod.fn(<caret>);");
+
+        ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
+        // TODO test !
     }
 
 }

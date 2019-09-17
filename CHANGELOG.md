@@ -12,6 +12,7 @@
 
 ## [Unreleased]
 
+- :bug: ![r] [#155](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/155) - Quick documentation is not showing inside parenthesis
 - :bug: ![o] [#22](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/22) - Reworked the uncommenter
 - :nail_care: ![r] Better parsing/highlighting of js template string
 - :house: rework Bs output listener, add test
