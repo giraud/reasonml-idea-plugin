@@ -439,7 +439,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 * :rocket: Parse Bsb super errors and use them to annotate source code
 
 [Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...HEAD
-[0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.79...0.80
+[0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
 [r]: jps-plugin/resources/icons/reason-file.png
 [o]: jps-plugin/resources/icons/ocaml-file.png
