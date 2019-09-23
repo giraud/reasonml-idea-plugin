@@ -2,14 +2,19 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-version = '0.80-beta01'
+version = '0.80'
 
 patchPluginXml {
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
-            <li>Add folding for functions</li>
-            <li>Reason: improve function parser</li>
+            <li>#155 - Quick documentation is not showing inside parenthesis</li>
+            <li>#133 - Syntax error popup is truncated</li>
+            <li>#27 - Reworked the uncommenter</li>
+            <li>Better function folding</li>
+            <li>Better parsing/highlighting of js template string</li>
+            <li>Remove custom syntax highlighting for `options` in default style settings</li>
+            <li>rework Bs output listener, add test</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

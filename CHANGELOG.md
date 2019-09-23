@@ -12,9 +12,14 @@
 
 ## [Unreleased]
 
+## [0.80] - 2019/09/23
+
 - :bug: ![r] [#155](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/155) - Quick documentation is not showing inside parenthesis
-- :bug: ![o] [#22](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/22) - Reworked the uncommenter
+- :bug: [#133](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/133) - Syntax error popup is truncated
+- :bug: ![o] [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Reworked the uncommenter
+- :nail_care: ![r] Better function folding
 - :nail_care: ![r] Better parsing/highlighting of js template string
+- :nail_care: Remove custom syntax highlighting for `options` in default style settings
 - :house: rework Bs output listener, add test
 
 ## [0.79] - 2019/08/28
@@ -433,7 +438,8 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 * :rocket: Parse Bsb super errors and use them to annotate source code
 
-[Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...HEAD
+[Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...HEAD
+[0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
 [r]: jps-plugin/resources/icons/reason-file.png
 [o]: jps-plugin/resources/icons/ocaml-file.png
