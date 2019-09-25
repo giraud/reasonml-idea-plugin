@@ -184,7 +184,8 @@ public abstract class ORTypes {
     public ORTokenElementType PERCENT;
     public ORTokenElementType PLUSDOT;
     public ORTokenElementType QUESTION_MARK;
-    public ORTokenElementType QUOTE;
+    public ORTokenElementType SINGLE_QUOTE;
+    public ORTokenElementType DOUBLE_QUOTE;
     public ORTokenElementType RAISE;
     public ORTokenElementType RARRAY;
     public ORTokenElementType RBRACE;

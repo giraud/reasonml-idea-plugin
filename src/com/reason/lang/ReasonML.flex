@@ -214,7 +214,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     ","   { return types.COMMA; }
     ":"   { return types.COLON; }
     ";"   { return types.SEMI; }
-    "'"   { return types.QUOTE; }
+    "'"   { return types.SINGLE_QUOTE; }
+    "\""  { return types.DOUBLE_QUOTE; }
     "..." { return types.DOTDOTDOT; }
     ".."  { return types.DOTDOT; }
     "."   { return types.DOT; }

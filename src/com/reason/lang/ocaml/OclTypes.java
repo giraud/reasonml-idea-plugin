@@ -166,7 +166,8 @@ public class OclTypes extends ORTypes {
         PERCENT = new ORTokenElementType("PERCENT", OclLanguage.INSTANCE);
         PLUSDOT = new ORTokenElementType("PLUSDOT", OclLanguage.INSTANCE);
         QUESTION_MARK = new ORTokenElementType("QUESTION_MARK", OclLanguage.INSTANCE);
-        QUOTE = new ORTokenElementType("QUOTE", OclLanguage.INSTANCE);
+        SINGLE_QUOTE = new ORTokenElementType("SINGLE_QUOTE", OclLanguage.INSTANCE);
+        DOUBLE_QUOTE = new ORTokenElementType("DOUBLE_QUOTE", OclLanguage.INSTANCE);
         RAISE = new ORTokenElementType("RAISE", OclLanguage.INSTANCE);
         RARRAY = new ORTokenElementType("RARRAY", OclLanguage.INSTANCE);
         RBRACE = new ORTokenElementType("RBRACE", OclLanguage.INSTANCE);

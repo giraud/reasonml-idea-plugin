@@ -165,7 +165,8 @@ public class RmlTypes extends ORTypes {
         PERCENT = new ORTokenElementType("PERCENT", RmlLanguage.INSTANCE);
         PLUSDOT = new ORTokenElementType("PLUSDOT", RmlLanguage.INSTANCE);
         QUESTION_MARK = new ORTokenElementType("QUESTION_MARK", RmlLanguage.INSTANCE);
-        QUOTE = new ORTokenElementType("QUOTE", RmlLanguage.INSTANCE);
+        SINGLE_QUOTE = new ORTokenElementType("SINGLE_QUOTE", RmlLanguage.INSTANCE);
+        DOUBLE_QUOTE = new ORTokenElementType("DOUBLE_QUOTE", RmlLanguage.INSTANCE);
         RAISE = new ORTokenElementType("RAISE", RmlLanguage.INSTANCE);
         RARRAY = new ORTokenElementType("RARRAY", RmlLanguage.INSTANCE);
         RBRACE = new ORTokenElementType("RBRACE", RmlLanguage.INSTANCE);
