@@ -4,10 +4,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +53,14 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals(1, file.getChildren().length);
     }
 
-    public void testTypeParameterized() {
-        PsiType type = first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = | RegularArity of 'a")));
-        assertEquals("declaration_arity", type.getName());
-        assertEquals("| RegularArity of 'a", type.getBinding().getText());
+    public void testParameterizedType() {
+        PsiType e = first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = | RegularArity of 'a")));
+
+        assertEquals("declaration_arity", e.getName());
+        assertEquals("| RegularArity of 'a", e.getBinding().getText());
+
+        PsiTypeConstrName cname = e.getConstrName();
+        assertTrue(cname.hasParameters());
     }
 
 }

@@ -24,7 +24,7 @@ public class PsiOption extends PsiToken<ORTypes> implements PsiLanguageConverter
         String convertedText = null;
 
         if (language == OclLanguage.INSTANCE) {
-            // Convert from reason to ocaml
+            // Convert from Reason to OCaml
             PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
             if (scope != null) {
                 String scopeText = scope.getText();
@@ -32,7 +32,7 @@ public class PsiOption extends PsiToken<ORTypes> implements PsiLanguageConverter
             }
         }
 
-        // Convert from ocaml
+        // Convert from OCaml
 
         return convertedText == null ? getText() : convertedText;
     }

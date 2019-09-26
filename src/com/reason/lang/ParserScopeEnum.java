@@ -15,6 +15,7 @@ public enum ParserScopeEnum {
 
     type,
     typeConstrName,
+    typeConstrNameParameters,
     typeNamed,
     typeNamedEq,
     typeNamedEqVariant,
@@ -150,5 +151,5 @@ public enum ParserScopeEnum {
     externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
     patternMatchConstructor, maybeRecordUsage, recordUsage, letNamedBindingFunction,
     typeBinding, recordFieldAnnotation, option, optionParameter, patternMatchVariant,
-    name, variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, unit,  localObjectOpen
+    name, variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
 }

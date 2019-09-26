@@ -892,7 +892,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // It's a constructor
             // | Some |>(<| .. ) =>     It's a constructor
             state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
-        } else if (state.previousElementType1 == m_types.LIDENT) {
+        } else if (state.isCurrentContext(typeConstrName)) {
+            // type parameter
+            // type x = t |>(<| 'a )
+            state.add(markScope(builder, state.currentContext(), typeConstrNameParameters, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        }
+        else if (state.previousElementType1 == m_types.LIDENT) {
             // calling a function
             state.
                     add(markScope(builder, functionCall, functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)).
