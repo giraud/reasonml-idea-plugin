@@ -72,6 +72,6 @@ public class ORSignatureTest extends LightCodeInsightTestCase {
         PsiFileFactory instance = PsiFileFactory.getInstance(getProject());
         PsiFile psiFile = instance.createFileFromText("Dummy.re", lang, "let x:" + sig);
         Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(psiFile, PsiSignatureItem.class);
-        return new ORSignature(false, items);
+        return new ORSignature(RmlLanguage.INSTANCE, items);
     }
 }

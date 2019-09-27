@@ -21,9 +21,8 @@ public class PsiSignatureImpl extends PsiToken<ORTypes> implements PsiSignature 
     @NotNull
     @Override
     public ORSignature asHMSignature() {
-        boolean isOcaml = FileHelper.isOCaml(getContainingFile().getFileType());
         Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(this, PsiSignatureItemImpl.class);
-        return new ORSignature(isOcaml, items);
+        return new ORSignature(getContainingFile().getLanguage(), items);
     }
 
     @NotNull

@@ -1,6 +1,7 @@
 package com.reason.lang.core.signature;
 
 import com.intellij.lang.Language;
+import com.intellij.util.ArrayUtil;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.ocaml.OclLanguage;
@@ -16,12 +17,14 @@ import java.util.Collections;
  */
 public class ORSignature {
 
-    public static final ORSignature EMPTY = new ORSignature(true, Collections.emptyList());
+    public static final ORSignature EMPTY = new ORSignature(RmlLanguage.INSTANCE, Collections.emptyList());
     private static final String REASON_SEPARATOR = " => ";
     private static final String OCAML_SEPARATOR = " -> ";
 
     @NotNull
     private final SignatureType[] m_types;
+
+    private PsiSignatureItem[] m_items;
 
     public static class SignatureType {
         PsiSignatureItem item;
@@ -37,7 +40,9 @@ public class ORSignature {
         }
     }
 
-    public ORSignature(boolean isOcaml, @NotNull Collection<PsiSignatureItem> items) {
+    public ORSignature(@NotNull Language language, @NotNull Collection<PsiSignatureItem> items) {
+        m_items = items.isEmpty() ? null : ArrayUtil.toObjectArray(items, PsiSignatureItem.class);
+
         m_types = new SignatureType[items.size()];
         int i = 0;
         for (PsiSignatureItem item : items) {
@@ -100,8 +105,9 @@ public class ORSignature {
         return asString(OclLanguage.INSTANCE);
     }
 
-    public String asString(Language lang) {
-        String sig = buildSignature(lang == RmlLanguage.INSTANCE);
+    @NotNull
+    public String asString(@NotNull Language lang) {
+        String sig = buildSignature(lang);
         if (sig.length() > 1000) {
             return sig.substring(0, 1000) + "...";
         }
@@ -134,14 +140,45 @@ public class ORSignature {
     }
 
     @NotNull
-    private String buildSignature(boolean reason) {
+    private String buildSignature(@NotNull Language lang) {
         StringBuilder sb = new StringBuilder();
+
+        boolean reason = lang == RmlLanguage.INSTANCE;
+        String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
+
+        if (m_items != null) {
+            if (reason && 2 < m_items.length) {
+                sb.append("(");
+            }
+
+            for (int i = 0; i < m_items.length - 1; i++) {
+                if (0 < i) {
+                    sb.append(inputSeparator);
+                }
+                PsiSignatureItem type = m_items[i];
+                sb.append(type.asText(lang).trim());
+            }
+
+            if (reason && 2 < m_items.length) {
+                sb.append(")");
+            }
+            if (1 < m_items.length) {
+                sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
+            }
+            if (0 < m_items.length) {
+                sb.append(m_items[m_items.length - 1].asText(lang));
+            }
+
+            return sb.toString().
+                    replaceAll("\\s+", " ").
+                    replaceAll("\\( ", "\\(").
+                    replaceAll(", \\)", "\\)");
+        }
 
         if (reason && 2 < m_types.length) {
             sb.append("(");
         }
 
-        String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
         for (int i = 0; i < m_types.length - 1; i++) {
             if (0 < i) {
                 sb.append(inputSeparator);
