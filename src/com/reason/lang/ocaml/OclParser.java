@@ -206,14 +206,12 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLt(@NotNull PsiBuilder builder, ParserState state) {
-        if (state.isCurrentResolution(signatureItem)) {
-            state.add(markScope(builder, jsObject, m_types.C_SCOPED_EXPR, m_types.LT));
-        }
+        state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT));
     }
 
     private void parseGt(ParserState state) {
-        if (state.isCurrentResolution(jsObject)) {
-            state.complete().popEnd();
+        if (state.isCurrentResolution(object)) {
+            state.advance().complete().popEnd();
         }
     }
 
@@ -227,8 +225,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(whileConditionLoop)) {
             state.complete().popEnd();
             state.add(markScope(builder, doLoop, whileDoLoop, m_types.C_SCOPED_EXPR, m_types.DO));
-        }
-        else {
+        } else {
             state.add(markScope(builder, doLoop, m_types.C_SCOPED_EXPR, m_types.DO));
         }
     }
@@ -519,8 +516,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 // module M (..) : S with type x = y |>=<| struct .. end
                 state.popEndUntilStartScope().complete();
                 state.popEnd();
-            }
-            else {
+            } else {
                 // Must be multiple declaration
                 // type x = y |>=<| ...
                 // This is not correctly parsed, just to avoid to break next instructions

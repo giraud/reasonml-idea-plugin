@@ -56,6 +56,7 @@ public class RmlTypes extends ORTypes {
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
+        C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
         C_OPEN = new ORCompositeElementType("C_OPEN", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);

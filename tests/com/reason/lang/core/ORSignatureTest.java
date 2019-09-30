@@ -60,6 +60,19 @@ public class ORSignatureTest extends LightCodeInsightTestCase {
         assertEquals("unit -> string -> float -> unit", sig.asString(OCL));
     }
 
+    public void testOCamlObject() {
+        ORSignature sig = makeSignature(OCL, "<a:string> -> string");
+
+        assertEquals("<a:string> -> string", sig.asString(OCL));
+        assertEquals("{. a:string } => string", sig.asString(RML));
+    }
+
+    public void testOCamlJsObject() {
+        ORSignature sig = makeSignature(OCL, "<a:string> Js.t -> string");
+
+        assertEquals("<a:string> Js.t -> string", sig.asString(OCL));
+        assertEquals("Js.t({. \"a\": string }) => string", sig.asString(RML));
+    }
 
     /*
     public void ReasonParam() {
@@ -70,7 +83,7 @@ public class ORSignatureTest extends LightCodeInsightTestCase {
     @NotNull
     private ORSignature makeSignature(Language lang, String sig) {
         PsiFileFactory instance = PsiFileFactory.getInstance(getProject());
-        PsiFile psiFile = instance.createFileFromText("Dummy.re", lang, "let x:" + sig);
+        PsiFile psiFile = instance.createFileFromText("Dummy." + lang.getAssociatedFileType().getDefaultExtension(), lang, "let x:" + sig);
         Collection<PsiSignatureItem> items = PsiTreeUtil.findChildrenOfType(psiFile, PsiSignatureItem.class);
         return new ORSignature(RmlLanguage.INSTANCE, items);
     }

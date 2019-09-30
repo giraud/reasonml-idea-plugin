@@ -55,6 +55,7 @@ public class OclTypes extends ORTypes {
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
+        C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
         C_OPEN = new ORCompositeElementType("C_OPEN", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);

@@ -39,6 +39,7 @@ public abstract class ORTypes {
     public IElementType C_MIXIN_FIELD;
     public IElementType C_ML_INTERPOLATOR;
     public IElementType C_MODULE_PATH;
+    public IElementType C_OBJECT;
     public IElementType C_OPTION;
     public IElementType C_PATTERN_MATCH_BODY;
     public IElementType C_PATTERN_MATCH_EXPR;

@@ -58,6 +58,8 @@ public class PsiElementFactory {
             return new PsiLetBinding(node);
         } else if (type == types.C_FUN_CALL_PARAMS) {
             return new PsiFunctionCallParamsImpl(types, node);
+        } else if (type == types.C_OBJECT) {
+            return new PsiObject(node);
         } else if (type == types.C_OPTION) {
             return new PsiOption(types, node);
         } else if (type == types.C_MACRO_EXPR) {

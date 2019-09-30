@@ -376,11 +376,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(maybeRecordUsage)) {
             IElementType nextToken = builder.lookAhead(1);
             if (m_types.COLON.equals(nextToken)) {
-                state.updateCurrentContext(jsObject).updateCurrentResolution(jsObject).updateCurrentCompositeElementType(m_types.C_JS_OBJECT);
-                state.add(markScope(builder, jsObject, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
+                state.updateCurrentContext(object).updateCurrentResolution(object).updateCurrentCompositeElementType(m_types.C_JS_OBJECT);
+                state.add(markScope(builder, object, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
             }
-        } else if (state.isCurrentResolution(jsObject)) {
-            state.add(markScope(builder, jsObject, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
+        } else if (state.isCurrentResolution(object)) {
+            state.add(markScope(builder, object, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
         }
     }
 
@@ -720,7 +720,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             } else {
                 // Add a generic wrapper in case it's a parameter
                 // It is complete only if we find a comma in the scope
-                if (state.isInScopeExpression() && !state.isCurrentContext(jsObject) && !state.isCurrentContext(functorConstraints) &&
+                if (state.isInScopeExpression() && !state.isCurrentContext(object) && !state.isCurrentContext(functorConstraints) &&
                         !state.isCurrentContext(maybeFunction) && !state.isCurrentResolution(patternMatchConstructor) &&
                         state.previousElementType1 != m_types.DOT) {
                     state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
@@ -808,7 +808,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             IElementType nextElement = builder.lookAhead(1);
             if (nextElement == m_types.STRING_VALUE) {
                 // js object detected
-                state.add(markScope(builder, jsObject, m_types.C_JS_OBJECT, m_types.LBRACE));
+                state.add(markScope(builder, object, m_types.C_JS_OBJECT, m_types.LBRACE));
             } else {
                 state.add(markScope(builder, scope, brace, m_types.C_SCOPED_EXPR, m_types.LBRACE));
             }

@@ -78,7 +78,7 @@ public enum ParserScopeEnum {
     brace,
     bracket,
 
-    jsObject,
+    object,
 
     exception,
     exceptionNamed,
