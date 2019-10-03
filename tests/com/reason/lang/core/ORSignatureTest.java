@@ -68,10 +68,10 @@ public class ORSignatureTest extends LightCodeInsightTestCase {
     }
 
     public void testOCamlJsObject() {
-        ORSignature sig = makeSignature(OCL, "<a:string> Js.t -> string");
+        ORSignature sig = makeSignature(OCL, "<a:string; b:int> Js.t -> string");
 
-        assertEquals("<a:string> Js.t -> string", sig.asString(OCL));
-        assertEquals("Js.t({. \"a\": string }) => string", sig.asString(RML));
+        assertEquals("<a:string; b:int> Js.t -> string", sig.asString(OCL));
+        assertEquals("{. \"a\":string, \"b\":int } => string", sig.asString(RML));
     }
 
     /*

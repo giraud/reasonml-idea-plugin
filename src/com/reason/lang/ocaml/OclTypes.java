@@ -46,7 +46,6 @@ public class OclTypes extends ORTypes {
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", OclLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", OclLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
-        C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", OclLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
@@ -56,6 +55,7 @@ public class OclTypes extends ORTypes {
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
         C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);
+        C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", OclLanguage.INSTANCE);
         C_OPEN = new ORCompositeElementType("C_OPEN", OclLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);
@@ -97,7 +97,6 @@ public class OclTypes extends ORTypes {
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", OclLanguage.INSTANCE);
         INT_VALUE = new ORTokenElementType("INT_VALUE", OclLanguage.INSTANCE);
         SWITCH = new ORTokenElementType("SWITCH", OclLanguage.INSTANCE);
-        GENERIC_COND = new ORTokenElementType("GENERIC_COND", OclLanguage.INSTANCE);
         FUNCTION = new ORTokenElementType("FUNCTION", OclLanguage.INSTANCE);
         FUN = new ORTokenElementType("FUN", OclLanguage.INSTANCE);
         FUNCTOR = new ORTokenElementType("FUNCTOR", OclLanguage.INSTANCE);

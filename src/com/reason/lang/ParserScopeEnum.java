@@ -79,6 +79,8 @@ public enum ParserScopeEnum {
     bracket,
 
     object,
+    objectField,
+    objectFieldNamed,
 
     exception,
     exceptionNamed,
@@ -148,7 +150,7 @@ public enum ParserScopeEnum {
     moduleNamedSignatureEq, array,  objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin,
-    externalNamedSignatureEq, jsObjectField, jsObjectFieldNamed,
+    externalNamedSignatureEq,
     patternMatchConstructor, maybeRecordUsage, recordUsage, letNamedBindingFunction,
     typeBinding, recordFieldAnnotation, option, optionParameter, patternMatchVariant,
     name, variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen

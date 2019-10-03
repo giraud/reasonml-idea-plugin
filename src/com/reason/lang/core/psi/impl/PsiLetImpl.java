@@ -38,13 +38,13 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     //endregion
 
     @NotNull
-    private static List<PsiJsObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
-        List<PsiJsObjectField> fields = new ArrayList<>();
+    private static List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
+        List<PsiObjectField> fields = new ArrayList<>();
         PsiElement prevParent = null;
         boolean isAdding = false;
 
         // depth first elements
-        Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(parent, PsiJsObjectField.class, PsiLowerSymbol.class);
+        Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(parent, PsiObjectField.class, PsiLowerSymbol.class);
         for (PsiElement element : elements) {
             if (visited.containsKey(element)) {
                 continue;
@@ -52,8 +52,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
             visited.put(element, true);
 
             // { "fieldName": currentLet } - element is "fieldName"
-            if (element instanceof PsiJsObjectField) {
-                String name = ((PsiJsObjectField) element).getName();
+            if (element instanceof PsiObjectField && element.getParent() instanceof PsiJsObject) {
+                String name = ((PsiObjectField) element).getName();
                 if (prevParent == null) {
                     prevParent = element.getParent().getParent();
                 }
@@ -61,7 +61,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                 if (offset >= path.size()) {
                     if (Objects.equals(element.getParent().getParent(), prevParent)) {
                         isAdding = true;
-                        fields.add((PsiJsObjectField) element);
+                        fields.add((PsiObjectField) element);
                     } else if (isAdding) {
                         isAdding = false;
                         offset = offset > 0 ? offset - 1 : 0;
@@ -104,10 +104,13 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
                         // fieldName that is referencing current let { "fieldName": currentLet };
                         PsiElement elementParent = element.getParent();
-                        if (elementParent instanceof PsiJsObjectField) {
-                            String fieldName = ((PsiJsObjectField) element.getParent()).getName();
-                            if (fieldName != null && fieldName.equals(lookingFor)) {
-                                fields.addAll(getJsObjectFields(let, visited, path, offset));
+                        if (elementParent instanceof PsiObjectField) {
+                            PsiElement elementGrandParent = elementParent.getParent();
+                            if (elementGrandParent instanceof PsiJsObject) {
+                                String fieldName = ((PsiObjectField) element.getParent()).getName();
+                                if (fieldName != null && fieldName.equals(lookingFor)) {
+                                    fields.addAll(getJsObjectFields(let, visited, path, offset));
+                                }
                             }
                         }
                     }
@@ -210,7 +213,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     @NotNull
     @Override
-    public Collection<PsiJsObjectField> getJsObjectFieldsForPath(@NotNull List<String> path) {
+    public Collection<PsiObjectField> getJsObjectFieldsForPath(@NotNull List<String> path) {
         WeakHashMap<PsiElement, Boolean> visited = new WeakHashMap<>();
         return getJsObjectFields(this, visited, new ArrayList<>(path), 0);
     }

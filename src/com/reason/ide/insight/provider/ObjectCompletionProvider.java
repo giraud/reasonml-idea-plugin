@@ -72,8 +72,8 @@ public class ObjectCompletionProvider {
                 }
             }
         } else if (let.isJsObject()) {
-            Collection<PsiJsObjectField> fields = let.getJsObjectFieldsForPath(path);
-            for (PsiJsObjectField field : fields) {
+            Collection<PsiObjectField> fields = let.getJsObjectFieldsForPath(path);
+            for (PsiObjectField field : fields) {
                 String name = field.getName();
                 if (name != null) {
                     resultSet.addElement(LookupElementBuilder.create(name).withIcon(PsiIconUtil.getProvidersIcon(field, 0)));

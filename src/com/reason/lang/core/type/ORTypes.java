@@ -34,12 +34,12 @@ public abstract class ORTypes {
     public IElementType C_FUNCTOR_PARAMS;
     public IElementType C_FUNCTOR_PARAM;
     public IElementType C_JS_OBJECT;
-    public IElementType C_JS_OBJECT_FIELD;
     public IElementType C_MACRO_RAW_BODY;
     public IElementType C_MIXIN_FIELD;
     public IElementType C_ML_INTERPOLATOR;
     public IElementType C_MODULE_PATH;
     public IElementType C_OBJECT;
+    public IElementType C_OBJECT_FIELD;
     public IElementType C_OPTION;
     public IElementType C_PATTERN_MATCH_BODY;
     public IElementType C_PATTERN_MATCH_EXPR;
@@ -138,7 +138,6 @@ public abstract class ORTypes {
     public ORTokenElementType WITH;
     public ORTokenElementType RAW;
 
-    public ORTokenElementType GENERIC_COND;
     public ORTokenElementType EXCEPTION_NAME;
     public ORTokenElementType C_LOCAL_OPEN;
     public ORTokenElementType PROPERTY_NAME;

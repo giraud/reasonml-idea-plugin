@@ -7,23 +7,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+public class PsiObjectField extends ASTWrapperPsiElement implements PsiLanguageConverter {
 
-public class PsiJsObject extends ASTWrapperPsiElement implements PsiLanguageConverter {
-
-    public PsiJsObject(@NotNull ASTNode node) {
+    public PsiObjectField(@NotNull ASTNode node) {
         super(node);
     }
 
-    @Override
-    public boolean canNavigate() {
-        return false;
+    @Nullable
+    public PsiElement getNameIdentifier() {
+        return getFirstChild();
     }
 
-    @NotNull
-    public Collection<PsiObjectField> getFields() {
-        return PsiTreeUtil.findChildrenOfType(this, PsiObjectField.class);
+    @Override
+    public String getName() {
+        PsiElement nameElement = getNameIdentifier();
+        return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
     }
 
     @NotNull
@@ -40,17 +40,8 @@ public class PsiJsObject extends ASTWrapperPsiElement implements PsiLanguageConv
             convertedText = getText();
         } else {
             // Convert from OCaml to Reason
-            convertedText = "";
-            for (int i = 0; i < getChildren().length; i++) {
-                PsiElement element = getChildren()[i];
-                if (element instanceof PsiObjectField) {
-                    if (0 < i) {
-                        convertedText += ", ";
-                    }
-                    convertedText += ((PsiObjectField) element).asText(language);
-                }
-            }
-            convertedText = "{. " + convertedText + " }";
+            PsiElement nameIdentifier = getNameIdentifier();
+            convertedText = "\"" + nameIdentifier.getText() + "\"" + getText().substring(nameIdentifier.getTextLength(), getTextLength());
         }
 
 
@@ -60,7 +51,6 @@ public class PsiJsObject extends ASTWrapperPsiElement implements PsiLanguageConv
     @NotNull
     @Override
     public String toString() {
-        return "JsObject";
+        return "ObjectField";
     }
-
 }

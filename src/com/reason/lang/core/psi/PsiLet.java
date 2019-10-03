@@ -4,7 +4,6 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.psi.impl.PsiRecordFieldImpl;
 import com.reason.lang.core.stub.PsiLetStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +29,7 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
     Collection<PsiRecordField> getRecordFields();
 
     @NotNull
-    Collection<PsiJsObjectField> getJsObjectFieldsForPath(@NotNull List<String> path);
+    Collection<PsiObjectField> getJsObjectFieldsForPath(@NotNull List<String> path);
 
     @Nullable
     PsiSignature getPsiSignature();

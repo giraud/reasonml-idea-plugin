@@ -19,7 +19,7 @@ public class JsObjectParsingTest extends BaseParsingTestCase {
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
         assertNotNull(object);
 
-        Collection<PsiJsObjectField> fields = object.getFields();
+        Collection<PsiObjectField> fields = object.getFields();
         assertEquals(2, fields.size());
     }
 
@@ -33,7 +33,7 @@ public class JsObjectParsingTest extends BaseParsingTestCase {
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
         assertNotNull(object);
 
-        Collection<PsiJsObjectField> fields = object.getFields();
+        Collection<PsiObjectField> fields = object.getFields();
         assertEquals(5, fields.size());
     }
 

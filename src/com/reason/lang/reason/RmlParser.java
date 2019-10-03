@@ -295,7 +295,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEnd()
                     .advance()
                     .add(mark(builder, state.currentContext(), recordField, m_types.C_RECORD_FIELD));
-        } else if (state.isCurrentResolution(jsObjectFieldNamed)) {
+        } else if (state.isCurrentResolution(objectFieldNamed)) {
             state.popEnd();
         } else if (state.isCurrentResolution(mixin)) {
             state.popEnd();
@@ -377,10 +377,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
             IElementType nextToken = builder.lookAhead(1);
             if (m_types.COLON.equals(nextToken)) {
                 state.updateCurrentContext(object).updateCurrentResolution(object).updateCurrentCompositeElementType(m_types.C_JS_OBJECT);
-                state.add(markScope(builder, object, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
+                state.add(markScope(builder, object, objectField, m_types.C_OBJECT_FIELD, m_types.STRING_VALUE));
             }
         } else if (state.isCurrentResolution(object)) {
-            state.add(markScope(builder, object, jsObjectField, m_types.C_JS_OBJECT_FIELD, m_types.STRING_VALUE));
+            state.add(markScope(builder, object, objectField, m_types.C_OBJECT_FIELD, m_types.STRING_VALUE));
         }
     }
 
@@ -546,9 +546,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.add(mark(builder, recordSignature, signature, m_types.C_SIG_EXPR).complete());
                 state.add(mark(builder, recordSignature, signatureItem, m_types.C_SIG_ITEM).complete());
             }
-        } else if (state.isCurrentResolution(jsObjectField)) {
+        } else if (state.isCurrentResolution(objectField)) {
             state.complete();
-            state.updateCurrentResolution(jsObjectFieldNamed);
+            state.updateCurrentResolution(objectFieldNamed);
         } else if (state.isCurrentResolution(functionParameter)) {
             state.updateCurrentResolution(functionParameterNamed).
                     advance().

@@ -130,8 +130,8 @@ public class PsiElementFactory {
             return new PsiMultiLineInterpolator(node);
         } else if (type == types.C_JS_OBJECT) {
             return new PsiJsObject(node);
-        } else if (type == types.C_JS_OBJECT_FIELD) {
-            return new PsiJsObjectField(node);
+        } else if (type == types.C_OBJECT_FIELD) {
+            return new PsiObjectField(node);
         } else if (type == types.C_VARIANT_DECL) {
             return new PsiVariantDeclaration(types, node);
         } else if (type == types.C_VARIANT) {

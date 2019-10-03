@@ -148,7 +148,7 @@ public class OclParser extends CommonParser<OclTypes> {
             else if (tokenType == m_types.LT) {
                 parseLt(builder, state);
             } else if (tokenType == m_types.GT) {
-                parseGt(state);
+                parseGt(builder, state);
             }
             // Starts expression
             else if (tokenType == m_types.OPEN) {
@@ -206,12 +206,31 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLt(@NotNull PsiBuilder builder, ParserState state) {
-        state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT));
+        state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT)).
+                advance().
+                add(mark(builder, object, objectField, m_types.C_OBJECT_FIELD));
     }
 
-    private void parseGt(ParserState state) {
-        if (state.isCurrentResolution(object)) {
-            state.advance().complete().popEnd();
+    private void parseGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+        if (state.isCurrentContext(object)) {
+            // < ... |> > <| ..
+            if (state.isCurrentResolution(objectFieldNamed)) {
+                state.popEnd();
+            }
+            state.advance();
+            if ("Js".equals(builder.getTokenText())) {
+                // it might be a Js object (same with Js.t at the end)
+                state.advance();
+                if (builder.getTokenType() == m_types.DOT) {
+                    state.advance();
+                    if ("t".equals(builder.getTokenText())) {
+                        state.updateCurrentCompositeElementType(m_types.C_JS_OBJECT).advance().complete();
+                    }
+                }
+            } else {
+                state.complete();
+            }
+            state.popEnd();
         }
     }
 
@@ -429,6 +448,9 @@ public class OclParser extends CommonParser<OclTypes> {
             // A SEMI operator ends the previous expression
             if (!isImplicitScope && !state.isInScopeExpression()) {
                 state.popEnd();
+                if (state.isCurrentContext(object)) {
+                    state.advance().add(mark(builder, object, objectField, m_types.C_OBJECT_FIELD));
+                }
             }
         }
     }
@@ -485,6 +507,8 @@ public class OclParser extends CommonParser<OclTypes> {
                     add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(functorParam)) {
             state.updateCurrentResolution(functorParamColon);
+        } else if (state.isCurrentResolution(objectField)) {
+            state.updateCurrentResolution(objectFieldNamed).complete();
         }
     }
 
@@ -745,6 +769,9 @@ public class OclParser extends CommonParser<OclTypes> {
             state.complete();
         } else if (state.isCurrentResolution(functionParameters)) {
             state.add(mark(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM));
+        } else if (state.isCurrentContext(objectField)) {
+            // < |>x<| : y; .. >
+            state.add(mark(builder, object, objectFieldNamed, m_types.C_OBJECT_FIELD));
         } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
             // Start of a new parameter
             //    .. ( xxx |>yyy<| ) ..

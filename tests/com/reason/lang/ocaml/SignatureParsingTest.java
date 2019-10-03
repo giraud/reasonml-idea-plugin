@@ -1,10 +1,12 @@
 package com.reason.lang.ocaml;
 
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
@@ -87,6 +89,18 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         ORSignature signature = e.getORSignature();
 
         assertEquals(2, signature.getTypes().length);
+    }
+
+    public void testJsObject() {
+        PsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
+        ORSignature signature = e.getORSignature();
+
+        assertEquals(2, signature.getTypes().length);
+        PsiSignatureItem jsObj = signature.getItems()[0];
+        List<PsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(jsObj, PsiObjectField.class));
+        assertSize(2, fields);
+        assertEquals(fields.get(0).getName(), "a");
+        assertEquals(fields.get(1).getName(), "b");
     }
 
 }

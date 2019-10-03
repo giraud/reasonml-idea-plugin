@@ -49,7 +49,6 @@ public class RmlTypes extends ORTypes {
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", RmlLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", RmlLanguage.INSTANCE);
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", RmlLanguage.INSTANCE);
-        C_JS_OBJECT_FIELD = new ORCompositeElementType("C_JS_OBJECT_FIELD", RmlLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", RmlLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", RmlLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
@@ -57,6 +56,7 @@ public class RmlTypes extends ORTypes {
         C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", RmlLanguage.INSTANCE);
         C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", RmlLanguage.INSTANCE);
         C_OBJECT = new ORCompositeElementType("C_OBJECT", RmlLanguage.INSTANCE);
+        C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", RmlLanguage.INSTANCE);
         C_OPTION = new ORCompositeElementType("C_OPTION", RmlLanguage.INSTANCE);
         C_OPEN = new ORCompositeElementType("C_OPEN", RmlLanguage.INSTANCE);
         C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", RmlLanguage.INSTANCE);
@@ -97,7 +97,6 @@ public class RmlTypes extends ORTypes {
         INT_VALUE = new ORTokenElementType("INT_VALUE", RmlLanguage.INSTANCE);
         EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", RmlLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", RmlLanguage.INSTANCE);
-        GENERIC_COND = new ORTokenElementType("GENERIC_COND", RmlLanguage.INSTANCE);
         SWITCH = new ORTokenElementType("SWITCH", RmlLanguage.INSTANCE);
         FUNCTION = new ORTokenElementType("FUNCTION", RmlLanguage.INSTANCE);
         FUN = new ORTokenElementType("FUN", RmlLanguage.INSTANCE);

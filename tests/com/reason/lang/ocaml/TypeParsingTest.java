@@ -64,7 +64,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeBindingObject() {
-        PsiType e = first(typeExpressions(parseCode("type t = <count: int>", true)));
+        PsiType e = first(typeExpressions(parseCode("type t = <count: int>")));
 
         assertInstanceOf(e.getBinding().getFirstChild(), PsiObject.class);
     }

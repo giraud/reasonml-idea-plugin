@@ -140,6 +140,11 @@ public class ORSignature {
     }
 
     @NotNull
+    public PsiSignatureItem[] getItems() {
+        return m_items;
+    }
+
+    @NotNull
     private String buildSignature(@NotNull Language lang) {
         StringBuilder sb = new StringBuilder();
 
