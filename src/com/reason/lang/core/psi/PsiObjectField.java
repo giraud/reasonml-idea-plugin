@@ -1,18 +1,19 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.impl.PsiToken;
+import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiObjectField extends ASTWrapperPsiElement implements PsiLanguageConverter {
+public class PsiObjectField extends PsiToken<ORTypes> implements PsiLanguageConverter {
 
-    public PsiObjectField(@NotNull ASTNode node) {
-        super(node);
+    public PsiObjectField(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
     @Nullable
@@ -33,7 +34,7 @@ public class PsiObjectField extends ASTWrapperPsiElement implements PsiLanguageC
             return getText();
         }
 
-        String convertedText = null;
+        String convertedText;
 
         if (language == OclLanguage.INSTANCE) {
             // Convert from Reason to OCaml
@@ -41,11 +42,28 @@ public class PsiObjectField extends ASTWrapperPsiElement implements PsiLanguageC
         } else {
             // Convert from OCaml to Reason
             PsiElement nameIdentifier = getNameIdentifier();
-            convertedText = "\"" + nameIdentifier.getText() + "\"" + getText().substring(nameIdentifier.getTextLength(), getTextLength());
+            if (nameIdentifier == null) {
+                convertedText = getText();
+            } else {
+                String valueAsText = "";
+                PsiElement value = getValue();
+                if (value instanceof PsiLanguageConverter) {
+                    valueAsText = ((PsiLanguageConverter) value).asText(language);
+                } else if (value != null) {
+                    valueAsText = value.getText();
+                }
+
+                convertedText = "\"" + nameIdentifier.getText() + "\": " + valueAsText;
+            }
         }
 
+        return convertedText;
+    }
 
-        return convertedText == null ? getText() : convertedText;
+    @Nullable
+    private PsiElement getValue() {
+        PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
+        return colon == null ? null : ORUtil.nextSiblingNode(colon.getNode()).getPsi();
     }
 
     @NotNull

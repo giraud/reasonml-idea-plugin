@@ -1,5 +1,6 @@
 package com.reason.ide.docs;
 
+import com.intellij.lang.Language;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
@@ -10,11 +11,12 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
+import com.reason.lang.odoc.ODocMarkup;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,14 +117,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
     public String getQuickNavigateInfo(PsiElement element, @NotNull PsiElement originalElement) {
         PsiFile psiFile = originalElement.getContainingFile();
 
-        String inferredType = "";
-        SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
-        if (signaturesContext != null) {
-            ORSignature elementSignature = signaturesContext.getSignatureByOffset(originalElement.getTextOffset());
-            if (elementSignature != null) {
-                inferredType = elementSignature.asString(element.getLanguage());
-            }
-        }
+        String inferredType = getInferredSignature(originalElement, psiFile, element.getLanguage());
 
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
@@ -168,7 +163,13 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
                 String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
 
-                String sig = inferredType.isEmpty() ? "<i>unknown signature</i>" : "<i>inferred:</i> " + inferredType;
+                if (inferredType == null) {
+                    // Can't find type in the usage, try to get type from the definition
+                    PsiElement nameIdentifier = ((PsiNamedElement) resolvedElement).getNameIdentifier();
+                    inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
+                }
+
+                String sig = "<i>" + (inferredType == null ? "unknown signature" : inferredType) + "</i>";
                 if (resolvedElement instanceof PsiVariantDeclaration) {
                     sig = "type " + ((PsiType) resolvedElement.getParent().getParent()).getName();
                 }
@@ -192,6 +193,18 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 if (reference != null) {
                     return reference.resolve();
                 }
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @NotNull Language language) {
+        SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+        if (signaturesContext != null) {
+            ORSignature elementSignature = signaturesContext.getSignatureByOffset(element.getTextOffset());
+            if (elementSignature != null) {
+                return elementSignature.asString(language);
             }
         }
         return null;
