@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FreeExpressionCompletionProvider {
@@ -71,7 +71,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance(project);
-        List<String> paths = m_modulePathFinder.extractPotentialPaths(element, EnumSet.noneOf(ModulePathFinder.Includes.class), false);
+        Set<String> paths = m_modulePathFinder.extractPotentialPaths(element, EnumSet.noneOf(ModulePathFinder.Includes.class), false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)

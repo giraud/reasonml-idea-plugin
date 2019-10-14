@@ -30,4 +30,18 @@ public class ResolveLetElementTest extends LightPlatformCodeInsightFixtureTestCa
         assertEquals("A.A1.add", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
+    public void testInnerScope() {
+        myFixture.configureByText("A.re", "let x = 1; let fn = { let x = 2; x<caret> + 10 };");
+
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("A.fn.x", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+    }
+
+    public void testInnerScopeInFunction() {
+        myFixture.configureByText("A.re", "let x = 1; let fn = { let x = 2; fn1(x<caret>); };");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.fn.x", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
 }

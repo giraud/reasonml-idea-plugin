@@ -425,6 +425,26 @@ public final class PsiFinder {
         return null;
     }
 
+
+    @Nullable
+    public PsiLet findLetFromQn(@Nullable String letQName) {
+        if (letQName == null) {
+            return null;
+        }
+
+        GlobalSearchScope scope = allScope(m_project);
+
+        // Try qn directly
+        Collection<PsiLet> lets = LetFqnIndex.getInstance().get(letQName.hashCode(), m_project, scope);
+        if (!lets.isEmpty()) {
+            if (lets.size() == 1) {
+                return lets.iterator().next();
+            }
+        }
+
+        return null;
+    }
+
     public Collection<IndexedFileModule> findModulesForNamespace(String namespace, GlobalSearchScope scope) {
         return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
     }

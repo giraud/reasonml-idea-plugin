@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiLet;
 import org.jetbrains.annotations.NotNull;
 
 public class LetIndex extends StringStubIndexExtension<PsiLet> {
-    private static final int VERSION = 6;
+    private static final int VERSION = 7;
 
     @Override
     public int getVersion() {

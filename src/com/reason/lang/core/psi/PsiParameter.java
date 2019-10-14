@@ -1,5 +1,11 @@
 package com.reason.lang.core.psi;
 
-public interface PsiParameter extends PsiNamedElement, PsiSignatureElement {
+import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.Nullable;
+
+public interface PsiParameter extends PsiElement, PsiSignatureElement {
     boolean hasDefaultValue();
+
+    @Nullable
+    String getName();
 }

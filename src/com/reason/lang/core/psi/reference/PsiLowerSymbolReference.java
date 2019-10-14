@@ -20,10 +20,7 @@ import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static com.reason.lang.ModulePathFinder.includeAll;
@@ -229,11 +226,20 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         Map<String, Integer> result = new THashMap<>();
 
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, false);
+        Set<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, false);
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(s);
-                    return moduleAlias == null ? psiFinder.findModuleFromQn(s) : moduleAlias;
+                    if (moduleAlias == null) {
+                        PsiModule moduleQn = psiFinder.findModuleFromQn(s);
+                        if (moduleQn == null) {
+                            // not a module but a let ?
+                            return psiFinder.findLetFromQn(s);
+                        }
+                        return moduleQn;
+                    }
+
+                    return moduleAlias;
                 }).
                 filter(Objects::nonNull).
                 collect(toList());

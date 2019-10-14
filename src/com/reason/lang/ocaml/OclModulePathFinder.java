@@ -1,14 +1,15 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.reason.lang.ModulePathFinder.Includes.containingFile;
@@ -18,8 +19,8 @@ public class OclModulePathFinder extends BaseModulePathFinder {
 
     // Find the expression paths
     @NotNull
-    public List<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes) {
-        List<String> qualifiedNames = new ArrayList<>();
+    public Set<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes) {
+        Set<String> qualifiedNames = new ArrayListSet<>();
 
         String path = extractPathName(element, OclTypes.INSTANCE);
         String pathExtension = path.isEmpty() ? "" : "." + path;

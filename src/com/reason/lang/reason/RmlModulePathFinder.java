@@ -1,16 +1,18 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseModulePathFinder;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.reason.lang.ModulePathFinder.Includes.containingFile;
@@ -21,8 +23,8 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
 
     // Find the expression paths
     @NotNull
-    public List<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes) {
-        List<String> qualifiedNames = new ArrayList<>();
+    public Set<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes) {
+        Set<String> qualifiedNames = new ArrayListSet<>();
 
         String path = extractPathName(element, RmlTypes.INSTANCE);
         String pathExtension = path.isEmpty() ? "" : "." + path;
@@ -87,6 +89,8 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 qualifiedNames.add(openName + pathExtension);
             } else if (item instanceof PsiType && addTypes) {
                 qualifiedNames.add(((PsiType) item).getQualifiedName() + pathExtension);
+            } else if (item instanceof PsiLet) {
+                qualifiedNames.add(((PsiLet) item).getQualifiedPath());
             }
 
             PsiElement prevItem = item.getPrevSibling();

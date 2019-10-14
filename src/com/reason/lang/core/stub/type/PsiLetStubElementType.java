@@ -53,6 +53,11 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
         if (name != null) {
             sink.occurrence(IndexKeys.LETS, name);
         }
+
+        String fqn = stub.getQualifiedName();
+        if (fqn != null) {
+            sink.occurrence(IndexKeys.LETS_FQN, fqn.hashCode());
+        }
     }
 
     @NotNull

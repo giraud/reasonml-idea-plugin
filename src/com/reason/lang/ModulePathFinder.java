@@ -1,9 +1,10 @@
 package com.reason.lang;
 
-import java.util.*;
-
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 public interface ModulePathFinder {
 
@@ -15,5 +16,5 @@ public interface ModulePathFinder {
     EnumSet<Includes> includeAll = EnumSet.of(Includes.containingFile, Includes.includedModules);
 
     @NotNull
-    List<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes);
+    Set<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes);
 }

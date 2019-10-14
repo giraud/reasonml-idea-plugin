@@ -21,8 +21,8 @@ import com.reason.lang.core.signature.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.reason.lang.ModulePathFinder.includeAll;
@@ -49,7 +49,7 @@ public class DotExpressionCompletionProvider {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                final List<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, includeAll,false);
+                final Set<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, includeAll, false);
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.reason.lang.ModulePathFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
@@ -105,7 +106,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
-        List<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, true);
+        Set<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, true);
 
         List<PsiQualifiedNamedElement> result = paths.stream().
                 map(path -> {
