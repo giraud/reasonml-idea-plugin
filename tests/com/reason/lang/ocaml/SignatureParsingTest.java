@@ -6,7 +6,6 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
@@ -21,6 +20,13 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         ORSignature signature = e.getORSignature();
         assertEquals("int", signature.asString(OclLanguage.INSTANCE));
         assertTrue(signature.isMandatory(0));
+    }
+
+    public void testOCamlBeforeDirective() {
+        PsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
+
+        ORSignature signature = e.getORSignature();
+        assertEquals("string -> bool option", signature.asString(OclLanguage.INSTANCE));
     }
 
     public void testVal() {

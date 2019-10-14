@@ -33,6 +33,7 @@ public class RmlTypes extends ORTypes {
         C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", RmlLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", RmlLanguage.INSTANCE);
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", RmlLanguage.INSTANCE);
+        C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
         C_FUN_PARAM = new ORCompositeElementType("C_FUNCTION_PARAMETER", RmlLanguage.INSTANCE);
@@ -116,6 +117,9 @@ public class RmlTypes extends ORTypes {
         COMMA = new ORTokenElementType("COMMA", RmlLanguage.INSTANCE);
         COMMENT = new ORTokenElementType("COMMENT", RmlLanguage.INSTANCE);
         DIFF = new ORTokenElementType("DIFF", RmlLanguage.INSTANCE);
+        DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", RmlLanguage.INSTANCE);
+        DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", RmlLanguage.INSTANCE);
+        DIRECTIVE_END = new ORTokenElementType("DIRECTIVE_END", RmlLanguage.INSTANCE);
         LT_OR_EQUAL = new ORTokenElementType("LT_OR_EQUAL", RmlLanguage.INSTANCE);
         GT_OR_EQUAL = new ORTokenElementType("GT_OR_EQUAL", RmlLanguage.INSTANCE);
         DOLLAR = new ORTokenElementType("DOLLAR", RmlLanguage.INSTANCE);

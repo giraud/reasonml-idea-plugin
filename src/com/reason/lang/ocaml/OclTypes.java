@@ -31,6 +31,7 @@ public class OclTypes extends ORTypes {
         C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", OclLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
+        C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
         C_FUN_PARAM = new ORCompositeElementType("C_FUNC_PARAM", OclLanguage.INSTANCE);
@@ -117,6 +118,9 @@ public class OclTypes extends ORTypes {
         COMMA = new ORTokenElementType("COMMA", OclLanguage.INSTANCE);
         COMMENT = new ORTokenElementType("COMMENT", OclLanguage.INSTANCE);
         DIFF = new ORTokenElementType("DIFF", OclLanguage.INSTANCE);
+        DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", OclLanguage.INSTANCE);
+        DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", OclLanguage.INSTANCE);
+        DIRECTIVE_END = new ORTokenElementType("DIRECTIVE_END", OclLanguage.INSTANCE);
         LT_OR_EQUAL = new ORTokenElementType("LT_OR_EQUAL", OclLanguage.INSTANCE);
         GT_OR_EQUAL = new ORTokenElementType("GT_OR_EQUAL", OclLanguage.INSTANCE);
         DOLLAR = new ORTokenElementType("DOLLAR", OclLanguage.INSTANCE);

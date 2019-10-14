@@ -12,6 +12,7 @@ public abstract class ORTypes {
     public IElementType C_CLASS_METHOD;
     public IElementType C_CLASS_PARAMS;
     public IElementType C_CLASS_STMT;
+    public IElementType C_DIRECTIVE;
     public IElementType C_EXTERNAL_STMT;
     public IElementType C_EXP_TYPE;
     public IElementType C_LET_STMT;
@@ -94,6 +95,9 @@ public abstract class ORTypes {
     public ORTokenElementType BEGIN;
     public ORTokenElementType CLASS;
     public ORTokenElementType CONSTRAINT;
+    public ORTokenElementType DIRECTIVE_IF;
+    public ORTokenElementType DIRECTIVE_ELSE;
+    public ORTokenElementType DIRECTIVE_END;
     public ORTokenElementType DO;
     public ORTokenElementType DONE;
     public ORTokenElementType DOWNTO;

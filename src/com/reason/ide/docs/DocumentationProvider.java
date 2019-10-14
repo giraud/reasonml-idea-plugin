@@ -16,7 +16,6 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.odoc.ODocMarkup;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -145,13 +144,13 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {
-                    String sig = signature.asString(element.getLanguage());
+                    String sig = signature.asString(originalElement.getLanguage());
                     if (resolvedElement instanceof PsiQualifiedNamedElement) {
                         String elementType = PsiTypeElementProvider.getType(resolvedElement);
                         String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
                         String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
 
-                        return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + "<hr/>" + sig;
+                        return "<html><head></head><body><div>" + path + "</div><div>" + desc + "</div><hr/><i>" + sig + "</i></body></html>";
                     }
                     return sig;
                 }

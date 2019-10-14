@@ -145,9 +145,14 @@ public enum ParserScopeEnum {
     whileDoLoop,
     doLoop,
 
+    directive,
+    directiveIf,
+    directiveElse,
+    directiveEnd,
+
     valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
     moduleInstanciation, moduleNamedColonWith, moduleNamedWithType, letBinding, scope,
-    moduleNamedSignatureEq, array,  objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
+    moduleNamedSignatureEq, array, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin,
     externalNamedSignatureEq,

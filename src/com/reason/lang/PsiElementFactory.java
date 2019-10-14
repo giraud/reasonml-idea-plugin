@@ -46,6 +46,8 @@ public class PsiElementFactory {
             return new PsiClassField(node);
         } else if (type == types.C_CLASS_METHOD) {
             return new PsiClassMethod(node);
+        } else if (type == types.C_DIRECTIVE) {
+            return new PsiDirective(node);
         } else if (type == types.C_MODULE_PATH) {
             return new PsiModulePath(node);
         } else if (type == types.C_LET_STMT) {

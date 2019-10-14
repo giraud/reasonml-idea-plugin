@@ -171,6 +171,12 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseMethod(builder, state);
             } else if (tokenType == m_types.EXCEPTION) {
                 parseException(builder, state);
+            } else if (tokenType == m_types.DIRECTIVE_IF) {
+                parseDirectiveIf(builder, state);
+            } else if (tokenType == m_types.DIRECTIVE_ELSE) {
+                parseDirectiveElse(builder, state);
+            } else if (tokenType == m_types.DIRECTIVE_END) {
+                parseDirectiveEnd(builder, state);
             }
 
             if (state.dontMove) {
@@ -398,9 +404,10 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseThen(@NotNull PsiBuilder builder, ParserState state) {
-        state.popEndUntilContext(if_);
-        state.advance()
-                .add(mark(builder, ifThenStatement, m_types.C_SCOPED_EXPR).complete());
+        if (!state.isCurrentContext(directive)) {
+            state.popEndUntilContext(if_);
+            state.advance().add(mark(builder, ifThenStatement, m_types.C_SCOPED_EXPR).complete());
+        }
     }
 
     private void parseElse(@NotNull PsiBuilder builder, ParserState state) {
@@ -879,6 +886,22 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.previousElementType1 != m_types.PIPE) {
             endLikeSemi(state);
             state.add(mark(builder, exception, m_types.C_EXCEPTION_EXPR));
+        }
+    }
+
+    private void parseDirectiveIf(@NotNull PsiBuilder builder, ParserState state) {
+        endLikeSemi(state);
+        state.add(mark(builder, directive, m_types.C_DIRECTIVE).setIsStart(true));
+    }
+
+    private void parseDirectiveElse(@NotNull PsiBuilder builder, ParserState state) {
+        // nothing for now
+    }
+
+    private void parseDirectiveEnd(@NotNull PsiBuilder builder, ParserState state) {
+        state.popEndUntilContext(directive);
+        if (state.isCurrentContext(directive)) {
+            state.complete().advance().popEnd();
         }
     }
 
