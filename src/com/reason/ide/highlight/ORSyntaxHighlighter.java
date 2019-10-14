@@ -35,7 +35,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             RmlTypes.INSTANCE.METHOD, RmlTypes.INSTANCE.MOD, RmlTypes.INSTANCE.NEW, RmlTypes.INSTANCE.NONREC,
             RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE, RmlTypes.INSTANCE.VIRTUAL, RmlTypes.INSTANCE.VAL,
             RmlTypes.INSTANCE.PUB, RmlTypes.INSTANCE.PRI, RmlTypes.INSTANCE.OBJECT, RmlTypes.INSTANCE.MUTABLE,
-            RmlTypes.INSTANCE.UNIT, RmlTypes.INSTANCE.WITH
+            RmlTypes.INSTANCE.UNIT, RmlTypes.INSTANCE.WITH,
+            RmlTypes.INSTANCE.DIRECTIVE_IF, RmlTypes.INSTANCE.DIRECTIVE_ELSE, RmlTypes.INSTANCE.DIRECTIVE_END
     );
 
     private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
@@ -72,7 +73,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE,
             OclTypes.INSTANCE.RECORD, OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY,
             OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN, OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT,
-            OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.OBJECT
+            OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.OBJECT,
+            OclTypes.INSTANCE.DIRECTIVE_IF, OclTypes.INSTANCE.DIRECTIVE_ELSE, OclTypes.INSTANCE.DIRECTIVE_END
     );
 
     private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES = of(

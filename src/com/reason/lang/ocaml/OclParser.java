@@ -895,7 +895,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseDirectiveElse(@NotNull PsiBuilder builder, ParserState state) {
-        // nothing for now
+        endLikeSemi(state);
     }
 
     private void parseDirectiveEnd(@NotNull PsiBuilder builder, ParserState state) {

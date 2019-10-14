@@ -23,22 +23,31 @@ public class PsiFileHelper {
         PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
 
         PsiElement element = file.getFirstChild();
+        processSiblingExpressions(psiFinder, element, result);
+
+        return result;
+    }
+
+    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull List<PsiNamedElement> result) {
         while (element != null) {
             if (element instanceof PsiInclude) {
                 // Recursively include everything from referenced module
                 PsiInclude include = (PsiInclude) element;
-                PsiModule includedModule = psiFinder.findModuleFromQn(include.getQualifiedName());
+                PsiModule includedModule = psiFinder == null ? null : psiFinder.findModuleFromQn(include.getQualifiedName());
                 if (includedModule != null) {
                     result.addAll(includedModule.getExpressions());
                 }
             }
-            if (element instanceof PsiNamedElement) {
+
+            if (element instanceof PsiDirective) {
+                // add all elements found in a directive, can't be resolved
+                processSiblingExpressions(psiFinder, element.getFirstChild(), result);
+            } else if (element instanceof PsiNamedElement) {
                 result.add((PsiNamedElement) element);
             }
+
             element = element.getNextSibling();
         }
-
-        return result;
     }
 
     @NotNull
