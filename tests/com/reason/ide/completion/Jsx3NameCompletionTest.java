@@ -1,13 +1,13 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class Jsx3NameCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class Jsx3NameCompletionTest extends BasePlatformTestCase {
 
     public void testShouldDisplayComponents() {
         myFixture.configureByText("DialogHeader.re", "[@react.component] let make = () => { <div/> };");

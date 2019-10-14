@@ -76,9 +76,17 @@ public class FreeExpressionCompletionProvider {
 
         // Add paths (opens and local opens for ex)
         for (String path : paths) {
-            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(path);
+            PsiModule module = psiFinder.findModuleFromQn(path);
             if (module != null) {
-                Collection<PsiNamedElement> expressions = (module instanceof FileBase) ? ((FileBase) module).getExpressions() : ((PsiInnerModule) module).getExpressions();
+                if (module instanceof FileBase) {
+                    if (module.equals(element.getContainingFile())) {
+                        // if the module is already the containing file, we do nothing,
+                        // local expressions will be added after
+                        continue;
+                    }
+                }
+
+                Collection<PsiNamedElement> expressions = module.getExpressions();
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.

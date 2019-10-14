@@ -1,11 +1,12 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 import java.util.List;
 
-public class IncludeCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+@SuppressWarnings("ConstantConditions")
+public class IncludeCompletionTest extends BasePlatformTestCase {
 
     public void testInclude() {
         myFixture.configureByText("A.re", "let x = 1;");

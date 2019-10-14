@@ -1,12 +1,12 @@
-package com.reason.ide;
+package com.reason.ide.reference;
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.usageView.UsageInfo;
 
 import java.util.Collection;
 
 @SuppressWarnings("ConstantConditions")
-public class FindUIdentUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
+public class FindUIdentUsagesTest extends BasePlatformTestCase {
 
     public void testException() {
         myFixture.configureByText("A.re", "exception Exception<caret>Name; raise(ExceptionName);");

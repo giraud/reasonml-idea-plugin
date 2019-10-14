@@ -76,7 +76,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
         if (namedParent != null && namedParent.getNameIdentifier() == myElement) {
-            return myElement;
+            return null;
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());

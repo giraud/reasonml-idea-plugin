@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class FileBase extends PsiFileBase implements PsiModule {
 
@@ -93,5 +94,22 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
     public boolean isInterface() {
         FileType fileType = getFileType();
         return fileType instanceof RmlInterfaceFileType || fileType instanceof OclInterfaceFileType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FileBase fileBase = (FileBase) o;
+        return m_moduleName.equals(fileBase.m_moduleName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(m_moduleName);
     }
 }

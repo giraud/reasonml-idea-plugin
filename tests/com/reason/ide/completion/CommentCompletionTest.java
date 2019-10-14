@@ -1,11 +1,11 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 import java.util.List;
 
-public class CommentCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class CommentCompletionTest extends BasePlatformTestCase {
     @Override
     protected String getTestDataPath() {
         return "testData/com/reason/lang";

@@ -1,13 +1,13 @@
 package com.reason.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class Jsx3PropertyCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+@SuppressWarnings("ConstantConditions")
+public class Jsx3PropertyCompletionTest extends BasePlatformTestCase {
 
     @NotNull
     @Override

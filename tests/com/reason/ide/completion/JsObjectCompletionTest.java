@@ -1,11 +1,12 @@
 package com.reason.ide.completion;
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 import java.util.List;
 
-public class JsObjectCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class JsObjectCompletionTest extends BasePlatformTestCase {
+
     public void testBasicJsFieldCompletion() {
         myFixture.configureByText("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");
         myFixture.configureByText(RmlFileType.INSTANCE, "open JsObj; oo##<caret>");
@@ -90,6 +91,5 @@ public class JsObjectCompletionTest extends LightPlatformCodeInsightFixtureTestC
         assertSize(2, elements);
         assertContainsElements(elements, "ooo", "f22");
     }
-
 
 }

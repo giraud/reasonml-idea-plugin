@@ -1,11 +1,11 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 import java.util.List;
 
-public class DotCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class DotCompletionTest extends BasePlatformTestCase {
 
     public void testModuleLetCompletion() {
         myFixture.configureByText("A.re", "let x = 1;");
