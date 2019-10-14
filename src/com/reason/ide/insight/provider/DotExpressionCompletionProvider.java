@@ -2,6 +2,7 @@ package com.reason.ide.insight.provider;
 
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
@@ -98,7 +99,7 @@ public class DotExpressionCompletionProvider {
                     if (resolvedModule != null) {
                         Collection<PsiNamedElement> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiInnerModule) resolvedModule).getExpressions();
                         LOG.debug("  expressions", expressions);
-                        addExpressions(resultSet, expressions);
+                        addExpressions(resultSet, expressions, element.getLanguage());
                     }
                 }
             }
@@ -122,7 +123,7 @@ public class DotExpressionCompletionProvider {
                         resultSet.addElement(
                                 LookupElementBuilder.
                                         create(recordField).
-                                        withTypeText(PsiSignatureUtil.getSignature(recordField)).
+                                        withTypeText(PsiSignatureUtil.getSignature(recordField, element.getLanguage())).
                                         withIcon(PsiIconUtil.getProvidersIcon(recordField, 0))
                         );
                     }
@@ -131,13 +132,13 @@ public class DotExpressionCompletionProvider {
         }
     }
 
-    private static void addExpressions(@NotNull CompletionResultSet resultSet, Collection<PsiNamedElement> expressions) {
+    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @NotNull Language language) {
         for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include
                 String name = expression.getName();
                 if (name != null) {
-                    String signature = PsiSignatureUtil.getSignature(expression);
+                    String signature = PsiSignatureUtil.getSignature(expression, language);
                     resultSet.addElement(LookupElementBuilder.
                             create(name).
                             withTypeText(signature).

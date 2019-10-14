@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Icons;
@@ -91,7 +90,7 @@ public class FreeExpressionCompletionProvider {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.
                                 create(expression).
-                                withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
                                 withIcon(PsiIconUtil.getProvidersIcon(expression, 0)).
                                 withInsertHandler(FreeExpressionCompletionProvider::insertExpression));
                     }
@@ -112,7 +111,7 @@ public class FreeExpressionCompletionProvider {
                     for (PsiNamedElement expression : moduleFromQn.getExpressions()) {
                         resultSet.addElement(LookupElementBuilder.
                                 create(expression).
-                                withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
                                 withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
                         if (item instanceof PsiType) {
                             expandType((PsiType) item, resultSet);
@@ -123,7 +122,7 @@ public class FreeExpressionCompletionProvider {
                 PsiNamedElement expression = (PsiNamedElement) item;
                 resultSet.addElement(LookupElementBuilder.
                         create(expression).
-                        withTypeText(PsiSignatureUtil.getSignature(expression)).
+                        withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
                         withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                 if (item instanceof PsiType) {
                     expandType((PsiType) item, resultSet);
@@ -150,7 +149,7 @@ public class FreeExpressionCompletionProvider {
                         if (!(expression instanceof PsiAnnotation)) {
                             resultSet.addElement(LookupElementBuilder.
                                     create(expression).
-                                    withTypeText(PsiSignatureUtil.getSignature(expression)).
+                                    withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
                                     withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                             if (expression instanceof PsiType) {
                                 expandType((PsiType) expression, resultSet);

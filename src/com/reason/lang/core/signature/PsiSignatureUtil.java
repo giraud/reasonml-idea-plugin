@@ -1,5 +1,6 @@
 package com.reason.lang.core.signature;
 
+import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiInnerModule;
@@ -14,17 +15,17 @@ public class PsiSignatureUtil {
     }
 
     @NotNull
-    public static String getSignature(@Nullable PsiElement element) {
+    public static String getSignature(@Nullable PsiElement element, @NotNull Language targetLanguage) {
         if (element instanceof PsiExternal) {
-            return ((PsiExternal) element).getORSignature().asString(element.getLanguage());
+            return ((PsiExternal) element).getORSignature().asString(targetLanguage);
         } else if (element instanceof PsiLet) {
             PsiLet let = (PsiLet) element;
             ORSignature signature = let.hasInferredType() ? let.getInferredType() : let.getORSignature();
-            return signature.asString(element.getLanguage());
+            return signature.asString(targetLanguage);
         } else if (element instanceof PsiVal) {
             PsiVal val = (PsiVal) element;
             ORSignature signature = val.getORSignature();
-            return signature.asString(element.getLanguage());
+            return signature.asString(targetLanguage);
         } else if (element instanceof PsiInnerModule) {
             String qualifiedName = ((PsiInnerModule) element).getQualifiedName();
             return qualifiedName == null ? "" : qualifiedName;

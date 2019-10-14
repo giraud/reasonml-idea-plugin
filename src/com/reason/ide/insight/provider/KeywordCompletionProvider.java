@@ -30,7 +30,7 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
     }
 
     @Override
-    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+    protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
         LOG.debug(m_debugName + " expression completion");
 
         for (String keyword : m_keywords) {
