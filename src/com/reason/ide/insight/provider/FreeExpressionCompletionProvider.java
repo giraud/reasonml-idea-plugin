@@ -7,11 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Icons;
 import com.reason.Log;
@@ -39,9 +35,7 @@ public class FreeExpressionCompletionProvider {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
-
         FileModuleIndexService orFinder = FileModuleIndexService.getService();
-        PsiManager psiManager = PsiManager.getInstance(project);
 
         // Add virtual namespaces
         Collection<String> namespaces = orFinder.getNamespaces(project);
@@ -56,7 +50,7 @@ public class FreeExpressionCompletionProvider {
         // Add file modules (that are not a component and without namespaces)
         Collection<IndexedFileModule> filesWithoutNamespace = orFinder.getFilesWithoutNamespace(project).
                 stream().
-                filter(indexedFileModule -> !containingFilePath.equals(indexedFileModule.getPath())).
+                filter(indexedFileModule -> !containingFilePath.equals(indexedFileModule.getPath()) && !indexedFileModule.getModuleName().equals("Pervasives")).
                 collect(Collectors.toList());
         if (LOG.isDebugEnabled()) {
             LOG.debug("  files without namespaces", filesWithoutNamespace);
@@ -135,28 +129,6 @@ public class FreeExpressionCompletionProvider {
                 item = parent instanceof PsiInnerModule ? parent.getPrevSibling() : parent;
             } else {
                 item = prevItem;
-            }
-        }
-
-        // Add pervasives expressions
-        Collection<VirtualFile> pervasivesFile = orFinder.getInterfaceFilesWithName("Pervasives", GlobalSearchScope.allScope(project));
-        if (!pervasivesFile.isEmpty()) {
-            PsiFile file = psiManager.findFile(pervasivesFile.iterator().next());
-            if (file instanceof FileBase) {
-                FileBase pervasives = pervasivesFile.isEmpty() ? null : (FileBase) file;
-                if (pervasives != null) {
-                    for (PsiNamedElement expression : pervasives.getExpressions()) {
-                        if (!(expression instanceof PsiAnnotation)) {
-                            resultSet.addElement(LookupElementBuilder.
-                                    create(expression).
-                                    withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
-                                    withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
-                            if (expression instanceof PsiType) {
-                                expandType((PsiType) expression, resultSet);
-                            }
-                        }
-                    }
-                }
             }
         }
     }
