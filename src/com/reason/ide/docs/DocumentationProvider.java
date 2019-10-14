@@ -5,7 +5,6 @@ import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Log;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.hints.SignatureProvider;
@@ -20,9 +19,11 @@ import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.reason.lang.odoc.ODocMarkup.*;
+
 public class DocumentationProvider extends AbstractDocumentationProvider {
 
-    private static final Log LOG = Log.create("doc");
+    //private static final Log LOG = Log.create("doc");
 
     public static boolean isSpecialComment(@Nullable PsiElement element) {
         if (element == null) {
@@ -134,23 +135,20 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
             if (resolvedElement instanceof PsiTypeConstrName) {
                 PsiType type = (PsiType) resolvedElement.getParent();
-                String desc = "type <b>" + resolvedElement.getText() + "</b>";
                 String path = ORUtil.getQualifiedPath(type);
-
-                String typeBinding = type.isAbstract() ? "<i>This is an abstract type</i>" : "<pre style='white-space:pre-wrap'>" + DocFormatter.escapeCodeForHtml(type.getBinding()) + "</pre>";
-                return "[<i>" + type.getContainingFile() + "</i>] " + path + "<br/>" + desc + "<hr/>" + typeBinding;
+                String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
+                return createQuickDocTemplate(path, "type", resolvedElement.getText(), typeBinding);
             }
 
             if (resolvedElement instanceof PsiSignatureElement) {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {
-                    String sig = signature.asString(originalElement.getLanguage());
+                    String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
                     if (resolvedElement instanceof PsiQualifiedNamedElement) {
-                        String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                        String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
                         String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
-
-                        return "<html><head></head><body><div>" + path + "</div><div>" + desc + "</div><hr/><i>" + sig + "</i></body></html>";
+                        String elementType = PsiTypeElementProvider.getType(resolvedElement);
+                        String desc = ((PsiQualifiedNamedElement) resolvedElement).getName();
+                        return createQuickDocTemplate(path, elementType, desc, sig);
                     }
                     return sig;
                 }
@@ -159,7 +157,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             // No signature found, but resolved
             if (resolvedElement instanceof PsiQualifiedNamedElement) {
                 String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                String desc = (elementType == null ? "" : elementType + " ") + "<b>" + ((PsiQualifiedNamedElement) resolvedElement).getName() + "</b>";
+                String desc = ((PsiQualifiedNamedElement) resolvedElement).getName();
                 String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
 
                 if (inferredType == null) {
@@ -168,12 +166,12 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                     inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
                 }
 
-                String sig = "<i>" + (inferredType == null ? "unknown signature" : inferredType) + "</i>";
+                String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);
                 if (resolvedElement instanceof PsiVariantDeclaration) {
                     sig = "type " + ((PsiType) resolvedElement.getParent().getParent()).getName();
                 }
 
-                return "[<i>" + resolvedElement.getContainingFile() + "</i>] " + path + "<br/>" + desc + (resolvedElement instanceof PsiModule ? "" : "<hr/>" + sig);
+                return createQuickDocTemplate(path, elementType, desc, resolvedElement instanceof PsiModule ? null : sig);
             }
         }
 
@@ -207,5 +205,14 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             }
         }
         return null;
+    }
+
+    @NotNull
+    private String createQuickDocTemplate(@NotNull String qPath, @Nullable String type, @Nullable String name, @Nullable String signature) {
+        return "<html><body>" +
+                "<div>" + qPath + "</div>" +
+                CONTENT_START + (type == null ? "" : type) + " <b>" + name + "</b>" + CONTENT_END +
+                (signature == null ? "" : "<hr/><i>" + CODE_START + signature + CODE_END + "</i>") +
+                "</body></html>";
     }
 }

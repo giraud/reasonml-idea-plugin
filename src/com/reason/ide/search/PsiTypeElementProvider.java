@@ -30,6 +30,9 @@ public class PsiTypeElementProvider {
         if (element instanceof PsiType) {
             return "type";
         }
+        if (element instanceof PsiVariantDeclaration) {
+            return "variant";
+        }
 
         return null;
     }

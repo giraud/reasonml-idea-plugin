@@ -41,7 +41,10 @@ class DocFormatter {
             return "";
         }
 
-        String s = code.getText().replaceAll("<", "&lt;");
-        return s;
+        return escapeCodeForHtml(code.getText());
+    }
+
+    public static String escapeCodeForHtml(@Nullable String code) {
+        return code == null ? null : code.replaceAll("<", "&lt;");
     }
 }
