@@ -252,7 +252,7 @@ public class ParserState {
 
     @NotNull
     public ParserState updateCurrentCompositeElementType(@NotNull IElementType compositeElementType) {
-        m_currentScope.compositeElementType(compositeElementType);
+        m_currentScope.updateCompositeElementType(compositeElementType);
         return this;
     }
 

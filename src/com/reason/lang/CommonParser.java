@@ -23,15 +23,20 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
         builder.setDebugMode(false);
 
-        //System.out.println("start parsing");
-        //long start = System.currentTimeMillis();
+//        System.out.println("start parsing ");
+//        long start = System.currentTimeMillis();
 
+        ASTNode treeBuilt;
+
+//        try {
         parseLight(elementType, builder);
         //noinspection UnnecessaryLocalVariable
-        ASTNode treeBuilt = builder.getTreeBuilt();
-
-        //long end = System.currentTimeMillis();
-        //System.out.println("end parsing in " + (end - start) + "ms");
+        treeBuilt = builder.getTreeBuilt();
+//        }
+//        finally {
+//            long end = System.currentTimeMillis();
+//            System.out.println("end parsing in " + (end - start) + "ms");
+//        }
 
         return treeBuilt;
     }

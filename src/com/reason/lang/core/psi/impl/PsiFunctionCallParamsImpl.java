@@ -1,9 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,15 +15,16 @@ public class PsiFunctionCallParamsImpl extends PsiToken<ORTypes> implements PsiF
         super(types, node);
     }
 
+    @Override
+    @NotNull
+    public Collection<PsiElement> getParametersList() {
+        return ORUtil.findImmediateChildrenOfType(this, m_types.C_FUN_CALL_PARAM);
+    }
+
     @NotNull
     @Override
     public String toString() {
-        return "function call params";
+        return "Function call parameters";
     }
 
-    @Override
-    @NotNull
-    public Collection<PsiParameter> getParameterList() {
-        return ORUtil.findImmediateChildrenOfClass(this, PsiParameter.class);
-    }
 }

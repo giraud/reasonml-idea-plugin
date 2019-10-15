@@ -4,25 +4,31 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.signature.ORSignature;
+import com.reason.lang.core.stub.PsiParameterStub;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiParameter {
+public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> implements PsiParameter {
 
+    PsiReference[] EMPTY_REFS = new PsiReference[0];
+
+    //region Constructors
     public PsiParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
+
+    public PsiParameterImpl(@NotNull ORTypes types, @NotNull PsiParameterStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
+    }
+    //endregion
 
     @Nullable
     public PsiElement getNameIdentifier() {
@@ -39,7 +45,7 @@ public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiParameter 
         return identifier == null ? "" : identifier.getText();
     }
 
-    @NotNull
+    @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
     }
@@ -62,39 +68,26 @@ public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiParameter 
         return ORUtil.nextSiblingWithTokenType(getFirstChild(), m_types.EQ) != null;
     }
 
-    @Nullable
-    @Override
-    public PsiReference getReference() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier instanceof PsiLowerSymbol ? new PsiLowerSymbolReference((PsiLowerSymbol) nameIdentifier, m_types) : null;
-    }
-
-    PsiReference[] EMPTY_REFS = new PsiReference[0];
-
     @NotNull
     @Override
-    public PsiReference[] getReferences() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? EMPTY_REFS : ReferenceProvidersRegistry.getReferencesFromProviders(nameIdentifier);
+    public String getQualifiedName() {
+        PsiParameterStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+        return getQualifiedPath() + "[" + getName() + "]";
+    }
+
+    @NotNull
+    private String getQualifiedPath() {
+        PsiQualifiedNamedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedNamedElement.class);
+        String parentQName =  qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
+        return parentQName == null ? "" : parentQName;
     }
 
     @Nullable
     @Override
     public String toString() {
-        return "Parameter " + getName();
-    }
-
-    @NotNull
-    @Override
-    public String getQualifiedName() {
-        PsiElement parent = getParent();
-        if (parent instanceof PsiParameters) {
-            // it's a function definition
-            PsiQualifiedNamedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedNamedElement.class);
-            if (qualifiedParent != null) {
-                return qualifiedParent.getQualifiedName() + "[" + getName() + "]";
-            }
-        }
-        return getName();
+        return "Parameter " + getQualifiedName();
     }
 }

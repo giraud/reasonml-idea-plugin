@@ -125,7 +125,7 @@ public class ParserScope {
     }
 
     @NotNull
-    public ParserScope compositeElementType(IElementType compositeElementType) {
+    public ParserScope updateCompositeElementType(IElementType compositeElementType) {
         m_compositeElementType = compositeElementType;
         return this;
     }
@@ -164,5 +164,11 @@ public class ParserScope {
 
     public ORTokenElementType getScopeTokenElementType() {
         return m_scopeTokenElementType;
+    }
+
+    public void rollbackTo() {
+        if (m_mark != null) {
+            m_mark.rollbackTo();
+        }
     }
 }

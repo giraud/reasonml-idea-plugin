@@ -50,7 +50,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleOpenVariant() {
-        PsiFile file = parseCode("ModelActions.UserCapabilitiesLoaded( UserCapabilitiesBuilder.( ) ),");
+        PsiFile file = parseCode("ModelActions.UserCapabilitiesLoaded( UserCapabilitiesBuilder.( ) ),", true);
         assertEquals(5, file.getChildren().length);
     }
 }

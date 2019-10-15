@@ -15,40 +15,63 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         super("", "re", new RmlParserDefinition());
     }
 
-    public void testLetFunction() {
-        PsiLet e = first(letExpressions(parseCode("let add = (x,y) => x + y;")));
-
-        assertTrue(e.isFunction());
-        PsiFunction function = e.getFunction();
-        assertSize(2, function.getParameters());
-        assertEquals("x", first(function.getParameters()).getText());
-        assertEquals("y", second(function.getParameters()).getText());
-        assertEquals("x + y", function.getBody().getText());
-    }
-
-    public void testLetFunctionParenless() {
-        PsiLet e = first(letExpressions(parseCode("let add10 = x => x + 10;")));
-
-        assertTrue(e.isFunction());
-        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        assertSize(1, function.getParameters());
-        assertNotNull(function.getBody());
-    }
-
     public void testAnonFunction() {
-        PsiLet e = first(letExpressions(parseCode("let x = Belt.map(items, (. item) => item)")));
+        PsiLet e = first(letExpressions(parseCode("let _ = Belt.map(items, (. item) => value)", true)));
 
         PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
         assertSize(1, function.getParameters());
         assertEquals("item", first(function.getParameters()).getText());
+        assertEquals("value", function.getBody().getText());
     }
 
     public void testBraceFunction() {
-        PsiLet e = first(letExpressions(parseCode("let x = (x, y) => { x + y; }")));
+        PsiLet e = first(letExpressions(parseCode("let x = (x, y) => { x + y; }", true)));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        assertSize(2, function.getParameters());
         assertEquals("(x, y) => { x + y; }", function.getText());
         assertNotNull(function.getBody());
+    }
+
+    public void testDestructuration() {
+        PsiLet e = first(letExpressions(parseCode("let _ = (a, {b, _}) => b;", true)));
+
+        assertTrue(e.isFunction());
+        assertSize(2, e.getFunction().getParameters());
+    }
+
+    public void testParenlessFunction() {
+        PsiLet e = first(letExpressions(parseCode("let _ = x => x + 10;")));
+
+        assertTrue(e.isFunction());
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+
+        assertSize(1, function.getParameters());
+        assertInstanceOf(first(function.getParameters()), PsiParameter.class);
+        assertNotNull(function.getBody());
+    }
+
+    public void testDotFunction() {
+        PsiLet e = first(letExpressions(parseCode("let _ = (. x) => x;", true)));
+
+        assertTrue(e.isFunction());
+        PsiFunction function = e.getFunction();
+
+        assertSize(1, function.getParameters());
+        assertEquals("x", first(function.getParameters()).getText());
+        assertEquals("x", function.getBody().getText());
+    }
+
+    public void testGHIssue113() {
+        PsiElement e = firstElement(parseCode("() => switch (isBuggy()) { | _ => \\\"buggy\\\" };\"", true));
+
+        assertInstanceOf(e, PsiFunction.class);
+        PsiFunction f = (PsiFunction) e;
+        assertSize(1, f.getParameters());
+        PsiFunctionBody fb = f.getBody();
+        assertInstanceOf(fb.getFirstChild(), PsiSwitch.class);
+        PsiSwitch s = (PsiSwitch) fb.getFirstChild();
+        assertEquals("(isBuggy())", s.getCondition().getText());
     }
 
     public void testInnerFunction() {
@@ -61,13 +84,6 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals("error##message", functionInner.getBody().getText());
     }
 
-    public void testInnerFunctionNoParens() {
-        PsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2);")));
-
-        PsiFunction functionInner = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
-        assertEquals("2", functionInner.getBody().getText());
-    }
-
     public void testInnerFunctionBraces() {
         PsiLet e = first(letExpressions(parseCode("let _ = error => { Belt.Array.mapU(errors, (. error) => error##message); };")));
 
@@ -78,20 +94,24 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals("error##message", functionInner.getBody().getText());
     }
 
-    public void testParametersNamedSymbols() {
-        PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option(Js.t('a)), children) => null;")));
+    public void testInnerFunctionNoParens() {
+        PsiLet e = first(letExpressions(parseCode("let _ = funcall(result => 2);")));
 
-        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
-        assertSize(3, parameters);
-
-        assertEquals("id", parameters.get(0).getName());
-        assertEquals("values", parameters.get(1).getName());
-        assertEquals("children", parameters.get(2).getName());
+        PsiFunction functionInner = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
+        assertEquals("2", functionInner.getBody().getText());
     }
 
-    public void testParametersLIdent() {
-        PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
+    public void testParameterAnonFunction() {
+        FileBase e = parseCode("describe('a', () => test('b', () => true));");
+
+        List<PsiFunction> funcs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiFunction.class));
+        assertSize(2, funcs);
+        assertEquals("() => test('b', () => true)", funcs.get(0).getText());
+        assertEquals("() => true", funcs.get(1).getText());
+    }
+
+    public void testParametersNamedSymbols() {
+        PsiLet e = first(letExpressions(parseCode("let make = (~id:string, ~values: option(Js.t('a)), children) => null;", true)));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
@@ -109,13 +129,39 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertSize(10, function.getParameters());
     }
 
-    public void testParameterAnonFunction() {
-        FileBase e = parseCode("describe('a', () => test('b', () => true));");
+    public void testParenFunction() {
+        PsiLet e = first(letExpressions(parseCode("let _ = (x,y) => x + y;", true)));
 
-        List<PsiFunction> funcs = new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiFunction.class));
-        assertSize(2, funcs);
-        assertEquals("() => test('b', () => true)", funcs.get(0).getText());
-        assertEquals("() => true", funcs.get(1).getText());
+        assertTrue(e.isFunction());
+        PsiFunction function = e.getFunction();
+
+        assertSize(2, function.getParameters());
+        assertEquals("x", first(function.getParameters()).getText());
+        assertEquals("y", second(function.getParameters()).getText());
+        assertEquals("x + y", function.getBody().getText());
+    }
+
+    public void testUnitFunction() {
+        PsiLet e = first(letExpressions(parseCode("let _ = () => 1;")));
+
+        assertTrue(e.isFunction());
+        PsiFunction function = e.getFunction();
+
+        assertSize(1, function.getParameters());
+        assertEquals("()", first(function.getParameters()).getText());
+        assertEquals("1", function.getBody().getText());
+    }
+
+    public void testParametersLIdent() {
+        PsiLet e = first(letExpressions(parseCode("let make = (id, values, children) => null;")));
+
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+        assertSize(3, parameters);
+
+        assertEquals("id", parameters.get(0).getName());
+        assertEquals("values", parameters.get(1).getName());
+        assertEquals("children", parameters.get(2).getName());
     }
 
     public void testRecordFunction() {
@@ -126,17 +172,5 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertSize(1, innerFunction.getParameters());
         assertEquals("self", first(innerFunction.getParameters()).getName());
         assertEquals("<div/>", innerFunction.getBody().getText());
-    }
-
-    public void testGHIssue113() {
-        PsiElement e = firstElement(parseCode("() => switch (isBuggy()) { | _ => \\\"buggy\\\" };\""));
-
-        assertInstanceOf(e, PsiFunction.class);
-        PsiFunction f = (PsiFunction) e;
-        assertSize(0, f.getParameters());
-        PsiFunctionBody fb = f.getBody();
-        assertInstanceOf(fb.getFirstChild(), PsiSwitch.class);
-        PsiSwitch s = (PsiSwitch) fb.getFirstChild();
-        assertEquals("(isBuggy())", s.getCondition().getText());
     }
 }

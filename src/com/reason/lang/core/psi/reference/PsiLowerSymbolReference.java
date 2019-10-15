@@ -6,6 +6,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModulePathFinder;
@@ -13,8 +14,8 @@ import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclModulePathFinder;
-import com.reason.lang.reason.RmlModulePathFinder;
+import com.reason.lang.ocaml.OclQNameFinder;
+import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     }
 
     @Override
-    public PsiElement handleElementRename(String newName) throws IncorrectOperationException {
+    public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
         PsiElement newNameIdentifier = ORElementFactory.createLetName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
@@ -128,6 +129,28 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                     LOG.debug("  Found intermediate result", letResult, resultPosition);
                 } else {
                     LOG.debug("  skip intermediate result", letResult, letPosition);
+                }
+            }
+        }
+
+        // Try to find parameter items
+
+        Collection<PsiParameter> parameters = psiFinder.findParameters(m_referenceName, interfaceOrImplementation);
+        LOG.debug("  parameters", parameters);
+
+        if (!parameters.isEmpty()) {
+            // Filter the parameters, keep the ones with the same qualified name
+            List<PsiParameter> filteredParameters = parameters.stream().filter(getPathPredicate(potentialPaths)).collect(toList());
+            LOG.debug("  filtered parameters", filteredParameters);
+
+            for (PsiParameter parameter : filteredParameters) {
+                Integer parameterPosition = potentialPaths.get(parameter.getQualifiedName());
+                if (parameterPosition < resultPosition) {
+                    result = parameter;
+                    resultPosition = parameterPosition;
+                    LOG.debug("  Found intermediate result", parameter, resultPosition);
+                } else {
+                    LOG.debug("  skip intermediate result", parameter, parameterPosition);
                 }
             }
         }
@@ -220,21 +243,23 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @NotNull
     private Map<String, Integer> getPotentialPaths() {
-        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
+        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
         Map<String, Integer> result = new THashMap<>();
 
         Set<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, false);
+
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(s);
                     if (moduleAlias == null) {
                         PsiModule moduleQn = psiFinder.findModuleFromQn(s);
                         if (moduleQn == null) {
-                            // not a module but a let ?
-                            return psiFinder.findLetFromQn(s);
+                            // not a module but maybe a let or a parameter
+                            PsiLet let = psiFinder.findLetFromQn(s);
+                            return let == null ? psiFinder.findParamFromQn(s) : let;
                         }
                         return moduleQn;
                     }
@@ -245,8 +270,8 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                 collect(toList());
 
         Integer position = 0;
-        for (PsiQualifiedNamedElement module : aliasPaths) {
-            result.put(module.getQualifiedName() + "." + m_referenceName, position);
+        for (PsiQualifiedNamedElement element : aliasPaths) {
+            result.put(element.getQualifiedName() + (element instanceof PsiParameter ? "" : "." + m_referenceName), position);
             position++;
         }
 

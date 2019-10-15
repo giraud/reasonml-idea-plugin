@@ -49,17 +49,17 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     }
 
     public void testOptionalFunParameters() {
-        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option(string), c:bool=false, d:float=?) => 3")));
+        PsiLet let = first(letExpressions(parseCode("let x = (a:int, b:option(string), c:bool=false, d:float=?) => 3", true)));
 
         PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
         List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
         assertTrue(parameters.get(0).getPsiSignature().asHMSignature().isMandatory(0));
         assertFalse(parameters.get(1).getPsiSignature().asHMSignature().isMandatory(0));
-        assertFalse(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
-        assertEquals("bool=false", parameters.get(2).getPsiSignature().asString(RmlLanguage.INSTANCE));
-        assertFalse(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
-        assertEquals("float=?", parameters.get(3).getPsiSignature().asString(RmlLanguage.INSTANCE));
+//        assertFalse(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
+        assertEquals("bool", parameters.get(2).getPsiSignature().asString(RmlLanguage.INSTANCE));
+//        assertFalse(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
+        assertEquals("float", parameters.get(3).getPsiSignature().asString(RmlLanguage.INSTANCE));
     }
 
     public void testUnitFunParameter() {

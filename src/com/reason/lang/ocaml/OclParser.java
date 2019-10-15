@@ -593,7 +593,7 @@ public class OclParser extends CommonParser<OclTypes> {
             ParserScope innerScope = state.pop();
             if (innerScope != null) {
                 // This is a function definition, change the scopes
-                innerScope.resolution(functionParameters).compositeElementType(m_types.C_FUN_PARAMS).complete().end();
+                innerScope.resolution(functionParameters).updateCompositeElementType(m_types.C_FUN_PARAMS).complete().end();
                 state.updateCurrentContext(function).
                         updateCurrentResolution(function).
                         updateCurrentCompositeElementType(m_types.C_FUN_EXPR).

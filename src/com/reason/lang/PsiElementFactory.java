@@ -60,6 +60,14 @@ public class PsiElementFactory {
             return new PsiLetBinding(node);
         } else if (type == types.C_FUN_CALL_PARAMS) {
             return new PsiFunctionCallParamsImpl(types, node);
+        } else if (type == types.C_FUN_EXPR) {
+            return new PsiFunctionImpl(types, node);
+        } else if (type == types.C_FUN_PARAMS) {
+            return new PsiParametersImpl(types, node);
+        } else if (type == types.C_FUN_PARAM) {
+            return new PsiParameterImpl(types, node);
+        } else if (type == types.C_FUN_BODY) {
+            return new PsiFunctionBody(node);
         } else if (type == types.C_OBJECT) {
             return new PsiObject(node);
         } else if (type == types.C_OPTION) {
@@ -118,14 +126,6 @@ public class PsiElementFactory {
             return new PsiParameterImpl(types, node);
         } else if (type == types.C_FUNCTOR_BINDING) {
             return new PsiFunctorBinding(types, node);
-        } else if (type == types.C_FUN_EXPR) {
-            return new PsiFunctionImpl(types, node);
-        } else if (type == types.C_FUN_PARAMS) {
-            return new PsiParametersImpl(types, node);
-        } else if (type == types.C_FUN_PARAM) {
-            return new PsiParameterImpl(types, node);
-        } else if (type == types.C_FUN_BODY) {
-            return new PsiFunctionBody(node);
         } else if (type == types.C_STRUCT_EXPR) {
             return new PsiStruct(node);
         } else if (type == types.C_ML_INTERPOLATOR) {
@@ -144,13 +144,6 @@ public class PsiElementFactory {
             return new PsiSignatureItemImpl(types, node);
         } else if (type == types.C_WHILE) {
             return new PsiWhile(types, node);
-        } else if (type == types.C_UNKNOWN_EXPR) {
-            // Try to resolve something from the parent context
-            ASTNode parentNode = node.getTreeParent();
-            if (parentNode != null && parentNode.getElementType() == types.C_FUN_PARAMS) {
-                return new PsiParameterImpl(types, node);
-            }
-            // Remove the unknown node by its children
         }
 
         return new PsiToken<>(types, node);

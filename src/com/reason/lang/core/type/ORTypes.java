@@ -25,6 +25,8 @@ public abstract class ORTypes {
     public IElementType C_LET_BINDING;
     public IElementType C_MACRO_EXPR;
     public IElementType C_MACRO_NAME;
+    public IElementType C_FUN_CALL_PARAMS;
+    public IElementType C_FUN_CALL_PARAM;
     public IElementType C_FUN_EXPR;
     public IElementType C_FUN_PARAMS;
     public IElementType C_FUN_PARAM;
@@ -64,7 +66,6 @@ public abstract class ORTypes {
     public IElementType C_TAG_START;
     public IElementType C_TAG_CLOSE;
     public IElementType C_TAG_PROPERTY;
-    public IElementType C_FUN_CALL_PARAMS;
     public IElementType C_RECORD_EXPR;
     public IElementType C_RECORD_FIELD;
     public IElementType C_SWITCH_EXPR;

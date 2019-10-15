@@ -2,9 +2,9 @@ package com.reason.ide.reference;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
-public class ResolveLetElementTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ResolveLetElementTest extends BasePlatformTestCase {
 
     public void testLocalOpenWithParens() {
         myFixture.configureByText("A.re", "module A1 = { let a = 3; };");
@@ -44,4 +44,12 @@ public class ResolveLetElementTest extends LightPlatformCodeInsightFixtureTestCa
         assertEquals("A.fn.x", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
     }
 
+    public void testInnerScopeInImpl() {
+        myFixture.configureByText("A.rei", "let x:int;");
+        myFixture.configureByText("A.re", "let x = 1; let fn = { let foo = 2; fn1(foo<caret>); };");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.fn.foo", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+        assertEquals("A.re", e.getContainingFile().getName());
+    }
 }

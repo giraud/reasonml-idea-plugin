@@ -55,7 +55,6 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
     }
     //endregion
 
-
     @Nullable
     @Override
     public String getQualifiedName() {

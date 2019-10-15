@@ -45,6 +45,6 @@ class DocFormatter {
     }
 
     public static String escapeCodeForHtml(@Nullable String code) {
-        return code == null ? null : code.replaceAll("<", "&lt;");
+        return code == null ? null : code.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
 }

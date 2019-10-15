@@ -3,13 +3,13 @@ package com.reason.ide.insight;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclModulePathFinder;
+import com.reason.lang.ocaml.OclQNameFinder;
 import com.reason.lang.ocaml.OclTypes;
 
 public class OclCompletionContributor extends CompletionContributor {
 
     OclCompletionContributor() {
-        super(OclTypes.INSTANCE, new OclModulePathFinder());
+        super(OclTypes.INSTANCE, new OclQNameFinder());
     }
 
     @Override

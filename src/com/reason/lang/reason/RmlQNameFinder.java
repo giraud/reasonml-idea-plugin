@@ -1,11 +1,12 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseModulePathFinder;
-import com.reason.lang.core.ORUtil;
+import com.reason.lang.BaseQNameFinder;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,7 @@ import static com.reason.lang.ModulePathFinder.Includes.containingFile;
 import static com.reason.lang.ModulePathFinder.Includes.includedModules;
 
 
-public class RmlModulePathFinder extends BaseModulePathFinder {
+public class RmlQNameFinder extends BaseQNameFinder {
 
     // Find the expression paths
     @NotNull
@@ -91,6 +92,15 @@ public class RmlModulePathFinder extends BaseModulePathFinder {
                 qualifiedNames.add(((PsiType) item).getQualifiedName() + pathExtension);
             } else if (item instanceof PsiLet) {
                 qualifiedNames.add(((PsiLet) item).getQualifiedPath());
+            } else if (item instanceof PsiFunction) {
+                PsiQualifiedNamedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedNamedElement.class);
+                if (parent != null) {
+                    String parentQName = parent.getQualifiedName();
+                    // Register all parameters of function
+                    for (PsiParameter parameter : ((PsiFunction) item).getParameters()) {
+                        qualifiedNames.add(parentQName + "[" + parameter.getName() + "]");
+                    }
+                }
             }
 
             PsiElement prevItem = item.getPrevSibling();

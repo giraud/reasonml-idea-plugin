@@ -8,13 +8,13 @@ import com.reason.ide.insight.provider.JsxNameCompletionProvider;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.reason.RmlModulePathFinder;
+import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
 
 public class RmlCompletionContributor extends CompletionContributor {
 
     RmlCompletionContributor() {
-        super(RmlTypes.INSTANCE, new RmlModulePathFinder());
+        super(RmlTypes.INSTANCE, new RmlQNameFinder());
     }
 
     @Override

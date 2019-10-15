@@ -6,7 +6,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseModulePathFinder implements ModulePathFinder {
+public abstract class BaseQNameFinder implements ModulePathFinder {
 
     @NotNull
     protected String extractPathName(@NotNull PsiElement element, @NotNull ORTypes types) {

@@ -10,6 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.indexing.FileBasedIndex;
+import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
@@ -189,6 +190,11 @@ public final class PsiFinder {
     }
 
     @NotNull
+    public Collection<PsiParameter> findParameters(@NotNull String name, @NotNull ORFileType fileType) {
+        return findLowerSymbols("parameters", name, fileType, IndexKeys.PARAMETERS, PsiParameter.class, allScope(m_project));
+    }
+
+    @NotNull
     public Collection<PsiLet> findLets(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("lets", name, fileType, IndexKeys.LETS, PsiLet.class, allScope(m_project));
     }
@@ -236,7 +242,6 @@ public final class PsiFinder {
                 String itemQName = item.getQualifiedName();
 
                 String filename = ((FileBase) item.getContainingFile()).asModuleName();
-                VirtualFile file;
 
                 if (fileType == ORFileType.implementationOnly) {
                     Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
@@ -249,8 +254,8 @@ public final class PsiFinder {
                         intfNames.put(itemQName, item);
                     }
                 } else {
-                    file = fileModuleIndex.getFile(filename, scope);
-                    if (file != null) {
+                    Collection<VirtualFile> files = fileModuleIndex.getFilesWithName(filename, scope);
+                    for (VirtualFile file : files) {
                         if (FileHelper.isInterface(file.getFileType())) {
                             if (((FileBase) item.getContainingFile()).isInterface()) {
                                 intfNames.put(itemQName, item);
@@ -445,6 +450,25 @@ public final class PsiFinder {
         return null;
     }
 
+    @Nullable
+    public PsiParameter findParamFromQn(@Nullable String qName) {
+        if (qName == null) {
+            return null;
+        }
+
+        GlobalSearchScope scope = allScope(m_project);
+
+        // Try qn directly
+        Collection<PsiParameter> parameters = ParameterFqnIndex.getInstance().get(qName.hashCode(), m_project, scope);
+        if (!parameters.isEmpty()) {
+            if (parameters.size() == 1) {
+                return parameters.iterator().next();
+            }
+        }
+
+        return null;
+    }
+
     public Collection<IndexedFileModule> findModulesForNamespace(String namespace, GlobalSearchScope scope) {
         return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
     }
@@ -467,4 +491,5 @@ public final class PsiFinder {
 
         return "";
     }
+
 }

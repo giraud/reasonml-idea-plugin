@@ -15,6 +15,7 @@ public class OclTypes extends ORTypes {
         C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", OclLanguage.INSTANCE);
         C_LET_STMT = new PsiLetStubElementType("C_LET_STMT", OclLanguage.INSTANCE);
         C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
+        C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", OclLanguage.INSTANCE);
         C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", OclLanguage.INSTANCE);
         C_MODULE_STMT = new PsiModuleStubElementType("C_MODULE_STMT", OclLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
@@ -33,8 +34,9 @@ public class OclTypes extends ORTypes {
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
+        C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
+        C_FUN_CALL_PARAM = new ORCompositeElementType("C_FUN_CALL_PARAM", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
-        C_FUN_PARAM = new ORCompositeElementType("C_FUNC_PARAM", OclLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", OclLanguage.INSTANCE);
         C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", OclLanguage.INSTANCE);
         C_FUNCTOR = new ORCompositeElementType("C_FUNCTOR", OclLanguage.INSTANCE);
@@ -42,7 +44,6 @@ public class OclTypes extends ORTypes {
         C_FUNCTOR_CONSTRAINTS = new ORCompositeElementType("C_FUNCTOR_CONSTRAINTS", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new ORCompositeElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
-        C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", OclLanguage.INSTANCE);
         C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", OclLanguage.INSTANCE);
         C_INTERPOLATION_REF = new ORCompositeElementType("C_INTERPOLATION_REF", OclLanguage.INSTANCE);

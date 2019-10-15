@@ -16,8 +16,8 @@ import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclModulePathFinder;
-import com.reason.lang.reason.RmlModulePathFinder;
+import com.reason.lang.ocaml.OclQNameFinder;
+import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,7 +106,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlModulePathFinder() : new OclModulePathFinder();
+        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
         Set<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, true);
 
         List<PsiQualifiedNamedElement> result = paths.stream().
