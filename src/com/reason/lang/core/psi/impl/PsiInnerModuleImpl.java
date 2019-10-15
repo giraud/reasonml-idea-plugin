@@ -3,7 +3,7 @@ package com.reason.lang.core.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
@@ -121,8 +121,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @NotNull
     @Override
-    public Collection<PsiNamedElement> getExpressions() {
-        Collection<PsiNamedElement> result = emptyList();
+    public Collection<PsiNameIdentifierOwner> getExpressions() {
+        Collection<PsiNameIdentifierOwner> result = emptyList();
 
         String alias = getAlias();
         if (alias != null) {
@@ -139,8 +139,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                     result = new ArrayList<>();
                     PsiElement element = body.getFirstChild();
                     while (element != null) {
-                        if (element instanceof PsiNamedElement) {
-                            result.add((PsiNamedElement) element);
+                        if (element instanceof PsiNameIdentifierOwner) {
+                            result.add((PsiNameIdentifierOwner) element);
                         }
                         element = element.getNextSibling();
                     }
@@ -149,8 +149,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                 result = new ArrayList<>();
                 PsiElement element = signature.getFirstChild();
                 while (element != null) {
-                    if (element instanceof PsiNamedElement) {
-                        result.add((PsiNamedElement) element);
+                    if (element instanceof PsiNameIdentifierOwner) {
+                        result.add((PsiNameIdentifierOwner) element);
                     }
                     element = element.getNextSibling();
                 }
@@ -330,10 +330,4 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         return "Module " + getQualifiedName();
     }
 
-    //region Compatibility
-    @Nullable
-    PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
-        return null;
-    }
-    //endregion
 }

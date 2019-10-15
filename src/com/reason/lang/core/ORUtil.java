@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,7 +41,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static TextRange getTextRangeForReference(@NotNull PsiNamedElement name) {
+    public static TextRange getTextRangeForReference(@NotNull PsiNameIdentifierOwner name) {
         PsiElement nameIdentifier = name.getNameIdentifier();
         return rangeInParent(name.getTextRange(), nameIdentifier == null ? TextRange.EMPTY_RANGE : name.getTextRange());
     }
@@ -212,7 +211,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getQualifiedPath(@NotNull PsiNamedElement element) {
+    public static String getQualifiedPath(@NotNull PsiNameIdentifierOwner element) {
         String path = "";
 
         PsiElement parent = element.getParent();
@@ -221,7 +220,7 @@ public class ORUtil {
                 path = ((PsiQualifiedElement) parent).getQualifiedName();
                 parent = null;
             } else {
-                if (parent instanceof PsiNamedElement) {
+                if (parent instanceof PsiNameIdentifierOwner) {
                     path = ((PsiNamedElement) parent).getName();
                 }
                 parent = parent.getParent();
@@ -237,7 +236,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getQualifiedName(@NotNull PsiNamedElement element) {
+    public static String getQualifiedName(@NotNull PsiNameIdentifierOwner element) {
         return getQualifiedPath(element) + "." + element.getName();
     }
 }

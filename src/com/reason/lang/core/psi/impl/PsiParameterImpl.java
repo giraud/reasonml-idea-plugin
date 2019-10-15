@@ -2,12 +2,15 @@ package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.signature.ORSignature;
@@ -66,9 +69,32 @@ public class PsiParameterImpl extends PsiToken<ORTypes> implements PsiParameter 
         return nameIdentifier instanceof PsiLowerSymbol ? new PsiLowerSymbolReference((PsiLowerSymbol) nameIdentifier, m_types) : null;
     }
 
+    PsiReference[] EMPTY_REFS = new PsiReference[0];
+
+    @NotNull
+    @Override
+    public PsiReference[] getReferences() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? EMPTY_REFS : ReferenceProvidersRegistry.getReferencesFromProviders(nameIdentifier);
+    }
+
     @Nullable
     @Override
     public String toString() {
         return "Parameter " + getName();
+    }
+
+    @NotNull
+    @Override
+    public String getQualifiedName() {
+        PsiElement parent = getParent();
+        if (parent instanceof PsiParameters) {
+            // it's a function definition
+            PsiQualifiedNamedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedNamedElement.class);
+            if (qualifiedParent != null) {
+                return qualifiedParent.getQualifiedName() + "[" + getName() + "]";
+            }
+        }
+        return getName();
     }
 }

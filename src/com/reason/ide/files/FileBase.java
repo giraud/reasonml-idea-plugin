@@ -5,13 +5,14 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,17 +50,17 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
     }
 
     @NotNull
-    public Collection<PsiNamedElement> getExpressions() {
+    public Collection<PsiNameIdentifierOwner> getExpressions() {
         return PsiFileHelper.getExpressions(this);
     }
 
     @NotNull
-    public Collection<PsiNamedElement> getExpressions(@Nullable String name) {
+    public Collection<PsiNameIdentifierOwner> getExpressions(@Nullable String name) {
         return PsiFileHelper.getExpressions(this, name);
     }
 
     @NotNull
-    public <T extends PsiNamedElement> Collection<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+    public <T extends PsiNameIdentifierOwner> Collection<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 
         if (name != null) {

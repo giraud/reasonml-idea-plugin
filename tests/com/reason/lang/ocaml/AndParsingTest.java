@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.*;
 
@@ -33,7 +34,7 @@ public class AndParsingTest extends BaseParsingTestCase {
 
     public void testPatternChaining() {
         PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
-        Collection<PsiNamedElement> exps = expressions(file);
+        Collection<PsiNameIdentifierOwner> exps = expressions(file);
 
         assertInstanceOf(firstElement(file), PsiSwitch.class);
         assertEquals(0, exps.size());

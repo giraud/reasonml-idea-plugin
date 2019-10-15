@@ -1,10 +1,10 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiParameter;
 
 import java.util.Collection;
@@ -16,14 +16,14 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def) : S => {};")));
+        PsiNameIdentifierOwner e = first(expressions(parseCode("module Make = (M: Def) : S => {};")));
 
         assertNotNull(e);
         assertInstanceOf(e, PsiFunctor.class);
     }
 
     public void testModuleFunctor2() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type input = M.t) => {};"));
+        Collection<PsiNameIdentifierOwner> expressions = expressions(parseCode("module Make = (M: Input) : (S with type input = M.t) => {};"));
 
         assertEquals(1, expressions.size());
         PsiFunctor functor = (PsiFunctor) first(expressions);
@@ -62,7 +62,7 @@ public class FunctorTest extends BaseParsingTestCase {
 
     public void testModuleFunctorInstantiation2() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash);\ntype infos;");
-        Collection<PsiNamedElement> expressions = expressions(file);
+        Collection<PsiNameIdentifierOwner> expressions = expressions(file);
 
         assertEquals(2, expressions.size());
     }

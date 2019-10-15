@@ -2,6 +2,7 @@ package com.reason.lang.core.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -18,7 +19,7 @@ import java.util.Collection;
 
 import static java.util.Collections.emptyList;
 
-public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclarationStub> implements PsiNamedElement, PsiQualifiedNamedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
+public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclarationStub> implements PsiNameIdentifierOwner, PsiQualifiedNamedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
 
     //region Constructors
     public PsiVariantDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {

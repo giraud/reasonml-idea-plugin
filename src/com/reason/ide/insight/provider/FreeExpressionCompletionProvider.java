@@ -8,6 +8,8 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Icons;
 import com.reason.Log;
@@ -79,7 +81,7 @@ public class FreeExpressionCompletionProvider {
                     }
                 }
 
-                Collection<PsiNamedElement> expressions = module.getExpressions();
+                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions();
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.

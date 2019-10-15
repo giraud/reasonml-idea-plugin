@@ -3,6 +3,7 @@ package com.reason.lang;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.DuneFile;
@@ -29,7 +30,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiNamedElement> expressions(@NotNull PsiFile file) {
+    protected Collection<PsiNameIdentifierOwner> expressions(@NotNull PsiFile file) {
         return PsiFileHelper.getExpressions(file);
     }
 

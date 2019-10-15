@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class PsiClassField extends ASTWrapperPsiElement implements NavigatablePsiElement, PsiNamedElement, PsiStructuredElement {
+public class PsiClassField extends ASTWrapperPsiElement implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
     public PsiClassField(@NotNull ASTNode node) {
         super(node);
     }

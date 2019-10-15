@@ -10,7 +10,6 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
@@ -145,9 +144,9 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 if (!signature.isEmpty()) {
                     String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
                     if (resolvedElement instanceof PsiQualifiedNamedElement) {
-                        String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
+                        String path = ORUtil.getQualifiedPath((PsiNameIdentifierOwner) resolvedElement);
                         String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                        String desc = ((PsiQualifiedNamedElement) resolvedElement).getName();
+                        String desc = ((PsiNamedElement) resolvedElement).getName();
                         return createQuickDocTemplate(path, elementType, desc, sig);
                     }
                     return sig;
@@ -158,11 +157,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (resolvedElement instanceof PsiQualifiedNamedElement) {
                 String elementType = PsiTypeElementProvider.getType(resolvedElement);
                 String desc = ((PsiQualifiedNamedElement) resolvedElement).getName();
-                String path = ORUtil.getQualifiedPath((PsiNamedElement) resolvedElement);
+                String path = ORUtil.getQualifiedPath((PsiNameIdentifierOwner) resolvedElement);
 
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
-                    PsiElement nameIdentifier = ((PsiNamedElement) resolvedElement).getNameIdentifier();
+                    PsiElement nameIdentifier = ((PsiNameIdentifierOwner) resolvedElement).getNameIdentifier();
                     inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
                 }
 

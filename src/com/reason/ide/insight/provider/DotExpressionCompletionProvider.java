@@ -5,6 +5,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -97,7 +99,7 @@ public class DotExpressionCompletionProvider {
 
                 for (PsiQualifiedNamedElement resolvedModule : resolvedModules) {
                     if (resolvedModule != null) {
-                        Collection<PsiNamedElement> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiInnerModule) resolvedModule).getExpressions();
+                        Collection<PsiNameIdentifierOwner> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiInnerModule) resolvedModule).getExpressions();
                         LOG.debug("  expressions", expressions);
                         addExpressions(resultSet, expressions, element.getLanguage());
                     }
@@ -132,8 +134,8 @@ public class DotExpressionCompletionProvider {
         }
     }
 
-    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @NotNull Language language) {
-        for (PsiNamedElement expression : expressions) {
+    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNameIdentifierOwner> expressions, @NotNull Language language) {
+        for (PsiNameIdentifierOwner expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include
                 String name = expression.getName();

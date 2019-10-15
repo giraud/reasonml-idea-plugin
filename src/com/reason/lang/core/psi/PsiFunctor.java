@@ -2,13 +2,14 @@ package com.reason.lang.core.psi;
 
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface PsiFunctor extends PsiNamedElement, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement {
+public interface PsiFunctor extends PsiNameIdentifierOwner, PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement {
     @Nullable
     PsiFunctorBinding getBinding();
 

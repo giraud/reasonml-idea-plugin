@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Icons;
@@ -49,13 +50,13 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     }
                 }
             }
-        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiLet && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiLet && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
-        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiVal && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiVal && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
-        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiExternal && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+        } else if (element instanceof PsiLowerSymbol && parent instanceof PsiExternal && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
-        } else if (element instanceof PsiUpperSymbol && parent instanceof PsiInnerModule && ((PsiNamedElement) parent).getNameIdentifier() == element) {
+        } else if (element instanceof PsiUpperSymbol && parent instanceof PsiInnerModule && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, scope, instance, containingFile);
         }
     }
@@ -70,9 +71,9 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             VirtualFile relatedFile = files.iterator().next();
             FileBase psiRelatedFile = (FileBase) instance.findFile(relatedFile);
             if (psiRelatedFile != null) {
-                Collection<PsiNamedElement> expressions = psiRelatedFile.getExpressions(element.getText());
+                Collection<PsiNameIdentifierOwner> expressions = psiRelatedFile.getExpressions(element.getText());
                 if (expressions.size() == 1) {
-                    PsiNamedElement relatedElement = expressions.iterator().next();
+                    PsiNameIdentifierOwner relatedElement = expressions.iterator().next();
                     PsiElement nameIdentifier = relatedElement.getNameIdentifier();
                     String tooltip = GutterIconTooltipHelper.composeText(new PsiElement[]{psiRelatedFile}, "", "Implements method <b>" + nameIdentifier.getText() + "</b> in <b>{0}</b>");
                     result.add(NavigationGutterIconBuilder.

@@ -2,6 +2,7 @@ package com.reason.lang.core;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.*;
@@ -17,8 +18,8 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file) {
-        ArrayList<PsiNamedElement> result = new ArrayList<>();
+    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file) {
+        ArrayList<PsiNameIdentifierOwner> result = new ArrayList<>();
 
         PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
 
@@ -28,7 +29,7 @@ public class PsiFileHelper {
         return result;
     }
 
-    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull List<PsiNamedElement> result) {
+    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull List<PsiNameIdentifierOwner> result) {
         while (element != null) {
             if (element instanceof PsiInclude) {
                 // Recursively include everything from referenced module
@@ -42,8 +43,8 @@ public class PsiFileHelper {
             if (element instanceof PsiDirective) {
                 // add all elements found in a directive, can't be resolved
                 processSiblingExpressions(psiFinder, element.getFirstChild(), result);
-            } else if (element instanceof PsiNamedElement) {
-                result.add((PsiNamedElement) element);
+            } else if (element instanceof PsiNameIdentifierOwner) {
+                result.add((PsiNameIdentifierOwner) element);
             }
 
             element = element.getNextSibling();
@@ -51,13 +52,13 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file, @NotNull String name) {
-        Collection<PsiNamedElement> result = new ArrayList<>();
+    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file, @NotNull String name) {
+        Collection<PsiNameIdentifierOwner> result = new ArrayList<>();
 
         PsiElement element = file.getFirstChild();
         while (element != null) {
-            if (element instanceof PsiNamedElement && name.equals(((PsiNamedElement) element).getName())) {
-                result.add((PsiNamedElement) element);
+            if (element instanceof PsiNameIdentifierOwner && name.equals(((PsiNameIdentifierOwner) element).getName())) {
+                result.add((PsiNameIdentifierOwner) element);
             }
             element = element.getNextSibling();
         }
@@ -107,17 +108,6 @@ public class PsiFileHelper {
     @NotNull
     public static List<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
-    }
-
-    @Nullable
-    public static PsiElement getLetExpression(@NotNull PsiFile file, @NotNull String name) {
-        List<PsiLet> letExpressions = getLetExpressions(file);
-        for (PsiLet let : letExpressions) {
-            if (name.equals(let.getName())) {
-                return let;
-            }
-        }
-        return null;
     }
 
     @Nullable

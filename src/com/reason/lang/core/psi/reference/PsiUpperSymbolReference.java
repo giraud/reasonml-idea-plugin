@@ -3,6 +3,7 @@ package com.reason.lang.core.psi.reference;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -72,7 +73,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        PsiNamedElement parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class, PsiVariantDeclaration.class, PsiException.class);
+        PsiNameIdentifierOwner parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class, PsiVariantDeclaration.class, PsiException.class);
         if (parent != null && parent.getNameIdentifier() == myElement) {
             return null;
         }
@@ -94,7 +95,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                 LOG.debug("»» " + elementReference.getQualifiedName() + (isInnerModule ? " / " + ((PsiInnerModule) elementReference).getAlias() : ""));
             }
 
-            return elementReference instanceof PsiNamedElement ? ((PsiNamedElement) elementReference).getNameIdentifier() : elementReference;
+            return elementReference instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) elementReference).getNameIdentifier() : elementReference;
         }
 
         return null;

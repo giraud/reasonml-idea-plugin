@@ -71,7 +71,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         if (parent instanceof PsiTypeConstrName) {
             parent = parent.getParent();
         }
-        PsiNamedElement namedParent = parent instanceof PsiNamedElement ? (PsiNamedElement) parent : null;
+        PsiNameIdentifierOwner namedParent = parent instanceof PsiNameIdentifierOwner ? (PsiNameIdentifierOwner) parent : null;
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html

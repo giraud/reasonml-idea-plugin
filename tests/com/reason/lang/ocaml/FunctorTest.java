@@ -1,9 +1,13 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiStruct;
 
 import java.util.Collection;
 
@@ -13,7 +17,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
+        PsiNameIdentifierOwner e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
 
         assertNotNull(e);
         assertInstanceOf(e, PsiFunctor.class);
@@ -21,7 +25,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctor2() {
-        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M: Input) : S with type +'a t = 'a M.t = struct end"));
+        Collection<PsiNameIdentifierOwner> expressions = expressions(parseCode("module Make (M: Input) : S with type +'a t = 'a M.t = struct end"));
 
         assertEquals(1, expressions.size());
         PsiFunctor functor = (PsiFunctor) first(expressions);
@@ -58,9 +62,9 @@ public class FunctorTest extends BaseParsingTestCase {
         assertNotNull(struct);
     }
 
-    public void testModuleFunctorInstantiation2() {
+    public void testModuleFunctorInstanciation2() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
-        Collection<PsiNamedElement> expressions = expressions(file);
+        Collection<PsiNameIdentifierOwner> expressions = expressions(file);
 
         assertEquals(2, expressions.size());
     }

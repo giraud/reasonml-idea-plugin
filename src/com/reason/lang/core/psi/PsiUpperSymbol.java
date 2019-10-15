@@ -1,5 +1,7 @@
 package com.reason.lang.core.psi;
 
-public interface PsiUpperSymbol extends PsiNamedElement {
+import com.intellij.psi.PsiNameIdentifierOwner;
+
+public interface PsiUpperSymbol extends PsiNameIdentifierOwner {
     boolean isVariant();
 }
