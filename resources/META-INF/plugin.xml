@@ -3,6 +3,11 @@
     <name>ReasonML</name>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
 
+    <!-- These 2 tags are overwritten during build, see build.gradle -->
+    <!-- We keep them in plugin.xml so that verifyPlugin task succeed -->
+    <version>0.0</version>
+    <description><![CDATA[This is a description to please the validation plugin]]></description>
+
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="173"/>
 

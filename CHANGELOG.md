@@ -15,8 +15,8 @@
 - :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o] GoTo/Declaration not looking for locally-defined symbol
 - :bug: [#83](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/83) ![r] ![o] Support GoTo/Declaration for function-local symbols
 - :nail_care: Try to improve quick navigation doc
-- :house: ![o] parsing directives (#if, #else, #end)
-- :house: get inferred type from definition if not found in usage
+- :house: ![o] Parsing directives (#if, #else, #end)
+- :house: Get inferred type from definition if not found in usage
 - :house: Some deduplication of pervasives expressions in free completion contributor
 - :house: Work on signature conversion (partial conversion)
 - :house: Better dot completion when module is an alias (ex: Belt.Map.String.<caret&gt;)

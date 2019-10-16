@@ -2,19 +2,20 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-version = '0.80'
+version = '0.81-beta'
 
 patchPluginXml {
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
-            <li>#155 - Quick documentation is not showing inside parenthesis</li>
-            <li>#133 - Syntax error popup is truncated</li>
-            <li>#27 - Reworked the uncommenter</li>
-            <li>Better function folding</li>
-            <li>Better parsing/highlighting of js template string</li>
-            <li>Remove custom syntax highlighting for `options` in default style settings</li>
-            <li>rework Bs output listener, add test</li>
+            <li>#88 - GoTo/Declaration not looking for locally-defined symbol</li>
+            <li>#83 - Support GoTo/Declaration for function-local symbols</li>
+            <li>Try to improve quick navigation doc</li>
+            <li>Parsing directives (#if, #else, #end)</li>
+            <li>Get inferred type from definition if not found in usage</li>
+            <li>Some deduplication of pervasives expressions in free completion contributor</li>
+            <li>Work on signature conversion (partial conversion)</li>
+            <li>Better dot completion when module is an alias (ex: Belt.Map.String.<caret&gt;)</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
@@ -43,11 +44,12 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
     intellij {
         plugins = [
-                //"java",
-                "PsiViewer:3.28.93" // always have psi viewer installed in sandbox
+                "java",
+                "PsiViewer:192-SNAPSHOT" // always have psi viewer installed in sandbox
         ]
         pluginName 'reasonml-plugin-idea'
-        version '173.4674.60' // https://www.jetbrains.com/intellij-repository/releases
+        //version '173.4674.60' // https://www.jetbrains.com/intellij-repository/releases
+        version '192.6817.14'
         updateSinceUntilBuild = false
     }
 
@@ -80,4 +82,8 @@ idea {
     module {
         generatedSourceDirs += file('gen')
     }
+}
+
+verifyPlugin {
+    pluginDirectory "resources"
 }

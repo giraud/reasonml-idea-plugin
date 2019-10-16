@@ -1,1 +1,3 @@
 jar.archiveName = "jps-plugin.jar"
+patchPluginXml.enabled = false
+verifyPlugin.enabled = false
