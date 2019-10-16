@@ -1,6 +1,8 @@
 package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
@@ -48,6 +50,19 @@ public class OclQNameFinder extends BaseQNameFinder {
             } else if (item instanceof PsiInnerModule) {
                 if (path.equals(((PsiInnerModule) item).getName())) {
                     qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + pathExtension);
+                }
+            } else if (item instanceof PsiType && addTypes) {
+                qualifiedNames.add(((PsiType) item).getQualifiedName() + pathExtension);
+            } else if (item instanceof PsiLet) {
+                qualifiedNames.add(((PsiLet) item).getQualifiedPath());
+            } else if (item instanceof PsiFunction) {
+                PsiQualifiedNamedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedNamedElement.class);
+                if (parent != null) {
+                    String parentQName = parent.getQualifiedName();
+                    // Register all parameters of function
+                    for (PsiParameter parameter : ((PsiFunction) item).getParameters()) {
+                        qualifiedNames.add(parentQName + "[" + parameter.getName() + "]");
+                    }
                 }
             }
 

@@ -30,15 +30,29 @@ public class ResolveLetElementTest extends BasePlatformTestCase {
         assertEquals("A.A1.add", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
-    public void testInnerScope() {
+    public void testRmlInnerScope() {
         myFixture.configureByText("A.re", "let x = 1; let fn = { let x = 2; x<caret> + 10 };");
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         assertEquals("A.fn.x", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
-    public void testInnerScopeInFunction() {
+    public void testOclInnerScope() {
+        myFixture.configureByText("A.ml", "let x = 1\nlet fn = let x = 2 in x<caret> + 10");
+
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("A.fn.x", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+    }
+
+    public void testRmlInnerScopeInFunction() {
         myFixture.configureByText("A.re", "let x = 1; let fn = { let x = 2; fn1(x<caret>); };");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.fn.x", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());
+    }
+
+    public void testOclInnerScopeInFunction() {
+        myFixture.configureByText("A.ml", "let x = 1\nlet fn = let x = 2 in fn1 x<caret>");
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.fn.x", ((PsiQualifiedNamedElement) e.getParent()).getQualifiedName());

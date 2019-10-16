@@ -16,7 +16,16 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         super("", "ml", new OclParserDefinition());
     }
 
-    public void testLetFunction() {
+    public void testSingleParamFunction() {
+        PsiLet e = first(letExpressions(parseCode("let fn x = x")));
+
+        assertTrue(e.isFunction());
+        PsiFunction function = e.getFunction();
+        assertSize(1, function.getParameters());
+        assertNotNull(function.getBody());
+    }
+
+    public void testMultipleParamsFunction() {
         PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
         assertTrue(e.isFunction());
