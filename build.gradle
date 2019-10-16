@@ -8,6 +8,7 @@ patchPluginXml {
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
+            <li>#185 - 'gradle verifyPlugin' fails</li>
             <li>#88 - GoTo/Declaration not looking for locally-defined symbol</li>
             <li>#83 - Support GoTo/Declaration for function-local symbols</li>
             <li>Try to improve quick navigation doc</li>
@@ -55,7 +56,7 @@ allprojects {
 
     runIde {
         systemProperty "refmtWidth", "120"
-        jvmArgs = ['-Dcompiler.process.debug.port=5005']
+        jvmArgs = ['-Dcompiler.process.debug.port=5005', '-Xmx1024m']
     }
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
