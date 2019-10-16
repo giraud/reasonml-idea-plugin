@@ -12,7 +12,7 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
     public static class InferredTypesWithLines {
         private InferredTypes m_types;
         private EditorPosition m_editorPosition;
-        private InferredTypes types;
+//        private InferredTypes types;
 
         InferredTypesWithLines(InferredTypes types, String[] lines) {
             m_types = types;
@@ -22,7 +22,7 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
         @Nullable
         public ORSignature getSignatureByOffset(int textOffset) {
             LogicalPosition elementPosition = m_editorPosition.getPositionFromOffset(textOffset);
-            return m_types.getSignatureByPosition(elementPosition);
+            return elementPosition == null ? null : m_types.getSignatureByPosition(elementPosition);
         }
 
         public InferredTypes getTypes() {
