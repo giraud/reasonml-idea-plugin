@@ -60,7 +60,7 @@ public class DotExpressionCompletionProvider {
                         collect(Collectors.toSet());
 
                 LOG.debug("  symbol", upperName);
-                LOG.debug("  potential paths", qualifiedNames);
+                LOG.debug("  potential paths (no aliases)", qualifiedNames);
 
                 // Might be a virtual namespace
 
@@ -85,7 +85,7 @@ public class DotExpressionCompletionProvider {
                     LOG.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getQualifiedName() + ")" : "");
                 }
 
-                Collection<? extends PsiQualifiedNamedElement> resolvedModules = modules.stream().
+                Collection<? extends PsiModule> resolvedModules = modules.stream().
                         map(psiModule -> {
                             String namespace = psiFinder.findNamespace(psiModule, scope);
                             String moduleQname = namespace.isEmpty() ? psiModule.getQualifiedName() : namespace + "." + psiModule.getQualifiedName();
@@ -105,9 +105,9 @@ public class DotExpressionCompletionProvider {
                         collect(Collectors.toList());
                 LOG.debug("  resolved", resolvedModules);
 
-                for (PsiQualifiedNamedElement resolvedModule : resolvedModules) {
+                for (PsiModule resolvedModule : resolvedModules) {
                     if (resolvedModule != null) {
-                        Collection<PsiNameIdentifierOwner> expressions = resolvedModule instanceof FileBase ? ((FileBase) resolvedModule).getExpressions() : ((PsiInnerModule) resolvedModule).getExpressions();
+                        Collection<PsiNameIdentifierOwner> expressions = resolvedModule.getExpressions();
                         LOG.debug("  expressions", expressions);
                         addExpressions(resultSet, expressions, element.getLanguage());
                     }

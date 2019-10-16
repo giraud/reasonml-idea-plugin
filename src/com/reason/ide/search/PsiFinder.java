@@ -390,12 +390,15 @@ public final class PsiFinder {
         Collection<PsiInnerModule> modules = ModuleFqnIndex.getInstance().get(moduleQName.hashCode(), m_project, scope);
         if (!modules.isEmpty()) {
             if (modules.size() == 1) {
-                return modules.iterator().next();
+                PsiInnerModule module = modules.iterator().next();
+                String alias = module.getAlias();
+                return alias == null ? module : findModule(alias, interfaceOrImplementation, scope);
             }
 
             for (PsiInnerModule module : modules) {
                 if (((FileBase) module.getContainingFile()).isInterface()) {
-                    return module;
+                    String alias = module.getAlias();
+                    return alias == null ? module : findModule(alias, interfaceOrImplementation, scope);
                 }
             }
         }

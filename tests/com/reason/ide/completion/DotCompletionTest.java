@@ -56,6 +56,20 @@ public class DotCompletionTest extends BasePlatformTestCase {
         assertEquals("key", elements.get(0));
     }
 
+    public void testSingleAlias() {
+        // like ReasonReact.Router
+        configureCode("ReasonReactRouter.rei", "type watcherID;");
+        configureCode("ReasonReact.rei", "module Router = ReasonReactRouter;");
+
+        configureCode("Dummy.re", "ReasonReact.Router.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertEquals("watcherID", elements.get(0));
+    }
+
     @SuppressWarnings("UnusedReturnValue")
     private PsiFile configureCode(String fileName, String code) {
         return configureCode(fileName, code, false);
