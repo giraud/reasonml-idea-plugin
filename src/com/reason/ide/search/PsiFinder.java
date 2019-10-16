@@ -10,14 +10,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.indexing.FileBasedIndex;
-import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import gnu.trove.THashMap;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public final class PsiFinder {
 
@@ -346,7 +345,7 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiQualifiedNamedElement findModuleAlias(@Nullable String moduleQname) {
+    public PsiModule findModuleAlias(@Nullable String moduleQname) {
         if (moduleQname == null) {
             return null;
         }
@@ -362,14 +361,14 @@ public final class PsiFinder {
                 VirtualFile vFile = FileModuleIndexService.getService().getFile(alias, scope);
                 if (vFile != null) {
                     PsiFile psiFile = PsiManager.getInstance(m_project).findFile(vFile);
-                    return psiFile instanceof FileBase ? (PsiQualifiedNamedElement) psiFile : null;
+                    return psiFile instanceof FileBase ? (PsiModule) psiFile : null;
                 }
 
                 modules = ModuleFqnIndex.getInstance().get(alias.hashCode(), m_project, scope);
                 if (!modules.isEmpty()) {
                     PsiInnerModule next = modules.iterator().next();
                     if (next != null) {
-                        PsiQualifiedNamedElement nextModuleAlias = findModuleAlias(next.getQualifiedName());
+                        PsiModule nextModuleAlias = findModuleAlias(next.getQualifiedName());
                         return nextModuleAlias == null ? next : nextModuleAlias;
                     }
                 }
@@ -415,7 +414,11 @@ public final class PsiFinder {
                     PsiModule currentModule = fileModule;
                     for (int i = 1; i < names.length; i++) {
                         String innerModuleName = names[i];
-                        currentModule = currentModule instanceof FileBase ? PsiFileHelper.getModuleExpression((PsiFile) currentModule, innerModuleName) : ((PsiInnerModule) currentModule).getModule(innerModuleName);
+                        currentModule = currentModule.getModuleExpression(innerModuleName);
+                        String alias = currentModule == null ? null : currentModule.getAlias();
+                        if (alias != null) {
+                            currentModule = findModule(alias, interfaceOrImplementation, scope);
+                        }
                         if (currentModule == null) {
                             return null;
                         }

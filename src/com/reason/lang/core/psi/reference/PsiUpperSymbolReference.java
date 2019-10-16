@@ -11,7 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.ModulePathFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.reason.lang.ModulePathFinder.includeAll;
+import static com.reason.lang.QNameFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
@@ -106,8 +106,8 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
-        Set<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, true);
+        QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
+        Set<String> paths = qnameFinder.extractPotentialPaths(myElement, includeAll, true);
 
         List<PsiQualifiedNamedElement> result = paths.stream().
                 map(path -> {

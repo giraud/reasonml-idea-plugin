@@ -16,8 +16,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.reason.lang.ModulePathFinder.Includes.containingFile;
-import static com.reason.lang.ModulePathFinder.Includes.includedModules;
+import static com.reason.lang.QNameFinder.Includes.containingFile;
+import static com.reason.lang.QNameFinder.Includes.includedModules;
 
 
 public class RmlQNameFinder extends BaseQNameFinder {

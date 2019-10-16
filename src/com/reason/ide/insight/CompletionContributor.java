@@ -13,7 +13,7 @@ import com.reason.ide.insight.provider.DotExpressionCompletionProvider;
 import com.reason.ide.insight.provider.FreeExpressionCompletionProvider;
 import com.reason.ide.insight.provider.ModuleCompletionProvider;
 import com.reason.ide.insight.provider.ObjectCompletionProvider;
-import com.reason.lang.ModulePathFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 abstract class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
     protected static final Log LOG = Log.create("insight");
 
-    CompletionContributor(@NotNull ORTypes types, @NotNull ModulePathFinder modulePathFinder) {
+    CompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
         extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new CompletionProvider<CompletionParameters>() {
             @Override
             protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
@@ -63,7 +63,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                 // Just after a DOT
                 if (prevNodeType == types.DOT) {
                     LOG.debug("previous element is DOT");
-                    DotExpressionCompletionProvider.addCompletions(modulePathFinder, element, result);
+                    DotExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
                     return;
                 }
 
@@ -79,7 +79,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                 }
 
                 LOG.debug("Nothing found, free expression");
-                FreeExpressionCompletionProvider.addCompletions(modulePathFinder, parameters.getOriginalFile().getVirtualFile().getPath(), element, result);
+                FreeExpressionCompletionProvider.addCompletions(qnameFinder, parameters.getOriginalFile().getVirtualFile().getPath(), element, result);
             }
         });
     }

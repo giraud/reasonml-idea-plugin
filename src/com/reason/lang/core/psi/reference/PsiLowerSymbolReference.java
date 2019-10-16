@@ -6,10 +6,9 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.ModulePathFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -24,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static com.reason.lang.ModulePathFinder.includeAll;
+import static com.reason.lang.QNameFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.toList;
 
@@ -243,13 +242,13 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @NotNull
     private Map<String, Integer> getPotentialPaths() {
-        ModulePathFinder modulePathFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
+        QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
         Map<String, Integer> result = new THashMap<>();
 
-        Set<String> paths = modulePathFinder.extractPotentialPaths(myElement, includeAll, false);
+        Set<String> paths = qnameFinder.extractPotentialPaths(myElement, includeAll, false);
 
         List<PsiQualifiedNamedElement> aliasPaths = paths.stream().
                 map(s -> {

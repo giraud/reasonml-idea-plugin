@@ -109,7 +109,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @Nullable
     @Override
-    public PsiInnerModule getModule(@NotNull String name) {
+    public PsiModule getModuleExpression(@NotNull String name) {
         Collection<PsiInnerModule> modules = getModules();
         for (PsiInnerModule module : modules) {
             if (name.equals(module.getName())) {

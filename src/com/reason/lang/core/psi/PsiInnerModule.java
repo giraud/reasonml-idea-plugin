@@ -20,7 +20,8 @@ public interface PsiInnerModule extends PsiNameIdentifierOwner, PsiModule, StubB
     Collection<PsiInnerModule> getModules();
 
     @Nullable
-    PsiInnerModule getModule(@NotNull String name);
+    @Override
+    PsiModule getModuleExpression(@NotNull String name);
 
     @NotNull
     Collection<PsiOpen> getOpenExpressions();

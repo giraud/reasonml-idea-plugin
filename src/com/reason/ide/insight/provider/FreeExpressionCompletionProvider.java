@@ -19,7 +19,7 @@ import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.ModulePathFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class FreeExpressionCompletionProvider {
 
     private static final Log LOG = Log.create("insight.free");
 
-    public static void addCompletions(@NotNull ModulePathFinder m_modulePathFinder, @NotNull String containingFilePath, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull QNameFinder qnameFinder, @NotNull String containingFilePath, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
@@ -66,7 +66,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         PsiFinder psiFinder = PsiFinder.getInstance(project);
-        Set<String> paths = m_modulePathFinder.extractPotentialPaths(element, EnumSet.noneOf(ModulePathFinder.Includes.class), false);
+        Set<String> paths = qnameFinder.extractPotentialPaths(element, EnumSet.noneOf(QNameFinder.Includes.class), false);
         LOG.debug("potential paths", paths);
 
         // Add paths (opens and local opens for ex)

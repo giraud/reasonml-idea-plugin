@@ -2,9 +2,9 @@ package com.reason.ide.reference;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
-public class ResolveModuleElementTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ResolveModuleElementTest extends BasePlatformTestCase {
 
     public void testWithAlias() {
         myFixture.configureByText("A.re", "module A1 = {};");

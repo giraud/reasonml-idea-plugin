@@ -77,6 +77,18 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
 
     @Nullable
     @Override
+    public PsiModule getModuleExpression(@NotNull String name) {
+        Collection<PsiInnerModule> modules = getExpressions(name, PsiInnerModule.class);
+        for (PsiInnerModule module : modules) {
+            if (name.equals(module.getName())) {
+                return module;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
     public String getQualifiedName() {
         return asModuleName();
     }

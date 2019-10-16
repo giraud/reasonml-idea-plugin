@@ -6,7 +6,6 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -18,7 +17,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.ModulePathFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.reason.lang.ModulePathFinder.includeAll;
+import static com.reason.lang.QNameFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class DotExpressionCompletionProvider {
@@ -38,7 +37,7 @@ public class DotExpressionCompletionProvider {
     private DotExpressionCompletionProvider() {
     }
 
-    public static void addCompletions(@NotNull ModulePathFinder modulePathFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+    public static void addCompletions(@NotNull QNameFinder qnameFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
         LOG.debug("DOT expression completion");
 
         Project project = element.getProject();
@@ -52,7 +51,13 @@ public class DotExpressionCompletionProvider {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                final Set<String> qualifiedNames = modulePathFinder.extractPotentialPaths(element, includeAll, false);
+                final Set<String> qualifiedNames = qnameFinder.extractPotentialPaths(element, includeAll, false).
+                        stream().
+                        map(qname -> {
+                            PsiModule moduleFromQn = psiFinder.findModuleFromQn(qname);
+                            return moduleFromQn == null ? qname : moduleFromQn.getQualifiedName();
+                        }).
+                        collect(Collectors.toSet());
 
                 LOG.debug("  symbol", upperName);
                 LOG.debug("  potential paths", qualifiedNames);
@@ -84,10 +89,13 @@ public class DotExpressionCompletionProvider {
                         map(psiModule -> {
                             String namespace = psiFinder.findNamespace(psiModule, scope);
                             String moduleQname = namespace.isEmpty() ? psiModule.getQualifiedName() : namespace + "." + psiModule.getQualifiedName();
-                            LOG.debug(moduleQname + " " + psiModule.getContainingFile().getVirtualFile().getPath());
+                            PsiModule moduleAlias = psiFinder.findModuleAlias(moduleQname);
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(moduleQname + " (alias=" + moduleAlias + ") " + psiModule.getContainingFile().getVirtualFile().getPath());
+                            }
+                            String name = moduleAlias == null ? moduleQname : moduleAlias.getQualifiedName();
 
-                            if (qualifiedNames.contains(moduleQname)) {
-                                PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(moduleQname);
+                            if (qualifiedNames.contains(name)) {
                                 return moduleAlias == null ? psiModule : moduleAlias;
                             }
 

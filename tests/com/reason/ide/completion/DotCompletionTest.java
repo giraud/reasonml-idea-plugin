@@ -1,15 +1,18 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class DotCompletionTest extends BasePlatformTestCase {
 
     public void testModuleLetCompletion() {
-        myFixture.configureByText("A.re", "let x = 1;");
-        myFixture.configureByText("B.re", "A.<caret>;");
+        configureCode("A.re", "let x = 1;");
+        configureCode("B.re", "A.<caret>;");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
@@ -18,8 +21,8 @@ public class DotCompletionTest extends BasePlatformTestCase {
     }
 
     public void testBeforeCaret() {
-        myFixture.configureByText("A.re", "type x;");
-        myFixture.configureByText("B.re", "A.<caret>;");
+        configureCode("A.re", "type x;");
+        configureCode("B.re", "A.<caret>;");
 
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
@@ -28,12 +31,44 @@ public class DotCompletionTest extends BasePlatformTestCase {
     }
 
     public void testEndOfFile() {
-        myFixture.configureByText("A.re", "type x;");
-        myFixture.configureByText("B.re", "A.<caret>");
+        configureCode("A.re", "type x;");
+        configureCode("B.re", "A.<caret>");
 
         myFixture.complete(CompletionType.BASIC, 1);
-        List<String> strings = myFixture.getLookupElementStrings();
+        List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSameElements(strings, "x");
+        assertSameElements(elements, "x");
     }
+
+    public void testMultipleAlias() {
+        // like Belt
+        configureCode("string.mli", "external length : string -> int = \"%string_length\"");
+        configureCode("belt_MapString.mli", "type key = string");
+        configureCode("belt_Map.mli", "module String = Belt_MapString");
+        configureCode("belt.ml", "module Map = Belt_Map");
+
+        configureCode("Dummy.re", "Belt.Map.String.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSize(1, elements);
+        assertEquals("key", elements.get(0));
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    private PsiFile configureCode(String fileName, String code) {
+        return configureCode(fileName, code, false);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private PsiFile configureCode(String fileName, String code, boolean debug) {
+        PsiFile file = myFixture.configureByText(fileName, code);
+        if (debug) {
+            System.out.println("» " + fileName + " " + this.getClass());
+            System.out.println(DebugUtil.psiToString(file, true, true));
+        }
+        return file;
+    }
+
 }

@@ -19,6 +19,7 @@
 - :house: get inferred type from definition if not found in usage
 - :house: Some deduplication of pervasives expressions in free completion contributor
 - :house: Work on signature conversion (partial conversion)
+- :house: Better dot completion when module is an alias (ex: Belt.Map.String.<caret&gt;)
 
 ## [0.80] - 2019/09/23
 
