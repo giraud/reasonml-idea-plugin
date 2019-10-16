@@ -12,11 +12,18 @@
 
 ## [Unreleased]
 
+- :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o]  - GoTo/Declaration not looking  for locally-defined symbol
+- :nail_care: Try to improve quick navigation doc
+- :house: ![o] parsing directives (#if, #else, #end)
+- :house: get inferred type from definition if not found in usage
+- :house: Some deduplication of pervasives expressions in free completion contributor
+- :house: Work on signature conversion (partial conversion)
+
 ## [0.80] - 2019/09/23
 
-- :bug: ![r] [#155](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/155) - Quick documentation is not showing inside parenthesis
-- :bug: [#133](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/133) - Syntax error popup is truncated
-- :bug: ![o] [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Reworked the uncommenter
+- :bug: [#155](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/155) ![r] - Quick documentation is not showing inside parenthesis
+- :bug: [#133](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/133) Syntax error popup is truncated
+- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) ![o] - Reworked the uncommenter
 - :nail_care: ![r] Better function folding
 - :nail_care: ![r] Better parsing/highlighting of js template string
 - :nail_care: Remove custom syntax highlighting for `options` in default style settings
@@ -34,14 +41,14 @@
 
 ## 0.78.4 - 2019/08/17
 
-- :bug: [#177](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/177) - Exception: "Access is allowed from event dispatch thread only."
-- :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) - 2019.2 error
+- :bug: [#177](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/177) Exception: "Access is allowed from event dispatch thread only."
+- :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) 2019.2 error
 - :house: Try to look up bsb and refmt in node_modules/.bin dir to improve support of monorepo. Thanks to [@Coobaha](https://github.com/Coobaha)
 
 ## 0.78.2 - 2019/07/02
 
-- :bug: [#173](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/173) - Fixed exception in Webstorm: gutter icons are only available in java-based IDE
-- :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) - Fixed exceptions in 2019.2 EAP
+- :bug: [#173](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/173) Fixed exception in Webstorm: gutter icons are only available in java-based IDE
+- :bug: [#172](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/172) Fixed exceptions in 2019.2 EAP
 - :house: Jetbrains recommendation: moving project components to service components. Expected faster startup</li>
 
 ## 0.78.1 - 2019/06/24
@@ -54,21 +61,21 @@
 
 ## 0.77 - 2019/06/05
 
-- :bug: [#166](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/166) - Indexing of Js.t
+- :bug: [#166](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/166) Indexing of Js.t
 - :house: ![r] Some quick doc improvement on resolved elements for ReasonML (ctrl+hover)
 
 ## 0.76 - 2019/04/24
 
 - :rocket: Support for ocaml 4.0.6 (Bs 6+)
-- :bug: [#165](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/165) - Autocompletion inside comments</li>
-- :bug: [#161](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/161) - Indexing exception</li>
-- :bug: [#160](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/160) - Autocompletion is not using module interface</li>
+- :bug: [#165](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/165) Autocompletion inside comments</li>
+- :bug: [#161](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/161) Indexing exception</li>
+- :bug: [#160](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/160) Autocompletion is not using module interface</li>
 
 ## 0.75.1 - 2019/04/16
 
-- :bug: [#154](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/154) - Remove unwanted end of line after reformat
-- :bug: [#153](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/153) - Split tuple items in structure view for let expressions
-- :bug: [#152](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/152) - Add a check to prevent exception
+- :bug: [#154](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/154) Remove unwanted end of line after reformat
+- :bug: [#153](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/153) Split tuple items in structure view for let expressions
+- :bug: [#152](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/152) Add a check to prevent exception
 - :house: Fix alpha sort on open/include in structure view
 - :house: Improved OCaml parser
 - :house: refmt is set to 80 cols by default
@@ -77,10 +84,10 @@
 ## 0.74 - 2019/03/25
 
 - :rocket: ODoc formatting when displaying special comments (ctrl+q), with the following limitation: element must be resolved, and only a subset of syntax is supported
-- :bug: [#153](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/153) - Structure panel for let fn and let (..)
-- :bug: [#151](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/151) - Fix parameters hints (is empty)
-- :bug: [#150](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/150) - Include expressions from include keyword
-- :bug: [#148](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/148) - Don't auto-reformat ml/mli files
+- :bug: [#153](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/153) Structure panel for let fn and let (..)
+- :bug: [#151](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/151) Fix parameters hints (is empty)
+- :bug: [#150](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/150) Include expressions from include keyword
+- :bug: [#148](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/148) Don't auto-reformat ml/mli files
 - :house: Redesign completion provider
 - :house: Upgraded minimal supported version of intellij product to 173
 
@@ -99,7 +106,7 @@
 - :rocket: Add a checkbox in Reason settings to disable bucklescript
 - :nail_care: Display module path in 'go to class' popup
 - :bug: [#126](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/126) ![r] - Function parameter info attempts to show return type
-- :bug: [#122](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/122) - Make error locations in bucklescript tool window clickable
+- :bug: [#122](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/122) Make error locations in bucklescript tool window clickable
 - :house: Use rincewind 0.4
 
 ## 0.71 - 2019/01/23
@@ -140,10 +147,10 @@
 
 ## 0.67 - 2018/10/27
 
-- :rocket: [#112](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/112) - Build hotkeys
-- :bug: [#111](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/111) - Bsb window actions are not working outside of reason file
-- :bug: [#108](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/108) - Reason language id in markdown preview
-- :bug: [#106](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/106) - Inconsistent highlighting of matching (), [] and {}
+- :rocket: [#112](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/112) Build hotkeys
+- :bug: [#111](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/111) Bsb window actions are not working outside of reason file
+- :bug: [#108](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/108) Reason language id in markdown preview
+- :bug: [#106](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/106) Inconsistent highlighting of matching (), [] and {}
 
 ## 0.66.2 - 2018/10/23
 
@@ -164,21 +171,21 @@
 - :rocket: ![r] Js language injection in [%raw] blocks
 - :nail_care: ![r] Better annotation parsing
 - :nail_care: ![r] ![o] Add missing keywords in highlighter
-- :bug: [#67](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67) - Curly braces intentions are broken</li>
+- :bug: [#67](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/67) Curly braces intentions are broken</li>
 
 ## 0.63 - 2018/09/20
 
-- :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) - Add dates to changelog
+- :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) Add dates to changelog
 - :bug: Renaming inner module should work
-- :bug: ![r] ![o] [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) - Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
-- :bug: ![r] ![o] [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) - Class names don't appear in Structure panel
+- :bug: ![r] ![o] [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
+- :bug: ![r] ![o] [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) Class names don't appear in Structure panel
 - :bug: Fix a bug that prevent plugin to work with 2018.3-EAP
 
 ## 0.62.1 - 2018/09/06
 
 - :rocket: Add a 'make' button to the bs console</li>
-- :bug: ![o] [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) - Awkward behavior when typing comments
-- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) - Uncommenting nested comments is incorrect
+- :bug: ![o] [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) Awkward behavior when typing comments
+- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) Uncommenting nested comments is incorrect
 
 ## 0.61 - 2018/08/29
 
@@ -208,19 +215,19 @@
 
 ## 0.58.1 - 2018/07/18
 
-- :bug: [#79](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/79) - IDE crash
-- :bug: [#77](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/77) - Show non-alphanumeric function names such as ">>=" in the structure panel
+- :bug: [#79](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/79) IDE crash
+- :bug: [#77](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/77) Show non-alphanumeric function names such as ">>=" in the structure panel
 
 ## 0.58 - 2018/07/12
 
 This release contains a big rewrite of how modules are referenced, it may break things that were working before (ex: find usages).
 
-- :bug: [#72](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/72) - Autocomplete not working in uncurried function
+- :bug: [#72](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/72) Autocomplete not working in uncurried function
 
 ## 0.57.1 - 2018/07/10
 
 - :rocket: Some record field completion
-- :bug: [#66](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/66) - Go To + module alias
+- :bug: [#66](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/66) Go To + module alias
 - :house: ![o] Better module path resolution</li>
 - :house: Improved parsers
             
