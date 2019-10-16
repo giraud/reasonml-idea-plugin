@@ -33,6 +33,9 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
 
     boolean isScopeIdentifier();
 
+    @Nullable
+    String getAlias();
+
     @NotNull
     Collection<PsiElement> getScopeChildren();
 

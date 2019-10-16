@@ -165,6 +165,7 @@
         <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ValFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantIndex"/>

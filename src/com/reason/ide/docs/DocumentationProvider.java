@@ -3,11 +3,13 @@ package com.reason.ide.docs;
 import com.intellij.lang.Language;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.hints.SignatureProvider;
+import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiType;
@@ -57,6 +59,23 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             element = element.getParent();
             if (element instanceof PsiTypeConstrName) {
                 element = element.getParent();
+            }
+
+            // If it's an alias, resolve to the alias
+            if (element instanceof PsiLet) {
+                String alias = ((PsiLet) element).getAlias();
+                if (alias != null) {
+                    Project project = element.getProject();
+                    PsiVal valFromAlias = PsiFinder.getInstance(project).findValFromQn(alias);
+                    if (valFromAlias == null) {
+                        PsiLet letFromAlias = PsiFinder.getInstance(project).findLetFromQn(alias);
+                        if (letFromAlias != null) {
+                            element = letFromAlias;
+                        }
+                    } else {
+                        element = valFromAlias;
+                    }
+                }
             }
 
             // Try to find a comment just below (OCaml only)

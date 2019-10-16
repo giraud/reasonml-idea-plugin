@@ -30,13 +30,19 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
 
     @NotNull
     public PsiLetStub createStub(@NotNull PsiLet psi, StubElement parentStub) {
-        return new PsiLetStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.isFunction());
+        return new PsiLetStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isFunction());
     }
 
     public void serialize(@NotNull PsiLetStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFunction());
+
+        String alias = stub.getAlias();
+        dataStream.writeBoolean(alias != null);
+        if (alias != null) {
+            dataStream.writeUTFFast(stub.getAlias());
+        }
     }
 
     @NotNull
@@ -45,7 +51,13 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
         String qname = dataStream.readUTFFast();
         boolean isFunction = dataStream.readBoolean();
 
-        return new PsiLetStub(parentStub, this, name, qname, isFunction);
+        String alias = null;
+        boolean isAlias = dataStream.readBoolean();
+        if (isAlias) {
+            alias = dataStream.readUTFFast();
+        }
+
+        return new PsiLetStub(parentStub, this, name, qname, alias, isFunction);
     }
 
     public void indexStub(@NotNull PsiLetStub stub, @NotNull IndexSink sink) {

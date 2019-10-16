@@ -129,4 +129,11 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("f2 = y => y", second(es).getText());
     }
 
+    public void testAlias() {
+        PsiLet e = first(letExpressions(parseCode("let x = M1.M2.y;")));
+
+        assertEquals("x", e.getName());
+        assertEquals("M1.M2.y", e.getAlias());
+    }
+
 }

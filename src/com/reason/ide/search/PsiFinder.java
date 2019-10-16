@@ -436,20 +436,110 @@ public final class PsiFinder {
         return null;
     }
 
-
     @Nullable
-    public PsiLet findLetFromQn(@Nullable String letQName) {
-        if (letQName == null) {
+    public PsiLet findLetFromQn(@Nullable String qname) {
+        if (qname == null) {
             return null;
         }
 
         GlobalSearchScope scope = allScope(m_project);
 
         // Try qn directly
-        Collection<PsiLet> lets = LetFqnIndex.getInstance().get(letQName.hashCode(), m_project, scope);
+        Collection<PsiLet> lets = LetFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
         if (!lets.isEmpty()) {
-            if (lets.size() == 1) {
+            return lets.iterator().next();
+        }
+
+        // Qn not working, maybe because of aliases... try to navigate to each module
+
+        // extract first token of path
+        String[] names = qname.split("\\.");
+
+        PsiModule realModule = null;
+        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], scope);
+        if (vFile != null) {
+            PsiFile file = PsiManager.getInstance(m_project).findFile(vFile);
+            if (file instanceof FileBase) {
+                realModule = (FileBase) file;
+                if (1 < names.length) {
+                    PsiModule currentModule = realModule;
+                    for (int i = 1; i < names.length - 1; i++) {
+                        String innerModuleName = names[i];
+                        currentModule = currentModule.getModuleExpression(innerModuleName);
+                        String alias = currentModule == null ? null : currentModule.getAlias();
+                        if (alias != null) {
+                            currentModule = findModule(alias, interfaceOrImplementation, scope);
+                        }
+                        if (currentModule == null) {
+                            return null;
+                        }
+                    }
+                    realModule = currentModule;
+                }
+            }
+        }
+
+        if (realModule != null) {
+            // Try qn directly with resolved aliases
+            String newQName = realModule.getQualifiedName() + "." + names[names.length - 1];
+            lets = LetFqnIndex.getInstance().get(newQName.hashCode(), m_project, scope);
+            if (!lets.isEmpty()) {
                 return lets.iterator().next();
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public PsiVal findValFromQn(@Nullable String qname) {
+        if (qname == null) {
+            return null;
+        }
+
+        GlobalSearchScope scope = allScope(m_project);
+
+        // Try qn directly
+        Collection<PsiVal> vals = ValFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+        if (!vals.isEmpty()) {
+            return vals.iterator().next();
+        }
+
+        // Qn not working, maybe because of aliases... try to navigate to each module
+
+        // extract first token of path
+        String[] names = qname.split("\\.");
+
+        PsiModule realModule = null;
+        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], scope);
+        if (vFile != null) {
+            PsiFile file = PsiManager.getInstance(m_project).findFile(vFile);
+            if (file instanceof FileBase) {
+                realModule = (FileBase) file;
+                if (1 < names.length) {
+                    PsiModule currentModule = realModule;
+                    for (int i = 1; i < names.length - 1; i++) {
+                        String innerModuleName = names[i];
+                        currentModule = currentModule.getModuleExpression(innerModuleName);
+                        String alias = currentModule == null ? null : currentModule.getAlias();
+                        if (alias != null) {
+                            currentModule = findModule(alias, interfaceOrImplementation, scope);
+                        }
+                        if (currentModule == null) {
+                            return null;
+                        }
+                    }
+                    realModule = currentModule;
+                }
+            }
+        }
+
+        if (realModule != null) {
+            // Try qn directly with resolved aliases
+            String newQName = realModule.getQualifiedName() + "." + names[names.length - 1];
+            vals = ValFqnIndex.getInstance().get(newQName.hashCode(), m_project, scope);
+            if (!vals.isEmpty()) {
+                return vals.iterator().next();
             }
         }
 

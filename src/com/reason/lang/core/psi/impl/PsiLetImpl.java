@@ -169,6 +169,22 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return findChildByClass(PsiLetBinding.class);
     }
 
+    @Nullable
+    @Override
+    public String getAlias() {
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getAlias();
+        }
+
+        PsiElement binding = getBinding();
+        if (binding != null) {
+            return ORUtil.computeAlias(binding.getFirstChild(), getLanguage(), true);
+        }
+
+        return null;
+    }
+
     @Override
     @Nullable
     public PsiSignature getPsiSignature() {

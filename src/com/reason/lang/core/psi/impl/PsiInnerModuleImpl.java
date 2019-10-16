@@ -4,10 +4,8 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
@@ -300,25 +298,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
         PsiElement eq = findChildByType(m_types.EQ);
         if (eq != null) {
-            boolean isALias = true;
-            StringBuilder aliasName = new StringBuilder();
-            PsiElement nextSibling = eq.getNextSibling();
-            IElementType elementType = nextSibling == null ? null : nextSibling.getNode().getElementType();
-            while (elementType != null && elementType != m_types.SEMI) {
-                if (elementType != TokenType.WHITE_SPACE && elementType != m_types.C_UPPER_SYMBOL && elementType != m_types.DOT) {
-                    isALias = false;
-                    break;
-                }
-
-                if (elementType != TokenType.WHITE_SPACE) {
-                    aliasName.append(nextSibling.getText());
-                }
-
-                nextSibling = nextSibling.getNextSibling();
-                elementType = nextSibling == null ? null : nextSibling.getNode().getElementType();
-            }
-
-            return isALias ? aliasName.toString() : null;
+            return ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
         }
 
         return null;

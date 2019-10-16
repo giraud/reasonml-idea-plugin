@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class LetFqnIndex extends IntStubIndexExtension<PsiLet> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final LetFqnIndex INSTANCE = new LetFqnIndex();
 
     @NotNull

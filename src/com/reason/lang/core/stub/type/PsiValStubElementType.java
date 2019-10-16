@@ -50,6 +50,11 @@ public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal> 
         if (name != null) {
             sink.occurrence(IndexKeys.VALS, name);
         }
+
+        String fqn = stub.getQualifiedName();
+        if (fqn != null) {
+            sink.occurrence(IndexKeys.VALS_FQN, fqn.hashCode());
+        }
     }
 
     @NotNull

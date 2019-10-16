@@ -1,14 +1,12 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class DotCompletionTest extends BasePlatformTestCase {
+public class DotCompletionTest extends ORBasePlatformTestCase {
 
     public void testModuleLetCompletion() {
         configureCode("A.re", "let x = 1;");
@@ -68,21 +66,6 @@ public class DotCompletionTest extends BasePlatformTestCase {
 
         assertSize(1, elements);
         assertEquals("watcherID", elements.get(0));
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
-    private PsiFile configureCode(String fileName, String code) {
-        return configureCode(fileName, code, false);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private PsiFile configureCode(String fileName, String code, boolean debug) {
-        PsiFile file = myFixture.configureByText(fileName, code);
-        if (debug) {
-            System.out.println("» " + fileName + " " + this.getClass());
-            System.out.println(DebugUtil.psiToString(file, true, true));
-        }
-        return file;
     }
 
 }

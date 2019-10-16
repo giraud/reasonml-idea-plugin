@@ -1,6 +1,7 @@
 package com.reason.lang.core;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.Language;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.psi.*;
@@ -8,6 +9,10 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.RmlLanguage;
+import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -239,4 +244,33 @@ public class ORUtil {
     public static String getQualifiedName(@NotNull PsiNameIdentifierOwner element) {
         return getQualifiedPath(element) + "." + element.getName();
     }
+
+    @Nullable
+    public static String computeAlias(@Nullable PsiElement rootElement, @NotNull Language language, boolean lowerAccepted) {
+        boolean isALias = true;
+
+        PsiElement currentElement = rootElement;
+        ORTypes types = language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        StringBuilder aliasName = new StringBuilder();
+        IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
+        while (elementType != null && elementType != types.SEMI) {
+            if (elementType != TokenType.WHITE_SPACE && elementType != types.C_UPPER_SYMBOL && elementType != types.DOT) {
+                // if last term is lower symbol and we accept lsymbol, then it's an alias
+                if (elementType != types.C_LOWER_SYMBOL || currentElement.getNextSibling() != null || !lowerAccepted) {
+                    isALias = false;
+                    break;
+                }
+            }
+
+            if (elementType != TokenType.WHITE_SPACE) {
+                aliasName.append(currentElement.getText());
+            }
+
+            currentElement = currentElement.getNextSibling();
+            elementType = currentElement == null ? null : currentElement.getNode().getElementType();
+        }
+
+        return isALias ? aliasName.toString() : null;
+    }
+
 }
