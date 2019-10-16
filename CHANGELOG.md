@@ -12,7 +12,7 @@
 
 ## [Unreleased]
 
-- :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o]  - GoTo/Declaration not looking  for locally-defined symbol
+- :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o] GoTo/Declaration not looking for locally-defined symbol
 - :nail_care: Try to improve quick navigation doc
 - :house: ![o] parsing directives (#if, #else, #end)
 - :house: get inferred type from definition if not found in usage
@@ -31,8 +31,8 @@
 
 ## [0.79] - 2019/08/28
 
-- :bug: [#176](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176)  - Functions missing in structure panel after "while+match" code
-- :bug: [#170](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/170)  - Functions in struct in "module : sig ... end = struct ... end" not shown in Structure panel
+- :bug: [#176](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/176) Functions missing in structure panel after "while+match" code
+- :bug: [#170](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/170) Functions in struct in "module : sig ... end = struct ... end" not shown in Structure panel
 - :rocket: Add line marker for inner module
 - :nail_care: Don't annotate interface file
 - :house: Improve module resolution when it's only found in implementation file
@@ -96,7 +96,7 @@
 - :rocket: Implement a (basic) related line marker
 - :rocket: Introduce a new OCaml module
 - :nail_care: Display a message at the end of the compilation
-- :bug: [#149](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/149) ![o] - ReasonML confused by .mly (yacc) files; structure panel shows most of the grammar on one very long line
+- :bug: [#149](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/149) ![o] ReasonML confused by .mly (yacc) files; structure panel shows most of the grammar on one very long line
 - :house: A new file based index
 - :house: Remove basic OCaml types detection in lexer
 
@@ -105,15 +105,15 @@
 - :rocket: Highlight of dune file
 - :rocket: Add a checkbox in Reason settings to disable bucklescript
 - :nail_care: Display module path in 'go to class' popup
-- :bug: [#126](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/126) ![r] - Function parameter info attempts to show return type
+- :bug: [#126](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/126) ![r] Function parameter info attempts to show return type
 - :bug: [#122](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/122) Make error locations in bucklescript tool window clickable
 - :house: Use rincewind 0.4
 
 ## 0.71 - 2019/01/23
 
-- :bug: [#136](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r] ![o] - Unicode characters inside strings turn into question marks
-- :bug: [#135](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/135) ![o] - Top-level declaration following "let f = function ... and" doesn't appear in the structure panel
-- :bug: [#109](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/109) ![r] ![o] - Reformat interface
+- :bug: [#136](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r] ![o] Unicode characters inside strings turn into question marks
+- :bug: [#135](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/135) ![o] Top-level declaration following "let f = function ... and" doesn't appear in the structure panel
+- :bug: [#109](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/109) ![r] ![o] Reformat interface
 - :house: - 2017.2 is the minimal idea version supported
 
 ## 0.70 - 2019/01/18
@@ -131,19 +131,19 @@
 - :rocket: add basic highlighting for .mll and .mly
 - :bug: Fix record field parsing when multiple annotations are used
 - :house: Better completion (variants, signatures)
-- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r] ![o] - Show Functor structure
-- :bug: [#120](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/120) ![r] - Incorrect highlighting of JSX being a function parameter
+- :bug: [#121](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r] ![o] Show Functor structure
+- :bug: [#120](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/120) ![r] Incorrect highlighting of JSX being a function parameter
 
 ## 0.67.2 - 2018/11/16
 
 - :house: ![r] Improve JSX parsing
-- :bug: [#116](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116) ![o] - Structure panel: show items defined in modules
-- :bug: [#105](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105) ![o] - Missing/incorrect structure info for function named "string"
+- :bug: [#116](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116) ![o] Structure panel: show items defined in modules
+- :bug: [#105](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105) ![o] Missing/incorrect structure info for function named "string"
 
 ## 0.67.1 - 2018/11/10
 
-- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o] - "end" highlighted the same way as an unmatched parenthesis
-- :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r] - Function parsing is not correct
+- :bug: [#115](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/115) ![o] "end" highlighted the same way as an unmatched parenthesis
+- :bug: [#113](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113) ![r] Function parsing is not correct
 
 ## 0.67 - 2018/10/27
 
@@ -161,7 +161,7 @@
 
 - :bug: Dune file were no more editable because of a change in the parser
 - :rocket: ![r] Parameter info (when possible) using ctrl-p
-- :rocket: ![r] ![o] [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) Support for rtop / RPEL as tool window
+- :rocket: [#97](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/97) ![r] ![o] Support for rtop / RPEL as tool window
 - :house: ![r] JSX completion can find inner component modules
 - :house: improve parser (function parameters, variant constructor, signature)
 - :bug: Transform compiler and refmt to project component, to fix incorrectly shared confs
@@ -203,7 +203,7 @@
 ## 0.59.1 - 2018/07/25
 
 - :rocket: You can use 'Go to class' to find OCaml/ReasonMl modules
-- :bug: ![o] [#78](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/78) Let symbol missing in structure panel
+- :bug: [#78](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/78) ![o] Let symbol missing in structure panel
 - :bug: [#82](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/82) Exception for GoTo/Declaration of a function parameter
 - :bug: [#87](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/87) NullPointerException at com.reason.Platform.findBaseRootFromFile
 
@@ -259,7 +259,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 ## 0.52
 
 * :rocket: ![o] Pair match in OCaml: struct/end and sig/end
-* :rocket: ![r] [#53](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Implemented intentions
+* :rocket: [#53](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) ![r] Implemented intentions
 * :nail_care: Add bool/char/int/float/string as keywords
 * :nail_care: [#64](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/53) Handle warning message from bsb
 * :house: Protect against concurrent run of bsb compilation process
@@ -300,7 +300,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 ## 0.47
 
 * :rocket: Reason settings to change reformat column width
-* :bug: Fix #45 (classes have been deleted)
+* :bug: [#45](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/45) (classes have been deleted)
 * :house: Better error extraction
 * :house: Reformat on save can be activated (see doc)
 
@@ -320,12 +320,12 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 ## 0.44
 
-* :bug: Fix #40
+* :bug: [#40](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/40)
 * :house: Improve completion on expressions
 
 ## 0.43
 
-* :bug: Fix 'Type annotations not working with bs namespace' (#35)
+* :bug: [#35](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/35) Type annotations not working with bs namespace
 * :house: Improve completion on expressions
 
 ## 0.42
@@ -349,7 +349,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 * :house: Better JSX parsing/highlighting
 * :rocket: Code lens style is customisable
-* :bug: Fix #33
+* :bug: [#33](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/33)
 * :rocket: Completion contributor for OCaml files (wip)
 
 ## 0.38
@@ -360,14 +360,14 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 ## 0.37
 
-* :bug: Fix #30
+* :bug: [#30](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/30)
 * :rocket: add completion when starting typing
 * :house: Display types for val/external (completion popup)
 * :house: Use mli file when present (pervasives)
 
 ## 0.36
 
-* :bug: Fix #29
+* :bug: [#29](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/29)
 * :house: Improve parsers
 * :rocket: add keyword completion (start expression)
 * :rocket: add module completion for open expression
