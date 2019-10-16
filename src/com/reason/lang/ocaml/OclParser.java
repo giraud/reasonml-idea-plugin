@@ -943,10 +943,12 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.previousElementType1 != m_types.IN && state.previousElementType1 != m_types.LPAREN &&
                 state.previousElementType1 != m_types.DO && state.previousElementType1 != m_types.STRUCT &&
                 state.previousElementType1 != m_types.SIG && state.previousElementType1 != m_types.COLON) {
-            ParserScope parserScope = state.popEndUntilStartScope();
-            while (parserScope.isContext(function) || parserScope.isContext(match)) {
+            state.popEndUntilStartScope();
+            ParserScope parserScope = state.getLatestScope();
+            while (parserScope != null && (parserScope.isContext(function) || parserScope.isContext(match))) {
                 state.popEnd();
-                parserScope = state.popEndUntilStartScope();
+                state.popEndUntilStartScope();
+                parserScope = state.getLatestScope();
             }
         }
     }

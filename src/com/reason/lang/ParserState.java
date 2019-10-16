@@ -47,11 +47,12 @@ public class ParserState {
             latestKnownScope = m_scopes.peek();
             ParserScope scope = latestKnownScope;
             while (scope != null && !scope.isScopeStart()) {
-                popEnd();
-                scope = getLatestScope();
+                scope = pop();
                 if (scope != null) {
+                    scope.end();
                     latestKnownScope = scope;
                 }
+                scope = getLatestScope();
             }
         }
 

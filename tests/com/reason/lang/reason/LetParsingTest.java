@@ -9,6 +9,8 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
 
+import java.util.Collection;
+
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {
@@ -117,6 +119,14 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertTrue(e.isFunction());
         assertEquals("watchUrl", e.getName());
         assertEquals("(url => unit) => watcherID", e.getPsiSignature().getText());
+    }
+
+    public void testLetAndInModule() {
+        FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
+        Collection<PsiLet> es = file.getModules().iterator().next().getLetExpressions();
+
+        assertSize(2, es);
+        assertEquals("f2 = y => y", second(es).getText());
     }
 
 }
