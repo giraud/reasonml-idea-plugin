@@ -5,7 +5,10 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Joiner;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiPatternMatchBody;
+import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +22,9 @@ public class VariantParsingTest extends BaseParsingTestCase {
 
     public void testBasic() {
         PsiSwitch e = firstOfType(parseCode("switch (action) { | UpdateDescription(desc) => ReasonReact.SideEffects(_self => onDescriptionChange(desc)) };"), PsiSwitch.class);
-        PsiFunctionBody functionBody = PsiTreeUtil.findChildOfType(e, PsiFunctionBody.class);
-        assertEquals("ReasonReact.SideEffects(_self => onDescriptionChange(desc))", functionBody.getText());
-        List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(functionBody, PsiUpperSymbol.class);
+        PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(e, PsiPatternMatchBody.class);
+        assertEquals("ReasonReact.SideEffects(_self => onDescriptionChange(desc))", body.getText());
+        List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(body, PsiUpperSymbol.class);
         assertEquals("ReasonReact, SideEffects", Joiner.join(", ", uppers.stream().map(PsiElement::getText).collect(Collectors.toList())));
     }
 

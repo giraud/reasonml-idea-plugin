@@ -19,7 +19,7 @@ public class ExpressionsParsingTest extends BaseParsingTestCase {
     }
 
     public void testB() {
-        PsiFile file = parseCode("let x = function | _ -> false\nlet y = 1", true);
+        PsiFile file = parseCode("let x = function | _ -> false\nlet y = 1");
         Collection<PsiNameIdentifierOwner> expressions = expressions(file);
 
         assertEquals(2, expressions.size());
