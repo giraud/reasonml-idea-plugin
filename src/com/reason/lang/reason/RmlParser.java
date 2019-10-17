@@ -1097,6 +1097,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             IElementType nextElementType = builder.lookAhead(1);
             if (!state.isCurrentResolution(moduleNamedEq) && nextElementType == m_types.LPAREN) {
                 // Also a variant, but with a constructor
+                state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
                 state.wrapWith(m_types.C_VARIANT);
                 return;

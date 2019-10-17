@@ -47,6 +47,18 @@ public class VariantDeclarationParsingTest extends BaseParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
+    public void testConstructor2() {
+        PsiType e = first(typeExpressions(parseCode("type color = Hex(string) | Rgb(int, int, int)", true)));
+
+        List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals(2, declarations.size());
+        assertEquals("Hex", declarations.get(0).getVariant().getName());
+        assertTrue(declarations.get(0).getVariant().isVariant());
+        assertEquals(1, declarations.get(0).getParameterList().size());
+        assertEquals("Rgb", declarations.get(1).getVariant().getName());
+        assertEquals(3, declarations.get(1).getParameterList().size());
+    }
+
     public void testMixed() {
         PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot(reason) | Loose | Strict")));
 
