@@ -9,18 +9,25 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiValStub extends NamedStubBase<PsiVal> {
     private String m_qname;
+    private boolean m_isFunction;
 
-    public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname) {
+    public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname, boolean isFunction) {
         super(parent, elementType, name);
         m_qname = qname;
+        m_isFunction = isFunction;
     }
 
-    public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname) {
+    public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, boolean isFunction) {
         super(parent, elementType, name);
         m_qname = qname;
+        m_isFunction = isFunction;
     }
 
     public String getQualifiedName() {
         return m_qname;
+    }
+
+    public boolean isFunction() {
+        return m_isFunction;
     }
 }

@@ -38,7 +38,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         super(types, node);
     }
 
-    public PsiInnerModuleImpl(@NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType, @NotNull ORTypes types) {
+    public PsiInnerModuleImpl(@NotNull ORTypes types, @NotNull PsiModuleStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     //endregion

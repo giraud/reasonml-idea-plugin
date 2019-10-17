@@ -66,9 +66,10 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 String alias = ((PsiLet) element).getAlias();
                 if (alias != null) {
                     Project project = element.getProject();
-                    PsiVal valFromAlias = PsiFinder.getInstance(project).findValFromQn(alias);
+                    PsiFinder psiFinder = PsiFinder.getInstance(project);
+                    PsiVal valFromAlias = psiFinder.findValFromQn(alias);
                     if (valFromAlias == null) {
-                        PsiLet letFromAlias = PsiFinder.getInstance(project).findLetFromQn(alias);
+                        PsiLet letFromAlias = psiFinder.findLetFromQn(alias);
                         if (letFromAlias != null) {
                             element = letFromAlias;
                         }

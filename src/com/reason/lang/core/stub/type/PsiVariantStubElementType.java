@@ -6,10 +6,7 @@ import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.stub.PsiVariantDeclarationStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -22,8 +19,7 @@ public class PsiVariantStubElementType extends IStubElementType<PsiVariantDeclar
 
     @NotNull
     public PsiVariantDeclaration createPsi(@NotNull final PsiVariantDeclarationStub stub) {
-        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiVariantDeclaration(types, stub, this);
+        return new PsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @NotNull

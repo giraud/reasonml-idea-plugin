@@ -2,6 +2,7 @@ package com.reason.ide.hints;
 
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.parameterInfo.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -9,6 +10,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
@@ -98,6 +100,25 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
             PsiElement resolvedElement = reference == null ? null : reference.resolve();
             if (resolvedElement instanceof PsiNamedElement) {
                 PsiElement resolvedParent = resolvedElement.getParent();
+
+                if (resolvedParent instanceof PsiLet) {
+                    // If it's an alias, resolve to the alias
+                    String alias = ((PsiLet) resolvedParent).getAlias();
+                    if (alias != null) {
+                        Project project = resolvedElement.getProject();
+                        PsiFinder psiFinder = PsiFinder.getInstance(project);
+                        PsiVal valFromAlias = psiFinder.findValFromQn(alias);
+                        if (valFromAlias == null) {
+                            PsiLet letFromAlias = psiFinder.findLetFromQn(alias);
+                            if (letFromAlias != null) {
+                                resolvedParent = letFromAlias;
+                            }
+                        } else {
+                            resolvedParent = valFromAlias;
+                        }
+                    }
+                }
+
                 if (resolvedParent instanceof PsiSignatureElement) {
                     PsiSignature signature = ((PsiSignatureElement) resolvedParent).getPsiSignature();
                     if (signature != null) {

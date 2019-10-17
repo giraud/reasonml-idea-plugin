@@ -7,10 +7,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.impl.PsiRecordFieldImpl;
 import com.reason.lang.core.stub.PsiRecordFieldStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,8 +20,7 @@ public class PsiRecordFieldStubElementType extends IStubElementType<PsiRecordFie
 
     @NotNull
     public PsiRecordFieldImpl createPsi(@NotNull final PsiRecordFieldStub stub) {
-        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiRecordFieldImpl(types, stub, this);
+        return new PsiRecordFieldImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @NotNull

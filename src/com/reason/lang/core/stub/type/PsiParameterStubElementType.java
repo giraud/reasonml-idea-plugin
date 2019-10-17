@@ -7,10 +7,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiParameterImpl;
 import com.reason.lang.core.stub.PsiParameterStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,8 +20,7 @@ public class PsiParameterStubElementType extends IStubElementType<PsiParameterSt
 
     @NotNull
     public PsiParameterImpl createPsi(@NotNull final PsiParameterStub stub) {
-        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiParameterImpl(types, stub, this);
+        return new PsiParameterImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @NotNull

@@ -5,26 +5,35 @@ import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiVal;
 
-@SuppressWarnings("ConstantConditions")
 public class ValParsingTest extends BaseParsingTestCase {
     public ValParsingTest() {
         super("", "ml", new OclParserDefinition());
     }
 
     public void testQualifiedName() {
-        PsiVal val = first(valExpressions(parseCode("val x = 1")));
-        assertEquals("Dummy.x", val.getQualifiedName());
+        PsiVal e = first(valExpressions(parseCode("val x : int")));
+
+        assertEquals("Dummy.x", e.getQualifiedName());
+        assertFalse(e.isFunction());
     }
 
-    public void testConstant() {
-        PsiVal val = first(valExpressions(parseCode("val x = 1")));
-        assertInstanceOf(val.getNameIdentifier(), PsiLowerSymbol.class);
-        assertEquals("x", val.getName());
+    public void testName() {
+        PsiVal e = first(valExpressions(parseCode("val x : int")));
+
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertEquals("x", e.getName());
     }
 
     public void testSpecialName() {
-        PsiVal val = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
-        assertInstanceOf(val.getNameIdentifier(), PsiScopedExpr.class);
-        assertEquals("(>>=)", val.getName());
+        PsiVal e = first(valExpressions(parseCode("val (>>=) : 'a -> 'a t")));
+
+        assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
+        assertEquals("(>>=)", e.getName());
+    }
+
+    public void testFunction() {
+        PsiVal e = first(valExpressions(parseCode("val x : 'a -> 'a t")));
+
+        assertTrue(e.isFunction());
     }
 }

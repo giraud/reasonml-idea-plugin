@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 
-public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifiedNamedElement, PsiNameIdentifierOwner, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
+public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, PsiQualifiedNamedElement, PsiNameIdentifierOwner, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
 
     @Nullable
     PsiLetBinding getBinding();
@@ -19,8 +19,6 @@ public interface PsiLet extends PsiSignatureElement, PsiInferredType, PsiQualifi
     boolean isRecord();
 
     boolean isJsObject();
-
-    boolean isFunction();
 
     @NotNull
     Collection<PsiRecordField> getRecordFields();

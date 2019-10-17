@@ -55,6 +55,20 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
     }
     //endregion
 
+    @Override
+    public boolean isFunction() {
+        PsiValStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isFunction();
+        }
+
+        PsiSignature signature = getPsiSignature();
+        if (signature != null) {
+            return signature.asHMSignature().isFunctionSignature();
+        }
+        return false;
+    }
+
     @Nullable
     @Override
     public String getQualifiedName() {

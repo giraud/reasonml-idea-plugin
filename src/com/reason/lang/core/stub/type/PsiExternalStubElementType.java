@@ -7,10 +7,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
 import com.reason.lang.core.stub.PsiExternalStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +21,7 @@ public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub
 
     @NotNull
     public PsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
-        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiExternalImpl(types, stub, this);
+        return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @NotNull

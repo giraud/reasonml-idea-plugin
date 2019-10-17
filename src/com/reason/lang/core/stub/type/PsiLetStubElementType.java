@@ -7,10 +7,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
 import com.reason.lang.core.stub.PsiLetStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +21,7 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
 
     @NotNull
     public PsiLetImpl createPsi(@NotNull PsiLetStub stub) {
-        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiLetImpl(types, stub, this);
+        return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @NotNull

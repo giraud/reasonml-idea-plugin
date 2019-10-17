@@ -198,6 +198,30 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
     }
 
+    @Override
+    public boolean isFunction() {
+        PsiLetStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.isFunction();
+        }
+
+        if (hasInferredType()) {
+            return getInferredType().isFunctionSignature();
+        } else {
+            ORSignature signature = getORSignature();
+            if (signature != ORSignature.EMPTY) {
+                return signature.isFunctionSignature();
+            }
+        }
+
+        if (m_types instanceof RmlTypes) {
+            PsiLetBinding binding = findChildByClass(PsiLetBinding.class);
+            return binding != null && binding.getFirstChild() instanceof PsiFunction;
+        }
+
+        return PsiTreeUtil.findChildOfType(this, PsiFunction.class) != null;
+    }
+
     @Nullable
     public PsiFunction getFunction() {
         PsiLetBinding binding = getBinding();
@@ -231,30 +255,6 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     public Collection<PsiObjectField> getJsObjectFieldsForPath(@NotNull List<String> path) {
         WeakHashMap<PsiElement, Boolean> visited = new WeakHashMap<>();
         return getJsObjectFields(this, visited, new ArrayList<>(path), 0);
-    }
-
-    @Override
-    public boolean isFunction() {
-        PsiLetStub stub = getGreenStub();
-        if (stub != null) {
-            return stub.isFunction();
-        }
-
-        if (hasInferredType()) {
-            return getInferredType().isFunctionSignature();
-        } else {
-            ORSignature signature = getORSignature();
-            if (signature != ORSignature.EMPTY) {
-                return signature.isFunctionSignature();
-            }
-        }
-
-        if (m_types instanceof RmlTypes) {
-            PsiLetBinding binding = findChildByClass(PsiLetBinding.class);
-            return binding != null && binding.getFirstChild() instanceof PsiFunction;
-        }
-
-        return PsiTreeUtil.findChildOfType(this, PsiFunction.class) != null;
     }
 
     private boolean isRecursive() {

@@ -7,10 +7,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.impl.PsiExceptionImpl;
 import com.reason.lang.core.stub.PsiExceptionStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,8 +20,7 @@ public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionSt
 
     @NotNull
     public PsiException createPsi(@NotNull final PsiExceptionStub stub) {
-        ORTypes types = getLanguage() instanceof RmlLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-        return new PsiExceptionImpl(stub, this, types);
+        return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
     }
 
     @NotNull

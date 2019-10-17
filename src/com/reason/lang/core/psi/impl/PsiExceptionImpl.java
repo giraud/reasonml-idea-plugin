@@ -23,7 +23,7 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiExceptionStub> im
         super(types, node);
     }
 
-    public PsiExceptionImpl(@NotNull PsiExceptionStub stub, @NotNull IStubElementType nodeType, @NotNull ORTypes types) {
+    public PsiExceptionImpl(@NotNull ORTypes types, @NotNull PsiExceptionStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     //endregion
