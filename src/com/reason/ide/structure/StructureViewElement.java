@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.PsiIconUtil;
-import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -26,14 +25,16 @@ import java.util.List;
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private final PsiElement m_element;
     private final PsiElement m_viewElement;
+    private final boolean m_navigateToViewElement;
 
     StructureViewElement(@NotNull PsiElement element) {
-        this(null, element);
+        this(null, element, false);
     }
 
-    private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element) {
-        m_element = element;
+    private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element, boolean navigateToViewElement) {
         m_viewElement = viewElement;
+        m_element = element;
+        m_navigateToViewElement = navigateToViewElement;
     }
 
     @Override
@@ -44,7 +45,9 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @Override
     public void navigate(boolean requestFocus) {
         if (m_element instanceof NavigationItem) {
-            ((NavigationItem) m_element).navigate(requestFocus);
+            NavigationItem targetElement = (NavigationItem) (m_navigateToViewElement ? m_viewElement : m_element);
+            assert targetElement != null;
+            targetElement.navigate(requestFocus);
         }
     }
 
@@ -252,7 +255,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                             // it's a tuple! add each element of the tuple separately
                             for (PsiElement child : let.getScopeChildren()) {
                                 if (child instanceof PsiLowerSymbol) {
-                                    m_treeElements.add(new StructureViewElement(child, element));
+                                    m_treeElements.add(new StructureViewElement(child, element, true));
                                 }
                             }
                             return;

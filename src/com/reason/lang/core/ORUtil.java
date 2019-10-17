@@ -127,6 +127,20 @@ public class ORUtil {
     }
 
     @Nullable
+    public static PsiElement nextSibling(@Nullable PsiElement element) {
+        if (element == null) {
+            return null;
+        }
+
+        PsiElement nextSibling = element.getNextSibling();
+        while (nextSibling != null && nextSibling.getNode().getElementType() == TokenType.WHITE_SPACE) {
+            nextSibling = nextSibling.getNextSibling();
+        }
+
+        return nextSibling;
+    }
+
+    @Nullable
     public static <T> T nextSiblingOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz) {
         if (element == null) {
             return null;
@@ -194,6 +208,22 @@ public class ORUtil {
         while (child != null) {
             if (clazz.isInstance(child)) {
                 return (T) child;
+            }
+            child = child.getNextSibling();
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static <T extends PsiElement> T findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class... clazz) {
+        PsiElement child = element.getFirstChild();
+
+        while (child != null) {
+            for (Class<T> aClazz : clazz) {
+                if (aClazz.isInstance(child)) {
+                    return (T) child;
+                }
             }
             child = child.getNextSibling();
         }

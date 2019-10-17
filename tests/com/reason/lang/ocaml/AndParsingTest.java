@@ -3,7 +3,10 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.PsiType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +52,7 @@ public class AndParsingTest extends BaseParsingTestCase {
         assertEquals("self", second(types).getName());
     }
 
-    public void testIssue135() {
+    public void testGH_135() {
         List<PsiLet> lets = new ArrayList(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
 
         assertSize(2, lets);

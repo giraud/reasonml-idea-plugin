@@ -36,6 +36,55 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
     //endregion
 
+    //region PsiNamedElement
+    @Nullable
+    @Override
+    public PsiElement getNameIdentifier() {
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class);
+    }
+
+    @Nullable
+    @Override
+    public String getName() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE ? "" : nameIdentifier.getText();
+    }
+
+    @NotNull
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
+    }
+    //endregion
+
+    @Override
+    @Nullable
+    public PsiLetBinding getBinding() {
+        return findChildByClass(PsiLetBinding.class);
+    }
+
+    @Override
+    public boolean isScopeIdentifier() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class) != null;
+    }
+
+    @NotNull
+    @Override
+    public Collection<PsiElement> getScopeChildren() {
+        Collection<PsiElement> result = new ArrayList<>();
+
+        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        if (scope != null) {
+            for (PsiElement element : scope.getChildren()) {
+                if (element.getNode().getElementType() != m_types.COMMA) {
+                    result.add(element);
+                }
+            }
+        }
+
+        return result;
+    }
+
     @NotNull
     private static List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
         List<PsiObjectField> fields = new ArrayList<>();
@@ -117,56 +166,6 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
             }
         }
         return fields;
-    }
-
-    //region PsiNamedElement
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
-    }
-
-    @Nullable
-    @Override
-    public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE ? "" : nameIdentifier.getText();
-    }
-
-    @NotNull
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this;
-    }
-    //endregion
-
-
-    @Override
-    public boolean isScopeIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class) != null;
-    }
-
-    @NotNull
-    @Override
-    public Collection<PsiElement> getScopeChildren() {
-        Collection<PsiElement> result = new ArrayList<>();
-
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
-        if (scope != null) {
-            for (PsiElement element : scope.getChildren()) {
-                if (element.getNode().getElementType() != m_types.COMMA) {
-                    result.add(element);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    @Override
-    @Nullable
-    public PsiLetBinding getBinding() {
-        return findChildByClass(PsiLetBinding.class);
     }
 
     @Nullable

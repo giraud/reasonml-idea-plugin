@@ -7,9 +7,12 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiRecord;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
@@ -134,6 +137,16 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertEquals("x", e.getName());
         assertEquals("M1.M2.y", e.getAlias());
+    }
+
+    public void testDeconstruction() {
+        PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
+        List<PsiElement> children = new ArrayList<>(e.getScopeChildren());
+
+        assertEquals("(a, b)", e.getName());
+        assertSize(2, children);
+        assertInstanceOf(children.get(0), PsiLowerSymbol.class);
+        assertInstanceOf(children.get(1), PsiLowerSymbol.class);
     }
 
 }

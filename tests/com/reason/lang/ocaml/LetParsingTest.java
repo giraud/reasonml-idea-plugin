@@ -123,7 +123,7 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)", function.getBody().getText());
     }
 
-    public void testIssue116() {
+    public void testGH_116() {
         FileBase file = parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
         PsiLet e = first(letExpressions(file));
 
@@ -131,7 +131,7 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("Proofview.apply (Global.env ()) tac pr.proofview", e.getBinding().getText());
     }
 
-    public void testIssue105() {
+    public void testGH_105() {
         FileBase file = parseCode("let string = \"x\"");
         PsiLet e = first(letExpressions(file));
 

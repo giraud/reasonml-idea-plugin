@@ -619,22 +619,22 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (state.isCurrentResolution(typeConstrName)) {
-            // TYPE <LIDENT> ...
+            // type |>x<| ..
             state.updateCurrentResolution(typeNamed);
             state.complete();
             state.setPreviousComplete();
         } else if (state.isCurrentResolution(functionParameters)) {
             state.add(mark(builder, functionParameter, m_types.C_FUN_PARAM).complete());
         } else if (state.isCurrentResolution(external)) {
-            // EXTERNAL <LIDENT> ...
+            // external |>x<| ..
             state.updateCurrentResolution(externalNamed);
             state.complete();
         } else if (state.isCurrentResolution(let)) {
-            // LET <LIDENT> ...
+            // let |>x<| ..
             state.updateCurrentResolution(letNamed).complete();
         } else if (state.isCurrentResolution(letNamedEq)) {
             if (state.previousElementType1 == m_types.EQ) {
-                // let x = <c> => ...
+                // let x = |>c<| => ...
                 IElementType nextElementType = builder.lookAhead(1);
                 if (nextElementType == m_types.ARROW) {
                     // Single (paren less) function parameters
@@ -697,14 +697,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.add(mark(builder, function, function, m_types.C_FUN_EXPR).complete());
                 state.add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
                 state.add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
-            } else {
-                // Add a generic wrapper in case it's a parameter
-                // It is complete only if we find a comma in the scope
-                if (state.isInScopeExpression() && !state.isCurrentContext(object) && !state.isCurrentContext(functorConstraints) &&
-                        !state.isCurrentContext(functionParameters) && !state.isCurrentResolution(patternMatchVariantConstructor) &&
-                        state.previousElementType1 != m_types.DOT) {
-                    state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
-                }
             }
         }
 
