@@ -21,9 +21,9 @@ public class VariantParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiSwitch e = firstOfType(parseCode("switch (action) { | UpdateDescription(desc) => ReasonReact.SideEffects(_self => onDescriptionChange(desc)) };"), PsiSwitch.class);
+        PsiSwitch e = firstOfType(parseCode("switch (action) { | UpdateDescription(desc) => ReasonReact.SideEffects.(_self => onDescriptionChange(desc)) };"), PsiSwitch.class);
         PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(e, PsiPatternMatchBody.class);
-        assertEquals("ReasonReact.SideEffects(_self => onDescriptionChange(desc))", body.getText());
+        assertEquals("ReasonReact.SideEffects.(_self => onDescriptionChange(desc))", body.getText());
         List<PsiUpperSymbol> uppers = ORUtil.findImmediateChildrenOfClass(body, PsiUpperSymbol.class);
         assertEquals("ReasonReact, SideEffects", Joiner.join(", ", uppers.stream().map(PsiElement::getText).collect(Collectors.toList())));
     }

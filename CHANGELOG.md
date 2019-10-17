@@ -12,6 +12,8 @@
 
 ## [Unreleased]
 
+## [0.81] - 2019/10/17
+
 - :bug: [#185](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/185) `gradle verifyPlugin` fails
 - :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o] GoTo/Declaration not looking for locally-defined symbol
 - :bug: [#83](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/83) ![r] ![o] Support GoTo/Declaration for function-local symbols
@@ -449,6 +451,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 * :rocket: Parse Bsb super errors and use them to annotate source code
 
 [Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...HEAD
+[0.81]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...0.81
 [0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
 [r]: jps-plugin/resources/icons/reason-file.png
