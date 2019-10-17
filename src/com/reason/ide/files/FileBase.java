@@ -6,13 +6,14 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiVal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +78,11 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
 
     @Nullable
     @Override
-    public PsiModule getModuleExpression(@NotNull String name) {
+    public PsiModule getModuleExpression(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
+
         Collection<PsiInnerModule> modules = getExpressions(name, PsiInnerModule.class);
         for (PsiInnerModule module : modules) {
             if (name.equals(module.getName())) {
@@ -85,6 +90,20 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
             }
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public PsiLet getLetExpression(@Nullable String name) {
+        Collection<PsiLet> expressions = getExpressions(name, PsiLet.class);
+        return expressions.isEmpty() ? null : expressions.iterator().next();
+    }
+
+    @Nullable
+    @Override
+    public PsiVal getValExpression(@Nullable String name) {
+        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
+        return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
     @Nullable

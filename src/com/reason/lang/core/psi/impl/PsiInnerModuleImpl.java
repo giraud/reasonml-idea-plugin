@@ -107,7 +107,11 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @Nullable
     @Override
-    public PsiModule getModuleExpression(@NotNull String name) {
+    public PsiModule getModuleExpression(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
+
         Collection<PsiInnerModule> modules = getModules();
         for (PsiInnerModule module : modules) {
             if (name.equals(module.getName())) {
@@ -216,8 +220,10 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @Nullable
     @Override
-    public PsiLet getLetExpression(@NotNull String name) {
-        PsiLet result = null;
+    public PsiLet getLetExpression(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
 
         PsiElement body = getBody();
         if (body != null) {
@@ -225,14 +231,35 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
             if (!expressions.isEmpty()) {
                 for (PsiLet expression : expressions) {
                     if (name.equals(expression.getName())) {
-                        result = expression;
-                        break;
+                        return expression;
                     }
                 }
             }
         }
 
-        return result;
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public PsiVal getValExpression(@Nullable String name) {
+        if (name == null) {
+            return null;
+        }
+
+        PsiElement body = getBody();
+        if (body != null) {
+            List<PsiVal> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class);
+            if (!expressions.isEmpty()) {
+                for (PsiVal expression : expressions) {
+                    if (name.equals(expression.getName())) {
+                        return expression;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public ItemPresentation getPresentation() {

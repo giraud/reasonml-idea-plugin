@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class PsiFileHelper {
+
     private PsiFileHelper() {
     }
 
@@ -52,15 +53,17 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file, @NotNull String name) {
+    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file, @Nullable String name) {
         Collection<PsiNameIdentifierOwner> result = new ArrayList<>();
 
-        PsiElement element = file.getFirstChild();
-        while (element != null) {
-            if (element instanceof PsiNameIdentifierOwner && name.equals(((PsiNameIdentifierOwner) element).getName())) {
-                result.add((PsiNameIdentifierOwner) element);
+        if (name != null) {
+            PsiElement element = file.getFirstChild();
+            while (element != null) {
+                if (element instanceof PsiNameIdentifierOwner && name.equals(((PsiNameIdentifierOwner) element).getName())) {
+                    result.add((PsiNameIdentifierOwner) element);
+                }
+                element = element.getNextSibling();
             }
-            element = element.getNextSibling();
         }
 
         return result;
@@ -110,14 +113,4 @@ public class PsiFileHelper {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
     }
 
-    @Nullable
-    public static PsiInnerModule getModuleExpression(@NotNull PsiFile file, @NotNull String name) {
-        Collection<PsiInnerModule> modules = getModuleExpressions(file);
-        for (PsiInnerModule module : modules) {
-            if (name.equals(module.getName())) {
-                return module;
-            }
-        }
-        return null;
-    }
 }

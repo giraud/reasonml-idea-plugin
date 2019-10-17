@@ -480,12 +480,7 @@ public final class PsiFinder {
         }
 
         if (realModule != null) {
-            // Try qn directly with resolved aliases
-            String newQName = realModule.getQualifiedName() + "." + names[names.length - 1];
-            lets = LetFqnIndex.getInstance().get(newQName.hashCode(), m_project, scope);
-            if (!lets.isEmpty()) {
-                return lets.iterator().next();
-            }
+            return realModule.getLetExpression(names[names.length - 1]);
         }
 
         return null;
@@ -535,12 +530,7 @@ public final class PsiFinder {
         }
 
         if (realModule != null) {
-            // Try qn directly with resolved aliases
-            String newQName = realModule.getQualifiedName() + "." + names[names.length - 1];
-            vals = ValFqnIndex.getInstance().get(newQName.hashCode(), m_project, scope);
-            if (!vals.isEmpty()) {
-                return vals.iterator().next();
-            }
+            return realModule.getValExpression(names[names.length - 1]);
         }
 
         return null;

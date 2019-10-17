@@ -12,12 +12,20 @@ import java.util.Collection;
  * Common interface to file-based modules and inner modules
  */
 public interface PsiModule extends PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement {
+
+    @Nullable
+    String getAlias();
+
     @NotNull
     Collection<PsiNameIdentifierOwner> getExpressions();
 
     @Nullable
-    PsiModule getModuleExpression(@NotNull String name);
+    PsiModule getModuleExpression(@Nullable String name);
 
     @Nullable
-    String getAlias();
+    PsiLet getLetExpression(@Nullable String name);
+
+    @Nullable
+    PsiVal getValExpression(@Nullable String name);
+
 }

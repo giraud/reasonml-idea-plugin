@@ -19,10 +19,6 @@ public interface PsiInnerModule extends PsiNameIdentifierOwner, PsiModule, StubB
     @NotNull
     Collection<PsiInnerModule> getModules();
 
-    @Nullable
-    @Override
-    PsiModule getModuleExpression(@NotNull String name);
-
     @NotNull
     Collection<PsiOpen> getOpenExpressions();
 
@@ -40,9 +36,6 @@ public interface PsiInnerModule extends PsiNameIdentifierOwner, PsiModule, StubB
 
     @Nullable
     PsiType getTypeExpression(@NotNull String name);
-
-    @Nullable
-    PsiLet getLetExpression(@NotNull String make);
 
     boolean isComponent();
 
