@@ -60,4 +60,14 @@ public class AndParsingTest extends BaseParsingTestCase {
         assertEquals("missing", lets.get(1).getName());
     }
 
+    public void testGH_175() {
+        List<PsiLet> lets = new ArrayList(letExpressions(parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n" +
+                "and f2 = let f21 = function | _ -> \"\" in ()\n" +
+                "and f3 = ()\n")));
+
+        assertSize(3, lets);
+        assertEquals("f1", lets.get(0).getName());
+        assertEquals("f2", lets.get(1).getName());
+        assertEquals("f3", lets.get(2).getName());
+    }
 }

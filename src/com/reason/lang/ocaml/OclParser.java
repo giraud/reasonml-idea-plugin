@@ -100,7 +100,10 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseArrobase(builder, state);
             } else if (tokenType == m_types.AND) {
                 parseAnd(builder, state);
-            } else if (tokenType == m_types.FUNCTION || tokenType == m_types.FUN) {
+            } else if (tokenType == m_types.FUNCTION) {
+                // function is a shortcut for a pattern match
+                parseFunction(builder, state);
+            } else if (tokenType == m_types.FUN) {
                 parseFun(builder, state);
             } else if (tokenType == m_types.ASSERT) {
                 parseAssert(builder, state);
@@ -526,6 +529,13 @@ public class OclParser extends CommonParser<OclTypes> {
             state.complete().
                     popEnd().
                     add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM));
+        }
+    }
+
+    private void parseFunction(@NotNull PsiBuilder builder, ParserState state) {
+        state.advance();
+        if (builder.getTokenType() != m_types.PIPE) {
+            state.add(mark(builder, state.currentContext(), patternMatch, m_types.C_PATTERN_MATCH_EXPR).complete());
         }
     }
 

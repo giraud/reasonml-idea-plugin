@@ -8,15 +8,7 @@ patchPluginXml {
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
-            <li>#185 - 'gradle verifyPlugin' fails</li>
-            <li>#88 - GoTo/Declaration not looking for locally-defined symbol</li>
-            <li>#83 - Support GoTo/Declaration for function-local symbols</li>
-            <li>Try to improve quick navigation doc</li>
-            <li>Parsing directives (#if, #else, #end)</li>
-            <li>Get inferred type from definition if not found in usage</li>
-            <li>Some deduplication of pervasives expressions in free completion contributor</li>
-            <li>Work on signature conversion (partial conversion)</li>
-            <li>Better dot completion when module is an alias (ex: Belt.Map.String.<caret&gt;)</li>
+            <li>#175 Structure panel missing top level functions defined after nested let foo = function</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

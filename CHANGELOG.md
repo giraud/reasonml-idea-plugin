@@ -12,6 +12,8 @@
 
 ## [Unreleased]
 
+- :bug: [#175](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175) ![o] Structure panel missing top level functions defined after nested let foo = function
+
 ## [0.81] - 2019/10/17
 
 - :bug: [#185](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/185) `gradle verifyPlugin` fails

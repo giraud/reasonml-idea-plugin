@@ -80,4 +80,20 @@ public class MatchParsingTest extends BaseParsingTestCase {
         PsiPatternMatch m2 = patterns.get(1);
         assertEquals("\"Total\"", m2.getBody().getText());
     }
+
+    public void testFunctionShortcut() {
+        PsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
+
+        PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiPatternMatch.class));
+        assertEquals("1", PsiTreeUtil.findChildOfType(fun.getBody(), PsiPatternMatchBody.class).getText());
+    }
+
+    public void testFunctionShortcutNoPipe() {
+        PsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
+
+        PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiPatternMatch.class));
+        assertEquals("1", PsiTreeUtil.findChildOfType(fun.getBody(), PsiPatternMatchBody.class).getText());
+    }
 }
