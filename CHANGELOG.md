@@ -15,6 +15,7 @@
 ## [0.81] - 2019/10/17
 
 - :bug: [#185](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/185) `gradle verifyPlugin` fails
+- :bug: [#156](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/156) Assigning any value to new variable confuses plugin
 - :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o] GoTo/Declaration not looking for locally-defined symbol
 - :bug: [#83](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/83) ![r] ![o] Support GoTo/Declaration for function-local symbols
 - :nail_care: Try to improve quick navigation doc
