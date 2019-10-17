@@ -34,8 +34,6 @@ public enum ParserScopeEnum {
     letNamedSignature,
     letNamedBinding,
 
-    maybeFunctionParameter,
-
     function,
     functionParameters,
     functionParameter,
@@ -94,12 +92,14 @@ public enum ParserScopeEnum {
     switch_,
     switchBinaryCondition,
     switchBody,
-    patternMatchBody,
 
     try_,
     tryScope,
 
     patternMatch,
+    patternMatchVariant,
+    patternMatchVariantConstructor,
+    patternMatchBody,
 
     multilineStart,
     interpolationString,
@@ -154,9 +154,7 @@ public enum ParserScopeEnum {
     moduleInstanciation, moduleNamedColonWith, moduleNamedWithType, letBinding, scope,
     moduleNamedSignatureEq, array, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
-    clazzNamedConstructor, record, mixin,
-    externalNamedSignatureEq,
-    patternMatchConstructor, maybeRecordUsage, recordUsage, letNamedBindingFunction,
-    typeBinding, recordFieldAnnotation, option, optionParameter, patternMatchVariant,
-    name, variant, variantConstructor, variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
+    clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage, letNamedBindingFunction,
+    typeBinding, recordFieldAnnotation, option, optionParameter, name, variant, variantConstructor,
+    variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
 }

@@ -14,7 +14,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.OclInterfaceFile;
 import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.lang.PsiElementFactory;
+import com.reason.lang.core.PsiElementFactory;
 import com.reason.lang.core.stub.type.OclFileStubElementType;
 import org.jetbrains.annotations.NotNull;
 

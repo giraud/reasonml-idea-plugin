@@ -76,6 +76,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     parseArrow(builder, state);
                 } else if (tokenType == m_types.OPTION) {
                     parseOption(builder, state);
+                } else if (tokenType == m_types.SOME) {
+                    parseSome(builder, state);
+                } else if (tokenType == m_types.NONE) {
+                    parseNone(builder, state);
                 } else if (tokenType == m_types.TRY) {
                     parseTry(builder, state);
                 } else if (tokenType == m_types.SWITCH) {
@@ -192,6 +196,24 @@ public class RmlParser extends CommonParser<RmlTypes> {
         state.add(mark(builder, option, m_types.C_OPTION));
     }
 
+    private void parseSome(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(patternMatch)) {
+            // Defining a pattern match
+            // switch (c) { | |>Some<| .. }
+            builder.remapCurrentToken(m_types.VARIANT_NAME);
+            state.wrapWith(m_types.C_VARIANT).updateCurrentResolution(patternMatchVariant);
+        }
+    }
+
+    private void parseNone(PsiBuilder builder, ParserState state) {
+        if (state.isCurrentResolution(patternMatch)) {
+            // Defining a pattern match
+            // switch (c) { | |>Some<| .. }
+            builder.remapCurrentToken(m_types.VARIANT_NAME);
+            state.wrapWith(m_types.C_VARIANT).updateCurrentResolution(patternMatchVariant);
+        }
+    }
+
     private void parseRaw(PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(macroName)) {
             state.advance().complete().popEnd()
@@ -298,7 +320,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
         // By default, a pattern match
         if (state.isCurrentResolution(patternMatchBody)) {
-            state.popEnd();
+            state.popEndUntilResolution(switchBody);
         }
         if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(typeNamedEqVariant)) {
             state.popEnd();
@@ -679,7 +701,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 // Add a generic wrapper in case it's a parameter
                 // It is complete only if we find a comma in the scope
                 if (state.isInScopeExpression() && !state.isCurrentContext(object) && !state.isCurrentContext(functorConstraints) &&
-                        !state.isCurrentContext(functionParameters) && !state.isCurrentResolution(patternMatchConstructor) &&
+                        !state.isCurrentContext(functionParameters) && !state.isCurrentResolution(patternMatchVariantConstructor) &&
                         state.previousElementType1 != m_types.DOT) {
                     state.add(mark(builder, state.currentContext(), state.currentResolution(), m_types.C_UNKNOWN_EXPR));
                 }
@@ -846,10 +868,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(ifThenStatement)) {
             state.complete();
             state.add(markScope(builder, binaryCondition, m_types.C_BIN_CONDITION, m_types.LPAREN).complete());
-        } else if (state.isCurrentResolution(patternMatch)) {
+        } else if (state.isCurrentResolution(patternMatchVariant)) {
             // It's a constructor
-            // | Some |>(<| .. ) =>     It's a constructor
-            state.add(markScope(builder, state.currentContext(), patternMatchConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
+            // | Variant |>(<| .. ) =>     It's a constructor
+            state.add(markScope(builder, state.currentContext(), patternMatchVariantConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
         } else if (state.isCurrentContext(typeConstrName)) {
             // type parameter
             // type x = t |>(<| 'a )
@@ -930,6 +952,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEnd();
         }
 
+        // Stopping early when structure is well known
         if (state.isCurrentResolution(letNamedSignature)) {
             return;
         } else if (state.isCurrentResolution(switchBinaryCondition)) {
@@ -952,6 +975,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             if (nextTokenType == m_types.ARROW && !state.isCurrentResolution(function)) {
                 if (state.isCurrentResolution(functorNamedEq)) {
                     state.updateCurrentResolution(functorNamedEqParamsArrow);
+                } else if (state.isCurrentResolution(patternMatchVariant)) {
+                    state.updateCurrentResolution(patternMatchVariantConstructor);
                 } else if (!state.isCurrentResolution(patternMatch) && !state.isCurrentContext(signature) && !state.isCurrentContext(functorDeclaration)) {
                     // we are processing a function definition,
                     // we must rollback to the start of the scope and start the parsing again, but this time with exact information!
@@ -1124,8 +1149,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
             // module Make = (M) : R |>=><| ..
             state.advance().add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
-        } else if (state.isCurrentResolution(patternMatchVariant)) {
-            state.advance().add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_PATTERN_MATCH_BODY).complete());
+        } else if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(patternMatchVariantConstructor)) {
+            // switch ( .. ) { | .. |>=><| .. }
+            state.advance().add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_PATTERN_MATCH_BODY).complete()).setStart();
         }
     }
 

@@ -1,4 +1,4 @@
-package com.reason.lang;
+package com.reason.lang.core;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -112,6 +112,8 @@ public class PsiElementFactory {
             return new PsiTagClose(node);
         } else if (type == types.C_UPPER_SYMBOL) {
             return new PsiUpperSymbolImpl(types, node);
+        } else if (type == types.C_UNIT) {
+            return new PsiUnit(node);
         } else if (type == types.C_LOWER_SYMBOL) {
             return new PsiLowerSymbolImpl(types, node);
         } else if (type == types.C_TRY_EXPR) {

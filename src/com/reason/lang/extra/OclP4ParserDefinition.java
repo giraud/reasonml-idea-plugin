@@ -13,7 +13,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.Ml4File;
-import com.reason.lang.PsiElementFactory;
+import com.reason.lang.core.PsiElementFactory;
 import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclParser;
 import com.reason.lang.ocaml.OclTypes;
