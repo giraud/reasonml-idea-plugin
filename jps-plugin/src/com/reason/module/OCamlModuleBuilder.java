@@ -1,4 +1,4 @@
-package com.reason;
+package com.reason.module;
 
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
@@ -13,12 +13,16 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Builder to create a new OCaml module.
+ */
 public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuilder {
 
     private List<Pair<String, String>> m_sourcePaths;
@@ -29,12 +33,12 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
     }
 
     @Override
-    public void setupRootModel(ModifiableRootModel rootModel) {
+    public void setupRootModel(@NotNull ModifiableRootModel rootModel) {
         rootModel.inheritSdk();
 
         ContentEntry contentEntry = doAddContentEntry(rootModel);
         if (contentEntry != null) {
-            final List<Pair<String, String>> sourcePaths = getSourcePaths();
+            List<Pair<String, String>> sourcePaths = getSourcePaths();
 
             if (sourcePaths != null) {
                 for (final Pair<String, String> sourcePath : sourcePaths) {
