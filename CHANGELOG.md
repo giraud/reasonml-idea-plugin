@@ -12,6 +12,7 @@
 
 ## [Unreleased]
 
+- :bug: [#189](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189) ![o] Structure panel missing members/parse problem for "while"
 - :bug: [#175](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175) ![o] Structure panel missing top level functions defined after nested let foo = function
 
 ## [0.81] - 2019/10/17

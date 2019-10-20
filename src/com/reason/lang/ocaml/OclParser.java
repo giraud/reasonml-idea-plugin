@@ -215,9 +215,11 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLt(@NotNull PsiBuilder builder, ParserState state) {
-        state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT)).
-                advance().
-                add(mark(builder, object, objectField, m_types.C_OBJECT_FIELD));
+        if (!state.isCurrentResolution(whileConditionLoop)) {
+            state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT)).
+                    advance().
+                    add(mark(builder, object, objectField, m_types.C_OBJECT_FIELD));
+        }
     }
 
     private void parseGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -244,15 +246,16 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseWhile(@NotNull PsiBuilder builder, ParserState state) {
-        state.add(markScope(builder, whileLoop, m_types.C_WHILE, m_types.WHILE));
-        state.advance();
-        state.add(mark(builder, whileLoop, whileConditionLoop, m_types.C_WHILE_CONDITION));
+        state.add(markScope(builder, whileLoop, m_types.C_WHILE, m_types.WHILE)).
+                advance().
+                add(mark(builder, whileLoop, whileConditionLoop, m_types.C_WHILE_CONDITION));
     }
 
     private void parseDo(@NotNull PsiBuilder builder, ParserState state) {
         if (state.isCurrentResolution(whileConditionLoop)) {
-            state.complete().popEnd();
-            state.add(markScope(builder, doLoop, whileDoLoop, m_types.C_SCOPED_EXPR, m_types.DO));
+            state.complete().
+                    popEnd().
+                    add(markScope(builder, doLoop, whileDoLoop, m_types.C_SCOPED_EXPR, m_types.DO));
         } else {
             state.add(markScope(builder, doLoop, m_types.C_SCOPED_EXPR, m_types.DO));
         }
@@ -267,7 +270,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     popEnd();
         }
         if (state.isCurrentResolution(doLoop)) {
-            state.popEnd();
+            state.advance().complete().popEnd();
         }
     }
 

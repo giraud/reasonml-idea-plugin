@@ -28,7 +28,7 @@ public class PsiElementFactory {
             return new PsiAssert(node);
         } else if (type == types.C_IF_STMT) {
             return new PsiIfStatement(node);
-        } else if (type == types.C_BIN_CONDITION) {
+        } else if (type == types.C_BIN_CONDITION || type == types.C_WHILE_CONDITION) {
             return new PsiBinaryCondition(node);
         } else if (type == types.C_TYPE_CONSTR_NAME) {
             return new PsiTypeConstrName(node);
