@@ -1,9 +1,11 @@
 package com.reason.ide.importWizard;
 
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.ide.wizard.CommitStepException;
+import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -12,10 +14,7 @@ import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.StandardFileSystems;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.VirtualFileSystem;
+import com.intellij.openapi.vfs.*;
 import com.reason.Log;
 import com.reason.OCamlSdkType;
 import com.reason.OCamlSourcesOrderRootType;
@@ -36,9 +35,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 // com.intellij.ide.util.projectWizard.ProjectJdkForModuleStep
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
-    @NotNull
+    private static final String SDK_HOME = "reasonml.sdk.home";
     private static String[] SDKS = new String[]{"4.02.3", "4.03.0", "4.04.2", "4.05.0", "4.06.1", "4.07.1", "4.08.1", "4.09.0"};
-
     private static final Log LOG = Log.create("import.sdk");
 
     private JPanel c_pnlRoot;
@@ -46,7 +44,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     private JRadioButton c_rdDownloadSdk;
     private JComboBox<String> c_selDownload;
     private JdkComboBox c_selExistingSdk;
-    private TextFieldWithBrowseButton textFieldWithBrowseButton1;
+    private TextFieldWithBrowseButton c_sdkHome;
 
     private final WizardContext m_context;
 
@@ -62,6 +60,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         ProjectSdksModel model = new ProjectSdksModel();
         model.reset(ProjectManager.getInstance().getDefaultProject());
         c_selExistingSdk = new JdkComboBox(model, sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName()));
+
     }
 
     @Override
@@ -69,6 +68,13 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         for (String sdk : SDKS) {
             c_selDownload.addItem(sdk);
         }
+
+        String value = PropertiesComponent.getInstance().getValue(SDK_HOME);
+        if (value == null) {
+            VirtualFile userHomeDir = VfsUtil.getUserHomeDir();
+            value = userHomeDir == null ? "" : userHomeDir.getCanonicalPath() + "/odk";
+        }
+        c_sdkHome.setText(value);
     }
 
     @Override
@@ -77,15 +83,40 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     }
 
     @Override
+    public boolean validate() throws ConfigurationException {
+        VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
+
+        VirtualFile sdkHome = fileSystem.findFileByPath(c_sdkHome.getText().trim());
+        if (sdkHome == null) {
+            throw new ConfigurationException("Can't find sdk home directory, make sure it exists");
+        }
+        if (!sdkHome.isDirectory()) {
+            throw new ConfigurationException("Sdk home is not a directory");
+        }
+        if (!sdkHome.isWritable()) {
+            throw new ConfigurationException("sdk home is not writable");
+        }
+
+        return super.validate();
+    }
+
+    @Override
     public void updateDataModel() {
+        String sdkHome = c_sdkHome.getText().trim();
+        if (!sdkHome.isEmpty()) {
+            PropertiesComponent.getInstance().setValue(SDK_HOME, sdkHome);
+        }
     }
 
     @Override
     public void onWizardFinished() throws CommitStepException {
-        // not now ! because of navigation !
         if (c_rdDownloadSdk.isSelected()) {
             String selectedSdk = (String) c_selDownload.getSelectedItem();
-            if (selectedSdk != null) {
+            String sdkHomeValue = PropertiesComponent.getInstance().getValue(SDK_HOME);
+            VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
+            VirtualFile sdkHome = fileSystem.findFileByPath(sdkHomeValue);
+
+            if (selectedSdk != null && sdkHome != null) {
                 int pos = selectedSdk.lastIndexOf('.');
                 String major = selectedSdk.substring(0, pos);
                 String minor = selectedSdk.substring(pos + 1);
@@ -96,7 +127,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
                 // Create SDK !
                 LOG.debug("Create SDK", selectedSdk);
-                File targetSdkLocation = new File(Platform.getPluginLocation(), "ocaml-" + selectedSdk);
+                File targetSdkLocation = new File(sdkHome.getCanonicalPath(), "ocaml-" + selectedSdk);
                 Sdk odk = SdkConfigurationUtil.createAndAddSDK(targetSdkLocation.getAbsolutePath(), new OCamlSdkType());
                 if (odk != null) {
                     SdkModificator odkModificator = odk.getSdkModificator();
@@ -122,7 +153,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     }
 
     private void addSdkSources(@NotNull SdkModificator odkModificator, @NotNull File targetSdkLocation) throws IOException {
-        VirtualFileSystem fileSystem = VirtualFileManager.getInstance().getFileSystem(StandardFileSystems.FILE_PROTOCOL);
+        VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
 
         Files.walkFileTree(targetSdkLocation.toPath(), new SimpleFileVisitor<Path>() {
             @NotNull
