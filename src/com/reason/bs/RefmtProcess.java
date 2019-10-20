@@ -2,10 +2,11 @@ package com.reason.bs;
 
 
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.reason.Joiner;
+import com.reason.Log;
 import com.reason.Streams;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
@@ -14,13 +15,11 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 
 import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
-import static com.reason.Platform.LOCAL_BS_PLATFORM;
-import static com.reason.Platform.LOCAL_NODE_MODULES_BIN;
-import static com.reason.Platform.UTF8;
+import static com.reason.Platform.*;
 
 public class RefmtProcess {
 
-    private static final Logger LOG = Logger.getInstance("ReasonML.refmt");
+    private static final Log LOG = Log.create("refmt");
 
     private final Project m_project;
 
@@ -46,7 +45,7 @@ public class RefmtProcess {
         }
 
         String columnsWidth = ReasonSettings.getInstance(m_project).getRefmtWidth();
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "--interface", Boolean.toString(isInterface), "--parse", fromFormat, "--print", toFormat, "-w", columnsWidth);
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
         }

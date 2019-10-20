@@ -177,4 +177,8 @@ public class Log {
             m_log.trace(msg);
         }
     }
+
+    public void warn(Exception e) {
+        m_log.warn(e);
+    }
 }

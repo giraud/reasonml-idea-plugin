@@ -25,17 +25,18 @@ public class ConvertAction extends AnAction {
             Bucklescript bucklescript = ServiceManager.getService(project, Bucklescript.class);
             FileType fileType = file.getFileType();
 
+            boolean isInterface = isInterface(fileType);
             if (FileHelper.isReason(fileType)) {
                 // convert ReasonML to OCaml
-                Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
+                Document document = PsiDocumentManager.getInstance(project).getDocument(file);
                 if (document != null) {
-                    bucklescript.convert(file.getVirtualFile(), isInterface(fileType), "re", "ml", document);
+                    bucklescript.convert(file.getVirtualFile(), isInterface, fileType.getDefaultExtension(), isInterface ? "mli" : "ml", document);
                 }
             } else if (FileHelper.isOCaml(fileType)) {
                 // convert OCaml to ReasonML
-                Document document = PsiDocumentManager.getInstance(project).getCachedDocument(file);
+                Document document = PsiDocumentManager.getInstance(project).getDocument(file);
                 if (document != null) {
-                    bucklescript.convert(file.getVirtualFile(), isInterface(fileType), "ml", "re", document);
+                    bucklescript.convert(file.getVirtualFile(), isInterface, fileType.getDefaultExtension(), isInterface ? "rei" : "re", document);
                 }
             }
         }
