@@ -13,12 +13,12 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OCamlSdk extends SdkType {
+public class OCamlSdkType extends SdkType {
 
     public static final String ID = "OCaml SDK";
     private static final Pattern VERSION_REGEXP = Pattern.compile(".*(\\d\\.\\d\\d).*");
 
-    public OCamlSdk() {
+    public OCamlSdkType() {
         super(ID);
     }
 
@@ -26,6 +26,10 @@ public class OCamlSdk extends SdkType {
     public static Sdk getSDK(@NotNull Project project) {
         Sdk projectSDK = ProjectRootManager.getInstance(project).getProjectSdk();
         return projectSDK != null && ID.equals(projectSDK.getSdkType().getName()) ? projectSDK : null;
+    }
+
+    public static SdkType getInstance() {
+        return SdkType.findInstance(OCamlSdkType.class);
     }
 
     @NotNull

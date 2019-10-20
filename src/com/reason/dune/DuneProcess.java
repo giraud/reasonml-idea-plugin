@@ -9,9 +9,9 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.OCamlSdk;
-import com.reason.Platform;
 import com.reason.CompilerProcessLifecycle;
+import com.reason.OCamlSdkType;
+import com.reason.Platform;
 import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -75,7 +75,7 @@ public final class DuneProcess implements CompilerProcessLifecycle {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine() {
-        Sdk odk = OCamlSdk.getSDK(m_project);
+        Sdk odk = OCamlSdkType.getSDK(m_project);
         if (odk == null) {
             Notifications.Bus.notify(new ORNotification("Dune",
                     "<html>Can't find sdk.\n"

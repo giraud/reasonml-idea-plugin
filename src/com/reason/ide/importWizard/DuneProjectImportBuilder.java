@@ -1,0 +1,140 @@
+package com.reason.ide.importWizard;
+
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.ModifiableModuleModel;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkTypeId;
+import com.intellij.openapi.roots.ContentEntry;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
+import com.intellij.openapi.vfs.*;
+import com.intellij.packaging.artifacts.ModifiableArtifactModel;
+import com.intellij.projectImport.ProjectImportBuilder;
+import com.reason.Icons;
+import com.reason.Log;
+import com.reason.OCamlSdkType;
+import com.reason.module.OCamlModuleType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder <- abstractImport ?
+public class DuneProjectImportBuilder extends ProjectImportBuilder {
+
+    private static final Log LOG = Log.create("import.builder");
+
+    @Nullable
+    private Sdk m_sdk;
+
+    @NotNull
+    @Override
+    public String getName() {
+        return "Dune (OCaml)";
+    }
+
+    @Override
+    public Icon getIcon() {
+        return Icons.DUNE;
+    }
+
+    @Override
+    public boolean isSuitableSdkType(SdkTypeId sdkType) {
+        return sdkType == OCamlSdkType.getInstance();
+    }
+
+    @Override
+    public List getList() {
+        return null;
+    }
+
+    @Override
+    public boolean isMarked(Object element) {
+        return false;
+    }
+
+    @Override
+    public void setList(List list) {
+    }
+
+    @Override
+    public void setOpenProjectSettingsAfter(boolean on) {
+    }
+
+    @Nullable
+    @Override
+    public List<Module> commit(Project project, ModifiableModuleModel moduleModel, ModulesProvider modulesProvider, ModifiableArtifactModel artifactModel) {
+        List<Module> createdModules = new ArrayList<>();
+
+        String ideaModuleDirPath = project.getBasePath();
+        if (ideaModuleDirPath != null) {
+            String ideaModuleFile = ideaModuleDirPath + File.separator + project.getName() + ".iml";
+
+            // Creating the OCaml module
+
+            ModifiableModuleModel obtainedModuleModel =
+                    moduleModel != null ? moduleModel : ModuleManager.getInstance(project).getModifiableModel();
+
+            Module module = obtainedModuleModel.newModule(ideaModuleFile, OCamlModuleType.getInstance().getId());
+            createdModules.add(module);
+
+            ModifiableRootModel rootModel = ModuleRootManager.getInstance(module).getModifiableModel();
+            rootModel.inheritSdk();
+
+            // Initialize source and test paths.
+
+            VirtualFile rootDir = LocalFileSystem.getInstance().findFileByPath(ideaModuleDirPath);
+            if (rootDir != null) {
+                ContentEntry content = rootModel.addContentEntry(rootDir);
+
+                try {
+                    Path rootPath = new File(ideaModuleDirPath).toPath();
+                    Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path path, BasicFileAttributes basicFileAttributes) {
+                            if ("dune".equals(path.getFileName().toString())) {
+                                VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path.toString());
+                                VirtualFile dir = file == null ? null : file.getParent();
+                                if (dir != null) {
+                                    content.addSourceFolder(dir, false);
+                                }
+                            }
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Commit project structure.
+            ApplicationManager.getApplication().runWriteAction(() -> {
+                rootModel.commit();
+                obtainedModuleModel.commit();
+                ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
+            });
+        }
+
+        return createdModules;
+    }
+
+    void setModuleSdk(@NotNull Sdk sdk) {
+        m_sdk = sdk;
+    }
+}

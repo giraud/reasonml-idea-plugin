@@ -15,7 +15,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.messages.MessageBusConnection;
-import com.reason.OCamlSdk;
+import com.reason.OCamlSdkType;
 import com.reason.OCamlSourcesOrderRootType;
 import com.reason.ide.format.ReformatOnSave;
 import gnu.trove.Equality;
@@ -50,7 +50,7 @@ public class ORProjectTracker implements ProjectComponent {
                             Project project = (Project) event.getSource();
                             if (!project.isDisposed()) {
                                 Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
-                                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdk) {
+                                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
                                     // Hack to get OCaml sources indexed like java sources
                                     // Find a better way to do it !!
                                     VirtualFile[] ocamlSources = projectSdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());

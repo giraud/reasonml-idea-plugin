@@ -1,5 +1,8 @@
 package com.reason;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -9,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -19,7 +23,7 @@ public class Platform {
 
     public static final String LOCAL_BS_PLATFORM = "/node_modules/bs-platform";
     public static final String LOCAL_NODE_MODULES_BIN = "/node_modules/.bin";
-    public static final Charset UTF8 = Charset.forName("UTF-8");
+    public static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private static final Map<Project, VirtualFile> m_baseDirs = new HashMap<>();
 
@@ -41,6 +45,13 @@ public class Platform {
         }
 
         return "";
+    }
+
+    @NotNull
+    public static File getPluginLocation() {
+        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
+        assert plugin != null;
+        return plugin.getPath();
     }
 
     @NotNull

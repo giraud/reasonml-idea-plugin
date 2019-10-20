@@ -73,63 +73,14 @@ public class RincewindDownloader extends Task.Backgroundable {
             indicator.setIndeterminate(false);
             indicator.setFraction(0.0);
 
-            try {
-                // some code
-                File partFile = new File(targetFile.getPath() + ".part");
-
-                if (partFile.exists()) {
-                    //noinspection ResultOfMethodCallIgnored
-                    partFile.delete();
-                }
-
-                //noinspection ResultOfMethodCallIgnored
-                partFile.createNewFile();
-
-                FileOutputStream partFileOut = new FileOutputStream(partFile);
-
-                java.net.URL url = new URL(DOWNLOAD_URL + insightManager.getRincewindFilename(m_sourceFile));
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setDoOutput(true);
-
-                connection.setConnectTimeout(240 * 1000);
-                connection.setReadTimeout(240 * 1000);
-
-                InputStream inputStream = connection.getInputStream();
-
-                double totalBytesDownloaded = 0.0;
-
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int bytesRead = inputStream.read(buffer);
-                while (bytesRead >= 0) {
-                    indicator.setFraction(totalBytesDownloaded / TOTAL_BYTES);
-                    totalBytesDownloaded += bytesRead;
-
-                    partFileOut.write(buffer, 0, bytesRead);
-                    bytesRead = inputStream.read(buffer);
-                }
-
-                connection.disconnect();
-                partFileOut.close();
-                inputStream.close();
-
-                java.nio.file.Files.move(partFile.toPath(), targetFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
-                if (!SystemInfo.isWindows) {
-                    //noinspection ResultOfMethodCallIgnored
-                    targetFile.setExecutable(true);
-                }
-
+            boolean downloaded = WGet.apply(DOWNLOAD_URL + insightManager.getRincewindFilename(m_sourceFile), targetFile, indicator, TOTAL_BYTES);
+            if (downloaded) {
                 insightManager.isDownloaded.set(true);
-                LOG.info(targetFile.getName() + " downloaded to " + targetFile.toPath().getParent());
-
-                Notifications.Bus.notify(new ORNotification("Reason", "Downloaded " + targetFile, NotificationType.INFORMATION));
 
                 Application application = ApplicationManager.getApplication();
                 application.invokeLater(() -> application.runWriteAction(() -> {
                     VirtualFileManager.getInstance().syncRefresh();
                 }));
-            } catch (IOException e) {
-                Notifications.Bus.notify(new ORNotification("Reason", "Can't download " + targetFile + "\n" + e, NotificationType.ERROR));
             }
 
             indicator.setFraction(1.0);

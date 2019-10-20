@@ -1,12 +1,19 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <sdkType implementation="com.reason.OCamlSdk"/>
+        <sdkType implementation="com.reason.OCamlSdkType"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
         <moduleConfigurationEditorProvider implementation="com.reason.module.OCamlDefaultModuleEditorsProvider"/>
         <projectStructure.sourceRootEditHandler implementation="com.reason.module.OCamlBinaryRootEditHandler"/>
 
         <orderRootType implementation="com.reason.OCamlSourcesOrderRootType"/>
         <OrderRootTypeUI key="OCAML_SOURCES" implementationClass="com.reason.OCamlSourcesOrderRootTypeUIFactory"/>
+
+        <!--
+         | External system integration (the import from model...)
+         -->
+
+        <projectImportProvider implementation="com.reason.ide.importWizard.DuneProjectImportProvider"/>
+        <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>
 
         <!--
          | OCaml module builder

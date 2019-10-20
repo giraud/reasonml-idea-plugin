@@ -49,7 +49,7 @@ allprojects {
 
     runIde {
         systemProperty "refmtWidth", "120"
-        jvmArgs = ['-Dcompiler.process.debug.port=5005', '-Xmx1024m']
+        jvmArgs = ['--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED', '-Dcompiler.process.debug.port=5005', '-Xmx1024m']
     }
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
