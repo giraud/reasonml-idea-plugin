@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORElementFactory;
-import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLocalOpen;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.Nls;
@@ -40,7 +39,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
 
     @Override
     void runInvoke(@NotNull Project project, @NotNull PsiLocalOpen parentElement) {
-        // parentElement is the scope: Module.Module «( .. )»
+        // parentElement is the scope: Module.Module «( ... )»
         RmlTypes types = RmlTypes.INSTANCE;
         PsiElement grandParentElement = parentElement.getParent();
 

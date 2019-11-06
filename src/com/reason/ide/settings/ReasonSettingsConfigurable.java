@@ -50,7 +50,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
         f_bsLocation.addBrowseFolderListener("Choose bs-platform directory: ", null, m_settings.getProject(),
                 FileChooserDescriptorFactory.createSingleFolderDescriptor());
 
-        f_workingDir.addBrowseFolderListener("Choose working directory: ", null, m_settings.getProject(),
+        f_workingDir.addBrowseFolderListener("Choose a working directory: ", null, m_settings.getProject(),
                 FileChooserDescriptorFactory.createSingleFolderDescriptor());
 
         return f_rootPanel;

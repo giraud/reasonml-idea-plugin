@@ -97,7 +97,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
             ModifiableRootModel rootModel = ModuleRootManager.getInstance(module).getModifiableModel();
             rootModel.inheritSdk();
 
-            // Initialize source and test paths.
+            // Initialize the source and the test paths.
 
             VirtualFile rootDir = LocalFileSystem.getInstance().findFileByPath(ideaModuleDirPath);
             if (rootDir != null) {

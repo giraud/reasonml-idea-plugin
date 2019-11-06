@@ -72,7 +72,7 @@ public class DuneOutputListener implements ProcessListener {
         m_bsbInfo.clear();
 
         ApplicationManager.getApplication().invokeLater(() -> {
-            // When build is done, we need to refresh editors to be notified of latest modifications
+            // When a build is done, we need to refresh editors to be notified of the latest modifications
             DaemonCodeAnalyzer.getInstance(m_project).restart();
             EditorFactory.getInstance().refreshAllEditors();
             InferredTypesService.queryForSelectedTextEditor(m_project);

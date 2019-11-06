@@ -6,7 +6,7 @@ import org.jetbrains.jps.model.ex.JpsElementBase;
 
 public class OCamlBinaryRootProperties extends JpsElementBase<OCamlBinaryRootProperties> {
     @NotNull
-    private String m_relativeOutputPath = "";
+    private String m_relativeOutputPath;
     private boolean m_forGeneratedSources;
 
     public OCamlBinaryRootProperties(@NotNull String relativeOutputPath, boolean forGeneratedSources) {

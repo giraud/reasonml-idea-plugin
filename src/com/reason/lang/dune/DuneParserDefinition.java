@@ -13,7 +13,6 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.DuneFile;
-import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class DuneParserDefinition implements ParserDefinition {

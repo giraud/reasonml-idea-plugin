@@ -158,7 +158,7 @@ public class BucklescriptImpl implements Bucklescript {
         if (m_disabled == null) {
             m_disabled = Boolean.getBoolean("reasonBsbDisabled");
             if (m_disabled) {
-                // But you should NEVER do that
+                // Possible but you should NEVER do that
                 Notifications.Bus.notify(new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
             }
         }

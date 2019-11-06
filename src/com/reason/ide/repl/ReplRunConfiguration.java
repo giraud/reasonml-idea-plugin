@@ -100,7 +100,7 @@ public class ReplRunConfiguration extends RunConfigurationBase {
                     }
                 }
             }
-            m_cygwinEnabled = Boolean.valueOf(node.getAttributeValue("cygwin"));
+            m_cygwinEnabled = Boolean.parseBoolean(node.getAttributeValue("cygwin"));
             m_cygwinPath = node.getAttributeValue("cygwinPath");
         }
     }

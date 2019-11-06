@@ -169,7 +169,7 @@ public final class PsiFinder {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("    keep (in config)");
+            LOG.debug("    keep (in the config)");
             for (PsiModule item : result) {
                 LOG.debug("      " + item.getQualifiedName() + " " + item.getContainingFile().getVirtualFile().getPath());
             }
@@ -278,7 +278,7 @@ public final class PsiFinder {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("    keep (in config)");
+            LOG.debug("    keep (in the config)");
             for (T item : result) {
                 LOG.debug("      " + item.getQualifiedName() + " " + item.getContainingFile().getVirtualFile().getPath());
             }

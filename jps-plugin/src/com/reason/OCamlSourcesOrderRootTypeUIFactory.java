@@ -39,7 +39,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
 
     @Override
     public Icon getIcon() {
-        return AllIcons.Nodes.SourceFolder;
+        return AllIcons.Nodes.Package;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
             return VfsUtil.toVirtualFileArray(result);
         }
 
-        private class OCamlRootsDetector extends LibraryRootsDetector {
+        private static class OCamlRootsDetector extends LibraryRootsDetector {
             @NotNull
             @Override
             public Collection<DetectedLibraryRoot> detectRoots(@NotNull VirtualFile rootCandidate, @NotNull ProgressIndicator progressIndicator) {

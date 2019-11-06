@@ -12,8 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-import static java.util.Collections.emptyList;
-
 public class PsiFunctionImpl extends PsiToken<ORTypes> implements PsiFunction {
 
     public PsiFunctionImpl(@NotNull ORTypes types, @NotNull ASTNode node) {

@@ -40,7 +40,7 @@
             <add-to-group group-id="EditMenu" anchor="last"/>
         </action>
         <action id="reason.actions.testData.Navigate" class="com.reason.ide.testAssistant.GotoTestDataAction"
-                text="Navigate to testdata" use-shortcut-of="GotoTest">
+                text="Navigate to Testdata" use-shortcut-of="GotoTest">
         </action>
     </actions>
 

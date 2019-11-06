@@ -117,7 +117,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                         return variant;
                     }
 
-                    // Trying to resolve variant from name,
+                    // Trying to resolve variant from the name,
                     // Variant might be locally open with module name only - and not including type name... qn can't be used
                     Collection<PsiVariantDeclaration> variants = psiFinder.findVariantByName(path, m_referenceName, scope);
                     if (variants.size() == 1) {

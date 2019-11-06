@@ -69,7 +69,7 @@ public class FreeExpressionCompletionProvider {
         Set<String> paths = qnameFinder.extractPotentialPaths(element, EnumSet.noneOf(QNameFinder.Includes.class), false);
         LOG.debug("potential paths", paths);
 
-        // Add paths (opens and local opens for ex)
+        // Add paths (opens and local opens for example)
         for (String path : paths) {
             PsiModule module = psiFinder.findModuleFromQn(path);
             if (module != null) {

@@ -34,7 +34,7 @@ public class ModuleHelper {
 
         // JSX 2
 
-        // Try to find if it's a proxy to a react class
+        // Try to find if it's a proxy to a React class
         List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiExternal.class);
         for (PsiExternal external : externals) {
             if ("ReasonReact.reactClass".equals(external.getORSignature().asString(element.getLanguage()))) {
@@ -43,7 +43,7 @@ public class ModuleHelper {
             }
         }
 
-        // Try to find a make and a component (if not a proxy) functions
+        // Try to find a make function and a component (if not a proxy) functions
         List<PsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(element, PsiLet.class);
         for (PsiLet let : expressions) {
             if (componentDef == null && "component".equals(let.getName())) {

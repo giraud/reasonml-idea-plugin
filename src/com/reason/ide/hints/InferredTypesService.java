@@ -74,7 +74,7 @@ public class InferredTypesService {
                 }
             }
         } catch (Error e) {
-            // might produce an AssertionError when project is disposed but the invokeLater still process that code
+            // might produce an AssertionError when project is being disposed, but the invokeLater still process that code
         }
     }
 

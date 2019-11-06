@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
- * Type of an OCaml native project.
+ * Type of OCaml native project.
  */
 public class OCamlModuleType extends ModuleType<OCamlModuleBuilder> {
 

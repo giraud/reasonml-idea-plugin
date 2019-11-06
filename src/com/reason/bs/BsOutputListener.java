@@ -73,7 +73,7 @@ public class BsOutputListener implements RawProcessListener {
 
         ApplicationManager.getApplication().invokeLater(() -> {
             if (!m_project.isDisposed()) {
-                // When build is done, we need to refresh editors to be notified of latest modifications
+                // When build is done, we need to refresh editors to be notified of the latest modifications
                 DaemonCodeAnalyzer.getInstance(m_project).restart();
                 EditorFactory.getInstance().refreshAllEditors();
                 InferredTypesService.queryForSelectedTextEditor(m_project);

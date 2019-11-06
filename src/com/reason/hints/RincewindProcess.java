@@ -81,6 +81,6 @@ public class RincewindProcess {
         String[] pos = location.split("\\.");
         int line = Integer.parseInt(pos[0]) - 1;
         int column = Integer.parseInt(pos[1]);
-        return new LogicalPosition(line < 0 ? 0 : line, column < 0 ? 0 : column);
+        return new LogicalPosition(Math.max(line, 0), Math.max(column, 0));
     }
 }

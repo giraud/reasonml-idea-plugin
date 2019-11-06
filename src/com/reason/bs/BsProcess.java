@@ -134,7 +134,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
         if (bsbPath == null) {
             Notifications.Bus.notify(new ORNotification("Bsb",
                     "<html>Can't find bsb.\n"
-                            + "Working directory is '" + ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile) + "'.\n"
+                            + "The working directory is '" + ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile) + "'.\n"
                             + "Be sure that bsb is installed and reachable from that directory, "
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));

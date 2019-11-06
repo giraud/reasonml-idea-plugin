@@ -33,7 +33,7 @@ public class PsiJsObject extends ASTWrapperPsiElement implements PsiLanguageConv
             return getText();
         }
 
-        String convertedText = null;
+        String convertedText;
 
         if (language == OclLanguage.INSTANCE) {
             // Convert from Reason to OCaml

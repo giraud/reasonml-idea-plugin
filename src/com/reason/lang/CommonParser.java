@@ -30,7 +30,6 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
 //        try {
         parseLight(elementType, builder);
-        //noinspection UnnecessaryLocalVariable
         treeBuilt = builder.getTreeBuilt();
 //        }
 //        finally {
@@ -51,7 +50,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         ParserState state = new ParserState(builder, fileScope);
         parseFile(builder, state);
 
-        // if we have a scope at last position in file, without SEMI, we need to handle it here
+        // if we have a scope at last position in a file, without SEMI, we need to handle it here
         if (!state.empty()) {
             state.clear();
         }

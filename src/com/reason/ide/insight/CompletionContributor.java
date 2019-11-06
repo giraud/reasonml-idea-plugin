@@ -50,7 +50,7 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
                 // Just after an open/include keyword
                 if (prevNodeType == types.OPEN || prevNodeType == types.INCLUDE) {
-                    LOG.debug("previous keyword is OPEN/INCLUDE");
+                    LOG.debug("the previous keyword is OPEN/INCLUDE");
                     ModuleCompletionProvider.addCompletions(types, element, result);
                     return;
                 }
@@ -62,13 +62,13 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
                 // Just after a DOT
                 if (prevNodeType == types.DOT) {
-                    LOG.debug("previous element is DOT");
+                    LOG.debug("the previous element is DOT");
                     DotExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
                     return;
                 }
 
                 if (prevNodeType == types.SHARPSHARP) {
-                    LOG.debug("previous element is SHARPSHARP");
+                    LOG.debug("the previous element is SHARPSHARP");
                     ObjectCompletionProvider.addCompletions(types, element, result);
                     return;
                 }

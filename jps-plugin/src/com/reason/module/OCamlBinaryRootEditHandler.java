@@ -56,8 +56,8 @@ public class OCamlBinaryRootEditHandler extends ModuleSourceRootEditHandler<OCam
     public JComponent createPropertiesEditor(@NotNull final SourceFolder folder,
                                              @NotNull final JComponent parentComponent,
                                              @NotNull final ContentRootPanel.ActionCallback callback) {
-        final IconActionComponent iconComponent = new IconActionComponent(AllIcons.Modules.SetPackagePrefix,
-                AllIcons.Modules.SetPackagePrefixRollover,
+        final IconActionComponent iconComponent = new IconActionComponent(AllIcons.General.Inline_edit,
+                AllIcons.General.Inline_edit_hovered,
                 ProjectBundle.message("module.paths.edit.properties.tooltip"),
                 () -> {
                     OCamlBinaryRootProperties properties = folder.getJpsElement().getProperties(OCamlBinaryRootType.BINARY);

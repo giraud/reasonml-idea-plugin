@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ocamlyacc.OclYaccTypes.*;
 
-@SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class OclYaccParser implements PsiParser, LightPsiParser {
 
     @NotNull

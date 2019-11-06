@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Listen to editor events and query merlin for types when editor get the focus.
+ * Listen to editor events and query merlin for types when editor gets the focus.
  */
 public class ORFileEditorListener implements FileEditorManagerListener {
 
