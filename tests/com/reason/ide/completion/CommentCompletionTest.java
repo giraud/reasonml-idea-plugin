@@ -2,10 +2,12 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class CommentCompletionTest extends BasePlatformTestCase {
+    @NotNull
     @Override
     protected String getTestDataPath() {
         return "testData/com/reason/lang";

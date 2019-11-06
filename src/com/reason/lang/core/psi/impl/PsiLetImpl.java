@@ -295,6 +295,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return ORUtil.getQualifiedName(this);
     }
 
+    @NotNull
     @Override
     public String getQualifiedPath() {
         return ORUtil.getQualifiedPath(this); // stub + name using this

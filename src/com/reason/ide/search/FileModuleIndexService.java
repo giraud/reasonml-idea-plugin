@@ -29,10 +29,12 @@ public class FileModuleIndexService {
         return ServiceManager.getService(FileModuleIndexService.class);
     }
 
+    @NotNull
     public Collection<String> getNamespaces(@NotNull Project project) {
         return FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project);
     }
 
+    @NotNull
     public Collection<String> getAllModules(@NotNull Project project) {
         return FileBasedIndex.getInstance().getAllKeys(m_index.getName(), project);
     }
@@ -56,7 +58,7 @@ public class FileModuleIndexService {
     }
 
     @Nullable
-    public VirtualFile getFile(String moduleName, GlobalSearchScope scope) {
+    public VirtualFile getFile(String moduleName, @NotNull GlobalSearchScope scope) {
         Collection<VirtualFile> filesWithName = getFilesWithName(moduleName, scope);
         if (1 < filesWithName.size()) {
             for (VirtualFile virtualFile : filesWithName) {
@@ -105,6 +107,7 @@ public class FileModuleIndexService {
         return interfaceFiles;
     }
 
+    @NotNull
     public Collection<VirtualFile> getImplementationFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();
@@ -149,6 +152,7 @@ public class FileModuleIndexService {
         return result;
     }
 
+    @NotNull
     public Collection<IndexedFileModule> getFilesForNamespace(@NotNull String namespace, boolean includeComponents, @NotNull GlobalSearchScope scope) {
         Collection<IndexedFileModule> result = new ArrayList<>();
 
@@ -175,6 +179,7 @@ public class FileModuleIndexService {
         return result;
     }
 
+    @NotNull
     public Collection<VirtualFile> getComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
         Set<VirtualFile> files = new THashSet<>();
         FileBasedIndex instance = FileBasedIndex.getInstance();

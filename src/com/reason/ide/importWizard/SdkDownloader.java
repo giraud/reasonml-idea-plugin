@@ -23,9 +23,12 @@ import static com.intellij.notification.NotificationType.ERROR;
 
 class SdkDownloader extends Task.Modal {
 
+    @NotNull
     private static Condition<String> KEEP_OCAML_SOURCES = s -> s.endsWith(".ml") || s.endsWith(".mli") || s.endsWith(".ml4") || s.endsWith(".mll") || s.endsWith(".mly");
 
+    @NotNull
     private final String m_sdk;
+    @NotNull
     private final String m_major;
 
     SdkDownloader(@NotNull String major, @NotNull String minor, @Nullable Project project) {
@@ -60,7 +63,8 @@ class SdkDownloader extends Task.Modal {
         }
     }
 
-    private File uncompress(File source) throws IOException {
+    @NotNull
+    private File uncompress(@NotNull File source) throws IOException {
         byte[] buffer = new byte[1024];
 
         String absolutePath = source.getAbsolutePath();

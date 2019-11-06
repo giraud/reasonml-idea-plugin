@@ -18,6 +18,7 @@ public class PsiWhile extends PsiToken<ORTypes> {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiBinaryCondition.class);
     }
 
+    @Nullable
     public PsiScopedExpr getBody() {
         return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
     }

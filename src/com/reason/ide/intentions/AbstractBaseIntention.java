@@ -25,18 +25,22 @@ abstract class AbstractBaseIntention<T extends PsiElement> implements IntentionA
         return false;
     }
 
+    @NotNull
     abstract Class<T> getClazz();
 
     abstract boolean isAvailable(@NotNull Project project, @NotNull T parentElement);
 
     @Override
     public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file) throws IncorrectOperationException {
-        if (!FileModificationService.getInstance().prepareFileForWrite(file)) return;
+        if (!FileModificationService.getInstance().prepareFileForWrite(file)) {
+            return;
+        }
 
         PsiDocumentManager.getInstance(project).commitAllDocuments();
         T parentAtCaret = getParentAtCaret(editor, file);
-        if (parentAtCaret != null)
+        if (parentAtCaret != null) {
             ApplicationManager.getApplication().runWriteAction(() -> runInvoke(project, parentAtCaret));
+        }
     }
 
     abstract void runInvoke(@NotNull Project project, @NotNull T parentElement);

@@ -26,7 +26,7 @@ public class OclParser extends CommonParser<OclTypes> {
         super(OclTypes.INSTANCE);
     }
 
-    public static ASTNode parseOcamlNode(ILazyParseableElementType root, ASTNode chameleon) {
+    public static ASTNode parseOcamlNode(@NotNull ILazyParseableElementType root, @NotNull ASTNode chameleon) {
         PsiElement parentElement = chameleon.getTreeParent().getPsi();
         Project project = parentElement.getProject();
 
@@ -196,25 +196,25 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseRaise(PsiBuilder builder, ParserState state) {
+    private void parseRaise(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(external)) {
             builder.remapCurrentToken(m_types.LIDENT);
             state.wrapWith(m_types.C_LOWER_SYMBOL).updateCurrentResolution(externalNamed).complete();
         }
     }
 
-    private void parseLArray(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseLArray(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(markScope(builder, array, m_types.C_SCOPED_EXPR, m_types.LARRAY));
     }
 
-    private void parseRArray(ParserState state) {
+    private void parseRArray(@NotNull ParserState state) {
         state.popEndUntilContext(array);
         if (state.isCurrentResolution(array)) {
             state.popEnd();
         }
     }
 
-    private void parseLt(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseLt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (!state.isCurrentResolution(whileConditionLoop)) {
             state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT)).
                     advance().
@@ -245,13 +245,13 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseWhile(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseWhile(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(markScope(builder, whileLoop, m_types.C_WHILE, m_types.WHILE)).
                 advance().
                 add(mark(builder, whileLoop, whileConditionLoop, m_types.C_WHILE_CONDITION));
     }
 
-    private void parseDo(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseDo(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(whileConditionLoop)) {
             state.complete().
                     popEnd().
@@ -261,7 +261,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseDone(ParserState state) {
+    private void parseDone(@NotNull ParserState state) {
         state.popEndUntilContext(doLoop);
         if (state.isCurrentResolution(whileDoLoop)) {
             state.advance().
@@ -274,7 +274,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseRightArrow(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseRightArrow(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(signatureItem)) {
             state.popEnd().
                     advance().
@@ -294,14 +294,14 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseUnderscore(ParserState state) {
+    private void parseUnderscore(@NotNull ParserState state) {
         if (state.isCurrentResolution(let)) {
             state.updateCurrentResolution(letNamed);
             state.complete();
         }
     }
 
-    private void parseAssert(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseAssert(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(mark(builder, assert_, m_types.C_ASSERT_STMT).complete());
     }
 
@@ -331,7 +331,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void endUntilStartExpression(ParserState state) {
+    private void endUntilStartExpression(@NotNull ParserState state) {
         ParserScopeEnum context = state.currentContext();
         while (context != let && context != type && context != moduleDeclaration && context != assert_) {
             if (context == file || state.isInScopeExpression()) {
@@ -342,7 +342,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parsePipe(@NotNull PsiBuilder builder, ParserState state) {
+    private void parsePipe(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(typeNamedEq)) {
             state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
         } else if (state.isCurrentResolution(typeNamedEqVariant)) {
@@ -363,19 +363,19 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseMatch(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseMatch(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(mark(builder, match, m_types.C_MATCH_EXPR).complete())
                 .advance()
                 .add(mark(builder, matchBinaryCondition, m_types.C_BIN_CONDITION).complete());
     }
 
-    private void parseTry(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseTry(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(mark(builder, try_, m_types.C_TRY_EXPR).complete()).
                 advance().
                 add(mark(builder, try_, tryBody, m_types.C_TRY_BODY).complete());
     }
 
-    private void parseWith(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseWith(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentContext(moduleInstanciation)) {
             // this is incorrect, it might comes from:
             // module Constraint : Set.S with type elt = univ_constraint
@@ -403,26 +403,26 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseIf(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseIf(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(mark(builder, if_, m_types.C_IF_STMT).complete())
                 .advance()
                 .add(mark(builder, binaryCondition, m_types.C_BIN_CONDITION).complete());
     }
 
-    private void parseThen(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseThen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (!state.isCurrentContext(directive)) {
             state.popEndUntilContext(if_);
             state.advance().add(mark(builder, ifThenStatement, m_types.C_SCOPED_EXPR).complete());
         }
     }
 
-    private void parseElse(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseElse(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.popEndUntilContext(if_);
         state.advance()
                 .add(mark(builder, ifElseStatement, m_types.C_SCOPED_EXPR).complete());
     }
 
-    private void parseStruct(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseStruct(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedSignatureEq)) {
             state.popEndUntilContext(moduleDeclaration);
             state.add(markScope(builder, moduleBinding, m_types.C_SCOPED_EXPR, m_types.STRUCT));
@@ -434,7 +434,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseSig(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseSig(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentContext(moduleDeclaration)) {
             if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedColon)) {
                 state.popEndUntilContext(moduleDeclaration);
@@ -447,7 +447,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseSemi(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseSemi(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(recordField)) {
             // SEMI ends the field, and starts a new one
             state.complete();
@@ -473,11 +473,11 @@ public class OclParser extends CommonParser<OclTypes> {
         state.popEnd();
     }
 
-    private void parseBegin(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseBegin(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(markScope(builder, beginScope, m_types.C_SCOPED_EXPR, m_types.BEGIN));
     }
 
-    private void parseObject(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseObject(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(clazzNamedEq)) {
             state.add(markScope(builder, clazzBodyScope, m_types.C_SCOPED_EXPR, m_types.OBJECT));
         } else {
@@ -485,7 +485,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseEnd(ParserState state) {
+    private void parseEnd(@NotNull ParserState state) {
         ParserScope scope = state.popEndUntilOneOfElementType(m_types.BEGIN, m_types.SIG, m_types.STRUCT, m_types.OBJECT);
         state.advance();
 
@@ -495,7 +495,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseColon(@NotNull PsiBuilder builder, ParserState state) { // :
+    private void parseColon(@NotNull PsiBuilder builder, @NotNull ParserState state) { // :
         if (state.isCurrentResolution(moduleNamed)) {
             state.updateCurrentResolution(moduleNamedColon).complete();
         } else if (state.isCurrentResolution(functorNamed)) {
@@ -525,7 +525,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseQuestionMark(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseQuestionMark(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
             // Start of a new optional parameter
             //    .. ( xxx |>?<|yyy ) ..
@@ -535,14 +535,14 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseFunction(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseFunction(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.advance();
         if (builder.getTokenType() != m_types.PIPE) {
             state.add(mark(builder, state.currentContext(), patternMatch, m_types.C_PATTERN_MATCH_EXPR).complete());
         }
     }
 
-    private void parseFun(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseFun(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentContext(letBinding)) {
             state.add(markScope(builder, function, m_types.C_FUN_EXPR, m_types.FUN).complete());
             state.advance();
@@ -550,7 +550,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseEq(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseEq(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentContext(signature)) {
             state.popEndWhileContext(signature);
         } else if (state.isCurrentResolution(typeNamedEq)) {
@@ -622,7 +622,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseOf(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseOf(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(typeNamedEqVariant)) {
             // Variant params :: type t = | Variant «of» ..
             state.add(mark(builder, variantConstructor, variantConstructorParameters, m_types.C_FUN_PARAMS).complete()).
@@ -631,7 +631,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseStar(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseStar(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(variantConstructorParameter)) {
             // Variant params :: type t = | Variant of x <*> y .. )
             state.popEnd().
@@ -640,14 +640,14 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseArrobase(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseArrobase(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(annotation)) {
             state.complete();
             state.add(mark(builder, annotationName, m_types.C_MACRO_NAME).complete());
         }
     }
 
-    private void parseLParen(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseLParen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Detecting a local open : M1.M2.<(> .. )
             state.add(markScope(builder, localOpenScope, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
@@ -698,7 +698,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseRParen(ParserState state) {
+    private void parseRParen(@NotNull ParserState state) {
         ParserScope scope = state.endUntilScopeToken(m_types.LPAREN);
         state.advance();
 
@@ -715,7 +715,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseLBrace(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseLBrace(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(functionParameters)) {
             state.add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
         }
@@ -725,7 +725,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.add(mark(builder, recordField, m_types.C_RECORD_FIELD));
     }
 
-    private void parseRBrace(ParserState state) {
+    private void parseRBrace(@NotNull ParserState state) {
         if (state.isCurrentResolution(recordField) && state.previousElementType1 != m_types.SEMI) {
             state.complete();
         }
@@ -739,7 +739,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseLBracket(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseLBracket(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(clazz)) {
             state.add(markScope(builder, clazzDeclaration, bracket, m_types.C_CLASS_PARAMS, m_types.LBRACKET));
         } else {
@@ -754,11 +754,11 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseBracketGt(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseBracketGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.add(markScope(builder, bracketGt, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
     }
 
-    private void parseRBracket(ParserState state) {
+    private void parseRBracket(@NotNull ParserState state) {
         ParserScope scope = state.endUntilScopeToken(m_types.LBRACKET);
         state.advance();
 
@@ -770,7 +770,7 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseLIdent(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseLIdent(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(typeConstrName)) {
             state.updateCurrentResolution(typeNamed);
             state.complete();
@@ -802,7 +802,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.wrapWith(m_types.C_LOWER_SYMBOL);
     }
 
-    private void transitionToLetNamed(PsiBuilder builder, ParserState state) {
+    private void transitionToLetNamed(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.updateCurrentResolution(letNamed).complete().
                 wrapWith(m_types.C_LOWER_SYMBOL);
         IElementType tokenType = builder.getTokenType();
@@ -814,7 +814,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     }
 
-    private void parseUIdent(PsiBuilder builder, @NotNull ParserState state) {
+    private void parseUIdent(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (DUMMY_IDENTIFIER_TRIMMED.equals(builder.getTokenText())) {
             return;
         }
@@ -861,7 +861,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.wrapWith(m_types.C_UPPER_SYMBOL);
     }
 
-    private void parseOpen(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseOpen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(let)) {
             // let open X (coq/indtypes.ml)
             state.updateCurrentResolution(open);
@@ -882,7 +882,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.add(mark(builder, external, m_types.C_EXTERNAL_STMT));
     }
 
-    private void parseType(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseType(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
             if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
                 state.updateCurrentResolution(moduleNamedWithType);
@@ -895,23 +895,23 @@ public class OclParser extends CommonParser<OclTypes> {
         }
     }
 
-    private void parseException(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseException(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.previousElementType1 != m_types.PIPE) {
             endLikeSemi(state);
             state.add(mark(builder, exception, m_types.C_EXCEPTION_EXPR));
         }
     }
 
-    private void parseDirectiveIf(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseDirectiveIf(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         endLikeSemi(state);
         state.add(mark(builder, directive, m_types.C_DIRECTIVE).setIsStart(true));
     }
 
-    private void parseDirectiveElse(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseDirectiveElse(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         endLikeSemi(state);
     }
 
-    private void parseDirectiveEnd(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseDirectiveEnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.popEndUntilContext(directive);
         if (state.isCurrentContext(directive)) {
             state.complete().advance().popEnd();
@@ -933,7 +933,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.add(mark(builder, let, m_types.C_LET_STMT));
     }
 
-    private void parseModule(@NotNull PsiBuilder builder, ParserState state) {
+    private void parseModule(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(let)) {
             state.updateCurrentContext(moduleDeclaration).
                     updateCurrentResolution(module).
@@ -949,7 +949,7 @@ public class OclParser extends CommonParser<OclTypes> {
         state.add(mark(builder, clazzDeclaration, clazz, m_types.C_CLASS_STMT));
     }
 
-    private void endLikeSemi(ParserState state) {
+    private void endLikeSemi(@NotNull ParserState state) {
         if (state.previousElementType1 != m_types.EQ && state.previousElementType1 != m_types.RIGHT_ARROW &&
                 state.previousElementType1 != m_types.TRY && state.previousElementType1 != m_types.SEMI &&
                 state.previousElementType1 != m_types.THEN && state.previousElementType1 != m_types.ELSE &&

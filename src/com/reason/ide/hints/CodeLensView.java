@@ -35,7 +35,7 @@ public class CodeLensView {
             signaturesPerLine.putAll(signatures);
         }
 
-        public synchronized void move(@NotNull VirtualFile file, LogicalPosition cursorPosition, int direction) {
+        public synchronized void move(@NotNull VirtualFile file, @NotNull LogicalPosition cursorPosition, int direction) {
             Map<Integer, InferredTypes.LogicalPositionSignature> signaturesByLine = m_signatures.get(file);
             if (signaturesByLine != null) {
                 int startLine = cursorPosition.line;

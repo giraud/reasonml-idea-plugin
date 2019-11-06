@@ -179,7 +179,7 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiModule findModule(@NotNull String name, @NotNull ORFileType fileType, GlobalSearchScope scope) {
+    public PsiModule findModule(@NotNull String name, @NotNull ORFileType fileType, @NotNull GlobalSearchScope scope) {
         Collection<PsiModule> modules = findModules(name, fileType, scope);
         if (!modules.isEmpty()) {
             return modules.iterator().next();
@@ -218,6 +218,7 @@ public final class PsiFinder {
         return findLowerSymbols("externals", name, fileType, IndexKeys.EXTERNALS, PsiExternal.class, allScope(m_project));
     }
 
+    @NotNull
     private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType, @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz, @NotNull GlobalSearchScope scope) {
         Map<String/*qn*/, T> implNames = new THashMap<>();
         Map<String/*qn*/, T> intfNames = new THashMap<>();
@@ -555,7 +556,7 @@ public final class PsiFinder {
         return null;
     }
 
-    public Collection<IndexedFileModule> findModulesForNamespace(String namespace, GlobalSearchScope scope) {
+    public Collection<IndexedFileModule> findModulesForNamespace(@NotNull String namespace, @NotNull GlobalSearchScope scope) {
         return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
     }
 

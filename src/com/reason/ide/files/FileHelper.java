@@ -37,7 +37,7 @@ public class FileHelper {
     }
 
     @NotNull
-    public static String shortLocation(Project project, String path) {
+    public static String shortLocation(@NotNull Project project, @NotNull String path) {
         String newPath = Platform.removeProjectDir(project, path).replace("node_modules" + File.separator, "");
         int pos = newPath.lastIndexOf("/");
         return 0 < pos ? newPath.substring(0, pos) : newPath;

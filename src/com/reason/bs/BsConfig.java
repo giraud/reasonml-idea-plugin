@@ -168,7 +168,7 @@ public class BsConfig {
     }
 
     @Nullable
-    private static String parseSourceItem(JsonObject obj) {
+    private static String parseSourceItem(@NotNull JsonObject obj) {
         JsonProperty srcProp = obj.findProperty("dir");
         if (srcProp != null) {
             JsonValue value = srcProp.getValue();
@@ -198,6 +198,7 @@ public class BsConfig {
         return m_sources;
     }
 
+    @NotNull
     public String getName() {
         return m_name;
     }
@@ -212,6 +213,7 @@ public class BsConfig {
         return false;
     }
 
+    @NotNull
     List<Path> getDependencies() {
         return m_deps;
     }

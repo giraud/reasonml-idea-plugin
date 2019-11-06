@@ -55,6 +55,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
             m_sdk = sdk;
         }
 
+        @NotNull
         @Override
         protected VirtualFile[] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
             java.util.List<OrderRoot> orderRoots = RootDetectionUtil.detectRoots(Arrays.asList(files), component, null,
@@ -69,6 +70,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
         }
 
         private class OCamlRootsDetector extends LibraryRootsDetector {
+            @NotNull
             @Override
             public Collection<DetectedLibraryRoot> detectRoots(@NotNull VirtualFile rootCandidate, @NotNull ProgressIndicator progressIndicator) {
                 List<DetectedLibraryRoot> result = new ArrayList<>();

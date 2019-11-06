@@ -56,7 +56,7 @@ public class ORLineBreakpointType extends XLineBreakpointType<ORLineBreakpointPr
         }
 
         @Override
-        public boolean process(PsiElement element) {
+        public boolean process(@NotNull PsiElement element) {
             IElementType elementType = element.getNode().getElementType();
 
             if (elementType.equals(TokenType.WHITE_SPACE) || elementType.equals(m_types.COMMENT)) {

@@ -147,7 +147,7 @@ public class FreeExpressionCompletionProvider {
         }
     }
 
-    private static void insertExpression(@NotNull InsertionContext insertionContext, LookupElement element) {
+    private static void insertExpression(@NotNull InsertionContext insertionContext, @NotNull LookupElement element) {
         PsiElement psiElement = element.getPsiElement();
         if (psiElement instanceof PsiLet) {
             PsiLet let = (PsiLet) psiElement;

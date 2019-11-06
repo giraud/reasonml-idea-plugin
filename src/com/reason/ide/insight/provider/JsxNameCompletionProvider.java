@@ -54,7 +54,7 @@ public class JsxNameCompletionProvider {
         }
     }
 
-    private static void insertTagNameHandler(@NotNull Project project, InsertionContext context, @NotNull String tagName) {
+    private static void insertTagNameHandler(@NotNull Project project, @NotNull InsertionContext context, @NotNull String tagName) {
         char completionChar = context.getCompletionChar();
         if (completionChar == ' ') {
             context.setAddCompletionChar(false);

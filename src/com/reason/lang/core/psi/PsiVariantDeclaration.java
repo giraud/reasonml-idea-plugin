@@ -43,6 +43,7 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;

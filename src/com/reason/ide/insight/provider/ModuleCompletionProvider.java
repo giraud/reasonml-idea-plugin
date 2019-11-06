@@ -20,6 +20,7 @@ import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,7 +69,7 @@ public class ModuleCompletionProvider {
     }
 
     @NotNull
-    private static ModulePath computePathFromPsi(@NotNull ORTypes types, PsiElement cursorElement) {
+    private static ModulePath computePathFromPsi(@NotNull ORTypes types, @Nullable PsiElement cursorElement) {
         List<PsiUpperSymbol> moduleNames = new ArrayList<>();
         PsiElement previousLeaf = cursorElement == null ? null : PsiTreeUtil.prevLeaf(cursorElement);
         if (previousLeaf != null) {

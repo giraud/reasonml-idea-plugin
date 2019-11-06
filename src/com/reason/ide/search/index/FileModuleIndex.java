@@ -37,7 +37,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
 
     public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
         @Override
-        public void save(@NotNull DataOutput out, FileModuleData value) throws IOException {
+        public void save(@NotNull DataOutput out, @NotNull FileModuleData value) throws IOException {
             out.writeBoolean(value.isOCaml());
             out.writeBoolean(value.isInterface());
             out.writeBoolean(value.isComponent());
@@ -47,6 +47,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
             out.writeUTF(value.getFullname());
         }
 
+        @NotNull
         @Override
         public FileModuleData read(@NotNull DataInput in) throws IOException {
             boolean isOCaml = in.readBoolean();

@@ -84,7 +84,7 @@ public class ORSignatureTest extends LightCodeInsightTestCase {
 
     @SuppressWarnings({"SameParameterValue", "ConstantConditions"})
     @NotNull
-    private ORSignature makeSignature(Language lang, String sig, boolean debug) {
+    private ORSignature makeSignature(@NotNull Language lang, String sig, boolean debug) {
         PsiFileFactory instance = PsiFileFactory.getInstance(getProject());
         PsiFile psiFile = instance.createFileFromText("Dummy." + lang.getAssociatedFileType().getDefaultExtension(), lang, "let x:" + sig);
         if (debug) {

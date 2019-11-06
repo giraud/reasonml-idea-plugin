@@ -37,5 +37,6 @@ public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, Ps
     @NotNull
     Collection<PsiElement> getScopeChildren();
 
+    @NotNull
     String getQualifiedPath();
 }

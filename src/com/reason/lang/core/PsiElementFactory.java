@@ -6,12 +6,14 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.*;
 import com.reason.lang.core.type.ORTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class PsiElementFactory {
     private PsiElementFactory() {
     }
 
-    public static PsiElement createElement(ORTypes types, ASTNode node) {
+    @NotNull
+    public static PsiElement createElement(@NotNull ORTypes types, @NotNull ASTNode node) {
         IElementType type = node.getElementType();
 
         if (type == types.C_EXTERNAL_STMT) {

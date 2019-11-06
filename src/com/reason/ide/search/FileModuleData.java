@@ -90,7 +90,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) {
             return true;
         }
@@ -108,6 +108,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
         return Objects.hash(m_namespace, m_moduleName, m_isInterface);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "FileModuleData{" +

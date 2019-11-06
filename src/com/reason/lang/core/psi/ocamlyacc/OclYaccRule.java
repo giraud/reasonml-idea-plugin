@@ -10,6 +10,7 @@ public interface OclYaccRule extends PsiStructuredElement {
     @Nullable
     OclYaccRuleBody getRuleBody();
 
+    @Nullable
     ItemPresentation getPresentation();
 
 }

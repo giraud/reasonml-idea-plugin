@@ -5,7 +5,6 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.Streams;
 import com.reason.ide.settings.ReasonSettings;
@@ -23,7 +22,7 @@ public class RefmtProcess {
 
     private final Project m_project;
 
-    public static RefmtProcess getInstance(Project project) {
+    public static RefmtProcess getInstance(@NotNull Project project) {
         return ServiceManager.getService(project, RefmtProcess.class);
     }
 

@@ -59,10 +59,12 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     public static Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
         if (isOCaml) {
             return isInterface ? Icons.OCL_FILE_MODULE_INTERFACE : Icons.OCL_FILE_MODULE;
-        } else return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
+        } else {
+            return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
+        }
     }
 
-    public static Icon getFileModuleIcon(IndexedFileModule indexedFile) {
+    public static Icon getFileModuleIcon(@NotNull IndexedFileModule indexedFile) {
         return getFileModuleIcon(indexedFile.isOCaml(), indexedFile.isInterface());
     }
 

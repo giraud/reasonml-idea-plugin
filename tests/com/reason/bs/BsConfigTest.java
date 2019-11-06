@@ -1,15 +1,11 @@
 package com.reason.bs;
 
 import com.intellij.json.JsonLanguage;
-import com.intellij.json.JsonParserDefinition;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiUtil;
-import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import com.reason.bs.BsConfig;
-import com.reason.lang.BaseParsingTestCase;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +13,7 @@ import java.util.Set;
 
 public class BsConfigTest extends BasePlatformTestCase {
 
+    @NotNull
     @Override
     protected String getTestDataPath() {
         return "testData/com/reason/bs";
@@ -73,16 +70,17 @@ public class BsConfigTest extends BasePlatformTestCase {
         assertSize(2, bsConfig.getDependencies());
     }
 
-    private String toJson(String value) {
+    @NotNull
+    private String toJson(@NotNull String value) {
         return value.replaceAll("'", "\"").replaceAll("@", "\n");
     }
 
-    private PsiFile loadJson(String filename) throws IOException {
+    private PsiFile loadJson(@NotNull String filename) throws IOException {
         String text = FileUtil.loadFile(new File(getTestDataPath(), filename), CharsetToolkit.UTF8, true).trim();
         return createJson(text);
     }
 
-    private PsiFile createJson(String content) {
+    private PsiFile createJson(@NotNull String content) {
         return createLightFile("dummy.json", JsonLanguage.INSTANCE, toJson(content));
     }
 }

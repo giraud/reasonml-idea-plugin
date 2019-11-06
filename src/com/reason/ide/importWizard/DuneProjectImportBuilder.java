@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkTypeId;
@@ -13,7 +12,8 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.projectImport.ProjectImportBuilder;
 import com.reason.Icons;
@@ -32,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 // org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder <- abstractImport ?
@@ -59,6 +58,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
         return sdkType == OCamlSdkType.getInstance();
     }
 
+    @Nullable
     @Override
     public List getList() {
         return null;
@@ -79,7 +79,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
 
     @Nullable
     @Override
-    public List<Module> commit(Project project, ModifiableModuleModel moduleModel, ModulesProvider modulesProvider, ModifiableArtifactModel artifactModel) {
+    public List<Module> commit(@NotNull Project project, @Nullable ModifiableModuleModel moduleModel, ModulesProvider modulesProvider, ModifiableArtifactModel artifactModel) {
         List<Module> createdModules = new ArrayList<>();
 
         String ideaModuleDirPath = project.getBasePath();
@@ -106,8 +106,9 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
                 try {
                     Path rootPath = new File(ideaModuleDirPath).toPath();
                     Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+                        @NotNull
                         @Override
-                        public FileVisitResult visitFile(Path path, BasicFileAttributes basicFileAttributes) {
+                        public FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
                             if ("dune".equals(path.getFileName().toString())) {
                                 VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path.toString());
                                 VirtualFile dir = file == null ? null : file.getParent();

@@ -51,10 +51,12 @@ public class InferredTypesImplementation implements InferredTypes {
         return result;
     }
 
-    private LogicalPositionSignature makeLogicalPositionSignature(Language lang, LogicalORSignature value) {
+    @NotNull
+    private LogicalPositionSignature makeLogicalPositionSignature(@NotNull Language lang, @NotNull LogicalORSignature value) {
         return makeLogicalPositionSignature(value.getLogicalStart().column, value.getLogicalEnd().column, value.getSignature().asString(lang));
     }
 
+    @NotNull
     private LogicalPositionSignature makeLogicalPositionSignature(int colStart, int colEnd, String signature) {
         LogicalPositionSignature result = new LogicalPositionSignature();
         result.colStart = colStart;
@@ -135,7 +137,7 @@ public class InferredTypesImplementation implements InferredTypes {
         private final LogicalPosition m_position;
         private final Set<String> m_values = new THashSet<>();
 
-        OpenModule(LogicalPosition start) {
+        OpenModule(@NotNull LogicalPosition start) {
             m_position = start;
         }
 

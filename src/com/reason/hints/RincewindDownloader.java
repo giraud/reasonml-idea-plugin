@@ -1,29 +1,19 @@
 package com.reason.hints;
 
 
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
-import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.StandardCopyOption;
 
 public class RincewindDownloader extends Task.Backgroundable {
 
@@ -33,6 +23,7 @@ public class RincewindDownloader extends Task.Backgroundable {
     private static final Log LOG = Log.create("hints");
 
     private static RincewindDownloader INSTANCE;
+    @NotNull
     private final VirtualFile m_sourceFile;
 
     public static RincewindDownloader getInstance(@NotNull Project project, @NotNull VirtualFile sourceFile) {

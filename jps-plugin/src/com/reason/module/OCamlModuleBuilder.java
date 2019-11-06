@@ -25,8 +25,10 @@ import java.util.List;
  */
 public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuilder {
 
+    @Nullable
     private List<Pair<String, String>> m_sourcePaths;
 
+    @NotNull
     @Override
     public ModuleType getModuleType() {
         return OCamlModuleType.getInstance();
@@ -61,6 +63,7 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
         return null;
     }
 
+    @Nullable
     @Override
     public List<Pair<String, String>> getSourcePaths() {
         if (m_sourcePaths == null) {
@@ -74,7 +77,7 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
     }
 
     @Override
-    public void setSourcePaths(List<Pair<String, String>> sourcePaths) {
+    public void setSourcePaths(@Nullable List<Pair<String, String>> sourcePaths) {
         m_sourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
     }
 

@@ -21,6 +21,7 @@ public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCam
         super(name, configurationModule, factory);
     }
 
+    @Nullable
     @Override
     public Collection<Module> getValidModules() {
         return null;

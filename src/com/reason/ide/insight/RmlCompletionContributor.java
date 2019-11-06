@@ -10,6 +10,7 @@ import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
+import org.jetbrains.annotations.NotNull;
 
 public class RmlCompletionContributor extends CompletionContributor {
 
@@ -18,7 +19,7 @@ public class RmlCompletionContributor extends CompletionContributor {
     }
 
     @Override
-    protected boolean addSpecificCompletions(ORTypes types, PsiElement element, PsiElement parent, PsiElement grandParent, CompletionResultSet result) {
+    protected boolean addSpecificCompletions(@NotNull ORTypes types, @NotNull PsiElement element, PsiElement parent, PsiElement grandParent, @NotNull CompletionResultSet result) {
         IElementType elementType = element.getNode().getElementType();
 
         if (elementType == types.TAG_NAME) {

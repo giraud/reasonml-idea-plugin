@@ -1,5 +1,8 @@
 package com.reason.ide.repl;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +18,7 @@ final class PromptHistory {
         m_maxSize = maxSize;
     }
 
-    void addInHistory(String command) {
+    void addInHistory(@NotNull String command) {
         if (!command.trim().isEmpty()) {
             m_history.remove(command);
             while (m_history.size() >= m_maxSize) {
@@ -26,6 +29,7 @@ final class PromptHistory {
         m_historyIndex = m_history.size();
     }
 
+    @Nullable
     String getFromHistory(boolean next) {
         if (next) {
             if ((m_historyIndex + 1) < m_history.size()) {

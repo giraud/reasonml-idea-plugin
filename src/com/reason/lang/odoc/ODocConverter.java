@@ -20,6 +20,7 @@ public class ODocConverter {
         m_lexer = lexer;
     }
 
+    @NotNull
     public String convert(@NotNull String text) {
         m_lexer.reset(text, 0, text.length() - 1, ODocLexer.YYINITIAL);
         m_builder.append("<p>");
@@ -114,11 +115,13 @@ public class ODocConverter {
         return m_builder.toString();
     }
 
-    private String extract(CharSequence text, int start) {
+    @NotNull
+    private String extract(@NotNull CharSequence text, int start) {
         return ((String) text).substring(start, text.length()).trim();
     }
 
-    private String extract(CharSequence text, int start, int end) {
+    @NotNull
+    private String extract(@NotNull CharSequence text, int start, int end) {
         return ((String) text).substring(start, text.length() - end).trim();
     }
 

@@ -90,6 +90,7 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
         };
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Functor";

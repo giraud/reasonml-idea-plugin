@@ -15,6 +15,7 @@ public class OclYaccPsiImplUtil {
     private OclYaccPsiImplUtil() {
     }
 
+    @NotNull
     public static ItemPresentation getPresentation(@NotNull OclYaccHeader it) {
         return new ItemPresentation() {
             @Override
@@ -34,6 +35,7 @@ public class OclYaccPsiImplUtil {
         };
     }
 
+    @NotNull
     public static ItemPresentation getPresentation(@NotNull OclYaccDeclaration it) {
         return new ItemPresentation() {
             @Override
@@ -54,6 +56,7 @@ public class OclYaccPsiImplUtil {
         };
     }
 
+    @NotNull
     public static ItemPresentation getPresentation(@NotNull OclYaccRule it) {
         return new ItemPresentation() {
             @Override
@@ -74,6 +77,7 @@ public class OclYaccPsiImplUtil {
         };
     }
 
+    @NotNull
     public static ItemPresentation getPresentation(@NotNull OclYaccTrailer it) {
         return new ItemPresentation() {
             @Override

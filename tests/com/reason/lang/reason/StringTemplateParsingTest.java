@@ -7,11 +7,13 @@ import com.reason.lang.core.psi.PsiInterpolation;
 import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
 public class StringTemplateParsingTest extends BaseParsingTestCase {
 
+    @NotNull
     private RmlTypes types = RmlTypes.INSTANCE;
 
     public StringTemplateParsingTest() {

@@ -27,8 +27,11 @@ public class BsOutputListener implements RawProcessListener {
     private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n");
     private static final Log LOG = Log.create("build");
 
+    @NotNull
     private final Project m_project;
+    @NotNull
     private final BsProcess m_compiler;
+    @NotNull
     private final LineProcessor m_lineProcessor;
 
     BsOutputListener(@NotNull Project project, @NotNull BsProcess bsc) {
@@ -100,10 +103,12 @@ public class BsOutputListener implements RawProcessListener {
             syntaxError
         }
 
+        @NotNull
         private BuildStatus m_status = BuildStatus.unknown;
 
         @Nullable
         private OutputInfo m_latestInfo = new OutputInfo();
+        @NotNull
         private String m_previousText = "";
 
         final List<OutputInfo> m_bsbInfo = new ArrayList<>();

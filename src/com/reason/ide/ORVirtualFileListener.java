@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
  */
 class ORVirtualFileListener implements VirtualFileListener {
 
+    @NotNull
     private final Project m_project;
 
     ORVirtualFileListener(@NotNull Project project) {

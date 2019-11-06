@@ -36,6 +36,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 // com.intellij.ide.util.projectWizard.ProjectJdkForModuleStep
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
+    @NotNull
     private static String[] SDKS = new String[]{"4.02.3", "4.03.0", "4.04.2", "4.05.0", "4.06.1", "4.07.1", "4.08.1", "4.09.0"};
 
     private static final Log LOG = Log.create("import.sdk");
@@ -124,8 +125,9 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         VirtualFileSystem fileSystem = VirtualFileManager.getInstance().getFileSystem(StandardFileSystems.FILE_PROTOCOL);
 
         Files.walkFileTree(targetSdkLocation.toPath(), new SimpleFileVisitor<Path>() {
+            @NotNull
             @Override
-            public FileVisitResult visitFile(Path path, BasicFileAttributes basicFileAttributes) {
+            public FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
                 VirtualFile file = fileSystem.findFileByPath(path.toString());
                 if (file != null) {
                     odkModificator.addRoot(file, OCamlSourcesOrderRootType.getInstance());

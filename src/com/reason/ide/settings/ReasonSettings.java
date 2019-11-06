@@ -75,6 +75,7 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
         return m_enabled && m_refmtOnSave;
     }
 
+    @NotNull
     public String getLocation() {
         return m_location;
     }
@@ -97,11 +98,11 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
         m_enabled = enabled;
     }
 
-    public void setLocation(String value) {
+    public void setLocation(@NotNull String value) {
         m_location = value;
     }
 
-    public void setWorkingDir(String value) {
+    public void setWorkingDir(@NotNull String value) {
         m_workingDir = value;
     }
 

@@ -16,11 +16,13 @@ public class DuneProjectImportProvider extends ProjectImportProvider {
 
     private static final Key<ProjectJdkStep> PROJECT_JDK_STEP_KEY = Key.create("ProjectJdkStep");
 
+    @NotNull
     @Override
     protected ProjectImportBuilder doGetBuilder() {
         return new DuneProjectImportBuilder();
     }
 
+    @NotNull
     public ModuleWizardStep[] createSteps(@NotNull WizardContext context) {
         return new ModuleWizardStep[]{
                 new OclProjectJdkWizardStep(context)};
@@ -32,6 +34,7 @@ public class DuneProjectImportProvider extends ProjectImportProvider {
         return "dune-project".equals(file.getName());
     }
 
+    @NotNull
     @Override
     public String getPathToBeImported(@NotNull VirtualFile file) {
         System.out.println("DuneProjectImportProvider.getPathToBeImported / file = " + file);

@@ -69,7 +69,7 @@ public class JsxAttributeCompletionProvider {
         }
     }
 
-    private static void insertTagAttributeHandler(InsertionContext context) {
+    private static void insertTagAttributeHandler(@NotNull InsertionContext context) {
         context.setAddCompletionChar(false);
 
         Editor editor = context.getEditor();

@@ -5,6 +5,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CompletionUtils {
     public static final int KEYWORD_PRIORITY = 10;
@@ -18,6 +19,7 @@ public class CompletionUtils {
         return parent;
     }
 
+    @Nullable
     static IElementType getPrevNodeType(@NotNull PsiElement element) {
         PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
         return prevLeaf == null ? null : prevLeaf.getNode().getElementType();

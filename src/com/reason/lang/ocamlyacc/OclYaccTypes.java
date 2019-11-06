@@ -5,6 +5,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.ocamlyacc.impl.*;
+import org.jetbrains.annotations.NotNull;
 
 public interface OclYaccTypes extends OclYaccLazyTypes {
 
@@ -35,7 +36,8 @@ public interface OclYaccTypes extends OclYaccLazyTypes {
     IElementType TYPE = new OclYaccTokenType("TYPE");
 
     class Factory {
-        public static PsiElement createElement(ASTNode node) {
+        @NotNull
+        public static PsiElement createElement(@NotNull ASTNode node) {
             IElementType type = node.getElementType();
             if (type == DECLARATION) {
                 return new OclYaccDeclarationImpl(node);

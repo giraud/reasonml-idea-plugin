@@ -61,7 +61,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
     }
 
-    private void extractRelatedExpressions(@Nullable PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result, GlobalSearchScope scope, PsiManager instance, FileBase containingFile) {
+    private void extractRelatedExpressions(@Nullable PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result, @NotNull GlobalSearchScope scope, @NotNull PsiManager instance, @NotNull FileBase containingFile) {
         if (element == null) {
             return;
         }

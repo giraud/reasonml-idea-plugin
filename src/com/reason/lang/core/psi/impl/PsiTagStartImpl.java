@@ -40,7 +40,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         private final String m_type;
         private boolean m_mandatory;
 
-        TagPropertyImpl(PsiRecordField field, List<PsiAnnotation> annotations) {
+        TagPropertyImpl(@NotNull PsiRecordField field, @NotNull List<PsiAnnotation> annotations) {
             m_name = field.getName();
             PsiSignature signature = field.getPsiSignature();
             ORSignature hmSignature = signature == null ? ORSignature.EMPTY : signature.asHMSignature();
@@ -54,7 +54,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
         }
 
-        TagPropertyImpl(PsiParameter parameter) {
+        TagPropertyImpl(@NotNull PsiParameter parameter) {
             m_name = parameter.getName();
             PsiSignature signature = parameter.getPsiSignature();
             ORSignature hmSignature = signature == null ? ORSignature.EMPTY : signature.asHMSignature();
@@ -91,6 +91,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
         }
     }
 
+    @NotNull
     public static TagProperty createProp(String name, String type) {
         return new TagPropertyImpl(name, type, false);
     }

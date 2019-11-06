@@ -115,17 +115,17 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected FileBase parseCode(String code) {
+    protected FileBase parseCode(@NotNull String code) {
         return parseCode(code, false);
     }
 
     @NotNull
-    protected FileBase parseCode(String code, boolean print) {
+    protected FileBase parseCode(@NotNull String code, boolean print) {
         parseRawCode(code, print);
         return (FileBase) myFile;
     }
 
-    protected PsiFile parseRawCode(String code, boolean print) {
+    protected PsiFile parseRawCode(@NotNull String code, boolean print) {
         myFile = createPsiFile("dummy", code);
         if (print) {
             System.out.println("» " + this.getClass());
@@ -135,12 +135,12 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected DuneFile parseDuneCode(String code) {
+    protected DuneFile parseDuneCode(@NotNull String code) {
         return parseDuneCode(code, false);
     }
 
     @NotNull
-    protected DuneFile parseDuneCode(String code, boolean print) {
+    protected DuneFile parseDuneCode(@NotNull String code, boolean print) {
         myFile = createFile("jbuild", code);
         if (print) {
             System.out.println("» " + this.getClass());

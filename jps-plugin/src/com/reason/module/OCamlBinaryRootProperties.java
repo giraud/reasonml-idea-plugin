@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.ex.JpsElementBase;
 
 public class OCamlBinaryRootProperties extends JpsElementBase<OCamlBinaryRootProperties> {
+    @NotNull
     private String m_relativeOutputPath = "";
     private boolean m_forGeneratedSources;
 

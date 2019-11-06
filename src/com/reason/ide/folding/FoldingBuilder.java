@@ -62,7 +62,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
         return descriptors.toArray(new FoldingDescriptor[0]);
     }
 
-    private void foldLet(@NotNull List<FoldingDescriptor> descriptors, PsiLet letExpression) {
+    private void foldLet(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiLet letExpression) {
         FoldingDescriptor fold = fold(letExpression.getBinding());
         if (fold != null) {
             descriptors.add(fold);
@@ -85,7 +85,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, PsiInnerModule module) {
+    private void foldModule(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiInnerModule module) {
         FoldingDescriptor foldSignature = fold(module.getSignature());
         if (foldSignature != null) {
             descriptors.add(foldSignature);
@@ -97,28 +97,28 @@ public class FoldingBuilder extends FoldingBuilderEx {
         }
     }
 
-    private void foldFunction(@NotNull List<FoldingDescriptor> descriptors, PsiFunction func) {
+    private void foldFunction(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunction func) {
         FoldingDescriptor foldBinding = fold(func.getBody());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }
     }
 
-    private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, PsiFunctor functor) {
+    private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunctor functor) {
         FoldingDescriptor foldBinding = fold(functor.getBinding());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }
     }
 
-    private void foldHeader(@NotNull List<FoldingDescriptor> descriptors, OclYaccHeader root) {
+    private void foldHeader(@NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccHeader root) {
         FoldingDescriptor fold = fold(ORUtil.findImmediateFirstChildOfType(root, OclYaccLazyTypes.OCAML_LAZY_NODE));
         if (fold != null) {
             descriptors.add(fold);
         }
     }
 
-    private void foldRule(@NotNull List<FoldingDescriptor> descriptors, OclYaccRule root) {
+    private void foldRule(@NotNull List<FoldingDescriptor> descriptors, @NotNull OclYaccRule root) {
         FoldingDescriptor fold = fold(ORUtil.findImmediateFirstChildOfClass(root, OclYaccRuleBody.class));
         if (fold != null) {
             descriptors.add(fold);

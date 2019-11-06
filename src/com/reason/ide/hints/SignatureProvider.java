@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.util.Key;
 import com.reason.ide.EditorPosition;
 import com.reason.lang.core.signature.ORSignature;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 // just an experiment, cancelled for now
@@ -14,7 +15,7 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
         private EditorPosition m_editorPosition;
 //        private InferredTypes types;
 
-        InferredTypesWithLines(InferredTypes types, String[] lines) {
+        InferredTypesWithLines(InferredTypes types, @NotNull String[] lines) {
             m_types = types;
             m_editorPosition = new EditorPosition(lines);
         }

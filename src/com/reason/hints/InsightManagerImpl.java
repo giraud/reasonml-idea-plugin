@@ -28,6 +28,7 @@ public class InsightManagerImpl implements InsightManager {
     @NotNull
     AtomicBoolean isDownloading = new AtomicBoolean(false);
 
+    @NotNull
     private final Project m_project;
 
     private InsightManagerImpl(@NotNull Project project) {
@@ -88,6 +89,7 @@ public class InsightManagerImpl implements InsightManager {
         }
     }
 
+    @NotNull
     private String getAppVersion(@NotNull String ocamlVersion) {
         switch (ocamlVersion) {
             case "4.02":

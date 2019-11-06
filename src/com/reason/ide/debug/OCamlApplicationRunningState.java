@@ -26,6 +26,7 @@ public class OCamlApplicationRunningState extends CommandLineState {
         return new OSProcessHandler(commandLine.createProcess(), commandLine.getCommandLineString());
     }
 
+    @NotNull
     private GeneralCommandLine getCommand() {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         // set exe/working dir/...

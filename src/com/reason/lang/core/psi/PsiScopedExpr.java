@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiScopedExpr extends ASTWrapperPsiElement {
 
+    @NotNull
     private final ORTypes m_types;
 
     public PsiScopedExpr(@NotNull ORTypes types, @NotNull ASTNode node) {

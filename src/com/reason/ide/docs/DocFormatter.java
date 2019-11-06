@@ -13,6 +13,7 @@ import static com.reason.lang.odoc.ODocMarkup.*;
 
 class DocFormatter {
 
+    @NotNull
     static String format(@NotNull PsiFile file, PsiElement element, @NotNull String text) {
         if (file instanceof FileBase) {
             ODocLexer lexer = new ODocLexer();
@@ -23,7 +24,8 @@ class DocFormatter {
         return text;
     }
 
-    private static String formatDefinition(PsiFile file, PsiElement element) {
+    @NotNull
+    private static String formatDefinition(@NotNull PsiFile file, PsiElement element) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(HEADER_START).append(((FileBase) file).getQualifiedName());
@@ -44,6 +46,7 @@ class DocFormatter {
         return escapeCodeForHtml(code.getText());
     }
 
+    @Nullable
     public static String escapeCodeForHtml(@Nullable String code) {
         return code == null ? null : code.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }

@@ -8,6 +8,7 @@ public class OclYaccTokenType extends IElementType {
         super(debugName, OclYaccLanguage.INSTANCE);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "OclYaccTokenType." + super.toString();

@@ -5,12 +5,12 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Compiler;
 import com.reason.Log;
 import com.reason.Platform;
-import com.reason.Compiler;
-import com.reason.ide.CompilerManager;
 import com.reason.bs.Bucklescript;
 import com.reason.hints.InsightManager;
+import com.reason.ide.CompilerManager;
 import com.reason.ide.FileManager;
 import com.reason.ide.ORProjectTracker;
 import com.reason.ide.files.CmiFileType;
@@ -31,7 +31,7 @@ public class CmtiFileListener {
     private final Project m_project;
     private final ORProjectTracker m_projectTracker;
 
-    private CmtiFileListener(Project project) {
+    private CmtiFileListener(@NotNull Project project) {
         m_project = project;
         m_projectTracker = project.getComponent(ORProjectTracker.class);
     }
@@ -73,7 +73,7 @@ public class CmtiFileListener {
     }
 
     @NotNull
-    private Path getPathToWatch(@NotNull Project project, Path relativeRoot) {
+    private Path getPathToWatch(@NotNull Project project, @NotNull Path relativeRoot) {
         VirtualFile baseRoot = Platform.findBaseRoot(project);
         Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
         return basePath.resolve(relativeRoot);

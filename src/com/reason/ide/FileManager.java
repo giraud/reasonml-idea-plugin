@@ -108,7 +108,8 @@ public class FileManager {
         return baseRoot.findFileByRelativePath(relativeCmiPath);
     }
 
-    private static String separatorsToUnix(String path) {
+    @NotNull
+    private static String separatorsToUnix(@NotNull String path) {
         return path.replace('\\', '/');
     }
 }

@@ -80,6 +80,7 @@ final class PromptConsole implements Disposable {
         return m_outputEditor;
     }
 
+    @NotNull
     JComponent getInputComponent() {
         return m_promptEditor.getContentComponent();
     }
@@ -150,7 +151,7 @@ final class PromptConsole implements Disposable {
     }
 
     @NotNull
-    private String normalizeCommand(String command) {
+    private String normalizeCommand(@NotNull String command) {
         String sanitizedCommand = command.trim();
         if (!sanitizedCommand.endsWith(";;")) {
             if (!sanitizedCommand.endsWith(";")) {

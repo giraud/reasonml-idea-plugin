@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
+    @NotNull
     private final PsiElement m_element;
+    @Nullable
     private final PsiElement m_viewElement;
     private final boolean m_navigateToViewElement;
 
@@ -37,6 +39,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         m_navigateToViewElement = navigateToViewElement;
     }
 
+    @NotNull
     @Override
     public Object getValue() {
         return m_viewElement == null ? m_element : m_viewElement;
@@ -168,7 +171,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     @NotNull
-    private List<TreeElement> buildModuleStructure(PsiInnerModule moduleElement) {
+    private List<TreeElement> buildModuleStructure(@NotNull PsiInnerModule moduleElement) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiSignature moduleSignature = moduleElement.getSignature();
@@ -193,7 +196,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     @NotNull
-    private List<TreeElement> buildFunctorStructure(PsiFunctor functor) {
+    private List<TreeElement> buildFunctorStructure(@NotNull PsiFunctor functor) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement binding = functor.getBinding();
@@ -216,7 +219,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private List<TreeElement> buildYaccHeaderStructure(OclYaccHeader root) {
+    @NotNull
+    private List<TreeElement> buildYaccHeaderStructure(@NotNull OclYaccHeader root) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
@@ -227,7 +231,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         return treeElements;
     }
 
-    private List<TreeElement> buildYaccTrailerStructure(OclYaccTrailer root) {
+    @NotNull
+    private List<TreeElement> buildYaccTrailerStructure(@NotNull OclYaccTrailer root) {
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);

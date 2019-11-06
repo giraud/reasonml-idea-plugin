@@ -8,6 +8,7 @@ public class ODocTokenType extends IElementType {
         super(debugName, ODocLanguage.INSTANCE);
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "ODocTokenType." + super.toString();

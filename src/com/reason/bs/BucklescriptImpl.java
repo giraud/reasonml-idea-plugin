@@ -30,9 +30,11 @@ import static com.intellij.openapi.application.ApplicationManager.getApplication
 
 public class BucklescriptImpl implements Bucklescript {
 
+    @NotNull
     private final Project m_project;
     private final Map<String, BsConfig> m_configs = new THashMap<>();
 
+    @Nullable
     private Boolean m_disabled = null; // Never call directly, use isDisabled()
 
     private BucklescriptImpl(@NotNull Project project) {

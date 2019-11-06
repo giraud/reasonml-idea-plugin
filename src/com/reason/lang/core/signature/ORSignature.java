@@ -7,6 +7,7 @@ import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +25,7 @@ public class ORSignature {
     @NotNull
     private final SignatureType[] m_types;
 
+    @Nullable
     private PsiSignatureItem[] m_items;
 
     public static class SignatureType {
@@ -63,7 +65,7 @@ public class ORSignature {
         }
     }
 
-    public ORSignature(Collection<PsiParameter> parameters) {
+    public ORSignature(@NotNull Collection<PsiParameter> parameters) {
         m_types = new SignatureType[parameters.size() + 1];
         int i = 0;
         for (PsiParameter item : parameters) {
@@ -114,6 +116,7 @@ public class ORSignature {
         return sig;
     }
 
+    @NotNull
     public String asParameterInfo(Language lang) {
         String sig = buildParameters();
         if (sig.length() > 1000) {

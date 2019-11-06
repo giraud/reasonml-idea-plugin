@@ -23,7 +23,7 @@ public class ParserScope {
     @Nullable
     private PsiBuilder.Marker m_mark;
 
-    private ParserScope(PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
+    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
         m_builder = builder;
         m_mark = builder.mark();
         m_offset = builder.getCurrentOffset();
@@ -33,10 +33,12 @@ public class ParserScope {
         m_scopeTokenElementType = scopeTokenElementType;
     }
 
+    @Nullable
     public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull IElementType compositeElementType) {
         return new ParserScope(builder, context, context, compositeElementType, null);
     }
 
+    @Nullable
     public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType) {
         return new ParserScope(builder, context, resolution, compositeElementType, null);
     }
@@ -53,6 +55,7 @@ public class ParserScope {
         return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
 
+    @Nullable
     public static ParserScope markRoot(@NotNull PsiBuilder builder) {
         return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
     }

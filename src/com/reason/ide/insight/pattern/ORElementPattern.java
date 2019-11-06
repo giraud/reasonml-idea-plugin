@@ -14,6 +14,7 @@ public class ORElementPattern implements ElementPattern<PsiElement> {
         m_matcher = matcher;
     }
 
+    @NotNull
     public static ORElementPattern create(ORElementPatternMatcher matcher) {
         return new ORElementPattern(matcher);
     }

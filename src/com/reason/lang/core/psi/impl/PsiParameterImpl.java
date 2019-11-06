@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> implements PsiParameter {
 
+    @NotNull
     PsiReference[] EMPTY_REFS = new PsiReference[0];
 
     //region Constructors
@@ -45,6 +46,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> im
         return identifier == null ? "" : identifier.getText();
     }
 
+    @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
@@ -81,7 +83,7 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> im
     @NotNull
     private String getQualifiedPath() {
         PsiQualifiedNamedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedNamedElement.class);
-        String parentQName =  qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
+        String parentQName = qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
         return parentQName == null ? "" : parentQName;
     }
 

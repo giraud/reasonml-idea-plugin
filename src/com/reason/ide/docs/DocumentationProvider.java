@@ -133,7 +133,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     @Override
-    public String getQuickNavigateInfo(PsiElement element, @NotNull PsiElement originalElement) {
+    public String getQuickNavigateInfo(@NotNull PsiElement element, @NotNull PsiElement originalElement) {
         PsiFile psiFile = originalElement.getContainingFile();
 
         String inferredType = getInferredSignature(originalElement, psiFile, element.getLanguage());

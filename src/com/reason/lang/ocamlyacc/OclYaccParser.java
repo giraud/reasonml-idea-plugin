@@ -7,6 +7,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.lang.PsiParser;
 import com.intellij.psi.tree.IElementType;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ocamlyacc.OclYaccTypes.*;
@@ -14,7 +15,8 @@ import static com.reason.lang.ocamlyacc.OclYaccTypes.*;
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
 public class OclYaccParser implements PsiParser, LightPsiParser {
 
-    public ASTNode parse(IElementType t, PsiBuilder b) {
+    @NotNull
+    public ASTNode parse(IElementType t, @NotNull PsiBuilder b) {
         parseLight(t, b);
         return b.getTreeBuilt();
     }
@@ -41,42 +43,58 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
         exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
     }
 
-    protected boolean parse_root_(IElementType t, PsiBuilder b, int l) {
+    protected boolean parse_root_(IElementType t, @NotNull PsiBuilder b, int l) {
         return yacc(b, l + 1);
     }
 
     /* ********************************************************** */
     // IDENT
-    static boolean constr(PsiBuilder b, int l) {
+    static boolean constr(@NotNull PsiBuilder b, int l) {
         return consumeToken(b, IDENT);
     }
 
     /* ********************************************************** */
     // token_dcl | start_dcl | type_dcl | left_dcl | right_dcl
-    public static boolean declaration(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "declaration")) return false;
+    public static boolean declaration(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "declaration")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b, l, _NONE_, DECLARATION, "<declaration>");
         r = token_dcl(b, l + 1);
-        if (!r) r = start_dcl(b, l + 1);
-        if (!r) r = type_dcl(b, l + 1);
-        if (!r) r = left_dcl(b, l + 1);
-        if (!r) r = right_dcl(b, l + 1);
+        if (!r) {
+            r = start_dcl(b, l + 1);
+        }
+        if (!r) {
+            r = type_dcl(b, l + 1);
+        }
+        if (!r) {
+            r = left_dcl(b, l + 1);
+        }
+        if (!r) {
+            r = right_dcl(b, l + 1);
+        }
         exit_section_(b, l, m, r, false, null);
         return r;
     }
 
     /* ********************************************************** */
     // declaration+
-    static boolean declarations(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "declarations")) return false;
+    static boolean declarations(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "declarations")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = declaration(b, l + 1);
         while (r) {
             int c = current_position_(b);
-            if (!declaration(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "declarations", c)) break;
+            if (!declaration(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "declarations", c)) {
+                break;
+            }
         }
         exit_section_(b, m, null, r);
         return r;
@@ -84,9 +102,13 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // HEADER_START OCAML_LAZY_NODE HEADER_STOP
-    public static boolean header(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "header")) return false;
-        if (!nextTokenIs(b, HEADER_START)) return false;
+    public static boolean header(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "header")) {
+            return false;
+        }
+        if (!nextTokenIs(b, HEADER_START)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeTokens(b, 0, HEADER_START, OCAML_LAZY_NODE, HEADER_STOP);
@@ -96,9 +118,13 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // LEFT symbol symbol*
-    static boolean left_dcl(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "left_dcl")) return false;
-        if (!nextTokenIs(b, LEFT)) return false;
+    static boolean left_dcl(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "left_dcl")) {
+            return false;
+        }
+        if (!nextTokenIs(b, LEFT)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, LEFT);
@@ -109,21 +135,31 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // symbol*
-    private static boolean left_dcl_2(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "left_dcl_2")) return false;
+    private static boolean left_dcl_2(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "left_dcl_2")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!symbol(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "left_dcl_2", c)) break;
+            if (!symbol(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "left_dcl_2", c)) {
+                break;
+            }
         }
         return true;
     }
 
     /* ********************************************************** */
     // RIGHT symbol symbol*
-    static boolean right_dcl(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "right_dcl")) return false;
-        if (!nextTokenIs(b, RIGHT)) return false;
+    static boolean right_dcl(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "right_dcl")) {
+            return false;
+        }
+        if (!nextTokenIs(b, RIGHT)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, RIGHT);
@@ -134,21 +170,31 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // symbol*
-    private static boolean right_dcl_2(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "right_dcl_2")) return false;
+    private static boolean right_dcl_2(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "right_dcl_2")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!symbol(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "right_dcl_2", c)) break;
+            if (!symbol(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "right_dcl_2", c)) {
+                break;
+            }
         }
         return true;
     }
 
     /* ********************************************************** */
     // IDENT COLON rule_body
-    public static boolean rule(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule")) return false;
-        if (!nextTokenIs(b, IDENT)) return false;
+    public static boolean rule(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule")) {
+            return false;
+        }
+        if (!nextTokenIs(b, IDENT)) {
+            return false;
+        }
         boolean r, p;
         Marker m = enter_section_(b, l, _NONE_, RULE, null);
         r = consumeTokens(b, 2, IDENT, COLON);
@@ -160,8 +206,10 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // PIPE? rule_pattern (PIPE rule_pattern)* SEMI
-    public static boolean rule_body(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule_body")) return false;
+    public static boolean rule_body(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule_body")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b, l, _NONE_, RULE_BODY, "<rule body>");
         r = rule_body_0(b, l + 1);
@@ -173,26 +221,36 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // PIPE?
-    private static boolean rule_body_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule_body_0")) return false;
+    private static boolean rule_body_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule_body_0")) {
+            return false;
+        }
         consumeToken(b, PIPE);
         return true;
     }
 
     // (PIPE rule_pattern)*
-    private static boolean rule_body_2(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule_body_2")) return false;
+    private static boolean rule_body_2(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule_body_2")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!rule_body_2_0(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "rule_body_2", c)) break;
+            if (!rule_body_2_0(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "rule_body_2", c)) {
+                break;
+            }
         }
         return true;
     }
 
     // PIPE rule_pattern
-    private static boolean rule_body_2_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule_body_2_0")) return false;
+    private static boolean rule_body_2_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule_body_2_0")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, PIPE);
@@ -203,9 +261,13 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // symbol* LBRACE semantic_action RBRACE
-    public static boolean rule_pattern(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule_pattern")) return false;
-        if (!nextTokenIs(b, "<rule pattern>", IDENT, LBRACE)) return false;
+    public static boolean rule_pattern(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule_pattern")) {
+            return false;
+        }
+        if (!nextTokenIs(b, "<rule pattern>", IDENT, LBRACE)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b, l, _NONE_, RULE_PATTERN, "<rule pattern>");
         r = rule_pattern_0(b, l + 1);
@@ -217,28 +279,42 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // symbol*
-    private static boolean rule_pattern_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rule_pattern_0")) return false;
+    private static boolean rule_pattern_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rule_pattern_0")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!symbol(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "rule_pattern_0", c)) break;
+            if (!symbol(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "rule_pattern_0", c)) {
+                break;
+            }
         }
         return true;
     }
 
     /* ********************************************************** */
     // rule+
-    static boolean rules(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "rules")) return false;
-        if (!nextTokenIs(b, IDENT)) return false;
+    static boolean rules(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "rules")) {
+            return false;
+        }
+        if (!nextTokenIs(b, IDENT)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = rule(b, l + 1);
         while (r) {
             int c = current_position_(b);
-            if (!rule(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "rules", c)) break;
+            if (!rule(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "rules", c)) {
+                break;
+            }
         }
         exit_section_(b, m, null, r);
         return r;
@@ -246,15 +322,19 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // OCAML_LAZY_NODE
-    static boolean semantic_action(PsiBuilder b, int l) {
+    static boolean semantic_action(@NotNull PsiBuilder b, int l) {
         return consumeToken(b, OCAML_LAZY_NODE);
     }
 
     /* ********************************************************** */
     // START symbol symbol*
-    static boolean start_dcl(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "start_dcl")) return false;
-        if (!nextTokenIs(b, START)) return false;
+    static boolean start_dcl(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "start_dcl")) {
+            return false;
+        }
+        if (!nextTokenIs(b, START)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, START);
@@ -265,27 +345,37 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // symbol*
-    private static boolean start_dcl_2(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "start_dcl_2")) return false;
+    private static boolean start_dcl_2(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "start_dcl_2")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!symbol(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "start_dcl_2", c)) break;
+            if (!symbol(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "start_dcl_2", c)) {
+                break;
+            }
         }
         return true;
     }
 
     /* ********************************************************** */
     // IDENT
-    static boolean symbol(PsiBuilder b, int l) {
+    static boolean symbol(@NotNull PsiBuilder b, int l) {
         return consumeToken(b, IDENT);
     }
 
     /* ********************************************************** */
     // TOKEN (LT type_expr GT)? constr constr*
-    static boolean token_dcl(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "token_dcl")) return false;
-        if (!nextTokenIs(b, TOKEN)) return false;
+    static boolean token_dcl(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "token_dcl")) {
+            return false;
+        }
+        if (!nextTokenIs(b, TOKEN)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, TOKEN);
@@ -297,15 +387,19 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // (LT type_expr GT)?
-    private static boolean token_dcl_1(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "token_dcl_1")) return false;
+    private static boolean token_dcl_1(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "token_dcl_1")) {
+            return false;
+        }
         token_dcl_1_0(b, l + 1);
         return true;
     }
 
     // LT type_expr GT
-    private static boolean token_dcl_1_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "token_dcl_1_0")) return false;
+    private static boolean token_dcl_1_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "token_dcl_1_0")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, LT);
@@ -316,21 +410,31 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // constr*
-    private static boolean token_dcl_3(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "token_dcl_3")) return false;
+    private static boolean token_dcl_3(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "token_dcl_3")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!constr(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "token_dcl_3", c)) break;
+            if (!constr(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "token_dcl_3", c)) {
+                break;
+            }
         }
         return true;
     }
 
     /* ********************************************************** */
     // OCAML_LAZY_NODE
-    public static boolean trailer(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "trailer")) return false;
-        if (!nextTokenIs(b, OCAML_LAZY_NODE)) return false;
+    public static boolean trailer(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "trailer")) {
+            return false;
+        }
+        if (!nextTokenIs(b, OCAML_LAZY_NODE)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, OCAML_LAZY_NODE);
@@ -340,9 +444,13 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // TYPE LT type_expr GT symbol symbol*
-    static boolean type_dcl(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "type_dcl")) return false;
-        if (!nextTokenIs(b, TYPE)) return false;
+    static boolean type_dcl(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "type_dcl")) {
+            return false;
+        }
+        if (!nextTokenIs(b, TYPE)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeTokens(b, 0, TYPE, LT);
@@ -355,21 +463,31 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // symbol*
-    private static boolean type_dcl_5(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "type_dcl_5")) return false;
+    private static boolean type_dcl_5(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "type_dcl_5")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!symbol(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "type_dcl_5", c)) break;
+            if (!symbol(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "type_dcl_5", c)) {
+                break;
+            }
         }
         return true;
     }
 
     /* ********************************************************** */
     // IDENT (DOT IDENT)*
-    static boolean type_expr(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "type_expr")) return false;
-        if (!nextTokenIs(b, IDENT)) return false;
+    static boolean type_expr(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "type_expr")) {
+            return false;
+        }
+        if (!nextTokenIs(b, IDENT)) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, IDENT);
@@ -379,19 +497,27 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // (DOT IDENT)*
-    private static boolean type_expr_1(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "type_expr_1")) return false;
+    private static boolean type_expr_1(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "type_expr_1")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!type_expr_1_0(b, l + 1)) break;
-            if (!empty_element_parsed_guard_(b, "type_expr_1", c)) break;
+            if (!type_expr_1_0(b, l + 1)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "type_expr_1", c)) {
+                break;
+            }
         }
         return true;
     }
 
     // DOT IDENT
-    private static boolean type_expr_1_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "type_expr_1_0")) return false;
+    private static boolean type_expr_1_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "type_expr_1_0")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeTokens(b, 0, DOT, IDENT);
@@ -401,8 +527,10 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
 
     /* ********************************************************** */
     // COMMENT* header? declarations SECTION_SEPARATOR rules (SECTION_SEPARATOR trailer)?
-    static boolean yacc(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc")) return false;
+    static boolean yacc(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = yacc_0(b, l + 1);
@@ -416,33 +544,45 @@ public class OclYaccParser implements PsiParser, LightPsiParser {
     }
 
     // COMMENT*
-    private static boolean yacc_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc_0")) return false;
+    private static boolean yacc_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_0")) {
+            return false;
+        }
         while (true) {
             int c = current_position_(b);
-            if (!consumeToken(b, COMMENT)) break;
-            if (!empty_element_parsed_guard_(b, "yacc_0", c)) break;
+            if (!consumeToken(b, COMMENT)) {
+                break;
+            }
+            if (!empty_element_parsed_guard_(b, "yacc_0", c)) {
+                break;
+            }
         }
         return true;
     }
 
     // header?
-    private static boolean yacc_1(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc_1")) return false;
+    private static boolean yacc_1(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_1")) {
+            return false;
+        }
         header(b, l + 1);
         return true;
     }
 
     // (SECTION_SEPARATOR trailer)?
-    private static boolean yacc_5(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc_5")) return false;
+    private static boolean yacc_5(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_5")) {
+            return false;
+        }
         yacc_5_0(b, l + 1);
         return true;
     }
 
     // SECTION_SEPARATOR trailer
-    private static boolean yacc_5_0(PsiBuilder b, int l) {
-        if (!recursion_guard_(b, l, "yacc_5_0")) return false;
+    private static boolean yacc_5_0(@NotNull PsiBuilder b, int l) {
+        if (!recursion_guard_(b, l, "yacc_5_0")) {
+            return false;
+        }
         boolean r;
         Marker m = enter_section_(b);
         r = consumeToken(b, SECTION_SEPARATOR);

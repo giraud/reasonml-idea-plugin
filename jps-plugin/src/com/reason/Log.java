@@ -14,12 +14,14 @@ import java.util.Map;
 public class Log {
 
     private static final String SEP = ": ";
+    @NotNull
     private final Logger m_log;
 
     private Log(String name) {
         m_log = Logger.getInstance("ReasonML." + name);
     }
 
+    @NotNull
     public static Log create(String name) {
         return new Log(name);
     }
@@ -178,7 +180,7 @@ public class Log {
         }
     }
 
-    public void warn(Exception e) {
+    public void warn(@NotNull Exception e) {
         m_log.warn(e);
     }
 }

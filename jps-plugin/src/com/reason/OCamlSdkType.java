@@ -28,6 +28,7 @@ public class OCamlSdkType extends SdkType {
         return projectSDK != null && ID.equals(projectSDK.getSdkType().getName()) ? projectSDK : null;
     }
 
+    @NotNull
     public static SdkType getInstance() {
         return SdkType.findInstance(OCamlSdkType.class);
     }
@@ -38,6 +39,7 @@ public class OCamlSdkType extends SdkType {
         return "OCaml";
     }
 
+    @NotNull
     @Override
     public Icon getIcon() {
         return Icons.OCL_SDK;

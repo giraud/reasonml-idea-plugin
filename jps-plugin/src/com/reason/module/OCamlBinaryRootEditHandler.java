@@ -76,7 +76,9 @@ public class OCamlBinaryRootEditHandler extends ModuleSourceRootEditHandler<OCam
     }
 
     private static class ResourceRootPropertiesDialog extends DialogWrapper {
+        @NotNull
         private final JTextField myRelativeOutputPathField;
+        @NotNull
         private final JCheckBox myIsGeneratedCheckBox;
         private final JPanel myMainPanel;
         @NotNull
@@ -112,7 +114,7 @@ public class OCamlBinaryRootEditHandler extends ModuleSourceRootEditHandler<OCam
         }
 
         @NotNull
-        private static String normalizePath(String path) {
+        private static String normalizePath(@NotNull String path) {
             return StringUtil.trimEnd(StringUtil.trimStart(FileUtil.toSystemIndependentName(path.trim()), "/"), "/");
         }
 

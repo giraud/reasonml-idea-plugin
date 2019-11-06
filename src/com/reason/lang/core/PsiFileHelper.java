@@ -94,6 +94,7 @@ public class PsiFileHelper {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiLet.class);
     }
 
+    @NotNull
     public static List<PsiVal> getValExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiVal.class);
     }

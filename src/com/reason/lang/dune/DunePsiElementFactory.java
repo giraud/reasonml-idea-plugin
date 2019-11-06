@@ -12,6 +12,7 @@ class DunePsiElementFactory {
     private DunePsiElementFactory() {
     }
 
+    @NotNull
     static PsiElement createElement(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
 

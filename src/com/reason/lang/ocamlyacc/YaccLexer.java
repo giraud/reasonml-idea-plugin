@@ -4,6 +4,8 @@ package com.reason.lang.ocamlyacc;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
@@ -81,6 +83,7 @@ class YaccLexer implements FlexLexer {
                     "\1\23\4\0\1\24\1\0\1\25\14\0\1\26\2\0" +
                     "\1\27\1\30\1\31\1\32";
 
+    @NotNull
     private static int[] zzUnpackAction() {
         int[] result = new int[56];
         int offset = 0;
@@ -88,7 +91,7 @@ class YaccLexer implements FlexLexer {
         return result;
     }
 
-    private static int zzUnpackAction(String packed, int offset, int[] result) {
+    private static int zzUnpackAction(@NotNull String packed, int offset, int[] result) {
         int i = 0;       /* index in packed string  */
         int j = offset;  /* index in unpacked array */
         int l = packed.length();
@@ -115,6 +118,7 @@ class YaccLexer implements FlexLexer {
                     "\0\u0294\0\u02b5\0\u02d6\0\u02f7\0\u0318\0\u0339\0\u035a\0\u037b" +
                     "\0\u039c\0\306\0\u03bd\0\u03de\0\306\0\306\0\306\0\306";
 
+    @NotNull
     private static int[] zzUnpackRowMap() {
         int[] result = new int[56];
         int offset = 0;
@@ -122,7 +126,7 @@ class YaccLexer implements FlexLexer {
         return result;
     }
 
-    private static int zzUnpackRowMap(String packed, int offset, int[] result) {
+    private static int zzUnpackRowMap(@NotNull String packed, int offset, int[] result) {
         int i = 0;  /* index in packed string  */
         int j = offset;  /* index in unpacked array */
         int l = packed.length();
@@ -154,6 +158,7 @@ class YaccLexer implements FlexLexer {
                     "\22\0\1\65\44\0\1\66\34\0\1\67\40\0\1\70" +
                     "\30\0";
 
+    @NotNull
     private static int[] zzUnpackTrans() {
         int[] result = new int[1023];
         int offset = 0;
@@ -161,7 +166,7 @@ class YaccLexer implements FlexLexer {
         return result;
     }
 
-    private static int zzUnpackTrans(String packed, int offset, int[] result) {
+    private static int zzUnpackTrans(@NotNull String packed, int offset, int[] result) {
         int i = 0;       /* index in packed string  */
         int j = offset;  /* index in unpacked array */
         int l = packed.length();
@@ -197,6 +202,7 @@ class YaccLexer implements FlexLexer {
                     "\1\1\3\11\4\0\1\11\1\0\1\11\14\0\1\11" +
                     "\2\0\4\11";
 
+    @NotNull
     private static int[] zzUnpackAttribute() {
         int[] result = new int[56];
         int offset = 0;
@@ -204,7 +210,7 @@ class YaccLexer implements FlexLexer {
         return result;
     }
 
-    private static int zzUnpackAttribute(String packed, int offset, int[] result) {
+    private static int zzUnpackAttribute(@NotNull String packed, int offset, int[] result) {
         int i = 0;       /* index in packed string  */
         int j = offset;  /* index in unpacked array */
         int l = packed.length();
@@ -310,7 +316,8 @@ class YaccLexer implements FlexLexer {
      * @param packed the packed character translation table
      * @return the unpacked character translation table
      */
-    private static char[] zzUnpackCMap(String packed) {
+    @NotNull
+    private static char[] zzUnpackCMap(@NotNull String packed) {
         int size = 0;
         for (int i = 0, length = packed.length(); i < length; i += 2) {
             size += packed.charAt(i);
@@ -438,8 +445,9 @@ class YaccLexer implements FlexLexer {
      *               This number must not be greater than yylength()!
      */
     public void yypushback(int number) {
-        if (number > yylength())
+        if (number > yylength()) {
             zzScanError(ZZ_PUSHBACK_2BIG);
+        }
 
         zzMarkedPos -= number;
     }
@@ -464,6 +472,7 @@ class YaccLexer implements FlexLexer {
      * @return the next token
      * @throws java.io.IOException if any I/O-Error occurs
      */
+    @Nullable
     public IElementType advance() throws java.io.IOException {
         int zzInput;
         int zzAction;
@@ -523,14 +532,18 @@ class YaccLexer implements FlexLexer {
                         }
                     }
                     int zzNext = zzTransL[zzRowMapL[zzState] + ZZ_CMAP(zzInput)];
-                    if (zzNext == -1) break zzForAction;
+                    if (zzNext == -1) {
+                        break zzForAction;
+                    }
                     zzState = zzNext;
 
                     zzAttributes = zzAttrL[zzState];
                     if ((zzAttributes & 1) == 1) {
                         zzAction = zzState;
                         zzMarkedPosL = zzCurrentPosL;
-                        if ((zzAttributes & 8) == 8) break zzForAction;
+                        if ((zzAttributes & 8) == 8) {
+                            break zzForAction;
+                        }
                     }
 
                 }

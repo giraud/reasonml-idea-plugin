@@ -18,5 +18,6 @@ public interface Bucklescript extends Compiler {
 
     void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document);
 
+    @Nullable
     ConsoleView getBsbConsole();
 }
