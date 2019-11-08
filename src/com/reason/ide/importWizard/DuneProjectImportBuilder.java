@@ -1,5 +1,6 @@
 package com.reason.ide.importWizard;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
@@ -16,8 +17,8 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.projectImport.ProjectImportBuilder;
+import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Icons;
-import com.reason.Log;
 import com.reason.OCamlSdkType;
 import com.reason.module.OCamlModuleType;
 import org.jetbrains.annotations.NotNull;
@@ -34,10 +35,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-// org.jetbrains.plugins.gradle.service.project.wizard.GradleProjectImportBuilder <- abstractImport ?
 public class DuneProjectImportBuilder extends ProjectImportBuilder {
-
-    private static final Log LOG = Log.create("import.builder");
 
     @Nullable
     private Sdk m_sdk;
@@ -125,11 +123,18 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
             }
 
             // Commit project structure.
-            ApplicationManager.getApplication().runWriteAction(() -> {
+            Application application = ApplicationManager.getApplication();
+            application.runWriteAction(() -> {
                 rootModel.commit();
                 obtainedModuleModel.commit();
                 ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
             });
+
+            VirtualFile homeDirectory = m_sdk == null ? null : m_sdk.getHomeDirectory();
+            if (homeDirectory != null) {
+                application.invokeLater(() -> FileBasedIndex.getInstance().requestReindex(homeDirectory)
+                );
+            }
         }
 
         return createdModules;
