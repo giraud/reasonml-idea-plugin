@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.io.Decompressor;
 import com.reason.Platform;
 import com.reason.hints.WGet;
@@ -23,26 +24,23 @@ import static com.intellij.notification.NotificationType.ERROR;
 
 class SdkDownloader extends Task.Modal {
 
-    @NotNull
     private static Condition<String> KEEP_OCAML_SOURCES = s -> s.endsWith(".ml") || s.endsWith(".mli") || s.endsWith(".ml4") || s.endsWith(".mll") || s.endsWith(".mly");
 
-    @NotNull
     private final String m_sdk;
-    @NotNull
     private final String m_major;
+    private final File m_sdkHome;
 
-    SdkDownloader(@NotNull String major, @NotNull String minor, @Nullable Project project) {
+    SdkDownloader(@NotNull String major, @NotNull String minor, @NotNull VirtualFile sdkHome, @Nullable Project project) {
         super(project, "Downloading SDK", true);
+        m_sdkHome = new File(sdkHome.getCanonicalPath());
         m_sdk = major + "." + minor;
         m_major = major;
     }
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
-        File pluginLocation = Platform.getPluginLocation();
-
         String sdkFilename = "ocaml-" + m_sdk + ".tar.gz";
-        File targetSdkLocation = new File(pluginLocation, sdkFilename);
+        File targetSdkLocation = new File(m_sdkHome, sdkFilename);
         String sdkUrl = "http://caml.inria.fr/pub/distrib/ocaml-" + m_major + "/" + sdkFilename;
 
         indicator.setIndeterminate(true);
@@ -55,7 +53,7 @@ class SdkDownloader extends Task.Modal {
                 File tarPath = uncompress(targetSdkLocation);
                 FileUtil.delete(targetSdkLocation);
                 indicator.setText("Untar sdk");
-                new Decompressor.Tar(tarPath).filter(KEEP_OCAML_SOURCES).extract(pluginLocation);
+                new Decompressor.Tar(tarPath).filter(KEEP_OCAML_SOURCES).extract(m_sdkHome);
                 FileUtil.delete(tarPath);
             } catch (IOException e) {
                 Notifications.Bus.notify(new ORNotification("Sdk", "Cannot download sdk, error: " + e.getMessage(), ERROR, null), getProject());

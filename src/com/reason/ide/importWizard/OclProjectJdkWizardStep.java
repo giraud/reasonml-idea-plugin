@@ -5,6 +5,7 @@ import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.ide.wizard.CommitStepException;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.ProjectManager;
@@ -14,11 +15,13 @@ import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.reason.Log;
 import com.reason.OCamlSdkType;
 import com.reason.OCamlSourcesOrderRootType;
-import com.reason.Platform;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -69,12 +72,22 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
             c_selDownload.addItem(sdk);
         }
 
+        if (c_selExistingSdk.getItemCount() == 0) {
+            c_rdSelectExisting.setEnabled(false);
+            c_selExistingSdk.setEnabled(false);
+            c_rdDownloadSdk.setSelected(true);
+        }
+
         String value = PropertiesComponent.getInstance().getValue(SDK_HOME);
         if (value == null) {
             VirtualFile userHomeDir = VfsUtil.getUserHomeDir();
             value = userHomeDir == null ? "" : userHomeDir.getCanonicalPath() + "/odk";
         }
         c_sdkHome.setText(value);
+
+        c_sdkHome.addBrowseFolderListener("Choose sdk home directory: ", null, m_context.getProject(),
+                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+
     }
 
     @Override
@@ -123,7 +136,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
                 // Download SDK from distribution site
                 LOG.debug("Download SDK", selectedSdk);
-                ProgressManager.getInstance().run(new SdkDownloader(major, minor, m_context.getProject()));
+                ProgressManager.getInstance().run(new SdkDownloader(major, minor, sdkHome, m_context.getProject()));
 
                 // Create SDK !
                 LOG.debug("Create SDK", selectedSdk);
