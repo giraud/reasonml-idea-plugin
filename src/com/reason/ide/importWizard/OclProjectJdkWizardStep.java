@@ -22,9 +22,7 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.reason.Log;
 import com.reason.OCamlSdkType;
 import com.reason.OCamlSourcesOrderRootType;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
@@ -35,7 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-// com.intellij.ide.util.projectWizard.ProjectJdkForModuleStep
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
     private static final String SDK_HOME = "reasonml.sdk.home";
@@ -52,10 +49,6 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     private final WizardContext m_context;
 
     OclProjectJdkWizardStep(final WizardContext context) {
-        this(context, null);
-    }
-
-    private OclProjectJdkWizardStep(WizardContext context, @Nullable @NonNls String helpId) {
         m_context = context;
     }
 
@@ -63,7 +56,6 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         ProjectSdksModel model = new ProjectSdksModel();
         model.reset(ProjectManager.getInstance().getDefaultProject());
         c_selExistingSdk = new JdkComboBox(model, sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName()));
-
     }
 
     @Override
@@ -85,9 +77,8 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         }
         c_sdkHome.setText(value);
 
-        c_sdkHome.addBrowseFolderListener("Choose sdk home directory: ", null, m_context.getProject(),
+        c_sdkHome.addBrowseFolderListener("Choose Sdk Home Directory: ", null, m_context.getProject(),
                 FileChooserDescriptorFactory.createSingleFolderDescriptor());
-
     }
 
     @Override
@@ -126,39 +117,41 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         if (c_rdDownloadSdk.isSelected()) {
             String selectedSdk = (String) c_selDownload.getSelectedItem();
             String sdkHomeValue = PropertiesComponent.getInstance().getValue(SDK_HOME);
-            VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
-            VirtualFile sdkHome = fileSystem.findFileByPath(sdkHomeValue);
+            if (sdkHomeValue != null) {
+                VirtualFileSystem fileSystem = LocalFileSystem.getInstance();
+                VirtualFile sdkHome = fileSystem.findFileByPath(sdkHomeValue);
 
-            if (selectedSdk != null && sdkHome != null) {
-                int pos = selectedSdk.lastIndexOf('.');
-                String major = selectedSdk.substring(0, pos);
-                String minor = selectedSdk.substring(pos + 1);
+                if (selectedSdk != null && sdkHome != null) {
+                    int pos = selectedSdk.lastIndexOf('.');
+                    String major = selectedSdk.substring(0, pos);
+                    String minor = selectedSdk.substring(pos + 1);
 
-                // Download SDK from distribution site
-                LOG.debug("Download SDK", selectedSdk);
-                ProgressManager.getInstance().run(new SdkDownloader(major, minor, sdkHome, m_context.getProject()));
+                    // Download SDK from distribution site
+                    LOG.debug("Download SDK", selectedSdk);
+                    ProgressManager.getInstance().run(new SdkDownloader(major, minor, sdkHome, m_context.getProject()));
 
-                // Create SDK !
-                LOG.debug("Create SDK", selectedSdk);
-                File targetSdkLocation = new File(sdkHome.getCanonicalPath(), "ocaml-" + selectedSdk);
-                Sdk odk = SdkConfigurationUtil.createAndAddSDK(targetSdkLocation.getAbsolutePath(), new OCamlSdkType());
-                if (odk != null) {
-                    SdkModificator odkModificator = odk.getSdkModificator();
+                    // Create SDK
+                    LOG.debug("Create SDK", selectedSdk);
+                    File targetSdkLocation = new File(sdkHome.getCanonicalPath(), "ocaml-" + selectedSdk);
+                    Sdk odk = SdkConfigurationUtil.createAndAddSDK(targetSdkLocation.getAbsolutePath(), new OCamlSdkType());
+                    if (odk != null) {
+                        SdkModificator odkModificator = odk.getSdkModificator();
 
-                    odkModificator.setVersionString(selectedSdk);  // must be set after home path, otherwise setting home path clears the version string
-                    odkModificator.setName("OCaml (sources only) " + major);
-                    try {
-                        addSdkSources(odkModificator, targetSdkLocation);
-                    } catch (IOException e) {
-                        throw new CommitStepException(e.getMessage());
-                    }
+                        odkModificator.setVersionString(selectedSdk);  // must be set after home path, otherwise setting home path clears the version string
+                        odkModificator.setName("OCaml (sources only) " + major);
+                        try {
+                            addSdkSources(odkModificator, targetSdkLocation);
+                        } catch (IOException e) {
+                            throw new CommitStepException(e.getMessage());
+                        }
 
-                    odkModificator.commitChanges();
+                        odkModificator.commitChanges();
 
-                    // update selected sdk in builder
-                    ProjectBuilder builder = m_context.getProjectBuilder();
-                    if (builder instanceof DuneProjectImportBuilder) {
-                        ((DuneProjectImportBuilder) builder).setModuleSdk(odk);
+                        // update selected sdk in builder
+                        ProjectBuilder builder = m_context.getProjectBuilder();
+                        if (builder instanceof DuneProjectImportBuilder) {
+                            ((DuneProjectImportBuilder) builder).setModuleSdk(odk);
+                        }
                     }
                 }
             }

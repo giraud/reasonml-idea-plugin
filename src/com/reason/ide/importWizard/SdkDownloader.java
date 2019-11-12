@@ -8,7 +8,6 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.io.Decompressor;
-import com.reason.Platform;
 import com.reason.hints.WGet;
 import com.reason.ide.ORNotification;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +31,9 @@ class SdkDownloader extends Task.Modal {
 
     SdkDownloader(@NotNull String major, @NotNull String minor, @NotNull VirtualFile sdkHome, @Nullable Project project) {
         super(project, "Downloading SDK", true);
-        m_sdkHome = new File(sdkHome.getCanonicalPath());
+        String canonicalPath = sdkHome.getCanonicalPath();
+        assert canonicalPath != null;
+        m_sdkHome = new File(canonicalPath);
         m_sdk = major + "." + minor;
         m_major = major;
     }
