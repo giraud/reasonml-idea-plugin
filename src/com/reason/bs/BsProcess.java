@@ -200,13 +200,13 @@ public final class BsProcess implements CompilerProcessLifecycle {
         return "4.02";
     }
 
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile("BuckleScript (\\d\\.\\d.\\d)[^ ]* \\(Using OCaml(\\d\\.\\d+).+\\)");
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[\\:]?(\\d\\.\\d+).+\\)");
 
     @NotNull
     static String ocamlVersionExtractor(@NotNull String line) {
         Matcher matcher = BS_VERSION_REGEXP.matcher(line);
         if (matcher.matches()) {
-            return matcher.group(2);
+            return matcher.group(1);
         }
         return "4.02";
     }
