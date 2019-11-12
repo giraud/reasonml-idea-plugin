@@ -16,7 +16,7 @@ class DunePsiElementFactory {
     static PsiElement createElement(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == DuneTypes.INSTANCE.SEXPR) {
+        if (type == DuneTypes.INSTANCE.C_SEXPR) {
             return new PsiSExpr(DuneTypes.INSTANCE, node);
         } else if (type == DuneTypes.INSTANCE.VERSION) {
             return new PsiDuneVersion(DuneTypes.INSTANCE, node);

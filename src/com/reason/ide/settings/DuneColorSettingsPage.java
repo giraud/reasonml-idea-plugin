@@ -6,10 +6,12 @@ import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.reason.Icons;
 import com.reason.ide.highlight.DuneSyntaxHighlighter;
+import com.reason.ide.highlight.ORSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public class DuneColorSettingsPage implements ColorSettingsPage {
@@ -19,6 +21,7 @@ public class DuneColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Fields", DuneSyntaxHighlighter.FIELDS_),
             new AttributesDescriptor("Options", DuneSyntaxHighlighter.OPTIONS_),
             new AttributesDescriptor("Atoms", DuneSyntaxHighlighter.ATOM_),
+            new AttributesDescriptor("Variables", DuneSyntaxHighlighter.VAR_),
             new AttributesDescriptor("Parenthesis", DuneSyntaxHighlighter.PARENS_),
     };
 
@@ -37,8 +40,7 @@ public class DuneColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return "; A single line comment\n" +
-                "(jbuild_version 1)\n\n" +
+        return "; A single line comment\n\n" +
                 "#| Block comments #| can be \"nested\" |# |#\n\n" +
 
                 "(executable\n" +
@@ -55,13 +57,19 @@ public class DuneColorSettingsPage implements ColorSettingsPage {
                 "(rule\n" +
                 " ((targets (config.full))\n" +
                 "  (deps    (config_common.ml config))\n" +
-                "  (action  (run ${OCAML} ${path:real_configure.ml}))))";
+                "  (action  (run <csVar>%{OCAML}</csVar> <csVar>%{path:real_configure.ml}</csVar>))))";
+    }
+
+    private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();
+
+    static {
+        additionalTags.put("csVar", DuneSyntaxHighlighter.VAR_);
     }
 
     @Nullable
     @Override
     public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return null;
+        return additionalTags;
     }
 
     @NotNull

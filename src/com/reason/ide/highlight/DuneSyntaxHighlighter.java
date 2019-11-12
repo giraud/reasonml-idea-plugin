@@ -35,8 +35,9 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
             DuneTypes.INSTANCE.PPX_RUNTIME_LIBRARIES, DuneTypes.INSTANCE.SELF_BUILD_STUBS_ARCHIVE, DuneTypes.INSTANCE.LINK_FLAGS,
             DuneTypes.INSTANCE.ALLOW_OVERLAPPING_DEPENDENCIES, DuneTypes.INSTANCE.MODULES_WITHOUT_IMPLEMENTATION, DuneTypes.INSTANCE.NAMES,
             DuneTypes.INSTANCE.PUBLIC_NAMES, DuneTypes.INSTANCE.SHARED_OBJECT, DuneTypes.INSTANCE.DEPS, DuneTypes.INSTANCE.MODE, DuneTypes.INSTANCE.LOCKS,
-            DuneTypes.INSTANCE.ACTION, DuneTypes.INSTANCE.TARGETS
-    );
+            DuneTypes.INSTANCE.ACTION, DuneTypes.INSTANCE.TARGETS, DuneTypes.INSTANCE.SYNOPSIS, DuneTypes.INSTANCE.PACKAGE,
+            DuneTypes.INSTANCE.SECTION, DuneTypes.INSTANCE.SOURCE_TREE
+            );
 
     private static final Set<IElementType> OPTIONS_TYPES = of(
             DuneTypes.INSTANCE.EXE, DuneTypes.INSTANCE.BEST, DuneTypes.INSTANCE.BYTE, DuneTypes.INSTANCE.OBJECT, DuneTypes.INSTANCE.NATIVE, DuneTypes.INSTANCE.PROMOTE,
@@ -50,6 +51,7 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey OPTIONS_ = createTextAttributesKey("DUNE_OPTION", DefaultLanguageHighlighterColors.LABEL);
     public static final TextAttributesKey STRING_ = createTextAttributesKey("DUNE_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey ATOM_ = createTextAttributesKey("DUNE_ATOM", DefaultLanguageHighlighterColors.CONSTANT);
+    public static final TextAttributesKey VAR_ = createTextAttributesKey("DUNE_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
     private static final TextAttributesKey BAD_CHAR_ = createTextAttributesKey("DUNE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT_};
@@ -59,6 +61,7 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] OPTIONS_KEYS = new TextAttributesKey[]{OPTIONS_};
     private static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING_};
     private static final TextAttributesKey[] ATOM_KEYS = new TextAttributesKey[]{ATOM_};
+    private static final TextAttributesKey[] VAR_KEYS = new TextAttributesKey[]{VAR_};
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHAR_};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 

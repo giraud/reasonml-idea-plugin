@@ -112,6 +112,7 @@ public enum ParserScopeEnum {
     sexpr,
     library,
     executable,
+    duneVariable,
 
     maybeFunction,
     maybeFunctionParameters,

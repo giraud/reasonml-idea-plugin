@@ -12,7 +12,8 @@ public class DuneTypes {
 
     // Composite element types
 
-    public final ORCompositeElementType SEXPR = new ORCompositeElementType("s-expr", DuneLanguage.INSTANCE);
+    public final ORCompositeElementType C_SEXPR = new ORCompositeElementType("S-expr", DuneLanguage.INSTANCE);
+    public final ORCompositeElementType C_VAR = new ORCompositeElementType("C_VAR", DuneLanguage.INSTANCE);
 
     // Token element types
 
@@ -27,6 +28,9 @@ public class DuneTypes {
     public final ORTokenElementType NAME = new ORTokenElementType("NAME", DuneLanguage.INSTANCE);
     public final ORTokenElementType PUBLIC_NAME = new ORTokenElementType("PUBLIC_NAME", DuneLanguage.INSTANCE);
     public final ORTokenElementType SYNOPSIS = new ORTokenElementType("SYNOPSIS", DuneLanguage.INSTANCE);
+    public final ORTokenElementType PACKAGE = new ORTokenElementType("PACKAGE", DuneLanguage.INSTANCE);
+    public final ORTokenElementType SECTION = new ORTokenElementType("SECTION", DuneLanguage.INSTANCE);
+    public final ORTokenElementType SOURCE_TREE = new ORTokenElementType("SOURCE_TREE", DuneLanguage.INSTANCE);
 
     public final ORTokenElementType EXECUTABLE = new ORTokenElementType("EXECUTABLE", DuneLanguage.INSTANCE);
     public final ORTokenElementType KIND = new ORTokenElementType("KIND", DuneLanguage.INSTANCE);
@@ -83,4 +87,9 @@ public class DuneTypes {
     public final ORTokenElementType OCAML_YACC = new ORTokenElementType("OCAML_YACC", DuneLanguage.INSTANCE);
     public final ORTokenElementType COPY_FILES = new ORTokenElementType("COPY_FILES", DuneLanguage.INSTANCE);
     public final ORTokenElementType COPY_FILES_SHARP = new ORTokenElementType("COPY_FILES_SHARP", DuneLanguage.INSTANCE);
+    public final ORTokenElementType COLON = new ORTokenElementType("COLON", DuneLanguage.INSTANCE);
+    public final ORTokenElementType EQUAL = new ORTokenElementType("EQUAL", DuneLanguage.INSTANCE);
+    public final ORTokenElementType SHARP = new ORTokenElementType("SHARP", DuneLanguage.INSTANCE);
+    public final ORTokenElementType VAR_START = new ORTokenElementType("VAR_START", DuneLanguage.INSTANCE);
+    public final ORTokenElementType VAR_END = new ORTokenElementType("VAR_END", DuneLanguage.INSTANCE);
 }

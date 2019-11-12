@@ -244,6 +244,7 @@
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
+        <annotator language="" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
 

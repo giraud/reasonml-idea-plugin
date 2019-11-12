@@ -40,7 +40,7 @@ WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
 NEWLINE=("\r"* "\n")
-ATOM=[A-Za-z_0-9'&\^%!\.-]
+ATOM=[A-Za-z_0-9'&\^!\.\-/+\\]
 
 %state WAITING_VALUE
 %state INITIAL
@@ -57,14 +57,6 @@ ATOM=[A-Za-z_0-9'&\^%!\.-]
 
 <INITIAL> {
     {WHITE_SPACE}    { return WHITE_SPACE; }
-
-    "("              { return types.LPAREN; }
-    ")"              { return types.RPAREN; }
-
-    "\""             { yybegin(IN_STRING); tokenStart(); }
-    "#|"             { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
-    "#;"             { yybegin(IN_SEXPR_COMMENT); parenDepth = 0; tokenStart(); }
-    ";"              { yybegin(IN_SL_COMMENT); tokenStart(); }
 
     "jbuild_version" { return types.VERSION; }
     "library"        { return types.LIBRARY; }
@@ -107,12 +99,15 @@ ATOM=[A-Za-z_0-9'&\^%!\.-]
     "ocamlopt_flags"                  { return types.OCAMLOPT_FLAGS; }
     "optional"                        { return types.OPTIONAL; }
     "ppx_runtime_libraries"           { return types.PPX_RUNTIME_LIBRARIES; }
+    "package"                         { return types.PACKAGE; }
     "preprocess"                      { return types.PREPROCESS; }
     "preprocessor_deps"               { return types.PREPROCESSOR_DEPS; }
     "public_name"                     { return types.PUBLIC_NAME; }
     "public_names"                    { return types.PUBLIC_NAMES; }
     "self_build_stubs_archive"        { return types.SELF_BUILD_STUBS_ARCHIVE; }
+    "section"                         { return types.SECTION; }
     "synopsis"                        { return types.SYNOPSIS; }
+    "source_tree"                     { return types.SOURCE_TREE; }
     "targets"                         { return types.TARGETS; }
     "virtual_deps"                    { return types.VIRTUAL_DEPS; }
     "wrapped"                         { return types.WRAPPED; }
@@ -128,10 +123,24 @@ ATOM=[A-Za-z_0-9'&\^%!\.-]
     "shared_object"                   { return types.SHARED_OBJECT; }
 
     // Modes
-    "standard"                        { return types.STANDARD; }
     "fallback"                        { return types.FALLBACK; }
     "promote"                         { return types.PROMOTE; }
     "promote-until-clean"             { return types.PROMOTE_UNTIL_CLEAN; }
+
+    ":standard"                       { return types.STANDARD; }
+
+    "\""                              { yybegin(IN_STRING); tokenStart(); }
+    "#|"                              { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
+    "#;"                              { yybegin(IN_SEXPR_COMMENT); parenDepth = 0; tokenStart(); }
+    ";"                               { yybegin(IN_SL_COMMENT); tokenStart(); }
+
+    "%{"                              { return types.VAR_START; }
+    "}"                               { return types.VAR_END; }
+    ":"                               { return types.COLON; }
+    "("                               { return types.LPAREN; }
+    ")"                               { return types.RPAREN; }
+    "="                               { return types.EQUAL; }
+    "#"                               { return types.SHARP; }
 
     {ATOM}+     { return types.ATOM; }
 }

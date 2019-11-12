@@ -37,7 +37,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
             }
 
             if (tokenType == m_types.LPAREN) {
-                state.add(markScope(builder, sexpr, m_types.SEXPR, m_types.LPAREN));
+                state.add(markScope(builder, sexpr, m_types.C_SEXPR, m_types.LPAREN));
             } else if (tokenType == m_types.RPAREN) {
                 if (state.isInScopeExpression()) {
                     state.complete();
@@ -54,6 +54,10 @@ public class DuneParser extends CommonParser<DuneTypes> {
                 parseLibrary(builder, state);
             } else if (tokenType == m_types.NAME) {
                 parseName(builder, state);
+            } else if (tokenType == m_types.VAR_START) {
+                parseVarStart(builder, state);
+            } else if (tokenType == m_types.VAR_END) {
+                parseVarEnd(builder, state);
             }
 
             if (state.dontMove) {
@@ -110,6 +114,18 @@ public class DuneParser extends CommonParser<DuneTypes> {
             state.updateCurrentResolution(name);
             state.setTokenElementType(m_types.NAME);
             state.complete();
+        }
+    }
+
+    /* |>%{<| .. } */
+    private void parseVarStart(PsiBuilder builder, @NotNull ParserState state) {
+        state.add(markScope(builder, duneVariable, m_types.C_VAR, m_types.VAR_START));
+    }
+
+    /* %{ .. |>}<| */
+    private void parseVarEnd(PsiBuilder builder, @NotNull ParserState state) {
+        if (state.isCurrentContext(duneVariable)) {
+            state.complete().advance().popEnd();
         }
     }
 
