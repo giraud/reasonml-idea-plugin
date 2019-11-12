@@ -125,7 +125,7 @@
         <lang.foldingBuilder language="Mlg" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="Mll" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="Mly" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <!--<lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>-->
+        <lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>
 
         <lang.commenter language="Reason" implementationClass="com.reason.ide.comment.RmlCommenter"/>
         <lang.commenter language="OCaml" implementationClass="com.reason.ide.comment.OclCommenter"/>
