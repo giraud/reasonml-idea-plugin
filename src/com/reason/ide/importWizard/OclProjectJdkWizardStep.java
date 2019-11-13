@@ -114,7 +114,12 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
     @Override
     public void onWizardFinished() throws CommitStepException {
-        if (c_rdDownloadSdk.isSelected()) {
+        Sdk odk = null;
+
+        if (c_rdSelectExisting.isSelected()) {
+            JdkComboBox.JdkComboBoxItem selectedItem = c_selExistingSdk.getSelectedItem();
+            odk = selectedItem.getJdk();
+        } else if (c_rdDownloadSdk.isSelected()) {
             String selectedSdk = (String) c_selDownload.getSelectedItem();
             String sdkHomeValue = PropertiesComponent.getInstance().getValue(SDK_HOME);
             if (sdkHomeValue != null) {
@@ -133,7 +138,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
                     // Create SDK
                     LOG.debug("Create SDK", selectedSdk);
                     File targetSdkLocation = new File(sdkHome.getCanonicalPath(), "ocaml-" + selectedSdk);
-                    Sdk odk = SdkConfigurationUtil.createAndAddSDK(targetSdkLocation.getAbsolutePath(), new OCamlSdkType());
+                    odk = SdkConfigurationUtil.createAndAddSDK(targetSdkLocation.getAbsolutePath(), new OCamlSdkType());
                     if (odk != null) {
                         SdkModificator odkModificator = odk.getSdkModificator();
 
@@ -146,15 +151,15 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
                         }
 
                         odkModificator.commitChanges();
-
-                        // update selected sdk in builder
-                        ProjectBuilder builder = m_context.getProjectBuilder();
-                        if (builder instanceof DuneProjectImportBuilder) {
-                            ((DuneProjectImportBuilder) builder).setModuleSdk(odk);
-                        }
                     }
                 }
             }
+        }
+
+        // update selected sdk in builder
+        ProjectBuilder builder = m_context.getProjectBuilder();
+        if (odk != null && builder instanceof DuneProjectImportBuilder) {
+            ((DuneProjectImportBuilder) builder).setModuleSdk(odk);
         }
     }
 

@@ -38,7 +38,7 @@ public class DuneProjectImportProvider extends ProjectImportProvider {
     @NotNull
     @Override
     public String getFileSample() {
-        return "<b>Dune</b> configuration file";
+        return "<b>Dune</b> project file (dune-project)";
     }
 
 }
