@@ -51,22 +51,7 @@ public class ORProjectTracker implements ProjectComponent {
                             if (!project.isDisposed()) {
                                 Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
                                 if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
-                                    // Hack to get OCaml sources indexed like java sources
-                                    // Find a better way to do it !!
-                                    VirtualFile[] ocamlSources = projectSdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
-                                    VirtualFile[] javaSources = projectSdk.getRootProvider().getFiles(OrderRootType.SOURCES);
-                                    boolean equals = ArrayUtil.equals(ocamlSources, javaSources, (Equality<VirtualFile>) (v1, v2) -> v1.getPath().equals(v2.getPath()));
-
-                                    if (!equals) {
-                                        SdkModificator sdkModificator = projectSdk.getSdkModificator();
-
-                                        sdkModificator.removeRoots(OrderRootType.SOURCES);
-                                        for (VirtualFile root : ocamlSources) {
-                                            sdkModificator.addRoot(root, OrderRootType.SOURCES);
-                                        }
-
-                                        sdkModificator.commitChanges();
-                                    }
+                                    OCamlSdkType.reindexSourceRoots(projectSdk);
                                 }
                             }
                         });

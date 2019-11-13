@@ -4,6 +4,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ArrayUtil;
+import gnu.trove.Equality;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -92,4 +95,24 @@ public class OCamlSdkType extends SdkType {
     @Override
     public void saveAdditionalData(@NotNull SdkAdditionalData additionalData, @NotNull Element additional) {
     }
+
+    // Hack to get OCaml sources indexed like java sources
+    // Find a better way to do it !!
+    public static void reindexSourceRoots(@NotNull Sdk sdk) {
+        VirtualFile[] ocamlSources = sdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
+        VirtualFile[] javaSources = sdk.getRootProvider().getFiles(OrderRootType.SOURCES);
+        boolean equals = ArrayUtil.equals(ocamlSources, javaSources, (Equality<VirtualFile>) (v1, v2) -> v1.getPath().equals(v2.getPath()));
+
+        if (!equals) {
+            SdkModificator sdkModificator = sdk.getSdkModificator();
+
+            sdkModificator.removeRoots(OrderRootType.SOURCES);
+            for (VirtualFile root : ocamlSources) {
+                sdkModificator.addRoot(root, OrderRootType.SOURCES);
+            }
+
+            sdkModificator.commitChanges();
+        }
+    }
+
 }

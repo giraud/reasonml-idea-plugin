@@ -17,7 +17,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.projectImport.ProjectImportBuilder;
-import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Icons;
 import com.reason.OCamlSdkType;
 import com.reason.module.OCamlModuleType;
@@ -125,16 +124,13 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
             // Commit project structure.
             Application application = ApplicationManager.getApplication();
             application.runWriteAction(() -> {
-                rootModel.commit();
                 obtainedModuleModel.commit();
-                ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
-            });
+                rootModel.commit();
 
-            VirtualFile homeDirectory = m_sdk == null ? null : m_sdk.getHomeDirectory();
-            if (homeDirectory != null) {
-                application.invokeLater(() -> FileBasedIndex.getInstance().requestReindex(homeDirectory)
-                );
-            }
+                assert m_sdk != null;
+                ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
+                OCamlSdkType.reindexSourceRoots(m_sdk);
+            });
         }
 
         return createdModules;
