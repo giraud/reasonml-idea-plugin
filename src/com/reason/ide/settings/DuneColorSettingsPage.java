@@ -6,7 +6,6 @@ import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
 import com.reason.Icons;
 import com.reason.ide.highlight.DuneSyntaxHighlighter;
-import com.reason.ide.highlight.ORSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

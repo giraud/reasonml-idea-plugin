@@ -110,9 +110,14 @@ public enum ParserScopeEnum {
 
     assert_,
     sexpr,
+    stanza,
     library,
     executable,
     duneVariable,
+    stanzaNamed,
+    stanzaNamedFields,
+    stanzaFields,
+    field,
 
     maybeFunction,
     maybeFunctionParameters,
@@ -157,5 +162,5 @@ public enum ParserScopeEnum {
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage, letNamedBindingFunction,
     typeBinding, recordFieldAnnotation, option, optionParameter, name, variant, variantConstructor,
-    variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
+    variantConstructorParameter, variantConstructorParameters, unit,  localObjectOpen
 }

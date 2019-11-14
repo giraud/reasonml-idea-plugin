@@ -10,11 +10,9 @@ import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
 import com.reason.Platform;
-import com.reason.StringUtil;
 import com.reason.bs.BsConfig;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.DuneFileType;
-import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -46,14 +44,14 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                 DuneFile duneFile = (DuneFile) inputData.getPsiFile();
                 PsiElement firstChild = duneFile.getFirstChild();
                 PsiElement nextSibling = firstChild == null ? null : firstChild.getNextSibling(); // todo: better
-                if (nextSibling != null && nextSibling.getNode().getElementType() == DuneTypes.INSTANCE.LIBRARY) {
-                    VirtualFile parent = dataFile.getParent();
-                    String namespace = StringUtil.toFirstUpper(parent.getName());
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
-                    }
-                    return Collections.singletonMap(namespace, null);
-                }
+//                if (nextSibling != null && nextSibling.getNode().getElementType() == DuneTypes.INSTANCE.LIBRARY) {
+//                    VirtualFile parent = dataFile.getParent();
+//                    String namespace = StringUtil.toFirstUpper(parent.getName());
+//                    if (LOG.isDebugEnabled()) {
+//                        LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
+//                    }
+//                    return Collections.singletonMap(namespace, null);
+//                }
             } else {
                 PsiFile file = PsiManager.getInstance(inputData.getProject()).findFile(dataFile);
                 if (file != null) {

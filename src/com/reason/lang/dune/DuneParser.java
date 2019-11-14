@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.reason.lang.ParserScope.mark;
 import static com.reason.lang.ParserScope.markScope;
 import static com.reason.lang.ParserScopeEnum.*;
 
@@ -36,9 +37,14 @@ public class DuneParser extends CommonParser<DuneTypes> {
                 break;
             }
 
+            // ( .. )
             if (tokenType == m_types.LPAREN) {
-                state.add(markScope(builder, sexpr, m_types.C_SEXPR, m_types.LPAREN));
+                parseLParen(builder, state);
             } else if (tokenType == m_types.RPAREN) {
+                if (state.isCurrentResolution(stanzaNamedFields)) {
+                    state.popEnd();
+                }
+
                 if (state.isInScopeExpression()) {
                     state.complete();
                     state.advance();
@@ -46,18 +52,15 @@ public class DuneParser extends CommonParser<DuneTypes> {
                 } else {
                     builder.error("Unbalanced parenthesis");
                 }
-            } else if (tokenType == m_types.VERSION) {
-                state.wrapWith(m_types.VERSION);
-            } else if (tokenType == m_types.EXECUTABLE) {
-                parseExecutable(builder, state);
-            } else if (tokenType == m_types.LIBRARY) {
-                parseLibrary(builder, state);
-            } else if (tokenType == m_types.NAME) {
-                parseName(builder, state);
-            } else if (tokenType == m_types.VAR_START) {
+            }
+
+            // %{ .. }
+            else if (tokenType == m_types.VAR_START) {
                 parseVarStart(builder, state);
             } else if (tokenType == m_types.VAR_END) {
                 parseVarEnd(builder, state);
+            } else if (tokenType == m_types.ATOM) {
+                parseAtom(builder, state);
             }
 
             if (state.dontMove) {
@@ -74,46 +77,21 @@ public class DuneParser extends CommonParser<DuneTypes> {
         }
     }
 
-    /*
-    (executable (
-        (name <name>)
-        <optional-fields>
-    ))
-    */
-    private void parseExecutable(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        state.updateCurrentResolution(executable);
-        state.setTokenElementType(m_types.EXECUTABLE);
-        state.advance();
-        if (builder.getTokenType() == m_types.LPAREN) {
-            state.complete();
-        } else {
-            builder.error("( expected");
+    private void parseAtom(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+        if (state.isCurrentResolution(stanza)) {
+            state.updateCurrentResolution(stanzaNamed).
+                    advance().
+                    add(mark(builder, state.currentContext(), stanzaNamedFields, m_types.C_FIELDS).complete());
         }
     }
 
-    /*
-    (library (
-        (name <library-name>)
-        <optional-fields>
-    ))
-    */
-    private void parseLibrary(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        state.updateCurrentResolution(library);
-        state.setTokenElementType(m_types.LIBRARY);
-        state.advance();
-        if (builder.getTokenType() == m_types.LPAREN) {
-            state.complete();
+    private void parseLParen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+        if (state.isCurrentContext(file)) {
+            state.add(markScope(builder, stanza, m_types.C_STANZA, m_types.LPAREN));
+        } else if (state.isCurrentResolution(stanzaNamedFields)) {
+            state.add(markScope(builder, stanzaFields, field, m_types.C_FIELD, m_types.LPAREN));
         } else {
-            builder.error("( expected");
-        }
-    }
-
-    /* (name id) */
-    private void parseName(PsiBuilder builder, @NotNull ParserState state) {
-        if (state.previousElementType1 == m_types.LPAREN) {
-            state.updateCurrentResolution(name);
-            state.setTokenElementType(m_types.NAME);
-            state.complete();
+            state.add(markScope(builder, sexpr, m_types.C_SEXPR, m_types.LPAREN));
         }
     }
 

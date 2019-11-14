@@ -20,30 +20,6 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
 public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
 
-    private static final Set<IElementType> STANZAS_TYPES = of(
-            DuneTypes.INSTANCE.VERSION, DuneTypes.INSTANCE.EXECUTABLE, DuneTypes.INSTANCE.EXECUTABLES, DuneTypes.INSTANCE.LIBRARY, DuneTypes.INSTANCE.RULE,
-            DuneTypes.INSTANCE.ALIAS, DuneTypes.INSTANCE.MENHIR, DuneTypes.INSTANCE.INSTALL, DuneTypes.INSTANCE.INCLUDE, DuneTypes.INSTANCE.OCAML_LEX,
-            DuneTypes.INSTANCE.OCAML_YACC, DuneTypes.INSTANCE.COPY_FILES, DuneTypes.INSTANCE.COPY_FILES_SHARP
-    );
-
-    private static final Set<IElementType> FIELDS_TYPES = of(
-            DuneTypes.INSTANCE.NAME, DuneTypes.INSTANCE.PUBLIC_NAME, DuneTypes.INSTANCE.KIND, DuneTypes.INSTANCE.MODES, DuneTypes.INSTANCE.FLAGS, DuneTypes.INSTANCE.C_NAMES,
-            DuneTypes.INSTANCE.C_FLAGS, DuneTypes.INSTANCE.MODULES, DuneTypes.INSTANCE.WRAPPED, DuneTypes.INSTANCE.OPTIONAL, DuneTypes.INSTANCE.LIBRARIES,
-            DuneTypes.INSTANCE.CXX_NAMES, DuneTypes.INSTANCE.CXX_FLAGS, DuneTypes.INSTANCE.NO_DYNLINK, DuneTypes.INSTANCE.PREPROCESS, DuneTypes.INSTANCE.JS_OF_OCAML,
-            DuneTypes.INSTANCE.VIRTUAL_DEPS, DuneTypes.INSTANCE.OCAMLC_FLAGS, DuneTypes.INSTANCE.LIBRARY_FLAGS, DuneTypes.INSTANCE.OCAMLOPT_FLAGS,
-            DuneTypes.INSTANCE.C_LIBRARY_FLAGS, DuneTypes.INSTANCE.INSTALL_C_HEADERS, DuneTypes.INSTANCE.PREPROCESSOR_DEPS,
-            DuneTypes.INSTANCE.PPX_RUNTIME_LIBRARIES, DuneTypes.INSTANCE.SELF_BUILD_STUBS_ARCHIVE, DuneTypes.INSTANCE.LINK_FLAGS,
-            DuneTypes.INSTANCE.ALLOW_OVERLAPPING_DEPENDENCIES, DuneTypes.INSTANCE.MODULES_WITHOUT_IMPLEMENTATION, DuneTypes.INSTANCE.NAMES,
-            DuneTypes.INSTANCE.PUBLIC_NAMES, DuneTypes.INSTANCE.SHARED_OBJECT, DuneTypes.INSTANCE.DEPS, DuneTypes.INSTANCE.MODE, DuneTypes.INSTANCE.LOCKS,
-            DuneTypes.INSTANCE.ACTION, DuneTypes.INSTANCE.TARGETS, DuneTypes.INSTANCE.SYNOPSIS, DuneTypes.INSTANCE.PACKAGE,
-            DuneTypes.INSTANCE.SECTION, DuneTypes.INSTANCE.SOURCE_TREE
-            );
-
-    private static final Set<IElementType> OPTIONS_TYPES = of(
-            DuneTypes.INSTANCE.EXE, DuneTypes.INSTANCE.BEST, DuneTypes.INSTANCE.BYTE, DuneTypes.INSTANCE.OBJECT, DuneTypes.INSTANCE.NATIVE, DuneTypes.INSTANCE.PROMOTE,
-            DuneTypes.INSTANCE.STANDARD
-    );
-
     public static final TextAttributesKey PARENS_ = createTextAttributesKey("DUNE_PAREN", DefaultLanguageHighlighterColors.PARENTHESES);
     public static final TextAttributesKey COMMENT_ = createTextAttributesKey("DUNE_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     public static final TextAttributesKey STANZAS_ = createTextAttributesKey("DUNE_STANZA", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION);
@@ -78,12 +54,6 @@ public class DuneSyntaxHighlighter extends SyntaxHighlighterBase {
             return PAREN_KEYS;
         } else if (tokenType.equals(DuneTypes.INSTANCE.COMMENT)) {
             return COMMENT_KEYS;
-        } else if (STANZAS_TYPES.contains(tokenType)) {
-            return STANZAS_KEYS;
-        } else if (FIELDS_TYPES.contains(tokenType)) {
-            return FIELDS_KEYS;
-        } else if (OPTIONS_TYPES.contains(tokenType)) {
-            return OPTIONS_KEYS;
         } else if (tokenType.equals(DuneTypes.INSTANCE.STRING)) {
             return STRING_KEYS;
         } else if (tokenType.equals(DuneTypes.INSTANCE.ATOM)) {
