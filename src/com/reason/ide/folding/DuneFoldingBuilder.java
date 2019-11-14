@@ -8,6 +8,8 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiDuneFields;
+import com.reason.lang.core.psi.PsiStanza;
 import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,8 +25,13 @@ public class DuneFoldingBuilder extends FoldingBuilderEx {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
 
         PsiTreeUtil.processElements(root, element -> {
-            if (DuneTypes.INSTANCE.C_SEXPR == element.getNode().getElementType() && isMultiline(element.getTextRange(), document)) {
-                FoldingDescriptor fold = fold(element);
+            if (isMultiline(element.getTextRange(), document)) {
+                FoldingDescriptor fold = null;
+                if (element instanceof PsiStanza) {
+                    fold = foldStanza((PsiStanza) element);
+                } else if (DuneTypes.INSTANCE.C_SEXPR == element.getNode().getElementType()) {
+                    fold = fold(element);
+                }
                 if (fold != null) {
                     descriptors.add(fold);
                 }
@@ -40,6 +47,11 @@ public class DuneFoldingBuilder extends FoldingBuilderEx {
         return document.getLineNumber(range.getStartOffset()) < document.getLineNumber(range.getEndOffset());
     }
 
+    @Nullable
+    private FoldingDescriptor foldStanza(@NotNull PsiStanza root) {
+        PsiDuneFields fields = ORUtil.findImmediateFirstChildOfClass(root, PsiDuneFields.class);
+        return fields == null ? null : new FoldingDescriptor(root, fields.getTextRange());
+    }
 
     @Nullable
     private FoldingDescriptor fold(@Nullable PsiElement root) {
@@ -52,7 +64,7 @@ public class DuneFoldingBuilder extends FoldingBuilderEx {
         ASTNode nextElement = element == null ? null : ORUtil.nextSiblingNode(element);
         ASTNode nextNextElement = nextElement == null ? null : ORUtil.nextSiblingNode(nextElement);
 
-        if (nextNextElement !=null) {
+        if (nextNextElement != null) {
             TextRange rootRange = root.getTextRange();
             TextRange nextRange = nextElement.getTextRange();
             return new FoldingDescriptor(root, TextRange.create(nextRange.getEndOffset(), rootRange.getEndOffset() - 1));

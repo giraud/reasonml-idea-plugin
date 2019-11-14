@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.util.PsiIconUtil;
+import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
@@ -136,7 +137,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (m_element instanceof FileBase) {
+        if (m_element instanceof FileBase || m_element instanceof DuneFile) {
             List<TreeElement> treeElements = new ArrayList<>();
             m_element.acceptChildren(new ElementVisitor(treeElements));
             return treeElements.toArray(new TreeElement[0]);
@@ -162,6 +163,11 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             }
         } else if (m_element instanceof OclYaccTrailer) {
             List<TreeElement> treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
+            if (!treeElements.isEmpty()) {
+                return treeElements.toArray(new TreeElement[0]);
+            }
+        } else if (m_element instanceof PsiStanza) {
+            List<TreeElement> treeElements = buildStanzaStructure((PsiStanza) m_element);
             if (!treeElements.isEmpty()) {
                 return treeElements.toArray(new TreeElement[0]);
             }
@@ -212,6 +218,18 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
         List<TreeElement> treeElements = new ArrayList<>();
 
         PsiElement rootElement = classElement.getClassBody();
+        if (rootElement != null) {
+            rootElement.acceptChildren(new ElementVisitor(treeElements));
+        }
+
+        return treeElements;
+    }
+
+    @NotNull
+    private List<TreeElement> buildStanzaStructure(@NotNull PsiStanza stanzaElement) {
+        List<TreeElement> treeElements = new ArrayList<>();
+
+        PsiElement rootElement = ORUtil.findImmediateFirstChildOfClass(stanzaElement, PsiDuneFields.class);
         if (rootElement != null) {
             rootElement.acceptChildren(new ElementVisitor(treeElements));
         }

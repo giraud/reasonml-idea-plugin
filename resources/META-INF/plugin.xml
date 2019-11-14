@@ -118,6 +118,8 @@
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="Mly"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+        <lang.psiStructureViewFactory language="Dune"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
         <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
