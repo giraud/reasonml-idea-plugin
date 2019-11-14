@@ -2,7 +2,6 @@ package com.reason.ide.search.index;
 
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.indexing.*;
@@ -10,12 +9,16 @@ import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
 import com.reason.Platform;
+import com.reason.StringUtil;
 import com.reason.bs.BsConfig;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.DuneFileType;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiStanza;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.List;
 
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
@@ -42,16 +45,17 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
             VirtualFile dataFile = inputData.getFile();
             if (inputData.getFileType() instanceof DuneFileType) {
                 DuneFile duneFile = (DuneFile) inputData.getPsiFile();
-                PsiElement firstChild = duneFile.getFirstChild();
-                PsiElement nextSibling = firstChild == null ? null : firstChild.getNextSibling(); // todo: better
-//                if (nextSibling != null && nextSibling.getNode().getElementType() == DuneTypes.INSTANCE.LIBRARY) {
-//                    VirtualFile parent = dataFile.getParent();
-//                    String namespace = StringUtil.toFirstUpper(parent.getName());
-//                    if (LOG.isDebugEnabled()) {
-//                        LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
-//                    }
-//                    return Collections.singletonMap(namespace, null);
-//                }
+                List<PsiStanza> stanzas = ORUtil.findImmediateChildrenOfClass(duneFile, PsiStanza.class);
+                for (PsiStanza stanza : stanzas) {
+                    if ("library".equals(stanza.getName())) {
+                        VirtualFile parent = dataFile.getParent();
+                        String namespace = StringUtil.toFirstUpper(parent.getName());
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
+                        }
+                        return Collections.singletonMap(namespace, null);
+                    }
+                }
             } else {
                 PsiFile file = PsiManager.getInstance(inputData.getProject()).findFile(dataFile);
                 if (file != null) {

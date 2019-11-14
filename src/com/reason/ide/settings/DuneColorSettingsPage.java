@@ -42,26 +42,28 @@ public class DuneColorSettingsPage implements ColorSettingsPage {
         return "; A single line comment\n\n" +
                 "#| Block comments #| can be \"nested\" |# |#\n\n" +
 
-                "(executable\n" +
-                " ((names (main))\n" +
+                "(<csStanza>executable</csStanza>\n" +
+                "  (<csField>names</csField> (main))\n" +
                 "  #; (this S-expression\n" +
                 "         (has been commented out)\n" +
                 "       )\n" +
-                "  (libraries (hello_world))))\n\n" +
+                "  (<csField>libraries</csField> (hello_world)))\n\n" +
 
-                "(install\n" +
-                " ((section bin)\n" +
-                "  (files ((main.exe as hello_world)))))\n\n" +
+                "(<csStanza>install</csStanza>\n" +
+                "  (<csField>section</csField> bin)\n" +
+                "  (<csField>files</csField> ((main.exe as hello_world))))\n\n" +
 
-                "(rule\n" +
-                " ((targets (config.full))\n" +
-                "  (deps    (config_common.ml config))\n" +
-                "  (action  (run <csVar>%{OCAML}</csVar> <csVar>%{path:real_configure.ml}</csVar>))))";
+                "(<csStanza>rule</csStanza>\n" +
+                "  (<csField>targets</csField> (config.full)\n" +
+                "  (<csField>deps</csField>    (config_common.ml config))\n" +
+                "  (<csField>action</csField>  (run <csVar>%{OCAML}</csVar> <csVar>%{path:real_configure.ml}</csVar>)))";
     }
 
     private static final Map<String, TextAttributesKey> additionalTags = new HashMap<>();
 
     static {
+        additionalTags.put("csField", DuneSyntaxHighlighter.FIELDS_);
+        additionalTags.put("csStanza", DuneSyntaxHighlighter.STANZAS_);
         additionalTags.put("csVar", DuneSyntaxHighlighter.VAR_);
     }
 
