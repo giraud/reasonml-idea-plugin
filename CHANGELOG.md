@@ -12,8 +12,14 @@
 
 ## [Unreleased]
 
+- :rocket: Importing a Dune project automatically configure project structure : SDK, module and project.
+  SDK can be automatically downloaded and indexed.
+- :rocket: Dune stanzas visible in the structure view
+- :rocket: Dune stanzas can be folded when they span on multiple lines
 - :bug: [#189](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189) ![o] Structure panel missing members/parse problem for "while"
 - :bug: [#175](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175) ![o] Structure panel missing top level functions defined after nested let foo = function
+- :house: Fix bs version extractor (format changed in bucklescript 6.2.1)
+- :house: Improved Dune parser
 
 ## [0.81] - 2019/10/17
 
