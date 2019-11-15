@@ -12,6 +12,8 @@
 
 ## [Unreleased]
 
+## [0.82] - 2019/11/15
+
 - :rocket: Importing a Dune project automatically configure project structure : SDK, module and project.
   SDK can be automatically downloaded and indexed.
 - :rocket: Dune stanzas visible in the structure view
@@ -460,7 +462,8 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 * :rocket: Parse Bsb super errors and use them to annotate source code
 
-[Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...HEAD
+[Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.82...HEAD
+[0.82]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.81...0.82
 [0.81]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...0.81
 [0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
