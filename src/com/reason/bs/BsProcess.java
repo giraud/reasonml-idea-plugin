@@ -33,6 +33,8 @@ import static com.reason.Platform.LOCAL_NODE_MODULES_BIN;
 
 public final class BsProcess implements CompilerProcessLifecycle {
 
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[\\:]?(\\d\\.\\d+).+\\)");
+
     @NotNull
     private final Project m_project;
 
@@ -53,7 +55,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     // Wait for the tool window to be ready before starting the process
-    public void startNotify() {
+    void startNotify() {
         if (m_bsb != null && !m_bsb.isStartNotified()) {
             try {
                 m_bsb.startNotify();
@@ -75,7 +77,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     @Nullable
-    public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             return createProcessHandler(sourceFile, cliType, onProcessTerminated);
         } catch (ExecutionException e) {
@@ -197,17 +199,17 @@ public final class BsProcess implements CompilerProcessLifecycle {
             }
         }
 
-        return "4.02";
+        return null;
     }
 
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[\\:]?(\\d\\.\\d+).+\\)");
 
-    @NotNull
+    @Nullable
     static String ocamlVersionExtractor(@NotNull String line) {
         Matcher matcher = BS_VERSION_REGEXP.matcher(line);
         if (matcher.matches()) {
             return matcher.group(1);
         }
-        return "4.02";
+
+        return null;
     }
 }

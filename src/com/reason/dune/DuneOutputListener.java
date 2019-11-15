@@ -119,7 +119,7 @@ public class DuneOutputListener implements ProcessListener {
                 String colEnd = matcher.group(4);
                 OutputInfo info = addInfo(path, line, colStart, colEnd);
                 if (info == null || info.colStart < 0 || info.colEnd < 0) {
-                    m_log.error("Can't decode columns for [" + text + "]");
+                    m_log.error("Can't decode columns for [" + text.replace("\n", "") + "]");
                     return null;
                 }
                 return info;
@@ -134,16 +134,16 @@ public class DuneOutputListener implements ProcessListener {
         OutputInfo info = new OutputInfo();
 
         VirtualFile baseDir = m_project.getBaseDir();
-        VirtualFile child = baseDir.findChild(path);
+        VirtualFile child = baseDir.findFileByRelativePath(path);
         if (child == null) {
             return null;
         }
 
         info.path = child.getCanonicalPath();
         info.lineStart = parseInt(line);
-        info.colStart = parseInt(colStart);
+        info.colStart = parseInt(colStart) + 1;
         info.lineEnd = info.lineStart;
-        info.colEnd = parseInt(colEnd);
+        info.colEnd = parseInt(colEnd) + 1;
         if (info.colEnd == info.colStart) {
             info.colEnd += 1;
         }

@@ -5,8 +5,12 @@ import javax.swing.*;
 import static com.intellij.openapi.util.IconLoader.getIcon;
 
 public class Icons {
-    public static final Icon BUCKLESCRIPT = getIcon("/icons/bucklescript.png");
-    public static final Icon DUNE = getIcon("/icons/dune-logo-16.png");
+    public static final Icon BUCKLESCRIPT_TOOL = getIcon("/icons/bucklescript.png");
+    public static final Icon DUNE_TOOL = getIcon("/icons/dune-tool.png");
+    public static final Icon ESY_TOOL = getIcon("/icons/esy-tool.png");
+
+    public static final Icon DUNE = getIcon("/icons/dune.png");
+    public static final Icon ESY = getIcon("/icons/esy.png");
 
     public static final Icon RML_FILE = getIcon("/icons/reason-file.png");
     public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reason-interface-file.png");

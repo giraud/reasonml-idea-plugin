@@ -2,17 +2,17 @@ package com.reason.dune;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.KillableColoredProcessHandler;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessListener;
+import com.intellij.execution.process.*;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Compiler;
 import com.reason.CompilerProcessLifecycle;
 import com.reason.OCamlSdkType;
 import com.reason.Platform;
 import com.reason.ide.ORNotification;
+import com.reason.ide.console.CliType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,13 +50,21 @@ public final class DuneProcess implements CompilerProcessLifecycle {
     }
 
     @Nullable
-    ProcessHandler recreate() {
+    ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             killIt();
-            GeneralCommandLine cli = getGeneralCommandLine();
+            GeneralCommandLine cli = getGeneralCommandLine(cliType);
             if (cli != null) {
                 m_processHandler = new KillableColoredProcessHandler(cli);
                 m_processHandler.addProcessListener(m_outputListener);
+                if (onProcessTerminated != null) {
+                    m_processHandler.addProcessListener(new ProcessAdapter() {
+                        @Override
+                        public void processTerminated(@NotNull ProcessEvent event) {
+                            onProcessTerminated.run();
+                        }
+                    });
+                }
             }
             return m_processHandler;
         } catch (ExecutionException e) {
@@ -74,7 +82,7 @@ public final class DuneProcess implements CompilerProcessLifecycle {
     }
 
     @Nullable
-    private GeneralCommandLine getGeneralCommandLine() {
+    private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
         Sdk odk = OCamlSdkType.getSDK(m_project);
         if (odk == null) {
             Notifications.Bus.notify(new ORNotification("Dune",
@@ -88,7 +96,15 @@ public final class DuneProcess implements CompilerProcessLifecycle {
         VirtualFile baseRoot = Platform.findBaseRoot(m_project);
         String workingDir = baseRoot.getPath();
 
-        GeneralCommandLine cli = new GeneralCommandLine(odk.getHomePath() + "/bin/jbuilder", "build", "rincewind.exe");
+        GeneralCommandLine cli;
+        switch (cliType) {
+            case clean:
+                cli = new GeneralCommandLine(odk.getHomePath() + "/bin/dune", "clean");
+                break;
+            default:
+                cli = new GeneralCommandLine(odk.getHomePath() + "/bin/dune", "build");
+        }
+
         Map<String, String> environment = cli.getParentEnvironment();
         String path = environment.get("PATH");
         String newPath = odk.getHomePath() + "/bin" + File.pathSeparator + path;

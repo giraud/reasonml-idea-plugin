@@ -1,25 +1,27 @@
 package com.reason.ide;
 
+import com.intellij.facet.FacetManager;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.OCamlSdkType;
-import com.reason.Platform;
 import com.reason.bs.Bucklescript;
-import com.reason.dune.DuneManager;
+import com.reason.dune.DuneCompiler;
 import com.reason.ide.console.CliType;
+import com.reason.ide.facet.DuneFacet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public class CompilerManager implements ApplicationComponent {
+public class CompilerManager {
 
     private static final Compiler DUMMY_COMPILER = new Compiler() {
         @Override
@@ -39,20 +41,23 @@ public class CompilerManager implements ApplicationComponent {
 
     @NotNull
     public Compiler getCompiler(@NotNull Project project) {
-        VirtualFile duneConfig = Platform.findBaseRoot(project).findChild("jbuild");
-        if (duneConfig != null) {
-            Sdk odk = OCamlSdkType.getSDK(project);
-            if (odk == null) {
-                Notifications.Bus.notify(new ORNotification("Dune",
-                        "<html>Can't find sdk.\n"
-                                + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
-                                + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
-                        ERROR, URL_OPENING_LISTENER));
-                return DUMMY_COMPILER;
+        Module[] modules = ModuleManager.getInstance(project).getModules();
+        for (Module module : modules) {
+            DuneFacet duneFacet = FacetManager.getInstance(module).getFacetByType(DuneFacet.ID);
+            if (duneFacet != null) {
+                Sdk odk = OCamlSdkType.getSDK(project);
+                if (odk == null) {
+                    Notifications.Bus.notify(new ORNotification("Dune",
+                            "<html>Can't find sdk.\n"
+                                    + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                                    + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
+                            ERROR, URL_OPENING_LISTENER));
+                    return DUMMY_COMPILER;
+                }
+                return ServiceManager.getService(project, DuneCompiler.class);
             }
-            return ServiceManager.getService(project, DuneManager.class);
-        } else {
-            return ServiceManager.getService(project, Bucklescript.class);
         }
+
+        return ServiceManager.getService(project, Bucklescript.class);
     }
 }
