@@ -118,7 +118,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
         if (c_rdSelectExisting.isSelected()) {
             JdkComboBox.JdkComboBoxItem selectedItem = c_selExistingSdk.getSelectedItem();
-            odk = selectedItem.getJdk();
+            odk = selectedItem == null ? null : selectedItem.getJdk();
         } else if (c_rdDownloadSdk.isSelected()) {
             String selectedSdk = (String) c_selDownload.getSelectedItem();
             String sdkHomeValue = PropertiesComponent.getInstance().getValue(SDK_HOME);
