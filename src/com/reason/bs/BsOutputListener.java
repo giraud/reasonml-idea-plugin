@@ -64,8 +64,9 @@ public class BsOutputListener implements RawProcessListener {
     public void processTerminated(@NotNull ProcessEvent event) {
         m_compiler.terminated();
 
-        if (!m_lineProcessor.m_bsbInfo.isEmpty()) {
-            ServiceManager.getService(m_project, ErrorsManager.class).addAllInfo(m_lineProcessor.m_bsbInfo);
+        if (!m_lineProcessor.m_bsbInfo.isEmpty() && !m_project.isDisposed()) {
+            ErrorsManager errorsService = ServiceManager.getService(m_project, ErrorsManager.class);
+            errorsService.addAllInfo(m_lineProcessor.m_bsbInfo);
         }
 
         m_lineProcessor.reset();
