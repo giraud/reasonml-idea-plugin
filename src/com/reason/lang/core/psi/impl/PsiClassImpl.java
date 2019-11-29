@@ -1,19 +1,23 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiClassConstructor;
+import com.reason.lang.core.psi.PsiClassField;
+import com.reason.lang.core.psi.PsiClassMethod;
+import com.reason.lang.core.psi.PsiClassParameters;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.Collection;
 
 public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
 
@@ -106,12 +110,4 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
     public String toString() {
         return "Class " + getQualifiedName();
     }
-
-    //region Compatibility
-    @SuppressWarnings("unused")
-    @Nullable
-    PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
-        return null;
-    }
-    //endregion
 }

@@ -1,5 +1,6 @@
 package com.reason.ide.insight;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -17,15 +18,14 @@ import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
 
 abstract class CompletionContributor extends com.intellij.codeInsight.completion.CompletionContributor {
-    protected static final Log LOG = Log.create("insight");
+    static final Log LOG = Log.create("insight");
 
     CompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
         extend(CompletionType.BASIC, com.intellij.patterns.PlatformPatterns.psiElement(), new CompletionProvider<CompletionParameters>() {
             @Override
-            protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+            protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
                 PsiElement position = parameters.getPosition();
                 PsiElement originalPosition = parameters.getOriginalPosition();
                 PsiElement element = originalPosition == null ? position : originalPosition;

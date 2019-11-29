@@ -1,21 +1,15 @@
 package com.reason.ide.insight.pattern;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.patterns.InitialPatternCondition;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ORPatternCondition extends InitialPatternCondition<PsiElement> {
 
-    public ORPatternCondition(@NotNull Class<PsiElement> aAcceptedClass) {
+    ORPatternCondition(@NotNull Class<PsiElement> aAcceptedClass) {
         super(aAcceptedClass);
-    }
-
-    @NotNull
-    @Override
-    public Class<PsiElement> getAcceptedClass() {
-        return super.getAcceptedClass();
     }
 
     @Override

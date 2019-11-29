@@ -1,14 +1,13 @@
 package com.reason.ide.facet;
 
+import javax.swing.*;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.options.ConfigurationException;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-
-public class DuneFacetEditor extends FacetEditorTab {
+class DuneFacetEditor extends FacetEditorTab {
 
     private final FacetEditorContext m_editorContext;
     private final DuneFacetConfiguration m_configuration;

@@ -1,24 +1,26 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.stub.PsiTypeStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.util.Collection;
-
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
 public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements PsiType {
 
@@ -144,12 +146,4 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
     public String toString() {
         return "Type " + getQualifiedName();
     }
-
-    //region Compatibility
-    @SuppressWarnings("unused")
-    @Nullable
-    PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
-        return null;
-    }
-    //endregion
 }

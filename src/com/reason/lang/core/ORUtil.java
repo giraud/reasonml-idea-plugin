@@ -1,10 +1,19 @@
 package com.reason.lang.core;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiInvalidElementAccessException;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -13,10 +22,6 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class ORUtil {
 
@@ -216,13 +221,13 @@ public class ORUtil {
     }
 
     @Nullable
-    public static <T extends PsiElement> T findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class... clazz) {
+    public static PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class... clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
-            for (Class<T> aClazz : clazz) {
+            for (Class aClazz : clazz) {
                 if (aClazz.isInstance(child)) {
-                    return (T) child;
+                    return child;
                 }
             }
             child = child.getNextSibling();
@@ -302,5 +307,4 @@ public class ORUtil {
 
         return isALias ? aliasName.toString() : null;
     }
-
 }

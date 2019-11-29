@@ -7,7 +7,6 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.util.containers.hash.HashMap;
 import com.intellij.util.indexing.DataIndexer;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.FileBasedIndexExtension;
@@ -36,7 +35,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
         return INSTANCE;
     }
 
-    public static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
+    static final class FileModuleDataExternalizer implements DataExternalizer<FileModuleData> {
         @Override
         public void save(@NotNull DataOutput out, @NotNull FileModuleData value) throws IOException {
             out.writeBoolean(value.isOCaml());

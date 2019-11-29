@@ -1,5 +1,10 @@
 package com.reason.bs;
 
+import java.io.*;
+import java.util.concurrent.atomic.*;
+import java.util.regex.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
@@ -14,22 +19,12 @@ import com.reason.Platform;
 import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.intellij.execution.process.ProcessOutputTypes.STDOUT;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
-import static com.reason.Platform.LOCAL_BS_PLATFORM;
-import static com.reason.Platform.LOCAL_NODE_MODULES_BIN;
+import static com.reason.Platform.*;
 
 public final class BsProcess implements CompilerProcessLifecycle {
 
@@ -66,14 +61,12 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     @Nullable
-    public ProcessHandler create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    private void create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
-            return createProcessHandler(sourceFile, cliType, onProcessTerminated);
+            createProcessHandler(sourceFile, cliType, onProcessTerminated);
         } catch (ExecutionException e) {
             // Don't log when first time execution
         }
-
-        return null;
     }
 
     @Nullable
@@ -88,7 +81,8 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     @Nullable
-    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
+    private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType cliType,
+                                                @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
@@ -134,12 +128,9 @@ public final class BsProcess implements CompilerProcessLifecycle {
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
         String bsbPath = getBsbPath(m_project, sourceFile);
         if (bsbPath == null) {
-            Notifications.Bus.notify(new ORNotification("Bsb",
-                    "<html>Can't find bsb.\n"
-                            + "The working directory is '" + ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile) + "'.\n"
-                            + "Be sure that bsb is installed and reachable from that directory, "
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>",
-                    ERROR, URL_OPENING_LISTENER));
+            Notifications.Bus.notify(new ORNotification("Bsb", "<html>Can't find bsb.\n" + "The working directory is '" + ReasonSettings.getInstance(m_project)
+                    .getWorkingDir(sourceFile) + "'.\n" + "Be sure that bsb is installed and reachable from that directory, "
+                    + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>", ERROR, URL_OPENING_LISTENER));
             return null;
         }
 
@@ -153,7 +144,6 @@ public final class BsProcess implements CompilerProcessLifecycle {
                 break;
             default:
                 cli = new GeneralCommandLine(bsbPath);
-
         }
 
         cli.withWorkDirectory(ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile));
@@ -201,7 +191,6 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
         return null;
     }
-
 
     @Nullable
     static String ocamlVersionExtractor(@NotNull String line) {

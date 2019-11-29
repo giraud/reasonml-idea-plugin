@@ -1,9 +1,12 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -16,11 +19,6 @@ import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiExternalStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.Objects;
 
 public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> implements PsiExternal {
 
@@ -72,7 +70,6 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
         return this;
     }
     //endregion
-
 
     @Nullable
     @Override
@@ -160,11 +157,4 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     public String toString() {
         return "external " + getQualifiedName();
     }
-
-    //region Compatibility
-    @Nullable
-    PsiQualifiedNamedElement getContainer() { // IU-145.2070.6 (2016.1.4)
-        return null;
-    }
-    //endregion
 }

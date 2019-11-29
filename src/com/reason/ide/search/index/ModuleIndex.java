@@ -1,9 +1,9 @@
 package com.reason.ide.search.index;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.lang.core.psi.PsiInnerModule;
-import org.jetbrains.annotations.NotNull;
 
 public class ModuleIndex extends StringStubIndexExtension<PsiInnerModule> {
     private static final int VERSION = 12;
@@ -13,7 +13,6 @@ public class ModuleIndex extends StringStubIndexExtension<PsiInnerModule> {
     public static ModuleIndex getInstance() {
         return INSTANCE;
     }
-
 
     @Override
     public int getVersion() {

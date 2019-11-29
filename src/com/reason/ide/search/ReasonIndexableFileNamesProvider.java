@@ -15,8 +15,6 @@ public class ReasonIndexableFileNamesProvider extends NodeModulesIndexableFileNa
         EXTENSIONS.add("rei");
     }
 
-    ;
-
     @NotNull
     @Override
     protected List<String> getIndexableExtensions(@NotNull DependencyKind kind) {
