@@ -1,6 +1,10 @@
 package com.reason.hints;
 
-
+import java.io.*;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -10,12 +14,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
 import com.reason.bs.BsProcess;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.reason.Platform.getOsPrefix;
 
@@ -75,7 +73,13 @@ public class InsightManagerImpl implements InsightManager {
     @Override
     public String getRincewindFilename(@NotNull VirtualFile sourceFile) {
         String ocamlVersion = ServiceManager.getService(m_project, BsProcess.class).getOCamlVersion(sourceFile);
-        return ocamlVersion == null ? null : "rincewind_" + getOsPrefix() + ocamlVersion + "-" + getAppVersion(ocamlVersion) + ".exe";
+        String rincewindVersion = getRincewindVersion(ocamlVersion);
+
+        if (ocamlVersion != null && rincewindVersion != null) {
+            return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
+        }
+
+        return null;
     }
 
     @Override
@@ -89,13 +93,16 @@ public class InsightManagerImpl implements InsightManager {
         }
     }
 
-    @NotNull
-    private String getAppVersion(@NotNull String ocamlVersion) {
-        switch (ocamlVersion) {
-            case "4.02":
-                return "0.4";
-            default:
-                return "0.5-dev";
+    @Nullable
+    private String getRincewindVersion(@Nullable String ocamlVersion) {
+        if (ocamlVersion == null) {
+            return null;
         }
+
+        if ("4.02".equals(ocamlVersion)) {
+            return "0.4";
+        }
+
+        return "0.5-dev";
     }
 }

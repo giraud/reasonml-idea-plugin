@@ -1,6 +1,8 @@
 package com.reason.hints;
 
-
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -10,15 +12,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
 
 public class RincewindDownloader extends Task.Backgroundable {
 
-    private static final double TOTAL_BYTES = 5_000_000.0;
-    private static final int BUFFER_SIZE = 1024;
+    private static final double TOTAL_BYTES = 6_000_000.0;
     private static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
     private static final Log LOG = Log.create("hints");
 
@@ -60,11 +57,17 @@ public class RincewindDownloader extends Task.Backgroundable {
                 return;
             }
 
+            String rincewindFilename = insightManager.getRincewindFilename(m_sourceFile);
+            if (rincewindFilename == null) {
+                LOG.debug("No rincewind version found, abort downloading");
+                return;
+            }
+
             LOG.info("Downloading " + targetFile.getName() + "...");
             indicator.setIndeterminate(false);
             indicator.setFraction(0.0);
 
-            boolean downloaded = WGet.apply(DOWNLOAD_URL + insightManager.getRincewindFilename(m_sourceFile), targetFile, indicator, TOTAL_BYTES);
+            boolean downloaded = WGet.apply(DOWNLOAD_URL + rincewindFilename, targetFile, indicator, TOTAL_BYTES);
             if (downloaded) {
                 insightManager.isDownloaded.set(true);
 

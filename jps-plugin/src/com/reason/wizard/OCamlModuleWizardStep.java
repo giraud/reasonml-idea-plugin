@@ -1,5 +1,6 @@
 package com.reason.wizard;
 
+import javax.swing.*;
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
@@ -10,8 +11,6 @@ import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.Messages;
 import com.reason.OCamlSdkType;
-
-import javax.swing.*;
 
 public class OCamlModuleWizardStep extends ModuleWizardStep {
 
@@ -40,13 +39,13 @@ public class OCamlModuleWizardStep extends ModuleWizardStep {
 
     @Override
     public void updateStep() {
-        Sdk odk = m_context.getProjectJdk();
-        if (odk == null) {
-//            JavaSdkVersion requiredJdkVersion = myProjectDescriptor != null ? myProjectDescriptor.getRequiredJdkVersion() : null;
-//            if (requiredJdkVersion != null) {
-//                myProjectJdksConfigurable.selectJdkVersion(requiredJdkVersion);
-//            }
-        }
+        //Sdk odk = m_context.getProjectJdk();
+        //if (odk == null) {
+        //            JavaSdkVersion requiredJdkVersion = myProjectDescriptor != null ? myProjectDescriptor.getRequiredJdkVersion() : null;
+        //            if (requiredJdkVersion != null) {
+        //                myProjectJdksConfigurable.selectJdkVersion(requiredJdkVersion);
+        //            }
+        //}
     }
 
     public void updateDataModel() {
@@ -56,8 +55,9 @@ public class OCamlModuleWizardStep extends ModuleWizardStep {
     public boolean validate() {
         Sdk odk = c_sdk.getSelectedJdk();
         if (odk == null && !ApplicationManager.getApplication().isUnitTestMode()) {
-            int result = Messages.showOkCancelDialog("Do you want to create a project with no SDK assigned?\\nAn SDK is required for compiling as well as for the standard SDK modules resolution and type inference.",
-                    IdeBundle.message("title.no.jdk.specified"), Messages.getWarningIcon());
+            int result = Messages.showOkCancelDialog(
+                    "Do you want to create a project with no SDK assigned?\\nAn SDK is required for compiling as well as for the standard SDK modules resolution and type inference.",
+                    IdeBundle.message("title.no.jdk.specified"), Messages.OK_BUTTON, Messages.CANCEL_BUTTON, Messages.getWarningIcon());
             return result == Messages.OK;
         }
         return true;

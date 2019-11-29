@@ -12,7 +12,7 @@ public interface Compiler {
         void run();
     }
 
-    void refresh(@NotNull VirtualFile bsconfigFile);
+    void refresh(@NotNull VirtualFile configFile);
 
     void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated);
 

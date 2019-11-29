@@ -1,19 +1,16 @@
 package com.reason.ide;
 
+import java.util.*;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 
-import java.util.Collection;
-
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.reason.lang.core.ORFileType.implementationOnly;
-import static com.reason.lang.core.ORFileType.interfaceOnly;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.*;
 
 @SuppressWarnings("ConstantConditions")
-public class PsiFinderTest extends LightPlatformCodeInsightFixtureTestCase {
+public class PsiFinderTest extends BasePlatformTestCase {
 
     public void testModuleLet() {
         myFixture.configureByText("ReasonReact.rei", "module Router: { let api = 1; };");
@@ -38,5 +35,4 @@ public class PsiFinderTest extends LightPlatformCodeInsightFixtureTestCase {
         assertEquals("rei", intf2.getContainingFile().getFileType().getDefaultExtension());
         assertEquals("re", impl.getContainingFile().getFileType().getDefaultExtension());
     }
-
 }

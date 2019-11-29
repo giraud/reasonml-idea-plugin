@@ -1,20 +1,19 @@
 package com.reason.lang.core;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.testFramework.LightCodeInsightTestCase;
+import com.intellij.testFramework.LightJavaCodeInsightTestCase;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-
-public class ORSignatureTest extends LightCodeInsightTestCase {
+public class ORSignatureTest extends LightJavaCodeInsightTestCase {
 
     private static final RmlLanguage RML = RmlLanguage.INSTANCE;
     private static final OclLanguage OCL = OclLanguage.INSTANCE;

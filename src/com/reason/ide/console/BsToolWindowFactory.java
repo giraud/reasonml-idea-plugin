@@ -12,7 +12,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.Icons;
 import org.jetbrains.annotations.NotNull;
 
 public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
@@ -30,7 +29,6 @@ public class BsToolWindowFactory implements ToolWindowFactory, DumbAware {
         Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
 
         bucklescriptWindow.getContentManager().addContent(content);
-        bucklescriptWindow.setIcon(Icons.BUCKLESCRIPT); // ? ProjectCompiler
 
         Disposer.register(project, console);
     }

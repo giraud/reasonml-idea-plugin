@@ -14,6 +14,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
+import com.reason.ProcessFinishedListener;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
@@ -67,11 +68,13 @@ public class BucklescriptImpl implements Bucklescript {
                 getOrRefreshBsConfig(bsConfigFile);
                 BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
                 if (process.start()) {
-                    ProcessHandler bscProcess = process.recreate(sourceFile, cliType, onProcessTerminated);
-                    if (bscProcess != null) {
+                    ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
+                    if (bscHandler != null) {
                         ConsoleView console = getBsbConsole();
                         if (console != null) {
-                            console.attachToProcess(bscProcess);
+                            long start = System.currentTimeMillis();
+                            console.attachToProcess(bscHandler);
+                            bscHandler.addProcessListener(new ProcessFinishedListener(start));
                         }
                         process.startNotify();
                         ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(sourceFile);
