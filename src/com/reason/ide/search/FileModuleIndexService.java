@@ -8,12 +8,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.indexing.FileBasedIndex;
+import com.reason.Log;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.index.FileModuleIndex;
 import com.reason.ide.search.index.NamespaceIndex;
 import gnu.trove.THashSet;
 
 public class FileModuleIndexService {
+
+    private static final Log LOG = Log.create("index.fileservice");
+
     @NotNull
     private final FileModuleIndex m_index;
     @NotNull
@@ -57,16 +61,16 @@ public class FileModuleIndexService {
     }
 
     @Nullable
-    public VirtualFile getFile(String moduleName, @NotNull GlobalSearchScope scope) {
-        Collection<VirtualFile> filesWithName = getFilesWithName(moduleName, scope);
-        if (1 < filesWithName.size()) {
-            for (VirtualFile virtualFile : filesWithName) {
+    public VirtualFile getFile(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+        Collection<VirtualFile> files = getFilesWithName(moduleName, scope);
+        if (1 < files.size()) {
+            for (VirtualFile virtualFile : files) {
                 if (FileHelper.isInterface(virtualFile.getFileType())) {
                     return virtualFile;
                 }
             }
         }
-        return filesWithName.isEmpty() ? null : filesWithName.iterator().next();
+        return files.isEmpty() ? null : files.iterator().next();
     }
 
     @NotNull
@@ -84,8 +88,7 @@ public class FileModuleIndexService {
             return "<EMPTY>";
         }
 
-        FileModuleData firstValue = values.iterator().next();
-        return firstValue.getFullname();
+        return values.iterator().next().getFullname();
     }
 
     @NotNull
@@ -126,25 +129,29 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public Collection<IndexedFileModule> getFilesWithoutNamespace(@NotNull Project project) {
+    public Collection<IndexedFileModule> getFilesWithoutNamespace(@NotNull Project project, @NotNull GlobalSearchScope scope) {
         Collection<IndexedFileModule> result = new ArrayList<>();
 
         FileBasedIndex fileIndex = FileBasedIndex.getInstance();
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         for (String key : fileIndex.getAllKeys(m_index.getName(), project)) {
             List<FileModuleData> values = fileIndex.getValues(m_index.getName(), key, scope);
             int valuesSize = values.size();
             if (valuesSize > 2) {
-                System.out.println("ERROR, size of " + key + " is " + valuesSize);
+                LOG.warn("ERROR, size of " + key + " is " + valuesSize);
             } else {
+                boolean fileFound = false;
                 for (FileModuleData value : values) {
-                    // 2 files and none of them are an interface !!!
                     if (valuesSize == 1 || value.isInterface()) {
                         if (value.getNamespace().isEmpty() && !value.isComponent()) {
+                            fileFound = true;
                             result.add(value);
                         }
                     }
+                }
+                // 2 files and none of them are an interface ! We take the first one
+                if (valuesSize > 1 && !fileFound) {
+                    result.add(values.get(0));
                 }
             }
         }
@@ -180,7 +187,7 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public Collection<VirtualFile> getComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
+    Collection<VirtualFile> getComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
         Set<VirtualFile> files = new THashSet<>();
         FileBasedIndex instance = FileBasedIndex.getInstance();
 

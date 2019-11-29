@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Icons;
 import com.reason.Log;
@@ -37,6 +38,8 @@ public class FreeExpressionCompletionProvider {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+
         FileModuleIndexService fileFinder = FileModuleIndexService.getService();
 
         // Add virtual namespaces
@@ -50,7 +53,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         // Add file modules (that are not a component and without namespaces)
-        Collection<IndexedFileModule> filesWithoutNamespace = fileFinder.getFilesWithoutNamespace(project).
+        Collection<IndexedFileModule> filesWithoutNamespace = fileFinder.getFilesWithoutNamespace(project, scope).
                 stream().
                 filter(indexedFileModule -> !containingFilePath.equals(indexedFileModule.getPath()) && !indexedFileModule.getModuleName().equals("Pervasives")).
                 collect(Collectors.toList());

@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PsiIconUtil;
@@ -34,6 +35,7 @@ public class ModuleCompletionProvider {
         LOG.debug("MODULE expression completion");
 
         Project project = element.getProject();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
         // Compute module path (all module names before the last dot)
         ModulePath modulePath = computePathFromPsi(types, element);
@@ -44,7 +46,7 @@ public class ModuleCompletionProvider {
         PsiFinder psiFinder = PsiFinder.getInstance(project);
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            Collection<IndexedFileModule> files = FileModuleIndexService.getService().getFilesWithoutNamespace(project);
+            Collection<IndexedFileModule> files = FileModuleIndexService.getService().getFilesWithoutNamespace(project, scope);
             for (IndexedFileModule indexedFile : files) {
                 resultSet.addElement(LookupElementBuilder.
                         create(indexedFile.getModuleName()).
