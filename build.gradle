@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-version = '0.82.2'
+version = '0.82.2-2018'
 
 patchPluginXml {
     sinceBuild = '181.0'
@@ -50,7 +50,7 @@ allprojects {
 
     runIde {
         systemProperty "refmtWidth", "120"
-        jvmArgs = ['--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED', '-Dcompiler.process.debug.port=5005', '-Xmx1024m']
+        jvmArgs = ['-Dcompiler.process.debug.port=5005', '-Xmx1024m']
     }
 
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
