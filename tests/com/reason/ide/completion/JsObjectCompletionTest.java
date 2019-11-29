@@ -1,11 +1,10 @@
 package com.reason.ide.completion;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import java.util.*;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.reason.ide.files.RmlFileType;
 
-import java.util.List;
-
-public class JsObjectCompletionTest extends BasePlatformTestCase {
+public class JsObjectCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
 
     public void testBasicJsFieldCompletion() {
         myFixture.configureByText("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");
@@ -91,5 +90,4 @@ public class JsObjectCompletionTest extends BasePlatformTestCase {
         assertSize(2, elements);
         assertContainsElements(elements, "ooo", "f22");
     }
-
 }

@@ -1,12 +1,11 @@
 package com.reason.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 
-import java.util.List;
-
-public class CommentCompletionTest extends BasePlatformTestCase {
+public class CommentCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
     @NotNull
     @Override
     protected String getTestDataPath() {
@@ -32,5 +31,4 @@ public class CommentCompletionTest extends BasePlatformTestCase {
 
         assertEmpty(strings);
     }
-
 }

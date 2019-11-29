@@ -2,9 +2,13 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-version = '0.82.2-beta04'
+version = '0.82.2-2017.2'
 
 patchPluginXml {
+    // http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
+    sinceBuild = '172.0'
+    untilBuild = '172.*'
+
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
@@ -46,12 +50,10 @@ allprojects {
         pluginName 'reasonml-plugin-idea'
         type 'IU'
         // https://www.jetbrains.com/intellij-repository/releases
-        version '193.5233.102'
+        version '173.4674.60' // 2017.3
         updateSinceUntilBuild = false
         plugins = [
-                'java',
-                'JavaScriptLanguage',
-                'psiViewer:193-SNAPSHOT' // always have psi viewer installed in sandbox
+                'psiViewer:3.28.93' // always have psi viewer installed in sandbox
         ]
     }
 

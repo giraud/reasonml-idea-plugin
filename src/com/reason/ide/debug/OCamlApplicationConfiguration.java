@@ -1,5 +1,8 @@
 package com.reason.ide.debug;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
@@ -9,13 +12,8 @@ import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.SettingsEditor;
-import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-
-public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration, PsiModule> {
+public class OCamlApplicationConfiguration extends ModuleBasedConfiguration<OCamlModuleBasedConfiguration> {
 
     public OCamlApplicationConfiguration(String name, @NotNull OCamlModuleBasedConfiguration configurationModule, @NotNull ConfigurationFactory factory) {
         super(name, configurationModule, factory);

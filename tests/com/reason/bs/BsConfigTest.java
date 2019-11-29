@@ -1,17 +1,19 @@
 package com.reason.bs;
 
-import com.intellij.json.JsonLanguage;
+import java.io.*;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.json.JsonParserDefinition;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.testFramework.ParsingTestCase;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
+public class BsConfigTest extends ParsingTestCase {
 
-public class BsConfigTest extends BasePlatformTestCase {
+    public BsConfigTest() {
+        super("", "json", new JsonParserDefinition());
+    }
 
     @NotNull
     @Override
@@ -81,6 +83,6 @@ public class BsConfigTest extends BasePlatformTestCase {
     }
 
     private PsiFile createJson(@NotNull String content) {
-        return createLightFile("dummy.json", JsonLanguage.INSTANCE, toJson(content));
+        return createPsiFile("dummy.json", toJson(content));
     }
 }

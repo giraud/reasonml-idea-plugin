@@ -15,8 +15,6 @@
          on how to target different products -->
     <depends optional="true" config-file="java-deps.xml">com.intellij.modules.java</depends>
 
-    <depends optional="true" config-file="js-deps.xml">JavaScript</depends>
-
     <application-components>
         <component>
             <implementation-class>com.reason.ide.CompilerManager</implementation-class>

@@ -1,12 +1,12 @@
 package com.reason.ide;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.reason.ide.files.FileBase;
-import org.jetbrains.annotations.NotNull;
 
-public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
+public abstract class ORBasePlatformTestCase extends LightPlatformCodeInsightFixtureTestCase {
 
     @NotNull
     @SuppressWarnings("UnusedReturnValue")
@@ -24,5 +24,4 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         }
         return (FileBase) file;
     }
-
 }
