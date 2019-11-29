@@ -1,5 +1,8 @@
 package com.reason.ide.go;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.daemon.impl.GutterIconTooltipHelper;
@@ -14,12 +17,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.Collections;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVal;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     @Override
@@ -61,7 +66,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         }
     }
 
-    private void extractRelatedExpressions(@Nullable PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result, @NotNull GlobalSearchScope scope, @NotNull PsiManager instance, @NotNull FileBase containingFile) {
+    private void extractRelatedExpressions(@Nullable PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result,
+                                           @NotNull GlobalSearchScope scope, @NotNull PsiManager instance, @NotNull FileBase containingFile) {
         if (element == null) {
             return;
         }
@@ -75,7 +81,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                 if (expressions.size() == 1) {
                     PsiNameIdentifierOwner relatedElement = expressions.iterator().next();
                     PsiElement nameIdentifier = relatedElement.getNameIdentifier();
-                    String tooltip = GutterIconTooltipHelper.composeText(new PsiElement[]{psiRelatedFile}, "", "Implements method <b>" + nameIdentifier.getText() + "</b> in <b>{0}</b>");
+                    String tooltip = GutterIconTooltipHelper
+                            .composeText(new PsiElement[]{psiRelatedFile}, "", "Implements method <b>" + nameIdentifier.getText() + "</b> in <b>{0}</b>");
                     result.add(NavigationGutterIconBuilder.
                             create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
                             setTooltipText(tooltip).

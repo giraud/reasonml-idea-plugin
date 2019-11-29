@@ -1,7 +1,15 @@
 package com.reason.ide.hints;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.*;
+import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
+import com.intellij.lang.parameterInfo.ParameterInfoContext;
+import com.intellij.lang.parameterInfo.ParameterInfoHandlerWithTabActionSupport;
+import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
+import com.intellij.lang.parameterInfo.ParameterInfoUtils;
+import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -11,16 +19,17 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiSignatureElement;
+import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 
 public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, ORSignature, PsiElement> {
 
@@ -146,7 +155,8 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     public void updateParameterInfo(@NotNull PsiFunctionCallParams paramsOwner, @NotNull UpdateParameterInfoContext context) {
         if (context.getParameterOwner() == null || paramsOwner.equals(context.getParameterOwner())) {
             context.setParameterOwner(paramsOwner);
-            context.setCurrentParameter(ParameterInfoUtils.getCurrentParameterIndex(paramsOwner.getNode(), context.getOffset(), getActualParameterDelimiterType()));
+            context.setCurrentParameter(
+                    ParameterInfoUtils.getCurrentParameterIndex(paramsOwner.getNode(), context.getOffset(), getActualParameterDelimiterType()));
         } else {
             context.removeHint();
         }
@@ -167,13 +177,8 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
         TextRange paramRange = TextRange.EMPTY_RANGE;
 
-        context.setupUIComponentPresentation(signature.asParameterInfo(OclLanguage.INSTANCE),
-                paramRange.getStartOffset(),
-                paramRange.getEndOffset(),
-                !context.isUIComponentEnabled(),
-                false,
-                true,
-                context.getDefaultParameterColor());
+        context.setupUIComponentPresentation(signature.asParameterInfo(OclLanguage.INSTANCE), paramRange.getStartOffset(), paramRange.getEndOffset(),
+                                             !context.isUIComponentEnabled(), false, true, context.getDefaultParameterColor());
     }
 
     @Nullable
@@ -184,24 +189,4 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
         }
         return null;
     }
-
-
-    //region Backward compatibility
-    @Nullable
-    @Override
-    public Object[] getParametersForDocumentation(ORSignature hmSignature, ParameterInfoContext parameterInfoContext) {
-        return new Object[0];
-    }
-
-    @Nullable
-    @Override
-    public String getParameterCloseChars() {
-        return null;
-    }
-
-    @Override
-    public boolean tracksParameterIndex() {
-        return false;
-    }
-    //endregion
 }

@@ -1,5 +1,6 @@
 package com.reason.lang.extra;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -17,7 +18,6 @@ import com.reason.lang.core.PsiElementFactory;
 import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclParser;
 import com.reason.lang.ocaml.OclTypes;
-import org.jetbrains.annotations.NotNull;
 
 public class OclMlgParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -64,7 +64,7 @@ public class OclMlgParserDefinition implements ParserDefinition {
     }
 
     @NotNull
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }
 

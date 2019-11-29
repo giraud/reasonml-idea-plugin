@@ -1,20 +1,21 @@
 package com.reason.lang.odoc;
 
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.Stack;
-import org.jetbrains.annotations.NotNull;
+import com.reason.Log;
 
-import java.io.IOException;
-
-import static com.reason.lang.odoc.ODocMarkup.CODE_END;
-import static com.reason.lang.odoc.ODocMarkup.CODE_START;
+import static com.reason.lang.odoc.ODocMarkup.*;
 
 public class ODocConverter {
+    private static final Log LOG = Log.create("odoc");
+
     private final ODocLexer m_lexer;
     private final StringBuilder m_builder = new StringBuilder();
 
-    boolean m_paragraphStarted = true;
+    private boolean m_paragraphStarted = true;
 
     public ODocConverter(ODocLexer lexer) {
         m_lexer = lexer;
@@ -74,7 +75,7 @@ public class ODocConverter {
                     m_builder.append("</pre>");
                 } else if (tokenType == ODocTypes.SECTION) {
                     String section = "h" + extract(m_lexer.yytext(), 1);
-                    m_builder.append("<" + section + ">");
+                    m_builder.append("<").append(section).append(">");
                     scopes.add("</" + section + ">");
                 } else if (tokenType == ODocTypes.LINK) {
                     m_builder.append("<a href=\"");
@@ -105,7 +106,7 @@ public class ODocConverter {
                 tokenType = m_lexer.advance();
             }
         } catch (IOException e) {
-            System.out.println(e);
+            LOG.error("Error during ODoc parsing", e);
         }
 
         if (m_paragraphStarted) {
@@ -124,5 +125,4 @@ public class ODocConverter {
     private String extract(@NotNull CharSequence text, int start, int end) {
         return ((String) text).substring(start, text.length() - end).trim();
     }
-
 }

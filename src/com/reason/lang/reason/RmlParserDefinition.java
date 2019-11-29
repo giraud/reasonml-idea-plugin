@@ -1,5 +1,6 @@
 package com.reason.lang.reason;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
@@ -16,7 +17,6 @@ import com.reason.ide.files.RmlInterfaceFile;
 import com.reason.ide.files.RmlInterfaceFileType;
 import com.reason.lang.core.PsiElementFactory;
 import com.reason.lang.core.stub.type.RmlFileStubElementType;
-import org.jetbrains.annotations.NotNull;
 
 public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -61,7 +61,7 @@ public class RmlParserDefinition implements ParserDefinition {
     }
 
     @NotNull
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }
 

@@ -1,5 +1,7 @@
 package com.reason.ide;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.AppTopics;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ProjectComponent;
@@ -14,8 +16,6 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.messages.MessageBusConnection;
 import com.reason.OCamlSdkType;
 import com.reason.ide.format.ReformatOnSave;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.ProjectTopics.PROJECT_ROOTS;
 
@@ -37,26 +37,26 @@ public class ORProjectTracker implements ProjectComponent {
     public void projectOpened() {
         m_messageBusConnection = m_project.getMessageBus().connect();
 
-        m_messageBusConnection.subscribe(PROJECT_ROOTS,
-                new ModuleRootListener() {
-                    @Override
-                    public void rootsChanged(@NotNull ModuleRootEvent event) {
-                        ApplicationManager.getApplication().invokeLater(() -> {
-                            Project project = (Project) event.getSource();
-                            if (!project.isDisposed()) {
-                                Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
-                                if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
-                                    OCamlSdkType.reindexSourceRoots(projectSdk);
-                                }
-                            }
-                        });
+        m_messageBusConnection.subscribe(PROJECT_ROOTS, new ModuleRootListener() {
+            @Override
+            public void rootsChanged(@NotNull ModuleRootEvent event) {
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    Project project = (Project) event.getSource();
+                    if (!project.isDisposed()) {
+                        Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
+                        if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
+                            OCamlSdkType.reindexSourceRoots(projectSdk);
+                        }
                     }
                 });
+            }
+        });
 
         m_fileEditorListener = new ORFileEditorListener(m_project);
         m_messageBusConnection.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, m_fileEditorListener);
         m_messageBusConnection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new ReformatOnSave(m_project));
 
+        // ZZZ USE com.intellij.openapi.vfs.AsyncFileListener
         m_vfListener = new ORVirtualFileListener(m_project);
         VirtualFileManager.getInstance().addVirtualFileListener(m_vfListener);
     }

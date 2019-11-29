@@ -1,5 +1,10 @@
 package com.reason;
 
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileTypes.FileType;
@@ -21,20 +26,12 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactory {
     @Override
     public SdkPathEditor createPathEditor(final Sdk sdk) {
         FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, false, false, false, true);
-        return new OCamlSourcesOrderRootTypeUIFactory.SourcesPathEditor(sdk, descriptor);
+        return new OCamlSourcesOrderRootTypeUIFactory.SourcesPathEditor(descriptor);
     }
 
     @Override
@@ -48,18 +45,16 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
     }
 
     private static class SourcesPathEditor extends SdkPathEditor {
-        private final Sdk m_sdk;
 
-        public SourcesPathEditor(Sdk sdk, FileChooserDescriptor descriptor) {
+        SourcesPathEditor(@NotNull FileChooserDescriptor descriptor) {
             super(ProjectBundle.message("sdk.configure.sourcepath.tab"), OCamlSourcesOrderRootType.getInstance(), descriptor);
-            m_sdk = sdk;
         }
 
         @NotNull
         @Override
         protected VirtualFile[] adjustAddedFileSet(final Component component, final VirtualFile[] files) {
-            java.util.List<OrderRoot> orderRoots = RootDetectionUtil.detectRoots(Arrays.asList(files), component, null,
-                    new OCamlRootsDetector(), new OrderRootType[]{OCamlSourcesOrderRootType.getInstance()});
+            java.util.List<OrderRoot> orderRoots = RootDetectionUtil
+                    .detectRoots(Arrays.asList(files), component, null, new OCamlRootsDetector(), new OrderRootType[]{OCamlSourcesOrderRootType.getInstance()});
 
             List<VirtualFile> result = new ArrayList<>();
             for (OrderRoot root : orderRoots) {
@@ -83,7 +78,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
             }
 
             @NotNull
-            public List<VirtualFile> suggestOCamlRoots(@NotNull VirtualFile dir, @NotNull final ProgressIndicator progressIndicator) {
+            List<VirtualFile> suggestOCamlRoots(@NotNull VirtualFile dir, @NotNull final ProgressIndicator progressIndicator) {
                 if (!dir.isDirectory()) {
                     return ContainerUtil.emptyList();
                 }
@@ -97,8 +92,7 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
                         public Result visitFileEx(@NotNull VirtualFile file) {
                             progressIndicator.checkCanceled();
 
-                            if (file.isDirectory()) {
-                            } else {
+                            if (!file.isDirectory()) {
                                 FileType type = typeManager.getFileTypeByFileName(file.getName());
 
                                 if (type.getDefaultExtension().equals("ml")) {

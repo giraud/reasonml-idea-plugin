@@ -1,15 +1,13 @@
 package com.reason.ide.facet;
 
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Icons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 
 public class DuneFacetType extends FacetType<DuneFacet, DuneFacetConfiguration> {
 

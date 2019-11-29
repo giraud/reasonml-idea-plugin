@@ -9,14 +9,12 @@ import com.intellij.openapi.options.ConfigurationException;
 
 class DuneFacetEditor extends FacetEditorTab {
 
-    private final FacetEditorContext m_editorContext;
     private final DuneFacetConfiguration m_configuration;
 
     private JPanel f_root;
     private JCheckBox f_esyCheck;
 
-    DuneFacetEditor(FacetEditorContext editorContext, DuneFacetConfiguration configuration) {
-        m_editorContext = editorContext;
+    DuneFacetEditor(@NotNull FacetEditorContext _editorContext, @NotNull DuneFacetConfiguration configuration) {
         m_configuration = configuration;
     }
 
