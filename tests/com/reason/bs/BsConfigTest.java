@@ -1,17 +1,15 @@
 package com.reason.bs;
 
+import java.io.*;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
-
-public class BsConfigTest extends BasePlatformTestCase {
+public class BsConfigTest extends LightPlatformCodeInsightFixtureTestCase {
 
     @NotNull
     @Override

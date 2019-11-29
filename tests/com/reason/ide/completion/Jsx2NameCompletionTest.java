@@ -1,14 +1,13 @@
 package com.reason.ide.completion;
 
-import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import com.reason.ide.files.RmlFileType;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.reason.ide.files.RmlFileType;
 
 @SuppressWarnings("ConstantConditions")
-public class Jsx2NameCompletionTest extends BasePlatformTestCase {
+public class Jsx2NameCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
 
     @NotNull
     @Override
@@ -37,5 +36,4 @@ public class Jsx2NameCompletionTest extends BasePlatformTestCase {
         assertEquals(1, strings.size());
         assertEquals("Component", strings.get(0));
     }
-
 }

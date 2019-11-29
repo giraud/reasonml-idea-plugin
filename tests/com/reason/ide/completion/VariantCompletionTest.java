@@ -1,12 +1,11 @@
 package com.reason.ide.completion;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import java.util.*;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.reason.ide.files.RmlFileType;
 
-import java.util.List;
-
 @SuppressWarnings("ConstantConditions")
-public class VariantCompletionTest extends BasePlatformTestCase {
+public class VariantCompletionTest extends LightPlatformCodeInsightFixtureTestCase {
 
     public void testVariant() {
         myFixture.configureByText("VariantCompletion.re", "type color = | Black | Red;");
@@ -18,5 +17,4 @@ public class VariantCompletionTest extends BasePlatformTestCase {
         assertSize(3, elements);
         assertContainsElements(elements, "color", "Black", "Red");
     }
-
 }

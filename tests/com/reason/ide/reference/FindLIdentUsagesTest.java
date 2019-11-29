@@ -1,13 +1,11 @@
 package com.reason.ide.reference;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import java.util.*;
+import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
 import com.intellij.usageView.UsageInfo;
 
-import java.util.Collection;
-import java.util.List;
-
 @SuppressWarnings("ConstantConditions")
-public class FindLIdentUsagesTest extends BasePlatformTestCase {
+public class FindLIdentUsagesTest extends LightPlatformCodeInsightFixtureTestCase {
 
     public void testFromModule() {
         myFixture.configureByText("FLIA.re", "let x<caret> = 1;");
@@ -15,7 +13,6 @@ public class FindLIdentUsagesTest extends BasePlatformTestCase {
 
         Collection<UsageInfo> usages = myFixture.testFindUsages("FLIA.re");
         assertSize(1, usages);
-
     }
 
     public void testSameModule() {
@@ -26,5 +23,4 @@ public class FindLIdentUsagesTest extends BasePlatformTestCase {
         UsageInfo usageInfo = usages.get(0);
         assertEquals("x + 1", usageInfo.getElement().getParent().getText());
     }
-
 }
