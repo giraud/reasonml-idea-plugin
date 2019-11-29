@@ -50,8 +50,8 @@ allprojects {
         updateSinceUntilBuild = false
         plugins = [
                 'java',
-                'javascriptlanguage',
-                'PsiViewer:193-SNAPSHOT' // always have psi viewer installed in sandbox
+                'JavaScriptLanguage',
+                'psiViewer:193-SNAPSHOT' // always have psi viewer installed in sandbox
         ]
     }
 
