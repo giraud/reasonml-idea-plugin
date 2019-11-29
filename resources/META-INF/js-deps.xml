@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="JavaScript">
+        <nodeModulesIndexableFileNamesProvider implementation="com.reason.ide.search.ReasonIndexableFileNamesProvider"/>
+    </extensions>
+</idea-plugin>

@@ -557,7 +557,7 @@ public final class PsiFinder {
     }
 
     public Collection<IndexedFileModule> findModulesForNamespace(@NotNull String namespace, @NotNull GlobalSearchScope scope) {
-        return FileModuleIndexService.getService().getFilesForNamespace(namespace, true, scope);
+        return FileModuleIndexService.getService().getFilesForNamespace(namespace, scope);
     }
 
     @NotNull

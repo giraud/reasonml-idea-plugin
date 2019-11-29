@@ -1,11 +1,18 @@
 package com.reason.ide.search.index;
 
+import java.io.*;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.hash.HashMap;
-import com.intellij.util.indexing.*;
+import com.intellij.util.indexing.DataIndexer;
+import com.intellij.util.indexing.FileBasedIndex;
+import com.intellij.util.indexing.FileBasedIndexExtension;
+import com.intellij.util.indexing.FileContent;
+import com.intellij.util.indexing.ID;
 import com.intellij.util.io.DataExternalizer;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
@@ -15,19 +22,13 @@ import com.reason.bs.BsConfig;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleData;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
 
-    private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
-    private static final int VERSION = 5;
     private static final Log LOG = Log.create("index.file");
+
+    private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
+    private static final int VERSION = 6;
     private static final FileModuleIndex INSTANCE = new FileModuleIndex();
 
     @NotNull
@@ -110,7 +111,8 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                     }
                     String moduleName = psiFile.asModuleName();
 
-                    FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
+                    FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()),
+                                                              psiFile.isInterface(), psiFile.isComponent());
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("indexing " + Platform.removeProjectDir(inputData.getProject(), path) + ": " + value);
                     }
@@ -146,6 +148,11 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
 
     @Override
     public boolean dependsOnFileContent() {
+        return true;
+    }
+
+    @Override
+    public boolean keyIsUniqueForIndexedFile() {
         return true;
     }
 }

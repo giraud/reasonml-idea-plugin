@@ -1,5 +1,8 @@
 package com.reason.ide.search;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -9,10 +12,6 @@ import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.index.FileModuleIndex;
 import com.reason.ide.search.index.NamespaceIndex;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class FileModuleIndexService {
     @NotNull
@@ -20,7 +19,7 @@ public class FileModuleIndexService {
     @NotNull
     private final NamespaceIndex m_nsIndex;
 
-    public FileModuleIndexService(/*@NotNull FileModuleIndex index, @NotNull NamespaceIndex nsIndex*/) {
+    public FileModuleIndexService() {
         m_index = FileModuleIndex.getInstance();
         m_nsIndex = NamespaceIndex.getInstance();
     }
@@ -40,7 +39,7 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public List<FileModuleData> getValues(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+    private List<FileModuleData> getValues(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();
         }
@@ -49,7 +48,7 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+    Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();
         }
@@ -140,6 +139,7 @@ public class FileModuleIndexService {
                 System.out.println("ERROR, size of " + key + " is " + valuesSize);
             } else {
                 for (FileModuleData value : values) {
+                    // 2 files and none of them are an interface !!!
                     if (valuesSize == 1 || value.isInterface()) {
                         if (value.getNamespace().isEmpty() && !value.isComponent()) {
                             result.add(value);
@@ -153,7 +153,7 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public Collection<IndexedFileModule> getFilesForNamespace(@NotNull String namespace, boolean includeComponents, @NotNull GlobalSearchScope scope) {
+    Collection<IndexedFileModule> getFilesForNamespace(@NotNull String namespace, @NotNull GlobalSearchScope scope) {
         Collection<IndexedFileModule> result = new ArrayList<>();
 
         FileBasedIndex fileIndex = FileBasedIndex.getInstance();
@@ -193,7 +193,6 @@ public class FileModuleIndexService {
                 return true;
             }, scope, null);
         }
-
 
         return files;
     }

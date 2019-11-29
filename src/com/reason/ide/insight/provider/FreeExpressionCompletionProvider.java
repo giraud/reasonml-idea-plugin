@@ -37,10 +37,10 @@ public class FreeExpressionCompletionProvider {
         LOG.debug("FREE expression completion");
 
         Project project = element.getProject();
-        FileModuleIndexService orFinder = FileModuleIndexService.getService();
+        FileModuleIndexService fileFinder = FileModuleIndexService.getService();
 
         // Add virtual namespaces
-        Collection<String> namespaces = orFinder.getNamespaces(project);
+        Collection<String> namespaces = fileFinder.getNamespaces(project);
         LOG.debug("  namespaces", namespaces);
         for (String namespace : namespaces) {
             resultSet.addElement(LookupElementBuilder.
@@ -50,7 +50,7 @@ public class FreeExpressionCompletionProvider {
         }
 
         // Add file modules (that are not a component and without namespaces)
-        Collection<IndexedFileModule> filesWithoutNamespace = orFinder.getFilesWithoutNamespace(project).
+        Collection<IndexedFileModule> filesWithoutNamespace = fileFinder.getFilesWithoutNamespace(project).
                 stream().
                 filter(indexedFileModule -> !containingFilePath.equals(indexedFileModule.getPath()) && !indexedFileModule.getModuleName().equals("Pervasives")).
                 collect(Collectors.toList());
