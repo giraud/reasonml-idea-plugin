@@ -2,9 +2,15 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-version = '0.82.2-beta04'
+def pluginVersion = '0.82.2-beta05'
+def ideaVersion = '2019'
+version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
+    // http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
+    sinceBuild = '191.0'
+    untilBuild = '193.*'
+
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
