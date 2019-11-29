@@ -19,10 +19,6 @@ import static com.reason.Platform.getOsPrefix;
 
 public class InsightManagerImpl implements InsightManager {
 
-    private static final Log LOG = Log.create("hints.insight");
-
-    @NotNull
-    AtomicBoolean isDownloaded = new AtomicBoolean(false);
     @NotNull
     AtomicBoolean isDownloading = new AtomicBoolean(false);
 
@@ -34,22 +30,10 @@ public class InsightManagerImpl implements InsightManager {
     }
 
     @Override
-    public boolean useCmt() {
-        return isDownloaded.get();
-    }
-
-    @Override
     public void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile) {
-        if (!isDownloaded.get()) {
-            File rincewind = getRincewindFile(sourceFile);
-            if (rincewind == null || !rincewind.exists()) {
-                if (!m_project.isDisposed()) {
-                    LOG.debug("Downloading rincewind in background");
-                    ProgressManager.getInstance().run(RincewindDownloader.getInstance(m_project, sourceFile));
-                }
-            } else {
-                isDownloaded.compareAndSet(false, true);
-            }
+        File rincewind = getRincewindFile(sourceFile);
+        if (rincewind == null || !rincewind.exists()) {
+            ProgressManager.getInstance().run(new RincewindDownloader(m_project, sourceFile));
         }
     }
 
@@ -69,6 +53,14 @@ public class InsightManagerImpl implements InsightManager {
         return new File(System.getProperty("java.io.tmpdir"), filename);
     }
 
+    @Override
+    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
+        File rincewindFile = getRincewindFile(sourceFile);
+        if (rincewindFile != null) {
+            RincewindProcess.getInstance(m_project).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+        }
+    }
+
     @Nullable
     @Override
     public String getRincewindFilename(@NotNull VirtualFile sourceFile) {
@@ -82,17 +74,6 @@ public class InsightManagerImpl implements InsightManager {
         return null;
     }
 
-    @Override
-    public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
-        if (isDownloaded.get()) {
-            File rincewindFile = getRincewindFile(sourceFile);
-            LOG.debug("rincewind", rincewindFile);
-            if (rincewindFile != null) {
-                RincewindProcess.getInstance(m_project).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
-            }
-        }
-    }
-
     @Nullable
     private String getRincewindVersion(@Nullable String ocamlVersion) {
         if (ocamlVersion == null) {
@@ -103,6 +84,6 @@ public class InsightManagerImpl implements InsightManager {
             return "0.4";
         }
 
-        return "0.5-dev";
+        return "0.5";
     }
 }

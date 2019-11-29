@@ -15,8 +15,6 @@ public interface InsightManager {
         void run(InferredTypes types);
     }
 
-    boolean useCmt();
-
     void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile);
 
     @Nullable

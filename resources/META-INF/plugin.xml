@@ -199,8 +199,7 @@
          | Settings
          -->
 
-        <projectService serviceInterface="com.reason.ide.settings.ReasonSettings"
-                        serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
+        <projectService serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
         <projectConfigurable id="settings.reason" groupId="language" displayName="Reason"
                              instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
 
@@ -222,10 +221,9 @@
 
         <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
-        <projectService serviceImplementation="com.reason.ide.hints.CmtiFileListener"/>
+        <projectService serviceImplementation="com.reason.ide.hints.CmtFileListener"/>
         <projectService serviceImplementation="com.reason.hints.RincewindProcess"/>
-        <projectService serviceInterface="com.reason.hints.InsightManager"
-                        serviceImplementation="com.reason.hints.InsightManagerImpl"/>
+        <projectService serviceInterface="com.reason.hints.InsightManager" serviceImplementation="com.reason.hints.InsightManagerImpl"/>
 
         <!--
          | Others

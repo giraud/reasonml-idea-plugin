@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-def pluginVersion = '0.82.2-beta05'
+def pluginVersion = '0.83-beta01'
 def ideaVersion = '2019'
 version = pluginVersion + '-' + ideaVersion
 
@@ -51,13 +51,12 @@ allprojects {
     intellij {
         pluginName 'reasonml-plugin-idea'
         type 'IU'
-        // https://www.jetbrains.com/intellij-repository/releases
-        version '193.5233.102'
+        version '193.5233.102' // https://www.jetbrains.com/intellij-repository/releases
         updateSinceUntilBuild = false
         plugins = [
                 'java',
                 'JavaScriptLanguage',
-                'PsiViewer:193-SNAPSHOT' // always have psi viewer installed in sandbox
+                'PsiViewer:193-SNAPSHOT' // https://plugins.jetbrains.com/plugin/227-psiviewer/versions
         ]
     }
 

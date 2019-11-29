@@ -15,22 +15,14 @@ import com.reason.Log;
 
 public class RincewindDownloader extends Task.Backgroundable {
 
-    private static final double TOTAL_BYTES = 6_000_000.0;
+    private static final double TOTAL_BYTES = 10_000_000.0;
     private static final String DOWNLOAD_URL = "https://dl.bintray.com/giraud/ocaml/";
     private static final Log LOG = Log.create("hints");
 
-    private static RincewindDownloader INSTANCE;
     @NotNull
     private final VirtualFile m_sourceFile;
 
-    public static RincewindDownloader getInstance(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        if (INSTANCE == null) {
-            INSTANCE = new RincewindDownloader(project, sourceFile);
-        }
-        return INSTANCE;
-    }
-
-    private RincewindDownloader(@Nullable Project project, @NotNull VirtualFile sourceFile) {
+    RincewindDownloader(@Nullable Project project, @NotNull VirtualFile sourceFile) {
         //noinspection DialogTitleCapitalization
         super(project, "Downloading Rincewind binary");
         m_sourceFile = sourceFile;
@@ -44,7 +36,7 @@ public class RincewindDownloader extends Task.Backgroundable {
         }
 
         InsightManagerImpl insightManager = (InsightManagerImpl) ServiceManager.getService(myProject, InsightManager.class);
-        if (!insightManager.isDownloaded.get() && !insightManager.isDownloading.compareAndSet(false, true)) {
+        if (!insightManager.isDownloading.compareAndSet(false, true)) {
             // We are already in the process of downloading
             LOG.debug("Already downloading, abort");
             return;
@@ -69,8 +61,6 @@ public class RincewindDownloader extends Task.Backgroundable {
 
             boolean downloaded = WGet.apply(DOWNLOAD_URL + rincewindFilename, targetFile, indicator, TOTAL_BYTES);
             if (downloaded) {
-                insightManager.isDownloaded.set(true);
-
                 Application application = ApplicationManager.getApplication();
                 application.invokeLater(() -> application.runWriteAction(() -> {
                     VirtualFileManager.getInstance().syncRefresh();

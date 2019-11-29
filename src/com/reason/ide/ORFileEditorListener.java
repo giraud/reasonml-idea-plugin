@@ -38,7 +38,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
     private final Project m_project;
     private final List<VirtualFile> m_openedFiles = new ArrayList<>();
 
-    ORFileEditorListener(Project project) {
+    ORFileEditorListener(@NotNull Project project) {
         m_project = project;
     }
 
