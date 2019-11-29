@@ -1,7 +1,8 @@
 package com.reason.ide.debug;
 
-import com.intellij.xdebugger.breakpoints.XBreakpointProperties;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.xdebugger.breakpoints.XBreakpointProperties;
 
 public class ORLineBreakpointProperties extends XBreakpointProperties<ORLineBreakpointProperties> {
     @Nullable
@@ -11,6 +12,6 @@ public class ORLineBreakpointProperties extends XBreakpointProperties<ORLineBrea
     }
 
     @Override
-    public void loadState(ORLineBreakpointProperties state) {
+    public void loadState(@NotNull ORLineBreakpointProperties state) {
     }
 }

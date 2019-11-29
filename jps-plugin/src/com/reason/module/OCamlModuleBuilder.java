@@ -1,5 +1,10 @@
 package com.reason.module;
 
+import java.io.*;
+import java.util.*;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.SourcePathsBuilder;
@@ -12,13 +17,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Builder to create a new OCaml module.
@@ -45,11 +43,12 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
             if (sourcePaths != null) {
                 for (final Pair<String, String> sourcePath : sourcePaths) {
                     String first = sourcePath.first;
-                    new File(first).mkdirs();
-                    final VirtualFile sourceRoot = LocalFileSystem.getInstance()
-                            .refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
-                    if (sourceRoot != null) {
-                        contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
+                    boolean created = new File(first).mkdirs();
+                    if (created) {
+                        VirtualFile sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
+                        if (sourceRoot != null) {
+                            contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
+                        }
                     }
                 }
             }
@@ -69,9 +68,11 @@ public class OCamlModuleBuilder extends ModuleBuilder implements SourcePathsBuil
         if (m_sourcePaths == null) {
             List<Pair<String, String>> paths = new ArrayList<>();
             @NonNls String path = getContentEntryPath() + File.separator + "src";
-            new File(path).mkdirs();
-            paths.add(Pair.create(path, ""));
-            return paths;
+            boolean created = new File(path).mkdirs();
+            if (created) {
+                paths.add(Pair.create(path, ""));
+                return paths;
+            }
         }
         return m_sourcePaths;
     }

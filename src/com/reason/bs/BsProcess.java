@@ -28,7 +28,7 @@ import static com.reason.Platform.*;
 
 public final class BsProcess implements CompilerProcessLifecycle {
 
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[\\:]?(\\d\\.\\d+).+\\)");
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+).+\\)");
 
     @NotNull
     private final Project m_project;
@@ -60,7 +60,6 @@ public final class BsProcess implements CompilerProcessLifecycle {
         }
     }
 
-    @Nullable
     private void create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             createProcessHandler(sourceFile, cliType, onProcessTerminated);

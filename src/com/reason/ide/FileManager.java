@@ -1,5 +1,10 @@
 package com.reason.ide;
 
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -13,12 +18,6 @@ import com.reason.Platform;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 public class FileManager {
 
@@ -79,13 +78,14 @@ public class FileManager {
     }
 
     @Nullable
-    private static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
+    private static Path pathFromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath,
+                                       @NotNull VirtualFile sourceFile, boolean useCmt) {
         Path baseRootPath = FileSystems.getDefault().getPath(baseRoot.getPath());
         Path relativePath;
         try {
             relativePath = baseRootPath.relativize(new File(sourceFile.getPath()).toPath());
         } catch (IllegalArgumentException e) {
-            // Path can't be relativized
+            // Path can't be relative
             return null;
         }
 
@@ -99,7 +99,8 @@ public class FileManager {
     }
 
     @Nullable
-    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath, @NotNull VirtualFile sourceFile, boolean useCmt) {
+    public static VirtualFile fromSource(@NotNull Project project, @NotNull VirtualFile baseRoot, @NotNull Path relativeBuildPath,
+                                         @NotNull VirtualFile sourceFile, boolean useCmt) {
         Path path = pathFromSource(project, baseRoot, relativeBuildPath, sourceFile, useCmt);
         if (path == null) {
             return null;

@@ -1,5 +1,7 @@
 package com.reason.bs;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.AnsiEscapeDecoder;
@@ -7,10 +9,8 @@ import com.intellij.execution.process.KillableProcessHandler;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
 import com.reason.Compiler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class BsProcessHandler extends KillableProcessHandler implements AnsiEscapeDecoder.ColoredTextAcceptor {
+class BsProcessHandler extends KillableProcessHandler implements AnsiEscapeDecoder.ColoredTextAcceptor {
 
     private final AnsiEscapeDecoder m_ansiEscapeDecoder = new AnsiEscapeDecoder();
     @Nullable

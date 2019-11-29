@@ -1,26 +1,29 @@
 package com.reason.bs;
 
-import com.intellij.json.psi.*;
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import com.intellij.json.psi.JsonArray;
+import com.intellij.json.psi.JsonBooleanLiteral;
+import com.intellij.json.psi.JsonFile;
+import com.intellij.json.psi.JsonObject;
+import com.intellij.json.psi.JsonProperty;
+import com.intellij.json.psi.JsonStringLiteral;
+import com.intellij.json.psi.JsonValue;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import gnu.trove.THashSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import static com.reason.StringUtil.toFirstUpper;
 
 public class BsConfig {
 
-    @NotNull
+    @Nullable
     private final Path m_basePath;
     @NotNull
     private final String m_name;
@@ -49,7 +52,7 @@ public class BsConfig {
     }
 
     boolean accept(@Nullable String canonicalPath) {
-        if (canonicalPath == null) {
+        if (canonicalPath == null || m_basePath == null) {
             return false;
         }
 
@@ -71,7 +74,9 @@ public class BsConfig {
 
     @NotNull
     public static BsConfig read(@NotNull Project project, @NotNull VirtualFile bsConfigFromFile) {
-        return BsConfig.read(bsConfigFromFile.getParent(), PsiManager.getInstance(project).findFile(bsConfigFromFile), false);
+        PsiFile file = PsiManager.getInstance(project).findFile(bsConfigFromFile);
+        assert file != null;
+        return BsConfig.read(bsConfigFromFile.getParent(), file, false);
     }
 
     @NotNull
@@ -157,14 +162,13 @@ public class BsConfig {
                 }
             }
 
-
             BsConfig bsConfig = new BsConfig(rootFile, name, hasNamespace, paths);
             bsConfig.m_sources = sources;
 
             return bsConfig;
         }
 
-        throw new RuntimeException("NOT A BSCONFIG");
+        throw new RuntimeException("Not a Bucklescript config");
     }
 
     @Nullable
@@ -204,10 +208,12 @@ public class BsConfig {
     }
 
     public boolean isInSources(@NotNull VirtualFile file) {
-        Path relativePath = m_basePath.relativize(new File(file.getPath()).toPath());
-        for (String source : m_sources) {
-            if (relativePath.startsWith(source)) {
-                return true;
+        if (m_basePath != null) {
+            Path relativePath = m_basePath.relativize(new File(file.getPath()).toPath());
+            for (String source : m_sources) {
+                if (relativePath.startsWith(source)) {
+                    return true;
+                }
             }
         }
         return false;

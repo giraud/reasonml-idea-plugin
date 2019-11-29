@@ -1,10 +1,9 @@
 package com.reason.module;
 
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.module.ModuleType;
 import com.reason.Icons;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
 
 /**
  * Type of OCaml native project.
@@ -41,9 +40,9 @@ public class OCamlModuleType extends ModuleType<OCamlModuleBuilder> {
         return "OCaml modules are used for native development";
     }
 
+    @NotNull
     @Override
     public Icon getNodeIcon(boolean isOpened) {
         return Icons.OCL_MODULE;
     }
-
 }

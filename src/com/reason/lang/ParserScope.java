@@ -1,10 +1,10 @@
 package com.reason.lang;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTokenElementType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ParserScope {
 
@@ -23,7 +23,8 @@ public class ParserScope {
     @Nullable
     private PsiBuilder.Marker m_mark;
 
-    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeTokenElementType) {
+    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType,
+                        ORTokenElementType scopeTokenElementType) {
         m_builder = builder;
         m_mark = builder.mark();
         m_offset = builder.getCurrentOffset();
@@ -33,30 +34,33 @@ public class ParserScope {
         m_scopeTokenElementType = scopeTokenElementType;
     }
 
-    @Nullable
+    @NotNull
     public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull IElementType compositeElementType) {
         return new ParserScope(builder, context, context, compositeElementType, null);
     }
 
-    @Nullable
-    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType) {
+    @NotNull
+    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution,
+                                   @NotNull IElementType compositeElementType) {
         return new ParserScope(builder, context, resolution, compositeElementType, null);
     }
 
     @NotNull
-    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
+    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution,
+                                        @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
         ParserScope parserScope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType).setIsStart(true);
         parserScope.m_isScope = true;
         return parserScope;
     }
 
     @NotNull
-    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
+    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType,
+                                        @NotNull ORTokenElementType scopeTokenElementType) {
         return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
 
-    @Nullable
-    public static ParserScope markRoot(@NotNull PsiBuilder builder) {
+    @NotNull
+    static ParserScope markRoot(@NotNull PsiBuilder builder) {
         return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
     }
 
@@ -85,7 +89,7 @@ public class ParserScope {
         }
     }
 
-    public void drop() {
+    void drop() {
         if (m_mark != null) {
             m_mark.drop();
             m_mark = null;
@@ -165,7 +169,7 @@ public class ParserScope {
         return m_isScope;
     }
 
-    public ORTokenElementType getScopeTokenElementType() {
+    ORTokenElementType getScopeTokenElementType() {
         return m_scopeTokenElementType;
     }
 

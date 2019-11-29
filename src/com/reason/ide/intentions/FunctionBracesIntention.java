@@ -1,5 +1,7 @@
 package com.reason.ide.intentions;
 
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -9,8 +11,6 @@ import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 
 public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> {
 
@@ -60,8 +60,12 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
             PsiFunction newFunction = newSyntax.getFunction();
             if (newFunction != null) {
                 PsiFunctionBody oldBody = oldFunction.getBody();
-                PsiFunctionBody newBody = newFunction.getBody();
-                oldFunction.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
+                if (oldBody != null) {
+                    PsiFunctionBody newBody = newFunction.getBody();
+                    if (newBody != null) {
+                        oldFunction.getNode().replaceChild(oldBody.getNode(), newBody.getNode());
+                    }
+                }
             }
         }
     }

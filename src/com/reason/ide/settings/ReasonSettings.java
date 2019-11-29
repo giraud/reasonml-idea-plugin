@@ -1,5 +1,7 @@
 package com.reason.ide.settings;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -7,13 +9,8 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Platform;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-@State(
-        name = "ReasonSettings",
-        storages = {@Storage("reason.xml")}
-)
+@State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
 public class ReasonSettings implements PersistentStateComponent<ReasonSettings.ReasonSettingsState> {
 
     private Project m_project;
@@ -110,7 +107,7 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
         m_refmtOnSave = value;
     }
 
-    public void setRefmtWidth(String value) {
+    public void setRefmtWidth(@Nullable String value) {
         m_refmtWidth = value;
     }
 

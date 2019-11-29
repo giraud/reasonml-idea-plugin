@@ -1,5 +1,9 @@
 package com.reason.dune;
 
+import java.util.*;
+import java.util.regex.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
@@ -14,24 +18,15 @@ import com.reason.CompilerProcessLifecycle;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.lang.Integer.parseInt;
 
 public class DuneOutputListener implements ProcessListener {
 
-    private static final Pattern FILE_LOCATION = Pattern.compile("File \\\"(.+)\\\", line (\\d+), characters (\\d+)-(\\d+):\n");
+    private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n");
 
     enum BuildStatus {
-        fine,
-        warning,
-        error
+        fine, warning, error
     }
 
     @NotNull
@@ -153,8 +148,8 @@ public class DuneOutputListener implements ProcessListener {
     }
 
     private void reset() {
-//        m_status = fine;
-//        m_failedLine = -1;
+        //        m_status = fine;
+        //        m_failedLine = -1;
         m_latestInfo = null;
     }
 }

@@ -12,7 +12,7 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.Messages;
 import com.reason.OCamlSdkType;
 
-public class OCamlModuleWizardStep extends ModuleWizardStep {
+class OCamlModuleWizardStep extends ModuleWizardStep {
 
     private JPanel c_rootPanel;
     private JdkComboBox c_sdk;

@@ -1,5 +1,6 @@
 package com.reason.lang.ocaml;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
@@ -11,13 +12,10 @@ import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserScopeEnum;
 import com.reason.lang.ParserState;
-import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScope.mark;
-import static com.reason.lang.ParserScope.markScope;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.reason.lang.ParserScope.*;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public class OclParser extends CommonParser<OclTypes> {
@@ -177,9 +175,9 @@ public class OclParser extends CommonParser<OclTypes> {
             } else if (tokenType == m_types.DIRECTIVE_IF) {
                 parseDirectiveIf(builder, state);
             } else if (tokenType == m_types.DIRECTIVE_ELSE) {
-                parseDirectiveElse(builder, state);
+                parseDirectiveElse(/*builder,*/ state);
             } else if (tokenType == m_types.DIRECTIVE_END) {
-                parseDirectiveEnd(builder, state);
+                parseDirectiveEnd(/*builder,*/ state);
             }
 
             if (state.dontMove) {
@@ -283,13 +281,11 @@ public class OclParser extends CommonParser<OclTypes> {
             state.advance().
                     add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_PATTERN_MATCH_BODY).complete());
         } else if (state.isCurrentResolution(matchWith)) {
-            state.advance()
-                    .add(mark(builder, matchException, m_types.C_SCOPED_EXPR));
+            state.advance().add(mark(builder, matchException, m_types.C_SCOPED_EXPR));
         } else if (state.isCurrentContext(typeConstrName)) {
             state.popEndUntilContext(type).popEnd();
         } else if (state.isCurrentResolution(maybeFunctionParameters)) {
-            state.complete().popEnd()
-                    .advance().
+            state.complete().popEnd().advance().
                     add(mark(builder, functionBody, m_types.C_FUN_BODY).complete());
         }
     }
@@ -364,9 +360,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseMatch(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        state.add(mark(builder, match, m_types.C_MATCH_EXPR).complete())
-                .advance()
-                .add(mark(builder, matchBinaryCondition, m_types.C_BIN_CONDITION).complete());
+        state.add(mark(builder, match, m_types.C_MATCH_EXPR).complete()).advance().add(mark(builder, matchBinaryCondition, m_types.C_BIN_CONDITION).complete());
     }
 
     private void parseTry(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -404,9 +398,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseIf(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        state.add(mark(builder, if_, m_types.C_IF_STMT).complete())
-                .advance()
-                .add(mark(builder, binaryCondition, m_types.C_BIN_CONDITION).complete());
+        state.add(mark(builder, if_, m_types.C_IF_STMT).complete()).advance().add(mark(builder, binaryCondition, m_types.C_BIN_CONDITION).complete());
     }
 
     private void parseThen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -418,8 +410,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseElse(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         state.popEndUntilContext(if_);
-        state.advance()
-                .add(mark(builder, ifElseStatement, m_types.C_SCOPED_EXPR).complete());
+        state.advance().add(mark(builder, ifElseStatement, m_types.C_SCOPED_EXPR).complete());
     }
 
     private void parseStruct(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -560,11 +551,12 @@ public class OclParser extends CommonParser<OclTypes> {
                 // module M (..) : S with type x = y |>=<| struct .. end
                 state.popEndUntilStartScope().complete();
                 state.popEnd();
-            } else {
-                // Must be multiple declaration
-                // type x = y |>=<| ...
-                // This is not correctly parsed, just to avoid to break next instructions
             }
+            //else {
+            // Must be multiple declaration
+            // type x = y |>=<| ...
+            // This is not correctly parsed, just to avoid to break next instructions
+            //}
         }
 
         if (state.isCurrentResolution(typeNamed)) {
@@ -807,11 +799,9 @@ public class OclParser extends CommonParser<OclTypes> {
                 wrapWith(m_types.C_LOWER_SYMBOL);
         IElementType tokenType = builder.getTokenType();
         if (tokenType != m_types.EQ && tokenType != m_types.COLON) {
-            state.add(mark(builder, letBinding, letNamedBinding, m_types.C_LET_BINDING).complete())
-                    .add(mark(builder, function, m_types.C_FUN_EXPR).complete())
+            state.add(mark(builder, letBinding, letNamedBinding, m_types.C_LET_BINDING).complete()).add(mark(builder, function, m_types.C_FUN_EXPR).complete())
                     .add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
         }
-
     }
 
     private void parseUIdent(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -907,11 +897,11 @@ public class OclParser extends CommonParser<OclTypes> {
         state.add(mark(builder, directive, m_types.C_DIRECTIVE).setIsStart(true));
     }
 
-    private void parseDirectiveElse(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+    private void parseDirectiveElse(/*@NotNull PsiBuilder builder,*/ @NotNull ParserState state) {
         endLikeSemi(state);
     }
 
-    private void parseDirectiveEnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+    private void parseDirectiveEnd(/*@NotNull PsiBuilder builder,*/ @NotNull ParserState state) {
         state.popEndUntilContext(directive);
         if (state.isCurrentContext(directive)) {
             state.complete().advance().popEnd();
@@ -950,12 +940,10 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void endLikeSemi(@NotNull ParserState state) {
-        if (state.previousElementType1 != m_types.EQ && state.previousElementType1 != m_types.RIGHT_ARROW &&
-                state.previousElementType1 != m_types.TRY && state.previousElementType1 != m_types.SEMI &&
-                state.previousElementType1 != m_types.THEN && state.previousElementType1 != m_types.ELSE &&
-                state.previousElementType1 != m_types.IN && state.previousElementType1 != m_types.LPAREN &&
-                state.previousElementType1 != m_types.DO && state.previousElementType1 != m_types.STRUCT &&
-                state.previousElementType1 != m_types.SIG && state.previousElementType1 != m_types.COLON) {
+        if (state.previousElementType1 != m_types.EQ && state.previousElementType1 != m_types.RIGHT_ARROW && state.previousElementType1 != m_types.TRY
+                && state.previousElementType1 != m_types.SEMI && state.previousElementType1 != m_types.THEN && state.previousElementType1 != m_types.ELSE
+                && state.previousElementType1 != m_types.IN && state.previousElementType1 != m_types.LPAREN && state.previousElementType1 != m_types.DO
+                && state.previousElementType1 != m_types.STRUCT && state.previousElementType1 != m_types.SIG && state.previousElementType1 != m_types.COLON) {
             state.popEndUntilStartScope();
             ParserScope parserScope = state.getLatestScope();
             while (parserScope != null && (parserScope.isContext(function) || parserScope.isContext(match))) {

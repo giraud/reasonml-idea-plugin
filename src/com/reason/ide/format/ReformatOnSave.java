@@ -1,5 +1,6 @@
 package com.reason.ide.format;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
@@ -11,7 +12,6 @@ import com.intellij.psi.PsiFile;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.settings.ReasonSettings;
-import org.jetbrains.annotations.NotNull;
 
 public class ReformatOnSave implements FileDocumentManagerListener {
 
@@ -53,22 +53,18 @@ public class ReformatOnSave implements FileDocumentManagerListener {
 
     @Override
     public void beforeAllDocumentsSaving() {
-
     }
 
     @Override
-    public void beforeFileContentReload(VirtualFile file, @NotNull Document document) {
-
+    public void beforeFileContentReload(@NotNull VirtualFile file, @NotNull Document document) {
     }
 
     @Override
     public void fileWithNoDocumentChanged(@NotNull VirtualFile file) {
-
     }
 
     @Override
     public void fileContentReloaded(@NotNull VirtualFile file, @NotNull Document document) {
-
     }
 
     @Override
@@ -78,7 +74,5 @@ public class ReformatOnSave implements FileDocumentManagerListener {
 
     @Override
     public void unsavedDocumentsDropped() {
-
     }
-
 }

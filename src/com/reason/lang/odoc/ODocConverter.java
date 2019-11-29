@@ -45,9 +45,10 @@ public class ODocConverter {
                     m_builder.append("<p>");
                 }
 
-                if (tokenType == ODocTypes.OCL_START || tokenType == ODocTypes.OCL_END || tokenType == ODocTypes.RML_START || tokenType == ODocTypes.RML_END) {
-                    // skip
-                } else if (tokenType == ODocTypes.CODE) {
+                //if (tokenType == ODocTypes.OCL_START || tokenType == ODocTypes.OCL_END || tokenType == ODocTypes.RML_START || tokenType == ODocTypes.RML_END) {
+                // skip
+                //}
+                if (tokenType == ODocTypes.CODE) {
                     m_builder.append(CODE_START).append(extract(m_lexer.yytext(), 1, 1)).append(CODE_END);
                 } else if (tokenType == ODocTypes.BOLD) {
                     m_builder.append("<b>").append(extract(m_lexer.yytext(), 2, 1)).append("</b>");

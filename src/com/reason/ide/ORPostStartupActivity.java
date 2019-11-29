@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.facet.FacetManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
@@ -11,7 +12,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
 import com.reason.Icons;
 import com.reason.ide.facet.DuneFacet;
-import org.jetbrains.annotations.NotNull;
 
 public class ORPostStartupActivity implements StartupActivity, DumbAware {
     @Override
@@ -33,9 +33,7 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
                     return;
                 }
             }
-            ApplicationManager.getApplication().invokeLater(() -> {
-                bucklescript.setIcon(Icons.BUCKLESCRIPT_TOOL);
-            });
+            ApplicationManager.getApplication().invokeLater(() -> bucklescript.setIcon(Icons.BUCKLESCRIPT_TOOL));
         }
     }
 }
