@@ -14,7 +14,7 @@ public class CmtFileType implements FileType {
     @NotNull
     @Override
     public String getName() {
-        return "cmt";
+        return "CMT";
     }
 
     @NotNull

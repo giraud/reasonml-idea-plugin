@@ -18,7 +18,7 @@ public class MlgFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Mlg file";
+        return "MLG";
     }
 
     @NotNull

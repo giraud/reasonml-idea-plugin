@@ -30,9 +30,11 @@
     </project-components>
 
     <actions>
+        <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.make" class="com.reason.ide.console.MakeAction" text="Bsb -make"/>
-        <action id="reason.actions.makeWorld" class="com.reason.ide.console.MakeWorldAction"
-                text="bsb -clean-world -make-world"/>
+        <!--suppress PluginXmlCapitalization -->
+        <action id="reason.actions.makeWorld" class="com.reason.ide.console.MakeWorldAction" text="bsb -clean-world -make-world"/>
+        <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
@@ -52,24 +54,24 @@
          -->
 
         <!-- Reason -->
-        <fileTypeFactory implementation="com.reason.ide.files.RmlInterfaceFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.files.RmlFileTypeFactory"/>
+        <fileType extensions="rei" name="Reason interface file" fieldName="INSTANCE" language="Reason" implementationClass="com.reason.ide.files.RmlInterfaceFileType"/>
+        <fileType extensions="re" name="Reason file" fieldName="INSTANCE" language="Reason" implementationClass="com.reason.ide.files.RmlFileType"/>
         <!-- OCaml -->
-        <fileTypeFactory implementation="com.reason.ide.files.OclInterfaceFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.files.OclFileTypeFactory"/>
+        <fileType extensions="mli" name="OCaml interface file" fieldName="INSTANCE" language="OCaml" implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
+        <fileType extensions="ml" name="OCaml file" fieldName="INSTANCE" language="OCaml" implementationClass="com.reason.ide.files.OclFileType"/>
         <!-- OCamlP4 -->
-        <fileTypeFactory implementation="com.reason.ide.files.Ml4FileTypeFactory"/>
+        <fileType extensions="ml4" name="OCamlP4 file" fieldName="INSTANCE" language="OCamlP4" implementationClass="com.reason.ide.files.Ml4FileType"/>
         <!-- OCamlMlg -->
-        <fileTypeFactory implementation="com.reason.ide.files.MlgFileTypeFactory"/>
+        <fileType extensions="mlg" name="MLG" fieldName="INSTANCE" language="Mlg" implementationClass="com.reason.ide.files.MlgFileType"/>
         <!-- OCaml - Lex -->
-        <fileTypeFactory implementation="com.reason.ide.files.MllFileTypeFactory"/>
+        <fileType extensions="mll" name="MLL" fieldName="INSTANCE" language="Mll" implementationClass="com.reason.ide.files.MllFileType"/>
         <!-- OCaml - Yacc -->
-        <fileTypeFactory implementation="com.reason.ide.files.MlyFileTypeFactory"/>
+        <fileType extensions="mly" name="Mly file" fieldName="INSTANCE" language="Mly" implementationClass="com.reason.ide.files.MlyFileType"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
         <!-- Binary -->
-        <fileTypeFactory implementation="com.reason.ide.files.CmiFileTypeFactory"/>
-        <fileTypeFactory implementation="com.reason.ide.files.CmtFileTypeFactory"/>
+        <fileType extensions="cmi" name="CMI" fieldName="INSTANCE" implementationClass="com.reason.ide.files.CmiFileType"/>
+        <fileType extensions="cmt" name="CMT" fieldName="INSTANCE" implementationClass="com.reason.ide.files.CmtFileType"/>
 
         <!--
          | Parsers

@@ -14,7 +14,7 @@ public class CmiFileType implements FileType {
     @NotNull
     @Override
     public String getName() {
-        return "cmi";
+        return "CMI";
     }
 
     @NotNull

@@ -19,7 +19,7 @@ public class MllFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Mll file";
+        return "MLL";
     }
 
     @NotNull
