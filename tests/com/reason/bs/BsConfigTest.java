@@ -1,17 +1,16 @@
 package com.reason.bs;
 
-import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.intellij.testFramework.LightPlatformCodeInsightTestCase;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-public class BsConfigTest extends BasePlatformTestCase {
+public class BsConfigTest extends LightPlatformCodeInsightTestCase {
 
     @NotNull
     @Override
@@ -81,6 +80,6 @@ public class BsConfigTest extends BasePlatformTestCase {
     }
 
     private PsiFile createJson(@NotNull String content) {
-        return createLightFile("dummy.json", JsonLanguage.INSTANCE, toJson(content));
+        return createLightFile("dummy.json", toJson(content));
     }
 }

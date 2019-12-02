@@ -1,11 +1,11 @@
 package com.reason.ide.completion;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 import java.util.List;
 
-public class JsObjectCompletionTest extends BasePlatformTestCase {
+public class JsObjectCompletionTest extends ORBasePlatformTestCase {
 
     public void testBasicJsFieldCompletion() {
         myFixture.configureByText("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");

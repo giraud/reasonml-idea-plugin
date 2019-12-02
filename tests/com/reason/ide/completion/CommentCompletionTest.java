@@ -1,12 +1,12 @@
 package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CommentCompletionTest extends BasePlatformTestCase {
+public class CommentCompletionTest extends ORBasePlatformTestCase {
     @NotNull
     @Override
     protected String getTestDataPath() {

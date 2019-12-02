@@ -1,12 +1,12 @@
 package com.reason.ide.reference;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.usageView.UsageInfo;
+import com.reason.ide.ORBasePlatformTestCase;
 
 import java.util.Collection;
 
 @SuppressWarnings("ConstantConditions")
-public class FindUIdentUsagesTest extends BasePlatformTestCase {
+public class FindUIdentUsagesTest extends ORBasePlatformTestCase {
 
     public void testException() {
         myFixture.configureByText("A.re", "exception Exception<caret>Name; raise(ExceptionName);");

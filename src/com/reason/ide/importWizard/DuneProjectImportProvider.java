@@ -3,7 +3,6 @@ package com.reason.ide.importWizard;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,10 +11,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DuneProjectImportProvider extends ProjectImportProvider {
 
-    @NotNull
-    @Override
-    protected ProjectImportBuilder doGetBuilder() {
-        return new DuneProjectImportBuilder();
+    public DuneProjectImportProvider() {
+        super(new DuneProjectImportBuilder());
     }
 
     @NotNull

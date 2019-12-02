@@ -1,12 +1,12 @@
 package com.reason.ide.completion;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class VariantCompletionTest extends BasePlatformTestCase {
+public class VariantCompletionTest extends ORBasePlatformTestCase {
 
     public void testVariant() {
         myFixture.configureByText("VariantCompletion.re", "type color = | Black | Red;");

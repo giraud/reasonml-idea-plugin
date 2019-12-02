@@ -1,13 +1,13 @@
 package com.reason.ide.reference;
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.intellij.usageView.UsageInfo;
+import com.reason.ide.ORBasePlatformTestCase;
 
 import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class FindLIdentUsagesTest extends BasePlatformTestCase {
+public class FindLIdentUsagesTest extends ORBasePlatformTestCase {
 
     public void testFromModule() {
         myFixture.configureByText("FLIA.re", "let x<caret> = 1;");
