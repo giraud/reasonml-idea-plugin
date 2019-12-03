@@ -3,12 +3,12 @@ plugins {
 }
 
 def pluginVersion = '0.83-beta01'
-def ideaVersion = '2019'
+def ideaVersion = '2019.3'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     // http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
-    sinceBuild = '191.0'
+    sinceBuild = '193.0'
     untilBuild = '193.*'
 
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
