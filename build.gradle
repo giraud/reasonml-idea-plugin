@@ -8,6 +8,7 @@ version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     // http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
+    // http://www.jetbrains.org/intellij/sdk/docs/reference_guide/api_changes_list.html
     sinceBuild = '191.0'
     untilBuild = '191.*'
 
@@ -55,7 +56,7 @@ allprojects {
         updateSinceUntilBuild = false
         plugins = [
 //                'java',
-                'JavaScriptLanguage',
+//                'JavaScriptLanguage',
                 'PsiViewer:191-SNAPSHOT' // https://plugins.jetbrains.com/plugin/227-psiviewer/versions
         ]
     }

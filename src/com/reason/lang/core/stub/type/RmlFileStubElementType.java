@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
     private static final int VERSION = 2;
-    public static final IStubFileElementType INSTANCE = new RmlFileStubElementType();
+    public static final IStubFileElementType<RmlFileStub> INSTANCE = new RmlFileStubElementType();
 
     private RmlFileStubElementType() {
         super("REASON_FILE", RmlLanguage.INSTANCE);

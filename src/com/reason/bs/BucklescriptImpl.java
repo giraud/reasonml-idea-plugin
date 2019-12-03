@@ -128,9 +128,9 @@ public class BucklescriptImpl implements Bucklescript {
     @Override
     public void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document) {
         if (ReasonSettings.getInstance(m_project).isEnabled()) {
-            RefmtProcess refmt = RefmtProcess.getInstance(m_project);
             String oldText = document.getText();
             if (!oldText.isEmpty()) {
+                RefmtProcess refmt = RefmtProcess.getInstance(m_project);
                 String newText = refmt.run(sourceFile, isInterface, format, oldText);
                 if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
                     getApplication().runWriteAction(
