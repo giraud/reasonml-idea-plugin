@@ -10,7 +10,16 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## [Unreleased]
+## Unreleased
+
+## 0.83 - 2019/12/03
+
+New versioning scheme: each intellij release has its own plugin version.
+For example, 2019.3 can only use plugin 0.83-2019.3. 
+
+This is much more work when developing the plugin but it is needed because API changes between releases
+can have many incompatibilities. The consequence is that I won't be able to maintain too 
+many versions active. Older version of the plugin will be frozen and won't get any updates. 
 
 ## [0.82] - 2019/11/15
 
@@ -462,7 +471,6 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 * :rocket: Parse Bsb super errors and use them to annotate source code
 
-[Unreleased]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.82...HEAD
 [0.82]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.81...0.82
 [0.81]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...0.81
 [0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...0.80
