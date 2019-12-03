@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.10"
 }
 
-def pluginVersion = '0.83-beta01'
+def pluginVersion = '0.83'
 def ideaVersion = '2019.2'
 version = pluginVersion + '-' + ideaVersion
 
@@ -14,13 +14,7 @@ patchPluginXml {
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
-            <li>#189 Structure panel missing members/parse problem for "while"</li>
-            <li>#175 Structure panel missing top level functions defined after nested let foo = function</li>
-            <li>Importing a Dune project automatically configure project structure : SDK, module and project. SDK can be automatically downloaded and indexed.</li>
-            <li>Dune stanzas visible in the structure view</li>
-            <li>Dune stanzas can be folded when they span on multiple lines</li>
-            <li>Fix bs version extractor (format changed in bucklescript 6.2.1)</li>
-            <li>Improved Dune parser</li>
+            <li>New versioning scheme</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
