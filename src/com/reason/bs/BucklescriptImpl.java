@@ -1,12 +1,21 @@
 package com.reason.bs;
 
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.command.CommandProcessor;
+import com.intellij.openapi.command.undo.UndoConstants;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,12 +29,6 @@ import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.io.IOException;
-import java.util.Map;
 
 import static com.intellij.openapi.application.ApplicationManager.getApplication;
 
@@ -109,7 +112,8 @@ public class BucklescriptImpl implements Bucklescript {
     }
 
     @Override
-    public void convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
+    public void convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat,
+                        @NotNull Document document) {
         RefmtProcess refmt = RefmtProcess.getInstance(m_project);
         String oldText = document.getText();
         String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
@@ -125,16 +129,44 @@ public class BucklescriptImpl implements Bucklescript {
         }
     }
 
+    // Try externalFormatProcessor
+    // see https://github.com/Mizzlr/intellij-community/blob/7e1217822045325b2e9269505d07c65daa9e5e9d/plugins/sh/src/com/intellij/sh/formatter/ShExternalFormatter.java
     @Override
     public void refmt(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document) {
+        refmtCount(sourceFile, isInterface, format, document, 1);
+    }
+
+    public void refmtCount(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull Document document, final int retries) {
+        if (!sourceFile.exists()) {
+            return;
+        }
+
         if (ReasonSettings.getInstance(m_project).isEnabled()) {
+            long before = document.getModificationStamp();
+
             RefmtProcess refmt = RefmtProcess.getInstance(m_project);
             String oldText = document.getText();
             if (!oldText.isEmpty()) {
                 String newText = refmt.run(sourceFile, isInterface, format, oldText);
                 if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
-                    getApplication().runWriteAction(
-                            () -> CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup"));
+                    ApplicationManager.getApplication().invokeLater(() -> {
+                        long after = document.getModificationStamp();
+                        if (after > before) {
+                            // Document has changed, redo refmt one time
+                            if (retries < 2) {
+                                refmtCount(sourceFile, isInterface, format, document, retries + 1);
+                            }
+                        } else {
+
+                            CommandProcessor.getInstance().executeCommand(m_project, () -> {
+                                WriteAction.run(() -> {
+                                    document.setText(newText);
+                                    FileDocumentManager.getInstance().saveDocument(document);
+                                });
+                                sourceFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
+                            }, "reason.refmt", "CodeFormatGroup", document);
+                        }
+                    });
                 }
             }
         }
