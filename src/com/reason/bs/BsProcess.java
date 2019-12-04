@@ -20,7 +20,6 @@ import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 
-import static com.intellij.execution.process.ProcessOutputTypes.STDOUT;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
@@ -160,10 +159,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     public void terminated() {
-        if (m_bsb != null) {
-            m_bsb.notifyTextAvailable("Compilation ended\n", STDOUT);
-            m_bsb = null;
-        }
+        m_bsb = null;
         m_started.set(false);
     }
 
