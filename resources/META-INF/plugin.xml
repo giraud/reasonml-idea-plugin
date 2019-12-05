@@ -17,12 +17,6 @@
 
     <depends optional="true" config-file="js-deps.xml">JavaScript</depends>
 
-    <application-components>
-        <component>
-            <implementation-class>com.reason.ide.CompilerManager</implementation-class>
-        </component>
-    </application-components>
-
     <project-components>
         <component>
             <implementation-class>com.reason.ide.ORProjectTracker</implementation-class>
@@ -54,10 +48,12 @@
          -->
 
         <!-- Reason -->
-        <fileType extensions="rei" name="Reason interface file" fieldName="INSTANCE" language="Reason" implementationClass="com.reason.ide.files.RmlInterfaceFileType"/>
+        <fileType extensions="rei" name="Reason interface file" fieldName="INSTANCE" language="Reason"
+                  implementationClass="com.reason.ide.files.RmlInterfaceFileType"/>
         <fileType extensions="re" name="Reason file" fieldName="INSTANCE" language="Reason" implementationClass="com.reason.ide.files.RmlFileType"/>
         <!-- OCaml -->
-        <fileType extensions="mli" name="OCaml interface file" fieldName="INSTANCE" language="OCaml" implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
+        <fileType extensions="mli" name="OCaml interface file" fieldName="INSTANCE" language="OCaml"
+                  implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
         <fileType extensions="ml" name="OCaml file" fieldName="INSTANCE" language="OCaml" implementationClass="com.reason.ide.files.OclFileType"/>
         <!-- OCamlP4 -->
         <fileType extensions="ml4" name="OCamlP4 file" fieldName="INSTANCE" language="OCamlP4" implementationClass="com.reason.ide.files.Ml4FileType"/>
@@ -209,10 +205,9 @@
          | Compiler
          -->
 
+        <applicationService serviceImplementation="com.reason.ide.CompilerManager"/>
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
-
-        <projectService serviceInterface="com.reason.bs.Bucklescript"
-                        serviceImplementation="com.reason.bs.BucklescriptImpl"/>
+        <projectService serviceInterface="com.reason.bs.Bucklescript" serviceImplementation="com.reason.bs.BucklescriptImpl"/>
 
         <!--
          | Insight

@@ -36,7 +36,7 @@ public class CompilerManager {
     };
 
     public static CompilerManager getInstance() {
-        return ApplicationManager.getApplication().getComponent(CompilerManager.class);
+        return ServiceManager.getService(CompilerManager.class);
     }
 
     @NotNull
