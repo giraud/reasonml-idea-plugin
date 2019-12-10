@@ -9,7 +9,7 @@
     <description><![CDATA[This is a description to please the validation plugin]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="173"/>
+    <idea-version since-build="193" until-build="193.*"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -42,7 +42,20 @@
         </action>
     </actions>
 
+    <!--
+    lang:     https://upsource.jetbrains.com/idea-ce/file/idea-ce-37502bec42258b27d4547dbe8593ba3427bfcc49/platform/platform-resources/src/META-INF/LangExtensionPoints.xml
+    platform: https://upsource.jetbrains.com/idea-ce/file/idea-ce-e9f8dd0cfdfe1a70011a5694d7da93dee387ca7b/platform/platform-resources/src/META-INF/PlatformExtensionPoints.xml
+    vcs:      https://upsource.jetbrains.com/idea-ce/file/idea-ce-37502bec42258b27d4547dbe8593ba3427bfcc49/platform/platform-resources/src/META-INF/VcsExtensionPoints.xml
+    -->
     <extensions defaultExtensionNs="com.intellij">
+
+        <!--
+         | Listeners
+         -->
+
+        <projectService serviceImplementation="com.reason.ide.ORProjectRootListener"/>
+        <projectService serviceImplementation="com.reason.ide.ORFileDocumentListener"/>
+
         <!--
          | File types
          -->
