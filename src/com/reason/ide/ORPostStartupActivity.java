@@ -16,6 +16,9 @@ import com.reason.ide.facet.DuneFacet;
 public class ORPostStartupActivity implements StartupActivity, DumbAware {
     @Override
     public void runActivity(@NotNull Project project) {
+        ORProjectRootListener.ensureSubscribed(project);
+        ORFileDocumentListener.ensureSubscribed(project);
+
         ToolWindow bucklescript = ToolWindowManagerEx.getInstanceEx(project).getToolWindow("Bucklescript");
         if (bucklescript != null) {
             ModuleManager moduleManager = ModuleManager.getInstance(project);
