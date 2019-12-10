@@ -1,20 +1,22 @@
 plugins {
-    id 'org.jetbrains.intellij' version "0.4.10"
+    id 'org.jetbrains.intellij' version "0.4.15"
 }
 
-def pluginVersion = '0.83'
+def pluginVersion = '0.84'
 def ideaVersion = '2019.2'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     // http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
-    sinceBuild = '192.0'
+    sinceBuild = '192'
     untilBuild = '192.*'
 
     pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
-            <li>New versioning scheme</li>
+            <li>197 - java.lang.Throwable: Assertion failed: Undoable actions allowed inside commands only</li>
+            <li>192 - Undoing causes Following files have changes that cannot be undone: error</li>
+            <li>Fix a stub exception for functor parameter</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
