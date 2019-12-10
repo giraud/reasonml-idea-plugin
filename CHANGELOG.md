@@ -12,6 +12,12 @@
 
 ## Unreleased
 
+## 0.84 - 2019/12/10
+
+- :bug: [#197](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/197) java.lang.Throwable: Assertion failed: Undoable actions allowed inside commands only
+- :bug: [#192](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/192) Undoing causes Following files have changes that cannot be undone: error
+- :house: Fix a stub exception for functor parameter
+
 ## 0.83 - 2019/12/03
 
 New versioning scheme: each intellij release has its own plugin version.
