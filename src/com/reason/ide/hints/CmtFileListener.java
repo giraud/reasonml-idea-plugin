@@ -1,8 +1,5 @@
 package com.reason.ide.hints;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
@@ -14,11 +11,15 @@ import com.reason.bs.Bucklescript;
 import com.reason.hints.InsightManager;
 import com.reason.ide.CompilerManager;
 import com.reason.ide.FileManager;
-import com.reason.ide.ORProjectTracker;
+import com.reason.ide.OREditorTracker;
 import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.FileHelper;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
+import org.jetbrains.annotations.NotNull;
+
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 public class CmtFileListener {
 
@@ -26,11 +27,9 @@ public class CmtFileListener {
 
     @NotNull
     private final Project m_project;
-    private final ORProjectTracker m_projectTracker;
 
     private CmtFileListener(@NotNull Project project) {
         m_project = project;
-        m_projectTracker = project.getComponent(ORProjectTracker.class);
     }
 
     public void onChange(@NotNull VirtualFile file) {
@@ -59,7 +58,7 @@ public class CmtFileListener {
         VirtualFile sourceFile = FileManager.toSource(m_project, file, relativeCmti);
         if (sourceFile == null) {
             LOG.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
-        } else if (m_projectTracker.isOpen(sourceFile)) {
+        } else if (OREditorTracker.getInstance(m_project).isOpen(sourceFile)) {
             Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
             insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, lang, sourceFile, inferredTypes));
         }

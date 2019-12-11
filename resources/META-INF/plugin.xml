@@ -55,6 +55,7 @@
 
         <projectService serviceImplementation="com.reason.ide.ORProjectRootListener"/>
         <projectService serviceImplementation="com.reason.ide.ORFileDocumentListener"/>
+        <editorFactoryListener implementation="com.reason.ide.OREditorTracker$AppLevelEditorFactoryListener"/>
 
         <!--
          | File types

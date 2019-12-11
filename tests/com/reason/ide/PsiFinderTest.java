@@ -15,7 +15,6 @@ public class PsiFinderTest extends BasePlatformTestCase {
     public void testModuleLet() {
         myFixture.configureByText("ReasonReact.rei", "module Router: { let api = 1; };");
         myFixture.configureByText("ReasonReact.re", "module Router: { let implRE = 1; };");
-        myFixture.configureByText("ReasonReact.ml", "module Router: { let implML = 1; };");
 
         Collection<PsiModule> modules = PsiFinder.getInstance(getProject()).findModules("Router", interfaceOrImplementation, allScope(getProject()));
 
