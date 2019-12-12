@@ -2,16 +2,11 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.15"
 }
 
-def pluginVersion = '0.84'
+def pluginVersion = '0.85-beta01'
 def ideaVersion = '2019.3'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
-    // http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
-    sinceBuild = '193'
-    untilBuild = '193.*'
-
-    pluginDescription "Add support for ReasonML language. Also add support for OCaml, and Dune."
     changeNotes """
         <ul>
             <li>197 - java.lang.Throwable: Assertion failed: Undoable actions allowed inside commands only</li>
