@@ -1,8 +1,17 @@
 package com.reason.dune;
 
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.*;
+import com.intellij.execution.process.KillableColoredProcessHandler;
+import com.intellij.execution.process.ProcessAdapter;
+import com.intellij.execution.process.ProcessEvent;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -13,12 +22,6 @@ import com.reason.OCamlSdkType;
 import com.reason.Platform;
 import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -85,15 +88,17 @@ public final class DuneProcess implements CompilerProcessLifecycle {
     private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
         Sdk odk = OCamlSdkType.getSDK(m_project);
         if (odk == null) {
-            Notifications.Bus.notify(new ORNotification("Dune",
-                    "<html>Can't find sdk.\n"
-                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
-                    ERROR, URL_OPENING_LISTENER));
+            Notifications.Bus.notify(new ORNotification("Dune", "<html>Can't find sdk.\n"
+                    + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                    + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>", ERROR, URL_OPENING_LISTENER));
             return null;
         }
 
-        VirtualFile baseRoot = Platform.findBaseRoot(m_project);
+        VirtualFile baseRoot = Platform.findORContentRoot(m_project);
+        if (baseRoot == null) {
+            return null;
+        }
+
         String workingDir = baseRoot.getPath();
 
         GeneralCommandLine cli;

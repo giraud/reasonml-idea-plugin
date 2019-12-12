@@ -15,6 +15,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.CompilerProcessLifecycle;
+import com.reason.Platform;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
@@ -128,8 +129,8 @@ public class DuneOutputListener implements ProcessListener {
     private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
 
-        VirtualFile baseDir = m_project.getBaseDir();
-        VirtualFile child = baseDir.findFileByRelativePath(path);
+        VirtualFile contentRoot = Platform.findORContentRoot(m_project);
+        VirtualFile child = contentRoot == null ? null : contentRoot.findFileByRelativePath(path);
         if (child == null) {
             return null;
         }

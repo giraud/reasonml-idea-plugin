@@ -1,5 +1,7 @@
 package com.reason.hints;
 
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
@@ -11,11 +13,6 @@ import com.reason.Platform;
 import com.reason.Streams;
 import com.reason.ide.ORNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
 
 public class RincewindProcess {
 
@@ -31,11 +28,17 @@ public class RincewindProcess {
         m_project = project;
     }
 
-    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
+    public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath,
+                      @NotNull InsightManager.ProcessTerminated runAfter) {
         LOG.debug("Looking for types for file", sourceFile);
 
+        VirtualFile contentRoot = Platform.findORContentRoot(m_project, sourceFile);
+        if (contentRoot == null) {
+            return;
+        }
+
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(Platform.findBaseRootFromFile(m_project, sourceFile).getPath()));
+        processBuilder.directory(new File(contentRoot.getPath()));
 
         Process rincewind = null;
         try {

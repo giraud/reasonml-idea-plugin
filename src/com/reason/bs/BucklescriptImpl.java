@@ -48,7 +48,7 @@ public class BucklescriptImpl implements Bucklescript {
     @NotNull
     @Override
     public String getNamespace(@NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
+        VirtualFile bsConfigFile = Platform.findBsconfig(m_project, sourceFile);
         if (bsConfigFile != null) {
             BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
             return bsConfig.getNamespace();
@@ -66,9 +66,9 @@ public class BucklescriptImpl implements Bucklescript {
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!isDisabled() && ReasonSettings.getInstance(m_project).isEnabled()) {
-            VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, sourceFile);
-            if (bsConfigFile != null) {
-                getOrRefreshBsConfig(bsConfigFile);
+            VirtualFile bsconfigFile = Platform.findBsconfig(m_project, sourceFile);
+            if (bsconfigFile != null) {
+                getOrRefreshBsConfig(bsconfigFile);
                 BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
                 if (process.start()) {
                     ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
@@ -107,7 +107,7 @@ public class BucklescriptImpl implements Bucklescript {
             return false;
         }
 
-        VirtualFile bsConfigFile = Platform.findBsConfigFromFile(m_project, file);
+        VirtualFile bsConfigFile = Platform.findBsconfig(m_project, file);
         return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getPath());
     }
 

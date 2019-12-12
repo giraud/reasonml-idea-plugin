@@ -84,7 +84,11 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
 
     @NotNull
     public String getWorkingDir(@NotNull VirtualFile sourceFile) {
-        return m_workingDir.isEmpty() ? Platform.findBaseRootFromFile(m_project, sourceFile).getPath() : m_workingDir;
+        if (m_workingDir.isEmpty()) {
+            VirtualFile contentRoot = Platform.findORContentRoot(m_project, sourceFile);
+            return contentRoot == null ? "" : contentRoot.getPath();
+        }
+        return m_workingDir;
     }
 
     public boolean isRefmtOnSave() {

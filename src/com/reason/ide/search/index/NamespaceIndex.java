@@ -1,10 +1,16 @@
 package com.reason.ide.search.index;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.util.indexing.*;
+import com.intellij.util.indexing.DataIndexer;
+import com.intellij.util.indexing.FileBasedIndex;
+import com.intellij.util.indexing.FileContent;
+import com.intellij.util.indexing.ID;
+import com.intellij.util.indexing.ScalarIndexExtension;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
@@ -15,10 +21,6 @@ import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.DuneFileType;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiStanza;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.List;
 
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
@@ -61,18 +63,20 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                 if (file != null) {
                     BsConfig configFile = BsConfig.read(dataFile, file, false);
                     if (configFile.hasNamespace()) {
-                        VirtualFile baseRoot = Platform.findBaseRoot(inputData.getProject());
-                        VirtualFile parent = dataFile.getParent();
-                        if (baseRoot.equals(parent)) {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Skip indexing of " + dataFile + ": in project root");
+                        VirtualFile baseRoot = Platform.findORContentRoot(inputData.getProject());
+                        if (baseRoot != null) {
+                            VirtualFile parent = dataFile.getParent();
+                            if (baseRoot.equals(parent)) {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Skip indexing of " + dataFile + ": in project root");
+                                }
+                            } else {
+                                String namespace = configFile.getNamespace();
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
+                                }
+                                return Collections.singletonMap(namespace, null);
                             }
-                        } else {
-                            String namespace = configFile.getNamespace();
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
-                            }
-                            return Collections.singletonMap(namespace, null);
                         }
                     }
                 }

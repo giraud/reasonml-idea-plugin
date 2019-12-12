@@ -89,22 +89,22 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                     Map<String, FileModuleData> map = new HashMap<>();
 
                     String namespace = "";
-                    VirtualFile bsConfigFromFile = Platform.findBsConfigFromFile(inputData.getProject(), inputData.getFile());
-                    String path = inputData.getFile().getPath();
-                    if (bsConfigFromFile != null) {
-                        VirtualFile parent = bsConfigFromFile.getParent();
+                    VirtualFile bsconfig = Platform.findAncestorBsconfig(inputData.getProject(), inputData.getFile());
+                    if (bsconfig != null) {
+                        VirtualFile parent = bsconfig.getParent();
                         boolean useExternalAsSource = "bs-platform".equals(parent.getName());
                         PsiManager psiManager = PsiManager.getInstance(inputData.getProject());
 
-                        PsiFile configFile = psiManager.findFile(bsConfigFromFile);
-                        if (configFile != null) {
-                            BsConfig bsConfig = BsConfig.read(parent, configFile, useExternalAsSource);
+                        PsiFile bsconfigPsiFile = psiManager.findFile(bsconfig);
+                        if (bsconfigPsiFile != null) {
+                            BsConfig bsConfig = BsConfig.read(parent, bsconfigPsiFile, useExternalAsSource);
                             if (!bsConfig.isInSources(inputData.getFile())) {
-                                LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsConfigFromFile);
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfig);
+                                }
                                 return Collections.emptyMap();
                             }
 
-                            //System.out.println("Indexing " + inputData.getFile() + " / sources: [" + Joiner.join(", ", bsConfig.getSources()) + "] / bsconf: " + bsConfigFromFile);
                             namespace = bsConfig.getNamespace();
                         }
                     }
@@ -113,6 +113,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                     FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()),
                                                               psiFile.isInterface(), psiFile.isComponent());
                     if (LOG.isDebugEnabled()) {
+                        String path = inputData.getFile().getPath();
                         LOG.debug("indexing " + Platform.removeProjectDir(inputData.getProject(), path) + ": " + value);
                     }
 

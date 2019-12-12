@@ -33,6 +33,6 @@ public class ModuleFqnIndex extends IntStubIndexExtension<PsiInnerModule> {
     @NotNull
     @Override
     public Collection<PsiInnerModule> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
-        return StubIndex.getElements(getKey(), integer, project, /*new JavaSourceFilterScope(scope) TODO*/scope, PsiInnerModule.class);
+        return StubIndex.getElements(getKey(), integer, project, scope, PsiInnerModule.class);
     }
 }

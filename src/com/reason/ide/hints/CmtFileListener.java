@@ -1,5 +1,9 @@
 package com.reason.ide.hints;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
@@ -16,10 +20,6 @@ import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.FileHelper;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
-import org.jetbrains.annotations.NotNull;
-
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 public class CmtFileListener {
 
@@ -37,36 +37,40 @@ public class CmtFileListener {
             return;
         }
 
-        InsightManager insightManager = ServiceManager.getService(m_project, InsightManager.class);
-
         Path path = FileSystems.getDefault().getPath(file.getPath());
-        Path relativeCmti;
+        @Nullable Path relativeCmt;
 
         Compiler compiler = CompilerManager.getInstance().getCompiler(m_project);
         if (compiler instanceof Bucklescript) {
             Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
             Path pathToWatch = getPathToWatch(m_project, relativeRoot);
-            relativeCmti = pathToWatch.relativize(path);
+            relativeCmt = pathToWatch == null ? null : pathToWatch.relativize(path);
         } else {
             Path relativeRoot = FileSystems.getDefault().getPath("_build", "default");
             Path pathToWatch = getPathToWatch(m_project, relativeRoot);
-            relativeCmti = pathToWatch.relativize(path);
+            relativeCmt = pathToWatch == null ? null : pathToWatch.relativize(path);
         }
 
-        LOG.info("Detected change on file " + relativeCmti + ", reading types");
+        if (relativeCmt != null) {
+            LOG.info("Detected change on file " + relativeCmt + ", reading types");
+            VirtualFile sourceFile = FileManager.toSource(m_project, file, relativeCmt);
+            if (sourceFile == null) {
+                LOG.warn("can't convert " + relativeCmt + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmt));
+            } else if (OREditorTracker.getInstance(m_project).isOpen(sourceFile)) {
+                InsightManager insightManager = ServiceManager.getService(m_project, InsightManager.class);
 
-        VirtualFile sourceFile = FileManager.toSource(m_project, file, relativeCmti);
-        if (sourceFile == null) {
-            LOG.warn("can't convert " + relativeCmti + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmti));
-        } else if (OREditorTracker.getInstance(m_project).isOpen(sourceFile)) {
-            Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
-            insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, lang, sourceFile, inferredTypes));
+                Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
+                insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, lang, sourceFile, inferredTypes));
+            }
         }
     }
 
-    @NotNull
+    @Nullable
     private Path getPathToWatch(@NotNull Project project, @NotNull Path relativeRoot) {
-        VirtualFile baseRoot = Platform.findBaseRoot(project);
+        VirtualFile baseRoot = Platform.findORContentRoot(project);
+        if (baseRoot == null) {
+            return null;
+        }
         Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
         return basePath.resolve(relativeRoot);
     }

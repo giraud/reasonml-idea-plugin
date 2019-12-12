@@ -41,11 +41,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
     public BsProcess(@NotNull Project project) {
         m_project = project;
-        VirtualFile baseRoot = Platform.findBaseRoot(project);
-        VirtualFile sourceFile = baseRoot.findChild("bsconfig.json");
-        if (sourceFile != null) {
-            create(sourceFile, CliType.make, null);
-        }
+        create(Platform.findBsconfig(project), CliType.make, null);
     }
 
     // Wait for the tool window to be ready before starting the process
@@ -59,9 +55,11 @@ public final class BsProcess implements CompilerProcessLifecycle {
         }
     }
 
-    private void create(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    private void create(@Nullable VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
-            createProcessHandler(sourceFile, cliType, onProcessTerminated);
+            if (sourceFile != null) {
+                createProcessHandler(sourceFile, cliType, onProcessTerminated);
+            }
         } catch (ExecutionException e) {
             // Don't log when first time execution
         }

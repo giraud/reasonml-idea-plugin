@@ -5,13 +5,11 @@ import java.nio.file.Path;
 import java.util.concurrent.atomic.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
 import com.reason.bs.BsProcess;
 
 import static com.reason.Platform.getOsPrefix;
@@ -44,12 +42,8 @@ public class InsightManagerImpl implements InsightManager {
             return null;
         }
 
-        IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
-        if (plugin != null) {
-            return new File(plugin.getPath(), filename);
-        }
-
-        return new File(System.getProperty("java.io.tmpdir"), filename);
+        File pluginLocation = Platform.getPluginLocation();
+        return new File(pluginLocation == null ? System.getProperty("java.io.tmpdir") : pluginLocation.getPath(), filename);
     }
 
     @Override

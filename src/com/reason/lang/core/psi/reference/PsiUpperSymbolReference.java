@@ -1,5 +1,8 @@
 package com.reason.lang.core.psi.reference;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -14,22 +17,18 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclQNameFinder;
 import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 import static com.reason.lang.QNameFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
@@ -92,7 +91,8 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             PsiQualifiedNamedElement elementReference = potentialPaths.iterator().next();
             boolean isInnerModule = elementReference instanceof PsiInnerModule;
             if (LOG.isDebugEnabled()) {
-                LOG.debug("»» " + elementReference.getQualifiedName() + (isInnerModule ? " / " + ((PsiInnerModule) elementReference).getAlias() : ""));
+                String alias = isInnerModule ? ((PsiInnerModule) elementReference).getAlias() : null;
+                LOG.debug("»» " + elementReference.getQualifiedName() + (alias == null ? "" : " / alias=" + alias));
             }
 
             return elementReference instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) elementReference).getNameIdentifier() : elementReference;

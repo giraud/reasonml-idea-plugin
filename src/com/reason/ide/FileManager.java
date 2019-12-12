@@ -67,11 +67,12 @@ public class FileManager {
     @Nullable
     public static VirtualFile toSource(@NotNull Project project, @NotNull VirtualFile cmxFile, @NotNull Path relativeCmi) {
         String relativeSource = separatorsToUnix(toRelativeSourceName(project, cmxFile, relativeCmi));
-        VirtualFile sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
+        VirtualFile contentRoot = Platform.findORContentRoot(project);
+        VirtualFile sourceFile = contentRoot == null ? null : contentRoot.findFileByRelativePath(relativeSource);
 
-        if (sourceFile == null) {
+        if (sourceFile == null && contentRoot != null) {
             relativeSource = relativeSource.replace(".re", ".ml");
-            sourceFile = Platform.findBaseRoot(project).findFileByRelativePath(relativeSource);
+            sourceFile = contentRoot.findFileByRelativePath(relativeSource);
         }
 
         return sourceFile;
