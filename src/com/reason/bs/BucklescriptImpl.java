@@ -112,21 +112,14 @@ public class BucklescriptImpl implements Bucklescript {
     }
 
     @Override
-    public void convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat,
+    @Nullable
+    public String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat,
                         @NotNull Document document) {
         RefmtProcess refmt = RefmtProcess.getInstance(m_project);
         String oldText = document.getText();
         String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
-        if (!oldText.isEmpty() && !newText.isEmpty()) { // additional protection
-            getApplication().runWriteAction(() -> {
-                CommandProcessor.getInstance().executeCommand(m_project, () -> document.setText(newText), "reason.refmt", "CodeFormatGroup");
-                try {
-                    virtualFile.rename(this, virtualFile.getNameWithoutExtension() + "." + toFormat);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
+        // additional protection
+        return oldText.isEmpty() || newText.isEmpty() ? null : newText;
     }
 
     // Try externalFormatProcessor
