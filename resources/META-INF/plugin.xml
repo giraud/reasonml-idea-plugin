@@ -32,6 +32,10 @@
                 text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
             <add-to-group group-id="EditMenu" anchor="last"/>
         </action>
+        <action id="reason.actions.transform" class="com.reason.ide.actions.TransformAction"
+                text="Convert Reason-OCaml (new file)" description="Convert between Reason and OCaml code in a new file">
+            <add-to-group group-id="EditMenu" anchor="last"/>
+        </action>
         <action id="reason.actions.testData.Navigate" class="com.reason.ide.testAssistant.GotoTestDataAction"
                 text="Navigate to Testdata" use-shortcut-of="GotoTest">
         </action>
