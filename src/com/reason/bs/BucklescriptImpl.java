@@ -107,7 +107,7 @@ public class BucklescriptImpl implements Bucklescript {
             return false;
         }
 
-        VirtualFile bsConfigFile = Platform.findBsconfig(m_project, file);
+        VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, file);
         return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getPath());
     }
 

@@ -1,5 +1,9 @@
 package com.reason.ide.search;
 
+import java.util.*;
+import java.util.stream.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -14,15 +18,27 @@ import com.reason.Log;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.index.*;
+import com.reason.ide.search.index.ExceptionFqnIndex;
+import com.reason.ide.search.index.IndexKeys;
+import com.reason.ide.search.index.LetFqnIndex;
+import com.reason.ide.search.index.ModuleComponentIndex;
+import com.reason.ide.search.index.ModuleFqnIndex;
+import com.reason.ide.search.index.ParameterFqnIndex;
+import com.reason.ide.search.index.ValFqnIndex;
+import com.reason.ide.search.index.VariantFqnIndex;
+import com.reason.ide.search.index.VariantIndex;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
@@ -64,18 +80,17 @@ public final class PsiFinder {
             return Collections.emptyList();
         }
 
-        FileModuleIndexService fileModuleIndexService = FileModuleIndexService.getService();
-        ModuleComponentIndex index = ModuleComponentIndex.getInstance();
         PsiManager psiManager = PsiManager.getInstance(project);
         Bucklescript bucklescript = ServiceManager.getService(m_project, Bucklescript.class);
 
-        List<PsiModule> result = fileModuleIndexService.getComponents(project, scope).
+        List<PsiModule> result = FileModuleIndexService.getService().getComponents(project, scope).
                 stream().
                 filter(bucklescript::isDependency).
                 map(vFile -> (FileBase) psiManager.findFile(vFile)).
                 filter(Objects::nonNull).
                 collect(Collectors.toList());
 
+        ModuleComponentIndex index = ModuleComponentIndex.getInstance();
         result.addAll(index.getAllKeys(m_project).
                 stream().
                 map(key -> index.getUnique(key, m_project, scope)).
@@ -219,7 +234,9 @@ public final class PsiFinder {
     }
 
     @NotNull
-    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType, @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz, @NotNull GlobalSearchScope scope) {
+    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType,
+                                                                                @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz,
+                                                                                @NotNull GlobalSearchScope scope) {
         Map<String/*qn*/, T> implNames = new THashMap<>();
         Map<String/*qn*/, T> intfNames = new THashMap<>();
 

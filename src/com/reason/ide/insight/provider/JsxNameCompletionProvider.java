@@ -38,7 +38,7 @@ public class JsxNameCompletionProvider {
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         Collection<PsiModule> modules = psiFinder.findComponents(scope);
-        LOG.debug("Modules found", modules.size());
+        LOG.debug("Modules found", modules);
         for (PsiModule module : modules) {
             boolean isInner = module instanceof PsiInnerModule;
             String moduleName = isInner ? module.getName() : ((FileBase) module).asModuleName();
