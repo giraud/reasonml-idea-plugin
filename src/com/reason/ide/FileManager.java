@@ -67,7 +67,7 @@ public class FileManager {
     @Nullable
     public static VirtualFile toSource(@NotNull Project project, @NotNull VirtualFile cmxFile, @NotNull Path relativeCmi) {
         String relativeSource = separatorsToUnix(toRelativeSourceName(project, cmxFile, relativeCmi));
-        VirtualFile contentRoot = Platform.findORContentRoot(project);
+        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project);
         VirtualFile sourceFile = contentRoot == null ? null : contentRoot.findFileByRelativePath(relativeSource);
 
         if (sourceFile == null && contentRoot != null) {

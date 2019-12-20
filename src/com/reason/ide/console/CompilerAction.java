@@ -30,11 +30,15 @@ abstract class CompilerAction extends DumbAwareAction {
         // Try to detect the current active editor
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         if (editor == null) {
-            VirtualFile baseDir = Platform.findORContentRoot(project);
+            VirtualFile baseDir = Platform.findORPackageJsonContentRoot(project);
             ConsoleView console = ServiceManager.getService(project, Bucklescript.class).getBsbConsole();
-            if (baseDir != null && console != null) {
-                console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                compiler.run(baseDir, cliType, null);
+            if (console != null) {
+                if (baseDir == null) {
+                    console.print("Can't find content root\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                } else {
+                    console.print("No active text editor found, using root directory " + baseDir.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+                    compiler.run(baseDir, cliType, null);
+                }
             }
         } else {
             Document document = editor.getDocument();

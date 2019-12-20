@@ -129,7 +129,7 @@ public class DuneOutputListener implements ProcessListener {
     private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
 
-        VirtualFile contentRoot = Platform.findORContentRoot(m_project);
+        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project);
         VirtualFile child = contentRoot == null ? null : contentRoot.findFileByRelativePath(path);
         if (child == null) {
             return null;

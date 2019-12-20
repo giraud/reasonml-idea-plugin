@@ -63,7 +63,7 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                 if (file != null) {
                     BsConfig configFile = BsConfig.read(dataFile, file, false);
                     if (configFile.hasNamespace()) {
-                        VirtualFile baseRoot = Platform.findORContentRoot(inputData.getProject());
+                        VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(inputData.getProject());
                         if (baseRoot != null) {
                             VirtualFile parent = dataFile.getParent();
                             if (baseRoot.equals(parent)) {

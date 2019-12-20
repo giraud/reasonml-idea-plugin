@@ -32,7 +32,7 @@ public class RincewindProcess {
                       @NotNull InsightManager.ProcessTerminated runAfter) {
         LOG.debug("Looking for types for file", sourceFile);
 
-        VirtualFile contentRoot = Platform.findORContentRoot(m_project, sourceFile);
+        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, sourceFile);
         if (contentRoot == null) {
             return;
         }

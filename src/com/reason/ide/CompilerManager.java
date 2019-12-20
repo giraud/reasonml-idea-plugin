@@ -45,7 +45,7 @@ public class CompilerManager {
         for (Module module : modules) {
             DuneFacet duneFacet = FacetManager.getInstance(module).getFacetByType(DuneFacet.ID);
             if (duneFacet != null) {
-                Sdk odk = OCamlSdkType.getSDK(project);
+                Sdk odk = duneFacet.getODK();
                 if (odk == null) {
                     Notifications.Bus.notify(new ORNotification("Dune",
                             "<html>Can't find sdk.\n"
@@ -54,7 +54,7 @@ public class CompilerManager {
                             ERROR, URL_OPENING_LISTENER));
                     return DUMMY_COMPILER;
                 }
-                return ServiceManager.getService(project, DuneCompiler.class);
+                return DuneCompiler.getInstance(project);
             }
         }
 

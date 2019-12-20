@@ -13,6 +13,7 @@ import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -39,6 +40,10 @@ public final class DuneProcess implements CompilerProcessLifecycle {
     DuneProcess(@NotNull Project project) {
         m_project = project;
         m_outputListener = new DuneOutputListener(m_project, this);
+    }
+
+    public static DuneProcess getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, DuneProcess.class);
     }
 
     // Wait for the tool window to be ready before starting the process
@@ -94,7 +99,7 @@ public final class DuneProcess implements CompilerProcessLifecycle {
             return null;
         }
 
-        VirtualFile baseRoot = Platform.findORContentRoot(m_project);
+        VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(m_project);
         if (baseRoot == null) {
             return null;
         }

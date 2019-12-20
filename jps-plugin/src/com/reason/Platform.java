@@ -73,7 +73,7 @@ public class Platform {
     }
 
     @Nullable
-    public static VirtualFile findORContentRoot(@NotNull Project project) {
+    public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project) {
         Map<Module, VirtualFile> rootContents = findPackageContentRoots(project);
 
         if (rootContents.isEmpty()) {
@@ -92,7 +92,7 @@ public class Platform {
     }
 
     @Nullable
-    public static VirtualFile findORContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile contentRoot = null;
 
         Module module = ProjectFileIndex.getInstance(project).getModuleForFile(sourceFile, false);
@@ -130,20 +130,20 @@ public class Platform {
 
     @Nullable
     public static VirtualFile findBsconfig(@NotNull Project project) {
-        VirtualFile contentRoot = Platform.findORContentRoot(project);
+        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project);
         return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
     }
 
     @Nullable
     public static VirtualFile findBsconfig(@NotNull Project project, @NotNull VirtualFile file) {
-        VirtualFile contentRoot = Platform.findORContentRoot(project, file);
+        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project, file);
         return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
     }
 
     @NotNull
     public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
         try {
-            VirtualFile baseRoot = Platform.findORContentRoot(project);
+            VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(project);
             if (baseRoot == null) {
                 return path;
             }

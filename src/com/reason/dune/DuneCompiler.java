@@ -23,6 +23,10 @@ public class DuneCompiler implements Compiler {
     @NotNull
     private final Project m_project;
 
+    public static Compiler getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, DuneCompiler.class);
+    }
+
     DuneCompiler(@NotNull Project project) {
         m_project = project;
     }
@@ -38,7 +42,7 @@ public class DuneCompiler implements Compiler {
             run(file, CliType.clean, () ->
                     run(file, CliType.make, onProcessTerminated));
         } else {
-            DuneProcess process = ServiceManager.getService(m_project, DuneProcess.class);
+            DuneProcess process = DuneProcess.getInstance(m_project);
             if (process.start()) {
                 ProcessHandler duneHandler = process.recreate(cliType, onProcessTerminated);
                 if (duneHandler != null) {

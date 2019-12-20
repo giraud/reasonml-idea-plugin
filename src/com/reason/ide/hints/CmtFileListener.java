@@ -67,7 +67,7 @@ public class CmtFileListener {
 
     @Nullable
     private Path getPathToWatch(@NotNull Project project, @NotNull Path relativeRoot) {
-        VirtualFile baseRoot = Platform.findORContentRoot(project);
+        VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(project);
         if (baseRoot == null) {
             return null;
         }
