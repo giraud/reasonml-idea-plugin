@@ -1,20 +1,30 @@
 package com.reason.ide.facet;
 
+import java.awt.event.*;
 import javax.swing.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
+import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
+import com.reason.OCamlSdkType;
 
 class DuneFacetEditor extends FacetEditorTab {
 
     private final DuneFacetConfiguration m_configuration;
+    private final FacetEditorContext m_editorContext;
 
     private JPanel f_root;
     private JCheckBox f_esyCheck;
+    private JCheckBox f_inheritProjectSDKCheck;
+    private JdkComboBox f_sdkSelect;
 
-    DuneFacetEditor(@NotNull FacetEditorContext _editorContext, @NotNull DuneFacetConfiguration configuration) {
+    DuneFacetEditor(@NotNull FacetEditorContext editorContext, @NotNull DuneFacetConfiguration configuration) {
+        m_editorContext = editorContext;
         m_configuration = configuration;
     }
 
@@ -25,6 +35,13 @@ class DuneFacetEditor extends FacetEditorTab {
         return "Dune/Esy";
     }
 
+    private void createUIComponents() {
+        Module m_module = m_editorContext.getModule();
+        ProjectSdksModel model = new ProjectSdksModel();
+        model.reset(m_module.getProject());
+        f_sdkSelect = new JdkComboBox(model, sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName()));
+    }
+
     @NotNull
     @Override
     public JComponent createComponent() {
@@ -32,17 +49,44 @@ class DuneFacetEditor extends FacetEditorTab {
         assert state != null;
 
         f_esyCheck.setSelected(state.isEsy);
+        f_inheritProjectSDKCheck.addItemListener(itemEvent -> f_sdkSelect.setEnabled(itemEvent.getStateChange() == ItemEvent.DESELECTED));
+        f_inheritProjectSDKCheck.setSelected(state.inheritProjectSdk);
+
+        if (state.inheritProjectSdk) {
+            Module module = m_editorContext.getModule();
+            Sdk odk = OCamlSdkType.getSDK(module.getProject());
+            if (odk != null) {
+                f_sdkSelect.setSelectedJdk(odk);
+            }
+        } else {
+            int itemCount = f_sdkSelect.getItemCount();
+            for (int i = 0; i < itemCount; i++) {
+                String odkName = f_sdkSelect.getItemAt(i).getSdkName();
+                if (odkName != null && odkName.equals(m_configuration.sdkName)) {
+                    f_sdkSelect.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
         return f_root;
     }
 
     @Override
     public boolean isModified() {
-        return m_configuration.isEsy != f_esyCheck.isSelected();
+        Sdk odk = f_sdkSelect.getSelectedJdk();
+        String odkName = odk == null ? "" : odk.getName();
+        String confOdkName = m_configuration.sdkName == null ? "" : m_configuration.sdkName;
+        return m_configuration.isEsy != f_esyCheck.isSelected() || m_configuration.inheritProjectSdk != f_inheritProjectSDKCheck.isSelected() || !odkName
+                .equals(confOdkName);
     }
 
     @Override
     public void apply() throws ConfigurationException {
         super.apply();
         m_configuration.isEsy = f_esyCheck.isSelected();
+        m_configuration.inheritProjectSdk = f_inheritProjectSDKCheck.isSelected();
+        Sdk odk = f_sdkSelect.getSelectedJdk();
+        m_configuration.sdkName = odk == null ? null : odk.getName();
     }
 }

@@ -17,6 +17,9 @@ public class DuneFacetConfiguration implements FacetConfiguration, PersistentSta
     @SuppressWarnings("WeakerAccess")
     public boolean isEsy = false;
 
+    public boolean inheritProjectSdk = true;
+    public String sdkName = null;
+
     @NotNull
     @Override
     public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
