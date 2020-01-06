@@ -1,10 +1,19 @@
 package com.reason.ide.docs;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiComment;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
@@ -12,13 +21,20 @@ import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.reason.lang.odoc.ODocMarkup.*;
 
@@ -83,18 +99,16 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (element.getLanguage() == OclLanguage.INSTANCE) {
                 PsiElement belowComment = findBelowComment(element);
                 if (belowComment != null) {
-                    return isSpecialComment(belowComment)
-                            ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
-                            : belowComment.getText();
+                    return isSpecialComment(belowComment) ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText()) :
+                            belowComment.getText();
                 }
             }
 
             // Else try to find a comment just above
             PsiElement aboveComment = findAboveComment(element);
             if (aboveComment != null) {
-                return isSpecialComment(aboveComment)
-                        ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText())
-                        : aboveComment.getText();
+                return isSpecialComment(aboveComment) ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText()) :
+                        aboveComment.getText();
             }
         }
 
@@ -142,6 +156,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         if (reference != null) {
             PsiElement resolvedElement = reference.resolve();
 
+            if (resolvedElement instanceof ORFakeResolvedElement) {
+                // A fake element, used to query inferred types
+                return "Show usages of fake element '" + resolvedElement.getText() + "'";
+            }
+
             if (resolvedElement instanceof FileBase) {
                 FileBase resolvedFile = (FileBase) resolvedElement;
                 String relative_path = Platform.removeProjectDir(resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
@@ -182,7 +201,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
                     PsiElement nameIdentifier = ((PsiNameIdentifierOwner) resolvedElement).getNameIdentifier();
-                    inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
+                    inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(),
+                                                        resolvedElement.getLanguage());
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);
@@ -228,10 +248,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @NotNull
     private String createQuickDocTemplate(@NotNull String qPath, @Nullable String type, @Nullable String name, @Nullable String signature) {
-        return "<html><body>" +
-                "<div>" + qPath + "</div>" +
-                CONTENT_START + (type == null ? "" : type) + " <b>" + name + "</b>" + CONTENT_END +
-                (signature == null ? "" : "<hr/><i>" + CODE_START + signature + CODE_END + "</i>") +
-                "</body></html>";
+        return "<html><body>" + "<div>" + qPath + "</div>" + CONTENT_START + (type == null ? "" : type) + " <b>" + name + "</b>" + CONTENT_END + (
+                signature == null ? "" : "<hr/><i>" + CODE_START + signature + CODE_END + "</i>") + "</body></html>";
     }
 }

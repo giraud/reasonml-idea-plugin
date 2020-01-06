@@ -229,7 +229,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("-> " + result + " (identifier=" + result.getNameIdentifier() + ")");
         }
 
-        return result == null ? null : result.getNameIdentifier();
+        return result == null ? new ORFakeResolvedElement(getElement()) : result.getNameIdentifier();
     }
 
     @NotNull
