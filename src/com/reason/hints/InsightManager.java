@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 public interface InsightManager {
 
@@ -25,4 +26,12 @@ public interface InsightManager {
 
     void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated callback);
 
+    @NotNull
+    List<String> dumpMeta(@NotNull VirtualFile cmtFile);
+
+    @NotNull
+    String dumpTree(@NotNull VirtualFile cmtFile);
+
+    @NotNull
+    List<String> dumpInferredTypes(@NotNull VirtualFile cmtFile);
 }

@@ -26,7 +26,7 @@
         <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt shift R"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt r"/>
         </action>
         <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"
                 text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
@@ -90,6 +90,8 @@
                   implementationClass="com.reason.ide.files.CmiFileType"/>
         <fileType extensions="cmt" name="CMT" fieldName="INSTANCE"
                   implementationClass="com.reason.ide.files.CmtFileType"/>
+
+        <fileEditorProvider implementation="com.reason.ide.editors.CmtFileEditorProvider"/>
 
         <!--
          | Parsers

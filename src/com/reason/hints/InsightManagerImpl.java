@@ -1,8 +1,13 @@
 package com.reason.hints;
 
 import java.io.*;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.*;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
@@ -54,6 +59,34 @@ public class InsightManagerImpl implements InsightManager {
         }
     }
 
+    @NotNull
+    @Override
+    public List<String> dumpInferredTypes(@NotNull VirtualFile cmtFile) {
+        RincewindProcess rincewindProcess = RincewindProcess.getInstance(m_project);
+
+        File rincewindFile = getRincewindFile(cmtFile);
+        return rincewindFile == null ? Collections.emptyList() : rincewindProcess.dumpTypes( rincewindFile.getPath(), cmtFile);
+    }
+
+    @NotNull
+    @Override
+    public List<String> dumpMeta(@NotNull VirtualFile cmtFile) {
+        RincewindProcess rincewindProcess = RincewindProcess.getInstance(m_project);
+
+        File rincewindFile = getRincewindFile(cmtFile);
+        return rincewindFile == null ? Collections.emptyList() : rincewindProcess.dumpMeta( rincewindFile.getPath(), cmtFile);
+    }
+
+    @NotNull
+    @Override
+    public String dumpTree(@NotNull VirtualFile cmtFile) {
+        Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
+        File rincewindFile = getRincewindFile(cmtFile);
+        RincewindProcess rincewindProcess = RincewindProcess.getInstance(m_project);
+
+        return rincewindFile == null ? "<unknown/>" : rincewindProcess.dumpTree(cmtFile, rincewindFile.getPath(), cmtPath.toString());
+    }
+
     @Nullable
     @Override
     public String getRincewindFilename(@NotNull VirtualFile sourceFile) {
@@ -77,6 +110,6 @@ public class InsightManagerImpl implements InsightManager {
             return "0.4";
         }
 
-        return "0.5";
+        return "0.6-snapshot";
     }
 }
