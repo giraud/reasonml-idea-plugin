@@ -132,7 +132,7 @@ public class RincewindProcess {
         if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
-            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary,  cmtPath.toString());
+            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmtPath.toString());
             processBuilder.directory(new File(contentRoot.getPath()));
 
             Process rincewind = null;
@@ -167,12 +167,11 @@ public class RincewindProcess {
 
         final List<String> dump = new ArrayList<>();
 
-
         VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, cmtFile);
         if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
-            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary,  cmtPath.toString());
+            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, "-m", cmtPath.toString());
             processBuilder.directory(new File(contentRoot.getPath()));
 
             Process rincewind = null;
