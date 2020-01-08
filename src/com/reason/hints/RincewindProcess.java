@@ -3,9 +3,7 @@ package com.reason.hints;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -85,40 +83,13 @@ public class RincewindProcess {
     }
 
     @NotNull
-    public String dumpTree(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmtPath) {
-        LOG.debug("Dumping file", sourceFile);
+    public String dumpTree(@NotNull VirtualFile cmtFile, @NotNull String rincewindBinary) {
+        LOG.debug("Dumping tree", cmtFile);
 
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, sourceFile);
-        if (contentRoot != null) {
-            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, "-d", cmtPath);
-            processBuilder.directory(new File(contentRoot.getPath()));
+        final StringBuilder dump = new StringBuilder();
+        dumper(rincewindBinary, cmtFile, "-d", dump::append);
 
-            Process rincewind = null;
-            try {
-                rincewind = processBuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(rincewind.getInputStream()));
-                BufferedReader errReader = new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
-
-                Streams.waitUntilReady(reader, errReader);
-                StringBuilder msgBuffer = new StringBuilder();
-                if (errReader.ready()) {
-                    errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                    Notifications.Bus.notify(new ORNotification("Rincewind", msgBuffer.toString(), NotificationType.ERROR));
-                } else {
-                    final StringBuilder dump = new StringBuilder();
-                    reader.lines().forEach(s -> dump.append(s).append("\n"));
-                    return dump.toString();
-                }
-            } catch (Exception e) {
-                LOG.error("An error occurred when reading types", e);
-            } finally {
-                if (rincewind != null) {
-                    rincewind.destroy();
-                }
-            }
-        }
-
-        return "<unknown/>";
+        return dump.toString();
     }
 
     @NotNull
@@ -126,52 +97,31 @@ public class RincewindProcess {
         LOG.debug("Dumping types", cmtFile);
 
         final List<String> dump = new ArrayList<>();
-
-
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, cmtFile);
-        if (contentRoot != null) {
-            Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
-
-            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmtPath.toString());
-            processBuilder.directory(new File(contentRoot.getPath()));
-
-            Process rincewind = null;
-            try {
-                rincewind = processBuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(rincewind.getInputStream()));
-                BufferedReader errReader = new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
-
-                Streams.waitUntilReady(reader, errReader);
-                StringBuilder msgBuffer = new StringBuilder();
-                if (errReader.ready()) {
-                    errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
-                    Notifications.Bus.notify(new ORNotification("Rincewind", msgBuffer.toString(), NotificationType.ERROR));
-                } else {
-                    reader.lines().forEach(dump::add);
-                }
-            } catch (Exception e) {
-                LOG.error("An error occurred when reading types", e);
-            } finally {
-                if (rincewind != null) {
-                    rincewind.destroy();
-                }
-            }
-        }
+        dumper(rincewindBinary, cmtFile, "", dump::add);
 
         return dump;
     }
 
     @NotNull
     public List<String> dumpMeta(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile) {
-        LOG.debug("Dumping types", cmtFile);
+        LOG.debug("Dumping meta", cmtFile);
 
         final List<String> dump = new ArrayList<>();
+        dumper(rincewindBinary, cmtFile, "-m", dump::add);
 
+        return dump;
+    }
+
+    interface DumpVisitor {
+        void visitLine(String line);
+    }
+
+    public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, String arg, DumpVisitor visitor) {
         VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, cmtFile);
         if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
-            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, "-m", cmtPath.toString());
+            ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, arg, cmtPath.toString());
             processBuilder.directory(new File(contentRoot.getPath()));
 
             Process rincewind = null;
@@ -181,23 +131,22 @@ public class RincewindProcess {
                 BufferedReader errReader = new BufferedReader(new InputStreamReader(rincewind.getErrorStream()));
 
                 Streams.waitUntilReady(reader, errReader);
-                StringBuilder msgBuffer = new StringBuilder();
+
                 if (errReader.ready()) {
-                    errReader.lines().forEach(line -> msgBuffer.append(line).append(System.lineSeparator()));
+                    StringBuilder msgBuffer = new StringBuilder();
+                    errReader.lines().forEach(line -> msgBuffer.append(line).append("\n"));
                     Notifications.Bus.notify(new ORNotification("Rincewind", msgBuffer.toString(), NotificationType.ERROR));
                 } else {
-                    reader.lines().forEach(dump::add);
+                    reader.lines().forEach(line -> visitor.visitLine(line + "\n"));
                 }
             } catch (Exception e) {
-                LOG.error("An error occurred when reading types", e);
+                LOG.error("An error occurred when dumping cmt file", e);
             } finally {
                 if (rincewind != null) {
                     rincewind.destroy();
                 }
             }
         }
-
-        return dump;
     }
 
     @NotNull
