@@ -91,7 +91,16 @@
         <fileType extensions="cmt" name="CMT" fieldName="INSTANCE"
                   implementationClass="com.reason.ide.files.CmtFileType"/>
 
+        <!--
+         | File related
+         -->
+
         <fileEditorProvider implementation="com.reason.ide.editors.CmtFileEditorProvider"/>
+
+        <internalFileTemplate name="OCaml Interface"/>
+        <internalFileTemplate name="OCaml Module"/>
+        <internalFileTemplate name="Reason Interface"/>
+        <internalFileTemplate name="Reason Module"/>
 
         <!--
          | Parsers
@@ -253,9 +262,6 @@
          -->
 
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
-
-        <internalFileTemplate name="Reason Module"/>
-        <internalFileTemplate name="OCaml Module"/>
 
         <typedHandler implementation="com.reason.ide.ORTypedHandler" id="RmlTypedHandler"/>
 
