@@ -11,13 +11,17 @@ import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
 import com.reason.Icons;
+import com.reason.Log;
 import com.reason.ide.facet.DuneFacet;
 
 public class ORPostStartupActivity implements StartupActivity, DumbAware {
+    static Log LOG = Log.create("startup");
+
     @Override
     public void runActivity(@NotNull Project project) {
         ORProjectRootListener.ensureSubscribed(project);
         ORFileDocumentListener.ensureSubscribed(project);
+        LOG.debug("ensure listeners subscribed");
 
         ToolWindow bucklescript = ToolWindowManagerEx.getInstanceEx(project).getToolWindow("Bucklescript");
         if (bucklescript != null) {

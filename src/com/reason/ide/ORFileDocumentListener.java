@@ -11,6 +11,7 @@ import com.reason.ide.format.ReformatOnSave;
 import static com.intellij.AppTopics.FILE_DOCUMENT_SYNC;
 
 public class ORFileDocumentListener {
+
     public static void ensureSubscribed(@NotNull Project project) {
         ServiceManager.getService(project, ORFileDocumentListener.class);
     }

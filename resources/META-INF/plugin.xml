@@ -48,6 +48,8 @@
     -->
     <extensions defaultExtensionNs="com.intellij">
 
+        <postStartupActivity implementation="com.reason.ide.ORPostStartupActivity"/>
+
         <!--
          | Listeners
          -->
