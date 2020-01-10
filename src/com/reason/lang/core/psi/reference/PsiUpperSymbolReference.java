@@ -12,6 +12,7 @@ import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
@@ -87,7 +88,10 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
             }
         }
 
-        if (!potentialPaths.isEmpty()) {
+        if (potentialPaths.isEmpty()) {
+            LOG.debug("»» No potential path found");
+        }
+        else {
             PsiQualifiedNamedElement elementReference = potentialPaths.iterator().next();
             boolean isInnerModule = elementReference instanceof PsiInnerModule;
             if (LOG.isDebugEnabled()) {
@@ -108,6 +112,9 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
         Set<String> paths = qnameFinder.extractPotentialPaths(myElement, includeAll, true);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("»» Paths before resolution: " + Joiner.join(", ", paths));
+        }
 
         List<PsiQualifiedNamedElement> result = paths.stream().
                 map(path -> {
