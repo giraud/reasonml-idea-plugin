@@ -10,6 +10,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Compiler;
+import com.reason.Platform;
 import com.reason.ProcessFinishedListener;
 import com.reason.hints.InsightManager;
 import com.reason.ide.console.CliType;
@@ -29,6 +30,12 @@ public class DuneCompiler implements Compiler {
 
     DuneCompiler(@NotNull Project project) {
         m_project = project;
+    }
+
+    @Nullable
+    @Override
+    public VirtualFile findContentRoot(@NotNull Project project) {
+        return Platform.findORDuneContentRoot(project);
     }
 
     @Override

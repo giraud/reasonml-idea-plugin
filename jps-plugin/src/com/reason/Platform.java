@@ -23,6 +23,7 @@ public class Platform {
 
     public static final String LOCAL_BS_PLATFORM = "/node_modules/bs-platform";
     public static final String LOCAL_NODE_MODULES_BIN = "/node_modules/.bin";
+    public static final String DUNE_NAME = "dune-project";
     public static final String PACKAGE_JSON_NAME = "package.json";
     public static final String BSCONFIG_JSON_NAME = "bsconfig.json";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
@@ -49,6 +50,10 @@ public class Platform {
         return "";
     }
 
+    public static boolean isWindows() {
+        return SystemInfo.isWindows;
+    }
+
     @Nullable
     public static File getPluginLocation() {
         IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
@@ -56,13 +61,13 @@ public class Platform {
     }
 
     @NotNull
-    public static Map<Module, VirtualFile> findPackageContentRoots(@NotNull Project project) {
+    private static Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
         Map<Module, VirtualFile> rootContents = new HashMap<>();
 
         ModuleManager moduleManager = ModuleManager.getInstance(project);
         for (Module module : moduleManager.getModules()) {
             for (VirtualFile contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
-                VirtualFile packageJson = contentRoot.findChild(PACKAGE_JSON_NAME);
+                VirtualFile packageJson = contentRoot.findChild(filename);
                 if (packageJson != null) {
                     rootContents.put(module, packageJson);
                 }
@@ -72,12 +77,11 @@ public class Platform {
         return rootContents;
     }
 
-    @Nullable
-    public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project) {
-        Map<Module, VirtualFile> rootContents = findPackageContentRoots(project);
+    public static VirtualFile findORDuneContentRoot(@NotNull Project project) {
+        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, DUNE_NAME);
 
         if (rootContents.isEmpty()) {
-            LOG.warn("No content roots with package.json file found");
+            LOG.warn("No content roots with " + DUNE_NAME + " file found");
             return null;
         } else if (rootContents.size() == 1) {
             Module module = rootContents.keySet().iterator().next();
@@ -86,7 +90,26 @@ public class Platform {
         } else {
             Module module = rootContents.keySet().iterator().next();
             VirtualFile packageJson = rootContents.get(module);
-            LOG.info("Many modules with package.json file in it found (" + rootContents.size() + "), using first", rootContents);
+            LOG.info("Many modules with " + DUNE_NAME + " file in it found (" + rootContents.size() + "), using first", rootContents);
+            return packageJson.getParent();
+        }
+    }
+
+    @Nullable
+    public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project) {
+        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, PACKAGE_JSON_NAME);
+
+        if (rootContents.isEmpty()) {
+            LOG.warn("No content roots with " + PACKAGE_JSON_NAME + " file found");
+            return null;
+        } else if (rootContents.size() == 1) {
+            Module module = rootContents.keySet().iterator().next();
+            VirtualFile packageJson = rootContents.get(module);
+            return packageJson.getParent();
+        } else {
+            Module module = rootContents.keySet().iterator().next();
+            VirtualFile packageJson = rootContents.get(module);
+            LOG.info("Many modules with " + PACKAGE_JSON_NAME + " file in it found (" + rootContents.size() + "), using first", rootContents);
             return packageJson.getParent();
         }
     }
@@ -108,7 +131,7 @@ public class Platform {
 
         if (contentRoot == null) {
             LOG.trace("Can't find content root from file, using project content root", sourceFile);
-            Map<Module, VirtualFile> contentRoots = findPackageContentRoots(project);
+            Map<Module, VirtualFile> contentRoots = findContentRootsFor(project, PACKAGE_JSON_NAME);
             if (contentRoots.isEmpty()) {
                 return null;
             } else {
@@ -121,7 +144,7 @@ public class Platform {
         }
 
         if (contentRoot == null) {
-            LOG.info("Can't find content root with a package.json in it, aborting");
+            LOG.info("Can't find content root with a " + PACKAGE_JSON_NAME + " in it, aborting");
             return null;
         }
 
@@ -186,4 +209,16 @@ public class Platform {
         return child;
     }
 
+    @Nullable
+    public static VirtualFile findFileByRelativePath(@NotNull Project project, @NotNull String path) {
+        for (Module module : ModuleManager.getInstance(project).getModules()) {
+            VirtualFile moduleFile = module.getModuleFile();
+            VirtualFile baseDir = moduleFile == null ? null : moduleFile.getParent();
+            VirtualFile file = baseDir == null ? null : baseDir.findFileByRelativePath(path);
+            if (file != null) {
+                return file;
+            }
+        }
+        return null;
+    }
 }

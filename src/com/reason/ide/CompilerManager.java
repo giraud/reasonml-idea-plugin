@@ -24,6 +24,12 @@ import static com.intellij.notification.NotificationType.ERROR;
 public class CompilerManager {
 
     private static final Compiler DUMMY_COMPILER = new Compiler() {
+        @Nullable
+        @Override
+        public VirtualFile findContentRoot(@NotNull Project project) {
+            return null;
+        }
+
         @Override
         public void refresh(@NotNull VirtualFile bsconfigFile) {
             //nothing

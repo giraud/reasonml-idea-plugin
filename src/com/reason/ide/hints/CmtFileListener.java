@@ -43,11 +43,13 @@ public class CmtFileListener {
         Compiler compiler = CompilerManager.getInstance().getCompiler(m_project);
         if (compiler instanceof Bucklescript) {
             Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
-            Path pathToWatch = getPathToWatch(m_project, relativeRoot);
+            VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(m_project);
+            Path pathToWatch = getPathToWatch(baseRoot, relativeRoot);
             relativeCmt = pathToWatch == null ? null : pathToWatch.relativize(path);
         } else {
             Path relativeRoot = FileSystems.getDefault().getPath("_build", "default");
-            Path pathToWatch = getPathToWatch(m_project, relativeRoot);
+            VirtualFile baseRoot = Platform.findORDuneContentRoot(m_project);
+            Path pathToWatch = getPathToWatch(baseRoot, relativeRoot);
             relativeCmt = pathToWatch == null ? null : pathToWatch.relativize(path);
         }
 
@@ -66,12 +68,7 @@ public class CmtFileListener {
     }
 
     @Nullable
-    private Path getPathToWatch(@NotNull Project project, @NotNull Path relativeRoot) {
-        VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(project);
-        if (baseRoot == null) {
-            return null;
-        }
-        Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-        return basePath.resolve(relativeRoot);
+    private Path getPathToWatch(@Nullable VirtualFile baseRoot, @NotNull Path relativeRoot) {
+        return baseRoot == null ? null : FileSystems.getDefault().getPath(baseRoot.getPath()).resolve(relativeRoot);
     }
 }

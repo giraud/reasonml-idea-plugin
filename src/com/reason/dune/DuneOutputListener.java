@@ -129,13 +129,12 @@ public class DuneOutputListener implements ProcessListener {
     private OutputInfo addInfo(@NotNull String path, @NotNull String line, @NotNull String colStart, @NotNull String colEnd) {
         OutputInfo info = new OutputInfo();
 
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project);
-        VirtualFile child = contentRoot == null ? null : contentRoot.findFileByRelativePath(path);
-        if (child == null) {
+        VirtualFile fileInError = Platform.findFileByRelativePath(m_project, path);
+        if (fileInError == null) {
             return null;
         }
 
-        info.path = child.getCanonicalPath();
+        info.path = fileInError.getCanonicalPath();
         info.lineStart = parseInt(line);
         info.colStart = parseInt(colStart) + 1;
         info.lineEnd = info.lineStart;
@@ -149,8 +148,6 @@ public class DuneOutputListener implements ProcessListener {
     }
 
     private void reset() {
-        //        m_status = fine;
-        //        m_failedLine = -1;
         m_latestInfo = null;
     }
 }

@@ -57,6 +57,12 @@ public class BucklescriptImpl implements Bucklescript {
     }
 
     //region Compiler
+    @Nullable
+    @Override
+    public VirtualFile findContentRoot(@NotNull Project project) {
+        return Platform.findORPackageJsonContentRoot(project);
+    }
+
     @Override
     public void refresh(@NotNull VirtualFile bsConfigFile) {
         BsConfig updatedConfig = BsConfig.read(m_project, bsConfigFile);

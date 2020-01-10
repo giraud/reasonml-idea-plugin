@@ -1,7 +1,6 @@
 package com.reason.ide;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.DumbModeTask;
@@ -39,7 +38,7 @@ public class ORProjectRootListener {
                                     //}
                                     Sdk projectSdk = ProjectRootManager.getInstance(project).getProjectSdk();
                                     if (projectSdk != null && projectSdk.getSdkType() instanceof OCamlSdkType) {
-                                        ApplicationManager.getApplication().runWriteAction(() -> OCamlSdkType.reindexSourceRoots(projectSdk));
+                                        OCamlSdkType.reindexSourceRoots(projectSdk);
                                     }
                                 }
                             }

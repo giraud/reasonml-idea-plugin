@@ -1,6 +1,8 @@
 package com.reason.dune;
 
 import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 import org.jetbrains.annotations.NotNull;
@@ -98,28 +100,35 @@ public final class DuneProcess implements CompilerProcessLifecycle {
                     + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>", ERROR, URL_OPENING_LISTENER));
             return null;
         }
+        assert odk.getHomePath() != null;
 
-        VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(m_project);
+        VirtualFile baseRoot = Platform.findORDuneContentRoot(m_project);
         if (baseRoot == null) {
             return null;
         }
 
-        String workingDir = baseRoot.getPath();
+        FileSystem fileSystem = FileSystems.getDefault();
 
+        String duneBinary = fileSystem.getPath(odk.getHomePath(), "bin", "dune" + (Platform.isWindows() ? ".exe" : "")).toString();
         GeneralCommandLine cli;
         switch (cliType) {
             case clean:
-                cli = new GeneralCommandLine(odk.getHomePath() + "/bin/dune", "clean");
+                cli = new GeneralCommandLine(duneBinary, "clean");
                 break;
             default:
-                cli = new GeneralCommandLine(odk.getHomePath() + "/bin/dune", "build");
+                cli = new GeneralCommandLine(duneBinary, "build");
         }
 
         Map<String, String> environment = cli.getParentEnvironment();
-        String path = environment.get("PATH");
-        String newPath = odk.getHomePath() + "/bin" + File.pathSeparator + path;
-        cli.withEnvironment("PATH", newPath);
-        cli.setWorkDirectory(workingDir);
+        String ocamlPath = //
+                fileSystem.getPath(odk.getHomePath(), "share") + File.pathSeparator +//
+                        fileSystem.getPath(odk.getHomePath(), "sbin") + File.pathSeparator +//
+                        fileSystem.getPath(odk.getHomePath(), "lib") + File.pathSeparator +//
+                        fileSystem.getPath(odk.getHomePath(), "bin");
+
+        cli.withEnvironment("PATH", ocamlPath + File.pathSeparator + environment.get("PATH"));
+        cli.withEnvironment("OCAMLLIB", fileSystem.getPath(odk.getHomePath(), "lib", "ocaml").toString());
+        cli.setWorkDirectory(baseRoot.getPath());
         cli.setRedirectErrorStream(true);
 
         return cli;
