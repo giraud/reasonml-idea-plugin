@@ -119,15 +119,20 @@ public final class DuneProcess implements CompilerProcessLifecycle {
                 cli = new GeneralCommandLine(duneBinary, "build");
         }
 
+        String ocamlPath = fileSystem.getPath(odk.getHomePath(), "share") + File.pathSeparator + //
+                fileSystem.getPath(odk.getHomePath(), "sbin") + File.pathSeparator + //
+                fileSystem.getPath(odk.getHomePath(), "lib") + File.pathSeparator + //
+                fileSystem.getPath(odk.getHomePath(), "bin") + File.pathSeparator;
+
+        String libPath = fileSystem.getPath(odk.getHomePath(), "lib", "stublibs") + File.pathSeparator + //
+                fileSystem.getPath(odk.getHomePath(), "lib", "ocaml") + File.pathSeparator +  //
+                fileSystem.getPath(odk.getHomePath(), "lib", "ocaml", "stublibs") + File.pathSeparator;
+
         Map<String, String> environment = cli.getParentEnvironment();
-        String ocamlPath = //
-                fileSystem.getPath(odk.getHomePath(), "share") + File.pathSeparator +//
-                        fileSystem.getPath(odk.getHomePath(), "sbin") + File.pathSeparator +//
-                        fileSystem.getPath(odk.getHomePath(), "lib") + File.pathSeparator +//
-                        fileSystem.getPath(odk.getHomePath(), "bin");
 
         cli.withEnvironment("PATH", ocamlPath + File.pathSeparator + environment.get("PATH"));
         cli.withEnvironment("OCAMLLIB", fileSystem.getPath(odk.getHomePath(), "lib", "ocaml").toString());
+        cli.withEnvironment("CAML_LD_LIBRARY_PATH", libPath);
         cli.setWorkDirectory(baseRoot.getPath());
         cli.setRedirectErrorStream(true);
 
