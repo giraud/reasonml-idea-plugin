@@ -1,5 +1,6 @@
 package com.reason;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.OrderRootType;
@@ -111,7 +112,7 @@ public class OCamlSdkType extends SdkType {
                 sdkModificator.addRoot(root, OrderRootType.SOURCES);
             }
 
-            sdkModificator.commitChanges();
+            ApplicationManager.getApplication().runWriteAction(sdkModificator::commitChanges);
         }
     }
 
