@@ -158,12 +158,12 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
 
         @Override
         public int getRowCount() {
-            return m_types.size();
+            return m_types.size() - 1;
         }
 
         @Override
         public int getColumnCount() {
-            return 4;
+            return 5;
         }
 
         @Override
@@ -174,8 +174,10 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
                 case 1:
                     return "Position";
                 case 2:
-                    return "QName";
+                    return "Name";
                 case 3:
+                    return "QName";
+                case 4:
                     return "Type";
                 default:
                     return " ";
@@ -189,7 +191,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
 
         @Override
         public Object getValueAt(int row, int col) {
-            String[] values = m_types.get(row);
+            String[] values = m_types.get(row + 1);
             if (values != null && col < values.length) {
                 return values[col];
             }

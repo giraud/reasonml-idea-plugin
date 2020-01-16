@@ -90,8 +90,7 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
 
         if (potentialPaths.isEmpty()) {
             LOG.debug("»» No potential path found");
-        }
-        else {
+        } else {
             PsiQualifiedNamedElement elementReference = potentialPaths.iterator().next();
             boolean isInnerModule = elementReference instanceof PsiInnerModule;
             if (LOG.isDebugEnabled()) {
@@ -143,7 +142,11 @@ public class PsiUpperSymbolReference extends PsiReferenceBase<PsiUpperSymbol> {
                 collect(toList());
 
         PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleFromQn(m_referenceName);
-        if (moduleAlias != null) {
+        if (moduleAlias == null) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("»» No module found for qn " + m_referenceName);
+            }
+        } else {
             result.add(moduleAlias);
         }
 
