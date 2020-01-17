@@ -21,6 +21,14 @@ public class DirectiveParsingTest extends BaseParsingTestCase {
         assertEquals("#if BS then\nx\n#else\ny\n#end", e.getText());
     }
 
+    public void testEndif() {
+        FileBase f = parseCode("#if BS then\nx\n#else\ny\n#endif");
+        PsiDirective e = PsiTreeUtil.findChildOfType(f, PsiDirective.class);
+
+        assertNotNull(e);
+        assertEquals("#if BS then\nx\n#else\ny\n#endif", e.getText());
+    }
+
     public void testOCamlBeforeDirective() {
         PsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
 

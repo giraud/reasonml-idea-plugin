@@ -176,7 +176,9 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseDirectiveIf(builder, state);
             } else if (tokenType == m_types.DIRECTIVE_ELSE) {
                 parseDirectiveElse(/*builder,*/ state);
-            } else if (tokenType == m_types.DIRECTIVE_END) {
+            } else if (tokenType == m_types.DIRECTIVE_ELIF) {
+                parseDirectiveElif(/*builder,*/ state);
+            } else if (tokenType == m_types.DIRECTIVE_END || tokenType == m_types.DIRECTIVE_ENDIF) {
                 parseDirectiveEnd(/*builder,*/ state);
             }
 
@@ -898,6 +900,10 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseDirectiveElse(/*@NotNull PsiBuilder builder,*/ @NotNull ParserState state) {
+        endLikeSemi(state);
+    }
+
+    private void parseDirectiveElif(/*@NotNull PsiBuilder builder,*/ @NotNull ParserState state) {
         endLikeSemi(state);
     }
 

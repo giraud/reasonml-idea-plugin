@@ -1,5 +1,7 @@
 package com.reason.ide.highlight;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.HighlighterColors;
@@ -11,86 +13,90 @@ import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLexer;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
 public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
-    private static final Set<IElementType> RML_KEYWORD_TYPES = of(
-            RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN,
-            RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE, RmlTypes.INSTANCE.INCLUDE, RmlTypes.INSTANCE.EXTERNAL,
-            RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE, RmlTypes.INSTANCE.ENDIF, RmlTypes.INSTANCE.SWITCH,
-            RmlTypes.INSTANCE.TRY, RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN,
-            RmlTypes.INSTANCE.TO, RmlTypes.INSTANCE.BOOL_VALUE, RmlTypes.INSTANCE.REF, RmlTypes.INSTANCE.EXCEPTION,
-            RmlTypes.INSTANCE.WHEN, RmlTypes.INSTANCE.AND, RmlTypes.INSTANCE.REC, RmlTypes.INSTANCE.WHILE,
-            RmlTypes.INSTANCE.ASR, RmlTypes.INSTANCE.CLASS, RmlTypes.INSTANCE.CONSTRAINT, RmlTypes.INSTANCE.DOWNTO,
-            RmlTypes.INSTANCE.FUNCTOR, RmlTypes.INSTANCE.INHERIT, RmlTypes.INSTANCE.INITIALIZER, RmlTypes.INSTANCE.LAND,
-            RmlTypes.INSTANCE.LOR, RmlTypes.INSTANCE.LSL, RmlTypes.INSTANCE.LSR, RmlTypes.INSTANCE.LXOR,
-            RmlTypes.INSTANCE.METHOD, RmlTypes.INSTANCE.MOD, RmlTypes.INSTANCE.NEW, RmlTypes.INSTANCE.NONREC,
-            RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE, RmlTypes.INSTANCE.VIRTUAL, RmlTypes.INSTANCE.VAL,
-            RmlTypes.INSTANCE.PUB, RmlTypes.INSTANCE.PRI, RmlTypes.INSTANCE.OBJECT, RmlTypes.INSTANCE.MUTABLE,
-            RmlTypes.INSTANCE.UNIT, RmlTypes.INSTANCE.WITH,
-            RmlTypes.INSTANCE.DIRECTIVE_IF, RmlTypes.INSTANCE.DIRECTIVE_ELSE, RmlTypes.INSTANCE.DIRECTIVE_END
-    );
+    private static final Set<IElementType> RML_KEYWORD_TYPES = of(RmlTypes.INSTANCE.OPEN, RmlTypes.INSTANCE.MODULE, RmlTypes.INSTANCE.FUN,
+                                                                  RmlTypes.INSTANCE.LET, RmlTypes.INSTANCE.TYPE, RmlTypes.INSTANCE.INCLUDE,
+                                                                  RmlTypes.INSTANCE.EXTERNAL, RmlTypes.INSTANCE.IF, RmlTypes.INSTANCE.ELSE,
+                                                                  RmlTypes.INSTANCE.ENDIF, RmlTypes.INSTANCE.SWITCH, RmlTypes.INSTANCE.TRY,
+                                                                  RmlTypes.INSTANCE.RAISE, RmlTypes.INSTANCE.FOR, RmlTypes.INSTANCE.IN, RmlTypes.INSTANCE.TO,
+                                                                  RmlTypes.INSTANCE.BOOL_VALUE, RmlTypes.INSTANCE.REF, RmlTypes.INSTANCE.EXCEPTION,
+                                                                  RmlTypes.INSTANCE.WHEN, RmlTypes.INSTANCE.AND, RmlTypes.INSTANCE.REC, RmlTypes.INSTANCE.WHILE,
+                                                                  RmlTypes.INSTANCE.ASR, RmlTypes.INSTANCE.CLASS, RmlTypes.INSTANCE.CONSTRAINT,
+                                                                  RmlTypes.INSTANCE.DOWNTO, RmlTypes.INSTANCE.FUNCTOR, RmlTypes.INSTANCE.INHERIT,
+                                                                  RmlTypes.INSTANCE.INITIALIZER, RmlTypes.INSTANCE.LAND, RmlTypes.INSTANCE.LOR,
+                                                                  RmlTypes.INSTANCE.LSL, RmlTypes.INSTANCE.LSR, RmlTypes.INSTANCE.LXOR,
+                                                                  RmlTypes.INSTANCE.METHOD, RmlTypes.INSTANCE.MOD, RmlTypes.INSTANCE.NEW,
+                                                                  RmlTypes.INSTANCE.NONREC, RmlTypes.INSTANCE.OR, RmlTypes.INSTANCE.PRIVATE,
+                                                                  RmlTypes.INSTANCE.VIRTUAL, RmlTypes.INSTANCE.VAL, RmlTypes.INSTANCE.PUB,
+                                                                  RmlTypes.INSTANCE.PRI, RmlTypes.INSTANCE.OBJECT, RmlTypes.INSTANCE.MUTABLE,
+                                                                  RmlTypes.INSTANCE.UNIT, RmlTypes.INSTANCE.WITH, RmlTypes.INSTANCE.DIRECTIVE_IF,
+                                                                  RmlTypes.INSTANCE.DIRECTIVE_ELSE, RmlTypes.INSTANCE.DIRECTIVE_ELIF,
+                                                                  RmlTypes.INSTANCE.DIRECTIVE_END, RmlTypes.INSTANCE.DIRECTIVE_ENDIF);
 
-    private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(
-            RmlTypes.INSTANCE.ANDAND, RmlTypes.INSTANCE.SHORTCUT, RmlTypes.INSTANCE.ARROW, RmlTypes.INSTANCE.PIPE_FIRST,
-            RmlTypes.INSTANCE.PIPE_FORWARD, RmlTypes.INSTANCE.EQEQEQ, RmlTypes.INSTANCE.EQEQ, RmlTypes.INSTANCE.EQ,
-            RmlTypes.INSTANCE.NOT_EQEQ, RmlTypes.INSTANCE.NOT_EQ, RmlTypes.INSTANCE.DIFF, RmlTypes.INSTANCE.COLON,
-            RmlTypes.INSTANCE.SINGLE_QUOTE, RmlTypes.INSTANCE.DOUBLE_QUOTE, RmlTypes.INSTANCE.CARRET, RmlTypes.INSTANCE.PLUSDOT, RmlTypes.INSTANCE.MINUSDOT,
-            RmlTypes.INSTANCE.SLASHDOT, RmlTypes.INSTANCE.STARDOT, RmlTypes.INSTANCE.PLUS, RmlTypes.INSTANCE.MINUS,
-            RmlTypes.INSTANCE.SLASH, RmlTypes.INSTANCE.STAR, RmlTypes.INSTANCE.PERCENT, RmlTypes.INSTANCE.PIPE,
-            RmlTypes.INSTANCE.ARROBASE, RmlTypes.INSTANCE.SHARP, RmlTypes.INSTANCE.SHARPSHARP,
-            RmlTypes.INSTANCE.QUESTION_MARK, RmlTypes.INSTANCE.EXCLAMATION_MARK, RmlTypes.INSTANCE.LT_OR_EQUAL,
-            RmlTypes.INSTANCE.GT_OR_EQUAL, RmlTypes.INSTANCE.AMPERSAND, RmlTypes.INSTANCE.LEFT_ARROW,
-            RmlTypes.INSTANCE.RIGHT_ARROW, RmlTypes.INSTANCE.COLON_EQ, RmlTypes.INSTANCE.COLON_GT, RmlTypes.INSTANCE.GT,
-            RmlTypes.INSTANCE.GT_BRACE, RmlTypes.INSTANCE.GT_BRACKET, RmlTypes.INSTANCE.BRACKET_GT,
-            RmlTypes.INSTANCE.BRACKET_LT, RmlTypes.INSTANCE.BRACE_LT, RmlTypes.INSTANCE.DOTDOT
-    );
+    private static final Set<IElementType> RML_OPERATION_SIGN_TYPES = of(RmlTypes.INSTANCE.ANDAND, RmlTypes.INSTANCE.SHORTCUT, RmlTypes.INSTANCE.ARROW,
+                                                                         RmlTypes.INSTANCE.PIPE_FIRST, RmlTypes.INSTANCE.PIPE_FORWARD, RmlTypes.INSTANCE.EQEQEQ,
+                                                                         RmlTypes.INSTANCE.EQEQ, RmlTypes.INSTANCE.EQ, RmlTypes.INSTANCE.NOT_EQEQ,
+                                                                         RmlTypes.INSTANCE.NOT_EQ, RmlTypes.INSTANCE.DIFF, RmlTypes.INSTANCE.COLON,
+                                                                         RmlTypes.INSTANCE.SINGLE_QUOTE, RmlTypes.INSTANCE.DOUBLE_QUOTE,
+                                                                         RmlTypes.INSTANCE.CARRET, RmlTypes.INSTANCE.PLUSDOT, RmlTypes.INSTANCE.MINUSDOT,
+                                                                         RmlTypes.INSTANCE.SLASHDOT, RmlTypes.INSTANCE.STARDOT, RmlTypes.INSTANCE.PLUS,
+                                                                         RmlTypes.INSTANCE.MINUS, RmlTypes.INSTANCE.SLASH, RmlTypes.INSTANCE.STAR,
+                                                                         RmlTypes.INSTANCE.PERCENT, RmlTypes.INSTANCE.PIPE, RmlTypes.INSTANCE.ARROBASE,
+                                                                         RmlTypes.INSTANCE.SHARP, RmlTypes.INSTANCE.SHARPSHARP, RmlTypes.INSTANCE.QUESTION_MARK,
+                                                                         RmlTypes.INSTANCE.EXCLAMATION_MARK, RmlTypes.INSTANCE.LT_OR_EQUAL,
+                                                                         RmlTypes.INSTANCE.GT_OR_EQUAL, RmlTypes.INSTANCE.AMPERSAND,
+                                                                         RmlTypes.INSTANCE.LEFT_ARROW, RmlTypes.INSTANCE.RIGHT_ARROW,
+                                                                         RmlTypes.INSTANCE.COLON_EQ, RmlTypes.INSTANCE.COLON_GT, RmlTypes.INSTANCE.GT,
+                                                                         RmlTypes.INSTANCE.GT_BRACE, RmlTypes.INSTANCE.GT_BRACKET, RmlTypes.INSTANCE.BRACKET_GT,
+                                                                         RmlTypes.INSTANCE.BRACKET_LT, RmlTypes.INSTANCE.BRACE_LT, RmlTypes.INSTANCE.DOTDOT);
 
     private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
 
-    private static final Set<IElementType> OCL_KEYWORD_TYPES = of(
-            OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN,
-            OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE, OclTypes.INSTANCE.INCLUDE, OclTypes.INSTANCE.EXTERNAL,
-            OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE, OclTypes.INSTANCE.ENDIF, OclTypes.INSTANCE.SWITCH,
-            OclTypes.INSTANCE.TRY, OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN,
-            OclTypes.INSTANCE.TO, OclTypes.INSTANCE.BOOL_VALUE, OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION,
-            OclTypes.INSTANCE.WHEN, OclTypes.INSTANCE.AND, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.WHILE,
-            OclTypes.INSTANCE.ASR, OclTypes.INSTANCE.CLASS, OclTypes.INSTANCE.CONSTRAINT, OclTypes.INSTANCE.DOWNTO,
-            OclTypes.INSTANCE.FUNCTOR, OclTypes.INSTANCE.INHERIT, OclTypes.INSTANCE.INITIALIZER, OclTypes.INSTANCE.LAND,
-            OclTypes.INSTANCE.LOR, OclTypes.INSTANCE.LSL, OclTypes.INSTANCE.LSR, OclTypes.INSTANCE.LXOR,
-            OclTypes.INSTANCE.METHOD, OclTypes.INSTANCE.MOD, OclTypes.INSTANCE.NEW, OclTypes.INSTANCE.NONREC,
-            OclTypes.INSTANCE.OR, OclTypes.INSTANCE.PRIVATE, OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.AS,
-            OclTypes.INSTANCE.MUTABLE, OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL, OclTypes.INSTANCE.PRI,
-            // OCaml
-            OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE,
-            OclTypes.INSTANCE.RECORD, OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END, OclTypes.INSTANCE.LAZY,
-            OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN, OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT,
-            OclTypes.INSTANCE.SIG, OclTypes.INSTANCE.OBJECT,
-            OclTypes.INSTANCE.DIRECTIVE_IF, OclTypes.INSTANCE.DIRECTIVE_ELSE, OclTypes.INSTANCE.DIRECTIVE_END
-    );
+    private static final Set<IElementType> OCL_KEYWORD_TYPES = of(OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN,
+                                                                  OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE, OclTypes.INSTANCE.INCLUDE,
+                                                                  OclTypes.INSTANCE.EXTERNAL, OclTypes.INSTANCE.IF, OclTypes.INSTANCE.ELSE,
+                                                                  OclTypes.INSTANCE.ENDIF, OclTypes.INSTANCE.SWITCH, OclTypes.INSTANCE.TRY,
+                                                                  OclTypes.INSTANCE.RAISE, OclTypes.INSTANCE.FOR, OclTypes.INSTANCE.IN, OclTypes.INSTANCE.TO,
+                                                                  OclTypes.INSTANCE.BOOL_VALUE, OclTypes.INSTANCE.REF, OclTypes.INSTANCE.EXCEPTION,
+                                                                  OclTypes.INSTANCE.WHEN, OclTypes.INSTANCE.AND, OclTypes.INSTANCE.REC, OclTypes.INSTANCE.WHILE,
+                                                                  OclTypes.INSTANCE.ASR, OclTypes.INSTANCE.CLASS, OclTypes.INSTANCE.CONSTRAINT,
+                                                                  OclTypes.INSTANCE.DOWNTO, OclTypes.INSTANCE.FUNCTOR, OclTypes.INSTANCE.INHERIT,
+                                                                  OclTypes.INSTANCE.INITIALIZER, OclTypes.INSTANCE.LAND, OclTypes.INSTANCE.LOR,
+                                                                  OclTypes.INSTANCE.LSL, OclTypes.INSTANCE.LSR, OclTypes.INSTANCE.LXOR,
+                                                                  OclTypes.INSTANCE.METHOD, OclTypes.INSTANCE.MOD, OclTypes.INSTANCE.NEW,
+                                                                  OclTypes.INSTANCE.NONREC, OclTypes.INSTANCE.OR, OclTypes.INSTANCE.PRIVATE,
+                                                                  OclTypes.INSTANCE.VIRTUAL, OclTypes.INSTANCE.AS, OclTypes.INSTANCE.MUTABLE,
+                                                                  OclTypes.INSTANCE.OF, OclTypes.INSTANCE.VAL, OclTypes.INSTANCE.PRI,
+                                                                  // OCaml
+                                                                  OclTypes.INSTANCE.MATCH, OclTypes.INSTANCE.WITH, OclTypes.INSTANCE.DO, OclTypes.INSTANCE.DONE,
+                                                                  OclTypes.INSTANCE.RECORD, OclTypes.INSTANCE.BEGIN, OclTypes.INSTANCE.END,
+                                                                  OclTypes.INSTANCE.LAZY, OclTypes.INSTANCE.ASSERT, OclTypes.INSTANCE.THEN,
+                                                                  OclTypes.INSTANCE.FUNCTION, OclTypes.INSTANCE.STRUCT, OclTypes.INSTANCE.SIG,
+                                                                  OclTypes.INSTANCE.OBJECT, OclTypes.INSTANCE.DIRECTIVE_IF, OclTypes.INSTANCE.DIRECTIVE_ELSE,
+                                                                  OclTypes.INSTANCE.DIRECTIVE_ELIF, OclTypes.INSTANCE.DIRECTIVE_END,
+                                                                  OclTypes.INSTANCE.DIRECTIVE_ENDIF);
 
-    private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES = of(
-            OclTypes.INSTANCE.ANDAND, OclTypes.INSTANCE.SHORTCUT, OclTypes.INSTANCE.ARROW, OclTypes.INSTANCE.PIPE_FIRST,
-            OclTypes.INSTANCE.PIPE_FORWARD, OclTypes.INSTANCE.EQEQEQ, OclTypes.INSTANCE.EQEQ, OclTypes.INSTANCE.EQ,
-            OclTypes.INSTANCE.NOT_EQEQ, OclTypes.INSTANCE.NOT_EQ, OclTypes.INSTANCE.DIFF, OclTypes.INSTANCE.COLON,
-            OclTypes.INSTANCE.SINGLE_QUOTE, OclTypes.INSTANCE.DOUBLE_QUOTE, OclTypes.INSTANCE.CARRET, OclTypes.INSTANCE.PLUSDOT, OclTypes.INSTANCE.MINUSDOT,
-            OclTypes.INSTANCE.SLASHDOT, OclTypes.INSTANCE.STARDOT, OclTypes.INSTANCE.PLUS, OclTypes.INSTANCE.MINUS,
-            OclTypes.INSTANCE.SLASH, OclTypes.INSTANCE.STAR, OclTypes.INSTANCE.PERCENT, OclTypes.INSTANCE.PIPE,
-            OclTypes.INSTANCE.ARROBASE, OclTypes.INSTANCE.SHARP, OclTypes.INSTANCE.SHARPSHARP,
-            OclTypes.INSTANCE.QUESTION_MARK, OclTypes.INSTANCE.EXCLAMATION_MARK, OclTypes.INSTANCE.LT_OR_EQUAL,
-            OclTypes.INSTANCE.GT_OR_EQUAL, OclTypes.INSTANCE.AMPERSAND, OclTypes.INSTANCE.LEFT_ARROW,
-            OclTypes.INSTANCE.RIGHT_ARROW, OclTypes.INSTANCE.COLON_EQ, OclTypes.INSTANCE.COLON_GT, OclTypes.INSTANCE.GT,
-            OclTypes.INSTANCE.GT_BRACE, OclTypes.INSTANCE.GT_BRACKET, OclTypes.INSTANCE.BRACKET_GT,
-            OclTypes.INSTANCE.BRACKET_LT, OclTypes.INSTANCE.BRACE_LT, OclTypes.INSTANCE.DOTDOT
-    );
+    private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES = of(OclTypes.INSTANCE.ANDAND, OclTypes.INSTANCE.SHORTCUT, OclTypes.INSTANCE.ARROW,
+                                                                         OclTypes.INSTANCE.PIPE_FIRST, OclTypes.INSTANCE.PIPE_FORWARD, OclTypes.INSTANCE.EQEQEQ,
+                                                                         OclTypes.INSTANCE.EQEQ, OclTypes.INSTANCE.EQ, OclTypes.INSTANCE.NOT_EQEQ,
+                                                                         OclTypes.INSTANCE.NOT_EQ, OclTypes.INSTANCE.DIFF, OclTypes.INSTANCE.COLON,
+                                                                         OclTypes.INSTANCE.SINGLE_QUOTE, OclTypes.INSTANCE.DOUBLE_QUOTE,
+                                                                         OclTypes.INSTANCE.CARRET, OclTypes.INSTANCE.PLUSDOT, OclTypes.INSTANCE.MINUSDOT,
+                                                                         OclTypes.INSTANCE.SLASHDOT, OclTypes.INSTANCE.STARDOT, OclTypes.INSTANCE.PLUS,
+                                                                         OclTypes.INSTANCE.MINUS, OclTypes.INSTANCE.SLASH, OclTypes.INSTANCE.STAR,
+                                                                         OclTypes.INSTANCE.PERCENT, OclTypes.INSTANCE.PIPE, OclTypes.INSTANCE.ARROBASE,
+                                                                         OclTypes.INSTANCE.SHARP, OclTypes.INSTANCE.SHARPSHARP, OclTypes.INSTANCE.QUESTION_MARK,
+                                                                         OclTypes.INSTANCE.EXCLAMATION_MARK, OclTypes.INSTANCE.LT_OR_EQUAL,
+                                                                         OclTypes.INSTANCE.GT_OR_EQUAL, OclTypes.INSTANCE.AMPERSAND,
+                                                                         OclTypes.INSTANCE.LEFT_ARROW, OclTypes.INSTANCE.RIGHT_ARROW,
+                                                                         OclTypes.INSTANCE.COLON_EQ, OclTypes.INSTANCE.COLON_GT, OclTypes.INSTANCE.GT,
+                                                                         OclTypes.INSTANCE.GT_BRACE, OclTypes.INSTANCE.GT_BRACKET, OclTypes.INSTANCE.BRACKET_GT,
+                                                                         OclTypes.INSTANCE.BRACKET_LT, OclTypes.INSTANCE.BRACE_LT, OclTypes.INSTANCE.DOTDOT);
 
     private static final Set<IElementType> OCL_OPTIONS_TYPES = of(OclTypes.INSTANCE.NONE, OclTypes.INSTANCE.SOME);
 
@@ -104,7 +110,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey STRING_ = createTextAttributesKey("REASONML_STRING", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey NUMBER_ = createTextAttributesKey("REASONML_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
     public static final TextAttributesKey MARKUP_TAG_ = createTextAttributesKey("REASONML_MARKUP_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
-    public static final TextAttributesKey MARKUP_ATTRIBUTE_ = createTextAttributesKey("REASONML_MARKUP_ATTRIBUTE", DefaultLanguageHighlighterColors.MARKUP_ATTRIBUTE);
+    public static final TextAttributesKey MARKUP_ATTRIBUTE_ = createTextAttributesKey("REASONML_MARKUP_ATTRIBUTE",
+                                                                                      DefaultLanguageHighlighterColors.MARKUP_ATTRIBUTE);
     public static final TextAttributesKey OPTION_ = createTextAttributesKey("REASONML_OPTION", DefaultLanguageHighlighterColors.STATIC_FIELD);
     public static final TextAttributesKey KEYWORD_ = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey SEMICOLON_ = createTextAttributesKey("REASONML_SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON);
@@ -153,7 +160,9 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMENT_KEYS;
         } else if (tokenType.equals(m_types.LBRACE) || tokenType.equals(m_types.RBRACE)) {
             return BRACE_KEYS;
-        } else if (tokenType.equals(m_types.LBRACKET) || tokenType.equals(m_types.RBRACKET) || tokenType.equals(m_types.LARRAY) || tokenType.equals(m_types.RARRAY) || tokenType.equals(m_types.ML_STRING_OPEN) || tokenType.equals(m_types.ML_STRING_CLOSE) || tokenType.equals(m_types.JS_STRING_OPEN) || tokenType.equals(m_types.JS_STRING_CLOSE)) {
+        } else if (tokenType.equals(m_types.LBRACKET) || tokenType.equals(m_types.RBRACKET) || tokenType.equals(m_types.LARRAY) || tokenType
+                .equals(m_types.RARRAY) || tokenType.equals(m_types.ML_STRING_OPEN) || tokenType.equals(m_types.ML_STRING_CLOSE) || tokenType
+                .equals(m_types.JS_STRING_OPEN) || tokenType.equals(m_types.JS_STRING_CLOSE)) {
             return BRACKET_KEYS;
         } else if (tokenType.equals(m_types.LPAREN) || tokenType.equals(m_types.RPAREN)) {
             return PAREN_KEYS;

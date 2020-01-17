@@ -120,7 +120,9 @@ public class RmlTypes extends ORTypes {
         DIFF = new ORTokenElementType("DIFF", RmlLanguage.INSTANCE);
         DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", RmlLanguage.INSTANCE);
         DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", RmlLanguage.INSTANCE);
+        DIRECTIVE_ELIF = new ORTokenElementType("DIRECTIVE_ELIF", RmlLanguage.INSTANCE);
         DIRECTIVE_END = new ORTokenElementType("DIRECTIVE_END", RmlLanguage.INSTANCE);
+        DIRECTIVE_ENDIF = new ORTokenElementType("DIRECTIVE_ENDIF", RmlLanguage.INSTANCE);
         LT_OR_EQUAL = new ORTokenElementType("LT_OR_EQUAL", RmlLanguage.INSTANCE);
         GT_OR_EQUAL = new ORTokenElementType("GT_OR_EQUAL", RmlLanguage.INSTANCE);
         DOLLAR = new ORTokenElementType("DOLLAR", RmlLanguage.INSTANCE);

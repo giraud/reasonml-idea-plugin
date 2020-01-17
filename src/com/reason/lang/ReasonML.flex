@@ -177,9 +177,11 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "//" { yybegin(IN_REASON_SL_COMMENT); tokenStart(); }
     "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
 
-    "#if"   { return types.DIRECTIVE_IF; }
-    "#else" { return types.DIRECTIVE_ELSE; }
-    "#end"  { return types.DIRECTIVE_END; }
+    "#if"     { return types.DIRECTIVE_IF; }
+    "#else"   { return types.DIRECTIVE_ELSE; }
+    "#elif"   { return types.DIRECTIVE_ELIF; }
+    "#endif"  { return types.DIRECTIVE_ENDIF; }
+    "#end"    { return types.DIRECTIVE_END; }
 
     "&&"  { return types.ANDAND; }
     "##"  { return types.SHARPSHARP; }

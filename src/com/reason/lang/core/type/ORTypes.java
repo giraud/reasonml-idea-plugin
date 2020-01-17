@@ -98,7 +98,9 @@ public abstract class ORTypes {
     public ORTokenElementType CONSTRAINT;
     public ORTokenElementType DIRECTIVE_IF;
     public ORTokenElementType DIRECTIVE_ELSE;
+    public ORTokenElementType DIRECTIVE_ELIF;
     public ORTokenElementType DIRECTIVE_END;
+    public ORTokenElementType DIRECTIVE_ENDIF;
     public ORTokenElementType DO;
     public ORTokenElementType DONE;
     public ORTokenElementType DOWNTO;

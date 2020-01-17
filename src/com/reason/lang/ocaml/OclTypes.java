@@ -121,7 +121,9 @@ public class OclTypes extends ORTypes {
         DIFF = new ORTokenElementType("DIFF", OclLanguage.INSTANCE);
         DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", OclLanguage.INSTANCE);
         DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", OclLanguage.INSTANCE);
+        DIRECTIVE_ELIF = new ORTokenElementType("DIRECTIVE_ELIF", OclLanguage.INSTANCE);
         DIRECTIVE_END = new ORTokenElementType("DIRECTIVE_END", OclLanguage.INSTANCE);
+        DIRECTIVE_ENDIF = new ORTokenElementType("DIRECTIVE_ENDIF", OclLanguage.INSTANCE);
         LT_OR_EQUAL = new ORTokenElementType("LT_OR_EQUAL", OclLanguage.INSTANCE);
         GT_OR_EQUAL = new ORTokenElementType("GT_OR_EQUAL", OclLanguage.INSTANCE);
         DOLLAR = new ORTokenElementType("DOLLAR", OclLanguage.INSTANCE);
