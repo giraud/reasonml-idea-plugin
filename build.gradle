@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.15"
 }
 
-def pluginVersion = '0.85-beta01'
+def pluginVersion = '0.85-beta17'
 def ideaVersion = '2019.3'
 version = pluginVersion + '-' + ideaVersion
 
@@ -85,3 +85,7 @@ idea {
 verifyPlugin {
     pluginDirectory "resources"
 }
+
+/*
+git log --oneline | Select-String -Pattern "(191|192|193) -" | %{$_.Line.Split(" ")[0]}
+*/

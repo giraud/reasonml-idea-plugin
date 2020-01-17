@@ -105,9 +105,7 @@ public final class PsiFinder {
         Map<String/*qn*/, PsiModule> implNames = new THashMap<>();
         Map<String/*qn*/, PsiModule> intfNames = new THashMap<>();
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Find modules with name", name);
-        }
+        LOG.debug("Find modules with name", name);
 
         VirtualFile file;
 
@@ -136,9 +134,7 @@ public final class PsiFinder {
 
         Collection<PsiInnerModule> items = StubIndex.getElements(IndexKeys.MODULES, name, m_project, scope, PsiInnerModule.class);
         if (items.isEmpty()) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("  No inner module found");
-            }
+            LOG.debug("  No inner module found");
         } else {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("  Inner modules found", items.size(), items);
@@ -595,5 +591,4 @@ public final class PsiFinder {
 
         return "";
     }
-
 }

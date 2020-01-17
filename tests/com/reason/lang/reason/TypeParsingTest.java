@@ -77,4 +77,15 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals("array(reactElement)", signatureItems.get(2).getText());
         assertEquals("reactElement", signatureItems.get(3).getText());
     }
+
+   /* public void testModuleSignature() {
+        PsiType e = first(typeExpressions(parseCode("type t = (. M.t) => X;",true)));
+
+        PsiFunction f = (PsiFunction) e.getBinding().getFirstChild();
+        Collection<PsiParameter> parameters = f.getParameters();
+
+        PsiParameter param = first(parameters);
+        assertEquals("M.t", param.getName());
+        assertEquals("M.t", param.getQualifiedName());
+    }*/
 }
