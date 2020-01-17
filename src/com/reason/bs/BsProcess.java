@@ -27,7 +27,7 @@ import static com.reason.Platform.*;
 
 public final class BsProcess implements CompilerProcessLifecycle {
 
-    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+).+\\)");
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
     @NotNull
     private final Project m_project;
