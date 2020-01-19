@@ -1,6 +1,5 @@
 package com.reason.bs;
 
-import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +29,6 @@ import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 import gnu.trove.THashMap;
 
-import static com.intellij.openapi.application.ApplicationManager.getApplication;
-
 public class BucklescriptImpl implements Bucklescript {
 
     @NotNull
@@ -48,7 +45,7 @@ public class BucklescriptImpl implements Bucklescript {
     @NotNull
     @Override
     public String getNamespace(@NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfigFile = Platform.findBsconfig(m_project, sourceFile);
+        VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
         if (bsConfigFile != null) {
             BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
             return bsConfig.getNamespace();
@@ -72,7 +69,7 @@ public class BucklescriptImpl implements Bucklescript {
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!isDisabled() && ReasonSettings.getInstance(m_project).isEnabled()) {
-            VirtualFile bsconfigFile = Platform.findBsconfig(m_project, sourceFile);
+            VirtualFile bsconfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
             if (bsconfigFile != null) {
                 getOrRefreshBsConfig(bsconfigFile);
                 BsProcess process = ServiceManager.getService(m_project, BsProcess.class);

@@ -15,7 +15,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 
@@ -115,74 +114,17 @@ public class Platform {
     }
 
     @Nullable
-    public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile contentRoot = null;
-
-        Module module = ProjectFileIndex.getInstance(project).getModuleForFile(sourceFile, false);
-        if (module != null) {
-            for (VirtualFile root : ModuleRootManager.getInstance(module).getContentRoots()) {
-                VirtualFile packageJson = root.findChild(PACKAGE_JSON_NAME);
-                if (packageJson != null) {
-                    contentRoot = packageJson.getParent();
-                    break;
-                }
-            }
-        }
-
-        if (contentRoot == null) {
-            LOG.trace("Can't find content root from file, using project content root", sourceFile);
-            Map<Module, VirtualFile> contentRoots = findContentRootsFor(project, PACKAGE_JSON_NAME);
-            if (contentRoots.isEmpty()) {
-                return null;
-            } else {
-                if (1 < contentRoots.size()) {
-                    LOG.info("Multiple package content roots found (" + contentRoots.size() + "), using first one", contentRoots);
-                }
-                module = contentRoots.keySet().iterator().next();
-                contentRoot = contentRoots.get(module).getParent();
-            }
-        }
-
-        if (contentRoot == null) {
-            LOG.info("Can't find content root with a " + PACKAGE_JSON_NAME + " in it, aborting");
-            return null;
-        }
-
-        return contentRoot;
-    }
-
-    @Nullable
-    public static VirtualFile findBsconfig(@NotNull Project project) {
+    public static VirtualFile findAncestorBsconfig(@NotNull Project project) {
         VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project);
         return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
     }
 
-    @Nullable
-    public static VirtualFile findBsconfig(@NotNull Project project, @NotNull VirtualFile file) {
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project, file);
-        return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
-    }
-
-    @NotNull
-    public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
-        try {
-            VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(project);
-            if (baseRoot == null) {
-                return path;
-            }
-            Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-            Path relativePath = basePath.relativize(new File(path).toPath());
-            return relativePath.toString();
-        } catch (IllegalArgumentException e) {
-            return path;
-        }
-    }
-
     // Special finder that iterate through parents until a bsConfig.json is found.
-    // This is needed when indexing files in node_modules
+    // This is always needed, we can't use module itself
+
     @Nullable
     public static VirtualFile findAncestorBsconfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile contentRoot = findBsconfig(project);
+        VirtualFile contentRoot = findAncestorBsconfig(project);
         if (sourceFile.equals(contentRoot)) {
             return sourceFile;
         }
@@ -207,6 +149,26 @@ public class Platform {
         }
 
         return child;
+    }
+
+    public static VirtualFile findAncestorContentRoot(Project project, VirtualFile file) {
+        VirtualFile bsConfig = findAncestorBsconfig(project, file);
+        return bsConfig == null ? null : bsConfig.getParent();
+    }
+
+    @NotNull
+    public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
+        try {
+            VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(project);
+            if (baseRoot == null) {
+                return path;
+            }
+            Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
+            Path relativePath = basePath.relativize(new File(path).toPath());
+            return relativePath.toString();
+        } catch (IllegalArgumentException e) {
+            return path;
+        }
     }
 
     @Nullable

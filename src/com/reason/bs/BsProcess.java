@@ -41,7 +41,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
     public BsProcess(@NotNull Project project) {
         m_project = project;
-        create(Platform.findBsconfig(project), CliType.make, null);
+        create(Platform.findAncestorBsconfig(project), CliType.make, null);
     }
 
     // Wait for the tool window to be ready before starting the process

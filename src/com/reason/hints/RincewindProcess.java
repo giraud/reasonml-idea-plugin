@@ -35,7 +35,7 @@ public class RincewindProcess {
                       @NotNull InsightManager.ProcessTerminated runAfter) {
         LOG.debug("Looking for types for file", sourceFile);
 
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, sourceFile);
+        VirtualFile contentRoot = Platform.findAncestorContentRoot(m_project, sourceFile);
         if (contentRoot == null) {
             return;
         }
@@ -117,7 +117,7 @@ public class RincewindProcess {
     }
 
     public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, String arg, DumpVisitor visitor) {
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(m_project, cmtFile);
+        VirtualFile contentRoot = Platform.findAncestorContentRoot(m_project, cmtFile);
         if (contentRoot != null) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
