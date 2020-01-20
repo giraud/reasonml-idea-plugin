@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiQualifiedNamedElement;
@@ -18,6 +19,8 @@ import com.reason.Log;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
+import com.reason.ide.files.RmlFileType;
+import com.reason.ide.files.RmlInterfaceFileType;
 import com.reason.ide.search.index.ExceptionFqnIndex;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.ide.search.index.LetFqnIndex;
@@ -56,6 +59,19 @@ public final class PsiFinder {
 
     public PsiFinder(@NotNull Project project) {
         m_project = project;
+    }
+
+    @Nullable
+    public FileBase findRelatedFile(@NotNull FileBase file) {
+        PsiDirectory directory = file.getParent();
+        if (directory != null) {
+            String filename = file.getVirtualFile().getNameWithoutExtension();
+
+            String relatedExtension = file.isInterface() ? RmlFileType.INSTANCE.getDefaultExtension() : RmlInterfaceFileType.INSTANCE.getDefaultExtension();
+            PsiFile relatedPsiFile = directory.findFile(filename + "." + relatedExtension);
+            return relatedPsiFile instanceof FileBase ? (FileBase) relatedPsiFile : null;
+        }
+        return null;
     }
 
     @Nullable
