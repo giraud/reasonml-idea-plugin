@@ -1,5 +1,8 @@
 package com.reason.ide.go;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.navigation.ChooseByNameContributor;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
@@ -13,15 +16,10 @@ import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.ORFileType;
+import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.intellij.psi.search.GlobalSearchScope.projectScope;
+import static com.intellij.psi.search.GlobalSearchScope.*;
 
 // Implements the goto class
 public class ORModuleContributor implements ChooseByNameContributor {
@@ -32,9 +30,10 @@ public class ORModuleContributor implements ChooseByNameContributor {
 
         GlobalSearchScope scope = includeNonProjectItems ? allScope(project) : projectScope(project);
 
-        Collection<PsiModule> modules = PsiFinder.getInstance(project).findModules(name, ORFileType.interfaceOrImplementation, scope);
-        for (PsiModule element : modules) {
-            items.add(new MlModuleNavigationItem(element, element.getName()));
+        Collection<PsiModule> modules = PsiFinder.getInstance(project).findModules(name, ORFileType.both, scope);
+        for (PsiModule module : modules) {
+            String moduleName = module instanceof PsiFakeModule ? module.getContainingFile().getName() : module.getName();
+            items.add(new MlModuleNavigationItem(module, moduleName));
         }
 
         return items.toArray(new NavigationItem[0]);
@@ -43,9 +42,9 @@ public class ORModuleContributor implements ChooseByNameContributor {
     @NotNull
     @Override
     public String[] getNames(@NotNull Project project, boolean includeNonProjectItems) {
-        ArrayList<String> modules = new ArrayList<>();
+        Set<String> modules = new HashSet<>();
 
-        Collection<String> fileModules = FileModuleIndexService.getService().getAllModules(project);
+        Collection<String> fileModules = FileModuleIndexService.getService().getAllFileModules(project);
         Collection<String> allModuleNames = StubIndex.getInstance().getAllKeys(IndexKeys.MODULES, project);
 
         modules.addAll(fileModules);

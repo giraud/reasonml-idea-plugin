@@ -1,7 +1,5 @@
 package com.reason.lang.core;
 
 public enum ORFileType {
-    implementationOnly,
-    interfaceOnly,
-    interfaceOrImplementation
+    both, implementationOnly, interfaceOnly, interfaceOrImplementation
 }

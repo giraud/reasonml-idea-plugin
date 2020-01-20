@@ -1,5 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -13,20 +17,22 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
 public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiInnerModule {
 
@@ -331,10 +337,14 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         return null;
     }
 
+    @Override
+    public boolean isInterface() {
+        return false;
+    }
+
     @Nullable
     @Override
     public String toString() {
         return "Module " + getQualifiedName();
     }
-
 }

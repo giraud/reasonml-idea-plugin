@@ -10,6 +10,8 @@ public class OclTypes extends ORTypes {
     public static final OclTypes INSTANCE = new OclTypes();
 
     private OclTypes() {
+        C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", OclLanguage.INSTANCE);
+
         // Stubbed element types
 
         C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", OclLanguage.INSTANCE);

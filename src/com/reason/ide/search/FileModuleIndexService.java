@@ -38,7 +38,7 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public Collection<String> getAllModules(@NotNull Project project) {
+    public Collection<String> getAllFileModules(@NotNull Project project) {
         return FileBasedIndex.getInstance().getAllKeys(m_index.getName(), project);
     }
 

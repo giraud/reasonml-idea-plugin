@@ -15,6 +15,7 @@ public abstract class ORTypes {
     public IElementType C_DIRECTIVE;
     public IElementType C_EXTERNAL_STMT;
     public IElementType C_EXP_TYPE;
+    public IElementType C_FAKE_MODULE;
     public IElementType C_LET_STMT;
     public IElementType C_MODULE_STMT;
     public IElementType C_VAL_EXPR;

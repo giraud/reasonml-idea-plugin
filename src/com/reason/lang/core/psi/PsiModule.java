@@ -1,12 +1,11 @@
 package com.reason.lang.core.psi;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 /**
  * Common interface to file-based modules and inner modules
@@ -28,4 +27,5 @@ public interface PsiModule extends PsiQualifiedNamedElement, NavigatablePsiEleme
     @Nullable
     PsiVal getValExpression(@Nullable String name);
 
+    boolean isInterface();
 }

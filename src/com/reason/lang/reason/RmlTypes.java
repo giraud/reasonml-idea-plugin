@@ -10,6 +10,8 @@ public class RmlTypes extends ORTypes {
     public static final RmlTypes INSTANCE = new RmlTypes();
 
     private RmlTypes() {
+        C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", RmlLanguage.INSTANCE);
+
         // Stubbed element types
 
         C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", RmlLanguage.INSTANCE);

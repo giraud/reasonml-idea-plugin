@@ -60,6 +60,8 @@ public class PsiElementFactory {
             return new PsiAnnotationImpl(types, node);
         } else if (type == types.C_LET_BINDING) {
             return new PsiLetBinding(node);
+        } else if (type == types.C_FAKE_MODULE) {
+            return new PsiFakeModule(types, node);
         } else if (type == types.C_FUN_CALL_PARAMS) {
             return new PsiFunctionCallParamsImpl(types, node);
         } else if (type == types.C_FUN_EXPR) {

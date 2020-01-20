@@ -26,6 +26,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.ide.search.index.LetFqnIndex;
 import com.reason.ide.search.index.ModuleComponentIndex;
 import com.reason.ide.search.index.ModuleFqnIndex;
+import com.reason.ide.search.index.ModuleIndex;
 import com.reason.ide.search.index.ParameterFqnIndex;
 import com.reason.ide.search.index.ValFqnIndex;
 import com.reason.ide.search.index.VariantFqnIndex;
@@ -44,7 +45,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 import gnu.trove.THashMap;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static com.reason.lang.core.ORFileType.*;
 
 public final class PsiFinder {
 
@@ -118,80 +119,42 @@ public final class PsiFinder {
 
     @NotNull
     public Collection<PsiModule> findModules(@NotNull String name, @NotNull ORFileType fileType, @NotNull GlobalSearchScope scope) {
-        Map<String/*qn*/, PsiModule> implNames = new THashMap<>();
-        Map<String/*qn*/, PsiModule> intfNames = new THashMap<>();
+        Map<String/*qn*/, PsiModule> implementations = new THashMap<>();
+        Map<String/*qn*/, PsiModule> interfaces = new THashMap<>();
 
         LOG.debug("Find modules with name", name);
 
-        VirtualFile file;
-
-        FileModuleIndexService fileModuleIndex = FileModuleIndexService.getService();
-        if (fileType == ORFileType.implementationOnly) {
-            Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(name, scope);
-            file = implementations.isEmpty() ? null : implementations.iterator().next();
-        } else if (fileType == ORFileType.interfaceOnly) {
-            Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(name, scope);
-            file = interfaces.isEmpty() ? null : interfaces.iterator().next();
-        } else {
-            file = fileModuleIndex.getFile(name, scope);
-        }
-
-        if (file == null) {
-            LOG.debug("  No file module found");
-        } else {
-            LOG.debug("  File module found", file);
-            Map<String, PsiModule> map = FileHelper.isInterface(file.getFileType()) ? intfNames : implNames;
-            PsiFile psiFile = PsiManager.getInstance(m_project).findFile(file);
-            if (psiFile instanceof FileBase) {
-                FileBase psiFileModule = (FileBase) psiFile;
-                map.put(psiFileModule.asModuleName(), psiFileModule);
-            }
-        }
-
-        Collection<PsiInnerModule> items = StubIndex.getElements(IndexKeys.MODULES, name, m_project, scope, PsiInnerModule.class);
-        if (items.isEmpty()) {
-            LOG.debug("  No inner module found");
+        Collection<PsiModule> modules = ModuleIndex.getInstance().get(name, m_project, scope);
+        if (modules.isEmpty()) {
+            LOG.debug("  No module found");
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("  Inner modules found", items.size(), items);
+                LOG.debug("  Modules found", modules.size(), modules);
             }
-            for (PsiInnerModule item : items) {
-                String itemQName = item.getQualifiedName();
+            for (PsiModule module : modules) {
+                String itemQName = module.getQualifiedName();
+                FileBase itemFile = ((FileBase) module.getContainingFile());
+                // in config ?
 
-                FileBase itemFile = ((FileBase) item.getContainingFile());
-                String filename = itemFile.asModuleName();
-
-                if (fileType == ORFileType.implementationOnly) {
-                    Collection<VirtualFile> implementations = fileModuleIndex.getImplementationFilesWithName(filename, scope);
-                    if (!implementations.isEmpty()) {
-                        implNames.put(itemQName, item);
-                    }
-                } else if (fileType == ORFileType.interfaceOnly) {
-                    Collection<VirtualFile> interfaces = fileModuleIndex.getInterfaceFilesWithName(filename, scope);
-                    if (!interfaces.isEmpty()) {
-                        intfNames.put(itemQName, item);
-                    }
+                if (module.isInterface()) {
+                    interfaces.put(itemQName, module);
                 } else {
-                    Collection<VirtualFile> resolvedFiles = fileModuleIndex.getFilesWithName(filename, scope);
-                    for (VirtualFile resolvedFile : resolvedFiles) {
-                        if (FileHelper.isInterface(resolvedFile.getFileType())) {
-                            if (itemFile.isInterface()) {
-                                intfNames.put(itemQName, item);
-                            }
-                        } else {
-                            if (!itemFile.isInterface()) {
-                                implNames.put(itemQName, item);
-                            }
-                        }
-                    }
+                    implementations.put(itemQName, module);
                 }
             }
         }
 
-        List<PsiModule> result = new ArrayList<>(intfNames.values());
-        for (Map.Entry<String, PsiModule> entry : implNames.entrySet()) {
-            if (!intfNames.containsKey(entry.getKey())) {
-                result.add(entry.getValue());
+        List<PsiModule> result = new ArrayList<>();
+
+        if (fileType == interfaceOrImplementation || fileType == both || fileType == interfaceOnly) {
+            result.addAll(interfaces.values());
+        }
+
+        if (fileType != interfaceOnly) {
+            for (Map.Entry<String, PsiModule> entry : implementations.entrySet()) {
+                if (fileType == both || fileType == implementationOnly || !interfaces.containsKey(entry.getKey())) {
+                    result.add(entry.getValue());
+                }
             }
         }
 
