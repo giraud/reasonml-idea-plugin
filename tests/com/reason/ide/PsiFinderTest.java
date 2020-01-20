@@ -3,6 +3,7 @@ package com.reason.ide;
 import java.util.*;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiModule;
 
@@ -22,6 +23,20 @@ public class PsiFinderTest extends BasePlatformTestCase {
         assertEquals("let api = 1", modules.iterator().next().getExpressions().iterator().next().getText());
     }
 
+    public void testFindRelatedFile() {
+        FileBase intf = (FileBase) myFixture.configureByText("A.rei", "module Router: { let x = 1; };");
+        FileBase impl = (FileBase) myFixture.configureByText("A.re", "module Router: { let x = 1; };");
+        FileBase implOnly = (FileBase) myFixture.configureByText("B.re", "module Router: { let x = 1; };");
+
+        FileBase implRelated = PsiFinder.getInstance(getProject()).findRelatedFile(intf);
+        FileBase intfRelated = PsiFinder.getInstance(getProject()).findRelatedFile(impl);
+        FileBase onlyRelated = PsiFinder.getInstance(getProject()).findRelatedFile(implOnly);
+
+        assertEquals("A.re", implRelated.getName());
+        assertEquals("A.rei", intfRelated.getName());
+        assertNull(onlyRelated);
+    }
+
     public void testException() {
         myFixture.configureByText("A.rei", "exception Ex;");
         myFixture.configureByText("A.re", "exception Ex;");
@@ -34,4 +49,6 @@ public class PsiFinderTest extends BasePlatformTestCase {
         assertEquals("rei", intf2.getContainingFile().getFileType().getDefaultExtension());
         assertEquals("re", impl.getContainingFile().getFileType().getDefaultExtension());
     }
+
+
 }
