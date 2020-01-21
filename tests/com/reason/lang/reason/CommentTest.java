@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 
 public class CommentTest extends BaseParsingTestCase {
@@ -10,14 +11,14 @@ public class CommentTest extends BaseParsingTestCase {
     }
 
     public void testConstant() {
-        PsiFile psiFile = parseCode("/* */");
+        FileBase psiFile = parseCode("/* */");
         assertInstanceOf(firstElement(psiFile), PsiComment.class);
     }
 
     public void testConstant2() {
-        PsiFile psiFile = parseCode("/* \"this is a string */\" */");
+        FileBase psiFile = parseCode("/* \"this is a string */\" */");
         assertInstanceOf(firstElement(psiFile), PsiComment.class);
-        assertEquals(psiFile.getChildren().length, 1);
+        assertEquals(1, childrenCount(psiFile));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiTry;
 
@@ -23,16 +23,13 @@ public class TryWithTest extends BaseParsingTestCase {
     }
 
     public void testTryIn() {
-        PsiFile file = parseCode("try x with Not_found -> assert false in otherExpression");
-        PsiElement[] children = file.getChildren();
-
-        assertEquals(1, children.length);
+        FileBase file = parseCode("try x with Not_found -> assert false in otherExpression");
+        assertEquals(1, childrenCount(file));
     }
 
     public void testTryLet() {
-        PsiFile psiFileModule = parseCode("let e = try let t = 6 with Not_found -> ()");
-        PsiElement[] children = psiFileModule.getChildren();
-        assertEquals(1, children.length);
+        FileBase file = parseCode("let e = try let t = 6 with Not_found -> ()");
+        assertEquals(1, childrenCount(file));
     }
 
     public void testTry() {

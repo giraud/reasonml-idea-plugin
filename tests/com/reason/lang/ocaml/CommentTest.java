@@ -2,6 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 
 @SuppressWarnings("ConstantConditions")
@@ -16,9 +17,9 @@ public class CommentTest extends BaseParsingTestCase {
     }
 
     public void testConstant2() {
-        PsiFile psiFile = parseCode("(* \"this is a string *)\" *)");
+        FileBase psiFile = parseCode("(* \"this is a string *)\" *)");
         assertInstanceOf(firstElement(psiFile), PsiComment.class);
-        assertEquals(psiFile.getChildren().length, 1);
+        assertEquals(1, childrenCount(psiFile));
     }
 
 }

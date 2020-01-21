@@ -13,6 +13,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ModulePath;
@@ -170,7 +171,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @NotNull
     @Override
-    public Collection<PsiLet> getLetExpressions() {
+    public List<PsiLet> getLetExpressions() {
         PsiElement body = getBody();
         return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class);
     }
@@ -339,7 +340,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @Override
     public boolean isInterface() {
-        return false;
+        return ((FileBase) getContainingFile()).isInterface();
     }
 
     @Nullable

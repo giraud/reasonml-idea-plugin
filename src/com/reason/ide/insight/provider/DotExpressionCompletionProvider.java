@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.ui.ListUtil;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Joiner;
 import com.reason.Log;
@@ -20,9 +21,7 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.reason.lang.QNameFinder.includeAll;
@@ -52,7 +51,8 @@ public class DotExpressionCompletionProvider {
                 final Set<String> qualifiedNames = qnameFinder.extractPotentialPaths(element, includeAll, false).
                         stream().
                         map(qname -> {
-                            PsiModule moduleFromQn = psiFinder.findModuleFromQn(qname);
+                            List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qname, interfaceOrImplementation, scope);
+                            PsiModule moduleFromQn =  modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
                             return moduleFromQn == null ? qname : moduleFromQn.getQualifiedName();
                         }).
                         collect(Collectors.toSet());

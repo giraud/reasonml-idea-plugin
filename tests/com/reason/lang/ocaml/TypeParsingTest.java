@@ -50,7 +50,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     public void testChainDef() {
         FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
 
-        assertEquals(1, file.getChildren().length);
+        assertEquals(1, childrenCount(file));
     }
 
     public void testParameterizedType() {

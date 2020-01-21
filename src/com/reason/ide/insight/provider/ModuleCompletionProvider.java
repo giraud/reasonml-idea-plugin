@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+
 public class ModuleCompletionProvider {
     private static final Log LOG = Log.create("insight.module");
 
@@ -55,7 +57,7 @@ public class ModuleCompletionProvider {
                 );
             }
         } else {
-            PsiQualifiedNamedElement foundModule = psiFinder.findModuleFromQn(modulePath.toString());
+            PsiQualifiedNamedElement foundModule = psiFinder.findModulesFromQn(modulePath.toString(), interfaceOrImplementation, scope).get(0);
             if (foundModule != null) {
                 LOG.debug("  Found module", foundModule);
                 Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() : ((PsiInnerModule) foundModule).getModules();

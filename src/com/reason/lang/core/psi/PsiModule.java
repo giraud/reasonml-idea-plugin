@@ -28,4 +28,7 @@ public interface PsiModule extends PsiQualifiedNamedElement, NavigatablePsiEleme
     PsiVal getValExpression(@Nullable String name);
 
     boolean isInterface();
+
+    @NotNull
+    List<PsiLet> getLetExpressions();
 }

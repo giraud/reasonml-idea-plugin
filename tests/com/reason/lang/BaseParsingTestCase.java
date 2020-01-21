@@ -8,6 +8,7 @@ import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +87,11 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     protected PsiElement firstElement(@NotNull PsiFile fileModule) {
-        return fileModule.getFirstChild();
+        return ORUtil.findImmediateFirstChildWithoutClass(fileModule, PsiFakeModule.class);
+    }
+
+    public static int childrenCount(@NotNull FileBase file) {
+        return file.getChildren().length - 1 /*PsiFakeModule*/;
     }
 
     public static <T extends PsiElement> T first(@NotNull Collection<T> collection) {

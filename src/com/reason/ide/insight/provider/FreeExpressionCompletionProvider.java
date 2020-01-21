@@ -25,10 +25,10 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class FreeExpressionCompletionProvider {
 
@@ -74,10 +74,11 @@ public class FreeExpressionCompletionProvider {
 
         // Add paths (opens and local opens for example)
         for (String path : paths) {
-            PsiModule module = psiFinder.findModuleFromQn(path);
+            List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path, interfaceOrImplementation, scope);
+            PsiModule module = modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
             if (module != null) {
-                if (module instanceof FileBase) {
-                    if (module.equals(element.getContainingFile())) {
+                if (module instanceof PsiFakeModule) {
+                    if (module.getContainingFile().equals(element.getContainingFile())) {
                         // if the module is already the containing file, we do nothing,
                         // local expressions will be added after
                         continue;
@@ -105,7 +106,7 @@ public class FreeExpressionCompletionProvider {
 
         while (item != null) {
             if (item instanceof PsiInclude) {
-                PsiModule moduleFromQn = psiFinder.findModuleFromQn(((PsiInclude) item).getQualifiedName());
+                PsiModule moduleFromQn = psiFinder.findModulesFromQn(((PsiInclude) item).getQualifiedName(), interfaceOrImplementation, scope).get(0);
                 if (moduleFromQn != null) {
                     for (PsiNamedElement expression : moduleFromQn.getExpressions()) {
                         resultSet.addElement(LookupElementBuilder.

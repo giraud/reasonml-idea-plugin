@@ -34,6 +34,7 @@ import com.reason.ide.search.index.VariantIndex;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -118,7 +119,7 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiModule> findModules(@NotNull String name, @NotNull ORFileType fileType, @NotNull GlobalSearchScope scope) {
+    public List<PsiModule> findModules(@NotNull String name, @NotNull ORFileType fileType, @NotNull GlobalSearchScope scope) {
         Map<String/*qn*/, PsiModule> implementations = new THashMap<>();
         Map<String/*qn*/, PsiModule> interfaces = new THashMap<>();
 
@@ -133,7 +134,7 @@ public final class PsiFinder {
             }
             for (PsiModule module : modules) {
                 String itemQName = module.getQualifiedName();
-                FileBase itemFile = ((FileBase) module.getContainingFile());
+                //FileBase itemFile = ((FileBase) module.getContainingFile());
                 // in config ?
 
                 if (module.isInterface()) {
@@ -371,29 +372,22 @@ public final class PsiFinder {
         return null;
     }
 
-    @Nullable
-    public PsiModule findModuleFromQn(@Nullable String moduleQName) {
+    @NotNull
+    public List<PsiModule> findModulesFromQn(@Nullable String moduleQName, @NotNull ORFileType fileType, @NotNull GlobalSearchScope scope) {
         if (moduleQName == null) {
-            return null;
+            return Collections.emptyList();
         }
 
-        GlobalSearchScope scope = allScope(m_project);
+        List<PsiModule> result = new ArrayList<>();
 
         // Try qn directly
         Collection<PsiInnerModule> modules = ModuleFqnIndex.getInstance().get(moduleQName.hashCode(), m_project, scope);
         if (!modules.isEmpty()) {
-            if (modules.size() == 1) {
-                PsiInnerModule module = modules.iterator().next();
-                String alias = module.getAlias();
-                return alias == null ? module : findModule(alias, interfaceOrImplementation, scope);
-            }
-
             for (PsiInnerModule module : modules) {
-                if (((FileBase) module.getContainingFile()).isInterface()) {
-                    String alias = module.getAlias();
-                    return alias == null ? module : findModule(alias, interfaceOrImplementation, scope);
-                }
+                String alias = module.getAlias();
+                result.add(alias == null ? module : findModule(alias, fileType, scope));
             }
+            return result;
         }
 
         // Qn not working, maybe because of aliases... try to navigate to each module
@@ -401,32 +395,36 @@ public final class PsiFinder {
         // extract first token of path
         String[] names = moduleQName.split("\\.");
 
-        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], scope);
+        Stream<PsiModule> fileModules = ModuleIndex.getInstance().get(names[0], m_project, scope).stream().filter(module -> module instanceof PsiFakeModule);
+
+        if (names.length == 1) {
+            // No dot in qn, just return file modules
+            result.addAll(fileModules.collect(Collectors.toList()));
+            return result;
+        }
+
+        VirtualFile vFile = FileModuleIndexService.getService().getFile(names[0], scope); // zzz
         if (vFile != null) {
             PsiFile file = PsiManager.getInstance(m_project).findFile(vFile);
             if (file instanceof FileBase) {
-                FileBase fileModule = (FileBase) file;
-                if (1 < names.length) {
-                    PsiModule currentModule = fileModule;
-                    for (int i = 1; i < names.length; i++) {
-                        String innerModuleName = names[i];
-                        currentModule = currentModule.getModuleExpression(innerModuleName);
-                        String alias = currentModule == null ? null : currentModule.getAlias();
-                        if (alias != null) {
-                            currentModule = findModule(alias, interfaceOrImplementation, scope);
-                        }
-                        if (currentModule == null) {
-                            return null;
-                        }
+                PsiModule currentModule = (FileBase) file;
+                for (int i = 1; i < names.length; i++) {
+                    String innerModuleName = names[i];
+                    currentModule = currentModule.getModuleExpression(innerModuleName);
+                    String alias = currentModule == null ? null : currentModule.getAlias();
+                    if (alias != null) {
+                        currentModule = findModule(alias, fileType, scope);
                     }
-                    return currentModule;
+                    if (currentModule == null) {
+                        return result;
+                    }
                 }
-
-                return fileModule;
+                result.add(currentModule);
+                return result;
             }
         }
 
-        return null;
+        return result;
     }
 
     @Nullable
@@ -554,7 +552,7 @@ public final class PsiFinder {
 
     @NotNull
     public String findNamespace(@NotNull PsiModule psiModule, @NotNull GlobalSearchScope scope) {
-        FileBase file = psiModule instanceof PsiInnerModule ? (FileBase) psiModule.getContainingFile() : (FileBase) psiModule;
+        FileBase file = psiModule instanceof FileBase ? (FileBase) psiModule : (FileBase) psiModule.getContainingFile();
         String path = file.getVirtualFile().getPath();
 
         List<FileModuleData> values = FileBasedIndex.getInstance().getValues(IndexKeys.FILE_MODULE, file.asModuleName(), scope);

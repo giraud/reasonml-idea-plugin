@@ -3,6 +3,7 @@ package com.reason.lang.core;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.*;
@@ -12,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class PsiFileHelper {
 
@@ -35,7 +38,8 @@ public class PsiFileHelper {
             if (element instanceof PsiInclude) {
                 // Recursively include everything from referenced module
                 PsiInclude include = (PsiInclude) element;
-                PsiModule includedModule = psiFinder == null ? null : psiFinder.findModuleFromQn(include.getQualifiedName());
+                GlobalSearchScope scope = GlobalSearchScope.allScope(element.getProject());
+                PsiModule includedModule = psiFinder == null ? null : psiFinder.findModulesFromQn(include.getQualifiedName(), interfaceOrImplementation, scope).get(0);
                 if (includedModule != null) {
                     result.addAll(includedModule.getExpressions());
                 }

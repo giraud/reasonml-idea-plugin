@@ -41,7 +41,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     public void testLetBindingWithJsx() {
         PsiFile file = parseCode("let make = p => { render: x => { <div/>; } }");
         PsiElement[] children = file.getChildren();
-        PsiElement element = PsiTreeUtil.nextLeaf(children[0], true);
+        PsiElement element = PsiTreeUtil.nextLeaf(children[1], true);
 
         assertNull(element);
         assertSize(1, expressions(file));

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
@@ -243,6 +244,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     @NotNull
     private Map<String, Integer> getPotentialPaths() {
         QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
+        GlobalSearchScope scope = GlobalSearchScope.allScope(myElement.getProject()); // in api
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
@@ -254,7 +256,8 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                 map(s -> {
                     PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(s);
                     if (moduleAlias == null) {
-                        PsiModule moduleQn = psiFinder.findModuleFromQn(s);
+                        List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(s, interfaceOrImplementation, scope);
+                        PsiModule moduleQn = modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
                         if (moduleQn == null) {
                             // not a module but maybe a let or a parameter
                             PsiLet let = psiFinder.findLetFromQn(s);

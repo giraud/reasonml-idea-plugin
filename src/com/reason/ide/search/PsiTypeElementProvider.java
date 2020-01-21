@@ -12,7 +12,7 @@ public class PsiTypeElementProvider {
         if (element instanceof PsiUpperSymbol)  {
             return ((PsiUpperSymbol) element).isVariant() ? "variant" : "module";
         }
-        if (element instanceof PsiInnerModule) {
+        if (element instanceof PsiModule) {
             return "module";
         }
         if (element instanceof PsiLowerSymbol) {

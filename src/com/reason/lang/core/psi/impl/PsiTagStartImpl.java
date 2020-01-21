@@ -1,32 +1,40 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.PsiFileHelper;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiTagProperty;
+import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     public PsiTagStartImpl(@NotNull ASTNode node) {
@@ -154,7 +162,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
         } else {
             // The tag is a custom component
-            PsiQualifiedNamedElement module = psiFinder.findModuleFromQn(tagName.getText());
+            PsiModule module = psiFinder.findModulesFromQn(tagName.getText(), interfaceOrImplementation, allScope(project)).get(0);
             if (module == null) {
                 // If nothing found, look for an inner module in current file
                 String fileModuleName = ((FileBase) tagName.getContainingFile()).asModuleName();
@@ -162,7 +170,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
 
             if (module != null) {
-                Collection<PsiLet> expressions = (module instanceof FileBase) ? PsiFileHelper.getLetExpressions((PsiFile) module) : ((PsiInnerModule) module).getLetExpressions();
+                Collection<PsiLet> expressions = module.getLetExpressions();
                 for (PsiLet expression : expressions) {
                     if ("make".equals(expression.getName())) {
                         PsiFunction function = expression.getFunction();

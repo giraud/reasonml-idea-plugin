@@ -38,11 +38,6 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    public Collection<String> getAllFileModules(@NotNull Project project) {
-        return FileBasedIndex.getInstance().getAllKeys(m_index.getName(), project);
-    }
-
-    @NotNull
     private List<FileModuleData> getValues(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
         if (moduleName == null) {
             return Collections.emptyList();
@@ -52,7 +47,7 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
+    Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) { // zzz DELETE
         if (moduleName == null) {
             return Collections.emptyList();
         }

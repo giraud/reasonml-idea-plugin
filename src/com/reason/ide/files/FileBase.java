@@ -92,6 +92,12 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         return null;
     }
 
+    @NotNull
+    @Override
+    public List<PsiLet> getLetExpressions() {
+        return PsiFileHelper.getLetExpressions(this);
+    }
+
     @Nullable
     @Override
     public PsiLet getLetExpression(@Nullable String name) {

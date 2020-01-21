@@ -50,9 +50,6 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         ParserScope fileScope = ParserScope.markRoot(builder);
 
         ParserState state = new ParserState(builder, fileScope);
-        if (m_types instanceof ORTypes) {
-            state.add(mark(builder, file, ((ORTypes) m_types).C_FAKE_MODULE).complete()).popEnd();
-        }
         parseFile(builder, state);
 
         // if we have a scope at last position in a file, without SEMI, we need to handle it here
@@ -61,6 +58,10 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         }
 
         fileScope.end();
+
+        if (m_types instanceof ORTypes) {
+            state.add(mark(builder, file, ((ORTypes) m_types).C_FAKE_MODULE).complete()).popEnd();
+        }
 
         exit_section_(builder, 0, m, elementType, true, true, TRUE_CONDITION);
     }

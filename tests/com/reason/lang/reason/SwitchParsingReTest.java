@@ -20,7 +20,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     public void testPatternUSymbol() {
         FileBase f = parseCode("switch (x) { | Variant1(x) => x; (); | Variant2 => () }");
 
-        assertSize(1, f.getChildren());
+        assertEquals(1, childrenCount(f));
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
         assertNotNull(switch_);
 
@@ -49,7 +49,7 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     public void testPatternOption() {
         FileBase f = parseCode("switch (x) { | Some(x) => x; (); | None => () }");
 
-        assertSize(1, f.getChildren());
+        assertEquals(1, childrenCount(f));
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(f, PsiSwitch.class));
         assertNotNull(switch_);
 
@@ -120,8 +120,8 @@ public class SwitchParsingReTest extends BaseParsingTestCase {
     }
 
     public void testReact() {
-        PsiFile psiFile = parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }");
-        assertSize(1, psiFile.getChildren());
+        FileBase psiFile = parseCode("switch (reasonStateUpdate) { | NoUpdate => (None, curTotalState) | Update(nextReasonState) => ( None, {\"reasonState\": nextReasonState}, ) }");
+        assertEquals(1, childrenCount(psiFile));
         PsiSwitch e = (PsiSwitch) psiFile.getChildren()[0];
 
         assertEquals("(reasonStateUpdate)", e.getCondition().getText());

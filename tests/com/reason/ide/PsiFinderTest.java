@@ -1,7 +1,9 @@
 package com.reason.ide;
 
 import java.util.*;
+import com.intellij.openapi.util.text.NaturalComparator;
 import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
@@ -14,13 +16,25 @@ import static com.reason.lang.core.ORFileType.*;
 public class PsiFinderTest extends BasePlatformTestCase {
 
     public void testModuleLet() {
-        myFixture.configureByText("ReasonReact.rei", "module Router: { let api = 1; };");
-        myFixture.configureByText("ReasonReact.re", "module Router: { let implRE = 1; };");
+        myFixture.configureByText("ReasonReact.rei", "module Router: { type api;  };");
+        myFixture.configureByText("ReasonReact.re", "module Router = { type impl; };");
 
-        Collection<PsiModule> modules = PsiFinder.getInstance(getProject()).findModules("Router", interfaceOrImplementation, allScope(getProject()));
+        GlobalSearchScope scope = allScope(getProject());
+        List<PsiModule> modulesA = PsiFinder.getInstance(getProject()).findModules("Router", interfaceOnly, scope);
+        List<PsiModule> modulesB = PsiFinder.getInstance(getProject()).findModules("Router", implementationOnly, scope);
+        List<PsiModule> modulesC = PsiFinder.getInstance(getProject()).findModules("Router", interfaceOrImplementation, scope);
+        List<PsiModule> modulesD = PsiFinder.getInstance(getProject()).findModules("Router", both, scope);
 
-        assertSize(1, modules);
-        assertEquals("let api = 1", modules.iterator().next().getExpressions().iterator().next().getText());
+        assertSize(1, modulesA);
+        assertEquals("type api", modulesA.get(0).getExpressions().iterator().next().getText());
+
+        assertSize(1, modulesB);
+        assertEquals("type impl", modulesB.get(0).getExpressions().iterator().next().getText());
+
+        assertSize(1, modulesC);
+        assertEquals("type api", modulesC.get(0).getExpressions().iterator().next().getText());
+
+        assertSize(2, modulesD);
     }
 
     public void testFindRelatedFile() {
@@ -37,6 +51,17 @@ public class PsiFinderTest extends BasePlatformTestCase {
         assertNull(onlyRelated);
     }
 
+    public void testFindModuleByQn() {
+        myFixture.configureByText("a.rei", "module A: { let x = 1; };");
+        myFixture.configureByText("A.re", "module A = { let x = 1; };");
+
+        List<PsiModule> fileModules = PsiFinder.getInstance(getProject()).findModulesFromQn("A", both, allScope(getProject()));
+        List<PsiModule> innerModules = PsiFinder.getInstance(getProject()).findModulesFromQn("A.A", both, allScope(getProject()));
+
+        assertSize(2, fileModules);
+        assertSize(2, innerModules);
+    }
+
     public void testException() {
         myFixture.configureByText("A.rei", "exception Ex;");
         myFixture.configureByText("A.re", "exception Ex;");
@@ -49,6 +74,4 @@ public class PsiFinderTest extends BasePlatformTestCase {
         assertEquals("rei", intf2.getContainingFile().getFileType().getDefaultExtension());
         assertEquals("re", impl.getContainingFile().getFileType().getDefaultExtension());
     }
-
-
 }

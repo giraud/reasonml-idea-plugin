@@ -14,16 +14,12 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.impl.PsiTokenStub;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlLanguage;
 
 public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiModule, StubBasedPsiElement<PsiModuleStub> {
-
-    @Nullable
-    private ModulePath m_modulePath = null;
 
     //region Constructors
     public PsiFakeModule(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -43,6 +39,16 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return null;  // TODO implement method
+    }
+
+    @Override
+    public boolean canBeDisplayed() {
+        return false;
+    }
+
+    @Override
+    public void navigate(boolean requestFocus) {
+        getContainingFile().navigate(requestFocus);
     }
 
     @Nullable
@@ -66,6 +72,12 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @Override
     public Collection<PsiNameIdentifierOwner> getExpressions() {
         return ((FileBase) getContainingFile()).getExpressions();
+    }
+
+    @NotNull
+    @Override
+    public List<PsiLet> getLetExpressions() {
+        return ((FileBase) getContainingFile()).getLetExpressions();
     }
 
     @Nullable
@@ -119,6 +131,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @Nullable
     @Override
     public String toString() {
-        return "Fake Module";
+        return "Fake Module (" + getContainingFile().getName() + ")";
     }
 }

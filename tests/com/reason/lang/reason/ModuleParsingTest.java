@@ -1,11 +1,13 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiFile;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiInnerModule;
 
 import java.util.Collection;
 
+@SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends BaseParsingTestCase {
     public ModuleParsingTest() {
         super("module", "re", new RmlParserDefinition());
@@ -50,7 +52,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleOpenVariant() {
-        PsiFile file = parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
-        assertEquals(6, file.getChildren().length);
+        FileBase file = parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
+        assertEquals(6, childrenCount(file));
     }
 }

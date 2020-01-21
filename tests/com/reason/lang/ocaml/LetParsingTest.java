@@ -1,15 +1,18 @@
 package com.reason.lang.ocaml;
 
+import java.util.*;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
@@ -97,10 +100,10 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testLikeModule() {
-        PsiFile file = parseCode("let module Repr = (val repr : S)");
+        FileBase file = parseCode("let module Repr = (val repr : S)");
         PsiInnerModule module = first(moduleExpressions(file));
 
-        assertEquals(1, file.getChildren().length);
+        assertEquals(1, childrenCount(file));
         assertEquals("Repr", module.getName());
     }
 
@@ -112,8 +115,8 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testCase1() {
-        FileBase file = parseCode("let format_open {o_loc; o_name; o_items; _} = " +
-                "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)");
+        FileBase file = parseCode("let format_open {o_loc; o_name; o_items; _} = "
+                                          + "Printf.printf \"O|%s|%s|%s\\n\" (format_location o_loc) o_name (Util.join_list \", \" !o_items)");
         PsiLet e = first(letExpressions(file));
 
         PsiLetBinding binding = e.getBinding();
@@ -178,5 +181,4 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("Dummy.root.inner", inner.getQualifiedName());
         assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions().iterator().next()).getQualifiedName());
     }
-
 }
