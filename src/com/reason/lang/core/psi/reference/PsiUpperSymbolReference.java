@@ -7,6 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReferenceBase;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.ResolveResult;
@@ -90,6 +91,16 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         }
 
         return ResolveResult.EMPTY_ARRAY;
+    }
+
+    @Nullable
+    @Override
+    public PsiElement resolve() {
+        ResolveResult[] resolveResults = multiResolve(false);
+        if (resolveResults.length > 1) {
+            LOG.debug("Can't resolve element because too many results", resolveResults);
+        }
+        return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
     }
 
     @Override
@@ -180,6 +191,11 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         @Override
         public boolean isValidResult() {
             return true;
+        }
+
+        @Override
+        public String toString() {
+            return m_referencedIdentifier instanceof PsiNamedElement ? ((PsiNamedElement) m_referencedIdentifier).getName() : m_referencedIdentifier.getText();
         }
     }
 }

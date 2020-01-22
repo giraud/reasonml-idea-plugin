@@ -29,13 +29,14 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
 
     @NotNull
     public PsiModuleStub createStub(@NotNull final PsiFakeModule psi, final StubElement parentStub) {
-        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isComponent());
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isComponent(), psi.isInterface());
     }
 
     public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isComponent());
+        dataStream.writeBoolean(stub.isInterface());
     }
 
     @NotNull
@@ -43,15 +44,26 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
         StringRef moduleName = dataStream.readName();
         String qname = dataStream.readUTFFast();
         boolean isComponent = dataStream.readBoolean();
-        String alias = null;
+        boolean isInterface = dataStream.readBoolean();
 
-        return new PsiModuleStub(parentStub, this, moduleName, qname, alias, isComponent);
+        return new PsiModuleStub(parentStub, this, moduleName, qname, null, isComponent, isInterface);
     }
 
     public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.MODULES, name);
+        }
+
+        if (!stub.isInterface()) {
+            // Only implementation files can be indexed, otherwise hash won't be unique
+            String fqn = stub.getQualifiedName();
+            if (fqn != null) {
+                sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
+                if (stub.isComponent()) {
+                    sink.occurrence(IndexKeys.MODULES_COMP, fqn);
+                }
+            }
         }
     }
 

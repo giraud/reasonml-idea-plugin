@@ -162,7 +162,8 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
         } else {
             // The tag is a custom component
-            PsiModule module = psiFinder.findModulesFromQn(tagName.getText(), interfaceOrImplementation, allScope(project)).get(0);
+            List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(tagName.getText(), interfaceOrImplementation, allScope(project));
+            PsiModule module = modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
             if (module == null) {
                 // If nothing found, look for an inner module in current file
                 String fileModuleName = ((FileBase) tagName.getContainingFile()).asModuleName();

@@ -9,6 +9,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiQualifiedNamedElement;
+import com.intellij.psi.ResolveResult;
 
 public class Log {
 
@@ -78,6 +79,12 @@ public class Log {
     public void debug(String comment, @Nullable PsiFile[] t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.length + " "));
+        }
+    }
+
+    public void debug(String comment, @Nullable ResolveResult[] t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "" : t.length + " [" + Joiner.join(", ", t) + "]"));
         }
     }
 

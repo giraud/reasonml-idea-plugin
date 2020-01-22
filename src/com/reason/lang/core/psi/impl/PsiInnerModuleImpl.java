@@ -322,6 +322,18 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         return ModuleHelper.isComponent(getBody());
     }
 
+    @NotNull
+    @Override
+    public PsiElement getNavigationElement() {
+        if (isComponent()) {
+            PsiLet make = getLetExpression("make");
+            if (make != null) {
+                return make;
+            }
+        }
+        return super.getNavigationElement();
+    }
+
     @Override
     @Nullable
     public String getAlias() {

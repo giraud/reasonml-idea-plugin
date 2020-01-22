@@ -14,4 +14,13 @@ public class ResolveModuleElementTest extends BasePlatformTestCase {
         assertEquals("A.A1", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
+    public void testWithAliasAndInterface() {
+        myFixture.configureByText("C.rei", "module A1 = {};");
+        myFixture.configureByText("C.re", "module A1 = {};");
+        myFixture.configureByText("D.re", "module X = C; X.A1<caret>);");
+
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("C.A1", ((PsiQualifiedNamedElement) elementAtCaret.getParent()).getQualifiedName());
+    }
+
 }
