@@ -10,12 +10,15 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Log;
 import com.reason.Platform;
 import com.reason.bs.BsProcess;
 
 import static com.reason.Platform.getOsPrefix;
 
 public class InsightManagerImpl implements InsightManager {
+
+    private static final Log LOG = Log.create("hints");
 
     @NotNull
     AtomicBoolean isDownloading = new AtomicBoolean(false);
@@ -80,11 +83,18 @@ public class InsightManagerImpl implements InsightManager {
     public File getRincewindFileExcludingVersion(@NotNull VirtualFile sourceFile, @NotNull String excludedVersion) {
         String filename = getRincewindFilenameExcludingVersion(sourceFile, excludedVersion);
         if (filename == null) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("No rincewind file found for " + sourceFile + " (excluded: " + excludedVersion + ")");
+            }
             return null;
         }
 
         File pluginLocation = Platform.getPluginLocation();
-        return new File(pluginLocation == null ? System.getProperty("java.io.tmpdir") : pluginLocation.getPath(), filename);
+        String pluginPath = pluginLocation == null ? System.getProperty("java.io.tmpdir") : pluginLocation.getPath();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Rincewind filename: " + filename + " at " + pluginPath);
+        }
+        return new File(pluginPath, filename);
     }
 
     @Nullable

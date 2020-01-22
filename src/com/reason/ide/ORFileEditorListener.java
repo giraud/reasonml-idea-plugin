@@ -1,5 +1,11 @@
 package com.reason.ide;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
@@ -7,7 +13,12 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -21,14 +32,6 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
 import com.reason.ide.hints.InferredTypesService;
-import org.jetbrains.annotations.NotNull;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Listen to editor events and query merlin for types when editor gets the focus.
@@ -155,8 +158,9 @@ public class ORFileEditorListener implements FileEditorManagerListener {
                 if (userData != null) {
                     VirtualFile file = FileDocumentManager.getInstance().getFile(document);
                     if (file != null) {
-                        TextEditor editor = (TextEditor) FileEditorManager.getInstance(m_project).getSelectedEditor(file);
-                        if (editor != null) {
+                        FileEditor selectedEditor = FileEditorManager.getInstance(m_project).getSelectedEditor(file);
+                        if (selectedEditor instanceof TextEditor) {
+                            TextEditor editor = (TextEditor) selectedEditor;
                             LogicalPosition cursorPosition = editor.getEditor().offsetToLogicalPosition(event.getOffset());
                             int direction = newLineCount - m_oldLinesCount;
                             userData.move(file, cursorPosition, direction);

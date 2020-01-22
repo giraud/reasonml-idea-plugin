@@ -69,6 +69,6 @@ public class PsiUpperSymbolImpl extends PsiToken<ORTypes> implements PsiUpperSym
     @Override
     public String toString() {
         String name = getName();
-        return "USymbol " + (name == null || name.isEmpty() ? "<" + ((FileBase) getContainingFile()).asModuleName() + ">" : name);
+        return "USymbol " + (name == null || name.isEmpty() ? "<" + ((FileBase) getContainingFile()).getModuleName() + ">" : name);
     }
 }

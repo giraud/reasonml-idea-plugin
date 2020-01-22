@@ -1,18 +1,25 @@
 package com.reason.lang.core;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiDirective;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiVal;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
@@ -35,12 +42,12 @@ public class PsiFileHelper {
 
     private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull List<PsiNameIdentifierOwner> result) {
         while (element != null) {
-            if (element instanceof PsiInclude) {
+            if (element instanceof PsiInclude && psiFinder != null) {
                 // Recursively include everything from referenced module
                 PsiInclude include = (PsiInclude) element;
                 GlobalSearchScope scope = GlobalSearchScope.allScope(element.getProject());
-                PsiModule includedModule = psiFinder == null ? null : psiFinder.findModulesFromQn(include.getQualifiedName(), interfaceOrImplementation, scope).get(0);
-                if (includedModule != null) {
+                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(include.getQualifiedName(), interfaceOrImplementation, scope);
+                for (PsiModule includedModule : modulesFromQn) {
                     result.addAll(includedModule.getExpressions());
                 }
             }
@@ -117,5 +124,4 @@ public class PsiFileHelper {
     public static List<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
     }
-
 }

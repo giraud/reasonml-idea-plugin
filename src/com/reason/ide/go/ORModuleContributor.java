@@ -1,105 +1,57 @@
 package com.reason.ide.go;
 
-import java.util.*;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.navigation.ChooseByNameContributor;
-import com.intellij.navigation.ItemPresentation;
+import com.intellij.navigation.ChooseByNameContributorEx;
+import com.intellij.navigation.GotoClassContributor;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.ArrayUtil;
-import com.reason.Icons;
-import com.reason.ide.IconProvider;
+import com.intellij.util.Processor;
+import com.intellij.util.indexing.FindSymbolParameters;
+import com.intellij.util.indexing.IdFilter;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.index.ModuleIndex;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
 
-import static com.intellij.psi.search.GlobalSearchScope.*;
-
 // Implements the goto class
-public class ORModuleContributor implements ChooseByNameContributor {
-    @NotNull
+public class ORModuleContributor implements GotoClassContributor, ChooseByNameContributorEx {
+
     @Override
-    public NavigationItem[] getItemsByName(@NotNull String name, String pattern, @NotNull Project project, boolean includeNonProjectItems) {
-        ArrayList<NavigationItem> items = new ArrayList<>();
-
-        GlobalSearchScope scope = includeNonProjectItems ? allScope(project) : projectScope(project);
-
-        Collection<PsiModule> modules = PsiFinder.getInstance(project).findModules(name, ORFileType.both, scope);
-        for (PsiModule module : modules) {
-            items.add(new MlModuleNavigationItem(module));
+    public void processNames(@NotNull Processor<String> processor, @NotNull GlobalSearchScope scope, @Nullable IdFilter filter) {
+        Project project = scope.getProject();
+        if (project != null) {
+            ModuleIndex.getInstance().processAllKeys(project, processor);
         }
-
-        return items.toArray(new NavigationItem[0]);
     }
 
-    @NotNull
     @Override
-    public String[] getNames(@NotNull Project project, boolean includeNonProjectItems) {
-        Collection<String> allModuleNames = ModuleIndex.getInstance().getAllKeys(project);
-        return ArrayUtil.toStringArray(new HashSet<>(allModuleNames));
+    public void processElementsWithName(@NotNull String name, @NotNull Processor<NavigationItem> processor, @NotNull FindSymbolParameters parameters) {
+        Project project = parameters.getProject();
+        GlobalSearchScope scope = parameters.getSearchScope();
+
+        for (PsiModule psiModule : PsiFinder.getInstance(project).findModulesbyName(name, ORFileType.both, null, scope)) {
+            processor.process(psiModule);
+        }
     }
 
-    private static class MlModuleNavigationItem implements NavigationItem {
-        private final PsiModule m_element;
-
-        MlModuleNavigationItem(PsiModule element) {
-            m_element = element;
+    @Nullable
+    @Override
+    public String getQualifiedName(NavigationItem item) {
+        if (item instanceof FileBase) {
+            return ((FileBase) item).getModuleName();
+        } else if (item instanceof PsiQualifiedNamedElement) {
+            return ((PsiQualifiedNamedElement) item).getQualifiedName();
         }
+        return null;
+    }
 
-        @Nullable
-        @Override
-        public String getName() {
-            return m_element.getName();
-        }
-
-        @Nullable
-        @Override
-        public ItemPresentation getPresentation() {
-            return new ItemPresentation() {
-                @Nullable
-                @Override
-                public String getPresentableText() {
-                    return m_element.getName();
-                }
-
-                @NotNull
-                @Override
-                public String getLocationString() {
-                    String shortLocation = FileHelper.shortLocation(m_element.getProject(), m_element.getContainingFile().getVirtualFile().getPath());
-                    return (m_element instanceof PsiInnerModule ? m_element.getQualifiedName() + ", " : "") + shortLocation;
-                }
-
-                @NotNull
-                @Override
-                public Icon getIcon(boolean unused) {
-                    PsiFile containingFile = m_element.getContainingFile();
-                    Icon icon = IconProvider.getFileModuleIcon((FileBase) containingFile);
-                    return icon == null ? Icons.MODULE : icon;
-                }
-            };
-        }
-
-        @Override
-        public void navigate(boolean requestFocus) {
-            m_element.navigate(requestFocus);
-        }
-
-        @Override
-        public boolean canNavigate() {
-            return m_element.canNavigate();
-        }
-
-        @Override
-        public boolean canNavigateToSource() {
-            return m_element.canNavigateToSource();
-        }
+    @Nullable
+    @Override
+    public String getQualifiedNameSeparator() {
+        return null;
     }
 }

@@ -108,7 +108,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                             namespace = bsConfig.getNamespace();
                         }
                     }
-                    String moduleName = psiFile.asModuleName();
+                    String moduleName = psiFile.getModuleName();
 
                     FileModuleData value = new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()),
                                                               psiFile.isInterface(), psiFile.isComponent());

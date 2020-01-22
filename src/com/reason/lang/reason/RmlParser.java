@@ -981,6 +981,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 } else if (parenScope.isResolution(clazzConstructor)) {
                     state.updateCurrentResolution(clazzConstructor);
                 }
+            } else if (nextTokenType == m_types.COLON) {
+                if (state.isCurrentResolution(let)) {
+                    // let (op|>)<|: ...
+                    //parenScope.updateCompositeElementType(m_types.C_OPERATOR);
+                    state.updateCurrentResolution(letNamed).complete();
+                }
             }
 
             parenScope.complete();

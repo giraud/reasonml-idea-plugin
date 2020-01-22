@@ -1,8 +1,10 @@
 package com.reason.ide.files;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
@@ -14,14 +16,8 @@ import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 
 public abstract class FileBase extends PsiFileBase implements PsiModule {
 
@@ -33,8 +29,9 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         m_moduleName = ORUtil.fileNameToModuleName(getName());
     }
 
-    @NotNull
-    public String asModuleName() {
+    @Nullable
+    @Override
+    public String getModuleName() {
         return m_moduleName;
     }
 
@@ -48,12 +45,14 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
 
     @Override
     public PsiElement getNavigationElement() {
+        /* ClassCastException ??
         if (isComponent()) {
             PsiLet make = getLetExpression("make");
             if (make != null) {
                 return make;
             }
         }
+        */
         return super.getNavigationElement();
     }
 
@@ -73,7 +72,7 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
     }
 
     @NotNull
-    public <T extends PsiNameIdentifierOwner> Collection<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+    public <T extends PsiNameIdentifierOwner> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 
         if (name != null) {
@@ -126,8 +125,15 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
 
     @Nullable
     @Override
+    public PsiType getTypeExpression(@Nullable String name) {
+        List<PsiType> expressions = getExpressions(name, PsiType.class);
+        return expressions.isEmpty() ? null : expressions.iterator().next();
+    }
+
+    @Nullable
+    @Override
     public String getQualifiedName() {
-        return asModuleName();
+        return getModuleName();
     }
 
     @NotNull
@@ -142,12 +148,11 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
     }
 
     public boolean isInterface() {
-        FileType fileType = getFileType();
-        return fileType instanceof RmlInterfaceFileType || fileType instanceof OclInterfaceFileType;
+        return FileHelper.isInterface(getFileType());
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -155,11 +160,11 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
             return false;
         }
         FileBase fileBase = (FileBase) o;
-        return m_moduleName.equals(fileBase.m_moduleName);
+        return m_moduleName.equals(fileBase.m_moduleName) && isInterface() == fileBase.isInterface();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(m_moduleName);
+        return Objects.hash(m_moduleName, isInterface());
     }
 }

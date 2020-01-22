@@ -1,13 +1,13 @@
 package com.reason.lang.core.stub;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiInnerModule;
-import org.jetbrains.annotations.NotNull;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 
-public class PsiVariantDeclarationStub extends NamedStubBase<PsiInnerModule> {
+public class PsiVariantDeclarationStub extends NamedStubBase<PsiVariantDeclaration> {
 
     private final String m_qname;
 
@@ -24,5 +24,4 @@ public class PsiVariantDeclarationStub extends NamedStubBase<PsiInnerModule> {
     public String getQualifiedName() {
         return m_qname;
     }
-
 }

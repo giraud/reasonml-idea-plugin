@@ -1,11 +1,11 @@
 package com.reason.lang.core.stub;
 
-import com.intellij.psi.PsiParameter;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
-import org.jetbrains.annotations.NotNull;
+import com.reason.lang.core.psi.PsiParameter;
 
 public class PsiParameterStub extends NamedStubBase<PsiParameter> {
     private final String m_qname;

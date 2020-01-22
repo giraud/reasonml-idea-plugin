@@ -30,8 +30,5 @@ public interface PsiInnerModule extends PsiNameIdentifierOwner, PsiModule, StubB
     @Nullable
     PsiExternal getExternalExpression(@NotNull String name);
 
-    @Nullable
-    PsiType getTypeExpression(@NotNull String name);
-
     boolean isComponent();
 }

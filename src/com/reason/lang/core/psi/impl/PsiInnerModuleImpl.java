@@ -70,6 +70,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     }
     //endregion
 
+    @NotNull
+    @Override
+    public String getModuleName() {
+        return getName();
+    }
+
     @Nullable
     @Override
     public String getQualifiedName() {
@@ -136,9 +142,13 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            PsiModule moduleAlias = PsiFinder.getInstance(getProject()).findModule(alias, interfaceOrImplementation, GlobalSearchScope.allScope(getProject()));
-            if (moduleAlias != null) {
-                result = moduleAlias.getExpressions();
+            Set<PsiModule> modulesbyName = PsiFinder.getInstance(getProject())
+                    .findModulesbyName(alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(getProject()));
+            if (!modulesbyName.isEmpty()) {
+                PsiModule moduleAlias = modulesbyName.iterator().next();
+                if (moduleAlias != null) {
+                    result = moduleAlias.getExpressions();
+                }
             }
         } else {
             PsiSignature signature = getSignature();

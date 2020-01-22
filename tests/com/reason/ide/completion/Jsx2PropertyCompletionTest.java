@@ -1,10 +1,9 @@
 package com.reason.ide.completion;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class Jsx2PropertyCompletionTest extends BasePlatformTestCase {

@@ -5,13 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -136,6 +134,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
 
         Project project = getProject();
         PsiFinder psiFinder = PsiFinder.getInstance(project);
+        GlobalSearchScope scope = allScope(project);
 
         // find tag 'make' expression
         PsiElement tagName = findChildByClass(PsiUpperSymbol.class);
@@ -143,12 +142,12 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             // no tag name, it's not a custom tag
             tagName = findChildByClass(PsiLowerSymbol.class);
             if (tagName != null) {
-                VirtualFile vFile = FileModuleIndexService.getService().getFile("ReactDOMRe", allScope(project));
-                FileBase reactDOMRe = vFile == null ? null : (FileBase) PsiManager.getInstance(project).findFile(vFile);
+                Set<PsiModule> modules = psiFinder.findModulesbyName("ReactDOMRe", interfaceOrImplementation, module -> module instanceof FileBase, scope);
+                PsiModule reactDOMRe = modules.isEmpty() ? null : modules.iterator().next();
                 if (reactDOMRe != null) {
-                    Collection<PsiType> props = reactDOMRe.getExpressions("props", PsiType.class);
-                    if (props.size() == 1) {
-                        PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props.iterator().next(), PsiTypeBinding.class);
+                    PsiType props = reactDOMRe.getTypeExpression("props");
+                    if (props != null) {
+                        PsiTypeBinding binding = PsiTreeUtil.getStubChildOfType(props, PsiTypeBinding.class);
                         if (binding != null) {
                             PsiRecord record = PsiTreeUtil.getStubChildOfType(binding, PsiRecord.class);
                             if (record != null) {
@@ -162,12 +161,12 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
         } else {
             // The tag is a custom component
-            List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(tagName.getText(), interfaceOrImplementation, allScope(project));
-            PsiModule module = modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
+            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(tagName.getText(), interfaceOrImplementation, scope);
+            PsiModule module = modulesFromQn.isEmpty() ? null : modulesFromQn.iterator().next();
             if (module == null) {
                 // If nothing found, look for an inner module in current file
-                String fileModuleName = ((FileBase) tagName.getContainingFile()).asModuleName();
-                module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), allScope(project));
+                String fileModuleName = ((FileBase) tagName.getContainingFile()).getModuleName();
+                module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), scope);
             }
 
             if (module != null) {

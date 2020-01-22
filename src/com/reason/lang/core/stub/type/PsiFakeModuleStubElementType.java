@@ -9,10 +9,9 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiFakeModule;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.impl.PsiInnerModuleImpl;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypesUtil;
 
@@ -28,8 +27,9 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
     }
 
     @NotNull
-    public PsiModuleStub createStub(@NotNull final PsiFakeModule psi, final StubElement parentStub) {
-        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isComponent(), psi.isInterface());
+    public PsiModuleStub createStub(@NotNull final PsiFakeModule fakeModule, final StubElement parentStub) {
+        FileBase file = (FileBase) fakeModule.getContainingFile();
+        return new PsiModuleStub(parentStub, this, file.getModuleName(), file.getModuleName(), file.getAlias(), file.isComponent(), file.isInterface());
     }
 
     public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
@@ -55,14 +55,11 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
             sink.occurrence(IndexKeys.MODULES, name);
         }
 
-        if (!stub.isInterface()) {
-            // Only implementation files can be indexed, otherwise hash won't be unique
-            String fqn = stub.getQualifiedName();
-            if (fqn != null) {
-                sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
-                if (stub.isComponent()) {
-                    sink.occurrence(IndexKeys.MODULES_COMP, fqn);
-                }
+        String fqn = stub.getQualifiedName();
+        if (fqn != null) {
+            sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
+            if (stub.isComponent()) {
+                sink.occurrence(IndexKeys.MODULES_COMP, fqn);
             }
         }
     }

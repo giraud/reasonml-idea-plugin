@@ -1,10 +1,12 @@
 package com.reason.lang;
 
+import java.util.*;
+import java.util.stream.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseQNameFinder implements QNameFinder {
 
@@ -32,8 +34,12 @@ public abstract class BaseQNameFinder implements QNameFinder {
                     break;
                 }
             }
-
         }
         return path;
+    }
+
+    @NotNull
+    protected List<String> extendPathWith(String openName, Set<String> qualifiedNames, String pathExtension) {
+        return qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
     }
 }

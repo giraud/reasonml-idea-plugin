@@ -2,17 +2,18 @@ package com.reason.ide.search;
 
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.indexing.FileBasedIndex;
+import com.intellij.util.indexing.ID;
+import com.reason.Joiner;
 import com.reason.Log;
-import com.reason.ide.files.FileHelper;
+import com.reason.ide.files.FileBase;
 import com.reason.ide.search.index.FileModuleIndex;
+import com.reason.ide.search.index.ModuleIndex;
 import com.reason.ide.search.index.NamespaceIndex;
-import gnu.trove.THashSet;
+import com.reason.lang.core.psi.PsiModule;
 
 public class FileModuleIndexService {
 
@@ -38,115 +39,19 @@ public class FileModuleIndexService {
     }
 
     @NotNull
-    private List<FileModuleData> getValues(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
-        if (moduleName == null) {
-            return Collections.emptyList();
-        }
-
-        return FileBasedIndex.getInstance().getValues(m_index.getName(), moduleName, scope);
-    }
-
-    @NotNull
-    Collection<VirtualFile> getFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) { // zzz DELETE
-        if (moduleName == null) {
-            return Collections.emptyList();
-        }
-
-        return FileBasedIndex.getInstance().getContainingFiles(m_index.getName(), moduleName, scope);
-    }
-
-    @Nullable
-    public VirtualFile getFile(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
-        Collection<VirtualFile> files = getFilesWithName(moduleName, scope);
-        if (1 < files.size()) {
-            for (VirtualFile virtualFile : files) {
-                if (FileHelper.isInterface(virtualFile.getFileType())) {
-                    return virtualFile;
-                }
-            }
-        }
-        return files.isEmpty() ? null : files.iterator().next();
-    }
-
-    @NotNull
-    public String getFilename(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
-        List<FileModuleData> values = getValues(moduleName, scope);
-        if (1 < values.size()) {
-            for (FileModuleData value : values) {
-                if (value.isInterface()) {
-                    return value.getFullname();
-                }
-            }
-        }
-
-        if (values.isEmpty()) {
-            return "<EMPTY>";
-        }
-
-        return values.iterator().next().getFullname();
-    }
-
-    @NotNull
-    public Collection<VirtualFile> getInterfaceFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
-        if (moduleName == null) {
-            return Collections.emptyList();
-        }
-
-        Set<VirtualFile> interfaceFiles = new THashSet<>();
-
-        FileBasedIndex.getInstance().processValues(m_index.getName(), moduleName, null, (file, value) -> {
-            if (value.isInterface()) {
-                interfaceFiles.add(file);
-            }
-            return true;
-        }, scope);
-
-        return interfaceFiles;
-    }
-
-    @NotNull
-    public Collection<VirtualFile> getImplementationFilesWithName(@Nullable String moduleName, @NotNull GlobalSearchScope scope) {
-        if (moduleName == null) {
-            return Collections.emptyList();
-        }
-
-        Set<VirtualFile> files = new THashSet<>();
-
-        FileBasedIndex.ValueProcessor<FileModuleData> valueProcessor = (file, value) -> {
-            if (!value.isInterface()) {
-                files.add(file);
-            }
-            return true;
-        };
-        FileBasedIndex.getInstance().processValues(m_index.getName(), moduleName, null, valueProcessor, scope);
-
-        return files;
-    }
-
-    @NotNull
-    public Collection<IndexedFileModule> getFilesWithoutNamespace(@NotNull Project project, @NotNull GlobalSearchScope scope) {
-        Collection<IndexedFileModule> result = new ArrayList<>();
+    public List<FileBase> getFiles(@NotNull Project project, @NotNull GlobalSearchScope scope) {
+        List<FileBase> result = new ArrayList<>();
 
         FileBasedIndex fileIndex = FileBasedIndex.getInstance();
 
-        for (String key : fileIndex.getAllKeys(m_index.getName(), project)) {
-            List<FileModuleData> values = fileIndex.getValues(m_index.getName(), key, scope);
-            int valuesSize = values.size();
-            if (valuesSize > 2) {
-                LOG.warn("ERROR, size of " + key + " is " + valuesSize);
-            } else {
-                boolean fileFound = false;
-                for (FileModuleData value : values) {
-                    if (valuesSize == 1 || value.isInterface()) {
-                        if (value.getNamespace().isEmpty() && !value.isComponent()) {
-                            fileFound = true;
-                            result.add(value);
-                        }
-                    }
-                }
-                // 2 files and none of them are an interface ! We take the first one
-                if (valuesSize > 1 && !fileFound) {
-                    result.add(values.get(0));
+        ID<String, FileModuleData> indexId = m_index.getName();
+        Collection<String> allKeys = fileIndex.getAllKeys(indexId, project);
+        LOG.debug("all keys (" + allKeys.size() + "): " + Joiner.join(", ", allKeys));
+        for (String key : allKeys) {
+            if (!"Pervasives".equals(key)) {
+                Collection<PsiModule> psiModules = ModuleIndex.getInstance().get(key, project, scope);
+                for (PsiModule psiModule : psiModules) {
+                    result.add((FileBase) psiModule.getContainingFile());
                 }
             }
         }
@@ -179,23 +84,5 @@ public class FileModuleIndexService {
         }
 
         return result;
-    }
-
-    @NotNull
-    Collection<VirtualFile> getComponents(@NotNull Project project, @NotNull GlobalSearchScope scope) {
-        Set<VirtualFile> files = new THashSet<>();
-        FileBasedIndex instance = FileBasedIndex.getInstance();
-
-        Collection<String> keys = instance.getAllKeys(m_index.getName(), project);
-        for (String key : keys) {
-            instance.processValues(m_index.getName(), key, null, (file, value) -> {
-                if (value.isComponent()) {
-                    files.add(file);
-                }
-                return true;
-            }, scope, null);
-        }
-
-        return files;
     }
 }

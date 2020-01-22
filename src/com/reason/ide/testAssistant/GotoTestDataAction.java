@@ -1,5 +1,8 @@
 package com.reason.ide.testAssistant;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -14,12 +17,9 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.ui.awt.RelativePoint;
 import com.reason.ide.ORNotification;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.search.FileModuleIndexService;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
+import com.reason.ide.search.PsiFinder;
+import com.reason.lang.core.ORFileType;
+import com.reason.lang.core.psi.PsiModule;
 
 import static com.intellij.notification.NotificationType.INFORMATION;
 
@@ -51,20 +51,27 @@ public class GotoTestDataAction extends AnAction {
             VirtualFile relatedFile;
 
             GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
-            FileModuleIndexService moduleIndexService = FileModuleIndexService.getService();
+            PsiFinder psiFinder = PsiFinder.getInstance(project);
+            PsiModule relatedModule;
 
-            String[] tokens = splitModuleName(((FileBase) file).asModuleName());
+            String[] tokens = splitModuleName(((FileBase) file).getModuleName());
             if (tokens.length == 1) {
-                relatedFile = moduleIndexService.getFile(tokens[0] + "_test", scope);
-                if (relatedFile == null) {
-                    relatedFile = moduleIndexService.getFile(tokens[0] + "_spec", scope);
+                Set<PsiModule> relatedModules = psiFinder
+                        .findModulesbyName(tokens[0] + "_test", ORFileType.implementationOnly, module -> module instanceof FileBase, scope);
+                relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
+                if (relatedModule == null) {
+                    relatedModules = psiFinder
+                            .findModulesbyName(tokens[0] + "_spec", ORFileType.implementationOnly, module -> module instanceof FileBase, scope);
+                    relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
                 }
             } else {
-                relatedFile = moduleIndexService.getFile(tokens[0], scope);
+                Set<PsiModule> relatedModules = psiFinder
+                        .findModulesbyName(tokens[0], ORFileType.implementationOnly, module -> module instanceof FileBase, scope);
+                relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
             }
 
-            if (relatedFile != null) {
-                return Collections.singletonList(relatedFile.getPath());
+            if (relatedModule != null) {
+                return Collections.singletonList(((FileBase) relatedModule).getVirtualFile().getPath());
             }
         }
 
@@ -74,7 +81,8 @@ public class GotoTestDataAction extends AnAction {
     @NotNull
     private String[] splitModuleName(@NotNull String moduleName) {
         int underscoreIndex = moduleName.lastIndexOf("_");
-        return 0 < underscoreIndex ? new String[]{moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)} : new String[]{moduleName};
+        return 0 < underscoreIndex ? new String[]{moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)} :
+                new String[]{moduleName};
     }
 
     @Nullable

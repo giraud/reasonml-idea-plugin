@@ -8,6 +8,7 @@ import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ProcessingContext;
 import com.reason.Log;
 import com.reason.ide.insight.provider.DotExpressionCompletionProvider;
@@ -29,7 +30,8 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
                 PsiElement position = parameters.getPosition();
                 PsiElement originalPosition = parameters.getOriginalPosition();
                 PsiElement element = originalPosition == null ? position : originalPosition;
-                IElementType prevNodeType = CompletionUtils.getPrevNodeType(element);
+                PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
+                IElementType prevNodeType = prevLeaf == null ? null : prevLeaf.getNode().getElementType();
                 PsiElement parent = element.getParent();
                 PsiElement grandParent = parent == null ? null : parent.getParent();
 
@@ -62,9 +64,14 @@ abstract class CompletionContributor extends com.intellij.codeInsight.completion
 
                 // Just after a DOT
                 if (prevNodeType == types.DOT) {
-                    LOG.debug("the previous element is DOT");
-                    DotExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
-                    return;
+                    // But not in a guaranted uncurried function
+                    assert prevLeaf != null;
+                    PsiElement prevPrevLeaf = prevLeaf.getPrevSibling();
+                    if (prevPrevLeaf != null && prevPrevLeaf.getNode().getElementType() != types.LPAREN) {
+                        LOG.debug("the previous element is DOT");
+                        DotExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
+                        return;
+                    }
                 }
 
                 if (prevNodeType == types.SHARPSHARP) {

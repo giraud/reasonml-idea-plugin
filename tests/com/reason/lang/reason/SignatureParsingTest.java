@@ -1,13 +1,19 @@
 package com.reason.lang.reason;
 
+import java.util.*;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiSignatureItem;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class SignatureParsingTest extends BaseParsingTestCase {
@@ -24,7 +30,8 @@ public class SignatureParsingTest extends BaseParsingTestCase {
     }
 
     public void testTrimming() {
-        PsiLet let = first(letExpressions(parseCode("let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
+        PsiLet let = first(letExpressions(parseCode(
+                "let statelessComponent:\n  string =>\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
         PsiSignature signature = let.getPsiSignature();
         assertEquals("string => componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asString(RmlLanguage.INSTANCE));
@@ -56,9 +63,9 @@ public class SignatureParsingTest extends BaseParsingTestCase {
 
         assertTrue(parameters.get(0).getPsiSignature().asHMSignature().isMandatory(0));
         assertFalse(parameters.get(1).getPsiSignature().asHMSignature().isMandatory(0));
-//        assertFalse(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
+        //        assertFalse(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
         assertEquals("bool", parameters.get(2).getPsiSignature().asString(RmlLanguage.INSTANCE));
-//        assertFalse(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
+        //        assertFalse(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
         assertEquals("float", parameters.get(3).getPsiSignature().asString(RmlLanguage.INSTANCE));
     }
 
@@ -96,7 +103,7 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         List<PsiSignatureItem> signatureItems = ORUtil.findImmediateChildrenOfClass(e.getPsiSignature(), PsiSignatureItem.class);
         assertSize(2, signatureItems);
         assertEquals("unit => unit", signatureItems.iterator().next().getText());
-//TODO        assertEquals("(unit => unit) => animationFrameID", signature.asString(RmlLanguage.INSTANCE));
+        //zzz        assertEquals("(unit => unit) => animationFrameID", signature.asString(RmlLanguage.INSTANCE));
     }
 
     public void testOption() {
@@ -112,5 +119,4 @@ public class SignatureParsingTest extends BaseParsingTestCase {
         ORSignature signature = let.getORSignature();
         assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa", signature.asString(RmlLanguage.INSTANCE));
     }
-
 }

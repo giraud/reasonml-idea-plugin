@@ -20,6 +20,7 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.ui.content.Content;
 import com.reason.Platform;
 import com.reason.ProcessFinishedListener;
@@ -153,7 +154,6 @@ public class BucklescriptImpl implements Bucklescript {
                                 refmtCount(sourceFile, isInterface, format, document, retries + 1);
                             }
                         } else {
-
                             CommandProcessor.getInstance().executeCommand(m_project, () -> {
                                 WriteAction.run(() -> {
                                     document.setText(newText);

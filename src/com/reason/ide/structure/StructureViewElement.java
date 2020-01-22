@@ -270,7 +270,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
 
         @Override
         public void visitElement(PsiElement element) {
-            if (element instanceof PsiStructuredElement) {
+            if (element instanceof PsiStructuredElement && !(element instanceof PsiFakeModule)) {
                 if (((PsiStructuredElement) element).canBeDisplayed()) {
                     if (element instanceof PsiLet) {
                         PsiLet let = (PsiLet) element;

@@ -14,15 +14,14 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.Log;
-import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORElementFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
@@ -32,9 +31,7 @@ import com.reason.lang.ocaml.OclQNameFinder;
 import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
 
-import static com.reason.lang.QNameFinder.includeAll;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.stream.Collectors.*;
+import static com.reason.lang.core.ORFileType.both;
 
 public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUpperSymbol> {
 
@@ -70,7 +67,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         // Find potential paths of current element
         Set<PsiQualifiedNamedElement> potentialPaths = getPotentialPaths();
         if (potentialPaths.isEmpty()) {
-            LOG.debug("  »» No potential path found");
+            LOG.debug(" -> No potential path found");
         } else {
             ResolveResult[] resolveResults = new ResolveResult[potentialPaths.size()];
 
@@ -79,8 +76,8 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                 if (LOG.isDebugEnabled()) {
                     boolean isInnerModule = referencedElement instanceof PsiInnerModule;
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
-                    LOG.debug("  »» " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " " + referencedElement
-                            .getContainingFile());
+                    LOG.debug(" -> " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + referencedElement
+                            .getContainingFile() + " [" + referencedElement.getClass() + "]");
                 }
 
                 resolveResults[i] = new UpperResolveResult(referencedElement);
@@ -127,51 +124,51 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
-        Set<String> paths = qnameFinder.extractPotentialPaths(myElement, includeAll, true);
+        Set<String> paths = qnameFinder.extractPotentialPaths(myElement);
         if (LOG.isTraceEnabled()) {
-            LOG.trace("»» Paths before resolution: " + Joiner.join(", ", paths));
+            LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));
         }
 
-        Set<PsiQualifiedNamedElement> result = paths.stream().
-                map(path -> {
-                    String qn = path + "." + m_referenceName;
-                    PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, scope);
-                    if (variant != null) {
-                        return variant;
-                    }
+        Set<PsiQualifiedNamedElement> resolvedElements = new ArrayListSet<>();
+        for (String path : paths) {
+            String qn = path + "." + m_referenceName;
 
-                    // Trying to resolve variant from the name,
-                    // Variant might be locally open with module name only - and not including type name... qn can't be used
-                    Collection<PsiVariantDeclaration> variants = psiFinder.findVariantByName(path, m_referenceName, scope);
-                    if (variants.size() == 1) {
-                        return variants.iterator().next();
-                    }
-
-                    PsiQualifiedNamedElement exception = psiFinder.findException(qn, interfaceOrImplementation, scope);
-                    if (exception != null) {
-                        return exception;
-                    }
-
-                    PsiQualifiedNamedElement moduleAlias = psiFinder.findModuleAlias(qn);
-                    List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qn, interfaceOrImplementation, scope);
-                    PsiModule module = modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
-                    return moduleAlias == null ? module : moduleAlias;
-                }).
-                filter(Objects::nonNull).
-                collect(toSet());
-
-        List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(m_referenceName, interfaceOrImplementation, scope);
-        for (PsiModule moduleAlias : modulesFromQn) {
-            if (moduleAlias == null) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("»» No module found for qn " + m_referenceName);
-                }
+            PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, scope);
+            if (variant != null) {
+                resolvedElements.add(variant);
             } else {
-                result.add(moduleAlias instanceof PsiFakeModule ? (FileBase) moduleAlias.getContainingFile() : moduleAlias);
+                // Trying to resolve variant from the name,
+                // Variant might be locally open with module name only - and not including type name... qn can't be used
+                Collection<PsiVariantDeclaration> variants = psiFinder.findVariantByName(path, m_referenceName, scope);
+                if (!variants.isEmpty()) {
+                    resolvedElements.addAll(variants);
+                } else {
+                    PsiQualifiedNamedElement exception = psiFinder.findException(qn, both, scope);
+                    if (exception != null) {
+                        resolvedElements.add(exception);
+                    } else {
+                        Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qn, both, scope);
+                        if (!modulesFromQn.isEmpty()) {
+                            resolvedElements.addAll(modulesFromQn);
+                        }
+                    }
+                }
             }
         }
 
-        return result;
+        PsiElement prevSibling = myElement.getPrevSibling();
+        if (prevSibling == null || prevSibling.getNode().getElementType() != m_types.DOT) {
+            Set<PsiModule> modulesReference = psiFinder.findModulesFromQn(m_referenceName, both, scope);
+            if (modulesReference.isEmpty()) {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace(" -> No module found for qn " + m_referenceName);
+                }
+            } else {
+                resolvedElements.addAll(modulesReference);
+            }
+        }
+
+        return resolvedElements;
     }
 
     private static class UpperResolveResult implements ResolveResult {

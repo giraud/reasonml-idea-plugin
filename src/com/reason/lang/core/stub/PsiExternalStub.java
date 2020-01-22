@@ -1,13 +1,13 @@
 package com.reason.lang.core.stub;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStubBase;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
-import com.reason.lang.core.psi.PsiLet;
-import org.jetbrains.annotations.NotNull;
+import com.reason.lang.core.psi.PsiExternal;
 
-public class PsiExternalStub extends NamedStubBase<PsiLet> {
+public class PsiExternalStub extends NamedStubBase<PsiExternal> {
     private final String m_qname;
     private final boolean m_isFunction;
 

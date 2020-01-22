@@ -1,5 +1,6 @@
 package com.reason.lang.reason;
 
+import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -9,10 +10,7 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiRecord;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.reason.lang.core.signature.ORSignature;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
@@ -149,4 +147,11 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertInstanceOf(children.get(1), PsiLowerSymbol.class);
     }
 
+    public void testOperator() {
+        PsiLet e = first(letExpressions(parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;", true)));
+
+        assertEquals("(/)", e.getName());
+        ORSignature signature = e.getORSignature();
+        assertEquals("(path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c", signature.asString(RmlLanguage.INSTANCE));
+    }
 }

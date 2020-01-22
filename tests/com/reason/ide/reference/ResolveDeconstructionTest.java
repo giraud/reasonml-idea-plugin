@@ -10,7 +10,6 @@ public class ResolveDeconstructionTest extends ORBasePlatformTestCase {
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         //assertEquals(12, elementAtCaret.getTextOffset());
-        //TODO
+        //zzz
     }
-
 }

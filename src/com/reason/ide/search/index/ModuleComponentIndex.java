@@ -1,16 +1,12 @@
 package com.reason.ide.search.index;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiInnerModule;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.PsiModule;
 
-import java.util.Collection;
+public class ModuleComponentIndex extends StringStubIndexExtension<PsiModule> {
 
-public class ModuleComponentIndex extends StringStubIndexExtension<PsiInnerModule> {
     private static final int VERSION = 5;
     private static final ModuleComponentIndex INSTANCE = new ModuleComponentIndex();
 
@@ -26,13 +22,7 @@ public class ModuleComponentIndex extends StringStubIndexExtension<PsiInnerModul
 
     @NotNull
     @Override
-    public StubIndexKey<String, PsiInnerModule> getKey() {
+    public StubIndexKey<String, PsiModule> getKey() {
         return IndexKeys.MODULES_COMP;
-    }
-
-    @Nullable
-    public PsiInnerModule getUnique(@NotNull String fqn, @NotNull Project project, @NotNull GlobalSearchScope scope) {
-        Collection<PsiInnerModule> psiModules = get(fqn, project, scope);
-        return psiModules.isEmpty() ? null : psiModules.iterator().next();
     }
 }

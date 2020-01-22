@@ -41,7 +41,7 @@ public class ModulePath {
         m_names = new String[elements.size()];
         for (int i = 0; i < elements.size(); i++) {
             PsiElement element = elements.get(i);
-            m_names[i] = element instanceof FileBase ? ((FileBase) element).asModuleName() : ((PsiNamedElement) element).getName();
+            m_names[i] = element instanceof FileBase ? ((FileBase) element).getModuleName() : ((PsiNamedElement) element).getName();
         }
     }
 

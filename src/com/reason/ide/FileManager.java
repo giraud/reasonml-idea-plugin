@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -17,7 +18,6 @@ import com.reason.Log;
 import com.reason.Platform;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.search.FileModuleIndexService;
 
 public class FileManager {
 
@@ -28,24 +28,23 @@ public class FileManager {
 
     @Nullable
     public static PsiFile findCmtFileFromSource(@NotNull Project project, @NotNull FileBase file) {
-        // All file names are unique, use that to get the corresponding cmt
-        String moduleName = file.asModuleName();
-
         if (!DumbService.isDumb(project)) {
             GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-            String filename = FileModuleIndexService.getService().getFilename(moduleName, scope);
-            PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename + ".cmt", scope);
+            String filename = FileUtil.getNameWithoutExtension(file.getName()) + ".cmt";
 
-            if (cmtFiles.length == 1) {
+            PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename, scope);
+            if (cmtFiles.length == 0) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + ")");
+                    LOG.debug("File module for " + filename + " is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
                 }
-                return cmtFiles[0];
+                return null;
             }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug("File module for " + filename + ".cmt is NOT FOUND, files found: [" + Joiner.join(", ", cmtFiles) + "]");
+                LOG.debug("Found cmt " + filename + " (" + cmtFiles[0].getVirtualFile().getPath() + ")");
             }
+
+            return cmtFiles[0];
         } else {
             LOG.info("Cant find cmt while reindexing");
         }

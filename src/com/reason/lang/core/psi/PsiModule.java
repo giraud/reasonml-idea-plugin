@@ -15,11 +15,17 @@ public interface PsiModule extends PsiQualifiedNamedElement, NavigatablePsiEleme
     @Nullable
     String getAlias();
 
+    @Nullable
+    String getModuleName();
+
     @NotNull
     Collection<PsiNameIdentifierOwner> getExpressions();
 
     @Nullable
     PsiModule getModuleExpression(@Nullable String name);
+
+    @Nullable
+    PsiType getTypeExpression(@NotNull String name);
 
     @Nullable
     PsiLet getLetExpression(@Nullable String name);

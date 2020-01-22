@@ -1,5 +1,7 @@
 package com.reason.ide.insight.provider;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.Language;
@@ -8,8 +10,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ui.ListUtil;
 import com.intellij.util.PsiIconUtil;
+import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.IconProvider;
@@ -17,14 +19,18 @@ import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.signature.PsiSignatureUtil;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.reason.lang.QNameFinder.includeAll;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class DotExpressionCompletionProvider {
@@ -44,21 +50,24 @@ public class DotExpressionCompletionProvider {
         if (previousElement instanceof PsiUpperSymbol) {
             String upperName = ((PsiUpperSymbol) previousElement).getName();
             if (upperName != null) {
+                LOG.debug(" -> symbol", upperName);
                 PsiFinder psiFinder = PsiFinder.getInstance(project);
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                final Set<String> qualifiedNames = qnameFinder.extractPotentialPaths(element, includeAll, false).
-                        stream().
-                        map(qname -> {
-                            List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qname, interfaceOrImplementation, scope);
-                            PsiModule moduleFromQn =  modulesFromQn.isEmpty() ? null : modulesFromQn.get(0);
-                            return moduleFromQn == null ? qname : moduleFromQn.getQualifiedName();
-                        }).
-                        collect(Collectors.toSet());
+                Set<String> potentialPaths = qnameFinder.extractPotentialPaths(element);
+                if (LOG.isTraceEnabled()) {
+                    LOG.debug(" -> paths", potentialPaths);
+                }
 
-                LOG.debug("  symbol", upperName);
-                LOG.debug("  potential paths (no aliases)", qualifiedNames);
+                Set<PsiModule> resolvedModules = new ArrayListSet<>();
+                for (String qname : potentialPaths) {
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qname, interfaceOrImplementation, scope);
+                    if (!modulesFromQn.isEmpty()) {
+                        resolvedModules.addAll(modulesFromQn);
+                    }
+                }
+                LOG.debug(" -> resolved modules from path", resolvedModules);
 
                 // Might be a virtual namespace
 
@@ -76,39 +85,12 @@ public class DotExpressionCompletionProvider {
                     return;
                 }
 
-                // Find modules
+                // Use first resolved module
 
-                Collection<PsiModule> modules = psiFinder.findModules(upperName, interfaceOrImplementation, scope);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("  modules", modules.size(), modules.size() == 1 ? " (" + modules.iterator().next().getQualifiedName() + ")" : "");
-                }
-
-                Collection<? extends PsiModule> resolvedModules = modules.stream().
-                        map(psiModule -> {
-                            String namespace = psiFinder.findNamespace(psiModule, scope);
-                            String moduleQname = namespace.isEmpty() ? psiModule.getQualifiedName() : namespace + "." + psiModule.getQualifiedName();
-                            PsiModule moduleAlias = psiFinder.findModuleAlias(moduleQname);
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug(moduleQname + " (alias=" + moduleAlias + ") " + psiModule.getContainingFile().getVirtualFile().getPath());
-                            }
-                            String name = moduleAlias == null ? moduleQname : moduleAlias.getQualifiedName();
-
-                            if (qualifiedNames.contains(name)) {
-                                return moduleAlias == null ? psiModule : moduleAlias;
-                            }
-
-                            return null;
-                        }).
-                        filter(Objects::nonNull).
-                        collect(Collectors.toList());
-                LOG.debug("  resolved", resolvedModules);
-
-                for (PsiModule resolvedModule : resolvedModules) {
-                    if (resolvedModule != null) {
-                        Collection<PsiNameIdentifierOwner> expressions = resolvedModule.getExpressions();
-                        LOG.debug("  expressions", expressions);
-                        addExpressions(resultSet, expressions, element.getLanguage());
-                    }
+                if (!resolvedModules.isEmpty()) {
+                    Collection<PsiNameIdentifierOwner> expressions = resolvedModules.iterator().next().getExpressions();
+                    LOG.trace(" -> expressions", expressions);
+                    addExpressions(resultSet, expressions, element.getLanguage());
                 }
             }
         } else if (previousElement instanceof PsiLowerSymbol) {
@@ -128,19 +110,18 @@ public class DotExpressionCompletionProvider {
 
                 for (PsiLet expression : lets) {
                     for (PsiRecordField recordField : expression.getRecordFields()) {
-                        resultSet.addElement(
-                                LookupElementBuilder.
-                                        create(recordField).
-                                        withTypeText(PsiSignatureUtil.getSignature(recordField, element.getLanguage())).
-                                        withIcon(PsiIconUtil.getProvidersIcon(recordField, 0))
-                        );
+                        resultSet.addElement(LookupElementBuilder.
+                                create(recordField).
+                                withTypeText(PsiSignatureUtil.getSignature(recordField, element.getLanguage())).
+                                withIcon(PsiIconUtil.getProvidersIcon(recordField, 0)));
                     }
                 }
             }
         }
     }
 
-    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNameIdentifierOwner> expressions, @NotNull Language language) {
+    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNameIdentifierOwner> expressions,
+                                       @NotNull Language language) {
         for (PsiNameIdentifierOwner expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include
@@ -150,8 +131,7 @@ public class DotExpressionCompletionProvider {
                     resultSet.addElement(LookupElementBuilder.
                             create(name).
                             withTypeText(signature).
-                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0))
-                    );
+                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
                 }
                 if (expression instanceof PsiType) {
                     PsiType eType = (PsiType) expression;
@@ -171,5 +151,4 @@ public class DotExpressionCompletionProvider {
             }
         }
     }
-
 }

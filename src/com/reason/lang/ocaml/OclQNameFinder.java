@@ -1,35 +1,32 @@
 package com.reason.lang.ocaml;
 
+import java.util.*;
+import java.util.stream.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.reason.lang.QNameFinder.Includes.containingFile;
-import static com.reason.lang.QNameFinder.Includes.includedModules;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiLocalOpen;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 
 public class OclQNameFinder extends BaseQNameFinder {
 
     // Find the expression paths
     @NotNull
-    public Set<String> extractPotentialPaths(@NotNull PsiElement element, @NotNull EnumSet<Includes> include, boolean addTypes) {
+    public Set<String> extractPotentialPaths(@NotNull PsiElement element) {
         Set<String> qualifiedNames = new ArrayListSet<>();
 
         String path = extractPathName(element, OclTypes.INSTANCE);
         String pathExtension = path.isEmpty() ? "" : "." + path;
-
-        if (!path.isEmpty()) {
-            qualifiedNames.add(path);
-        }
 
         // Walk backward until top of the file is reached, trying to find local opens and opens/includes
         PsiElement item = element;
@@ -38,23 +35,29 @@ public class OclQNameFinder extends BaseQNameFinder {
                 break; // There must be a problem with the parser
             }
 
-            if ((item instanceof FileBase) && include.contains(containingFile)) {
-                qualifiedNames.add(((FileBase) item).asModuleName());
+            if ((item instanceof FileBase)) {
+                qualifiedNames.add(((FileBase) item).getModuleName() + pathExtension);
                 break;
-            } else if (item instanceof PsiOpen || (include.contains(includedModules) && item instanceof PsiInclude)) {
+            } else if (item instanceof PsiLocalOpen) {
+                String openName = extractPathName(item, OclTypes.INSTANCE);
+                // Add local open value to all previous elements
+                List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
+                qualifiedNames.addAll(withOpenQualifier);
+                qualifiedNames.add(openName + pathExtension);
+            } else if (item instanceof PsiOpen || item instanceof PsiInclude) {
                 String openName = ((PsiQualifiedElement) item).getQualifiedName();
                 // Add open value to all previous elements
                 List<String> withOpenQualifier = qualifiedNames.stream().map(name -> openName + pathExtension).collect(Collectors.toList());
                 qualifiedNames.addAll(withOpenQualifier);
                 qualifiedNames.add(openName + pathExtension);
-            } else if (item instanceof PsiInnerModule) {
-                if (path.equals(((PsiInnerModule) item).getName())) {
-                    qualifiedNames.add(((FileBase) element.getContainingFile()).asModuleName() + pathExtension);
+            } else if (item instanceof PsiLetBinding) {
+                // let a = { <caret> }
+                PsiLet let = PsiTreeUtil.getParentOfType(item, PsiLet.class);
+                if (let != null) {
+                    String letQName = let.getQualifiedName();
+                    qualifiedNames.addAll(extendPathWith(letQName, qualifiedNames, pathExtension));
+                    qualifiedNames.add(letQName + pathExtension);
                 }
-            } else if (item instanceof PsiType && addTypes) {
-                qualifiedNames.add(((PsiType) item).getQualifiedName() + pathExtension);
-            } else if (item instanceof PsiLet) {
-                qualifiedNames.add(((PsiLet) item).getQualifiedPath());
             } else if (item instanceof PsiFunction) {
                 PsiQualifiedNamedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedNamedElement.class);
                 if (parent != null) {
@@ -78,9 +81,10 @@ public class OclQNameFinder extends BaseQNameFinder {
             }
         }
 
-        qualifiedNames.add("Pervasives");
+        if (!path.isEmpty()) {
+            qualifiedNames.add(path);
+        }
 
         return qualifiedNames;
     }
-
 }

@@ -50,6 +50,7 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
         String qname = dataStream.readUTFFast();
         boolean isComponent = dataStream.readBoolean();
         boolean isInterface = dataStream.readBoolean();
+        assert moduleName != null;
 
         String alias = null;
         boolean isAlias = dataStream.readBoolean();
@@ -67,7 +68,7 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
         }
 
         String fqn = stub.getQualifiedName();
-        if (fqn != null && stub.isInterface()) {
+        if (fqn != null) {
             sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
             if (stub.isComponent()) {
                 sink.occurrence(IndexKeys.MODULES_COMP, fqn);

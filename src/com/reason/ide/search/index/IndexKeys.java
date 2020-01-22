@@ -5,7 +5,6 @@ import com.intellij.util.indexing.ID;
 import com.reason.ide.search.FileModuleData;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiParameter;
@@ -19,8 +18,8 @@ public class IndexKeys {
     public static final ID<String, FileModuleData> FILE_MODULE = ID.create("reason.index.fileModule");
 
     public static final StubIndexKey<String, PsiModule> MODULES = StubIndexKey.createIndexKey("reason.module");
-    public static final StubIndexKey<String, PsiInnerModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");
-    public static final StubIndexKey<Integer, PsiInnerModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
+    public static final StubIndexKey<String, PsiModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");
+    public static final StubIndexKey<Integer, PsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
     public static final StubIndexKey<String, PsiVariantDeclaration> VARIANTS = StubIndexKey.createIndexKey("reason.variant");
     public static final StubIndexKey<Integer, PsiVariantDeclaration> VARIANTS_FQN = StubIndexKey.createIndexKey("reason.variant.fqn");
     public static final StubIndexKey<String, PsiLet> LETS = StubIndexKey.createIndexKey("reason.let");

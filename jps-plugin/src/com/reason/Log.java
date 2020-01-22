@@ -124,6 +124,12 @@ public class Log {
         }
     }
 
+    public void trace(String comment, @Nullable Collection<?> t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
+        }
+    }
+
     public void debug(String comment, @NotNull PsiQualifiedNamedElement element) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ")");

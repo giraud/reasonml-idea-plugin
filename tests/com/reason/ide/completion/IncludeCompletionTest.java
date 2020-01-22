@@ -1,9 +1,8 @@
 package com.reason.ide.completion;
 
+import java.util.*;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-
-import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class IncludeCompletionTest extends BasePlatformTestCase {
@@ -15,8 +14,8 @@ public class IncludeCompletionTest extends BasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(2, strings);
-        assertSameElements(strings, "A", "x");
+        assertSize(1, strings);
+        assertSameElements(strings, "x");
     }
 
     public void testIncludeEOF() {
@@ -26,8 +25,7 @@ public class IncludeCompletionTest extends BasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(3, strings);
-        assertSameElements(strings, "A", "y", "x");
+        assertSize(9, strings);
+        assertSameElements(strings, "y", "x", "exception", "external", "include", "let", "module", "open", "type");
     }
-
 }

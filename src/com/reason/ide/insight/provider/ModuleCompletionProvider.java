@@ -1,5 +1,8 @@
 package com.reason.ide.insight.provider;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
@@ -14,19 +17,11 @@ import com.reason.Log;
 import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.FileModuleIndexService;
-import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
@@ -45,31 +40,32 @@ public class ModuleCompletionProvider {
             LOG.debug("  module path", modulePath.toString());
         }
 
-        PsiFinder psiFinder = PsiFinder.getInstance(project);
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            Collection<IndexedFileModule> files = FileModuleIndexService.getService().getFilesWithoutNamespace(project, scope);
-            for (IndexedFileModule indexedFile : files) {
-                resultSet.addElement(LookupElementBuilder.
-                        create(indexedFile.getModuleName()).
-                        withTypeText(indexedFile.getPath()).
-                        withIcon(IconProvider.getFileModuleIcon(indexedFile))
-                );
+            Collection<FileBase> files = FileModuleIndexService.getService().getFiles/*WithoutNamespace*/(project, scope);
+            for (FileBase indexedFile : files) {
+                String moduleName = indexedFile.getModuleName();
+                if (moduleName != null) {
+                    resultSet.addElement(LookupElementBuilder.
+                            create(moduleName).
+                            withTypeText(indexedFile.getVirtualFile().getPath()).
+                            withIcon(IconProvider.getFileModuleIcon(indexedFile)));
+                }
             }
         } else {
-            PsiQualifiedNamedElement foundModule = psiFinder.findModulesFromQn(modulePath.toString(), interfaceOrImplementation, scope).get(0);
+            PsiFinder psiFinder = PsiFinder.getInstance(project);
+            PsiQualifiedNamedElement foundModule = psiFinder.findModulesFromQn(modulePath.toString(), interfaceOrImplementation, scope).iterator().next();
             if (foundModule != null) {
                 LOG.debug("  Found module", foundModule);
-                Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() : ((PsiInnerModule) foundModule).getModules();
+                Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() :
+                        ((PsiInnerModule) foundModule).getModules();
                 for (PsiInnerModule module : modules) {
                     resultSet.addElement(LookupElementBuilder.
                             create(module).
-                            withIcon(PsiIconUtil.getProvidersIcon(module, 0))
-                    );
+                            withIcon(PsiIconUtil.getProvidersIcon(module, 0)));
                 }
             }
         }
-
     }
 
     @NotNull

@@ -1,5 +1,7 @@
 package com.reason.ide.insight.provider;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
@@ -15,9 +17,6 @@ import com.reason.ide.files.RmlFile;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.intellij.util.PsiIconUtil.getProvidersIcon;
@@ -35,22 +34,17 @@ public class JsxNameCompletionProvider {
         RmlFile originalFile = (RmlFile) element.getContainingFile();
         Project project = originalFile.getProject();
         GlobalSearchScope scope = allScope(project);
-        PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-        Collection<PsiModule> modules = psiFinder.findComponents(scope);
-        LOG.debug("Modules found", modules);
+        Collection<PsiModule> modules = PsiFinder.getInstance(project).findComponents(scope);
+        LOG.debug(" -> Modules found", modules);
         for (PsiModule module : modules) {
-            boolean isInner = module instanceof PsiInnerModule;
-            String moduleName = isInner ? module.getName() : ((FileBase) module).asModuleName();
-            if (moduleName != null) {
-                resultSet.addElement(LookupElementBuilder.
-                        create(moduleName).
-                        withIcon(getProvidersIcon(module, 0)).
-                        withTypeText(isInner ? ((FileBase) module.getContainingFile()).asModuleName() : ((FileBase) module).shortLocation(project)).
-                        withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName))
-                );
-            }
-
+            String moduleName = module.getModuleName();
+            FileBase containingFile = module instanceof FileBase ? (FileBase) module : (FileBase) module.getContainingFile();
+            resultSet.addElement(LookupElementBuilder.
+                    create(moduleName).
+                    withIcon(getProvidersIcon(module, 0)).
+                    withTypeText(module instanceof PsiInnerModule ? containingFile.getModuleName() : containingFile.shortLocation(project)).
+                    withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName)));
         }
     }
 
