@@ -67,15 +67,14 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        List<PsiQualifiedNamedElement> potentialPaths = getPotentialPaths();
+        Set<PsiQualifiedNamedElement> potentialPaths = getPotentialPaths();
         if (potentialPaths.isEmpty()) {
             LOG.debug("  »» No potential path found");
         } else {
             ResolveResult[] resolveResults = new ResolveResult[potentialPaths.size()];
 
-            for (int i = 0; i < potentialPaths.size(); i++) {
-                PsiQualifiedNamedElement referencedElement = potentialPaths.get(i);
-
+            int i = 0;
+            for (PsiQualifiedNamedElement referencedElement : potentialPaths) {
                 if (LOG.isDebugEnabled()) {
                     boolean isInnerModule = referencedElement instanceof PsiInnerModule;
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
@@ -84,6 +83,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                 }
 
                 resolveResults[i] = new UpperResolveResult(referencedElement);
+                i++;
             }
 
             return resolveResults;
@@ -110,7 +110,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         return myElement;
     }
 
-    private List<PsiQualifiedNamedElement> getPotentialPaths() {
+    private Set<PsiQualifiedNamedElement> getPotentialPaths() {
         Project project = myElement.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
@@ -121,7 +121,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
             LOG.trace("»» Paths before resolution: " + Joiner.join(", ", paths));
         }
 
-        List<PsiQualifiedNamedElement> result = paths.stream().
+        Set<PsiQualifiedNamedElement> result = paths.stream().
                 map(path -> {
                     String qn = path + "." + m_referenceName;
                     PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, scope);
@@ -147,7 +147,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                     return moduleAlias == null ? module : moduleAlias;
                 }).
                 filter(Objects::nonNull).
-                collect(toList());
+                collect(toSet());
 
         List<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(m_referenceName, interfaceOrImplementation, scope);
         for (PsiModule moduleAlias : modulesFromQn) {
