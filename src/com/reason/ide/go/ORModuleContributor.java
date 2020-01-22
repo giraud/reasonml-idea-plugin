@@ -12,9 +12,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.ArrayUtil;
 import com.reason.Icons;
-import com.reason.Platform;
 import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.index.ModuleIndex;
 import com.reason.lang.core.ORFileType;
@@ -63,32 +63,28 @@ public class ORModuleContributor implements ChooseByNameContributor {
         @Nullable
         @Override
         public ItemPresentation getPresentation() {
-            if (m_element instanceof PsiInnerModule) {
-                return new ItemPresentation() {
-                    @Nullable
-                    @Override
-                    public String getPresentableText() {
-                        return m_element.getName();
-                    }
+            return new ItemPresentation() {
+                @Nullable
+                @Override
+                public String getPresentableText() {
+                    return m_element.getName();
+                }
 
-                    @NotNull
-                    @Override
-                    public String getLocationString() {
-                        return m_element.getQualifiedName() + ", " + Platform
-                                .removeProjectDir(m_element.getProject(), m_element.getContainingFile().getVirtualFile().getPath());
-                    }
+                @NotNull
+                @Override
+                public String getLocationString() {
+                    String shortLocation = FileHelper.shortLocation(m_element.getProject(), m_element.getContainingFile().getVirtualFile().getPath());
+                    return (m_element instanceof PsiInnerModule ? m_element.getQualifiedName() + ", " : "") + shortLocation;
+                }
 
-                    @NotNull
-                    @Override
-                    public Icon getIcon(boolean unused) {
-                        PsiFile containingFile = m_element.getContainingFile();
-                        Icon icon = IconProvider.getFileModuleIcon((FileBase) containingFile);
-                        return icon == null ? Icons.MODULE : icon;
-                    }
-                };
-            }
-
-            return m_element.getPresentation();
+                @NotNull
+                @Override
+                public Icon getIcon(boolean unused) {
+                    PsiFile containingFile = m_element.getContainingFile();
+                    Icon icon = IconProvider.getFileModuleIcon((FileBase) containingFile);
+                    return icon == null ? Icons.MODULE : icon;
+                }
+            };
         }
 
         @Override

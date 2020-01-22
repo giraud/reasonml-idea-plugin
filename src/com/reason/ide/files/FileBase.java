@@ -5,6 +5,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
@@ -43,6 +44,17 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         }
 
         return ModuleHelper.isComponent(this);
+    }
+
+    @Override
+    public PsiElement getNavigationElement() {
+        if (isComponent()) {
+            PsiLet make = getLetExpression("make");
+            if (make != null) {
+                return make;
+            }
+        }
+        return super.getNavigationElement();
     }
 
     @NotNull
