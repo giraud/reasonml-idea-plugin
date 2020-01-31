@@ -126,13 +126,13 @@ public final class BsProcess implements CompilerProcessLifecycle {
         String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
         VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
-        VirtualFile bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsc.exe");
+        VirtualFile bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsc.exe");
 
-        if (bsbPath == null) {
-            bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsc");
+        if (bscPath == null) {
+            bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsc");
         }
 
-        return bsbPath == null ? null : bsbPath.getCanonicalPath();
+        return bscPath == null ? null : bscPath.getCanonicalPath();
     }
 
     @Nullable
