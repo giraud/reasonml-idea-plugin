@@ -120,6 +120,21 @@ public final class BsProcess implements CompilerProcessLifecycle {
         return bsbPath == null ? null : bsbPath.getCanonicalPath();
     }
 
+    // Duplicate BsbPath for more safety
+    @Nullable
+    private static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
+
+        VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
+        VirtualFile bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsc.exe");
+
+        if (bsbPath == null) {
+            bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsc");
+        }
+
+        return bsbPath == null ? null : bsbPath.getCanonicalPath();
+    }
+
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType cliType) {
         String bsbPath = getBsbPath(m_project, sourceFile);
@@ -163,8 +178,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
-        String bsb = getBsbPath(m_project, sourceFile);
-        String bsc = bsb == null ? null : bsb.replace("bsb.exe", "bsc.exe");
+        String bsc = getBscPath(m_project, sourceFile);
         if (bsc != null) {
             Process p = null;
             try {
