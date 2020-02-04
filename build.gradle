@@ -2,16 +2,21 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.16"
 }
 
-def pluginVersion = '0.85-beta17'
+def pluginVersion = '0.85'
 def ideaVersion = '2019.3'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>197 - java.lang.Throwable: Assertion failed: Undoable actions allowed inside commands only</li>
-            <li>192 - Undoing causes Following files have changes that cannot be undone: error</li>
-            <li>Fix a stub exception for functor parameter</li>
+            <li>Fix bsc path</li>
+            <li>New indexing of file modules</li>
+            <li>Use Rincewind 0.6</li>
+            <li>File | New menu as OCaml and ReasonML templates</li>
+            <li>Display cmt file in a custom editor</li>
+            <li>200 - OCaml SDK can be set at the module level</li>
+            <li>199 - Prepare for dynamic plugins</li>
+            <li>196 - Redesign content root finding</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

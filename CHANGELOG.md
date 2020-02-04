@@ -12,6 +12,17 @@
 
 ## Unreleased
 
+## 0.85 - 2020/02/04
+
+- :rocket: File | New menu as OCaml and ReasonML templates
+- :rocket: Display cmt file in a custom editor
+- :rocket: [#200](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/200) OCaml SDK can be set at the module level</li>
+- :house: Fix bsc path
+- :house: New indexing of file modules
+- :house: Use Rincewind 0.6
+- :house: [#199](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/199) Prepare for dynamic plugins
+- :house: [#196](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/196) Redesign content root finding
+
 ## 0.84 - 2019/12/10
 
 - :bug: [#197](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/197) java.lang.Throwable: Assertion failed: Undoable actions allowed inside commands only
