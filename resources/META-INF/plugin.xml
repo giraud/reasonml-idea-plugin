@@ -88,8 +88,6 @@
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
         <!-- Binary -->
-        <fileType extensions="cmi" name="CMI" fieldName="INSTANCE"
-                  implementationClass="com.reason.ide.files.CmiFileType"/>
         <fileType extensions="cmt" name="CMT" fieldName="INSTANCE"
                   implementationClass="com.reason.ide.files.CmtFileType"/>
 
@@ -254,7 +252,6 @@
 
         <!--<codeInsight.parameterNameHints language="Reason" implementationClass="SignatureProvider"/>-->
         <editor.linePainter implementation="com.reason.ide.hints.OREditorLinePainter"/>
-        <projectService serviceImplementation="com.reason.ide.hints.CmtFileListener"/>
         <projectService serviceImplementation="com.reason.hints.RincewindProcess"/>
         <projectService serviceInterface="com.reason.hints.InsightManager"
                         serviceImplementation="com.reason.hints.InsightManagerImpl"/>

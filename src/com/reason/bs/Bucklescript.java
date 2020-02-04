@@ -1,5 +1,6 @@
 package com.reason.bs;
 
+import java.util.*;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -21,4 +22,7 @@ public interface Bucklescript extends Compiler {
 
     @Nullable
     ConsoleView getBsbConsole();
+
+    @NotNull
+    Ninja readNinjaBuild(@Nullable VirtualFile contentRoot);
 }

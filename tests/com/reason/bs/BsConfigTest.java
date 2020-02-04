@@ -1,15 +1,13 @@
 package com.reason.bs;
 
+import java.io.*;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.json.JsonLanguage;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Set;
 
 public class BsConfigTest extends BasePlatformTestCase {
 
@@ -26,7 +24,14 @@ public class BsConfigTest extends BasePlatformTestCase {
     }
 
     public void testNamespace() {
-        assertTrue(BsConfig.read(null, createJson("{'name': 'x', 'namespace': true}"), false).hasNamespace());
+        BsConfig conf1 = BsConfig.read(null, createJson("{'name': 'x', 'namespace': 'Foo'}"), false);
+        assertTrue(conf1.hasNamespace());
+        assertEquals("Foo", conf1.getNamespace());
+
+        BsConfig conf2 = BsConfig.read(null, createJson("{'name': 'auto', 'namespace': true}"), false);
+        assertTrue(conf2.hasNamespace());
+        assertEquals("Auto", conf2.getNamespace());
+
         assertFalse(BsConfig.read(null, createJson("{'name': 'x', 'namespace': false}"), false).hasNamespace());
         assertFalse(BsConfig.read(null, createJson("{'name': 'x'}"), false).hasNamespace());
     }
@@ -68,6 +73,18 @@ public class BsConfigTest extends BasePlatformTestCase {
     public void testDepsRead() throws IOException {
         BsConfig bsConfig = BsConfig.read(null, loadJson("deps.json"), false);
         assertSize(2, bsConfig.getDependencies());
+    }
+
+    public void testJsx() {
+        BsConfig bsConfig = BsConfig.read(null, createJson("{'name': 'x', 'reason': {'react-jsx': 2}}"), false);
+        assertEquals("2", bsConfig.getJsxVersion());
+    }
+
+    public void testPpx() {
+        BsConfig bsConfig = BsConfig.read(null, createJson("{'name': 'x', 'ppx-flags': ['graphql/ppx', 'other/ppx']}"), false);
+        assertSize(2, bsConfig.getPpx());
+        assertEquals("graphql/ppx", bsConfig.getPpx()[0]);
+        assertEquals("other/ppx", bsConfig.getPpx()[1]);
     }
 
     @NotNull

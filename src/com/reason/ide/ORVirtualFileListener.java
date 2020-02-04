@@ -17,7 +17,6 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.util.containers.ContainerUtil;
 import com.reason.hints.InsightManager;
 import com.reason.ide.files.CmtFileType;
-import com.reason.ide.hints.CmtFileListener;
 
 /**
  * Listener that detects all modifications on project files
@@ -34,15 +33,12 @@ class ORVirtualFileListener implements AsyncFileListener {
                 for (VFileEvent event : relevantEvents) {
                     VirtualFile file = event.getFile();
                     FileType fileType = file == null ? null : file.getFileType();
-                    if (fileType != null) {
+                    if (fileType instanceof JsonFileType && "bsconfig.json".equals(file.getName())) {
                         for (Project project : ProjectManager.getInstance().getOpenProjects()) {
                             Module module = ModuleUtil.findModuleForFile(file, project);
                             if (module != null) {
-                                if (fileType instanceof CmtFileType) {
-                                    ServiceManager.getService(project, CmtFileListener.class).onChange(file);
-                                } else if (fileType instanceof JsonFileType && "bsconfig.json".equals(file.getName())) {
-                                    ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(file);
-                                }
+                                ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(file);
+                               OREditorTracker.getInstance(project).updateQueues();
                             }
                         }
                     }
@@ -59,5 +55,4 @@ class ORVirtualFileListener implements AsyncFileListener {
         }
         return false;
     }
-
 }

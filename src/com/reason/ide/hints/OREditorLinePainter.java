@@ -1,13 +1,11 @@
 package com.reason.ide.hints;
 
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorLinePainter;
 import com.intellij.openapi.editor.LineExtensionInfo;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.annotations.ErrorsManager;
@@ -30,12 +28,7 @@ public class OREditorLinePainter extends EditorLinePainter {
             return null;
         }
 
-        if (ServiceManager.getService(project, ErrorsManager.class).hasErrors(file)) {
-            return null;
-        }
-
-        Document document = FileDocumentManager.getInstance().getDocument(file);
-        if (document == null) {
+        if (ServiceManager.getService(project, ErrorsManager.class).hasErrors(file.getName(), lineNumber + 1)) {
             return null;
         }
 
@@ -52,5 +45,4 @@ public class OREditorLinePainter extends EditorLinePainter {
         //System.out.println("line extensions in " + (end - start) + "ms");
         return info;
     }
-
 }

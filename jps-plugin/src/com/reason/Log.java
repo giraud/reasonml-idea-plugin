@@ -40,13 +40,25 @@ public class Log {
         }
     }
 
+    public void debug(String comment, Integer t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t);
+        }
+    }
+
     public void debug(String comment, int t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + t);
         }
     }
 
-    public void debug(String comment, int t, @Nullable Collection t1) {
+    public void debug(String comment, long t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + t);
+        }
+    }
+
+    public void debug(String comment, int t, @Nullable Collection<?> t1) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + t + (t1 != null && 1 == t1.size() ? " " + t1.iterator().next() : ""));
         }
@@ -201,5 +213,11 @@ public class Log {
             sb.append("(module ").append(entry.getKey()).append(", file ").append(entry.getValue()).append(")");
         }
         m_log.info(msg + SEP + sb.toString());
+    }
+
+    public void debug(String comment, String[] values) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + "[" + Joiner.join(", ", values) + "]");
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.Platform;
+import com.reason.StringUtil;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 
@@ -27,10 +28,10 @@ public class FileManager {
     }
 
     @Nullable
-    public static PsiFile findCmtFileFromSource(@NotNull Project project, @NotNull FileBase file) {
+    public static PsiFile findCmtFileFromSource(@NotNull Project project, @NotNull String filenameWithoutExtension) {
         if (!DumbService.isDumb(project)) {
             GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-            String filename = FileUtil.getNameWithoutExtension(file.getName()) + ".cmt";
+            String filename = filenameWithoutExtension + ".cmt";
 
             PsiFile[] cmtFiles = FilenameIndex.getFilesByName(project, filename, scope);
             if (cmtFiles.length == 0) {
@@ -57,7 +58,7 @@ public class FileManager {
         String sourcePath = relativePath.toString();
         String namespace = ServiceManager.getService(project, Bucklescript.class).getNamespace(sourceFile);
         if (!namespace.isEmpty()) {
-            sourcePath = sourcePath.replace("-" + namespace, "");
+            sourcePath = sourcePath.replace("-" + StringUtil.toFirstUpper(namespace), "");
         }
         int dotPos = sourcePath.lastIndexOf(".");
         return 0 <= dotPos ? sourcePath.substring(0, dotPos) + ".re" : sourcePath;

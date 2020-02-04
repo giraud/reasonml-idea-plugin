@@ -1,13 +1,12 @@
 package com.reason.ide.hints;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class CodeLensView {
     public static final Key<CodeLensInfo> CODE_LENS = Key.create("reasonml.codelens");
@@ -31,6 +30,8 @@ public class CodeLensView {
             if (signaturesPerLine == null) {
                 signaturesPerLine = new THashMap<>();
                 m_signatures.put(file, signaturesPerLine);
+            } else {
+                signaturesPerLine.clear();
             }
             signaturesPerLine.putAll(signatures);
         }
@@ -51,7 +52,6 @@ public class CodeLensView {
                         }
                     } else if (startLine < line) {
                         signatures.put(line + direction, value);
-
                     } else {
                         signatures.put(line, value);
                     }
@@ -59,13 +59,5 @@ public class CodeLensView {
                 m_signatures.put(file, signatures);
             }
         }
-
-        synchronized void clearInternalData(@NotNull VirtualFile virtualFile) {
-            Map<Integer, InferredTypes.LogicalPositionSignature> signaturesPerFile = m_signatures.get(virtualFile);
-            if (signaturesPerFile != null) {
-                signaturesPerFile.clear();
-            }
-        }
     }
-
 }

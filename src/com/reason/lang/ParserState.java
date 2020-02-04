@@ -307,4 +307,8 @@ public class ParserState {
         m_currentScope.setIsStart(true);
         return this;
     }
+
+    public void error(String message) {
+        m_builder.error(message);
+    }
 }

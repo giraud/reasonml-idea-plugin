@@ -35,6 +35,10 @@ public final class OREditorTracker implements Disposable {
         return m_fileEditorListener.isOpen(file);
     }
 
+    public void updateQueues() {
+        m_fileEditorListener.updateQueues();
+    }
+
     static final class AppLevelEditorFactoryListener implements EditorFactoryListener {
         @Override
         public void editorCreated(@NotNull EditorFactoryEvent event) {

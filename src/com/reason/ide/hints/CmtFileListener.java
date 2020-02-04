@@ -16,7 +16,6 @@ import com.reason.hints.InsightManager;
 import com.reason.ide.CompilerManager;
 import com.reason.ide.FileManager;
 import com.reason.ide.OREditorTracker;
-import com.reason.ide.files.CmiFileType;
 import com.reason.ide.files.FileHelper;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
@@ -33,23 +32,21 @@ public class CmtFileListener {
     }
 
     public void onChange(@NotNull VirtualFile file) {
-        if (file.getFileType() instanceof CmiFileType) {
-            return;
-        }
-
-        Path path = FileSystems.getDefault().getPath(file.getPath());
-        @Nullable Path relativeCmt;
+        Path relativeCmt;
 
         Compiler compiler = CompilerManager.getInstance().getCompiler(m_project);
         if (compiler instanceof Bucklescript) {
             Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
             VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(m_project);
             Path pathToWatch = getPathToWatch(baseRoot, relativeRoot);
+            Path path = FileSystems.getDefault().getPath(file.getPath()).toAbsolutePath();
+
             relativeCmt = pathToWatch == null ? null : pathToWatch.relativize(path);
         } else {
             Path relativeRoot = FileSystems.getDefault().getPath("_build", "default");
             VirtualFile baseRoot = Platform.findORDuneContentRoot(m_project);
             Path pathToWatch = getPathToWatch(baseRoot, relativeRoot);
+            Path path = FileSystems.getDefault().getPath(file.getPath()).toAbsolutePath();
             relativeCmt = pathToWatch == null ? null : pathToWatch.relativize(path);
         }
 
@@ -62,6 +59,7 @@ public class CmtFileListener {
                 InsightManager insightManager = ServiceManager.getService(m_project, InsightManager.class);
 
                 Language lang = FileHelper.isReason(sourceFile.getFileType()) ? RmlLanguage.INSTANCE : OclLanguage.INSTANCE;
+                Path path = FileSystems.getDefault().getPath(file.getPath()).toAbsolutePath();
                 insightManager.queryTypes(file, path, inferredTypes -> InferredTypesService.annotatePsiFile(m_project, lang, sourceFile, inferredTypes));
             }
         }

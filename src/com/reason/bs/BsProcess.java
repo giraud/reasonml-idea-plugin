@@ -35,7 +35,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
     @Nullable
     private BsProcessHandler m_bsb;
-    private RawProcessListener m_outputListener;
+    //private RawProcessListener m_outputListener;
 
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
@@ -84,11 +84,11 @@ public final class BsProcess implements CompilerProcessLifecycle {
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
             m_bsb = new BsProcessHandler(cli, onProcessTerminated);
-            if (m_outputListener == null) {
-                addListener(new BsOutputListener(m_project, this));
-            } else {
-                m_bsb.addRawProcessListener(m_outputListener);
-            }
+            //if (m_outputListener == null) {
+            addListener(new BsOutputListener(m_project, this));
+            //} else {
+            //    m_bsb.addRawProcessListener(m_outputListener);
+            //}
         }
         return m_bsb;
     }
@@ -101,14 +101,14 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     private void addListener(RawProcessListener outputListener) {
-        m_outputListener = outputListener;
+        //m_outputListener = outputListener;
         if (m_bsb != null) {
             m_bsb.addRawProcessListener(outputListener);
         }
     }
 
     @Nullable
-    private static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
         VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
@@ -123,14 +123,14 @@ public final class BsProcess implements CompilerProcessLifecycle {
 
     // Duplicate BsbPath for more safety
     @Nullable
-    private static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+    public static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
         VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
         VirtualFile bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsc.exe");
 
         if (bscPath == null) {
-            bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsc");
+            bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsc" + (SystemInfo.isWindows ? ".cmd" : ""));
         }
 
         return bscPath == null ? null : bscPath.getCanonicalPath();

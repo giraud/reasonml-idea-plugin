@@ -40,6 +40,10 @@ public class RincewindProcess {
             return;
         }
 
+        if (!new File(rincewindBinary).exists()) { // to a
+            return;
+        }
+
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
         processBuilder.directory(new File(contentRoot.getPath()));
 

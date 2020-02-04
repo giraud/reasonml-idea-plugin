@@ -1,5 +1,10 @@
 package com.reason.ide.hints;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
@@ -19,11 +24,6 @@ import com.reason.Log;
 import com.reason.hints.InsightManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 import static com.reason.ide.FileManager.findCmtFileFromSource;
 
@@ -32,11 +32,6 @@ public class InferredTypesService {
     private static final Log LOG = Log.create("hints.inferredTypes");
 
     private InferredTypesService() {
-    }
-
-    public static void clearTypes(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
-        userData.clearInternalData(sourceFile);
     }
 
     public static void queryForSelectedTextEditor(@NotNull Project project) {
@@ -58,12 +53,12 @@ public class InferredTypesService {
                             InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
 
                             if (!DumbService.isDumb(project)) {
-                                LOG.debug("Reading files from file");
-                                PsiFile cmtFile = findCmtFileFromSource(project, (FileBase) psiFile);
+                                LOG.debug("Reading types from file", psiFile);
+                                PsiFile cmtFile = findCmtFileFromSource(project, sourceFile.getNameWithoutExtension());
                                 if (cmtFile != null) {
                                     Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
-                                    insightManager.queryTypes(sourceFile, cmtPath,
-                                            types -> application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), sourceFile, types)));
+                                    insightManager.queryTypes(sourceFile, cmtPath, types -> application
+                                            .runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), sourceFile, types)));
                                 }
                             }
                         }
@@ -91,8 +86,7 @@ public class InferredTypesService {
 
         TextEditor selectedEditor = (TextEditor) FileEditorManager.getInstance(project).getSelectedEditor(sourceFile);
         if (selectedEditor != null) {
-            CodeLensView.CodeLensInfo userData = getCodeLensData(project, sourceFile);
-            userData.clearInternalData(sourceFile);
+            CodeLensView.CodeLensInfo userData = getCodeLensData(project);
             userData.putAll(sourceFile, types.signaturesByLines(lang));
         }
 
@@ -103,14 +97,28 @@ public class InferredTypesService {
         }
     }
 
+    public static void annotatePsiFile(@NotNull Project project, @NotNull Language lang, @Nullable PsiFile psiFile, @Nullable InferredTypes types) {
+        if (types == null || psiFile == null || FileHelper.isInterface(psiFile.getFileType())) {
+            return;
+        }
+
+        LOG.debug("Updating signatures in user data cache for file", psiFile);
+        VirtualFile sourceFile = psiFile.getVirtualFile();
+
+        String[] lines = psiFile.getText().split("\n");
+        SignatureProvider.InferredTypesWithLines inferredTypes = new SignatureProvider.InferredTypesWithLines(types, lines);
+        Map<Integer, InferredTypes.LogicalPositionSignature> signatures = types.signaturesByLines(lang);
+
+        psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, inferredTypes);
+        getCodeLensData(project).putAll(sourceFile, signatures);
+    }
+
     @NotNull
-    private static CodeLensView.CodeLensInfo getCodeLensData(@NotNull Project project, @Nullable VirtualFile sourceFile) {
+    private static CodeLensView.CodeLensInfo getCodeLensData(@NotNull Project project) {
         CodeLensView.CodeLensInfo userData = project.getUserData(CodeLensView.CODE_LENS);
         if (userData == null) {
             userData = new CodeLensView.CodeLensInfo();
             project.putUserData(CodeLensView.CODE_LENS, userData);
-        } else if (sourceFile != null) {
-            userData.clearInternalData(sourceFile);
         }
         return userData;
     }

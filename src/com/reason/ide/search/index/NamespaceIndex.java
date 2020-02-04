@@ -25,7 +25,7 @@ import com.reason.lang.core.psi.PsiStanza;
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
     private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
     private static final Log LOG = Log.create("index.namespace");
     private static final NamespaceIndex INSTANCE = new NamespaceIndex();
 
@@ -65,18 +65,11 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                     if (configFile.hasNamespace()) {
                         VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(inputData.getProject());
                         if (baseRoot != null) {
-                            VirtualFile parent = dataFile.getParent();
-                            if (baseRoot.equals(parent)) {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Skip indexing of " + dataFile + ": in project root");
-                                }
-                            } else {
-                                String namespace = configFile.getNamespace();
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
-                                }
-                                return Collections.singletonMap(namespace, null);
+                            String namespace = configFile.getNamespace();
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
                             }
+                            return Collections.singletonMap(namespace, null);
                         }
                     }
                 }
