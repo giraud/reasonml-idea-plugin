@@ -2,6 +2,7 @@ package com.reason.lang.reason;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
@@ -54,4 +55,10 @@ public class FunctionCallTest extends BaseParsingTestCase {
         assertEquals("()", ORUtil.findImmediateFirstChildOfType(new ArrayList<>(params.getParametersList()).get(1), RmlTypes.INSTANCE.C_UNIT).getText());
     }
 
+    public void testParams() {
+        FileBase f = parseCode("call(~decode=x => Ok(), ~task=() => y,);");
+        PsiFunctionCallParams e = ORUtil.findImmediateFirstChildOfClass(f, PsiFunctionCallParams.class);
+
+        assertSize(2, e.getParametersList());
+    }
 }

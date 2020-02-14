@@ -1,6 +1,15 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.stub.type.*;
+import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
+import com.reason.lang.core.stub.type.PsiExternalStubElementType;
+import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiLetStubElementType;
+import com.reason.lang.core.stub.type.PsiModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiParameterStubElementType;
+import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
+import com.reason.lang.core.stub.type.PsiTypeStubElementType;
+import com.reason.lang.core.stub.type.PsiValStubElementType;
+import com.reason.lang.core.stub.type.PsiVariantStubElementType;
 import com.reason.lang.core.type.ORCompositeElementType;
 import com.reason.lang.core.type.ORTokenElementType;
 import com.reason.lang.core.type.ORTypes;
@@ -42,6 +51,7 @@ public class OclTypes extends ORTypes {
         C_FUN_CALL_PARAM = new ORCompositeElementType("C_FUN_CALL_PARAM", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", OclLanguage.INSTANCE);
+        C_FUN_PARAM_BINDING = new ORCompositeElementType("C_FUN_PARAM_BINDING", OclLanguage.INSTANCE);
         C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", OclLanguage.INSTANCE);
         C_FUNCTOR = new ORCompositeElementType("C_FUNCTOR", OclLanguage.INSTANCE);
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", OclLanguage.INSTANCE);

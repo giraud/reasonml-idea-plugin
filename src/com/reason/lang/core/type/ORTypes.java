@@ -32,6 +32,7 @@ public abstract class ORTypes {
     public IElementType C_FUN_EXPR;
     public IElementType C_FUN_PARAMS;
     public IElementType C_FUN_PARAM;
+    public IElementType C_FUN_PARAM_BINDING;
     public IElementType C_FUN_BODY;
     public IElementType C_FUNCTOR;
     public IElementType C_FUNCTOR_BINDING;
