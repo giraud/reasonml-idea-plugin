@@ -1,17 +1,15 @@
 package com.reason.lang.reason;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
-import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScope.mark;
-import static com.reason.lang.ParserScope.markScope;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.reason.lang.ParserScope.*;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public class RmlParser extends CommonParser<RmlTypes> {
@@ -714,12 +712,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (nextTokenType == m_types.PERCENT) {
             state.add(markScope(builder, macro, m_types.C_MACRO_EXPR, m_types.LBRACKET));
         } else {
-            state.add(markScope(builder, bracket, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
+            if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
+                // Local open
+                // M.|>[<| ... ]
+                state.add(markScope(builder, localOpen, m_types.C_LOCAL_OPEN, m_types.LBRACKET).complete());
+            } else {
+                state.add(markScope(builder, bracket, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
+            }
         }
-    }
-
-    private void parseBracketGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        state.add(markScope(builder, bracketGt, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
     }
 
     private void parseRBracket(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -735,6 +735,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.add(mark(builder, state.currentContext(), recordField, m_types.C_RECORD_FIELD));
             }
         }
+    }
+
+    private void parseBracketGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+        state.add(markScope(builder, bracketGt, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
     }
 
     private void parseLBrace(@NotNull PsiBuilder builder, @NotNull ParserState state) {
@@ -849,6 +853,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     advance().
                     add(mark(builder, variantConstructor, functionParameter, m_types.C_FUN_PARAM));
         } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
+            // Local open
+            // M.|>(<| ...
             state.add(markScope(builder, localOpen, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.add(markScope(builder, state.currentContext(), scope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
@@ -880,8 +886,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             //  let |>(<| + ) =
             //  let |>(<| a, b ) =
             state.add(markScope(builder, let, genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        }
-        else {
+        } else {
             IElementType nextTokenType = builder.lookAhead(1);
 
             if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {

@@ -14,4 +14,11 @@ public class RmlQNameFinderTest extends ORBasePlatformTestCase {
         Set<String> paths = new RmlQNameFinder().extractPotentialPaths(myFixture.getElementAtCaret());
         assertSameElements(paths, "A.make", "A");
     }
+
+    public void testLocalOpenList() {
+        FileBase f = configureCode("A.re", "let item = Css.[ margin<caret>");
+
+        Set<String> paths = new RmlQNameFinder().extractPotentialPaths(myFixture.getElementAtCaret());
+        assertSameElements(paths, "Css.Css"/*?*/, "Css", "A.item.Css", "A.Css");
+    }
 }
