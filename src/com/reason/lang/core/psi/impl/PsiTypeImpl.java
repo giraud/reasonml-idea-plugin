@@ -108,7 +108,18 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
         return emptyList();
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiTypeStub stub = getGreenStub();

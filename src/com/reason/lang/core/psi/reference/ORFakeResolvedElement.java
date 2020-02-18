@@ -17,7 +17,7 @@ public class ORFakeResolvedElement extends FakePsiElement {
     @Nullable
     @Override
     public PsiElement getParent() {
-        return m_sourceElement.getContainingFile();
+        return m_sourceElement.getParent();
     }
 
     @Nullable

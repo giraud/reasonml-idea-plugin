@@ -25,7 +25,6 @@ import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -114,28 +113,23 @@ public class FreeExpressionCompletionProvider {
         }
 
         while (item != null) {
-            if (item instanceof PsiInclude) {
-                //Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(((PsiInclude) item).getQualifiedName(), interfaceOrImplementation, scope);
-                //for (PsiModule module : modulesFromQn) {
-                //    for (PsiNamedElement expression : module.getExpressions()) {
-                //        resultSet.addElement(LookupElementBuilder.
-                //                create(expression).
-                //                withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
-                //                withIcon(PsiIconUtil.getProvidersIcon(element, 0)));
-                //        if (item instanceof PsiType) {
-                //            expandType((PsiType) item, resultSet);
-                //        }
-                //    }
-                //}
-            } else if (item instanceof PsiInnerModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal
+            if (item instanceof PsiInnerModule || item instanceof PsiLet || item instanceof PsiType || item instanceof PsiExternal
                     || item instanceof PsiException || item instanceof PsiVal) {
-                PsiNamedElement expression = (PsiNamedElement) item;
-                resultSet.addElement(LookupElementBuilder.
-                        create(expression).
-                        withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
-                        withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
-                if (item instanceof PsiType) {
-                    expandType((PsiType) item, resultSet);
+                if (item instanceof PsiLet && ((PsiLet) item).isDeconsruction()) {
+                    for (PsiElement deconstructedElement : ((PsiLet) item).getDeconstructedElements()) {
+                        resultSet.addElement(LookupElementBuilder.create(deconstructedElement.getText()).
+                                withTypeText(PsiSignatureUtil.getSignature(item, element.getLanguage())).
+                                withIcon(Icons.LET));
+                    }
+                } else {
+                    PsiNamedElement expression = (PsiNamedElement) item;
+                    resultSet.addElement(LookupElementBuilder.
+                            create(expression).
+                            withTypeText(PsiSignatureUtil.getSignature(expression, element.getLanguage())).
+                            withIcon(PsiIconUtil.getProvidersIcon(expression, 0)));
+                    if (item instanceof PsiType) {
+                        expandType((PsiType) item, resultSet);
+                    }
                 }
             }
 

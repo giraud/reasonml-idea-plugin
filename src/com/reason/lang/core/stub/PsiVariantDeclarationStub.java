@@ -8,17 +8,23 @@ import com.intellij.util.io.StringRef;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 public class PsiVariantDeclarationStub extends NamedStubBase<PsiVariantDeclaration> {
-
+    private final String m_path;
     private final String m_qname;
 
-    public PsiVariantDeclarationStub(StubElement parent, @NotNull IStubElementType elementType, String name, String qname) {
+    public PsiVariantDeclarationStub(StubElement parent, @NotNull IStubElementType elementType, String name, String path) {
         super(parent, elementType, name);
-        m_qname = qname;
+        m_path = path;
+        m_qname = path + "." + name;
     }
 
-    public PsiVariantDeclarationStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname) {
+    public PsiVariantDeclarationStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String path) {
         super(parent, elementType, name);
-        m_qname = qname;
+        m_path = path;
+        m_qname = path + "." + name;
+    }
+
+    public String getPath() {
+        return m_path;
     }
 
     public String getQualifiedName() {

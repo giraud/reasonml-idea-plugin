@@ -25,20 +25,20 @@ public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionSt
 
     @NotNull
     public PsiExceptionStub createStub(@NotNull final PsiException psi, final StubElement parentStub) {
-        return new PsiExceptionStub(parentStub, this, psi.getName(), psi.getQualifiedName());
+        return new PsiExceptionStub(parentStub, this, psi.getName(), psi.getPath());
     }
 
     public void serialize(@NotNull final PsiExceptionStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        dataStream.writeUTFFast(stub.getQualifiedName());
+        dataStream.writeUTFFast(stub.getPath());
     }
 
     @NotNull
     public PsiExceptionStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
-        String qname = dataStream.readUTFFast();
+        String path = dataStream.readUTFFast();
 
-        return new PsiExceptionStub(parentStub, this, name, qname);
+        return new PsiExceptionStub(parentStub, this, name, path);
     }
 
     public void indexStub(@NotNull final PsiExceptionStub stub, @NotNull final IndexSink sink) {

@@ -16,7 +16,6 @@ import com.reason.Icons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
-import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiInclude;
@@ -37,9 +36,6 @@ import static java.util.Collections.*;
 
 public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiInnerModule {
 
-    @Nullable
-    private ModulePath m_modulePath = null;
-
     //region Constructors
     public PsiInnerModuleImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
@@ -51,10 +47,11 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     //endregion
 
     //region NamedElement
+    @Nullable
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+        return nameIdentifier == null ? null : nameIdentifier.getText();
     }
 
     @Nullable
@@ -73,10 +70,22 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     @NotNull
     @Override
     public String getModuleName() {
-        return getName();
+        String name = getName();
+        return name == null ? "" : name;
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiModuleStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiModuleStub stub = getGreenStub();
@@ -299,27 +308,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                 return Icons.MODULE;
             }
         };
-    }
-
-    @NotNull
-    private ModulePath getPath() {
-        // TODO: use stub
-        if (m_modulePath == null) {
-            List<PsiElement> parents = new ArrayList<>();
-
-            PsiInnerModule parent = PsiTreeUtil.getStubOrPsiParentOfType(this, PsiInnerModule.class);
-            while (parent != null) {
-                parents.add(parent);
-                parent = PsiTreeUtil.getStubOrPsiParentOfType(parent, PsiInnerModule.class);
-            }
-
-            parents.add(getContainingFile());
-
-            Collections.reverse(parents);
-            m_modulePath = new ModulePath(parents);
-        }
-
-        return m_modulePath;
     }
 
     @Override

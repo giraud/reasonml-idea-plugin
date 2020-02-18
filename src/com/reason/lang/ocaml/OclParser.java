@@ -107,6 +107,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseAssert(builder, state);
             } else if (tokenType == m_types.RAISE) {
                 parseRaise(builder, state);
+            } else if (tokenType == m_types.COMMA) {
+                parseComma(builder, state);
             }
             // while ... do ... done
             else if (tokenType == m_types.WHILE) {
@@ -200,6 +202,14 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(external)) {
             builder.remapCurrentToken(m_types.LIDENT);
             state.wrapWith(m_types.C_LOWER_SYMBOL).updateCurrentResolution(externalNamed).complete();
+        }
+    }
+
+    private void parseComma(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+        if (state.isCurrentContext(let) && state.isCurrentResolution(genericExpression)) {
+            // It must be a deconstruction
+            // let ( a |>,<| b ) = ..
+            state.updateCurrentResolution(deconstruction).updateCurrentCompositeElementType(m_types.C_DECONSTRUCTION);
         }
     }
 
@@ -649,8 +659,14 @@ public class OclParser extends CommonParser<OclTypes> {
             // Overloading an operator: external (...) = ...
             state.updateCurrentResolution(externalNamed).complete();
             state.add(markScope(builder, localOpenScope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        } else if (state.isCurrentResolution(let)) {
+            // Overloading operator OR deconstructing a term
+            //  let |>(<| + ) =
+            //  let |>(<| a, b ) =
+            state.add(markScope(builder, let, genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(val)) {
-            // Overloading an operator: val (...) = ...
+            // Overloading an operator
+            //   val |>(<| .. ) = ..
             state.updateCurrentResolution(valNamed).complete();
             state.add(markScope(builder, valNamedSymbol, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(clazzNamed)) {

@@ -26,22 +26,22 @@ public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub
 
     @NotNull
     public PsiExternalStub createStub(@NotNull PsiExternal psi, StubElement parentStub) {
-        return new PsiExternalStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.isFunction());
+        return new PsiExternalStub(parentStub, this, psi.getName(), psi.getPath(), psi.isFunction());
     }
 
     public void serialize(@NotNull PsiExternalStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        dataStream.writeUTFFast(stub.getQualifiedName());
+        dataStream.writeUTFFast(stub.getPath());
         dataStream.writeBoolean(stub.isFunction());
     }
 
     @NotNull
     public PsiExternalStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
-        String qname = dataStream.readUTFFast();
+        String path = dataStream.readUTFFast();
         boolean isFunction = dataStream.readBoolean();
 
-        return new PsiExternalStub(parentStub, this, name, qname, isFunction);
+        return new PsiExternalStub(parentStub, this, name, path, isFunction);
     }
 
     public void indexStub(@NotNull PsiExternalStub stub, @NotNull IndexSink sink) {

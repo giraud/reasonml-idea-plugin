@@ -257,11 +257,16 @@ public class ORUtil {
         PsiElement parent = element.getParent();
         while (parent != null) {
             if (parent instanceof PsiQualifiedElement) {
-                path = ((PsiQualifiedElement) parent).getQualifiedName();
-                parent = null;
+                if (parent instanceof PsiNameIdentifierOwner && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
+                    return ((PsiQualifiedElement) parent).getPath();
+                }
+                return ((PsiQualifiedElement) parent).getQualifiedName() + (path.isEmpty() ? "" : "." + path);
             } else {
                 if (parent instanceof PsiNameIdentifierOwner) {
-                    path = ((PsiNamedElement) parent).getName();
+                    String parentName = ((PsiNamedElement) parent).getName();
+                    if (parentName != null && !parentName.isEmpty()) {
+                        path = parentName + (path.isEmpty() ? "" : "." + path);
+                    }
                 }
                 parent = parent.getParent();
             }
@@ -269,9 +274,9 @@ public class ORUtil {
 
         try {
             PsiFile containingFile = element.getContainingFile(); // Fail in 2019.2... ?
-            return ((FileBase) containingFile).getQualifiedName() + (path == null || path.isEmpty() ? "" : "." + path);
+            return ((FileBase) containingFile).getQualifiedName() + (path.isEmpty() ? "" : "." + path);
         } catch (PsiInvalidElementAccessException e) {
-            return path == null ? "" : path;
+            return path;
         }
     }
 

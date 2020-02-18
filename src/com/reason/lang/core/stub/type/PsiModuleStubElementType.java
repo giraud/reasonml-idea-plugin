@@ -28,12 +28,12 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
 
     @NotNull
     public PsiModuleStub createStub(@NotNull final PsiInnerModule psi, final StubElement parentStub) {
-        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isComponent(), psi.isInterface());
+        return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getAlias(), psi.isComponent(), psi.isInterface());
     }
 
     public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        dataStream.writeUTFFast(stub.getQualifiedName());
+        dataStream.writeUTFFast(stub.getPath());
         dataStream.writeBoolean(stub.isComponent());
         dataStream.writeBoolean(stub.isInterface());
 
@@ -47,7 +47,7 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
     @NotNull
     public PsiModuleStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
-        String qname = dataStream.readUTFFast();
+        String path = dataStream.readUTFFast();
         boolean isComponent = dataStream.readBoolean();
         boolean isInterface = dataStream.readBoolean();
         assert moduleName != null;
@@ -58,7 +58,7 @@ public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, Ps
             alias = dataStream.readUTFFast();
         }
 
-        return new PsiModuleStub(parentStub, this, moduleName, qname, alias, isComponent, isInterface);
+        return new PsiModuleStub(parentStub, this, moduleName, path, alias, isComponent, isInterface);
     }
 
     public void indexStub(@NotNull final PsiModuleStub stub, @NotNull final IndexSink sink) {

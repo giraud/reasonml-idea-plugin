@@ -8,11 +8,11 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.CommonProcessors;
+import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Joiner;
 import com.reason.Log;
@@ -38,6 +38,7 @@ import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
@@ -194,39 +195,39 @@ public final class PsiFinder {
     }
 
     @NotNull
-    public Collection<PsiParameter> findParameters(@NotNull String name, @NotNull ORFileType fileType) {
+    public Set<PsiParameter> findParameters(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("parameters", name, fileType, IndexKeys.PARAMETERS, PsiParameter.class, allScope(m_project));
     }
 
     @NotNull
-    public Collection<PsiLet> findLets(@NotNull String name, @NotNull ORFileType fileType) {
+    public Set<PsiLet> findLets(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("lets", name, fileType, IndexKeys.LETS, PsiLet.class, allScope(m_project));
     }
 
     @NotNull
-    public Collection<PsiVal> findVals(@NotNull String name, @NotNull ORFileType fileType) {
+    public Set<PsiVal> findVals(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("vals", name, fileType, IndexKeys.VALS, PsiVal.class, allScope(m_project));
     }
 
     @NotNull
-    public Collection<PsiType> findTypes(@NotNull String name, @NotNull ORFileType fileType) {
+    public Set<PsiType> findTypes(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("types", name, fileType, IndexKeys.TYPES, PsiType.class, allScope(m_project));
     }
 
     @NotNull
-    public Collection<PsiRecordField> findRecordFields(@NotNull String name, @NotNull ORFileType fileType) {
+    public Set<PsiRecordField> findRecordFields(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("record fields", name, fileType, IndexKeys.RECORD_FIELDS, PsiRecordField.class, allScope(m_project));
     }
 
     @NotNull
-    public Collection<PsiExternal> findExternals(@NotNull String name, @NotNull ORFileType fileType) {
+    public Set<PsiExternal> findExternals(@NotNull String name, @NotNull ORFileType fileType) {
         return findLowerSymbols("externals", name, fileType, IndexKeys.EXTERNALS, PsiExternal.class, allScope(m_project));
     }
 
     @NotNull
-    private <T extends PsiQualifiedNamedElement> Collection<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType,
-                                                                                @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz,
-                                                                                @NotNull GlobalSearchScope scope) {
+    private <T extends PsiQualifiedElement> Set<T> findLowerSymbols(@NotNull String debugName, @NotNull String name, @NotNull ORFileType fileType,
+                                                                    @NotNull StubIndexKey<String, T> indexKey, @NotNull Class<T> clazz,
+                                                                    @NotNull GlobalSearchScope scope) {
         Map<String/*qn*/, T> implNames = new THashMap<>();
         Map<String/*qn*/, T> intfNames = new THashMap<>();
 
@@ -269,7 +270,8 @@ public final class PsiFinder {
             }
         }
 
-        List<T> result = new ArrayList<>(intfNames.values());
+        Set<T> result = new ArrayListSet<>();
+        result.addAll(intfNames.values());
         for (Map.Entry<String, T> entry : implNames.entrySet()) {
             if (!intfNames.containsKey(entry.getKey())) {
                 result.add(entry.getValue());
@@ -287,7 +289,7 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiQualifiedNamedElement findVariant(@Nullable String qname, @NotNull GlobalSearchScope scope) {
+    public PsiVariantDeclaration findVariant(@Nullable String qname, @NotNull GlobalSearchScope scope) {
         if (qname == null) {
             return null;
         }
@@ -315,7 +317,7 @@ public final class PsiFinder {
     }
 
     @Nullable
-    public PsiQualifiedNamedElement findException(@Nullable String qname, ORFileType fileType, @NotNull GlobalSearchScope scope) {
+    public PsiException findException(@Nullable String qname, ORFileType fileType, @NotNull GlobalSearchScope scope) {
         if (qname == null) {
             return null;
         }

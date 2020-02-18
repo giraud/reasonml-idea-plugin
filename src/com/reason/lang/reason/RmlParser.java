@@ -1,15 +1,17 @@
 package com.reason.lang.reason;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
+import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ParserScope.*;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.reason.lang.ParserScope.mark;
+import static com.reason.lang.ParserScope.markScope;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public class RmlParser extends CommonParser<RmlTypes> {
@@ -310,6 +312,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // We don't know yet but we need to complete the marker
             state.complete();
             state.popEnd();
+        } else if (state.isCurrentContext(let) && state.isCurrentResolution(genericExpression)) {
+            // It must be a deconstruction
+            // let ( a |>,<| b ) = ..
+            state.updateCurrentResolution(deconstruction).updateCurrentCompositeElementType(m_types.C_DECONSTRUCTION);
         }
     }
 
@@ -869,7 +875,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // overloading an operator
             state.updateCurrentResolution(externalNamed);
             state.complete();
-        } else {
+        } else if (state.isCurrentResolution(let)) {
+            // Overloading operator OR deconstructing a term
+            //  let |>(<| + ) =
+            //  let |>(<| a, b ) =
+            state.add(markScope(builder, let, genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN));
+        }
+        else {
             IElementType nextTokenType = builder.lookAhead(1);
 
             if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {

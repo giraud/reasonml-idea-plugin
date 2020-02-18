@@ -1,16 +1,16 @@
 package com.reason.ide.intentions;
 
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORElementFactory;
+import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.reason.RmlTypes;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> {
 
@@ -54,7 +54,7 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
     void runInvoke(@NotNull Project project, @NotNull PsiFunction oldFunction) {
         String text = oldFunction.getText();
         String[] tokens = text.split("=>", 2);
-        PsiLet newSyntax = (PsiLet) ORElementFactory.createExpression(project, "let x = " + tokens[0] + "=> {" + tokens[1] + "; };");
+        PsiLet newSyntax = (PsiLet) ORCodeFactory.createExpression(project, "let x = " + tokens[0] + "=> {" + tokens[1] + "; };");
 
         if (newSyntax != null) {
             PsiFunction newFunction = newSyntax.getFunction();

@@ -20,4 +20,13 @@ public class FreeCompletionTest extends ORBasePlatformTestCase {
         assertSize(4, elements);
         assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "x");
     }
+
+    public void testDeconstruction() {
+        configureCode("Dummy.re", "let (first, second) = myVar; <caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertContainsElements(elements, "first", "second");
+    }
 }

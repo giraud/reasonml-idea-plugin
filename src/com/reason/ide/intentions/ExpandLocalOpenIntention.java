@@ -4,7 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORElementFactory;
+import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.psi.PsiLocalOpen;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.Nls;
@@ -56,7 +56,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
         }
 
         String text = parentElement.getText();
-        PsiElement newOpen = ORElementFactory.createExpression(project, "{ open " + modulePath + "; " + text.substring(1, text.length() - 1) + "; }");
+        PsiElement newOpen = ORCodeFactory.createExpression(project, "{ open " + modulePath + "; " + text.substring(1, text.length() - 1) + "; }");
         if (newOpen != null) {
             grandParentElement.getNode().replaceChild(parentElement.getNode(), newOpen.getNode());
         }

@@ -9,7 +9,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReferenceBase;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -19,11 +18,12 @@ import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.ORElementFactory;
+import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.type.ORTypes;
@@ -65,14 +65,14 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        Set<PsiQualifiedNamedElement> potentialPaths = getPotentialPaths();
+        Set<PsiQualifiedElement> potentialPaths = getPotentialPaths();
         if (potentialPaths.isEmpty()) {
             LOG.debug(" -> No potential path found");
         } else {
             ResolveResult[] resolveResults = new ResolveResult[potentialPaths.size()];
 
             int i = 0;
-            for (PsiQualifiedNamedElement referencedElement : potentialPaths) {
+            for (PsiQualifiedElement referencedElement : potentialPaths) {
                 if (LOG.isDebugEnabled()) {
                     boolean isInnerModule = referencedElement instanceof PsiInnerModule;
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
@@ -102,7 +102,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORElementFactory.createModuleName(myElement.getProject(), newName);
+        PsiElement newNameIdentifier = ORCodeFactory.createModuleName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {
@@ -118,7 +118,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         return myElement;
     }
 
-    private Set<PsiQualifiedNamedElement> getPotentialPaths() {
+    private Set<PsiQualifiedElement> getPotentialPaths() {
         Project project = myElement.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
@@ -129,11 +129,11 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
             LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));
         }
 
-        Set<PsiQualifiedNamedElement> resolvedElements = new ArrayListSet<>();
+        Set<PsiQualifiedElement> resolvedElements = new ArrayListSet<>();
         for (String path : paths) {
             String qn = path + "." + m_referenceName;
 
-            PsiQualifiedNamedElement variant = psiFinder.findVariant(qn, scope);
+            PsiQualifiedElement variant = psiFinder.findVariant(qn, scope);
             if (variant != null) {
                 resolvedElements.add(variant);
             } else {
@@ -143,7 +143,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                 if (!variants.isEmpty()) {
                     resolvedElements.addAll(variants);
                 } else {
-                    PsiQualifiedNamedElement exception = psiFinder.findException(qn, both, scope);
+                    PsiQualifiedElement exception = psiFinder.findException(qn, both, scope);
                     if (exception != null) {
                         resolvedElements.add(exception);
                     } else {
@@ -174,7 +174,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     private static class UpperResolveResult implements ResolveResult {
         private PsiElement m_referencedIdentifier;
 
-        public UpperResolveResult(PsiQualifiedNamedElement referencedElement) {
+        public UpperResolveResult(PsiQualifiedElement referencedElement) {
             m_referencedIdentifier = referencedElement instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) referencedElement).getNameIdentifier() :
                     referencedElement;
         }

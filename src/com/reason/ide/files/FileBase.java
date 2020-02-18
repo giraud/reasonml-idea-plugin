@@ -130,7 +130,13 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        return getModuleName();
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         return getModuleName();

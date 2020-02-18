@@ -1,5 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
@@ -12,8 +14,6 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiRecordFieldStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub> implements PsiRecordField {
 
@@ -33,7 +33,19 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub
         return getFirstChild();
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiRecordFieldStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        PsiType parent = PsiTreeUtil.getParentOfType(this, PsiType.class);
+        return (parent == null) ? getName() : (ORUtil.getQualifiedPath(parent) + "." + getName());
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiRecordFieldStub stub = getGreenStub();
@@ -42,13 +54,6 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub
         }
 
         return ORUtil.getQualifiedName(this);
-    }
-
-    @Nullable
-    @Override
-    public String getPathName() {
-        PsiType parent = PsiTreeUtil.getParentOfType(this, PsiType.class);
-        return (parent == null) ? getName() : (ORUtil.getQualifiedPath(parent) + "." + getName());
     }
 
     @Override
@@ -80,5 +85,4 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub
     public String toString() {
         return "Record field " + getQualifiedName();
     }
-
 }

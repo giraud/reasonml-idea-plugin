@@ -7,20 +7,20 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.ORElementFactory;
+import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
@@ -51,7 +51,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORElementFactory.createLetName(myElement.getProject(), newName);
+        PsiElement newNameIdentifier = ORCodeFactory.createLetName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {
@@ -88,7 +88,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
-        PsiNameIdentifierOwner result = null;
+        PsiElement result = null;
         int resultPosition = Integer.MAX_VALUE;
 
         // Find potential paths of current element
@@ -128,9 +128,24 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("  filtered lets", filteredLets);
 
             for (PsiLet letResult : filteredLets) {
-                Integer letPosition = potentialPaths.get(letResult.getQualifiedName());
-                if (letPosition < resultPosition) {
-                    result = letResult;
+                PsiElement letIdentifier = null;
+                Integer letPosition = null;
+                if (letResult.isDeconsruction()) {
+                    for (PsiElement deconstructedElement : letResult.getDeconstructedElements()) {
+                        String qname = letResult.getPath() + "." + deconstructedElement.getText();
+                        letPosition = potentialPaths.get(qname);
+                        if (letPosition != null) {
+                            letIdentifier = deconstructedElement;
+                            break;
+                        }
+                    }
+                } else {
+                    letIdentifier = letResult;
+                    letPosition = potentialPaths.get(letResult.getQualifiedName());
+                }
+
+                if (letPosition != null && letPosition < resultPosition) {
+                    result = letIdentifier;
                     resultPosition = letPosition;
                     LOG.debug("  Found intermediate result", letResult, resultPosition);
                 } else {
@@ -213,13 +228,13 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         if (!recordFields.isEmpty()) {
             // Filter the fields, keep the ones with the same qualified name
             List<PsiRecordField> filteredFields = recordFields.stream().filter(element -> {
-                String pn = element.getPathName();
-                return m_referenceName.equals(pn) || potentialPaths.containsKey(pn);
+                String qp = element.getPath();
+                return m_referenceName.equals(qp) || potentialPaths.containsKey(qp);
             }).collect(toList());
             LOG.debug("  filtered fields", filteredFields);
 
             for (PsiRecordField fieldResult : filteredFields) {
-                Integer fieldPosition = potentialPaths.get(fieldResult.getPathName());
+                Integer fieldPosition = potentialPaths.get(fieldResult.getPath());
                 if (fieldPosition != null) {
                     if (fieldPosition < resultPosition) {
                         result = fieldResult;
@@ -233,15 +248,27 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         if (result != null && LOG.isDebugEnabled()) {
-            LOG.debug("-> " + result + " (identifier=" + result.getNameIdentifier() + ")");
+            LOG.debug("-> " + result + " (identifier=" + (result instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) result).getNameIdentifier() :
+                    result) + ")");
         }
 
-        return result == null ? /*new ORFakeResolvedElement(getElement()) */null : result.getNameIdentifier();
+        return result == null ? new ORFakeResolvedElement(getElement()) :
+                result instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) result).getNameIdentifier() : result;
     }
 
     @NotNull
-    private Predicate<? super PsiQualifiedNamedElement> getPathPredicate(@NotNull Map<String, Integer> potentialPaths) {
+    private Predicate<? super PsiQualifiedElement> getPathPredicate(@NotNull Map<String, Integer> potentialPaths) {
         return element -> {
+            if (element instanceof PsiLet && ((PsiLet) element).isDeconsruction()) {
+                for (PsiElement deconstructedElement : ((PsiLet) element).getDeconstructedElements()) {
+                    String qn = element.getPath() + "." + deconstructedElement.getText();
+                    if ((m_referenceName != null && m_referenceName.equals(qn)) || potentialPaths.containsKey(qn)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             String qn = element.getQualifiedName();
             return (m_referenceName != null && m_referenceName.equals(qn)) || potentialPaths.containsKey(qn);
         };
@@ -256,7 +283,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
         Map<String, Integer> result = new THashMap<>();
 
-        List<PsiQualifiedNamedElement> resolvedPaths = new ArrayList<>();
+        List<PsiQualifiedElement> resolvedPaths = new ArrayList<>();
         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(myElement);
         for (String pathName : potentialPaths) {
             Set<PsiModule> moduleAlias = psiFinder.findModuleAlias(pathName, scope);
@@ -275,7 +302,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         }
 
         Integer position = 0;
-        for (PsiQualifiedNamedElement element : resolvedPaths) {
+        for (PsiQualifiedElement element : resolvedPaths) {
             if (element != null) {
                 result.put(element.getQualifiedName() + (element instanceof PsiParameter ? "" : "." + m_referenceName), position);
                 position++;

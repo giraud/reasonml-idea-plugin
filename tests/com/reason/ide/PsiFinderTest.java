@@ -1,19 +1,19 @@
 package com.reason.ide;
 
 import java.util.*;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
+import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.reason.lang.core.ORFileType.*;
 
 @SuppressWarnings("ConstantConditions")
-public class PsiFinderTest extends BasePlatformTestCase {
+public class PsiFinderTest extends ORBasePlatformTestCase {
 
     public void testModuleLet() {
         myFixture.configureByText("ReasonReact.rei", "module Router: { type api;  };");
@@ -72,9 +72,9 @@ public class PsiFinderTest extends BasePlatformTestCase {
         myFixture.configureByText("A.re", "exception Ex;");
 
         PsiFinder psiFinder = PsiFinder.getInstance(getProject());
-        PsiQualifiedNamedElement intf1 = psiFinder.findException("A.Ex", interfaceOnly, allScope(getProject()));
-        PsiQualifiedNamedElement intf2 = psiFinder.findException("A.Ex", interfaceOrImplementation, allScope(getProject()));
-        PsiQualifiedNamedElement impl = psiFinder.findException("A.Ex", implementationOnly, allScope(getProject()));
+        PsiException intf1 = psiFinder.findException("A.Ex", interfaceOnly, allScope(getProject()));
+        PsiException intf2 = psiFinder.findException("A.Ex", interfaceOrImplementation, allScope(getProject()));
+        PsiException impl = psiFinder.findException("A.Ex", implementationOnly, allScope(getProject()));
 
         assertEquals("rei", intf1.getContainingFile().getFileType().getDefaultExtension());
         assertEquals("rei", intf2.getContainingFile().getFileType().getDefaultExtension());
@@ -92,5 +92,23 @@ public class PsiFinderTest extends BasePlatformTestCase {
         assertSize(2, moduleAliases);
         assertInstanceOf(moduleAliases.get(0), FileBase.class);
         assertInstanceOf(moduleAliases.get(1), FileBase.class);
+    }
+
+    public void testRml_letDeconstruction() {
+        configureCode("A.re", "let x = something;");
+        configureCode("B.re", "let (x, y) = other;");
+
+        Set<PsiLet> lets = PsiFinder.getInstance(getProject()).findLets("x", both);
+
+        assertSize(2, lets);
+    }
+
+    public void testOcl_letDeconstruction() {
+        configureCode("A.ml", "let x = something");
+        configureCode("B.ml", "let (x, y) = other");
+
+        Set<PsiLet> lets = PsiFinder.getInstance(getProject()).findLets("x", both);
+
+        assertSize(2, lets);
     }
 }

@@ -1,6 +1,8 @@
 package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
@@ -12,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> {
 
@@ -26,13 +30,30 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
 
     @NotNull
     public PsiLetStub createStub(@NotNull PsiLet psi, StubElement parentStub) {
-        return new PsiLetStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isFunction());
+        List<String> deconstructedNames = new ArrayList<>();
+        if (psi.isDeconsruction()) {
+            List<PsiElement> elements = psi.getDeconstructedElements();
+            for (PsiElement element : elements) {
+                if (element instanceof PsiNamedElement) {
+                    deconstructedNames.add(((PsiNamedElement) element).getName());
+                }
+            }
+        }
+        return new PsiLetStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.getAlias(), psi.isFunction(), deconstructedNames);
     }
 
     public void serialize(@NotNull PsiLetStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
         dataStream.writeUTFFast(stub.getQualifiedName());
         dataStream.writeBoolean(stub.isFunction());
+
+        List<String> deconstructionNames = stub.getDeconstructionNames();
+        dataStream.writeByte(deconstructionNames.size());
+        if (!deconstructionNames.isEmpty()) {
+            for (String name : deconstructionNames) {
+                dataStream.writeUTFFast(name);
+            }
+        }
 
         String alias = stub.getAlias();
         dataStream.writeBoolean(alias != null);
@@ -47,19 +68,34 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
         String qname = dataStream.readUTFFast();
         boolean isFunction = dataStream.readBoolean();
 
+        List<String> deconstructionNames = new ArrayList<>();
+        byte namesCount = dataStream.readByte();
+        if (namesCount > 0) {
+            for (int i = 0; i < namesCount; i++) {
+                 deconstructionNames.add(dataStream.readUTFFast());
+            }
+        }
+
         String alias = null;
         boolean isAlias = dataStream.readBoolean();
         if (isAlias) {
             alias = dataStream.readUTFFast();
         }
 
-        return new PsiLetStub(parentStub, this, name, qname, alias, isFunction);
+        return new PsiLetStub(parentStub, this, name, qname, alias, isFunction, deconstructionNames);
     }
 
     public void indexStub(@NotNull PsiLetStub stub, @NotNull IndexSink sink) {
-        String name = stub.getName();
-        if (name != null) {
-            sink.occurrence(IndexKeys.LETS, name);
+        List<String> deconstructionNames = stub.getDeconstructionNames();
+        if (deconstructionNames.isEmpty()) {
+            String name = stub.getName();
+            if (name != null) {
+                sink.occurrence(IndexKeys.LETS, name);
+            }
+        } else {
+            for (String name : deconstructionNames) {
+                sink.occurrence(IndexKeys.LETS, name);
+            }
         }
 
         String fqn = stub.getQualifiedName();

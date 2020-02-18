@@ -27,7 +27,13 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     }
     //endregion
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        return ((FileBase) getContainingFile()).getPath();
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiModuleStub greenStub = getGreenStub();

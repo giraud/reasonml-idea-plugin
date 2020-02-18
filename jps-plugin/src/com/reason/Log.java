@@ -8,8 +8,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.ResolveResult;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 
 public class Log {
 
@@ -130,13 +130,13 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @NotNull PsiQualifiedNamedElement element) {
+    public void debug(String comment, @NotNull PsiQualifiedElement element) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ")");
         }
     }
 
-    public void debug(String comment, @NotNull PsiQualifiedNamedElement element, int position) {
+    public void debug(String comment, @NotNull PsiQualifiedElement element, int position) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + element.getQualifiedName() + " (" + element.getContainingFile().getVirtualFile().getPath() + ") pos=" + position);
         }

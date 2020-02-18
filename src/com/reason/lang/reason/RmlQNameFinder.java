@@ -3,7 +3,6 @@ package com.reason.lang.reason;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
@@ -61,7 +60,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
                     qualifiedNames.add(letQName + pathExtension);
                 }
             } else if (item instanceof PsiFunction) {
-                PsiQualifiedNamedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedNamedElement.class);
+                PsiQualifiedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedElement.class);
                 if (parent != null) {
                     String parentQName = parent.getQualifiedName();
                     // Register all parameters of function

@@ -26,21 +26,21 @@ public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal> 
 
     @NotNull
     public PsiValStub createStub(@NotNull PsiVal psi, StubElement parentStub) {
-        return new PsiValStub(parentStub, this, psi.getName(), psi.getQualifiedName(), psi.isFunction());
+        return new PsiValStub(parentStub, this, psi.getName(), psi.getPath(), psi.isFunction());
     }
 
     public void serialize(@NotNull PsiValStub stub, @NotNull StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        dataStream.writeUTFFast(stub.getQualifiedName());
+        dataStream.writeUTFFast(stub.getPath());
         dataStream.writeBoolean(stub.isFunction());
     }
 
     @NotNull
     public PsiValStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) throws IOException {
         StringRef name = dataStream.readName();
-        String qname = dataStream.readUTFFast();
+        String path = dataStream.readUTFFast();
         boolean isFunction = dataStream.readBoolean();
-        return new PsiValStub(parentStub, this, name, qname, isFunction);
+        return new PsiValStub(parentStub, this, name, path, isFunction);
     }
 
     public void indexStub(@NotNull PsiValStub stub, @NotNull IndexSink sink) {

@@ -1,6 +1,7 @@
 package com.reason.lang.ocaml;
 
 import java.util.*;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
@@ -180,5 +181,15 @@ public class LetParsingTest extends BaseParsingTestCase {
         assertEquals("Dummy.root", root.getQualifiedName());
         assertEquals("Dummy.root.inner", inner.getQualifiedName());
         assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions().iterator().next()).getQualifiedName());
+    }
+
+    public void testDeconstruction() {
+        PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
+
+        assertTrue(e.isDeconsruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertEquals("b", names.get(1).getText());
     }
 }

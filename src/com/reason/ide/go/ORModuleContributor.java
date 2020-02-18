@@ -6,7 +6,6 @@ import com.intellij.navigation.ChooseByNameContributorEx;
 import com.intellij.navigation.GotoClassContributor;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.Processor;
 import com.intellij.util.indexing.FindSymbolParameters;
@@ -16,6 +15,7 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.index.ModuleIndex;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 
 // Implements the goto class
 public class ORModuleContributor implements GotoClassContributor, ChooseByNameContributorEx {
@@ -43,8 +43,8 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
     public String getQualifiedName(NavigationItem item) {
         if (item instanceof FileBase) {
             return ((FileBase) item).getModuleName();
-        } else if (item instanceof PsiQualifiedNamedElement) {
-            return ((PsiQualifiedNamedElement) item).getQualifiedName();
+        } else if (item instanceof PsiQualifiedElement) {
+            return ((PsiQualifiedElement) item).getQualifiedName();
         }
         return null;
     }

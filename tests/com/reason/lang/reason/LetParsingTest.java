@@ -8,7 +8,6 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.signature.ORSignature;
 
@@ -39,7 +38,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     public void testLetBindingWithJsx() {
         PsiFile file = parseCode("let make = p => { render: x => { <div/>; } }");
         PsiElement[] children = file.getChildren();
-        PsiElement element = PsiTreeUtil.nextLeaf(children[1], true);
+        PsiElement element = PsiTreeUtil.nextLeaf(children[1]);
 
         assertNull(element);
         assertSize(1, expressions(file));
@@ -139,16 +138,16 @@ public class LetParsingTest extends BaseParsingTestCase {
 
     public void testDeconstruction() {
         PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
-        List<PsiElement> children = new ArrayList<>(e.getScopeChildren());
 
-        assertEquals("(a, b)", e.getName());
-        assertSize(2, children);
-        assertInstanceOf(children.get(0), PsiLowerSymbol.class);
-        assertInstanceOf(children.get(1), PsiLowerSymbol.class);
+        assertTrue(e.isDeconsruction());
+        List<PsiElement> names = e.getDeconstructedElements();
+        assertSize(2, names);
+        assertEquals("a", names.get(0).getText());
+        assertEquals("b", names.get(1).getText());
     }
 
     public void testOperator() {
-        PsiLet e = first(letExpressions(parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;", true)));
+        PsiLet e = first(letExpressions(parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;")));
 
         assertEquals("(/)", e.getName());
         ORSignature signature = e.getORSignature();

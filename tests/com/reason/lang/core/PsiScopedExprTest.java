@@ -1,6 +1,7 @@
 package com.reason.lang.core;
 
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.psi.PsiDeconstruction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.ocaml.OclParserDefinition;
@@ -20,7 +21,7 @@ public class PsiScopedExprTest extends BaseParsingTestCase {
     public void testNotEmptyScope() {
         PsiLet e = (PsiLet) firstElement(parseCode("let (a, b) = x"));
 
-        assertFalse(ORUtil.findImmediateFirstChildOfClass(e, PsiScopedExpr.class).isEmpty());
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(e, PsiDeconstruction.class));
     }
 
 }

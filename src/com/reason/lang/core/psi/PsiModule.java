@@ -5,12 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiQualifiedNamedElement;
 
 /**
  * Common interface to file-based modules and inner modules
  */
-public interface PsiModule extends PsiQualifiedNamedElement, NavigatablePsiElement, PsiStructuredElement {
+public interface PsiModule extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement {
 
     @Nullable
     String getAlias();

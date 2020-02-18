@@ -1,21 +1,22 @@
 package com.reason.ide.insight.provider;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
@@ -35,7 +36,8 @@ public class ObjectCompletionProvider {
         if (previousLeaf != null) {
             IElementType previousElementType = previousLeaf.getNode().getElementType();
 
-            while (previousLeaf != null && previousElementType == types.LIDENT || previousElementType == types.SHARPSHARP || previousElementType == types.SHARP) {
+            while (previousLeaf != null && previousElementType == types.LIDENT || previousElementType == types.SHARPSHARP
+                    || previousElementType == types.SHARP) {
                 if (previousElementType == types.LIDENT) {
                     //noinspection ConstantConditions
                     LeafPsiElement node = (LeafPsiElement) previousLeaf.getNode();
@@ -52,16 +54,17 @@ public class ObjectCompletionProvider {
             return;
         }
 
-        PsiLet let = null;
         String lowerName = path.remove(0);
 
-        Collection<? extends PsiQualifiedNamedElement> lets = PsiFinder.getInstance(project).findLets(lowerName, interfaceOrImplementation);
-
+        PsiLet let = null;
+        Set<PsiLet> lets = PsiFinder.getInstance(project).findLets(lowerName, interfaceOrImplementation);
         if (!lets.isEmpty()) {
-            let = (PsiLet) lets.iterator().next();
+            let = lets.iterator().next();
         }
 
-        if (let == null) return;
+        if (let == null) {
+            return;
+        }
 
         if (let.isRecord()) {
             Collection<PsiRecordField> fields = let.getRecordFields();
@@ -79,8 +82,6 @@ public class ObjectCompletionProvider {
                     resultSet.addElement(LookupElementBuilder.create(name).withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
                 }
             }
-
         }
-
     }
 }

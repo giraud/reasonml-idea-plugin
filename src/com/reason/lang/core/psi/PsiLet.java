@@ -1,14 +1,17 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.*;
-import com.reason.lang.core.stub.PsiLetStub;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.NavigatablePsiElement;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.StubBasedPsiElement;
+import com.reason.lang.core.stub.PsiLetStub;
 
-import java.util.Collection;
-import java.util.List;
-
-public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, PsiQualifiedNamedElement, PsiNameIdentifierOwner, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
+public interface PsiLet
+        extends PsiVar, PsiSignatureElement, PsiInferredType, PsiQualifiedElement, PsiNameIdentifierOwner, NavigatablePsiElement, PsiStructuredElement,
+                StubBasedPsiElement<PsiLetStub> {
 
     @Nullable
     PsiLetBinding getBinding();
@@ -38,5 +41,10 @@ public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, Ps
     Collection<PsiElement> getScopeChildren();
 
     @NotNull
-    String getQualifiedPath();
+    String getPath();
+
+    boolean isDeconsruction();
+
+    @NotNull
+    List<PsiElement> getDeconstructedElements();
 }

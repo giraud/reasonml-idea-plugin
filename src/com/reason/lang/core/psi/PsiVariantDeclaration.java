@@ -1,9 +1,11 @@
 package com.reason.lang.core.psi;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -12,14 +14,11 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.impl.PsiTokenStub;
 import com.reason.lang.core.stub.PsiVariantDeclarationStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import static java.util.Collections.*;
 
-import static java.util.Collections.emptyList;
-
-public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclarationStub> implements PsiNameIdentifierOwner, PsiQualifiedNamedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
+public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclarationStub>
+        implements PsiNameIdentifierOwner, PsiQualifiedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
 
     //region Constructors
     public PsiVariantDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -49,7 +48,18 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
         return this;
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiVariantDeclarationStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiVariantDeclarationStub stub = getGreenStub();

@@ -1,5 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -15,11 +19,6 @@ import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiValStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.Collection;
 
 public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements PsiVal {
 
@@ -69,13 +68,25 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
         return false;
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiValStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiValStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
+
         return ORUtil.getQualifiedName(this);
     }
 
@@ -127,5 +138,4 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
     public String toString() {
         return "Val " + getQualifiedName();
     }
-
 }

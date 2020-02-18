@@ -9,30 +9,37 @@ import com.intellij.util.io.StringRef;
 import com.reason.lang.core.psi.PsiModule;
 
 public class PsiModuleStub extends NamedStubBase<PsiModule> {
+    private final String m_path;
     private final String m_qname;
     private final String m_alias;
     private final boolean m_isComponent;
     private final boolean m_isInterface;
 
-    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @Nullable String qname, String alias,
+    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable String name, @Nullable String path, String alias,
                          boolean isComponent, boolean isInterface) {
         super(parent, elementType, name);
-        m_qname = qname;
+        m_path = path;
+        m_qname = path == null || path.length() == 0 ? "" + name : path + "." + name;
         m_alias = alias;
         m_isComponent = isComponent;
         m_isInterface = isInterface;
     }
 
-    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @Nullable String qname, String alias,
+    public PsiModuleStub(StubElement parent, @NotNull IStubElementType elementType, @Nullable StringRef name, @Nullable String path, String alias,
                          boolean isComponent, boolean isInterface) {
         super(parent, elementType, name);
-        m_qname = qname;
+        m_path = path;
+        m_qname = path == null || path.length() == 0 ? "" + name : path + "." + name;
         m_alias = alias;
         m_isComponent = isComponent;
         m_isInterface = isInterface;
     }
 
-    @Nullable
+    public String getPath() {
+        return m_path;
+    }
+
+    @NotNull
     public String getQualifiedName() {
         return m_qname;
     }

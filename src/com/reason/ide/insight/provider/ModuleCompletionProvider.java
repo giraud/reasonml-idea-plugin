@@ -7,7 +7,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.IElementType;
@@ -20,6 +19,7 @@ import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ModulePath;
 import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
 
@@ -54,7 +54,8 @@ public class ModuleCompletionProvider {
             }
         } else {
             PsiFinder psiFinder = PsiFinder.getInstance(project);
-            PsiQualifiedNamedElement foundModule = psiFinder.findModulesFromQn(modulePath.toString(), interfaceOrImplementation, scope).iterator().next();
+            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(modulePath.toString(), interfaceOrImplementation, scope);
+            PsiModule foundModule = modulesFromQn.isEmpty() ? null : modulesFromQn.iterator().next();
             if (foundModule != null) {
                 LOG.debug("  Found module", foundModule);
                 Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() :

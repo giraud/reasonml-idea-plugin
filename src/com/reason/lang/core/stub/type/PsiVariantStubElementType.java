@@ -24,20 +24,20 @@ public class PsiVariantStubElementType extends IStubElementType<PsiVariantDeclar
 
     @NotNull
     public PsiVariantDeclarationStub createStub(@NotNull final PsiVariantDeclaration psi, final StubElement parentStub) {
-        return new PsiVariantDeclarationStub(parentStub, this, psi.getName(), psi.getQualifiedName());
+        return new PsiVariantDeclarationStub(parentStub, this, psi.getName(), psi.getPath());
     }
 
     public void serialize(@NotNull final PsiVariantDeclarationStub stub, @NotNull final StubOutputStream dataStream) throws IOException {
         dataStream.writeName(stub.getName());
-        dataStream.writeUTFFast(stub.getQualifiedName());
+        dataStream.writeUTFFast(stub.getPath());
     }
 
     @NotNull
     public PsiVariantDeclarationStub deserialize(@NotNull final StubInputStream dataStream, final StubElement parentStub) throws IOException {
         StringRef moduleName = dataStream.readName();
-        String qname = dataStream.readUTFFast();
+        String path = dataStream.readUTFFast();
 
-        return new PsiVariantDeclarationStub(parentStub, this, moduleName, qname);
+        return new PsiVariantDeclarationStub(parentStub, this, moduleName, path);
     }
 
     public void indexStub(@NotNull final PsiVariantDeclarationStub stub, @NotNull final IndexSink sink) {

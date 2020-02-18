@@ -44,13 +44,25 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
         return findChildByClass(PsiLowerSymbol.class);
     }
 
-    @Nullable
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiExternalStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
+
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @NotNull
     @Override
     public String getQualifiedName() {
         PsiExternalStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
+
         return ORUtil.getQualifiedName(this);
     }
 

@@ -1,25 +1,21 @@
 package com.reason.lang.core.psi.impl;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
-import com.intellij.psi.PsiReference;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiParameterStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> implements PsiParameter {
-
-    @NotNull
-    PsiReference[] EMPTY_REFS = new PsiReference[0];
 
     //region Constructors
     public PsiParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -72,19 +68,20 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> im
 
     @NotNull
     @Override
+    public String getPath() {
+        PsiQualifiedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedElement.class);
+        String parentQName = qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
+        return parentQName == null ? "" : parentQName;
+    }
+
+    @NotNull
+    @Override
     public String getQualifiedName() {
         PsiParameterStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
         }
-        return getQualifiedPath() + "[" + getName() + "]";
-    }
-
-    @NotNull
-    private String getQualifiedPath() {
-        PsiQualifiedNamedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedNamedElement.class);
-        String parentQName = qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
-        return parentQName == null ? "" : parentQName;
+        return getPath() + "[" + getName() + "]";
     }
 
     @Nullable

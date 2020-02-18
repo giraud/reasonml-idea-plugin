@@ -29,7 +29,7 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
     @NotNull
     public PsiModuleStub createStub(@NotNull final PsiFakeModule fakeModule, final StubElement parentStub) {
         FileBase file = (FileBase) fakeModule.getContainingFile();
-        return new PsiModuleStub(parentStub, this, file.getModuleName(), file.getModuleName(), file.getAlias(), file.isComponent(), file.isInterface());
+        return new PsiModuleStub(parentStub, this, file.getModuleName(), "", file.getAlias(), file.isComponent(), file.isInterface());
     }
 
     public void serialize(@NotNull final PsiModuleStub stub, @NotNull final StubOutputStream dataStream) throws IOException {

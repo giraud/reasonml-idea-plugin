@@ -33,6 +33,7 @@ public enum ParserScopeEnum {
     letNamedEq,
     letNamedSignature,
     letNamedBinding,
+    deconstruction,
 
     function,
     functionParameters,
@@ -162,5 +163,5 @@ public enum ParserScopeEnum {
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage, letNamedBindingFunction,
     typeBinding, recordFieldAnnotation, option, optionParameter, name, variant, variantConstructor,
-    variantConstructorParameter, variantConstructorParameters, unit,  localObjectOpen
+    variantConstructorParameter, variantConstructorParameters, unit, localObjectOpen
 }

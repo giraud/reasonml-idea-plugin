@@ -40,7 +40,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class, PsiDeconstruction.class);
     }
 
     @Nullable
@@ -297,8 +297,24 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     @NotNull
     @Override
-    public String getQualifiedPath() {
+    public String getPath() {
         return ORUtil.getQualifiedPath(this); // stub + name using this
+    }
+
+    @Override
+    public boolean isDeconsruction() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier instanceof PsiDeconstruction;
+    }
+
+    @NotNull
+    @Override
+    public List<PsiElement> getDeconstructedElements() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        if (nameIdentifier instanceof PsiDeconstruction) {
+            return ((PsiDeconstruction) nameIdentifier).getDeconstructedElements();
+        }
+        return Collections.emptyList();
     }
 
     //region PsiStructuredElement

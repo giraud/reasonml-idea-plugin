@@ -1,7 +1,5 @@
 package com.reason.lang.core;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -12,9 +10,11 @@ import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.reason.RmlLanguage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ORElementFactory {
-    private ORElementFactory() {
+public class ORCodeFactory {
+    private ORCodeFactory() {
     }
 
     @Nullable

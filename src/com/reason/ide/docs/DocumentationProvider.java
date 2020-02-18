@@ -10,8 +10,6 @@ import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiQualifiedNamedElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -26,6 +24,7 @@ import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
@@ -183,20 +182,19 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
                 if (!signature.isEmpty()) {
                     String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
-                    if (resolvedElement instanceof PsiQualifiedNamedElement) {
-                        String path = ORUtil.getQualifiedPath((PsiNameIdentifierOwner) resolvedElement);
+                    if (resolvedElement instanceof PsiQualifiedElement) {
+                        PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedElement;
                         String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                        String desc = ((PsiNamedElement) resolvedElement).getName();
-                        return createQuickDocTemplate(path, elementType, desc, sig);
+                        return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
                     }
                     return sig;
                 }
             }
 
             // No signature found, but resolved
-            if (resolvedElement instanceof PsiQualifiedNamedElement) {
+            if (resolvedElement instanceof PsiNameIdentifierOwner) {
                 String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                String desc = ((PsiQualifiedNamedElement) resolvedElement).getName();
+                String desc = ((PsiNameIdentifierOwner) resolvedElement).getName();
                 String path = ORUtil.getQualifiedPath((PsiNameIdentifierOwner) resolvedElement);
 
                 if (inferredType == null) {
