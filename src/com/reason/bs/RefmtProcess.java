@@ -3,9 +3,11 @@ package com.reason.bs;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
+import com.reason.Platform;
 import com.reason.Streams;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
@@ -115,7 +117,7 @@ public class RefmtProcess {
         if (binary == null) {
             binary = vfManager.findFileByUrl(path + "/refmt3.exe");
             if (binary == null) {
-                binary = vfManager.findFileByUrl(path + "/bsrefmt");
+                binary = vfManager.findFileByUrl(path + "/bsrefmt" + (SystemInfo.isWindows ? ".cmd" : ""));
             }
         }
 
