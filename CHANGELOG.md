@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.86 - 2020/02/20
+
 - :rocket: [!r] [#204](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/204) New on-the-fly compilation to get faster inferred information
 - :bug: [#167](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/167) Go-to definition is not working correctly for deconstructed tuples
 
