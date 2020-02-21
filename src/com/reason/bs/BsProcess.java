@@ -1,30 +1,32 @@
 package com.reason.bs;
 
-import java.io.*;
-import java.util.concurrent.atomic.*;
-import java.util.regex.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Compiler;
 import com.reason.CompilerProcessLifecycle;
 import com.reason.Platform;
 import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
-import static com.intellij.openapi.vfs.StandardFileSystems.FILE_PROTOCOL_PREFIX;
-import static com.reason.Platform.*;
+import static com.reason.bs.BsBinaries.getBsbPath;
+import static com.reason.bs.BsBinaries.getBscPath;
 
 public final class BsProcess implements CompilerProcessLifecycle {
 
@@ -105,35 +107,6 @@ public final class BsProcess implements CompilerProcessLifecycle {
         if (m_bsb != null) {
             m_bsb.addRawProcessListener(outputListener);
         }
-    }
-
-    @Nullable
-    public static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
-
-        VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
-        VirtualFile bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsb.exe");
-
-        if (bsbPath == null) {
-            bsbPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsb" + (SystemInfo.isWindows ? ".cmd" : ""));
-        }
-
-        return bsbPath == null ? null : bsbPath.getCanonicalPath();
-    }
-
-    // Duplicate BsbPath for more safety
-    @Nullable
-    public static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        String workingDir = ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
-
-        VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
-        VirtualFile bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_BS_PLATFORM + "/lib/bsc.exe");
-
-        if (bscPath == null) {
-            bscPath = virtualFileManager.findFileByUrl(FILE_PROTOCOL_PREFIX + workingDir + LOCAL_NODE_MODULES_BIN + "/bsc" + (SystemInfo.isWindows ? ".cmd" : ""));
-        }
-
-        return bscPath == null ? null : bscPath.getCanonicalPath();
     }
 
     @Nullable

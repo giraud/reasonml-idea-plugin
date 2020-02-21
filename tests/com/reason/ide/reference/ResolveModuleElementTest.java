@@ -1,8 +1,9 @@
 package com.reason.ide.reference;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiQualifiedNamedElement;
 import com.reason.ide.ORBasePlatformTestCase;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 
 public class ResolveModuleElementTest extends ORBasePlatformTestCase {
 
@@ -10,16 +11,16 @@ public class ResolveModuleElementTest extends ORBasePlatformTestCase {
         configureCode("Dimensions.re", "let space = 5;");
         configureCode("Comp.re", "Dimensions<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Dimensions.re", ((PsiModule) e).getName());
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("Dimensions.re", ((PsiQualifiedElement) elementAtCaret).getName());
     }
 
     public void testBasic() {
         configureCode("Dimensions.re", "let space = 5;");
         configureCode("Comp.re", "let D = Dimensions<caret>");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("Dimensions.re", ((PsiModule) e).getName());
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("Dimensions.re", ((PsiQualifiedElement) elementAtCaret).getName());
     }
 
     public void testWithAlias() {
@@ -27,15 +28,33 @@ public class ResolveModuleElementTest extends ORBasePlatformTestCase {
         configureCode("A.re", "module A1 = {};");
         configureCode("B.re", "module X = A; X.A1<caret>);");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.A1", ((PsiModule) e.getParent()).getQualifiedName());
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("A.A1", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
     public void testWithAliasAndInterface() {
         configureCode("C.rei", "module A1 = {};");
         configureCode("D.re", "module X = C; X.A1<caret>);");
 
-        PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("C.A1", ((PsiModule) e.getParent()).getQualifiedName());
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("C.A1", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());
     }
+
+    public void testOpen() {
+        configureCode("Belt.re", "module Option = {}");
+        configureCode("Dummy.re", "open Belt.Option<caret>;");
+
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("Belt.Option", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());
+        assertEquals("Belt.re", elementAtCaret.getContainingFile().getName());
+    }
+
+    public void testInclude() {
+        configureCode("Css_Core.rei", "let display: string => rule");
+        configureCode("Css.re", "include Css_Core<caret>; include Css_Core.Make({})");
+
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("Css_Core", ((PsiQualifiedElement) elementAtCaret).getQualifiedName());
+    }
+
 }

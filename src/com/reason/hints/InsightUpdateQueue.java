@@ -160,7 +160,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
 
                         // Compile temporary file
 
-                        String bscPath = BsProcess.getBscPath(m_project, sourceFile);
+                        String bscPath = BsBinaries.getBscPath(m_project, sourceFile);
                         if (bscPath != null) {
                             File cmtFile = new File(m_tempDirectory, nameWithoutExtension + ".cmt");
                             if (isExpired()) {

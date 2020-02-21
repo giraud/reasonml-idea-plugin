@@ -69,7 +69,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @Override
     @Nullable
     public String getName() {
-        throw new RuntimeException("Not implemented, use FileBase");
+        return getContainingFile().getName();
     }
 
     @Nullable
