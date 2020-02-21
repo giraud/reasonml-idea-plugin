@@ -12,8 +12,9 @@
 
 ## Unreleased
 
-## 0.86 - 2020/02/20
+## 0.86.1 - 2020/02/21
 
+- Compatible with bucklescript 7.2
 - :rocket: [!r] [#204](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/204) New on-the-fly compilation to get faster inferred information
 - :bug: [#167](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/167) Go-to definition is not working correctly for deconstructed tuples
 

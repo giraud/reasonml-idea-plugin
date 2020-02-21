@@ -2,13 +2,14 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.16"
 }
 
-def pluginVersion = '0.86'
+def pluginVersion = '0.86.1'
 def ideaVersion = '2019.3'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     changeNotes """
         <ul>
+            <li>Compatible with bucklescript 7.2</li>
             <li>204 - New on-the-fly compilation to get faster inferred information</li>
             <li>167 - Go-to definition is not working correctly for deconstructed tuples</li>
         </ul>
