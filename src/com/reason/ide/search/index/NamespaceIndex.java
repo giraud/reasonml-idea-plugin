@@ -4,8 +4,6 @@ import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.util.indexing.DataIndexer;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.FileContent;
@@ -17,6 +15,7 @@ import com.reason.Log;
 import com.reason.Platform;
 import com.reason.StringUtil;
 import com.reason.bs.BsConfig;
+import com.reason.bs.BsConfigReader;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.DuneFileType;
 import com.reason.lang.core.ORUtil;
@@ -59,18 +58,15 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
                     }
                 }
             } else {
-                PsiFile file = PsiManager.getInstance(inputData.getProject()).findFile(dataFile);
-                if (file != null) {
-                    BsConfig configFile = BsConfig.read(dataFile, file, false);
-                    if (configFile.hasNamespace()) {
-                        VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(inputData.getProject());
-                        if (baseRoot != null) {
-                            String namespace = configFile.getNamespace();
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
-                            }
-                            return Collections.singletonMap(namespace, null);
+                BsConfig configFile = BsConfigReader.read(dataFile);
+                if (configFile.hasNamespace()) {
+                    VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(inputData.getProject());
+                    if (baseRoot != null) {
+                        String namespace = configFile.getNamespace();
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Indexing " + dataFile + " with namespace " + namespace);
                         }
+                        return Collections.singletonMap(namespace, null);
                     }
                 }
             }

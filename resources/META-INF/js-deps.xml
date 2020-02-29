@@ -1,5 +1,8 @@
 <idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="com.reason.ide.js.OrJsLibraryManager"/>
+    </extensions>
     <extensions defaultExtensionNs="JavaScript">
-        <nodeModulesIndexableFileNamesProvider implementation="com.reason.ide.search.ReasonIndexableFileNamesProvider"/>
+        <nodeModulesIndexableFileNamesProvider implementation="com.reason.ide.js.OrIndexableFileNamesProvider"/>
     </extensions>
 </idea-plugin>

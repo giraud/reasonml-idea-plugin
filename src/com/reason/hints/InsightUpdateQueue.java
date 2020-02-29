@@ -79,7 +79,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
 
         // Read bsConfig to get the jsx value and ppx
         VirtualFile configJson = m_contentRoot == null ? null : m_contentRoot.findFileByRelativePath("bsconfig.json");
-        BsConfig config = configJson == null ? null : BsConfig.read(project, configJson);
+        BsConfig config = configJson == null ? null : BsConfigReader.read(configJson);
         if (config == null) {
             LOG.debug("No bsconfig.json found for content root: " + m_contentRoot);
             m_jsxVersion = null;

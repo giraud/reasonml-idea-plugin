@@ -1,5 +1,10 @@
 package com.reason.bs;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.coverage.gnu.trove.THashMap;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
@@ -17,26 +22,15 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
+import com.reason.FileUtil;
 import com.reason.Platform;
 import com.reason.ProcessFinishedListener;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
-import gnu.trove.THashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class BucklescriptImpl implements Bucklescript {
-
-    private static final String[] EMPTY_ARRAY = new String[0];
 
     @NotNull
     private final Project m_project;
@@ -69,7 +63,7 @@ public class BucklescriptImpl implements Bucklescript {
 
     @Override
     public void refresh(@NotNull VirtualFile bsConfigFile) {
-        BsConfig updatedConfig = BsConfig.read(m_project, bsConfigFile);
+        BsConfig updatedConfig = BsConfigReader.read(bsConfigFile);
         m_configs.put(bsConfigFile.getCanonicalPath(), updatedConfig);
     }
 
@@ -196,15 +190,11 @@ public class BucklescriptImpl implements Bucklescript {
     public Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
         String content = null;
 
-        try {
-            if (contentRoot != null) {
-                VirtualFile ninja = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
-                if (ninja != null) {
-                    content = new String(ninja.contentsToByteArray(), StandardCharsets.UTF_8);
-                }
+        if (contentRoot != null) {
+            VirtualFile ninja = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
+            if (ninja != null) {
+                content = FileUtil.readFileContent(ninja);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);  // TODO handle exception
         }
 
         return new Ninja(content);

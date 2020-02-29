@@ -1,10 +1,13 @@
 package com.reason.ide;
 
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.FileBase;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
@@ -25,4 +28,12 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         return (FileBase) file;
     }
 
+    @NotNull
+    protected String toJson(@NotNull String value) {
+        return value.replaceAll("'", "\"").replaceAll("@", "\n");
+    }
+
+    protected String loadJson(@NotNull String filename) throws IOException {
+        return FileUtil.loadFile(new File(getTestDataPath(), filename), CharsetToolkit.UTF8, true).trim();
+    }
 }

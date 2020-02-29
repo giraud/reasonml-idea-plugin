@@ -1,10 +1,10 @@
-package com.reason.ide.search;
+package com.reason.ide.js;
 
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.javascript.modules.NodeModulesIndexableFileNamesProvider;
 
-public class ReasonIndexableFileNamesProvider extends NodeModulesIndexableFileNamesProvider {
+public class OrIndexableFileNamesProvider extends NodeModulesIndexableFileNamesProvider {
 
     private static final List<String> EXTENSIONS = new ArrayList<>(4);
     private static final List<String> FILES = new ArrayList<>(1);

@@ -1,11 +1,15 @@
 package com.reason;
 
+import java.io.*;
+import java.util.stream.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Streams {
+
+    public static final String LINE_SEPARATOR = System.lineSeparator();
+
     private Streams() {
     }
 
@@ -20,6 +24,16 @@ public class Streams {
                 Interrupted.sleep(20);
                 isReady = reader.ready() || errorReader.ready();
             }
+        }
+    }
+
+    public static String inputToString(InputStream is) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, UTF_8))) {
+            return br.lines().collect(Collectors.joining(LINE_SEPARATOR));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 }

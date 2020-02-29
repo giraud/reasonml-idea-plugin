@@ -1,6 +1,7 @@
 package com.reason;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -91,6 +92,12 @@ public class Log {
     public void debug(String comment, @Nullable PsiFile[] t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.length + " "));
+        }
+    }
+
+    public void debug(String comment, Path t) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + (t == null ? "" : t + " "));
         }
     }
 

@@ -2,16 +2,10 @@ package com.reason.ide;
 
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiFile;
 
 @SuppressWarnings("ConstantConditions")
 public class FileManagerTest extends ORBasePlatformTestCase {
-
-    @NotNull
-    private String toJson(@NotNull String value) {
-        return value.replaceAll("'", "\"").replaceAll("@", "\n");
-    }
 
     public void testRelativeSourceWithNamespace() {
         myFixture.configureByText("bsconfig.json", toJson("{'name': 'foo', 'namespace': 'foo'}"));

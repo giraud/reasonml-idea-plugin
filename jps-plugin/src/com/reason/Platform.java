@@ -67,7 +67,7 @@ public class Platform {
         for (Module module : moduleManager.getModules()) {
             for (VirtualFile contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
                 VirtualFile packageJson = contentRoot.findChild(filename);
-                if (packageJson != null) {
+                if (packageJson != null && !rootContents.containsKey(module)) {
                     rootContents.put(module, packageJson);
                 }
             }
@@ -114,7 +114,7 @@ public class Platform {
     }
 
     @Nullable
-    public static VirtualFile findAncestorBsconfig(@NotNull Project project) {
+    public static VirtualFile findProjectBsconfig(@NotNull Project project) {
         VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project);
         return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
     }
@@ -124,7 +124,7 @@ public class Platform {
 
     @Nullable
     public static VirtualFile findAncestorBsconfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile contentRoot = findAncestorBsconfig(project);
+        VirtualFile contentRoot = findProjectBsconfig(project);
         if (sourceFile.equals(contentRoot)) {
             return sourceFile;
         }

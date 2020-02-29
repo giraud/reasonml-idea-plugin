@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.util.indexing.DataIndexer;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.FileBasedIndexExtension;
@@ -18,6 +17,7 @@ import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
 import com.reason.Platform;
 import com.reason.bs.BsConfig;
+import com.reason.bs.BsConfigReader;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleData;
@@ -89,24 +89,19 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                     Map<String, FileModuleData> map = new HashMap<>();
 
                     String namespace = "";
-                    VirtualFile bsconfig = Platform.findAncestorBsconfig(inputData.getProject(), inputData.getFile());
-                    if (bsconfig != null) {
-                        VirtualFile parent = bsconfig.getParent();
+                    VirtualFile bsconfigFile = Platform.findAncestorBsconfig(inputData.getProject(), inputData.getFile());
+                    if (bsconfigFile != null) {
+                        VirtualFile parent = bsconfigFile.getParent();
                         boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-                        PsiManager psiManager = PsiManager.getInstance(inputData.getProject());
-
-                        PsiFile bsconfigPsiFile = psiManager.findFile(bsconfig);
-                        if (bsconfigPsiFile != null) {
-                            BsConfig bsConfig = BsConfig.read(parent, bsconfigPsiFile, useExternalAsSource);
-                            if (!bsConfig.isInSources(inputData.getFile())) {
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfig);
-                                }
-                                return Collections.emptyMap();
+                        BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
+                        if (!bsConfig.isInSources(inputData.getFile())) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
                             }
-
-                            namespace = bsConfig.getNamespace();
+                            return Collections.emptyMap();
                         }
+
+                        namespace = bsConfig.getNamespace();
                     }
                     String moduleName = psiFile.getModuleName();
 
