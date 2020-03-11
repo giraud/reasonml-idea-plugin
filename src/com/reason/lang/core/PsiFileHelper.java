@@ -9,6 +9,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
+import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiDirective;
 import com.reason.lang.core.psi.PsiExternal;
@@ -29,18 +30,19 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file) {
+    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file, @NotNull ExpressionScope eScope) {
         ArrayList<PsiNameIdentifierOwner> result = new ArrayList<>();
 
         PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
 
         PsiElement element = file.getFirstChild();
-        processSiblingExpressions(psiFinder, element, result);
+        processSiblingExpressions(psiFinder, element, eScope, result);
 
         return result;
     }
 
-    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull List<PsiNameIdentifierOwner> result) {
+    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull ExpressionScope eScope,
+                                                  @NotNull List<PsiNameIdentifierOwner> result) {
         while (element != null) {
             if (element instanceof PsiInclude && psiFinder != null) {
                 // Recursively include everything from referenced module
@@ -48,15 +50,18 @@ public class PsiFileHelper {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(element.getProject());
                 Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(include.getQualifiedName(), interfaceOrImplementation, scope);
                 for (PsiModule includedModule : modulesFromQn) {
-                    result.addAll(includedModule.getExpressions());
+                    result.addAll(includedModule.getExpressions(eScope));
                 }
             }
 
             if (element instanceof PsiDirective) {
                 // add all elements found in a directive, can't be resolved
-                processSiblingExpressions(psiFinder, element.getFirstChild(), result);
+                processSiblingExpressions(psiFinder, element.getFirstChild(), eScope, result);
             } else if (element instanceof PsiNameIdentifierOwner) {
-                result.add((PsiNameIdentifierOwner) element);
+                boolean include = !(element instanceof PsiLet && ((PsiLet) element).isPrivate());
+                if (include) {
+                    result.add((PsiNameIdentifierOwner) element);
+                }
             }
 
             element = element.getNextSibling();

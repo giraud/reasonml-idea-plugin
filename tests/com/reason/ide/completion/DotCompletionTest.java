@@ -132,4 +132,14 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
 
         assertSameElements(strings, "A");
     }
+
+    public void testRml_letprivate() {
+        configureCode("A.re", "let x%private = 1;");
+        configureCode("B.re", "A.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> strings = myFixture.getLookupElementStrings();
+
+        assertEmpty(strings);
+    }
 }

@@ -47,4 +47,6 @@ public interface PsiLet
 
     @NotNull
     List<PsiElement> getDeconstructedElements();
+
+    boolean isPrivate();
 }

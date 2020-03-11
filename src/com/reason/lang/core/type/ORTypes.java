@@ -24,6 +24,7 @@ public abstract class ORTypes {
     public IElementType C_EXCEPTION_EXPR;
     public IElementType C_OPEN;
     public IElementType C_INCLUDE;
+    public IElementType C_LET_ATTR;
     public IElementType C_LET_BINDING;
     public IElementType C_MACRO_EXPR;
     public IElementType C_MACRO_NAME;

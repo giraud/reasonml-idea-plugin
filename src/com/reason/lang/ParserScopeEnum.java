@@ -30,6 +30,7 @@ public enum ParserScopeEnum {
 
     let,
     letNamed,
+    letNamedAttribute,
     letNamedEq,
     letNamedSignature,
     letNamedBinding,

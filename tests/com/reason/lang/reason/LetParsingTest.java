@@ -153,4 +153,11 @@ public class LetParsingTest extends BaseParsingTestCase {
         ORSignature signature = e.getORSignature();
         assertEquals("(path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c", signature.asString(RmlLanguage.INSTANCE));
     }
+
+    public void testPrivate() {
+        PsiLet e = first(letExpressions(parseCode("let x%private = 1;", true)));
+
+        assertEquals("x", e.getName());
+        assertTrue(e.isPrivate());
+    }
 }

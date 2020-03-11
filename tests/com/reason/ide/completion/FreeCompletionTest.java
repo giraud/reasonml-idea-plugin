@@ -29,4 +29,23 @@ public class FreeCompletionTest extends ORBasePlatformTestCase {
 
         assertContainsElements(elements, "first", "second");
     }
+
+    public void testRml_letPrivateFromOutside() {
+        configureCode("A.re" , "let x%private = 1;");
+        configureCode("B.re" , "open A; <caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertDoesntContain(elements, "x");
+    }
+
+    public void testRml_letPrivateFromInside() {
+        configureCode("A.re" , "let x%private = 1; <caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertContainsElements(elements, "x");
+    }
 }

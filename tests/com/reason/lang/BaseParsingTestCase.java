@@ -32,7 +32,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     @NotNull
     protected Collection<PsiNameIdentifierOwner> expressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file);
+        return PsiFileHelper.getExpressions(file, ExpressionScope.all);
     }
 
     @NotNull

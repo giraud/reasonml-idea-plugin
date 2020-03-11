@@ -32,6 +32,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static com.reason.lang.core.psi.ExpressionScope.pub;
 
 public class DotExpressionCompletionProvider {
 
@@ -88,7 +89,7 @@ public class DotExpressionCompletionProvider {
                 // Use first resolved module
 
                 if (!resolvedModules.isEmpty()) {
-                    Collection<PsiNameIdentifierOwner> expressions = resolvedModules.iterator().next().getExpressions();
+                    Collection<PsiNameIdentifierOwner> expressions = resolvedModules.iterator().next().getExpressions(pub);
                     LOG.trace(" -> expressions", expressions);
                     addExpressions(resultSet, expressions, element.getLanguage());
                 }

@@ -18,7 +18,7 @@ public interface PsiModule extends PsiQualifiedElement, NavigatablePsiElement, P
     String getModuleName();
 
     @NotNull
-    Collection<PsiNameIdentifierOwner> getExpressions();
+    Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope);
 
     @Nullable
     PsiModule getModuleExpression(@Nullable String name);

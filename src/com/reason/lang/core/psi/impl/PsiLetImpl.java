@@ -307,6 +307,13 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         return nameIdentifier instanceof PsiDeconstruction;
     }
 
+    @Override
+    public boolean isPrivate() {
+        PsiLetAttribute attribute = ORUtil.findImmediateFirstChildOfClass(this, PsiLetAttribute.class);
+        String value = attribute == null ? null : attribute.getValue();
+        return value != null && value.equals("private");
+    }
+
     @NotNull
     @Override
     public List<PsiElement> getDeconstructedElements() {

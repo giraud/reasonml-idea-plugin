@@ -17,6 +17,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInnerModule;
@@ -145,7 +146,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions() {
+    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
         Collection<PsiNameIdentifierOwner> result = emptyList();
 
         String alias = getAlias();
@@ -156,7 +157,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
             if (!modulesbyName.isEmpty()) {
                 PsiModule moduleAlias = modulesbyName.iterator().next();
                 if (moduleAlias != null) {
-                    result = moduleAlias.getExpressions();
+                    result = moduleAlias.getExpressions(eScope);
                 }
             }
         } else {

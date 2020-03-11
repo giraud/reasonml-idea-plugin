@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
@@ -180,7 +181,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertEquals("Dummy.root", root.getQualifiedName());
         assertEquals("Dummy.root.inner", inner.getQualifiedName());
-        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions().iterator().next()).getQualifiedName());
+        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions(ExpressionScope.all).iterator().next()).getQualifiedName());
     }
 
     public void testDeconstruction() {

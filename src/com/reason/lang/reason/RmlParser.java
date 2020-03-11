@@ -476,7 +476,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(macro)) {
             state.complete();
             state.add(mark(builder, macro, macroName, m_types.C_MACRO_NAME));
-        } else {
+        }
+        else if (state.isCurrentResolution(letNamed)) {
+            // let name|>%<|private = ...
+            state.add(mark(builder,state.currentContext(), letNamedAttribute, m_types.C_LET_ATTR));
+        }
+        else {
             IElementType nextTokenType = builder.rawLookup(1);
             if (nextTokenType == m_types.RAW) {
                 state.add(mark(builder, raw, m_types.C_RAW));
@@ -1046,9 +1051,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     updateCurrentResolution(typeNamedEq).
                     advance().
                     add(mark(builder, typeBinding, typeNamedEq, m_types.C_TYPE_BINDING).complete());
-        } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
+        } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedAttribute) || state.isCurrentResolution(letNamedSignature)) {
             if (state.isCurrentResolution(letNamedSignature)) {
                 state.popEnd();
+            } else if (state.isCurrentResolution(letNamedAttribute)) {
+                state.complete().popEnd();
             }
             state.updateCurrentResolution(letNamedEq).advance().add(mark(builder, letBinding, letNamedEq, m_types.C_LET_BINDING).complete());
         } else if (state.isCurrentResolution(jsxTagProperty)) {

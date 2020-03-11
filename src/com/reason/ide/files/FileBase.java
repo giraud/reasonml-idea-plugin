@@ -13,6 +13,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
+import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -61,9 +62,10 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         return FileHelper.shortLocation(project, getVirtualFile().getPath());
     }
 
+    @Override
     @NotNull
-    public Collection<PsiNameIdentifierOwner> getExpressions() {
-        return PsiFileHelper.getExpressions(this);
+    public Collection<PsiNameIdentifierOwner> getExpressions(ExpressionScope eScope) {
+        return PsiFileHelper.getExpressions(this, eScope);
     }
 
     @NotNull

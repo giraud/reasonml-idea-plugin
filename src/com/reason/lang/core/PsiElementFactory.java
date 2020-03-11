@@ -56,12 +56,14 @@ public class PsiElementFactory {
             return new PsiModulePath(node);
         } else if (type == types.C_LET_STMT) {
             return new PsiLetImpl(types, node);
+        } else if (type == types.C_LET_ATTR) {
+            return new PsiLetAttribute(node);
+        } else if (type == types.C_LET_BINDING) {
+            return new PsiLetBinding(node);
         } else if (type == types.C_VAL_EXPR) {
             return new PsiValImpl(types, node);
         } else if (type == types.C_ANNOTATION_EXPR) {
             return new PsiAnnotationImpl(types, node);
-        } else if (type == types.C_LET_BINDING) {
-            return new PsiLetBinding(node);
         } else if (type == types.C_FAKE_MODULE) {
             return new PsiFakeModule(types, node);
         } else if (type == types.C_FUN_CALL_PARAMS) {

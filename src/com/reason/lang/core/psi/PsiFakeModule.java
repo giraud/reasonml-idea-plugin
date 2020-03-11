@@ -95,7 +95,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions() {
+    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
         throw new RuntimeException("Not implemented, use FileBase");
     }
 

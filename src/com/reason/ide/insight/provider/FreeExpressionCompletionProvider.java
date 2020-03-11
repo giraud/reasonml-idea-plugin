@@ -34,6 +34,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static com.reason.lang.core.psi.ExpressionScope.pub;
 
 public class FreeExpressionCompletionProvider {
 
@@ -93,7 +94,7 @@ public class FreeExpressionCompletionProvider {
                     }
                 }
 
-                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions();
+                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub);
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.
