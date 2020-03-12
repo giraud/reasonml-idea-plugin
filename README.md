@@ -1,6 +1,6 @@
 # reasonml-idea-plugin
 
-[JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml)
+![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)
 
 ReasonML language plugin for idea
 
