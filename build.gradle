@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.16"
 }
 
-def pluginVersion = '0.86.1'
+def pluginVersion = '0.87'
 def ideaVersion = '2019.3'
 version = pluginVersion + '-' + ideaVersion
 

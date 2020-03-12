@@ -12,6 +12,15 @@
 
 ## Unreleased
 
+## 0.87 - 2020/03/12
+
+- :rocket: Compatible with bucklescript 7.2.2
+- :rocket: Add OCaml 4.10 to the list of downloadable SDKs
+- :bug: [#211](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/211) let%private support
+- :bug: [#209](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/209) Deep dependenciess are not indexed in IDE that have javascript functionality (ultimate/webstorm)
+- :house: Use rincewind 0.7 (support of OCaml 4.10)
+
+
 ## 0.86.1 - 2020/02/21
 
 - Compatible with bucklescript 7.2
