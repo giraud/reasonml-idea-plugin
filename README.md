@@ -1,4 +1,7 @@
 # reasonml-idea-plugin
+
+[JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml)
+
 ReasonML language plugin for idea
 
 ![screenshot](screenshot.png)
@@ -33,6 +36,7 @@ Other features:
 - Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 - Reformat on save
 - Works natively on Windows
+
 
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
