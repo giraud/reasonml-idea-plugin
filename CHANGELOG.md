@@ -12,6 +12,10 @@
 
 ## Unreleased
 
+## 0.87 - 2020/04/03
+
+- :bug: [#214](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/214) Infinite indexing
+
 ## 0.87 - 2020/03/12
 
 - :rocket: Compatible with bucklescript 7.2.2
