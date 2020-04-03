@@ -1,6 +1,7 @@
 package com.reason.bs;
 
 import java.util.*;
+import java.util.regex.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.google.gson.JsonArray;
@@ -15,6 +16,8 @@ import gnu.trove.THashSet;
 import static com.reason.StringUtil.toFirstUpper;
 
 public class BsConfigReader {
+
+    private static final Pattern NORMALIZE = Pattern.compile(",$");
 
     @NotNull
     public static BsConfig read(@NotNull VirtualFile bsConfigFile) {
@@ -31,8 +34,10 @@ public class BsConfigReader {
 
     @NotNull
     static BsConfig parse(@NotNull String content) {
+        String normalizedContent = NORMALIZE.matcher(content).replaceAll("").replaceAll(",[\\s\\n]*]", "]").replaceAll(",[\\s\\n]*}", "}");
+
         JsonParser parser = new JsonParser();
-        JsonElement topElement = parser.parse(content);
+        JsonElement topElement = parser.parse(normalizedContent);
 
         if (topElement.isJsonObject()) {
             JsonObject top = topElement.getAsJsonObject();

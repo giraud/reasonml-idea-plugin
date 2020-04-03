@@ -18,6 +18,16 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
         assertEquals("x", bsConfig.getName());
     }
 
+    public void testTrailingComma() {
+        BsConfig bsConfig = BsConfigReader.parse(toJson("{'sources': ['a',  ],\n  },"));
+        assertContainsElements( bsConfig.getSources(), "a");
+    }
+
+    public void test_GHIssue214() throws IOException {
+        BsConfig bsConf = BsConfigReader.parse(loadJson("issue_214.json"));
+        assertNotNull(bsConf);
+    }
+
     public void testJsx() {
         BsConfig bsConfig = BsConfigReader.parse(toJson("{'name': 'x', 'reason': {'react-jsx': 2}}"));
         assertEquals("2", bsConfig.getJsxVersion());
