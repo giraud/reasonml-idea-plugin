@@ -86,7 +86,7 @@ public class BucklescriptImpl implements Bucklescript {
                         process.startNotify();
                         ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(sourceFile);
                     } else {
-                        process.terminated();
+                        process.terminate();
                     }
                 }
             }

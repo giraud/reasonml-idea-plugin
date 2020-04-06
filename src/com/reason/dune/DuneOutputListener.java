@@ -14,7 +14,7 @@ import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.CompilerProcessLifecycle;
+import com.reason.CompilerProcess;
 import com.reason.Platform;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
@@ -32,7 +32,7 @@ public class DuneOutputListener implements ProcessListener {
 
     @NotNull
     private final Project m_project;
-    private final CompilerProcessLifecycle m_compilerLifecycle;
+    private final CompilerProcess m_compilerLifecycle;
     @NotNull
     private final Logger m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
@@ -40,7 +40,7 @@ public class DuneOutputListener implements ProcessListener {
     @Nullable
     private OutputInfo m_latestInfo = null;
 
-    DuneOutputListener(@NotNull Project project, CompilerProcessLifecycle compilerLifecycle) {
+    public DuneOutputListener(@NotNull Project project, CompilerProcess compilerLifecycle) {
         m_project = project;
         m_compilerLifecycle = compilerLifecycle;
         m_log = Logger.getInstance("ReasonML.build");
@@ -58,7 +58,7 @@ public class DuneOutputListener implements ProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
-        m_compilerLifecycle.terminated();
+        m_compilerLifecycle.terminate();
 
         if (!m_bsbInfo.isEmpty()) {
             ServiceManager.getService(m_project, ErrorsManager.class).addAllInfo(m_bsbInfo);
