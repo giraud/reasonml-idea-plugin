@@ -3,7 +3,7 @@ plugins {
 }
 
 def pluginVersion = '0.87.1'
-def ideaVersion = '2020.1'
+def ideaVersion = '2020.1-EAP1'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
