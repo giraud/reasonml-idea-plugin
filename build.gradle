@@ -67,7 +67,6 @@ repositories {
 
 dependencies {
     compile project('jps-plugin')
-    testCompile "org.mockito:mockito-core:2.+"
 }
 
 apply plugin: 'idea'

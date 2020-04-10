@@ -1,25 +1,16 @@
 package com.reason.esy;
 
-import com.intellij.openapi.project.Project;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-public class EsyProcessTest {
-
-  @Mock
-  private Project mockProject;
+public class EsyProcessTest extends BasePlatformTestCase {
 
   private EsyProcess instance;
 
   @Before
   public void setUp() throws Exception {
-    initMocks(this);
-    this.instance = EsyProcess.getInstance(mockProject);
+    this.instance = EsyProcess.getInstance(getProject());
   }
 
   @Test
