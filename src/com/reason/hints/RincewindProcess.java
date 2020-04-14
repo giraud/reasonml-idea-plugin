@@ -14,7 +14,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
 import com.reason.Platform;
 import com.reason.Streams;
-import com.reason.ide.ORNotification;
+import com.reason.ORNotification;
 import com.reason.ide.hints.InferredTypesImplementation;
 
 public class RincewindProcess {

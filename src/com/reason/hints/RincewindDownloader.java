@@ -17,6 +17,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.reason.Log;
+import com.reason.WGet;
 import com.reason.ide.FileManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.hints.InferredTypesService;

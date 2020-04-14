@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.CompilerProcess;
 import com.reason.Platform;
-import com.reason.ide.ORNotification;
+import com.reason.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;

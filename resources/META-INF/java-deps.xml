@@ -1,6 +1,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <sdkType implementation="com.reason.OCamlSdkType"/>
+        <sdkType implementation="com.reason.sdk.OCamlSdkType"/>
         <configurationType implementation="com.reason.ide.repl.ReplRunConfigurationType"/>
         <moduleConfigurationEditorProvider implementation="com.reason.module.OCamlDefaultModuleEditorsProvider"/>
         <projectStructure.sourceRootEditHandler implementation="com.reason.module.OCamlBinaryRootEditHandler"/>

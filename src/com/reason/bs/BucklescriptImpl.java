@@ -26,7 +26,7 @@ import com.reason.FileUtil;
 import com.reason.Platform;
 import com.reason.ProcessFinishedListener;
 import com.reason.hints.InsightManager;
-import com.reason.ide.ORNotification;
+import com.reason.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 

@@ -11,7 +11,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
-import com.reason.OCamlSdkType;
+import com.reason.sdk.OCamlSdkType;
 
 class DuneFacetEditor extends FacetEditorTab {
 

@@ -10,7 +10,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModuleRootEvent;
 import com.intellij.openapi.roots.ModuleRootListener;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.reason.OCamlSdkType;
+import com.reason.sdk.OCamlSdkType;
 
 import static com.intellij.ProjectTopics.PROJECT_ROOTS;
 

@@ -10,7 +10,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.Messages;
-import com.reason.OCamlSdkType;
+import com.reason.sdk.OCamlSdkType;
 
 class OCamlModuleWizardStep extends ModuleWizardStep {
 

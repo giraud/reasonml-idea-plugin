@@ -1,4 +1,4 @@
-package com.reason.ide;
+package com.reason;
 
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;

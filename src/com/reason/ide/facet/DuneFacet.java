@@ -9,7 +9,7 @@ import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.reason.OCamlSdkType;
+import com.reason.sdk.OCamlSdkType;
 
 public class DuneFacet extends Facet<DuneFacetConfiguration> {
 
