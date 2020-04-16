@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class EsyPackageJson {
 
+    private EsyPackageJson() {}
+
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
         FileContent fileContent = FileContentImpl.createByFile(virtualFile);
