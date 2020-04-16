@@ -12,6 +12,7 @@ public class Icons {
     public static final Icon DUNE = getIcon("/icons/dune.png");
     public static final Icon ESY = getIcon("/icons/esy.png");
 
+    public static final Icon BS_FILE = getIcon("/icons/bs-file.png");
     public static final Icon ESY_FILE = getIcon("/icons/esy-file.png");
     public static final Icon RML_FILE = getIcon("/icons/reason-file.png");
     public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reason-interface-file.png");
