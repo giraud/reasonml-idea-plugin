@@ -19,9 +19,9 @@
 
     <actions>
         <!--suppress PluginXmlCapitalization -->
-        <action id="reason.actions.make" class="com.reason.ide.console.MakeAction" text="Bsb -make"/>
+        <action id="reason.actions.make" class="com.reason.ide.console.BsMakeAction" text="Bsb -make"/>
         <!--suppress PluginXmlCapitalization -->
-        <action id="reason.actions.makeWorld" class="com.reason.ide.console.MakeWorldAction"
+        <action id="reason.actions.makeWorld" class="com.reason.ide.console.BsMakeWorldAction"
                 text="bsb -clean-world -make-world"/>
         <!--suppress PluginXmlCapitalization -->
         <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
