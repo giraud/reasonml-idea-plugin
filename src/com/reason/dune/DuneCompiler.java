@@ -12,10 +12,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
+import com.reason.*;
 import com.reason.Compiler;
-import com.reason.CompilerProcess;
-import com.reason.Platform;
-import com.reason.ProcessFinishedListener;
 import com.reason.esy.EsyProcess;
 import com.reason.hints.InsightManager;
 import com.reason.ide.console.CliType;
@@ -38,6 +36,11 @@ public class DuneCompiler implements Compiler {
         m_project = project;
     }
 
+    @Override
+    public CompilerType getType() {
+        return CompilerType.DUNE;
+    }
+
     @Nullable
     @Override
     public VirtualFile findContentRoot(@NotNull Project project) {
@@ -51,27 +54,22 @@ public class DuneCompiler implements Compiler {
 
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-        if (cliType == CliType.cleanMake) {
-            run(file, CliType.clean, () ->
-                    run(file, CliType.make, onProcessTerminated));
-        } else {
-            CompilerProcess process = isEsyFacetConfigured()
+        CompilerProcess process = isEsyFacetConfigured()
                 ? EsyProcess.getInstance(m_project)
                 : DuneProcess.getInstance(m_project);
-            if (process.start()) {
-                ProcessHandler duneHandler = process.recreate(cliType, onProcessTerminated);
-                if (duneHandler != null) {
-                    ConsoleView console = getConsoleView();
-                    if (console != null) {
-                        long start = System.currentTimeMillis();
-                        console.attachToProcess(duneHandler);
-                        duneHandler.addProcessListener(new ProcessFinishedListener(start));
-                    }
-                    process.startNotify();
-                    ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(file);
-                } else {
-                    process.terminate();
+        if (process.start()) {
+            ProcessHandler duneHandler = process.recreate(cliType, onProcessTerminated);
+            if (duneHandler != null) {
+                ConsoleView console = getConsoleView();
+                if (console != null) {
+                    long start = System.currentTimeMillis();
+                    console.attachToProcess(duneHandler);
+                    duneHandler.addProcessListener(new ProcessFinishedListener(start));
                 }
+                process.startNotify();
+                ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(file);
+            } else {
+                process.terminate();
             }
         }
     }

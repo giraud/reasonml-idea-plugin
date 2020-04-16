@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
+import com.reason.CompilerType;
 import com.reason.ORNotification;
 import com.reason.bs.Bucklescript;
 import com.reason.dune.DuneCompiler;
@@ -37,6 +38,11 @@ public class ORCompilerManager {
         @Override
         public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
             //nothing
+        }
+
+        @Override
+        public CompilerType getType() {
+            return CompilerType.DUMMY;
         }
     };
 

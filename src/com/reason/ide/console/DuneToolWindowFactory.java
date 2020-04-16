@@ -21,9 +21,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class BsToolWindowFactory extends ORToolWindowFactory {
+public class DuneToolWindowFactory extends ORToolWindowFactory {
 
-    public static final String ID = "BuckleScript:";
+    public static final String ID = "Dune:";
 
     @Override
     public String getId() {
@@ -32,7 +32,7 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public Icon getIcon() {
-        return Icons.BUCKLESCRIPT_TOOL;
+        return Icons.DUNE_TOOL;
     }
 
     @Nls
@@ -43,23 +43,22 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public String getStripeTitle() {
-        return "BuckleScript";
+        return "Dune";
     }
 
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
-        ToolWindow window = ToolWindowManagerEx.getInstanceEx(project).getToolWindow(ID);
-        if (window != null) {
+        ToolWindow bsWindow = ToolWindowManagerEx.getInstanceEx(project).getToolWindow(BsToolWindowFactory.ID);
+        if (bsWindow != null) {
             ModuleManager moduleManager = ModuleManager.getInstance(project);
             Module[] modules = moduleManager.getModules();
             for (Module module : modules) {
                 FacetManager instance = FacetManager.getInstance(module);
                 DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
                 if (duneFacet != null) {
-                    return false;
+                    return true;
                 }
             }
-            return true;
         }
         return false;
     }
@@ -86,8 +85,9 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new BsMakeAction());
-        group.add(new BsMakeWorldAction());
+        group.add(new DuneBuildAction());
+        group.add(new DuneCleanAction());
+        group.add(new DuneInstallAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());
