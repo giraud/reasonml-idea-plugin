@@ -125,6 +125,6 @@ public class InsightManagerImpl implements InsightManager {
             return "0.4";
         }
 
-        return "0.8-snapshot";
+        return "0.8";
     }
 }
