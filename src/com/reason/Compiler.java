@@ -20,4 +20,6 @@ public interface Compiler {
 
     void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated);
 
+    CompilerType getType();
+
 }

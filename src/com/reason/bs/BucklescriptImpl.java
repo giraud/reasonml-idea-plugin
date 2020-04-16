@@ -1,10 +1,5 @@
 package com.reason.bs;
 
-import java.util.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.coverage.gnu.trove.THashMap;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
@@ -22,13 +17,16 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
-import com.reason.FileUtil;
-import com.reason.Platform;
-import com.reason.ProcessFinishedListener;
+import com.reason.*;
 import com.reason.hints.InsightManager;
-import com.reason.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.coverage.gnu.trove.THashMap;
+
+import javax.swing.*;
+import java.util.Map;
 
 public class BucklescriptImpl implements Bucklescript {
 
@@ -91,6 +89,11 @@ public class BucklescriptImpl implements Bucklescript {
                 }
             }
         }
+    }
+
+    @Override
+    public CompilerType getType() {
+        return CompilerType.BS;
     }
 
     @NotNull
