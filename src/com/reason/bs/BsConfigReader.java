@@ -61,7 +61,7 @@ public class BsConfigReader {
 
             String jsxVersion = null;
             JsonElement reason = top.get("reason");
-            JsonObject reasonProp = reason.isJsonObject() ? top.getAsJsonObject("reason") : null;
+            JsonObject reasonProp = reason != null && reason.isJsonObject() ? top.getAsJsonObject("reason") : null;
             if (reasonProp != null) {
                 JsonPrimitive jsxProp = reasonProp.getAsJsonPrimitive("react-jsx");
                 if (jsxProp != null && jsxProp.isNumber()) {
