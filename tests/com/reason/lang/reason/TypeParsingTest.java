@@ -1,12 +1,15 @@
 package com.reason.lang.reason;
 
+import java.util.*;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiJsObject;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiSignatureItem;
+import com.reason.lang.core.psi.PsiType;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends BaseParsingTestCase {
@@ -78,14 +81,9 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals("reactElement", signatureItems.get(3).getText());
     }
 
-   /* public void testModuleSignature() {
-        PsiType e = first(typeExpressions(parseCode("type t = (. M.t) => X;",true)));
+    public void testJsObject() {
+        PsiType e = first(typeExpressions(parseCode("type t = {. a: string };", true)));
 
-        PsiFunction f = (PsiFunction) e.getBinding().getFirstChild();
-        Collection<PsiParameter> parameters = f.getParameters();
-
-        PsiParameter param = first(parameters);
-        assertEquals("M.t", param.getName());
-        assertEquals("M.t", param.getQualifiedName());
-    }*/
+        assertInstanceOf(e.getBinding().getFirstChild(), PsiJsObject.class);
+    }
 }

@@ -33,14 +33,21 @@ public class PsiJsObject extends ASTWrapperPsiElement implements PsiLanguageConv
             return getText();
         }
 
-        String convertedText;
-
+        String convertedText = "";
         if (language == OclLanguage.INSTANCE) {
             // Convert from Reason to OCaml
-            convertedText = getText();
+            for (int i = 0; i < getChildren().length; i++) {
+                PsiElement element = getChildren()[i];
+                if (element instanceof PsiObjectField) {
+                    if (0 < i) {
+                        convertedText += "; ";
+                    }
+                    convertedText += ((PsiObjectField) element).asText(language);
+                }
+            }
+            convertedText = "<" + convertedText + "> Js.t";
         } else {
             // Convert from OCaml to Reason
-            convertedText = "";
             for (int i = 0; i < getChildren().length; i++) {
                 PsiElement element = getChildren()[i];
                 if (element instanceof PsiObjectField) {

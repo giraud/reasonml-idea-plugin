@@ -79,6 +79,7 @@ public enum ParserScopeEnum {
     brace,
     bracket,
 
+    jsObject,
     object,
     objectField,
     objectFieldNamed,

@@ -67,18 +67,25 @@ public class ORSignatureTest extends LightJavaCodeInsightTestCase {
         assertEquals("{. a:string } => string", sig.asString(RML));
     }
 
+    public void testReasonJsObject() {
+        ORSignature sig = makeSignature(RML, "{. a:string, b:int } => string", false);
+
+        assertEquals("<a:string; b:int> Js.t -> string", sig.asString(OCL));
+        assertEquals("{. a:string, b:int } => string", sig.asString(RML));
+    }
+
     public void testOCamlJsObject() {
         ORSignature sig = makeSignature(OCL, "<a:string; b:int> Js.t -> string", false);
 
         assertEquals("<a:string; b:int> Js.t -> string", sig.asString(OCL));
-        assertEquals("{. \"a\": string, \"b\": int } => string", sig.asString(RML));
+        assertEquals("{. a:string, b:int } => string", sig.asString(RML));
     }
 
     public void testOcamJsJsObject() {
         ORSignature sig = makeSignature(OCL, "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t", false);
 
         assertEquals("string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t", sig.asString(OCL));
-        assertEquals("string => {. \"a\": string, \"b\": {. \"b1\": string, \"b2\": string } }", sig.asString(RML));
+        assertEquals("string => {. a:string, b:{. b1:string, b2:string } }", sig.asString(RML));
     }
 
     @SuppressWarnings({"SameParameterValue", "ConstantConditions"})
