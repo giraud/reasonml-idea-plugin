@@ -1,4 +1,4 @@
-package com.reason.ide.files;
+package com.reason.esy;
 
 import com.intellij.framework.detection.FileContentPattern;
 import com.intellij.json.JsonFileType;
@@ -15,9 +15,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
+import com.reason.ide.files.EsyPackageJsonFileType;
+import com.reason.ide.files.FileBase;
 import org.jetbrains.annotations.NotNull;
 
-public class EsyPackageJsonFile extends FileBase {
+public class EsyPackageJson {
 
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
@@ -25,13 +27,7 @@ public class EsyPackageJsonFile extends FileBase {
         return createFilePattern().accepts(fileContent);
     }
 
-    EsyPackageJsonFile(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
-        super(viewProvider, language);
-    }
-
-    @NotNull
-    @Override
-    public FileType getFileType() {
+    public static FileType getFileType() {
         return EsyPackageJsonFileType.INSTANCE;
     }
 

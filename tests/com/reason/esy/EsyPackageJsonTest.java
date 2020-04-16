@@ -1,12 +1,13 @@
-package com.reason.ide.files;
+package com.reason.esy;
 
 import com.intellij.mock.MockVirtualFile;
 import com.reason.ide.ORBasePlatformTestCase;
+import com.reason.ide.files.EsyPackageJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class EsyPackageJsonFileTest extends ORBasePlatformTestCase {
+public class EsyPackageJsonTest extends ORBasePlatformTestCase {
 
     @NotNull
     @Override
@@ -19,8 +20,8 @@ public class EsyPackageJsonFileTest extends ORBasePlatformTestCase {
         String mockJson = loadJson(packageJsonFilename);
         MockVirtualFile mockVirtualFile = MockVirtualFile.file(packageJsonFilename);
         mockVirtualFile.setText(mockJson);
-        assertTrue(EsyPackageJsonFile.isEsyPackageJson(mockVirtualFile));
+        assertTrue(EsyPackageJson.isEsyPackageJson(mockVirtualFile));
         mockVirtualFile.setText("{}");
-        assertFalse(EsyPackageJsonFile.isEsyPackageJson(mockVirtualFile));
+        assertFalse(EsyPackageJson.isEsyPackageJson(mockVirtualFile));
     }
 }
