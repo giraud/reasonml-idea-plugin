@@ -5,13 +5,13 @@ import java.nio.file.FileSystems;
 import com.intellij.psi.PsiFile;
 
 @SuppressWarnings("ConstantConditions")
-public class FileManagerTest extends ORBasePlatformTestCase {
+public class ORFileManagerTest extends ORBasePlatformTestCase {
 
     public void testRelativeSourceWithNamespace() {
         myFixture.configureByText("bsconfig.json", toJson("{'name': 'foo', 'namespace': 'foo'}"));
         PsiFile binary = myFixture.configureByText("Config-Foo.cm", "binary, should be .cmt");
         FileSystem fs = FileSystems.getDefault();
-        String relativeSource = FileManager.toRelativeSourceName(getProject(), binary.getVirtualFile(), fs.getPath("src/Config-Foo.cmt"));
+        String relativeSource = ORFileManager.toRelativeSourceName(getProject(), binary.getVirtualFile(), fs.getPath("src/Config-Foo.cmt"));
         assertEquals(fs.getPath("src", "Config.re").toString(), relativeSource);
     }
 }

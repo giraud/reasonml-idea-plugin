@@ -25,7 +25,7 @@ import com.reason.hints.InsightManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 
-import static com.reason.ide.FileManager.findCmtFileFromSource;
+import static com.reason.ide.ORFileManager.findCmtFileFromSource;
 
 public class InferredTypesService {
 

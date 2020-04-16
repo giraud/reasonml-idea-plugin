@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public class CompilerManager {
+public class ORCompilerManager {
 
     private static final Compiler DUMMY_COMPILER = new Compiler() {
         @Nullable
@@ -40,8 +40,8 @@ public class CompilerManager {
         }
     };
 
-    public static CompilerManager getInstance() {
-        return ServiceManager.getService(CompilerManager.class);
+    public static ORCompilerManager getInstance() {
+        return ServiceManager.getService(ORCompilerManager.class);
     }
 
     @NotNull

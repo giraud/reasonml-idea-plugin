@@ -14,9 +14,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Compiler;
-import com.reason.Platform;
 import com.reason.bs.Bucklescript;
-import com.reason.ide.CompilerManager;
+import com.reason.ide.ORCompilerManager;
 
 abstract class CompilerAction extends DumbAwareAction {
 
@@ -25,7 +24,7 @@ abstract class CompilerAction extends DumbAwareAction {
     }
 
     void doAction(@NotNull Project project, @NotNull CliType cliType) {
-        Compiler compiler = CompilerManager.getInstance().getCompiler(project);
+        Compiler compiler = ORCompilerManager.getInstance().getCompiler(project);
 
         // Try to detect the current active editor
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();

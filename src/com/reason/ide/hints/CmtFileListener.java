@@ -13,8 +13,8 @@ import com.reason.Log;
 import com.reason.Platform;
 import com.reason.bs.Bucklescript;
 import com.reason.hints.InsightManager;
-import com.reason.ide.CompilerManager;
-import com.reason.ide.FileManager;
+import com.reason.ide.ORCompilerManager;
+import com.reason.ide.ORFileManager;
 import com.reason.ide.OREditorTracker;
 import com.reason.ide.files.FileHelper;
 import com.reason.lang.ocaml.OclLanguage;
@@ -34,7 +34,7 @@ public class CmtFileListener {
     public void onChange(@NotNull VirtualFile file) {
         Path relativeCmt;
 
-        Compiler compiler = CompilerManager.getInstance().getCompiler(m_project);
+        Compiler compiler = ORCompilerManager.getInstance().getCompiler(m_project);
         if (compiler instanceof Bucklescript) {
             Path relativeRoot = FileSystems.getDefault().getPath("lib", "bs");
             VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(m_project);
@@ -52,9 +52,9 @@ public class CmtFileListener {
 
         if (relativeCmt != null) {
             LOG.info("Detected change on file " + relativeCmt + ", reading types");
-            VirtualFile sourceFile = FileManager.toSource(m_project, file, relativeCmt);
+            VirtualFile sourceFile = ORFileManager.toSource(m_project, file, relativeCmt);
             if (sourceFile == null) {
-                LOG.warn("can't convert " + relativeCmt + " to " + FileManager.toRelativeSourceName(m_project, file, relativeCmt));
+                LOG.warn("can't convert " + relativeCmt + " to " + ORFileManager.toRelativeSourceName(m_project, file, relativeCmt));
             } else if (OREditorTracker.getInstance(m_project).isOpen(sourceFile)) {
                 InsightManager insightManager = ServiceManager.getService(m_project, InsightManager.class);
 
