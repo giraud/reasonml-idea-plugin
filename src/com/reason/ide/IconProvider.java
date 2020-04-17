@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.intellij.json.psi.JsonFile;
 import com.intellij.lang.javascript.psi.JSFile;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
@@ -78,7 +79,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     }
 
     private boolean isEsyPackageJson(PsiFile element) {
-        return EsyPackageJson.isEsyPackageJson(element.getVirtualFile());
+        return element instanceof JsonFile && EsyPackageJson.isEsyPackageJson(element.getVirtualFile());
     }
 
     /* needed as plugin.xml's filetype extension does NOT support extensions with multiple "." */
