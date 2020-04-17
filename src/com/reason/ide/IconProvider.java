@@ -1,10 +1,12 @@
 package com.reason.ide;
 
+import com.intellij.lang.javascript.psi.JSFile;
 import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
 import com.reason.Icons;
+import com.reason.bs.BsConstants;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.lang.core.psi.*;
@@ -29,6 +31,9 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             }
             if (element instanceof RmlInterfaceFile) {
                 return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_INTERFACE_FILE;
+            }
+            if (isBsJsFile((PsiFile) element)) {
+                return Icons.BS_FILE;
             }
         } else if (element instanceof PsiException) {
             return Icons.EXCEPTION;
@@ -68,5 +73,12 @@ public class IconProvider extends com.intellij.ide.IconProvider {
         return getFileModuleIcon(indexedFile.isOCaml(), indexedFile.isInterface());
     }
 
-
+    /* needed as plugin.xml's filetype extension does NOT support extensions with multiple "." */
+    private static boolean isBsJsFile(PsiFile psiFile) {
+        if (psiFile instanceof JSFile) {
+            JSFile jsFile = (JSFile) psiFile;
+            return jsFile.getName().endsWith("." + BsConstants.BS_JS_FILE_EXTENSION);
+        }
+        return false;
+    }
 }
