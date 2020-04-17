@@ -10,7 +10,12 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class DuneFileType extends LanguageFileType {
+
     public static final FileType INSTANCE = new DuneFileType();
+
+    public static String getDefaultFilename() {
+        return "dune-project";
+    }
 
     private DuneFileType() {
         super(DuneLanguage.INSTANCE);
