@@ -1,29 +1,24 @@
-package com.reason.ide.files;
+package com.reason.bs;
 
 import com.intellij.framework.detection.FileContentPattern;
-import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
-import com.intellij.psi.FileViewProvider;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
+import com.reason.ide.files.BsConfigJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
-public class BsConfigJsonFile extends FileBase {
+public class BsConfigJson {
+
+    private BsConfigJson() {}
 
     public static boolean isBsConfigJson(@NotNull VirtualFile virtualFile) {
         FileContent fileContent = FileContentImpl.createByFile(virtualFile);
         return createFilePattern().accepts(fileContent);
     }
 
-    BsConfigJsonFile(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
-        super(viewProvider, language);
-    }
-
-    @NotNull
-    @Override
-    public FileType getFileType() {
+    public static FileType getFileType() {
         return BsConfigJsonFileType.INSTANCE;
     }
 

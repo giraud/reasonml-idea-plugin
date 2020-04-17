@@ -1,15 +1,15 @@
-package com.reason.ide.files;
+package com.reason.bs;
 
 import com.intellij.mock.MockVirtualFile;
 import com.reason.ide.ORBasePlatformTestCase;
-import org.junit.Test;
+import com.reason.ide.files.BsConfigJsonFileType;
 
-public class BsConfigJsonFileTest extends ORBasePlatformTestCase {
+public class BsConfigJsonTest extends ORBasePlatformTestCase {
 
     public void testIsBsConfig() {
         String bsConfigFileName = BsConfigJsonFileType.getDefaultFilename();
         MockVirtualFile mockBsConfig = MockVirtualFile.file(bsConfigFileName);
-        assertTrue(BsConfigJsonFile.isBsConfigJson(mockBsConfig));
-        assertFalse(BsConfigJsonFile.isBsConfigJson(MockVirtualFile.file("package.json")));
+        assertTrue(BsConfigJson.isBsConfigJson(mockBsConfig));
+        assertFalse(BsConfigJson.isBsConfigJson(MockVirtualFile.file("package.json")));
     }
 }
