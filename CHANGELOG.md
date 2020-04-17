@@ -12,8 +12,9 @@
 
 ## Unreleased
 
-- :rocket: ![o] ![r] Poly-variants can have a different hilighting, color scheme updated
 - :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
+- :nail_care: ![o] ![r] [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) by [@pooch](https://github.com/JohnPucciarelli)
+- :nail_care: ![o] ![r] Poly-variants can have a different highlighting, color scheme updated
 
 ## 0.87.1 - 2020/04/03
 
