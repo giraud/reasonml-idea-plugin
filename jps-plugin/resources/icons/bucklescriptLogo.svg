@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+    <defs>
+        <linearGradient x1=".811" y1="19.666" x2="29.665" y2="19.666" id="a" gradientTransform="scale(1.3484 .74162)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#BF9155" offset="0%"/>
+            <stop stop-color="#8B582B" offset="100%"/>
+        </linearGradient>
+        <linearGradient x1="10.402" y1="11.505" x2="2.424" y2="17.966" id="b" gradientTransform="scale(.78186 1.279)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FFF" offset="0%"/>
+            <stop stop-color="#B0854D" offset="100%"/>
+        </linearGradient>
+        <linearGradient x1="10.488" y1="0" x2="10.488" y2="20.976" id="c" gradientTransform="scale(1.90693 .5244)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#6F4824" offset="0%"/>
+            <stop stop-color="#8F5D2F" offset="100%"/>
+        </linearGradient>
+    </defs>
+    <g transform="matrix(.35 0 0 .35 1 2.89)" fill="none" fill-rule="evenodd">
+        <path d="M40 22.5c0 3.038-8.954 5.5-20 5.5S0 25.538 0 22.5V6h40z" fill="url(#a)"/>
+        <path d="M4.916 12.283c.42.12.863.236 1.326.346l-2.541 2.058a3 3 0 00-.444 4.22l4.475 5.526a2.99 2.99 0 001.295.927 3 3 0 01-2.884-1.06L1.67 18.772a3 3 0 01.443-4.22l2.804-2.27z"
+              opacity=".247" fill="url(#b)"/>
+        <path d="M0 5c0 2.761 8.954 5 20 5s20-2.239 20-5v5h-.4c-1.853 2.282-9.924 4-19.6 4-9.676 0-17.747-1.718-19.6-4H0z" opacity=".16" fill="#fff"/>
+        <ellipse cx="20" cy="5.5" rx="20" ry="5.5" fill="url(#c)"/>
+        <path d="M0 22c0 2.982 8.954 5.4 20 5.4s20-2.418 20-5.4v1.8c0 2.982-8.954 5.4-20 5.4S0 26.782 0 23.8z" opacity=".066" fill="#000"/>
+        <circle cx="8.5" cy="19.5" r="1" fill="#000" fill-opacity=".237"/>
+        <circle cx="6.5" cy="18.5" r="1" fill="#000" fill-opacity=".237"/>
+        <circle cx="4.5" cy="17.5" r="1" fill="#000" fill-opacity=".237"/>
+        <path d="M29 19a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h.5v4a3.5 3.5 0 01-3.5 3.5H12a1.5 1.5 0 01-1.5-1.5V13a1.5 1.5 0 011.5-1.5h14a3.5 3.5 0 013.5 3.5v4zm-2.618-.5v-2.367a1.5 1.5 0 00-1.5-1.5H13.618v10.734h11.264a1.5 1.5 0 001.5-1.5V21.5H14.5v-3z"
+              fill="#ededed" stroke="#000" stroke-opacity=".332"/>
+    </g>
+</svg>

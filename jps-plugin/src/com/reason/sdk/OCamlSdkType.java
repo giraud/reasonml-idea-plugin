@@ -20,7 +20,7 @@ import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ArrayUtil;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.OCamlSourcesOrderRootType;
 import gnu.trove.Equality;
 
@@ -53,13 +53,13 @@ public class OCamlSdkType extends SdkType {
     @NotNull
     @Override
     public Icon getIcon() {
-        return Icons.OCL_SDK;
+        return ORIcons.OCL_SDK;
     }
 
     @NotNull
     @Override
     public Icon getIconForAddAction() {
-        return Icons.OCL_SDK;
+        return ORIcons.OCL_SDK;
     }
 
     @Nullable

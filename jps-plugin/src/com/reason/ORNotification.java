@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
+import icons.ORIcons;
 
 public class ORNotification extends Notification {
 
@@ -32,6 +33,6 @@ public class ORNotification extends Notification {
 
     @NotNull
     private static Icon getIcon(@NotNull NotificationType type) {
-        return type == NotificationType.INFORMATION ? Icons.RML_BLUE : (type == NotificationType.WARNING ? Icons.RML_YELLOW : Icons.RML_FILE);
+        return type == NotificationType.INFORMATION ? ORIcons.RML_BLUE : (type == NotificationType.WARNING ? ORIcons.RML_YELLOW : ORIcons.RML_FILE);
     }
 }

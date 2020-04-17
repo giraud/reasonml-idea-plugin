@@ -352,9 +352,9 @@
          | UI
          -->
 
-        <toolWindow id="BuckleScript:" anchor="bottom" icon="/icons/bucklescript.png" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
-        <toolWindow id="Dune:" anchor="bottom" icon="/icons/dune-tool.png" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
-        <toolWindow id="Esy:" anchor="bottom" icon="/icons/esy-tool.png" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
+        <toolWindow id="BuckleScript:" anchor="bottom" icon="ORIcons.bucklescriptTool" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
+        <toolWindow id="Dune:" anchor="bottom" icon="ORIcons.duneTool" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
+        <toolWindow id="Esy:" anchor="bottom" icon="ORIcons.esyTool" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="Reason"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>

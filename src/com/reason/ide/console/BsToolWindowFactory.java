@@ -10,8 +10,8 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.Icons;
 import com.reason.Platform;
+import icons.ORIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public Icon getIcon() {
-        return Icons.BUCKLESCRIPT_TOOL;
+        return ORIcons.BUCKLESCRIPT_TOOL;
     }
 
     @Nls

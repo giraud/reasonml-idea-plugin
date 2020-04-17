@@ -1,7 +1,7 @@
 package com.reason.lang.ocamlyacc;
 
 import com.intellij.navigation.ItemPresentation;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccDeclaration;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
@@ -30,7 +30,7 @@ public class OclYaccPsiImplUtil {
 
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.OBJECT;
+                return ORIcons.OBJECT;
             }
         };
     }
@@ -51,7 +51,7 @@ public class OclYaccPsiImplUtil {
 
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.TYPE;
+                return ORIcons.TYPE;
             }
         };
     }
@@ -72,7 +72,7 @@ public class OclYaccPsiImplUtil {
 
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.FUNCTION;
+                return ORIcons.FUNCTION;
             }
         };
     }
@@ -92,7 +92,7 @@ public class OclYaccPsiImplUtil {
 
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.OBJECT;
+                return ORIcons.OBJECT;
             }
         };
     }

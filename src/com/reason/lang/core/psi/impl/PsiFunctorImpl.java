@@ -8,7 +8,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiFunctorBinding;
@@ -91,7 +91,7 @@ public class PsiFunctorImpl extends PsiToken<ORTypes> implements PsiFunctor {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.FUNCTOR;
+                return ORIcons.FUNCTOR;
             }
         };
     }

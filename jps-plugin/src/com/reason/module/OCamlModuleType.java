@@ -3,7 +3,7 @@ package com.reason.module;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.module.ModuleType;
-import com.reason.Icons;
+import icons.ORIcons;
 
 /**
  * Type of OCaml native project.
@@ -43,6 +43,6 @@ public class OCamlModuleType extends ModuleType<OCamlModuleBuilder> {
     @NotNull
     @Override
     public Icon getNodeIcon(boolean isOpened) {
-        return Icons.OCL_MODULE;
+        return ORIcons.OCL_MODULE;
     }
 }

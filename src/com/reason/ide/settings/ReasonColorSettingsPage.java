@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.ide.highlight.ORSyntaxHighlighter;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public class ReasonColorSettingsPage implements ColorSettingsPage {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.RML_FILE;
+        return ORIcons.RML_FILE;
     }
 
     @NotNull

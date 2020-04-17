@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.xml.model.gotosymbol.GoToSymbolProvider;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
@@ -41,7 +41,7 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
 
     @Override
     public ItemPresentation getPresentation() {
-        return new GoToSymbolProvider.BaseNavigationItem(this, getQualifiedName(), Icons.OPEN);
+        return new GoToSymbolProvider.BaseNavigationItem(this, getQualifiedName(), ORIcons.OPEN);
     }
 
     @Nullable

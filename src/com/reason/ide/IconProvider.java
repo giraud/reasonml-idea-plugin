@@ -6,12 +6,12 @@ import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
-import com.reason.Icons;
 import com.reason.bs.BsConstants;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.lang.core.psi.*;
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,40 +23,40 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     public Icon getIcon(@NotNull PsiElement element, int flags) {
         if (element instanceof PsiFile) {
             if (element instanceof OclFile) {
-                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.OCL_FILE_MODULE : Icons.OCL_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? ORIcons.OCL_FILE_MODULE : ORIcons.OCL_FILE;
             }
             if (element instanceof OclInterfaceFile) {
-                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.OCL_FILE_MODULE_INTERFACE : Icons.OCL_INTERFACE_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? ORIcons.OCL_FILE_MODULE_INTERFACE : ORIcons.OCL_INTERFACE_FILE;
             }
             if (element instanceof RmlFile) {
-                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.RML_FILE_MODULE : Icons.RML_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? ORIcons.RML_FILE_MODULE : ORIcons.RML_FILE;
             }
             if (element instanceof RmlInterfaceFile) {
-                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_INTERFACE_FILE;
+                return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? ORIcons.RML_FILE_MODULE_INTERFACE : ORIcons.RML_INTERFACE_FILE;
             }
             if (isBsJsFile((PsiFile) element)) {
-                return Icons.BS_FILE;
+                return ORIcons.BS_FILE;
             }
             if (isEsyPackageJson((PsiFile) element)) {
-                return Icons.ESY_FILE;
+                return ORIcons.ESY_FILE;
             }
         } else if (element instanceof PsiException) {
-            return Icons.EXCEPTION;
+            return ORIcons.EXCEPTION;
         } else if (element instanceof PsiInnerModule) {
-            return Icons.MODULE;
+            return ORIcons.MODULE;
         } else if (element instanceof PsiFunctor) {
-            return Icons.FUNCTOR;
+            return ORIcons.FUNCTOR;
         } else if (element instanceof PsiType) {
-            return Icons.TYPE;
+            return ORIcons.TYPE;
         } else if (element instanceof PsiVariantDeclaration) {
-            return Icons.VARIANT;
+            return ORIcons.VARIANT;
         } else if (element instanceof PsiLet) {
             PsiLet let = (PsiLet) element;
-            return let.isRecord() ? Icons.OBJECT : (let.isFunction() ? Icons.FUNCTION : Icons.LET);
+            return let.isRecord() ? ORIcons.OBJECT : (let.isFunction() ? ORIcons.FUNCTION : ORIcons.LET);
         } else if (element instanceof PsiExternal) {
-            return Icons.EXTERNAL;
+            return ORIcons.EXTERNAL;
         } else if (element instanceof PsiVal) {
-            return Icons.VAL;
+            return ORIcons.VAL;
         }
         return null;
     }
@@ -68,9 +68,9 @@ public class IconProvider extends com.intellij.ide.IconProvider {
 
     public static Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
         if (isOCaml) {
-            return isInterface ? Icons.OCL_FILE_MODULE_INTERFACE : Icons.OCL_FILE_MODULE;
+            return isInterface ? ORIcons.OCL_FILE_MODULE_INTERFACE : ORIcons.OCL_FILE_MODULE;
         } else {
-            return isInterface ? Icons.RML_FILE_MODULE_INTERFACE : Icons.RML_FILE_MODULE;
+            return isInterface ? ORIcons.RML_FILE_MODULE_INTERFACE : ORIcons.RML_FILE_MODULE;
         }
     }
 

@@ -13,8 +13,8 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.Icons;
 import com.reason.ide.facet.DuneFacet;
+import icons.ORIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public Icon getIcon() {
-        return Icons.ESY_TOOL;
+        return ORIcons.ESY_TOOL;
     }
 
     @Nls

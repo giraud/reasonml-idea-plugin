@@ -1,7 +1,7 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.lang.extra.OclMlgLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +36,6 @@ public class MlgFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.OCL_GREEN_FILE;
+        return ORIcons.OCL_GREEN_FILE;
     }
 }
