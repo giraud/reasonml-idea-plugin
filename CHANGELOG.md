@@ -13,8 +13,8 @@
 ## Unreleased
 
 - :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
-- :nail_care: ![o] ![r] [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
-- :nail_care: ![o] ![r] [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
+- :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
+- :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
 - :nail_care: ![o] ![r] Poly-variants can have a different highlighting, color scheme updated
 
 ## 0.87.1 - 2020/04/03
