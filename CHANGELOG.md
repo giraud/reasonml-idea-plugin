@@ -12,7 +12,8 @@
 
 ## Unreleased
 
-- :rocket: ![o] You can easily download OCaml SDK sources in SDK settings
+- :rocket: ![o] ![r] Poly-variants can have a different hilighting, color scheme updated
+- :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
 
 ## 0.87.1 - 2020/04/03
 
