@@ -19,6 +19,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.*;
 import com.reason.hints.InsightManager;
+import com.reason.ide.console.BsToolWindowFactory;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
@@ -175,7 +176,7 @@ public class BucklescriptImpl implements Bucklescript {
     public ConsoleView getBsbConsole() {
         ConsoleView console = null;
 
-        ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow("Bucklescript");
+        ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow(BsToolWindowFactory.ID);
         Content windowContent = window.getContentManager().getContent(0);
         if (windowContent != null) {
             SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();

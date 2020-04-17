@@ -11,7 +11,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.reason.Icons;
@@ -48,16 +47,13 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
-        ToolWindow bsWindow = ToolWindowManagerEx.getInstanceEx(project).getToolWindow(BsToolWindowFactory.ID);
-        if (bsWindow != null) {
-            ModuleManager moduleManager = ModuleManager.getInstance(project);
-            Module[] modules = moduleManager.getModules();
-            for (Module module : modules) {
-                FacetManager instance = FacetManager.getInstance(module);
-                DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
-                if (duneFacet != null) {
-                    return duneFacet.getConfiguration().isEsy;
-                }
+        ModuleManager moduleManager = ModuleManager.getInstance(project);
+        Module[] modules = moduleManager.getModules();
+        for (Module module : modules) {
+            FacetManager instance = FacetManager.getInstance(module);
+            DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
+            if (duneFacet != null) {
+                return duneFacet.getConfiguration().isEsy;
             }
         }
         return false;

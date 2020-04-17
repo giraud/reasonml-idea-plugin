@@ -357,7 +357,7 @@
          | UI
          -->
 
-        <toolWindow id="Bucklescript:" anchor="bottom" icon="/icons/bucklescript.png" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
+        <toolWindow id="BuckleScript:" anchor="bottom" icon="/icons/bucklescript.png" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
         <toolWindow id="Dune:" anchor="bottom" icon="/icons/dune-tool.png" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
         <toolWindow id="Esy:" anchor="bottom" icon="/icons/esy-tool.png" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
 
