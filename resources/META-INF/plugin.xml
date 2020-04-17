@@ -85,6 +85,9 @@
         <!-- OCaml - Yacc -->
         <fileType extensions="mly" name="Mly file" fieldName="INSTANCE" language="Mly"
                   implementationClass="com.reason.ide.files.MlyFileType"/>
+        <!-- BuckleScript Configuration (bsconfig.json) -->
+        <fileType name="BuckleScript Configuration" fieldName="INSTANCE" language="JSON" fileNames="bsconfig.json"
+                  implementationClass="com.reason.ide.files.BsConfigJsonFileType"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
         <!-- Esy -->
