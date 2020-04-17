@@ -1,7 +1,5 @@
 package com.reason.ide.js;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.javascript.library.JSLibraryManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.DumbAware;
@@ -16,12 +14,16 @@ import com.reason.Log;
 import com.reason.Platform;
 import com.reason.bs.BsConfig;
 import com.reason.bs.BsConfigReader;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.intellij.openapi.vfs.VirtualFile.EMPTY_ARRAY;
 import static com.intellij.util.ArrayUtilRt.EMPTY_STRING_ARRAY;
 import static com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.PROJECT;
 
-public class OrJsLibraryManager implements StartupActivity, DumbAware {
+public class ORJsLibraryManager implements StartupActivity, DumbAware {
 
     private static final Log LOG = Log.create("js.lib");
     private static final String LIB_NAME = "Bucklescript";

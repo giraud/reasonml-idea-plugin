@@ -24,6 +24,7 @@ public class Platform {
     public static final String LOCAL_NODE_MODULES_BIN = "/node_modules/.bin";
     public static final String DUNE_NAME = "dune-project";
     public static final String PACKAGE_JSON_NAME = "package.json";
+    public static final String ESY_PROJECT_IDENTIFIER = "_esy";
     public static final String BSCONFIG_JSON_NAME = "bsconfig.json";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
 
@@ -76,46 +77,40 @@ public class Platform {
         return rootContents;
     }
 
-    public static VirtualFile findORDuneContentRoot(@NotNull Project project) {
-        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, DUNE_NAME);
+    public static VirtualFile findContentRootFor(@NotNull Project project, @NotNull String filename) {
+        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
 
         if (rootContents.isEmpty()) {
-            LOG.warn("No content roots with " + DUNE_NAME + " file found");
+            LOG.warn("No content roots with " + filename + " file found");
             return null;
         } else if (rootContents.size() == 1) {
             Module module = rootContents.keySet().iterator().next();
-            VirtualFile packageJson = rootContents.get(module);
-            return packageJson.getParent();
+            VirtualFile file = rootContents.get(module);
+            return file.getParent();
         } else {
             Module module = rootContents.keySet().iterator().next();
-            VirtualFile packageJson = rootContents.get(module);
-            LOG.info("Many modules with " + DUNE_NAME + " file in it found (" + rootContents.size() + "), using first", rootContents);
-            return packageJson.getParent();
+            VirtualFile file = rootContents.get(module);
+            LOG.info("Many modules with " + filename + " file in it found (" + rootContents.size() + "), using first", rootContents);
+            return file.getParent();
         }
+    }
+
+    public static VirtualFile findORDuneContentRoot(@NotNull Project project) {
+        return findContentRootFor(project, DUNE_NAME);
+    }
+
+    public static VirtualFile findOREsyContentRoot(@NotNull Project project) {
+        return findContentRootFor(project, ESY_PROJECT_IDENTIFIER);
     }
 
     @Nullable
     public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project) {
-        Map<Module, VirtualFile> rootContents = findContentRootsFor(project, PACKAGE_JSON_NAME);
-
-        if (rootContents.isEmpty()) {
-            LOG.warn("No content roots with " + PACKAGE_JSON_NAME + " file found");
-            return null;
-        } else if (rootContents.size() == 1) {
-            Module module = rootContents.keySet().iterator().next();
-            VirtualFile packageJson = rootContents.get(module);
-            return packageJson.getParent();
-        } else {
-            Module module = rootContents.keySet().iterator().next();
-            VirtualFile packageJson = rootContents.get(module);
-            LOG.info("Many modules with " + PACKAGE_JSON_NAME + " file in it found (" + rootContents.size() + "), using first", rootContents);
-            return packageJson.getParent();
-        }
+        return findContentRootFor(project, PACKAGE_JSON_NAME);
     }
 
     @Nullable
     public static VirtualFile findProjectBsconfig(@NotNull Project project) {
-        VirtualFile contentRoot = Platform.findORPackageJsonContentRoot(project);
+        VirtualFile contentRoot = findORPackageJsonContentRoot(project);
         return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
     }
 

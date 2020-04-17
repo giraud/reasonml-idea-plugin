@@ -1,5 +1,13 @@
 package com.reason.ide.importWizard;
 
+import java.io.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
@@ -20,18 +28,9 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.reason.Log;
-import com.reason.OCamlSdkType;
 import com.reason.OCamlSourcesOrderRootType;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
+import com.reason.sdk.OCamlSdkType;
+import com.reason.sdk.SdkDownloader;
 
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
@@ -78,7 +77,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
         c_sdkHome.setText(value);
 
         c_sdkHome.addBrowseFolderListener("Choose Sdk Home Directory: ", null, m_context.getProject(),
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+                                          FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }
 
     @Override
@@ -128,12 +127,15 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
                 if (selectedSdk != null && sdkHome != null) {
                     int pos = selectedSdk.lastIndexOf('.');
-                    String major = selectedSdk.substring(0, pos);
-                    String minor = selectedSdk.substring(pos + 1);
+                    String patch = selectedSdk.substring(pos + 1);
+                    String majorMinor = selectedSdk.substring(0, pos);
+                    pos = majorMinor.lastIndexOf('.');
+                    String major = majorMinor.substring(0, pos);
+                    String minor = majorMinor.substring(pos + 1);
 
                     // Download SDK from distribution site
                     LOG.debug("Download SDK", selectedSdk);
-                    ProgressManager.getInstance().run(new SdkDownloader(major, minor, sdkHome, m_context.getProject()));
+                    ProgressManager.getInstance().run(SdkDownloader.modalTask(major, minor, patch, sdkHome, m_context.getProject()));
 
                     // Create SDK
                     LOG.debug("Create SDK", selectedSdk);
@@ -178,5 +180,4 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
             }
         });
     }
-
 }

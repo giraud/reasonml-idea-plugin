@@ -2,7 +2,6 @@ package com.reason.ide.actions;
 
 import java.io.*;
 import org.jetbrains.annotations.NotNull;
-import com.intellij.lang.Language;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -23,10 +22,8 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.reason.bs.Bucklescript;
-import com.reason.ide.ORNotification;
+import com.reason.ORNotification;
 import com.reason.ide.files.FileHelper;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.reason.RmlLanguage;
 
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 import static com.reason.ide.files.FileHelper.isInterface;

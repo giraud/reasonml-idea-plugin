@@ -17,7 +17,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.reason.Log;
-import com.reason.ide.FileManager;
+import com.reason.WGet;
+import com.reason.ide.ORFileManager;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.hints.InferredTypesService;
 
@@ -78,7 +79,7 @@ public class RincewindDownloader extends Task.Backgroundable {
                         VirtualFile[] openedFiles = FileEditorManager.getInstance(myProject).getOpenFiles();
                         for (VirtualFile openedFile : openedFiles) {
                             // Query types and update psi cache
-                            PsiFile cmtFile = FileManager.findCmtFileFromSource(myProject, openedFile.getNameWithoutExtension());
+                            PsiFile cmtFile = ORFileManager.findCmtFileFromSource(myProject, openedFile.getNameWithoutExtension());
                             if (cmtFile != null) {
                                 Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
 

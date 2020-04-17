@@ -20,7 +20,7 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
 
     public void testTrailingComma() {
         BsConfig bsConfig = BsConfigReader.parse(toJson("{'sources': ['a',  ],\n  },"));
-        assertContainsElements( bsConfig.getSources(), "a");
+        assertContainsElements(bsConfig.getSources(), "a");
     }
 
     public void test_GHIssue214() throws IOException {
@@ -31,6 +31,9 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
     public void testJsx() {
         BsConfig bsConfig = BsConfigReader.parse(toJson("{'name': 'x', 'reason': {'react-jsx': 2}}"));
         assertEquals("2", bsConfig.getJsxVersion());
+
+        BsConfig bsConfig2 = BsConfigReader.parse(toJson("{'name': 'x', 'reason': true}")); // ?
+        assertNull(bsConfig2.getJsxVersion());
     }
 
     public void testNamespace() {

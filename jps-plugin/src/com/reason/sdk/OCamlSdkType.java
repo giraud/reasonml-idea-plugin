@@ -1,26 +1,33 @@
-package com.reason;
+package com.reason.sdk;
 
+import java.io.*;
+import java.util.regex.*;
+import javax.swing.*;
+
+import com.intellij.openapi.application.Application;
+import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.projectRoots.AdditionalDataConfigurable;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkAdditionalData;
+import com.intellij.openapi.projectRoots.SdkModel;
+import com.intellij.openapi.projectRoots.SdkModificator;
+import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ArrayUtil;
+import com.reason.Icons;
+import com.reason.OCamlSourcesOrderRootType;
 import gnu.trove.Equality;
-import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class OCamlSdkType extends SdkType {
 
     public static final String ID = "OCaml SDK";
-    private static final Pattern VERSION_REGEXP = Pattern.compile(".*(\\d\\.\\d\\d).*");
+    private static final Pattern VERSION_REGEXP = Pattern.compile(".*(\\d\\.\\d\\d(\\.\\d)?).*");
 
     public OCamlSdkType() {
         super(ID);
@@ -87,16 +94,6 @@ public class OCamlSdkType extends SdkType {
         return type.name().equals("OCAML_SOURCES");
     }
 
-    @Nullable
-    @Override
-    public AdditionalDataConfigurable createAdditionalDataConfigurable(@NotNull SdkModel sdkModel, @NotNull SdkModificator sdkModificator) {
-        return null;
-    }
-
-    @Override
-    public void saveAdditionalData(@NotNull SdkAdditionalData additionalData, @NotNull Element additional) {
-    }
-
     // Hack to get OCaml sources indexed like java sources
     // Find a better way to do it !!
     public static void reindexSourceRoots(@NotNull Sdk sdk) {
@@ -112,8 +109,34 @@ public class OCamlSdkType extends SdkType {
                 sdkModificator.addRoot(root, OrderRootType.SOURCES);
             }
 
-            ApplicationManager.getApplication().runWriteAction(sdkModificator::commitChanges);
+            Application application = ApplicationManager.getApplication();
+            application.invokeLater(() -> application.runWriteAction(sdkModificator::commitChanges));
         }
     }
 
+    @Nullable
+    @Override
+    public AdditionalDataConfigurable createAdditionalDataConfigurable(@NotNull SdkModel sdkModel, @NotNull SdkModificator sdkModificator) {
+        return new OCamlAdditionalDataConfigurable();
+    }
+
+    @Nullable
+    @Override
+    public SdkAdditionalData loadAdditionalData(@NotNull Element additional) {
+        OCamlSdkAdditionalData data = new OCamlSdkAdditionalData();
+        data.setMajor(additional.getAttributeValue("major"));
+        data.setMinor(additional.getAttributeValue("minor"));
+        data.setPatch(additional.getAttributeValue("patch"));
+        data.setForced(Boolean.getBoolean(additional.getAttributeValue("forced")));
+        return data;
+    }
+
+    @Override
+    public void saveAdditionalData(@NotNull SdkAdditionalData data, @NotNull Element additional) {
+        OCamlSdkAdditionalData odkAdditionalData = (OCamlSdkAdditionalData) data;
+        additional.setAttribute("major", odkAdditionalData.getMajor());
+        additional.setAttribute("minor", odkAdditionalData.getMinor());
+        additional.setAttribute("patch", odkAdditionalData.getPatch());
+        additional.setAttribute("forced", odkAdditionalData.isForced().toString());
+    }
 }

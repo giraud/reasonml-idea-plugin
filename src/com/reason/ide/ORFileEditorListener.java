@@ -115,7 +115,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         public void propertyChange(@NotNull PropertyChangeEvent evt) {
             if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
                 // Document is saved, run the compiler !!
-                CompilerManager.getInstance().getCompiler(m_project).run(m_file, CliType.standard, () -> m_updateQueue.queue(m_project, m_document));
+                ORCompilerManager.getInstance().getCompiler(m_project).run(m_file, CliType.standard, () -> m_updateQueue.queue(m_project, m_document));
 
                 //() -> ApplicationManager.getApplication().runReadAction(() -> {
                 //InferredTypesService.clearTypes(m_project, m_file);

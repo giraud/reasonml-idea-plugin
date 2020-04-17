@@ -85,8 +85,16 @@
         <!-- OCaml - Yacc -->
         <fileType extensions="mly" name="Mly file" fieldName="INSTANCE" language="Mly"
                   implementationClass="com.reason.ide.files.MlyFileType"/>
+        <!-- BuckleScript Configuration (bsconfig.json) -->
+        <fileType name="BuckleScript Configuration" fieldName="INSTANCE" language="JSON" fileNames="bsconfig.json"
+                  implementationClass="com.reason.ide.files.BsConfigJsonFileType"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
+        <!-- Esy -->
+        <fileType name="Esy Sandbox" fieldName="INSTANCE" fileNames="_esy"
+                  implementationClass="com.reason.ide.files.EsySandboxFileType"/>
+        <fileType name="Esy Lock File" fieldName="INSTANCE" fileNames="esy.lock"
+                  implementationClass="com.reason.ide.files.EsyLockFileType"/>
         <!-- Binary -->
         <fileType extensions="cmt" name="CMT" fieldName="INSTANCE"
                   implementationClass="com.reason.ide.files.CmtFileType"/>
@@ -238,7 +246,7 @@
          | Compiler
          -->
 
-        <applicationService serviceImplementation="com.reason.ide.CompilerManager"/>
+        <applicationService serviceImplementation="com.reason.ide.ORCompilerManager"/>
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
         <projectService serviceInterface="com.reason.bs.Bucklescript"
                         serviceImplementation="com.reason.bs.BucklescriptImpl"/>

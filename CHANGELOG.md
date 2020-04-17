@@ -12,7 +12,12 @@
 
 ## Unreleased
 
-## 0.87 - 2020/04/03
+- :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
+- :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
+- :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
+- :nail_care: ![o] ![r] Poly-variants can have a different highlighting, color scheme updated
+
+## 0.87.1 - 2020/04/03
 
 - :bug: [#214](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/214) Infinite indexing
 
@@ -24,11 +29,10 @@
 - :bug: [#209](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/209) Deep dependenciess are not indexed in IDE that have javascript functionality (ultimate/webstorm)
 - :house: Use rincewind 0.7 (support of OCaml 4.10)
 
-
 ## 0.86.1 - 2020/02/21
 
 - Compatible with bucklescript 7.2
-- :rocket: [!r] [#204](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/204) New on-the-fly compilation to get faster inferred information
+- :rocket: ![r], [#204](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/204) New on-the-fly compilation to get faster inferred information
 - :bug: [#167](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/167) Go-to definition is not working correctly for deconstructed tuples
 
 ## 0.85 - 2020/02/04

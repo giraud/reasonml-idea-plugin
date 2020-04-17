@@ -1,20 +1,14 @@
-package com.reason.hints;
+package com.reason;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.StandardCopyOption;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.util.SystemInfo;
-import com.reason.Log;
-import com.reason.ide.ORNotification;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.file.StandardCopyOption;
 
 public class WGet {
 
@@ -80,5 +74,4 @@ public class WGet {
             return false;
         }
     }
-
 }

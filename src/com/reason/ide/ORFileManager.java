@@ -20,11 +20,11 @@ import com.reason.StringUtil;
 import com.reason.bs.Bucklescript;
 import com.reason.ide.files.FileBase;
 
-public class FileManager {
+public class ORFileManager {
 
     private static final Log LOG = Log.create("file");
 
-    private FileManager() {
+    private ORFileManager() {
     }
 
     @Nullable

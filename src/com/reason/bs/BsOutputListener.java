@@ -44,7 +44,7 @@ public class BsOutputListener implements RawProcessListener {
 
     @Override
     public void processTerminated(@NotNull ProcessEvent event) {
-        m_compiler.terminated();
+        m_compiler.terminate();
 
         //if (m_lineProcessor.hasInfo() && !m_project.isDisposed()) {
         //    ErrorsManager errorsService = ServiceManager.getService(m_project, ErrorsManager.class);

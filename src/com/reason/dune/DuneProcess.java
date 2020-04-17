@@ -5,6 +5,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.concurrent.atomic.*;
+
+import com.reason.ORNotification;
+import com.reason.sdk.OCamlSdkType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
@@ -20,16 +23,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
-import com.reason.CompilerProcessLifecycle;
-import com.reason.OCamlSdkType;
+import com.reason.CompilerProcess;
 import com.reason.Platform;
-import com.reason.ide.ORNotification;
 import com.reason.ide.console.CliType;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 
-public final class DuneProcess implements CompilerProcessLifecycle {
+public final class DuneProcess implements CompilerProcess {
 
     @NotNull
     private final Project m_project;
@@ -49,7 +50,8 @@ public final class DuneProcess implements CompilerProcessLifecycle {
     }
 
     // Wait for the tool window to be ready before starting the process
-    void startNotify() {
+    @Override
+    public void startNotify() {
         if (m_processHandler != null && !m_processHandler.isStartNotified()) {
             try {
                 m_processHandler.startNotify();
@@ -59,8 +61,9 @@ public final class DuneProcess implements CompilerProcessLifecycle {
         }
     }
 
+    @Override
     @Nullable
-    ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             killIt();
             GeneralCommandLine cli = getGeneralCommandLine(cliType);
@@ -139,12 +142,13 @@ public final class DuneProcess implements CompilerProcessLifecycle {
         return cli;
     }
 
+    @Override
     public boolean start() {
         return m_started.compareAndSet(false, true);
     }
 
     @Override
-    public void terminated() {
+    public void terminate() {
         m_started.set(false);
     }
 }

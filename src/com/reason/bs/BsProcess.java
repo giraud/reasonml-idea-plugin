@@ -8,9 +8,9 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
-import com.reason.CompilerProcessLifecycle;
+import com.reason.CompilerProcess;
 import com.reason.Platform;
-import com.reason.ide.ORNotification;
+import com.reason.ORNotification;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ import static com.intellij.notification.NotificationType.ERROR;
 import static com.reason.bs.BsBinaries.getBsbPath;
 import static com.reason.bs.BsBinaries.getBscPath;
 
-public final class BsProcess implements CompilerProcessLifecycle {
+public final class BsProcess implements CompilerProcess {
 
     private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
@@ -48,7 +48,8 @@ public final class BsProcess implements CompilerProcessLifecycle {
     }
 
     // Wait for the tool window to be ready before starting the process
-    void startNotify() {
+    @Override
+    public void startNotify() {
         if (m_bsb != null && !m_bsb.isStartNotified()) {
             try {
                 m_bsb.startNotify();
@@ -68,8 +69,13 @@ public final class BsProcess implements CompilerProcessLifecycle {
         }
     }
 
+    @Override
+    public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+        throw new RuntimeException("Method not yet implemented.");
+    }
+
     @Nullable
-    ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             return createProcessHandler(sourceFile, cliType, onProcessTerminated);
         } catch (ExecutionException e) {
@@ -137,6 +143,7 @@ public final class BsProcess implements CompilerProcessLifecycle {
         return cli;
     }
 
+    @Override
     public boolean start() {
         boolean success = m_started.compareAndSet(false, true);
         if (!success) {
@@ -145,7 +152,8 @@ public final class BsProcess implements CompilerProcessLifecycle {
         return success;
     }
 
-    public void terminated() {
+    @Override
+    public void terminate() {
         m_bsb = null;
         m_started.set(false);
     }
