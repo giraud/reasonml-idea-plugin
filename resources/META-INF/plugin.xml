@@ -87,6 +87,11 @@
                   implementationClass="com.reason.ide.files.MlyFileType"/>
         <!-- Dune -->
         <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
+        <!-- Esy -->
+        <fileType name="Esy Sandbox" fieldName="INSTANCE" fileNames="_esy"
+                  implementationClass="com.reason.ide.files.EsySandboxFileType"/>
+        <fileType name="Esy Lock File" fieldName="INSTANCE" fileNames="esy.lock"
+                  implementationClass="com.reason.ide.files.EsyLockFileType"/>
         <!-- Binary -->
         <fileType extensions="cmt" name="CMT" fieldName="INSTANCE"
                   implementationClass="com.reason.ide.files.CmtFileType"/>
