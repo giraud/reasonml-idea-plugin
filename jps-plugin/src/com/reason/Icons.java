@@ -18,18 +18,18 @@ public class Icons {
     public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/ocaml-interface-file.png");
     public static final Icon DUNE_FILE = getIcon("/icons/dune-file.png");
 
-    public static final Icon RML_FILE_MODULE = getIcon("/icons/reason-file-module.png");
-    public static final Icon RML_FILE_MODULE_INTERFACE = getIcon("/icons/reason-file-blue.png");
-    public static final Icon OCL_FILE_MODULE = getIcon("/icons/ocaml-file-module.png");
-    public static final Icon OCL_FILE_MODULE_INTERFACE = getIcon("/icons/ocaml-file-blue.png");
+    public static final Icon RML_FILE_MODULE = getIcon("/icons/reason-red.png");
+    public static final Icon RML_FILE_MODULE_INTERFACE = getIcon("/icons/reason-blue.png");
+    public static final Icon OCL_FILE_MODULE = getIcon("/icons/ocaml.png");
+    public static final Icon OCL_FILE_MODULE_INTERFACE = getIcon("/icons/ocaml-blue.png");
 
-    public static final Icon BLUE_FILE = getIcon("/icons/reason-file-blue.png");
-    public static final Icon YELLOW_FILE = getIcon("/icons/reason-file-yellow.png");
+    public static final Icon RML_BLUE = getIcon("/icons/reason-blue.png");
+    public static final Icon RML_YELLOW = getIcon("/icons/reason-yellow.png");
 
     public static final Icon OCL_MODULE = getIcon("/icons/ocaml-module.png");
     public static final Icon OCL_SDK = getIcon("/icons/ocaml-sdk.png");
-    public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocaml-file-blue.png");
-    public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocaml-file-green.png");
+    public static final Icon OCL_BLUE_FILE = getIcon("/icons/ocaml-blue.png");
+    public static final Icon OCL_GREEN_FILE = getIcon("/icons/ocaml-green.png");
 
     public static final Icon TYPE = getIcon("/icons/type.png");
     public static final Icon VARIANT = getIcon("/icons/variant.png");
