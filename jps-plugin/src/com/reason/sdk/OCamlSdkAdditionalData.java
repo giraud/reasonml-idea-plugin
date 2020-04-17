@@ -23,7 +23,7 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
 
     @NotNull
     public String getMajor() {
-        return m_major;
+        return m_major.isEmpty() ? "4" : m_major;
     }
 
     public void setMajor(@NotNull String major) {
@@ -32,7 +32,7 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
 
     @NotNull
     public String getMinor() {
-        return m_minor;
+        return m_minor.isEmpty() ? "06" : m_minor;
     }
 
     public void setMinor(@NotNull String minor) {
@@ -45,7 +45,7 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
             return m_patch;
         }
 
-        switch (m_minor) {
+        switch (getMinor()) {
             case "02":
                 return "3";
             //case "03":
@@ -83,6 +83,6 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
 
     @Override
     public String toString() {
-        return m_major + '.' + m_minor + '.' + m_patch;
+        return getMajor() + '.' + getMinor() + '.' + getPatch();
     }
 }
