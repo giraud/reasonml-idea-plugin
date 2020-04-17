@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.BitUtil;
 import com.reason.Icons;
 import com.reason.bs.BsConstants;
+import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.lang.core.psi.*;
@@ -34,6 +35,9 @@ public class IconProvider extends com.intellij.ide.IconProvider {
             }
             if (isBsJsFile((PsiFile) element)) {
                 return Icons.BS_FILE;
+            }
+            if (isEsyPackageJson((PsiFile) element)) {
+                return Icons.ESY_FILE;
             }
         } else if (element instanceof PsiException) {
             return Icons.EXCEPTION;
@@ -71,6 +75,10 @@ public class IconProvider extends com.intellij.ide.IconProvider {
 
     public static Icon getFileModuleIcon(@NotNull IndexedFileModule indexedFile) {
         return getFileModuleIcon(indexedFile.isOCaml(), indexedFile.isInterface());
+    }
+
+    private boolean isEsyPackageJson(PsiFile element) {
+        return EsyPackageJson.isEsyPackageJson(element.getVirtualFile());
     }
 
     /* needed as plugin.xml's filetype extension does NOT support extensions with multiple "." */
