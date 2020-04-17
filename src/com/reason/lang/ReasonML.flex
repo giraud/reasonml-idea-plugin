@@ -171,6 +171,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     ({FLOAT_LITERAL} | {HEXA_FLOAT_LITERAL}){LITERAL_MODIFIER}? { return types.FLOAT_VALUE; }
     "'"{LOWERCASE}{IDENTCHAR}*       { return types.TYPE_ARGUMENT; }
     "`"{UPPERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
+    "`"{LOWERCASE}{IDENTCHAR}*       { return types.POLY_VARIANT; }
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_REASON_ML_COMMENT); commentDepth = 1; tokenStart(); }
