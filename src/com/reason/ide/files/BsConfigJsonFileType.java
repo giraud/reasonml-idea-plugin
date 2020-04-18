@@ -30,6 +30,6 @@ public class BsConfigJsonFileType extends JsonFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.BS_FILE;
+        return Icons.BUCKLESCRIPT_TOOL;
     }
 }
