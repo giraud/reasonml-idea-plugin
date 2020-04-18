@@ -1,31 +1,25 @@
 package com.reason.dune;
 
-import java.io.*;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.util.*;
-import java.util.concurrent.atomic.*;
-
-import com.reason.ORNotification;
-import com.reason.sdk.OCamlSdkType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.KillableColoredProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessListener;
+import com.intellij.execution.process.*;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
-import com.reason.CompilerProcess;
-import com.reason.Platform;
+import com.reason.*;
 import com.reason.ide.console.CliType;
+import com.reason.sdk.OCamlSdkType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -64,9 +58,12 @@ public final class DuneProcess implements CompilerProcess {
     @Override
     @Nullable
     public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+        if (!(cliType instanceof CliType.Dune)) {
+            throw new CompilerProcessException("Invalid cliType command.", CompilerType.DUNE);
+        }
         try {
             killIt();
-            GeneralCommandLine cli = getGeneralCommandLine(cliType);
+            GeneralCommandLine cli = getGeneralCommandLine((CliType.Dune) cliType);
             if (cli != null) {
                 m_processHandler = new KillableColoredProcessHandler(cli);
                 m_processHandler.addProcessListener(m_outputListener);
@@ -95,7 +92,7 @@ public final class DuneProcess implements CompilerProcess {
     }
 
     @Nullable
-    private GeneralCommandLine getGeneralCommandLine(CliType cliType) {
+    private GeneralCommandLine getGeneralCommandLine(CliType.Dune cliType) {
         Sdk odk = OCamlSdkType.getSDK(m_project);
         if (odk == null) {
             Notifications.Bus.notify(new ORNotification("Dune", "<html>Can't find sdk.\n"
@@ -115,9 +112,10 @@ public final class DuneProcess implements CompilerProcess {
         String duneBinary = fileSystem.getPath(odk.getHomePath(), "bin", "dune" + (Platform.isWindows() ? ".exe" : "")).toString();
         GeneralCommandLine cli;
         switch (cliType) {
-            case clean:
+            case CLEAN:
                 cli = new GeneralCommandLine(duneBinary, "clean");
                 break;
+            case BUILD:
             default:
                 cli = new GeneralCommandLine(duneBinary, "build");
         }

@@ -154,9 +154,13 @@ public class EsyProcess implements CompilerProcess {
 
   @Override
   public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    if (!(cliType instanceof CliType.Dune)) {
+      throw new CompilerProcessException("Invalid cliType command.", CompilerType.DUNE);
+    }
+
     killIt();
 
-    Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine(cliType);
+    Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine((CliType.Dune) cliType);
     if (!commandLineOptional.isPresent()) {
       SHOW_DUNE_NOT_FOUND_NOTIFICATION.run();
       return null;
@@ -239,7 +243,7 @@ public class EsyProcess implements CompilerProcess {
     return commandLine;
   }
 
-  private Optional<GeneralCommandLine> getDuneCommandLine(CliType cliType) {
+  private Optional<GeneralCommandLine> getDuneCommandLine(CliType.Dune cliType) {
     Optional<Path> duneExecutable = findDuneExecutableWithinEsy();
     if (!duneExecutable.isPresent()) {
       return Optional.empty();
@@ -247,7 +251,7 @@ public class EsyProcess implements CompilerProcess {
 
     VirtualFile esyContentRoot = Platform.findOREsyContentRoot(project);
 
-    String duneCommand = cliType == CliType.clean ? "clean" : "build"; // @TODO support all actions
+    String duneCommand = cliType == CliType.Dune.CLEAN ? "clean" : "build"; // @TODO support all actions
 
     GeneralCommandLine cli = new GeneralCommandLine(duneExecutable.get().toString(), duneCommand);
     cli.withEnvironment(getEsyEnvironment());

@@ -1,9 +1,12 @@
 package com.reason.ide.console;
 
+import com.intellij.facet.FacetManager;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.editor.actions.ScrollToTheEndToolbarAction;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
@@ -11,15 +14,15 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.reason.Icons;
-import com.reason.Platform;
+import com.reason.ide.facet.DuneFacet;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class BsToolWindowFactory extends ORToolWindowFactory {
+public class EsyToolWindowFactory extends ORToolWindowFactory {
 
-    public static final String ID = "BuckleScript:";
+    public static final String ID = "Esy:";
 
     @Override
     public String getId() {
@@ -28,7 +31,7 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public Icon getIcon() {
-        return Icons.BUCKLESCRIPT_TOOL;
+        return Icons.ESY_TOOL;
     }
 
     @Nls
@@ -39,12 +42,21 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public String getStripeTitle() {
-        return "BuckleScript";
+        return "Esy";
     }
 
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
-        return Platform.findProjectBsconfig(project) != null;
+        ModuleManager moduleManager = ModuleManager.getInstance(project);
+        Module[] modules = moduleManager.getModules();
+        for (Module module : modules) {
+            FacetManager instance = FacetManager.getInstance(module);
+            DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
+            if (duneFacet != null) {
+                return duneFacet.getConfiguration().isEsy;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -69,8 +81,13 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        group.add(new BsMakeAction());
-        group.add(new BsMakeWorldAction());
+        // @TODO replace with esy actions once EsyProcess supports them
+        group.add(new DuneInstallAction());
+        group.add(new DuneBuildAction());
+        group.add(new DuneCleanAction());
+        // group.add(new EsyInstallAction());
+        // group.add(new EsyBuildAction());
+        // group.add(new EsyShellAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());
