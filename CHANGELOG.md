@@ -16,6 +16,7 @@
 - :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
 - :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
 - :nail_care: ![o] ![r] Poly-variants can have a different highlighting, color scheme updated
+- :nail_care: ![o] ![r] Use SVG icons
 
 ## 0.87.1 - 2020/04/03
 
