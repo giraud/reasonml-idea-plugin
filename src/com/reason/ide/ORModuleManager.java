@@ -67,7 +67,7 @@ public class ORModuleManager {
         if (foundFile != null) {
             return Optional.of(foundFile);
         }
-        // finally, a "jbuilder" file...
+        // finally, a "jbuild" file...
         foundFile = foundFiles.get(LEGACY_JBUILDER_FILENAME);
         if (foundFile != null) {
             return Optional.of(foundFile);
