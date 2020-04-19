@@ -1,14 +1,8 @@
 package com.reason.ide;
 
-import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -18,11 +12,16 @@ import com.reason.Log;
 import com.reason.Platform;
 import com.reason.StringUtil;
 import com.reason.bs.Bucklescript;
-import com.reason.ide.files.FileBase;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 public class ORFileManager {
 
-    private static final Log LOG = Log.create("file");
+    private static final Log LOG = Log.create("manager.file");
 
     private ORFileManager() {
     }
