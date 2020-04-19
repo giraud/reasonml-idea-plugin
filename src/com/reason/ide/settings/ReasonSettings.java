@@ -15,7 +15,7 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
 
     private Project m_project;
     private boolean m_enabled = true;
-    private boolean m_refmtOnSave = true;
+    private boolean m_refmtOnSave = false;
     @NotNull
     private String m_location = "";
     @NotNull
@@ -118,7 +118,7 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
     @SuppressWarnings("WeakerAccess")
     public static class ReasonSettingsState {
         public boolean enabled = true;
-        public boolean refmtOnSave = true;
+        public boolean refmtOnSave = false;
 
         @NotNull
         public String location = "";
