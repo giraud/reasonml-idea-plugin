@@ -6,7 +6,7 @@ public class DuneConstants {
 
     public static final String DUNE_FILENAME = "dune";
 
-    public static final String LEGACY_JBUILDER_FILENAME = "jbuilder";
+    public static final String LEGACY_JBUILDER_FILENAME = "jbuild";
 
     private DuneConstants() {}
 
