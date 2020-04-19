@@ -50,6 +50,7 @@ public class ORModuleManager {
         return findFileInModule(BsConfigJsonFileType.getDefaultFilename(), module);
     }
 
+    /* searches module for files named "dune-project", then "dune", and lastly "jbuild" */
     public static Optional<VirtualFile> findDuneConfigurationFile(@NotNull Module module) {
         Map<String, VirtualFile> foundFiles = findFilesInModule(DUNE_PROJECT_FILES, module).stream()
                 .collect(Collectors.toMap(VirtualFile::getName, Function.identity()));
