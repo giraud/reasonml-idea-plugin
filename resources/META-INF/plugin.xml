@@ -104,10 +104,13 @@
         <fileType extensions="mly" name="Mly file" fieldName="INSTANCE" language="Mly"
                   implementationClass="com.reason.ide.files.MlyFileType"/>
         <!-- BuckleScript Configuration (bsconfig.json) -->
-        <fileType name="BuckleScript Configuration" fieldName="INSTANCE" language="JSON" fileNames="bsconfig.json"
+        <fileType name="BuckleScript Configuration" fieldName="INSTANCE" language="JSON"
+                  fileNames="bsconfig.json"
                   implementationClass="com.reason.ide.files.BsConfigJsonFileType"/>
         <!-- Dune -->
-        <fileTypeFactory implementation="com.reason.ide.files.DuneFileTypeFactory"/>
+        <fileType name="Dune Configuration" fieldName="INSTANCE" language="Dune"
+                  fileNames="dune;dune-project;jbuild"
+                  implementationClass="com.reason.ide.files.DuneFileType"/>
         <!-- Binary -->
         <fileType extensions="cmt" name="CMT" fieldName="INSTANCE"
                   implementationClass="com.reason.ide.files.CmtFileType"/>
