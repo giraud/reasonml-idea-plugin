@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -8,22 +9,26 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
-import com.reason.ide.files.DuneFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.reason.dune.DuneConstants.*;
 
 /**
  * Identifies and retrieves modules by framework type (Bs, Esy, Dune).
  * Prefer this class to access {@link ModuleManager} directly.
  */
 public class ORModuleManager {
+
+    private static final Set<String> DUNE_PROJECT_FILES = ImmutableSet.of(
+            DUNE_FILENAME,
+            DUNE_PROJECT_FILENAME,
+            LEGACY_JBUILDER_FILENAME);
 
     private static final Log LOG = Log.create("manager.module");
 
@@ -45,8 +50,32 @@ public class ORModuleManager {
         return findFileInModule(BsConfigJsonFileType.getDefaultFilename(), module);
     }
 
+    /* searches module for files named "dune-project", then "dune", and lastly "jbuild" */
     public static Optional<VirtualFile> findDuneConfigurationFile(@NotNull Module module) {
-        return findFileInModule(DuneFileType.getDefaultFilename(), module);
+        Map<String, VirtualFile> foundFiles = findFilesInModule(DUNE_PROJECT_FILES, module).stream()
+                .collect(Collectors.toMap(VirtualFile::getName, Function.identity()));
+        // first, if no matches were found, return empty...
+        if (foundFiles.isEmpty()) {
+            return Optional.empty();
+        }
+        // then let's see if "dune-project" was found...
+        VirtualFile foundFile = foundFiles.get(DUNE_PROJECT_FILENAME);
+        if (foundFile != null) {
+            return Optional.of(foundFile);
+        }
+        // next, let's check for a "dune" file...
+        foundFile = foundFiles.get(DUNE_FILENAME);
+        if (foundFile != null) {
+            return Optional.of(foundFile);
+        }
+        // finally, a "jbuild" file...
+        foundFile = foundFiles.get(LEGACY_JBUILDER_FILENAME);
+        if (foundFile != null) {
+            return Optional.of(foundFile);
+        }
+        // if we get here, something went wrong...
+        LOG.warn("Something went wrong. Dune file might have been removed while searching?");
+        return Optional.empty();
     }
 
     public static Optional<VirtualFile> findEsyConfigurationFile(@NotNull Module module) {
@@ -146,5 +175,21 @@ public class ORModuleManager {
             }
         }
         return Optional.empty();
+    }
+
+    private static Set<VirtualFile> findFilesInModule(@NotNull Set<String> filenames, @NotNull Module module) {
+        Set<VirtualFile> foundFiles = new HashSet<>(filenames.size());
+        Set<String> remainingFilenames = new HashSet<>(filenames);
+        for (VirtualFile contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
+            for (Iterator<String> iterator = remainingFilenames.iterator(); iterator.hasNext();) {
+                String filename = iterator.next();
+                VirtualFile file = contentRoot.findChild(filename);
+                if (file != null) {
+                    foundFiles.add(file);
+                    iterator.remove();
+                }
+            }
+        }
+        return foundFiles;
     }
 }

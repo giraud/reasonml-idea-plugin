@@ -11,12 +11,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.Set;
 
+import static com.reason.dune.DuneConstants.*;
+
 public class DuneFileType extends LanguageFileType {
 
     public static final FileType INSTANCE = new DuneFileType();
 
     public static Set<String> getDefaultFilenames() {
-        return ImmutableSet.of("dune", "dune-project", "jbuild");
+        return ImmutableSet.of(DUNE_FILENAME, DUNE_PROJECT_FILENAME, LEGACY_JBUILDER_FILENAME);
     }
 
     private DuneFileType() {
