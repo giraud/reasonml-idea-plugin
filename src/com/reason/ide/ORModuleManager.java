@@ -167,6 +167,7 @@ public class ORModuleManager {
         return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
     }
 
+    /* @TODO add support for nested configuration files, i.e. recursive search here */
     private static Optional<VirtualFile> findFileInModule(@NotNull String filename, @NotNull Module module) {
         for (VirtualFile contentRoot : ModuleRootManager.getInstance(module).getContentRoots()) {
             VirtualFile file = contentRoot.findChild(filename);
