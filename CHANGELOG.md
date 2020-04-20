@@ -13,10 +13,11 @@
 ## Unreleased
 
 - :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
-- :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
-- :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
+- :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
+- :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
 - :nail_care: ![o] ![r] Poly-variants can have a different highlighting, color scheme updated
 - :nail_care: ![o] ![r] Use SVG icons
+- :house: [#224](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/224) ![r] Use bsb.exe instead of node.js wrapper in monorepo by [@Coobaha](https://github.com/Coobaha)
 
 ## 0.87.1 - 2020/04/03
 
