@@ -103,19 +103,24 @@ public class BsBinaries {
 			// Try old locations
 			bin = virtualFileManager.findFileByUrl(workingDir + "/lib/" + target + ".exe");
 		}
+
 		if (bin == null) {
 			bin = virtualFileManager.findFileByUrl(workingDir + "/" + target + (SystemInfo.isWindows ? ".cmd" : ""));
 			if (bin != null) {
 				VirtualFile canonicalFile = bin.getCanonicalFile();
 				if (canonicalFile != null) {
 					VirtualFile bsDir = canonicalFile.getParent();
-					bin = virtualFileManager.findFileByUrl(bsDir + "/" + platform + "/" + target + ".exe");
-					if (bin == null) {
-						bin = virtualFileManager.findFileByUrl(bsDir + "/lib/" + target + ".exe");
+					VirtualFile resolvedBin = virtualFileManager.findFileByUrl(bsDir + "/" + platform + "/" + target + ".exe");
+					if (resolvedBin == null) {
+                        resolvedBin = virtualFileManager.findFileByUrl(bsDir + "/lib/" + target + ".exe");
 					}
+					if (resolvedBin != null) {
+					    bin = resolvedBin;
+                    }
 				}
 			}
 		}
+
 		return bin;
 	}
 }
