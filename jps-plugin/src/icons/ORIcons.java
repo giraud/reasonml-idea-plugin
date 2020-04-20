@@ -17,7 +17,7 @@ public class ORIcons {
     // TOOL WINDOW
 
     public static final Icon BUCKLESCRIPT_TOOL = getIcon("/icons/bucklescriptTool.svg");
-    public static final Icon DUNE_TOOL = getIcon("/icons/dune-tool.png");
+    public static final Icon DUNE_TOOL = getIcon("/icons/duneTool.svg");
     public static final Icon ESY_TOOL = getIcon("/icons/esyTool.svg");
 
     // GUTTER
@@ -27,7 +27,7 @@ public class ORIcons {
 
     // OTHER
 
-    public static final Icon DUNE = getIcon("/icons/dune.png");
+    public static final Icon DUNE = getIcon("/icons/duneLogo.svg");
     public static final Icon ESY = getIcon("/icons/esy.svg");
 
     public static final Icon BS_FILE = getIcon("/icons/bsFile.svg");
