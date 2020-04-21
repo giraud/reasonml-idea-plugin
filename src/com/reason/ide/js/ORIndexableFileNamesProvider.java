@@ -1,6 +1,10 @@
 package com.reason.ide.js;
 
+import com.google.common.collect.ImmutableList;
 import com.intellij.lang.javascript.modules.NodeModulesIndexableFileNamesProvider;
+import com.reason.ide.files.BsConfigJsonFileType;
+import com.reason.ide.files.DuneFileType;
+import com.reason.ide.files.EsyPackageJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -8,16 +12,21 @@ import java.util.List;
 
 public class ORIndexableFileNamesProvider extends NodeModulesIndexableFileNamesProvider {
 
-    private static final List<String> EXTENSIONS = new ArrayList<>(4);
-    private static final List<String> FILES = new ArrayList<>(1);
+    private static final List<String> EXTENSIONS = extensions();
+    private static final List<String> FILES = files();
 
-    static {
-        EXTENSIONS.add("ml");
-        EXTENSIONS.add("mli");
-        EXTENSIONS.add("re");
-        EXTENSIONS.add("rei");
-        FILES.add("bsconfig.json");
+    private static List<String> extensions() {
+        return ImmutableList.of("ml", "mli", "re", "rei");
     }
+
+    private static List<String> files() {
+        // configuration files need to be indexed to determine project types
+        ArrayList<String> files = new ArrayList<>();
+        files.add(BsConfigJsonFileType.getDefaultFilename());
+        files.add(EsyPackageJsonFileType.getDefaultFilename());
+        files.addAll(DuneFileType.getDefaultFilenames());
+        return ImmutableList.copyOf(files);
+    };
 
     @NotNull
     @Override
