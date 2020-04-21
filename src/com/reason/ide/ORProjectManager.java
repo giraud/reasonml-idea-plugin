@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -28,44 +29,39 @@ public class ORProjectManager {
             LEGACY_JBUILDER_FILENAME
     );
 
-    private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR = (left, right) -> {
-        // "dune-project" should have highest priority
-        if (left.getName().equals(DUNE_FILENAME) && !right.getName().equals(DUNE_FILENAME)) {
-            return 1;
-        }
-        // "jbuild" should have lowest priority
-        if (left.getName().equals(LEGACY_JBUILDER_FILENAME) && !right.getName().equals(LEGACY_JBUILDER_FILENAME)) {
-            return -1;
-        }
-        // otherwise, tie
-        return 0;
-    };
+    private static final Map<String, Integer> DUNE_PROJECT_FILE_PRIORITY = ImmutableMap.of(
+            DUNE_PROJECT_FILENAME, 2,
+            DUNE_FILENAME, 1,
+            LEGACY_JBUILDER_FILENAME, 0
+    );
+
+    private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR = (left, right) ->
+            DUNE_PROJECT_FILE_PRIORITY.get(right.getName()) - DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
 
     private static final Log LOG = Log.create("manager.project");
 
     private ORProjectManager() {}
 
     public static boolean isBsProject(@NotNull Project project) {
-        return findBsConfigurationFiles(project).isEmpty();
+        return !findBsConfigurationFiles(project).isEmpty();
     }
 
     public static boolean isDuneProject(@NotNull Project project) {
-        return findDuneConfigurationFiles(project).isEmpty();
+        return !findDuneConfigurationFiles(project).isEmpty();
     }
 
     public static boolean isEsyProject(@NotNull Project project) {
-        return findEsyConfigurationFiles(project).isEmpty();
+        return !findEsyConfigurationFiles(project).isEmpty();
     }
 
     public static Set<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
         return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project);
     }
 
-    public static SortedSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
-        Set<VirtualFile> duneFiles = findFilesInProject(DUNE_PROJECT_FILES, project);
-        SortedSet<VirtualFile> sortedFiles = new TreeSet<>(DUNE_PROJECT_FILE_COMPARATOR);
-        sortedFiles.addAll(duneFiles);
-        return sortedFiles;
+    public static LinkedHashSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
+        return findFilesInProject(DUNE_PROJECT_FILES, project).stream()
+                .sorted(DUNE_PROJECT_FILE_COMPARATOR)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static Set<VirtualFile> findEsyConfigurationFiles(@NotNull Project project) {
@@ -78,8 +74,8 @@ public class ORProjectManager {
         return findContentRoots(project, ORProjectManager::findBsConfigurationFiles);
     }
 
-    public static Set<VirtualFile> findDuneContentRoots(@NotNull Project project) {
-        return findContentRoots(project, ORProjectManager::findDuneConfigurationFiles);
+    public static LinkedHashSet<VirtualFile> findDuneContentRoots(@NotNull Project project) {
+        return findContentRootsPreserveOrder(project, ORProjectManager::findDuneConfigurationFiles);
     }
 
     public static Set<VirtualFile> findEsyContentRoots(@NotNull Project project) {
@@ -136,5 +132,12 @@ public class ORProjectManager {
         return findConfigurationFiles.apply(project).stream()
                 .map(VirtualFile::getParent)
                 .collect(Collectors.toSet());
+    }
+
+    private static LinkedHashSet<VirtualFile> findContentRootsPreserveOrder(@NotNull Project project,
+            Function<Project, LinkedHashSet<VirtualFile>> findConfigurationFiles) {
+        return findConfigurationFiles.apply(project).stream()
+                .map(VirtualFile::getParent)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }
