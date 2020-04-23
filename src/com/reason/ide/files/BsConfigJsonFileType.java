@@ -1,7 +1,7 @@
 package com.reason.ide.files;
 
 import com.intellij.json.JsonFileType;
-import com.reason.Icons;
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +30,6 @@ public class BsConfigJsonFileType extends JsonFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.BS_FILE;
+        return ORIcons.BUCKLESCRIPT_TOOL;
     }
 }

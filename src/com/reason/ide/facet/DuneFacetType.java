@@ -7,7 +7,7 @@ import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
-import com.reason.Icons;
+import icons.ORIcons;
 
 public class DuneFacetType extends FacetType<DuneFacet, DuneFacetConfiguration> {
 
@@ -34,6 +34,6 @@ public class DuneFacetType extends FacetType<DuneFacet, DuneFacetConfiguration> 
 
     @Override
     public Icon getIcon() {
-        return Icons.DUNE;
+        return ORIcons.DUNE;
     }
 }

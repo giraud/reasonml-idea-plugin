@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Icons;
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +54,7 @@ public class PsiClassField extends ASTWrapperPsiElement implements NavigatablePs
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.VAL;
+                return ORIcons.VAL;
             }
         };
     }

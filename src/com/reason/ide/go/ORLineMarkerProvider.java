@@ -11,7 +11,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiExternal;
@@ -39,7 +39,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     PsiElement relatedSymbol = PsiTreeUtil.findChildOfType(relatedType, PsiLowerSymbol.class);
                     if (symbol != null && relatedSymbol != null) {
                         result.add(NavigationGutterIconBuilder.
-                                create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
+                                create(containingFile.isInterface() ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING).
                                 setAlignment(GutterIconRenderer.Alignment.RIGHT).
                                 setTargets(Collections.singleton(relatedSymbol.getFirstChild())).
                                 createLineMarkerInfo(symbol.getFirstChild()));
@@ -73,7 +73,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     String tooltip = GutterIconTooltipHelper
                             .composeText(new PsiElement[]{psiRelatedFile}, "", "Implements method <b>" + nameIdentifier.getText() + "</b> in <b>{0}</b>");
                     result.add(NavigationGutterIconBuilder.
-                            create(containingFile.isInterface() ? Icons.IMPLEMENTED : Icons.IMPLEMENTING).
+                            create(containingFile.isInterface() ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING).
                             setTooltipText(tooltip).
                             setAlignment(GutterIconRenderer.Alignment.RIGHT).
                             setTargets(Collections.singleton(nameIdentifier instanceof PsiLowerSymbol ? nameIdentifier.getFirstChild() : nameIdentifier)).

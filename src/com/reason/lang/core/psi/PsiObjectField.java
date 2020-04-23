@@ -53,7 +53,7 @@ public class PsiObjectField extends PsiToken<ORTypes> implements PsiLanguageConv
                     valueAsText = value.getText();
                 }
 
-                convertedText = "\"" + nameIdentifier.getText() + "\": " + valueAsText;
+                convertedText = "" + nameIdentifier.getText() + ":" + valueAsText;
             }
         }
 

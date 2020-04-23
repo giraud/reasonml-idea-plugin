@@ -226,6 +226,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseLt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (!state.isCurrentResolution(whileConditionLoop)) {
+            // |> < <| .. > ..
             state.add(markScope(builder, object, m_types.C_OBJECT, m_types.LT)).
                     advance().
                     add(mark(builder, object, objectField, m_types.C_OBJECT_FIELD));

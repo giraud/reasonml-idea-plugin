@@ -12,7 +12,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
@@ -306,7 +306,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.MODULE;
+                return ORIcons.MODULE;
             }
         };
     }

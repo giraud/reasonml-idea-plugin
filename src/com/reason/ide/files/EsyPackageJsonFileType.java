@@ -1,11 +1,10 @@
 package com.reason.ide.files;
 
+import javax.swing.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.fileTypes.FileType;
-import com.reason.Icons;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import icons.ORIcons;
 
 public class EsyPackageJsonFileType extends JsonFileType {
 
@@ -21,6 +20,6 @@ public class EsyPackageJsonFileType extends JsonFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.ESY_FILE;
+        return ORIcons.ESY_FILE;
     }
 }

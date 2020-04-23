@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.LayeredIcon;
-import com.reason.Icons;
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class ReplConfigurationFactory extends ConfigurationFactory {
     @NotNull
     @Override
     public Icon getIcon() {
-        return LayeredIcon.create(Icons.OCL_FILE, Icons.OVERLAY_EXECUTE);
+        return LayeredIcon.create(ORIcons.OCL_FILE, ORIcons.OVERLAY_EXECUTE);
     }
 
     @NotNull

@@ -13,9 +13,14 @@
 ## Unreleased
 
 - :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
-- :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
-- :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
+- :bug: [#231](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/231) Fix ClassCastException when reading bsconfig.json
+- :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
+- :nail_care: [#219](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/219) ![o] ![r] Added file type support for Esy by [@pooch](https://github.com/JohnPucciarelli)
 - :nail_care: ![o] ![r] Poly-variants can have a different highlighting, color scheme updated
+- :nail_care: ![o] ![r] Use SVG icons
+- :house: [#224](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/224) ![r] Use bsb.exe instead of node.js wrapper in monorepo by [@Coobaha](https://github.com/Coobaha)
+- :house: [#221](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/221) ![o] ![r] Compilers have separate tool windows by [@pooch](https://github.com/JohnPucciarelli) 
+- :house: Use rincewind@0.8
 
 ## 0.87.1 - 2020/04/03
 

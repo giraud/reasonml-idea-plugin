@@ -9,6 +9,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
+import com.reason.Log;
+import com.reason.CompilerType;
 import com.reason.ORNotification;
 import com.reason.bs.Bucklescript;
 import com.reason.dune.DuneCompiler;
@@ -21,6 +23,8 @@ import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENE
 import static com.intellij.notification.NotificationType.ERROR;
 
 public class ORCompilerManager {
+
+    private static final Log LOG = Log.create("manager.compiler");
 
     private static final Compiler DUMMY_COMPILER = new Compiler() {
         @Nullable
@@ -37,6 +41,11 @@ public class ORCompilerManager {
         @Override
         public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
             //nothing
+        }
+
+        @Override
+        public CompilerType getType() {
+            return CompilerType.DUMMY;
         }
     };
 

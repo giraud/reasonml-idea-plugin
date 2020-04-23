@@ -4,7 +4,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.ide.highlight.DuneSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +27,7 @@ public class DuneColorSettingsPage implements ColorSettingsPage {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.DUNE_FILE;
+        return ORIcons.DUNE_FILE;
     }
 
     @NotNull

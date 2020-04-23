@@ -1,13 +1,5 @@
 package com.reason;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
@@ -17,6 +9,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Platform {
 
@@ -110,6 +112,7 @@ public class Platform {
 
     @Nullable
     public static VirtualFile findProjectBsconfig(@NotNull Project project) {
+        // @TODO use `BsConfigFile.isBsConfig(file)`
         VirtualFile contentRoot = findORPackageJsonContentRoot(project);
         return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
     }

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.ORUtil;
@@ -371,7 +371,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return isFunction() ? Icons.FUNCTION : Icons.LET;
+                return isFunction() ? ORIcons.FUNCTION : ORIcons.LET;
             }
         };
     }

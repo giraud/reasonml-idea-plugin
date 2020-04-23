@@ -2,14 +2,22 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.18"
 }
 
-def pluginVersion = '0.87.1'
-def ideaVersion = '2020.1-EAP1'
+def pluginVersion = '0.88.0'
+def ideaVersion = '2020.1'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>214 - Infinite indexing</li>
+            <li>You can easily download OCaml SDK sources in SDK platform settings</li>
+            <li>#231 - Fix ClassCastException when reading bsconfig.json</li>
+            <li>#220 - Added BuckleScript file type and icon</li> 
+            <li>#219 - Added file type support for Esy</li>
+            <li>Poly-variants can have a different highlighting, color scheme updated</li>
+            <li>Use SVG icons</li>
+            <li>#224 - Use bsb.exe instead of node.js wrapper in monorepo</li>
+            <li>#221 - Compilers have separate tool windows</li> 
+            <li>Use rincewind@0.8</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

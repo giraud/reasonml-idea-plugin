@@ -14,7 +14,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PsiIconUtil;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.Log;
 import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
@@ -58,7 +58,7 @@ public class FreeExpressionCompletionProvider {
             resultSet.addElement(LookupElementBuilder.
                     create(namespace).
                     withTypeText("Generated namespace").
-                    withIcon(Icons.VIRTUAL_NAMESPACE));
+                    withIcon(ORIcons.VIRTUAL_NAMESPACE));
         }
 
         // Add file modules (that are not a component and without namespaces)
@@ -120,7 +120,7 @@ public class FreeExpressionCompletionProvider {
                     for (PsiElement deconstructedElement : ((PsiLet) item).getDeconstructedElements()) {
                         resultSet.addElement(LookupElementBuilder.create(deconstructedElement.getText()).
                                 withTypeText(PsiSignatureUtil.getSignature(item, element.getLanguage())).
-                                withIcon(Icons.LET));
+                                withIcon(ORIcons.LET));
                     }
                 } else {
                     PsiNamedElement expression = (PsiNamedElement) item;

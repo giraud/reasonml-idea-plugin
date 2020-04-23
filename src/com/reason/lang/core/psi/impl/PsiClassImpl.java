@@ -9,7 +9,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiClassConstructor;
@@ -109,7 +109,7 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return Icons.CLASS;
+                return ORIcons.CLASS;
             }
         };
     }

@@ -1,7 +1,7 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +36,7 @@ public class OclFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.OCL_FILE;
+        return ORIcons.OCL_FILE;
     }
 
     @NotNull

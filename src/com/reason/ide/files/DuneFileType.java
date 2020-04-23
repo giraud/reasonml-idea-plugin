@@ -1,16 +1,25 @@
 package com.reason.ide.files;
 
+import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.Icons;
 import com.reason.lang.dune.DuneLanguage;
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Set;
+
+import static com.reason.dune.DuneConstants.*;
 
 public class DuneFileType extends LanguageFileType {
+
     public static final FileType INSTANCE = new DuneFileType();
+
+    public static Set<String> getDefaultFilenames() {
+        return ImmutableSet.of(DUNE_FILENAME, DUNE_PROJECT_FILENAME, LEGACY_JBUILDER_FILENAME);
+    }
 
     private DuneFileType() {
         super(DuneLanguage.INSTANCE);
@@ -19,7 +28,7 @@ public class DuneFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Dune configuration";
+        return "Dune Configuration";
     }
 
     @NotNull
@@ -37,6 +46,6 @@ public class DuneFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return Icons.DUNE_FILE;
+        return ORIcons.DUNE_FILE;
     }
 }

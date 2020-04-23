@@ -8,7 +8,7 @@ import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.LayeredIcon;
-import com.reason.Icons;
+import icons.ORIcons;
 import com.reason.Log;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagStart;
@@ -57,7 +57,7 @@ public class JsxAttributeCompletionProvider {
                 String attributeName = attribute.getName();
                 if (attributeName != null && !usedNames.contains(attributeName)) {
                     boolean mandatory = attribute.isMandatory();
-                    Icon icon = mandatory ? LayeredIcon.create(Icons.ATTRIBUTE, Icons.OVERLAY_MANDATORY) : Icons.ATTRIBUTE;
+                    Icon icon = mandatory ? LayeredIcon.create(ORIcons.ATTRIBUTE, ORIcons.OVERLAY_MANDATORY) : ORIcons.ATTRIBUTE;
                     resultSet.addElement(LookupElementBuilder.
                             create(attributeName).
                             withBoldness(mandatory).

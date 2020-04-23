@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.WeakList;
+import com.reason.Compiler;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightUpdateQueue;
 import com.reason.ide.console.CliType;
@@ -115,7 +116,19 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         public void propertyChange(@NotNull PropertyChangeEvent evt) {
             if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
                 // Document is saved, run the compiler !!
-                ORCompilerManager.getInstance().getCompiler(m_project).run(m_file, CliType.standard, () -> m_updateQueue.queue(m_project, m_document));
+                Compiler compiler = ORCompilerManager.getInstance().getCompiler(m_project);
+                switch (compiler.getType()) {
+                    case BS:
+                        compiler.run(m_file, CliType.Bs.MAKE, () -> m_updateQueue.queue(m_project, m_document));
+                        break;
+                    case DUNE:
+                        compiler.run(m_file, CliType.Dune.BUILD, () -> m_updateQueue.queue(m_project, m_document));
+                        break;
+                    case ESY:
+                        compiler.run(m_file, CliType.Esy.BUILD, () -> m_updateQueue.queue(m_project, m_document));
+                        break;
+                }
+
 
                 //() -> ApplicationManager.getApplication().runReadAction(() -> {
                 //InferredTypesService.clearTypes(m_project, m_file);
