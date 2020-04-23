@@ -34,14 +34,10 @@ public class ORCompilerManager {
         }
 
         @Override
-        public void refresh(@NotNull VirtualFile bsconfigFile) {
-            //nothing
-        }
+        public void refresh(@NotNull VirtualFile bsconfigFile) {}
 
         @Override
-        public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-            //nothing
-        }
+        public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {}
 
         @Override
         public CompilerType getType() {
