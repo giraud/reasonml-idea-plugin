@@ -9,13 +9,19 @@ import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.BsConfigJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public class BsConfigJson {
 
     private BsConfigJson() {}
 
     public static boolean isBsConfigJson(@NotNull VirtualFile virtualFile) {
-        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-        return createFilePattern().accepts(fileContent);
+        try {
+            FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+            return createFilePattern().accepts(fileContent);
+        } catch (IOException e) {
+            throw new RuntimeException(e); // TODO?
+        }
     }
 
     public static FileType getFileType() {

@@ -48,7 +48,7 @@ allprojects {
     intellij {
         pluginName 'reasonml-plugin-idea'
         type 'IU'
-        version '201.6668.13-EAP-SNAPSHOT' // https://www.jetbrains.com/intellij-repository/releases
+        version '201.6668.121' // https://www.jetbrains.com/intellij-repository/releases
         updateSinceUntilBuild = false
         plugins = ['java',
                    'JavaScriptLanguage',
