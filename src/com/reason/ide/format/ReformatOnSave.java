@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.reason.bs.Bucklescript;
+import com.reason.bs.BsCompiler;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.settings.ReasonSettings;
 
@@ -30,7 +30,7 @@ public class ReformatOnSave {
                 String format = ReformatUtil.getFormat(file);
                 if (format != null) {
                     ServiceManager.
-                            getService(project, Bucklescript.class).
+                            getService(project, BsCompiler.class).
                             refmt(virtualFile, FileHelper.isInterface(file.getFileType()), format, document);
                 }
             }

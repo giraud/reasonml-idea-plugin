@@ -54,6 +54,10 @@ public class ORProjectManager {
         return !findEsyConfigurationFiles(project).isEmpty();
     }
 
+    public static Optional<VirtualFile> findFirstBsConfigurationFile(@NotNull Project project) {
+        return findFirst(findBsConfigurationFiles(project));
+    }
+
     public static Set<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
         return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project);
     }
@@ -70,7 +74,8 @@ public class ORProjectManager {
                 .collect(Collectors.toSet());
     }
 
-    public static Set<VirtualFile> findBsContentRoots(@NotNull Project project) {
+     // * @TODO this MUST be sorted. should return root config first
+    public static LinkedHashSet<VirtualFile> findBsContentRoots(@NotNull Project project) {
         return findContentRoots(project, ORProjectManager::findBsConfigurationFiles);
     }
 
@@ -95,30 +100,16 @@ public class ORProjectManager {
         return new HashSet<>(virtualFilesByName);
     }
 
-    /**
-     * @deprecated there could be more than 1 BuckleScript configurations in a project.
-     */
-    @Deprecated
+     // @TODO this should be sorted, ancestors -> children
     public static Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
-        LOG.warn("Using deprecated method 'findFirstBsContentRoot'.");
         return findFirst(findBsContentRoots(project));
     }
 
-    /**
-     * @deprecated there could be more than 1 Dune configurations in a project.
-     */
-    @Deprecated
     public static Optional<VirtualFile> findFirstDuneContentRoot(@NotNull Project project) {
-        LOG.warn("Using deprecated method 'findFirstDuneContentRoot'.");
         return findFirst(findDuneContentRoots(project));
     }
 
-    /**
-     * @deprecated there could be more than 1 Esy configurations in a project.
-     */
-    @Deprecated
     public static Optional<VirtualFile> findFirstEsyContentRoot(@NotNull Project project) {
-        LOG.warn("Using deprecated method 'findFirstEsyContentRoot'.");
         return findFirst(findEsyContentRoots(project));
     }
 

@@ -1,25 +1,24 @@
 package com.reason.ide.search.index;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.indexing.DataIndexer;
-import com.intellij.util.indexing.FileBasedIndex;
-import com.intellij.util.indexing.FileContent;
-import com.intellij.util.indexing.ID;
-import com.intellij.util.indexing.ScalarIndexExtension;
+import com.intellij.util.indexing.*;
 import com.intellij.util.io.EnumeratorStringDescriptor;
 import com.intellij.util.io.KeyDescriptor;
 import com.reason.Log;
-import com.reason.Platform;
 import com.reason.StringUtil;
 import com.reason.bs.BsConfig;
 import com.reason.bs.BsConfigReader;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.DuneFileType;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiStanza;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
@@ -60,8 +59,8 @@ public class NamespaceIndex extends ScalarIndexExtension<String> {
             } else {
                 BsConfig configFile = BsConfigReader.read(dataFile);
                 if (configFile.hasNamespace()) {
-                    VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(inputData.getProject());
-                    if (baseRoot != null) {
+                    Optional<VirtualFile> baseRoot = ORProjectManager.findFirstBsContentRoot(inputData.getProject());
+                    if (baseRoot.isPresent()) {
                         String namespace = configFile.getNamespace();
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Indexing " + dataFile + " with namespace " + namespace);

@@ -72,7 +72,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
     public void initConfig(@NotNull Project project) {
         LOG.debug("Refresh bsconfig");
 
-        Bucklescript bucklescript = ServiceManager.getService(project, Bucklescript.class);
+        BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
 
         // Read build.ninja
         m_ninja = bucklescript.readNinjaBuild(m_contentRoot);

@@ -6,6 +6,9 @@ import com.reason.ide.console.CliType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+import java.util.Set;
+
 public interface Compiler {
 
     @FunctionalInterface
@@ -13,8 +16,9 @@ public interface Compiler {
         void run();
     }
 
-    @Nullable
-    VirtualFile findContentRoot(@NotNull Project project);
+    Optional<VirtualFile> findFirstContentRoot(@NotNull Project project);
+
+    Set<VirtualFile> findContentRoots(@NotNull Project project);
 
     void refresh(@NotNull VirtualFile configFile);
 

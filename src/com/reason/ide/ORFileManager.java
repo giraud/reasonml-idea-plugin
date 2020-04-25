@@ -10,7 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.StringUtil;
-import com.reason.bs.Bucklescript;
+import com.reason.bs.BsCompiler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +51,7 @@ public class ORFileManager {
     @NotNull
     public static String toRelativeSourceName(@NotNull Project project, @NotNull VirtualFile sourceFile, @NotNull Path relativePath) {
         String sourcePath = relativePath.toString();
-        String namespace = ServiceManager.getService(project, Bucklescript.class).getNamespace(sourceFile);
+        String namespace = ServiceManager.getService(project, BsCompiler.class).getNamespace(sourceFile);
         if (!namespace.isEmpty()) {
             sourcePath = sourcePath.replace("-" + StringUtil.toFirstUpper(namespace), "");
         }
