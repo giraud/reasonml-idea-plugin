@@ -1,6 +1,5 @@
 package com.reason.bs;
 
-import java.util.*;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -8,7 +7,7 @@ import com.reason.Compiler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface Bucklescript extends Compiler {
+public interface BsCompiler extends Compiler {
 
     boolean isDependency(@Nullable VirtualFile file);
 

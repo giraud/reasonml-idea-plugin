@@ -11,9 +11,11 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ObjectUtils;
 import com.reason.*;
 import com.reason.Compiler;
 import com.reason.dune.DuneOutputListener;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +47,10 @@ public class EsyProcess implements CompilerProcess {
 
   private static final Runnable SHOW_ESY_NOT_FOUND_NOTIFICATION =
       () -> Notifications.Bus.notify(new ORNotification("Esy Missing", "Unable to find esy executable in system PATH.", ERROR));
+
+  private static final Runnable SHOW_ESY_PROJECT_ROOT_NOT_FOUND_NOTIFICATION =
+          () -> Notifications.Bus.notify(new ORNotification("Missing Project Configuration File",
+                  "Unable to find esy package.json. Has it been created?", ERROR));
 
   private static final Consumer<Exception> SHOW_EXEC_EXCEPTION_NOTIFICATION =
       (e) -> Notifications.Bus.notify(new ORNotification("Esy Exception", "Failed to execute esy command.\n" + e.getMessage(), ERROR));
@@ -106,7 +112,6 @@ public class EsyProcess implements CompilerProcess {
 
   private EsyProcess(@NotNull Project project) {
     FileSystem fileSystem = FileSystems.getDefault();
-    VirtualFile esyContentRoot = Platform.findOREsyContentRoot(project);
     Path esyExecutable = findExecutableInPath(ESY_EXECUTABLE_NAME, System.getenv("PATH"))
         .orElseThrow(() -> {
           SHOW_ESY_NOT_FOUND_NOTIFICATION.run();
@@ -114,7 +119,7 @@ public class EsyProcess implements CompilerProcess {
         });
     this.project = project;
     this.outputListener = new DuneOutputListener(project, this);
-    this.workingDir = fileSystem.getPath(esyContentRoot.getPath());
+    this.workingDir = findOrDefaultEsyContentRoot(project);
     this.esyExecutable = esyExecutable;
     this.redirectErrors = true;
     this.started = new AtomicBoolean(false);
@@ -249,13 +254,11 @@ public class EsyProcess implements CompilerProcess {
       return Optional.empty();
     }
 
-    VirtualFile esyContentRoot = Platform.findOREsyContentRoot(project);
-
     String duneCommand = cliType == CliType.Dune.CLEAN ? "clean" : "build"; // @TODO support all actions
 
     GeneralCommandLine cli = new GeneralCommandLine(duneExecutable.get().toString(), duneCommand);
     cli.withEnvironment(getEsyEnvironment());
-    cli.setWorkDirectory(esyContentRoot.getPath());
+    cli.setWorkDirectory(workingDir.toString());
     cli.setRedirectErrorStream(true);
     return Optional.of(cli);
   }
@@ -275,5 +278,17 @@ public class EsyProcess implements CompilerProcess {
     }
     File exeFile = PathEnvironmentVariableUtil.findInPath(filename, shellPath, null);
     return exeFile == null ? Optional.empty() : Optional.of(exeFile.toPath());
+  }
+
+  // attempt to find esy package.json. if it's missing, show warning and return the project's root directory
+  private static Path findOrDefaultEsyContentRoot(@NotNull Project project) {
+    FileSystem fileSystem = FileSystems.getDefault();
+    Optional<VirtualFile> esyContentRoot = ORProjectManager.findFirstEsyContentRoot(project);
+    if (esyContentRoot.isPresent()) {
+      return fileSystem.getPath(esyContentRoot.get().getPath());
+    }
+    SHOW_ESY_PROJECT_ROOT_NOT_FOUND_NOTIFICATION.run();
+    String defaultPath = ObjectUtils.notNull(project.getBasePath(), "");
+    return fileSystem.getPath(defaultPath);
   }
 }

@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.*;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +42,10 @@ public final class BsProcess implements CompilerProcess {
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
     public BsProcess(@NotNull Project project) {
-        m_project = project;
-        create(Platform.findProjectBsconfig(project), CliType.Bs.MAKE, null);
+        // no file is active yet, default working directory to the top-level bsconfig.json file
+        VirtualFile firstBsContentRoot = ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
+        create(firstBsContentRoot, CliType.Bs.MAKE, null);
+        this.m_project = project;
     }
 
     // Wait for the tool window to be ready before starting the process
