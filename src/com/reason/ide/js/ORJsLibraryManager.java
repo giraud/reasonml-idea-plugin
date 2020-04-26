@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.pointers.VirtualFilePointerListener;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager;
 import com.intellij.webcore.libraries.ScriptingLibraryModel;
 import com.reason.Log;
-import com.reason.Platform;
 import com.reason.bs.BsConfig;
 import com.reason.bs.BsConfigReader;
 import com.reason.ide.ORProjectManager;
@@ -35,7 +34,8 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
         JSLibraryManager jsLibraryManager = JSLibraryManager.getInstance(project);
 
         Optional<VirtualFile> bsConfigFileOptional = ORProjectManager.findFirstBsConfigurationFile(project);
-        if (bsConfigFile != null) {
+        if (bsConfigFileOptional.isPresent()) {
+            VirtualFile bsConfigFile = bsConfigFileOptional.get();
             String baseDir = "file://" + bsConfigFile.getParent().getPath() + "/node_modules/";
             List<VirtualFile> sources = new ArrayList<>(readBsConfigDependencies(project, baseDir, bsConfigFile));
 
