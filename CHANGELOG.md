@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.88 - 2020/04/23
+
 - :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
 - :bug: [#231](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/231) Fix ClassCastException when reading bsconfig.json
 - :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
