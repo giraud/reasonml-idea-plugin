@@ -13,6 +13,7 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.facet.DuneFacet;
 import icons.ORIcons;
 import org.jetbrains.annotations.Nls;
@@ -47,6 +48,11 @@ public class DuneToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
+        // if config is present, show the tool window
+        if (ORProjectManager.isDuneProject(project)) {
+            return true;
+        }
+        // if dune facet explicitly setup, also show the window
         ModuleManager moduleManager = ModuleManager.getInstance(project);
         Module[] modules = moduleManager.getModules();
         for (Module module : modules) {

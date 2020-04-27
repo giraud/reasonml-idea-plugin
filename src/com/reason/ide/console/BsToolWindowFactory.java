@@ -10,6 +10,7 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.reason.ide.ORProjectManager;
 import icons.ORIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +44,7 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     @Override
     public boolean shouldBeAvailable(@NotNull Project project) {
-        // @TODO TEMPORARY - replace with ORModuleManager::findFirstBsModule
-        return true;
+        return ORProjectManager.isBsProject(project);
     }
 
     @Override

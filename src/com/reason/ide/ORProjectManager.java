@@ -47,7 +47,7 @@ public class ORProjectManager {
     }
 
     public static boolean isDuneProject(@NotNull Project project) {
-        return !findDuneConfigurationFiles(project).isEmpty();
+        return !isEsyProject(project) && !findDuneConfigurationFiles(project).isEmpty();
     }
 
     public static boolean isEsyProject(@NotNull Project project) {
