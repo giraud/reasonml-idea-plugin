@@ -2,7 +2,7 @@ package com.reason.ide.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -11,10 +11,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.reason.Compiler;
-import com.reason.bs.BsCompiler;
-import com.reason.bs.BsConstants;
-import com.reason.ide.ORCompilerManager;
+import com.reason.compiler.Compiler;
+import com.reason.compiler.CompilerManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -27,31 +25,48 @@ abstract class CompilerAction extends DumbAwareAction {
     }
 
     void doAction(@NotNull Project project, @NotNull CliType cliType) {
-        Compiler compiler = ORCompilerManager.getInstance().getCompiler(project);
-
-        // Try to detect the current active editor
-        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-        if (editor == null) {
-            ConsoleView console = ServiceManager.getService(project, BsCompiler.class).getConsoleView();
-            if (console != null) {
-                Optional<VirtualFile> baseDirectoryOptional = compiler.findFirstContentRoot(project);
-                if (!baseDirectoryOptional.isPresent()) {
-                    console.print("Can't find content root\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                } else {
-                    VirtualFile baseDirectory = baseDirectoryOptional.get();
-                    console.print("No active text editor found, using root directory " +
-                                    baseDirectory.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                    VirtualFile bsConfig = baseDirectory.findChild(BsConstants.BS_CONFIG_FILENAME);
-                    assert bsConfig != null;
-                    compiler.run(bsConfig, cliType, null);
-                }
-            }
-        } else {
-            Document document = editor.getDocument();
-            PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-            if (psiFile != null) {
-                compiler.run(psiFile.getVirtualFile(), cliType, null);
-            }
+        Optional<Editor> editorOptional = getActiveEditor(project);
+        if (editorOptional.isPresent()) {
+            compileFile(project, editorOptional.get(), cliType);
+            return;
         }
+        compileDirectory(project, cliType);
+    }
+
+    private static void compileDirectory(@NotNull Project project, CliType cliType) {
+        CompilerManager compilerManager = CompilerManager.getInstance(project);
+        Compiler compiler = compilerManager.getCompiler(cliType);
+        ConsoleView consoleView = compiler.getConsoleView();
+        if (consoleView == null) {
+            return;
+        }
+        Optional<VirtualFile> baseDir = compiler.findContentRoot();
+        if (!baseDir.isPresent()) {
+            consoleView.print("Can't find content root\n", ConsoleViewContentType.NORMAL_OUTPUT);
+        } else {
+            consoleView.print("No active text editor found, using root directory " + baseDir.get().getPath() + "\n",
+                    ConsoleViewContentType.NORMAL_OUTPUT);
+            compiler.run(baseDir.get(), cliType, null);
+        }
+    }
+
+    private static void compileFile(@NotNull Project project, @NotNull Editor editor, @NotNull CliType cliType) {
+        Optional<PsiFile> activeFile = getActiveFile(project, editor);
+        if (activeFile.isPresent()) {
+            CompilerManager compilerManager = CompilerManager.getInstance(project);
+            Compiler compiler = compilerManager.getCompiler(cliType);
+            compiler.run(activeFile.get().getVirtualFile(), cliType, null);
+        }
+    }
+
+    private static Optional<PsiFile> getActiveFile(@NotNull Project project, @NotNull Editor editor) {
+        Document document = editor.getDocument();
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        return Optional.ofNullable(psiDocumentManager.getPsiFile(document));
+    }
+
+    private static Optional<Editor> getActiveEditor(Project project) {
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        return Optional.ofNullable(fileEditorManager.getSelectedTextEditor());
     }
 }
