@@ -59,7 +59,7 @@ public class BsCompilerImpl implements BsCompiler {
     @Override
     @Deprecated
     public Optional<VirtualFile> findFirstContentRoot(@NotNull Project project) {
-        return ORProjectManager.findFirstEsyContentRoot(project);
+        return ORProjectManager.findFirstBsContentRoot(project);
     }
 
     @Override
