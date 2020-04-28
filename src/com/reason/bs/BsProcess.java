@@ -31,7 +31,6 @@ public final class BsProcess implements CompilerProcess {
 
     private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
-    @NotNull
     private final Project m_project;
 
     @Nullable
@@ -42,10 +41,10 @@ public final class BsProcess implements CompilerProcess {
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
 
     public BsProcess(@NotNull Project project) {
+        this.m_project = project;
         // no file is active yet, default working directory to the top-level bsconfig.json file
         VirtualFile firstBsContentRoot = ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
         create(firstBsContentRoot, CliType.Bs.MAKE, null);
-        this.m_project = project;
     }
 
     // Wait for the tool window to be ready before starting the process
