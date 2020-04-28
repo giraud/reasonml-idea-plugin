@@ -64,9 +64,19 @@ public class ORProjectManager {
     }
 
     public static LinkedHashSet<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
-        return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project).stream()
+        LinkedHashSet<VirtualFile> configurationFiles =
+                findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project).stream()
                 .sorted(FILE_DEPTH_COMPARATOR)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        // @TODO vvv REMOVE vvv
+        String configPaths = configurationFiles.stream()
+                .map(VirtualFile::getPath)
+                .collect(Collectors.joining(",\n"));
+        LOG.error("Configuration files = " + configPaths);
+        // @TODO ^^^ REMOVE ^^^
+
+        return configurationFiles;
     }
 
     public static LinkedHashSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
