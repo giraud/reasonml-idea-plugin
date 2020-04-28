@@ -40,8 +40,8 @@ public class ORProjectManager {
     private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR = (left, right) ->
             DUNE_PROJECT_FILE_PRIORITY.get(right.getName()) - DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
 
-    private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR = (left, right) ->
-            fileSeparatorCount(left) - fileSeparatorCount(right);
+    private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR =
+            Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
 
     private static final Log LOG = Log.create("manager.project");
 
@@ -108,7 +108,6 @@ public class ORProjectManager {
         return new HashSet<>(virtualFilesByName);
     }
 
-     // @TODO this should be sorted, ancestors -> children
     public static Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
         return findFirst(findBsContentRoots(project));
     }
