@@ -10,7 +10,6 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.ide.ORProjectManager;
 import icons.ORIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -40,11 +39,6 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
     @Override
     public String getStripeTitle() {
         return "Esy";
-    }
-
-    @Override
-    public boolean shouldBeAvailable(@NotNull Project project) {
-        return ORProjectManager.isEsyProject(project);
     }
 
     @Override

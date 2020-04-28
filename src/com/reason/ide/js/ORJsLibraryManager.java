@@ -3,6 +3,7 @@ package com.reason.ide.js;
 import com.intellij.lang.javascript.library.JSLibraryManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -31,6 +32,10 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
 
     @Override
     public void runActivity(@NotNull Project project) {
+        DumbService.getInstance(project).smartInvokeLater(() -> runActivityLater(project));
+    }
+
+    private void runActivityLater(Project project) {
         JSLibraryManager jsLibraryManager = JSLibraryManager.getInstance(project);
 
         Optional<VirtualFile> bsConfigFileOptional = ORProjectManager.findFirstBsConfigurationFile(project);
