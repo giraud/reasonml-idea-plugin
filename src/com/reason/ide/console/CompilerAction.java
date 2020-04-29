@@ -14,6 +14,7 @@ import com.intellij.psi.PsiFile;
 import com.reason.Compiler;
 import com.reason.CompilerType;
 import com.reason.bs.BsCompiler;
+import com.reason.bs.BsConstants;
 import com.reason.ide.ORCompilerManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +44,9 @@ abstract class CompilerAction extends DumbAwareAction {
                     VirtualFile baseDirectory = baseDirectoryOptional.get();
                     console.print("No active text editor found, using root directory " +
                                     baseDirectory.getPath() + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
-                    compiler.run(baseDirectory, cliType, null);
+                    VirtualFile bsConfig = baseDirectory.findChild(BsConstants.BS_CONFIG_FILENAME);
+                    assert bsConfig != null;
+                    compiler.run(bsConfig, cliType, null);
                 }
             }
         } else {

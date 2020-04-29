@@ -82,7 +82,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testJsObject() {
-        PsiType e = first(typeExpressions(parseCode("type t = {. a: string };", true)));
+        PsiType e = first(typeExpressions(parseCode("type t = {. a: string };")));
 
         assertInstanceOf(e.getBinding().getFirstChild(), PsiJsObject.class);
     }
