@@ -10,6 +10,7 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.*;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.sdk.OCamlSdkType;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
@@ -102,8 +104,8 @@ public final class DuneProcess implements CompilerProcess {
         }
         assert odk.getHomePath() != null;
 
-        VirtualFile baseRoot = Platform.findORDuneContentRoot(m_project);
-        if (baseRoot == null) {
+        Optional<VirtualFile> baseRoot = ORProjectManager.findFirstDuneContentRoot(m_project);
+        if (!baseRoot.isPresent()) {
             return null;
         }
 
@@ -134,7 +136,7 @@ public final class DuneProcess implements CompilerProcess {
         cli.withEnvironment("PATH", ocamlPath + File.pathSeparator + environment.get("PATH"));
         cli.withEnvironment("OCAMLLIB", fileSystem.getPath(odk.getHomePath(), "lib", "ocaml").toString());
         cli.withEnvironment("CAML_LD_LIBRARY_PATH", libPath);
-        cli.setWorkDirectory(baseRoot.getPath());
+        cli.setWorkDirectory(baseRoot.get().getPath());
         cli.setRedirectErrorStream(true);
 
         return cli;

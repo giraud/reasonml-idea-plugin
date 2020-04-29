@@ -21,7 +21,7 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.reason.bs.Bucklescript;
+import com.reason.bs.BsCompiler;
 import com.reason.ORNotification;
 import com.reason.ide.files.FileHelper;
 
@@ -40,7 +40,7 @@ public class ConvertAction extends AnAction {
     }
 
     protected void apply(@NotNull Project project, @NotNull PsiFile file, boolean isNewFile) {
-        Bucklescript bucklescript = ServiceManager.getService(project, Bucklescript.class);
+        BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
         FileType fileType = file.getFileType();
 
         final Document document = PsiDocumentManager.getInstance(project).getDocument(file);

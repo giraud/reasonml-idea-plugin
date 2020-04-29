@@ -19,8 +19,14 @@ abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
 
     public abstract String getStripeTitle();
 
+    /**
+     * Initially hide all tool windows until indexing has completed.
+     * See {@link com.reason.ide.ORPostStartupActivity}
+     */
     @Override
-    public abstract boolean shouldBeAvailable(@NotNull Project project);
+    public boolean shouldBeAvailable(@NotNull Project project) {
+        return false;
+    }
 
     @Override
     public abstract void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window);

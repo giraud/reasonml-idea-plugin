@@ -10,8 +10,10 @@ import com.reason.Log;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,6 +40,9 @@ public class ORProjectManager {
     private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR = (left, right) ->
             DUNE_PROJECT_FILE_PRIORITY.get(right.getName()) - DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
 
+    private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR =
+            Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
+
     private static final Log LOG = Log.create("manager.project");
 
     private ORProjectManager() {}
@@ -54,32 +59,50 @@ public class ORProjectManager {
         return !findEsyConfigurationFiles(project).isEmpty();
     }
 
-    public static Set<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
-        return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project);
+    public static Optional<VirtualFile> findFirstBsConfigurationFile(@NotNull Project project) {
+        return findFirst(findBsConfigurationFiles(project));
+    }
+
+    public static LinkedHashSet<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
+        LinkedHashSet<VirtualFile> configurationFiles =
+                findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project).stream()
+                .sorted(FILE_DEPTH_COMPARATOR)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        // @TODO vvv REMOVE vvv
+        String configPaths = configurationFiles.stream()
+                .map(VirtualFile::getPath)
+                .collect(Collectors.joining(",\n"));
+        LOG.error("Configuration files = " + configPaths);
+        // @TODO ^^^ REMOVE ^^^
+
+        return configurationFiles;
     }
 
     public static LinkedHashSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
         return findFilesInProject(DUNE_PROJECT_FILES, project).stream()
+                .sorted(FILE_DEPTH_COMPARATOR)
                 .sorted(DUNE_PROJECT_FILE_COMPARATOR)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public static Set<VirtualFile> findEsyConfigurationFiles(@NotNull Project project) {
+    public static LinkedHashSet<VirtualFile> findEsyConfigurationFiles(@NotNull Project project) {
         return findFilesInProject(EsyPackageJsonFileType.getDefaultFilename(), project).stream()
                 .filter(EsyPackageJson::isEsyPackageJson)
-                .collect(Collectors.toSet());
+                .sorted(FILE_DEPTH_COMPARATOR)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public static Set<VirtualFile> findBsContentRoots(@NotNull Project project) {
-        return findContentRoots(project, ORProjectManager::findBsConfigurationFiles);
+    public static LinkedHashSet<VirtualFile> findBsContentRoots(@NotNull Project project) {
+        return mapToParents(project, ORProjectManager::findBsConfigurationFiles);
     }
 
     public static LinkedHashSet<VirtualFile> findDuneContentRoots(@NotNull Project project) {
-        return findContentRootsPreserveOrder(project, ORProjectManager::findDuneConfigurationFiles);
+        return mapToParents(project, ORProjectManager::findDuneConfigurationFiles);
     }
 
     public static Set<VirtualFile> findEsyContentRoots(@NotNull Project project) {
-        return findContentRoots(project, ORProjectManager::findEsyConfigurationFiles);
+        return mapToParents(project, ORProjectManager::findEsyConfigurationFiles);
     }
 
     public static Set<VirtualFile> findFilesInProject(@NotNull Set<String> filenames, @NotNull Project project) {
@@ -95,30 +118,15 @@ public class ORProjectManager {
         return new HashSet<>(virtualFilesByName);
     }
 
-    /**
-     * @deprecated there could be more than 1 BuckleScript configurations in a project.
-     */
-    @Deprecated
     public static Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
-        LOG.warn("Using deprecated method 'findFirstBsContentRoot'.");
         return findFirst(findBsContentRoots(project));
     }
 
-    /**
-     * @deprecated there could be more than 1 Dune configurations in a project.
-     */
-    @Deprecated
     public static Optional<VirtualFile> findFirstDuneContentRoot(@NotNull Project project) {
-        LOG.warn("Using deprecated method 'findFirstDuneContentRoot'.");
         return findFirst(findDuneContentRoots(project));
     }
 
-    /**
-     * @deprecated there could be more than 1 Esy configurations in a project.
-     */
-    @Deprecated
     public static Optional<VirtualFile> findFirstEsyContentRoot(@NotNull Project project) {
-        LOG.warn("Using deprecated method 'findFirstEsyContentRoot'.");
         return findFirst(findEsyContentRoots(project));
     }
 
@@ -127,17 +135,14 @@ public class ORProjectManager {
         return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
     }
 
-    private static Set<VirtualFile> findContentRoots(@NotNull Project project,
-           Function<Project, Set<VirtualFile>> findConfigurationFiles) {
-        return findConfigurationFiles.apply(project).stream()
-                .map(VirtualFile::getParent)
-                .collect(Collectors.toSet());
-    }
-
-    private static LinkedHashSet<VirtualFile> findContentRootsPreserveOrder(@NotNull Project project,
+    private static LinkedHashSet<VirtualFile> mapToParents(@NotNull Project project,
             Function<Project, LinkedHashSet<VirtualFile>> findConfigurationFiles) {
         return findConfigurationFiles.apply(project).stream()
                 .map(VirtualFile::getParent)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private static int fileSeparatorCount(VirtualFile file) {
+        return StringUtils.countMatches(file.getPath(), File.separator);
     }
 }

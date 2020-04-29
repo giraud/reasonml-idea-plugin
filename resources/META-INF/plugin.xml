@@ -264,8 +264,8 @@
 
         <applicationService serviceImplementation="com.reason.ide.ORCompilerManager"/>
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
-        <projectService serviceInterface="com.reason.bs.Bucklescript"
-                        serviceImplementation="com.reason.bs.BucklescriptImpl"/>
+        <projectService serviceInterface="com.reason.bs.BsCompiler"
+                        serviceImplementation="com.reason.bs.BsCompilerImpl"/>
 
         <!--
          | Insight

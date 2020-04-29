@@ -24,9 +24,7 @@ public class Platform {
 
     public static final String LOCAL_BS_PLATFORM = "/node_modules/bs-platform";
     public static final String LOCAL_NODE_MODULES_BIN = "/node_modules/.bin";
-    public static final String DUNE_NAME = "dune-project";
     public static final String PACKAGE_JSON_NAME = "package.json";
-    public static final String ESY_PROJECT_IDENTIFIER = "_esy";
     public static final String BSCONFIG_JSON_NAME = "bsconfig.json";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
 
@@ -79,6 +77,9 @@ public class Platform {
         return rootContents;
     }
 
+    /**
+     * @deprecated replace usages with ORProjectManager::findContentRoots which returns ALL potential roots.
+     */
     public static VirtualFile findContentRootFor(@NotNull Project project, @NotNull String filename) {
         Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
 
@@ -97,32 +98,20 @@ public class Platform {
         }
     }
 
-    public static VirtualFile findORDuneContentRoot(@NotNull Project project) {
-        return findContentRootFor(project, DUNE_NAME);
-    }
 
-    public static VirtualFile findOREsyContentRoot(@NotNull Project project) {
-        return findContentRootFor(project, ESY_PROJECT_IDENTIFIER);
-    }
-
+    /**
+     * Project Special finder that iterate through parents until a bsConfig.json is found.
+     * This is always needed, we can't use module itself.
+     * @deprecated move this logic out of jps-plugin. Break it up into 2 separate methods:
+     *  1. ORFileManager::findFirstAncestor
+     *  2. ORProjectManager::findAncestorBsConfig
+     *  This method currently used findContentRootsFor which is deprecated as a project might have multiple
+     *  content roots.
+     */
     @Nullable
-    public static VirtualFile findORPackageJsonContentRoot(@NotNull Project project) {
-        return findContentRootFor(project, PACKAGE_JSON_NAME);
-    }
-
-    @Nullable
-    public static VirtualFile findProjectBsconfig(@NotNull Project project) {
-        // @TODO use `BsConfigFile.isBsConfig(file)`
-        VirtualFile contentRoot = findORPackageJsonContentRoot(project);
-        return contentRoot == null ? null : contentRoot.findChild(BSCONFIG_JSON_NAME);
-    }
-
-    // Special finder that iterate through parents until a bsConfig.json is found.
-    // This is always needed, we can't use module itself
-
-    @Nullable
+    @Deprecated
     public static VirtualFile findAncestorBsconfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile contentRoot = findProjectBsconfig(project);
+        VirtualFile contentRoot = findContentRootFor(project, BSCONFIG_JSON_NAME);
         if (sourceFile.equals(contentRoot)) {
             return sourceFile;
         }
@@ -149,15 +138,25 @@ public class Platform {
         return child;
     }
 
+    /**
+     * @deprecated see {@link Platform::findAncestorBsconfig}
+     */
+    @Deprecated
     public static VirtualFile findAncestorContentRoot(Project project, VirtualFile file) {
         VirtualFile bsConfig = findAncestorBsconfig(project, file);
         return bsConfig == null ? null : bsConfig.getParent();
     }
 
+    /**
+     * @deprecated Move this out of jps-plugin and replace implementation with ORProjectManager.
+     *             This incorrectly assumes that the project is a BuckleScript project which might
+     *             not be the case. Could be Dune, Esy, mono-repo, etc.
+     */
     @NotNull
+    @Deprecated
     public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
         try {
-            VirtualFile baseRoot = Platform.findORPackageJsonContentRoot(project);
+            VirtualFile baseRoot = findContentRootFor(project, PACKAGE_JSON_NAME);
             if (baseRoot == null) {
                 return path;
             }

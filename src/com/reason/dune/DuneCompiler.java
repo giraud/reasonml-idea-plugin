@@ -13,9 +13,12 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Compiler;
-import com.reason.*;
+import com.reason.CompilerProcess;
+import com.reason.CompilerType;
+import com.reason.ProcessFinishedListener;
 import com.reason.esy.EsyProcess;
 import com.reason.hints.InsightManager;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.DuneToolWindowFactory;
 import com.reason.ide.facet.DuneFacet;
@@ -23,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.util.Optional;
+import java.util.Set;
 
 public class DuneCompiler implements Compiler {
 
@@ -42,10 +47,14 @@ public class DuneCompiler implements Compiler {
         return CompilerType.DUNE;
     }
 
-    @Nullable
     @Override
-    public VirtualFile findContentRoot(@NotNull Project project) {
-        return Platform.findORDuneContentRoot(project);
+    public Optional<VirtualFile> findFirstContentRoot(@NotNull Project project) {
+        return ORProjectManager.findFirstDuneContentRoot(project);
+    }
+
+    @Override
+    public Set<VirtualFile> findContentRoots(@NotNull Project project) {
+        return ORProjectManager.findDuneContentRoots(project);
     }
 
     @Override
