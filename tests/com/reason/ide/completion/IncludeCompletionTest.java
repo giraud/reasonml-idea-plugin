@@ -14,8 +14,8 @@ public class IncludeCompletionTest extends BasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(1, strings);
-        assertSameElements(strings, "x");
+        assertSize(2, strings);
+        assertSameElements(strings, "x", "A");
     }
 
     public void testIncludeEOF() {
@@ -25,7 +25,7 @@ public class IncludeCompletionTest extends BasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> strings = myFixture.getLookupElementStrings();
 
-        assertSize(9, strings);
-        assertSameElements(strings, "y", "x", "exception", "external", "include", "let", "module", "open", "type");
+        assertSize(10, strings);
+        assertSameElements(strings,  "exception", "external", "include", "let", "module", "open", "type", "A", "y", "x");
     }
 }

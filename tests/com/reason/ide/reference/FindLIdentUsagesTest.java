@@ -15,7 +15,6 @@ public class FindLIdentUsagesTest extends BasePlatformTestCase {
 
         Collection<UsageInfo> usages = myFixture.testFindUsages("FLIA.re");
         assertSize(1, usages);
-
     }
 
     public void testSameModule() {

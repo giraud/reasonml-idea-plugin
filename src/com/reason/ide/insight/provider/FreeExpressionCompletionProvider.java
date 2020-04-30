@@ -1,7 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -14,7 +12,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PsiIconUtil;
-import icons.ORIcons;
 import com.reason.Log;
 import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
@@ -22,16 +19,13 @@ import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.PsiSignatureUtil;
+import icons.ORIcons;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Set;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
@@ -63,35 +57,32 @@ public class FreeExpressionCompletionProvider {
 
         // Add file modules (that are not a component and without namespaces)
         // everything scope is needed to retrieve files from node_modules
-        Collection<FileBase> fileModules = fileIndex.getFiles/*WithoutNamespace*/(project, scope);
+        Set<PsiFakeModule> topModules = psiFinder.findTopModules(true, scope);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  files without namespaces", fileModules);
+            LOG.debug("  files without namespaces", topModules);
         }
 
-        Set<String> paths = qnameFinder.extractPotentialPaths(element);
-        paths.add("Pervasives");
-        LOG.debug("potential paths", paths);
-
-        for (FileBase fileModule : fileModules) {
-            String moduleName = fileModule.getModuleName();
-            if (moduleName != null && !paths.contains(moduleName)) {
+        for (PsiFakeModule topModule : topModules) {
+            if (!topModule.getContainingFile().equals(containingFile)) {
                 resultSet.addElement(LookupElementBuilder.
-                        create(fileModule.getModuleName()).
-                        withTypeText(FileHelper.shortLocation(project, fileModule.getVirtualFile().getPath())).
-                        withIcon(IconProvider.getFileModuleIcon(fileModule)));
+                        create(topModule.getModuleName()).
+                        withTypeText(FileHelper.shortLocation(project, topModule.getContainingFile().getVirtualFile().getPath())).
+                        withIcon(IconProvider.getFileModuleIcon((FileBase) topModule.getContainingFile())));
             }
         }
 
+        Set<String> paths = qnameFinder.extractPotentialPaths(element, true);
+        paths.add("Pervasives");
+        LOG.debug("potential paths", paths);
+
         // Add paths (opens and local opens for example)
         for (String path : paths) {
-            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path, interfaceOrImplementation, scope);
+            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path, true, interfaceOrImplementation, scope);
             for (PsiModule module : modulesFromQn) {
-                if (module instanceof FileBase) {
-                    if (module.getContainingFile().equals(containingFile)) {
-                        // if the module is already the containing file, we do nothing,
-                        // local expressions will be added after
-                        continue;
-                    }
+                if (module.getContainingFile().equals(containingFile)) {
+                    // if the module is already the containing file, we do nothing,
+                    // local expressions will be added after
+                    continue;
                 }
 
                 Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub);

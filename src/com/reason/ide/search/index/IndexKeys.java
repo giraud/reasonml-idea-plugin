@@ -3,21 +3,14 @@ package com.reason.ide.search.index;
 import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.indexing.ID;
 import com.reason.ide.search.FileModuleData;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.*;
 
 public class IndexKeys {
 
     public static final ID<String, FileModuleData> FILE_MODULE = ID.create("reason.index.fileModule");
 
     public static final StubIndexKey<String, PsiModule> MODULES = StubIndexKey.createIndexKey("reason.module");
+    public static final StubIndexKey<String, PsiFakeModule> MODULES_TOP_LEVEL = StubIndexKey.createIndexKey("reason.module.toplevel");
     public static final StubIndexKey<String, PsiModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");
     public static final StubIndexKey<Integer, PsiModule> MODULES_FQN = StubIndexKey.createIndexKey("reason.module.fqn");
     public static final StubIndexKey<String, PsiVariantDeclaration> VARIANTS = StubIndexKey.createIndexKey("reason.variant");

@@ -1,20 +1,16 @@
 package com.reason.lang.ocaml;
 
-import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
@@ -103,7 +99,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
     public void testLikeModule() {
         FileBase file = parseCode("let module Repr = (val repr : S)");
-        PsiInnerModule module = first(moduleExpressions(file));
+        PsiModule module = first(moduleExpressions(file));
 
         assertEquals(1, childrenCount(file));
         assertEquals("Repr", module.getName());

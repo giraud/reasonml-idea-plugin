@@ -1,7 +1,5 @@
 package com.reason.ide.search;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -14,6 +12,12 @@ import com.reason.ide.search.index.FileModuleIndex;
 import com.reason.ide.search.index.ModuleIndex;
 import com.reason.ide.search.index.NamespaceIndex;
 import com.reason.lang.core.psi.PsiModule;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class FileModuleIndexService {
 
@@ -36,6 +40,11 @@ public class FileModuleIndexService {
     @NotNull
     public Collection<String> getNamespaces(@NotNull Project project) {
         return FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project);
+    }
+
+    @NotNull
+    public boolean isNamespace(@Nullable String name, @NotNull Project project) {
+        return name != null && FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project).contains(name);
     }
 
     @NotNull

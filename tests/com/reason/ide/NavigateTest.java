@@ -3,6 +3,7 @@ package com.reason.ide;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.PsiFileHelper;
 
 @SuppressWarnings("ConstantConditions")
 public class NavigateTest extends BasePlatformTestCase {
@@ -15,6 +16,6 @@ public class NavigateTest extends BasePlatformTestCase {
     public void testInnerComponent() {
         FileBase file = (FileBase) myFixture.configureByText("NotComp.re", "module Comp = { [@react.component] let make = () => <div/>; };");
         assertEquals("NotComp.re", ((PsiNamedElement) file.getNavigationElement()).getName());
-        assertEquals("make", ((PsiNamedElement) file.getModuleExpression("Comp").getNavigationElement()).getName());
+        assertEquals("make", ((PsiNamedElement) PsiFileHelper.getModuleExpressions(file).get(0).getNavigationElement()).getName());
     }
 }

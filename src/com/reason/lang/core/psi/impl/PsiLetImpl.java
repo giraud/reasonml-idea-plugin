@@ -7,7 +7,6 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import icons.ORIcons;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.ORUtil;
@@ -16,6 +15,7 @@ import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +47,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     @Override
     public String getName() {
         PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE ? "" : nameIdentifier.getText();
+        return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE ? null : nameIdentifier.getText();
     }
 
     @NotNull

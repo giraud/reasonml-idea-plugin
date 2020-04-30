@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
@@ -123,7 +124,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
     public void testLetAndInModule() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
-        Collection<PsiLet> es = file.getModules().iterator().next().getLetExpressions();
+        Collection<PsiLet> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getLetExpressions();
 
         assertSize(2, es);
         assertEquals("f2 = y => y", second(es).getText());

@@ -1,19 +1,10 @@
 package com.reason.lang.core;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiInvalidElementAccessException;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.TokenType;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -22,6 +13,10 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 
 public class ORUtil {
 
@@ -274,7 +269,7 @@ public class ORUtil {
 
         try {
             PsiFile containingFile = element.getContainingFile(); // Fail in 2019.2... ?
-            return ((FileBase) containingFile).getQualifiedName() + (path.isEmpty() ? "" : "." + path);
+            return ((FileBase) containingFile).getModuleName() + (path.isEmpty() ? "" : "." + path);
         } catch (PsiInvalidElementAccessException e) {
             return path;
         }
@@ -282,7 +277,9 @@ public class ORUtil {
 
     @NotNull
     public static String getQualifiedName(@NotNull PsiNameIdentifierOwner element) {
-        return getQualifiedPath(element) + "." + element.getName();
+        String name = element.getName();
+        String qualifiedPath = getQualifiedPath(element);
+        return name == null ? qualifiedPath + ".UNKNOWN" : qualifiedPath + "." + name;
     }
 
     @Nullable

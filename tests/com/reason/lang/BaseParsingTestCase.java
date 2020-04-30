@@ -51,7 +51,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiInnerModule> moduleExpressions(@NotNull PsiFile file) {
+    protected Collection<PsiModule> moduleExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getModuleExpressions(file);
     }
 

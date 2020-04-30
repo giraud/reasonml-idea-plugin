@@ -28,7 +28,7 @@ class DocFormatter {
     private static String formatDefinition(@NotNull PsiFile file, PsiElement element) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(HEADER_START).append(((FileBase) file).getQualifiedName());
+        sb.append(HEADER_START).append(((FileBase) file).getModuleName());
         if (element instanceof PsiVal) {
             sb.append("<br/>").append(element.getText());
         }

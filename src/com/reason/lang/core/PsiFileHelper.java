@@ -30,13 +30,14 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file, @NotNull ExpressionScope eScope) {
+    public static Collection<PsiNameIdentifierOwner> getExpressions(@Nullable PsiFile file, @NotNull ExpressionScope eScope) {
         ArrayList<PsiNameIdentifierOwner> result = new ArrayList<>();
 
-        PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
-
-        PsiElement element = file.getFirstChild();
-        processSiblingExpressions(psiFinder, element, eScope, result);
+        if (file!=null) {
+            PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
+            PsiElement element = file.getFirstChild();
+            processSiblingExpressions(psiFinder, element, eScope, result);
+        }
 
         return result;
     }
@@ -48,7 +49,7 @@ public class PsiFileHelper {
                 // Recursively include everything from referenced module
                 PsiInclude include = (PsiInclude) element;
                 GlobalSearchScope scope = GlobalSearchScope.allScope(element.getProject());
-                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(include.getQualifiedName(), interfaceOrImplementation, scope);
+                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(include.getQualifiedName(), true, interfaceOrImplementation, scope);
                 for (PsiModule includedModule : modulesFromQn) {
                     result.addAll(includedModule.getExpressions(eScope));
                 }
@@ -86,47 +87,47 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static List<PsiType> getTypeExpressions(@NotNull PsiFile file) {
+    public static List<PsiType> getTypeExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiType.class);
     }
 
     @NotNull
-    public static List<PsiInnerModule> getModuleExpressions(@NotNull PsiFile file) {
+    public static List<PsiModule> getModuleExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInnerModule.class);
     }
 
     @NotNull
-    public static List<PsiFunctor> getFunctorExpressions(@NotNull PsiFile file) {
+    public static List<PsiFunctor> getFunctorExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiFunctor.class);
     }
 
     @NotNull
-    public static List<PsiClass> getClassExpressions(@NotNull PsiFile file) {
+    public static List<PsiClass> getClassExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiClass.class);
     }
 
     @NotNull
-    public static List<PsiLet> getLetExpressions(@NotNull PsiFile file) {
+    public static List<PsiLet> getLetExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiLet.class);
     }
 
     @NotNull
-    public static List<PsiVal> getValExpressions(@NotNull PsiFile file) {
+    public static List<PsiVal> getValExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiVal.class);
     }
 
     @NotNull
-    public static List<PsiExternal> getExternalExpressions(@NotNull PsiFile file) {
+    public static List<PsiExternal> getExternalExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiExternal.class);
     }
 
     @NotNull
-    public static Collection<PsiOpen> getOpenExpressions(PsiFile file) {
+    public static Collection<PsiOpen> getOpenExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiOpen.class);
     }
 
     @NotNull
-    public static List<PsiInclude> getIncludeExpressions(@NotNull PsiFile file) {
+    public static List<PsiInclude> getIncludeExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiInclude.class);
     }
 }

@@ -17,8 +17,8 @@ public class FreeCompletionTest extends ORBasePlatformTestCase {
         myFixture.complete(CompletionType.BASIC, 1);
         List<String> elements = myFixture.getLookupElementStrings();
 
-        assertSize(4, elements);
-        assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "x");
+        assertSize(5, elements);
+        assertContainsElements(elements, "int_of_string", "Belt", "Belt_Array", "Pervasives", "x");
     }
 
     public void testDeconstruction() {

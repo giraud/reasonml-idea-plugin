@@ -1,19 +1,25 @@
 package com.reason.lang.core.psi;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.impl.PsiTokenStub;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiModule, StubBasedPsiElement<PsiModuleStub> {
 
@@ -30,7 +36,8 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @NotNull
     @Override
     public String getPath() {
-        return ((FileBase) getContainingFile()).getPath();
+        PsiFile file = getContainingFile();
+        return file instanceof FileBase ? ((FileBase) file).getModuleName() : "";
     }
 
     @NotNull
@@ -38,9 +45,17 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     public String getQualifiedName() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
-            return greenStub.getQualifiedName();
+            return greenStub.getName();
         }
-        return ((FileBase) getContainingFile()).getQualifiedName();
+
+        // ?? Namespace ??
+        return getModuleName();
+    }
+
+    @Override
+    public void navigate(boolean requestFocus) {
+        PsiFile file = getContainingFile();
+            file.navigate(requestFocus);
     }
 
     @Override
@@ -69,13 +84,15 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @Override
     @Nullable
     public String getName() {
-        return getContainingFile().getName();
+        return getModuleName();
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getModuleName() {
-        throw new RuntimeException("Not implemented, use FileBase");
+        PsiFile file = getContainingFile();
+        assert file instanceof FileBase;
+        return ((FileBase) file).getModuleName();
     }
 
     @Override
@@ -83,53 +100,84 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
         throw new RuntimeException("Not implemented, use FileBase");
     }
 
-    @Override
-    public boolean canBeDisplayed() {
-        throw new RuntimeException("Not implemented, use FileBase");
-    }
-
-    @Override
-    public void navigate(boolean requestFocus) {
-        throw new RuntimeException("Not implemented, use FileBase");
-    }
-
     @NotNull
     @Override
     public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
-        throw new RuntimeException("Not implemented, use FileBase");
+        return PsiFileHelper.getExpressions(getContainingFile(), eScope);
     }
 
     @NotNull
-    @Override
-    public List<PsiLet> getLetExpressions() {
-        throw new RuntimeException("Not implemented, use FileBase");
+    public Collection<PsiModule> getModules() {
+        return PsiFileHelper.getModuleExpressions(getContainingFile());
     }
 
     @Nullable
     @Override
     public PsiModule getModuleExpression(@Nullable String name) {
-        throw new RuntimeException("Not implemented, use FileBase");
+        if (name != null) {
+            Collection<PsiInnerModule> modules = getExpressions(name, PsiInnerModule.class);
+            for (PsiInnerModule module : modules) {
+                if (name.equals(module.getName())) {
+                    return module;
+                }
+            }
+        }
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public List<PsiLet> getLetExpressions() {
+        return PsiFileHelper.getLetExpressions(getContainingFile());
     }
 
     @Nullable
     @Override
     public PsiLet getLetExpression(@Nullable String name) {
-        throw new RuntimeException("Not implemented, use FileBase");
+        Collection<PsiLet> expressions = getExpressions(name, PsiLet.class);
+        return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
     @Nullable
     @Override
     public PsiVal getValExpression(@Nullable String name) {
-        throw new RuntimeException("Not implemented, use FileBase");
+        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
+        return expressions.isEmpty() ? null : expressions.iterator().next();
     }
 
     @Nullable
     @Override
-    public PsiType getTypeExpression(@NotNull String name) {
-        throw new RuntimeException("Not implemented, use FileBase");
+    public PsiType getTypeExpression(@Nullable String name) {
+        List<PsiType> expressions = getExpressions(name, PsiType.class);
+        return expressions.isEmpty() ? null : expressions.iterator().next();
+    }
+
+    @NotNull
+    private <T extends PsiNameIdentifierOwner> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+
+        if (name != null) {
+            Collection<T> children = PsiTreeUtil.findChildrenOfType(getContainingFile(), clazz);
+            for (T child : children) {
+                if (name.equals(child.getName())) {
+                    result.add(child);
+                }
+            }
+        }
+
+        return result;
     }
 
     public ItemPresentation getPresentation() {
         throw new RuntimeException("Not implemented, use FileBase");
+    }
+
+    public boolean hasNamespace() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "PsiFakeModule:" + getModuleName();
     }
 }

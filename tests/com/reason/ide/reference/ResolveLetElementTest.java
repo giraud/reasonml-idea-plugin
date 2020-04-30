@@ -75,4 +75,13 @@ public class ResolveLetElementTest extends ORBasePlatformTestCase {
         assertEquals("A.fn.foo", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
         assertEquals("A.re", e.getContainingFile().getName());
     }
+
+    public void testLocalModuleAlias() {
+        configureCode("A.rei", "let x:int;");
+        configureCode("B.re", "module X = A; X.x<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.x", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
+        assertEquals("A.rei", e.getContainingFile().getName());
+    }
 }

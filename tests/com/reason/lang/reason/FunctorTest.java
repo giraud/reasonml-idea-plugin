@@ -55,7 +55,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctorInstanciation1() {
-        PsiInnerModule module = first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record; });")));
+        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make({ let encode = encode_record; });")));
 
         assertNotNull(module.getBody());
     }

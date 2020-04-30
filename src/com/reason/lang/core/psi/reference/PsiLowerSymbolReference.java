@@ -284,11 +284,11 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         Map<String, Integer> result = new THashMap<>();
 
         List<PsiQualifiedElement> resolvedPaths = new ArrayList<>();
-        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(myElement);
+        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(myElement, true);
         for (String pathName : potentialPaths) {
             Set<PsiModule> moduleAlias = psiFinder.findModuleAlias(pathName, scope);
             if (moduleAlias.isEmpty()) {
-                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(pathName, interfaceOrImplementation, scope);
+                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(pathName, true, interfaceOrImplementation, scope);
                 if (modulesFromQn.isEmpty()) {
                     // Not a module but maybe a let or a parameter
                     PsiLet let = psiFinder.findLetFromQn(pathName);

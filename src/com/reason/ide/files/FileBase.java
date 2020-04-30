@@ -1,8 +1,5 @@
 package com.reason.ide.files;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
@@ -13,14 +10,16 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class FileBase extends PsiFileBase implements PsiModule {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
+public abstract class FileBase extends PsiFileBase implements PsiQualifiedElement {
 
     @NotNull
     private final String m_moduleName;
@@ -30,10 +29,21 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         m_moduleName = ORUtil.fileNameToModuleName(getName());
     }
 
-    @Nullable
-    @Override
+    @NotNull
     public String getModuleName() {
         return m_moduleName;
+    }
+
+    @NotNull
+    @Override
+    public String getPath() {
+        return getModuleName();
+    }
+
+    @NotNull
+    @Override
+    public String getQualifiedName() {
+        return getModuleName();
     }
 
     public boolean isComponent() {
@@ -62,12 +72,6 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         return FileHelper.shortLocation(project, getVirtualFile().getPath());
     }
 
-    @Override
-    @NotNull
-    public Collection<PsiNameIdentifierOwner> getExpressions(ExpressionScope eScope) {
-        return PsiFileHelper.getExpressions(this, eScope);
-    }
-
     @NotNull
     public Collection<PsiNameIdentifierOwner> getExpressions(@Nullable String name) {
         return PsiFileHelper.getExpressions(this, name);
@@ -87,72 +91,6 @@ public abstract class FileBase extends PsiFileBase implements PsiModule {
         }
 
         return result;
-    }
-
-    @Nullable
-    @Override
-    public PsiModule getModuleExpression(@Nullable String name) {
-        if (name == null) {
-            return null;
-        }
-
-        Collection<PsiInnerModule> modules = getExpressions(name, PsiInnerModule.class);
-        for (PsiInnerModule module : modules) {
-            if (name.equals(module.getName())) {
-                return module;
-            }
-        }
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public List<PsiLet> getLetExpressions() {
-        return PsiFileHelper.getLetExpressions(this);
-    }
-
-    @Nullable
-    @Override
-    public PsiLet getLetExpression(@Nullable String name) {
-        Collection<PsiLet> expressions = getExpressions(name, PsiLet.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
-    @Nullable
-    @Override
-    public PsiVal getValExpression(@Nullable String name) {
-        Collection<PsiVal> expressions = getExpressions(name, PsiVal.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
-    @Nullable
-    @Override
-    public PsiType getTypeExpression(@Nullable String name) {
-        List<PsiType> expressions = getExpressions(name, PsiType.class);
-        return expressions.isEmpty() ? null : expressions.iterator().next();
-    }
-
-    @NotNull
-    @Override
-    public String getPath() {
-        return getModuleName();
-    }
-
-    @NotNull
-    @Override
-    public String getQualifiedName() {
-        return getModuleName();
-    }
-
-    @NotNull
-    public Collection<PsiInnerModule> getModules() {
-        return PsiFileHelper.getModuleExpressions(this);
-    }
-
-    @Nullable
-    @Override
-    public String getAlias() {
-        return null;
     }
 
     public boolean isInterface() {
