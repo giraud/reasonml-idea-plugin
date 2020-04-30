@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Compiler;
-import com.reason.CompilerType;
 import com.reason.bs.BsCompiler;
 import com.reason.bs.BsConstants;
 import com.reason.ide.ORCompilerManager;
@@ -26,8 +25,6 @@ abstract class CompilerAction extends DumbAwareAction {
     CompilerAction(@NotNull String text, @NotNull String description, @NotNull Icon icon) {
         super(text, description, icon);
     }
-
-    public abstract CompilerType getCompilerType();
 
     void doAction(@NotNull Project project, @NotNull CliType cliType) {
         Compiler compiler = ORCompilerManager.getInstance().getCompiler(project);

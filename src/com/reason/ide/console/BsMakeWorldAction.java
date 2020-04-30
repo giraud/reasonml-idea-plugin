@@ -3,7 +3,6 @@ package com.reason.ide.console;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.reason.CompilerType;
 import org.jetbrains.annotations.NotNull;
 
 public class BsMakeWorldAction extends CompilerAction {
@@ -19,10 +18,5 @@ public class BsMakeWorldAction extends CompilerAction {
         if (project != null) {
             doAction(project, CliType.Bs.CLEAN_MAKE);
         }
-    }
-
-    @Override
-    public CompilerType getCompilerType() {
-        return CompilerType.BS;
     }
 }
