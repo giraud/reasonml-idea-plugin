@@ -5,18 +5,15 @@ import com.intellij.json.JsonFileType;
 import com.intellij.json.psi.JsonFile;
 import com.intellij.json.psi.JsonObject;
 import com.intellij.json.psi.JsonValue;
-import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PatternCondition;
-import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.EsyPackageJsonFileType;
-import com.reason.ide.files.FileBase;
 import org.jetbrains.annotations.NotNull;
 
 public class EsyPackageJson {
@@ -25,6 +22,9 @@ public class EsyPackageJson {
 
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
+        if (virtualFile.isDirectory()) {
+            return false;
+        }
         FileContent fileContent = FileContentImpl.createByFile(virtualFile);
         return createFilePattern().accepts(fileContent);
     }
