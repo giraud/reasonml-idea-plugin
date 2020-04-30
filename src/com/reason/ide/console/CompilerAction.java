@@ -2,7 +2,6 @@ package com.reason.ide.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -11,8 +10,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.reason.compiler.Compiler;
-import com.reason.compiler.CompilerManager;
+import com.reason.Compiler;
+import com.reason.ORCompilerManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -34,13 +33,17 @@ abstract class CompilerAction extends DumbAwareAction {
     }
 
     private static void compileDirectory(@NotNull Project project, CliType cliType) {
-        CompilerManager compilerManager = CompilerManager.getInstance(project);
-        Compiler compiler = compilerManager.getCompiler(cliType);
+        ORCompilerManager compilerManager = ORCompilerManager.getInstance(project);
+        Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
+        if (!compilerOptional.isPresent()) {
+           return;
+        }
+        Compiler compiler = compilerOptional.get();
         ConsoleView consoleView = compiler.getConsoleView();
         if (consoleView == null) {
             return;
         }
-        Optional<VirtualFile> baseDir = compiler.findContentRoot();
+        Optional<VirtualFile> baseDir = compiler.findFirstContentRoot(project);
         if (!baseDir.isPresent()) {
             consoleView.print("Can't find content root\n", ConsoleViewContentType.NORMAL_OUTPUT);
         } else {
@@ -52,11 +55,16 @@ abstract class CompilerAction extends DumbAwareAction {
 
     private static void compileFile(@NotNull Project project, @NotNull Editor editor, @NotNull CliType cliType) {
         Optional<PsiFile> activeFile = getActiveFile(project, editor);
-        if (activeFile.isPresent()) {
-            CompilerManager compilerManager = CompilerManager.getInstance(project);
-            Compiler compiler = compilerManager.getCompiler(cliType);
-            compiler.run(activeFile.get().getVirtualFile(), cliType, null);
+        if (!activeFile.isPresent()) {
+            return;
         }
+        ORCompilerManager compilerManager = ORCompilerManager.getInstance(project);
+        Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
+        if (!compilerOptional.isPresent()) {
+            return;
+        }
+        Compiler compiler = compilerOptional.get();
+        compiler.run(activeFile.get().getVirtualFile(), cliType, null);
     }
 
     private static Optional<PsiFile> getActiveFile(@NotNull Project project, @NotNull Editor editor) {

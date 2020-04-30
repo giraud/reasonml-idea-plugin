@@ -186,7 +186,7 @@ public class BsCompilerImpl implements BsCompiler {
 
         return new Ninja(content);
     }
-    
+
     @Nullable
     @Override
     public ConsoleView getConsoleView() {
