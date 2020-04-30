@@ -54,7 +54,8 @@ public class ORProjectManager {
     }
 
     public static LinkedHashSet<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
-        return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project).stream().sorted(FILE_DEPTH_COMPARATOR)
+        return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project).stream()
+                .sorted(FILE_DEPTH_COMPARATOR)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
