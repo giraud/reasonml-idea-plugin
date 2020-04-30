@@ -32,12 +32,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.reason.dune.DuneConstants.DUNE_EXECUTABLE_NAME;
+import static com.reason.esy.EsyConstants.ESY_EXECUTABLE_NAME;
 import static com.reason.esy.EsyProcessException.esyNotFoundException;
 
 public class EsyProcess implements CompilerProcess {
-
-  public static final String DUNE_EXECUTABLE_NAME = "dune";
-  public static final String ESY_EXECUTABLE_NAME = "esy";
 
   private static final Runnable SHOW_DUNE_NOT_FOUND_NOTIFICATION =
       () -> Notifications.Bus.notify(new ORNotification("Dune Missing", "Unable to find dune executable in esy PATH.", ERROR));
