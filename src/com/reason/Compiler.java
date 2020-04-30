@@ -26,4 +26,6 @@ public interface Compiler {
 
     CompilerType getType();
 
+    boolean isConfigured(@NotNull Project project);
+
 }

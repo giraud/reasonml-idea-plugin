@@ -104,6 +104,12 @@ public class BsCompilerImpl implements BsCompiler {
         return CompilerType.BS;
     }
 
+    @Override
+    public boolean isConfigured(@NotNull Project project) {
+        // BuckleScript doesn't require any project-level configuration
+        return true;
+    }
+
     @NotNull
     private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
         String bsConfigPath = bsConfigFile.getCanonicalPath();
