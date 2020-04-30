@@ -1,5 +1,6 @@
 package com.reason;
 
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.console.CliType;
@@ -27,5 +28,8 @@ public interface Compiler {
     CompilerType getType();
 
     boolean isConfigured(@NotNull Project project);
+
+    @Nullable
+    ConsoleView getConsoleView();
 
 }

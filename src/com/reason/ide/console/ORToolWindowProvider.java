@@ -5,7 +5,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
 import org.jetbrains.annotations.NotNull;
 
-class ORToolWindowProvider {
+public class ORToolWindowProvider {
 
     private final ToolWindowManagerEx toolWindowManager;
 

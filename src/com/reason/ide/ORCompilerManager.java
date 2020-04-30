@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.facet.FacetManager;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
@@ -50,6 +51,17 @@ public class ORCompilerManager {
         @Override
         public CompilerType getType() {
             return CompilerType.DUMMY;
+        }
+
+        @Override
+        public boolean isConfigured(@NotNull Project project) {
+            return true;
+        }
+
+        @Nullable
+        @Override
+        public ConsoleView getConsoleView() {
+            return null;
         }
     };
 

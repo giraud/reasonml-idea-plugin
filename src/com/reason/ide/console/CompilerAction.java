@@ -35,7 +35,7 @@ abstract class CompilerAction extends DumbAwareAction {
         // Try to detect the current active editor
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         if (editor == null) {
-            ConsoleView console = ServiceManager.getService(project, BsCompiler.class).getBsbConsole();
+            ConsoleView console = ServiceManager.getService(project, BsCompiler.class).getConsoleView();
             if (console != null) {
                 Optional<VirtualFile> baseDirectoryOptional = compiler.findFirstContentRoot(project);
                 if (!baseDirectoryOptional.isPresent()) {

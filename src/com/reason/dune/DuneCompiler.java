@@ -12,7 +12,6 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.Compiler;
 import com.reason.*;
@@ -20,7 +19,7 @@ import com.reason.esy.EsyProcess;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import com.reason.ide.console.DuneToolWindowFactory;
+import com.reason.ide.console.ORToolWindowProvider;
 import com.reason.ide.facet.DuneFacet;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -125,21 +124,18 @@ public class DuneCompiler implements Compiler {
         return false;
     }
 
-    // copied
-    @Nullable
-    private ConsoleView getConsoleView() {
-        ConsoleView console = null;
-
-        ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(DuneToolWindowFactory.ID);
-        Content windowContent = window.getContentManager().getContent(0);
-        if (windowContent != null) {
-            SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
-            JComponent panelComponent = component.getComponent();
-            if (panelComponent != null) {
-                console = (ConsoleView) panelComponent.getComponent(0);
-            }
+    @Override
+    public ConsoleView getConsoleView() {
+        ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(project);
+        ToolWindow duneToolWindow = windowProvider.getDuneToolWindow();
+        Content windowContent = duneToolWindow.getContentManager().getContent(0);
+        if (windowContent == null) {
+            return null;
         }
-
-        return console;
-    }
-}
+        SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
+        JComponent panelComponent = component.getComponent();
+        if (panelComponent == null) {
+            return null;
+        }
+        return (ConsoleView) panelComponent.getComponent(0);
+    }}
