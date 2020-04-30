@@ -1,5 +1,6 @@
 package com.reason;
 
+import com.intellij.execution.configurations.PathEnvironmentVariableUtil;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
@@ -19,6 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Platform {
 
@@ -27,6 +29,7 @@ public class Platform {
     public static final String PACKAGE_JSON_NAME = "package.json";
     public static final String BSCONFIG_JSON_NAME = "bsconfig.json";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
+    public static final String WINDOWS_EXECUTABLE_SUFFIX =  ".exe";
 
     private static final Log LOG = Log.create("platform");
 
@@ -179,5 +182,13 @@ public class Platform {
             }
         }
         return null;
+    }
+
+    public static Optional<Path> findExecutableInPath(String filename, String shellPath) {
+      if (SystemInfo.isWindows) {
+        filename += WINDOWS_EXECUTABLE_SUFFIX;
+      }
+      File exeFile = PathEnvironmentVariableUtil.findInPath(filename, shellPath, null);
+      return exeFile == null ? Optional.empty() : Optional.of(exeFile.toPath());
     }
 }

@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.PathEnvironmentVariableUtil;
 import com.intellij.execution.process.*;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
@@ -40,7 +38,6 @@ public class EsyProcess implements CompilerProcess {
 
   public static final String DUNE_EXECUTABLE_NAME = "dune";
   public static final String ESY_EXECUTABLE_NAME = "esy";
-  public static final String WINDOWS_EXECUTABLE_SUFFIX =  ".exe";
 
   private static final Runnable SHOW_DUNE_NOT_FOUND_NOTIFICATION =
       () -> Notifications.Bus.notify(new ORNotification("Dune Missing", "Unable to find dune executable in esy PATH.", ERROR));
@@ -112,7 +109,7 @@ public class EsyProcess implements CompilerProcess {
 
   private EsyProcess(@NotNull Project project) {
     FileSystem fileSystem = FileSystems.getDefault();
-    Path esyExecutable = findExecutableInPath(ESY_EXECUTABLE_NAME, System.getenv("PATH"))
+    Path esyExecutable = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, System.getenv("PATH"))
         .orElseThrow(() -> {
           SHOW_ESY_NOT_FOUND_NOTIFICATION.run();
           return esyNotFoundException();
@@ -269,15 +266,7 @@ public class EsyProcess implements CompilerProcess {
     if (paths == null) {
       return Optional.empty();
     }
-    return findExecutableInPath(DUNE_EXECUTABLE_NAME, paths);
-  }
-
-  private static Optional<Path> findExecutableInPath(String filename, String shellPath) {
-    if (SystemInfo.isWindows) {
-      filename += WINDOWS_EXECUTABLE_SUFFIX;
-    }
-    File exeFile = PathEnvironmentVariableUtil.findInPath(filename, shellPath, null);
-    return exeFile == null ? Optional.empty() : Optional.of(exeFile.toPath());
+    return Platform.findExecutableInPath(DUNE_EXECUTABLE_NAME, paths);
   }
 
   // attempt to find esy package.json. if it's missing, show warning and return the project's root directory

@@ -1,10 +1,5 @@
 package com.reason.ide;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.project.Project;
@@ -14,6 +9,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.reason.dune.DuneConstants.*;
 
