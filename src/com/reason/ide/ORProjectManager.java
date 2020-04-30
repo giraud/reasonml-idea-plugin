@@ -1,13 +1,13 @@
 package com.reason.ide;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
+import com.reason.ide.files.DuneFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -23,15 +23,14 @@ import static com.reason.dune.DuneConstants.*;
  */
 public class ORProjectManager {
 
-    private static final Set<String> DUNE_PROJECT_FILES = ImmutableSet.of(DUNE_FILENAME, DUNE_PROJECT_FILENAME, LEGACY_JBUILDER_FILENAME);
-
     private static final Map<String, Integer> DUNE_PROJECT_FILE_PRIORITY = ImmutableMap
             .of(DUNE_PROJECT_FILENAME, 2, DUNE_FILENAME, 1, LEGACY_JBUILDER_FILENAME, 0);
 
-    private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR = (left, right) -> DUNE_PROJECT_FILE_PRIORITY.get(right.getName())
-            - DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
+    private static final Comparator<VirtualFile> DUNE_PROJECT_FILE_COMPARATOR = (left, right) ->
+            DUNE_PROJECT_FILE_PRIORITY.get(right.getName()) - DUNE_PROJECT_FILE_PRIORITY.get(left.getName());
 
-    private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR = Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
+    private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR =
+            Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
 
     //private static final Log LOG = Log.create("manager.project");
 
@@ -60,13 +59,17 @@ public class ORProjectManager {
     }
 
     public static LinkedHashSet<VirtualFile> findDuneConfigurationFiles(@NotNull Project project) {
-        return findFilesInProject(DUNE_PROJECT_FILES, project).stream().sorted(FILE_DEPTH_COMPARATOR).sorted(DUNE_PROJECT_FILE_COMPARATOR)
+        return findFilesInProject(DuneFileType.getDefaultFilenames(), project).stream()
+                .sorted(FILE_DEPTH_COMPARATOR)
+                .sorted(DUNE_PROJECT_FILE_COMPARATOR)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static LinkedHashSet<VirtualFile> findEsyConfigurationFiles(@NotNull Project project) {
-        return findFilesInProject(EsyPackageJsonFileType.getDefaultFilename(), project).stream().filter(EsyPackageJson::isEsyPackageJson)
-                .sorted(FILE_DEPTH_COMPARATOR).collect(Collectors.toCollection(LinkedHashSet::new));
+        return findFilesInProject(EsyPackageJsonFileType.getDefaultFilename(), project).stream()
+                .filter(EsyPackageJson::isEsyPackageJson)
+                .sorted(FILE_DEPTH_COMPARATOR)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public static LinkedHashSet<VirtualFile> findBsContentRoots(@NotNull Project project) {
@@ -82,7 +85,10 @@ public class ORProjectManager {
     }
 
     public static Set<VirtualFile> findFilesInProject(@NotNull Set<String> filenames, @NotNull Project project) {
-        return filenames.stream().map(filename -> findFilesInProject(filename, project)).flatMap(Collection::stream).collect(Collectors.toSet());
+        return filenames.stream()
+                .map(filename -> findFilesInProject(filename, project))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     public static Set<VirtualFile> findFilesInProject(@NotNull String filename, @NotNull Project project) {
@@ -109,8 +115,10 @@ public class ORProjectManager {
     }
 
     private static LinkedHashSet<VirtualFile> mapToParents(@NotNull Project project,
-                                                           @NotNull Function<Project, LinkedHashSet<VirtualFile>> findConfigurationFiles) {
-        return findConfigurationFiles.apply(project).stream().map(VirtualFile::getParent).collect(Collectors.toCollection(LinkedHashSet::new));
+            @NotNull Function<Project, LinkedHashSet<VirtualFile>> findConfigurationFiles) {
+        return findConfigurationFiles.apply(project).stream()
+                .map(VirtualFile::getParent)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private static int fileSeparatorCount(@NotNull VirtualFile file) {
