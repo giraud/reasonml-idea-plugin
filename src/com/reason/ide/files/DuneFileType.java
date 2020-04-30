@@ -3,6 +3,7 @@ package com.reason.ide.files;
 import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.lang.dune.DuneLanguage;
 import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,11 @@ public class DuneFileType extends LanguageFileType {
 
     public static Set<String> getDefaultFilenames() {
         return ImmutableSet.of(DUNE_FILENAME, DUNE_PROJECT_FILENAME, LEGACY_JBUILDER_FILENAME);
+    }
+
+    public static boolean isDuneFile(VirtualFile file) {
+        return getDefaultFilenames().stream()
+                .anyMatch(filename -> filename.equals(file.getName()));
     }
 
     private DuneFileType() {
