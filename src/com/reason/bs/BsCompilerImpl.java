@@ -109,18 +109,6 @@ public class BsCompilerImpl implements BsCompiler {
         return true;
     }
 
-    @NotNull
-    private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
-        String bsConfigPath = bsConfigFile.getCanonicalPath();
-        BsConfig bsConfig = m_configs.get(bsConfigPath);
-        if (bsConfig == null) {
-            refresh(bsConfigFile);
-            bsConfig = m_configs.get(bsConfigPath);
-        }
-        return bsConfig;
-    }
-    //endregion
-
     @Override
     public boolean isDependency(@Nullable VirtualFile file) {
         if (file == null) {
@@ -184,6 +172,21 @@ public class BsCompilerImpl implements BsCompiler {
         }
     }
 
+    @Override
+    @NotNull
+    public Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
+        String content = null;
+
+        if (contentRoot != null) {
+            VirtualFile ninja = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
+            if (ninja != null) {
+                content = FileUtil.readFileContent(ninja);
+            }
+        }
+
+        return new Ninja(content);
+    }
+    
     @Nullable
     @Override
     public ConsoleView getConsoleView() {
@@ -201,20 +204,18 @@ public class BsCompilerImpl implements BsCompiler {
         return (ConsoleView) panelComponent.getComponent(0);
     }
 
-    @Override
+
     @NotNull
-    public Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
-        String content = null;
-
-        if (contentRoot != null) {
-            VirtualFile ninja = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
-            if (ninja != null) {
-                content = FileUtil.readFileContent(ninja);
-            }
+    private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
+        String bsConfigPath = bsConfigFile.getCanonicalPath();
+        BsConfig bsConfig = m_configs.get(bsConfigPath);
+        if (bsConfig == null) {
+            refresh(bsConfigFile);
+            bsConfig = m_configs.get(bsConfigPath);
         }
-
-        return new Ninja(content);
+        return bsConfig;
     }
+    //endregion
 
     private boolean isDisabled() {
         if (m_disabled == null) {
