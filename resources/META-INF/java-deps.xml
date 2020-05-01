@@ -32,6 +32,7 @@
 
         <!-- Esy -->
 
+        <projectService serviceImplementation="com.reason.esy.EsyCompiler"/>
         <projectService serviceImplementation="com.reason.esy.EsyProcess"/>
 
         <!-- Gutter icons -->

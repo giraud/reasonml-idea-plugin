@@ -86,6 +86,11 @@ public class DuneCompiler implements Compiler {
     }
 
     @Override
+    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+        run(file, CliType.Dune.BUILD, onProcessTerminated);
+    }
+
+    @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         CompilerProcess process = DuneProcess.getInstance(project);
         if (process.start()) {
@@ -93,9 +98,8 @@ public class DuneCompiler implements Compiler {
             if (duneHandler != null) {
                 ConsoleView console = getConsoleView();
                 if (console != null) {
-                    long start = System.currentTimeMillis();
                     console.attachToProcess(duneHandler);
-                    duneHandler.addProcessListener(new ProcessFinishedListener(start));
+                    duneHandler.addProcessListener(new ProcessFinishedListener());
                 }
                 process.startNotify();
                 ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(file);

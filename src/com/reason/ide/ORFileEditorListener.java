@@ -16,7 +16,6 @@ import com.reason.Compiler;
 import com.reason.ORCompilerManager;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightUpdateQueue;
-import com.reason.ide.console.CliType;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
 import com.reason.ide.hints.InferredTypesService;
@@ -129,18 +128,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
                     && evt.getNewValue() == Boolean.FALSE
                     && m_compiler != null) {
                 // Document is saved, run the compiler !!
-                switch (m_compiler.getType()) {
-                    case BS:
-                        m_compiler.run(m_file, CliType.Bs.MAKE, () -> m_updateQueue.queue(m_project, m_document));
-                        break;
-                    case DUNE:
-                        m_compiler.run(m_file, CliType.Dune.BUILD, () -> m_updateQueue.queue(m_project, m_document));
-                        break;
-                    case ESY:
-                        m_compiler.run(m_file, CliType.Esy.BUILD, () -> m_updateQueue.queue(m_project, m_document));
-                        break;
-                }
-
+                m_compiler.runDefault(m_file, () -> m_updateQueue.queue(m_project, m_document));
 
                 //() -> ApplicationManager.getApplication().runReadAction(() -> {
                 //InferredTypesService.clearTypes(m_project, m_file);

@@ -54,8 +54,14 @@ abstract class CompilerAction extends DumbAwareAction {
     }
 
     private static void compileFile(@NotNull Project project, @NotNull Editor editor, @NotNull CliType cliType) {
-        Optional<PsiFile> activeFile = getActiveFile(project, editor);
-        if (!activeFile.isPresent()) {
+        Optional<PsiFile> activeFileOptional = getActiveFile(project, editor);
+        if (!activeFileOptional.isPresent()) {
+            return;
+        }
+        PsiFile activeFile = activeFileOptional.get();
+        // unsupported file type is open, compile the directory instead
+        if (!Compiler.isSupportedFileType(activeFile.getFileType())) {
+            compileDirectory(project, cliType);
             return;
         }
         ORCompilerManager compilerManager = ORCompilerManager.getInstance(project);
@@ -64,7 +70,7 @@ abstract class CompilerAction extends DumbAwareAction {
             return;
         }
         Compiler compiler = compilerOptional.get();
-        compiler.run(activeFile.get().getVirtualFile(), cliType, null);
+        compiler.run(activeFile.getVirtualFile(), cliType, null);
     }
 
     private static Optional<PsiFile> getActiveFile(@NotNull Project project, @NotNull Editor editor) {

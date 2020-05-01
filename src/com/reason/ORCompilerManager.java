@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.BsCompiler;
 import com.reason.dune.DuneCompiler;
+import com.reason.esy.EsyCompiler;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.console.CliType;
 import com.reason.ide.files.*;
@@ -38,23 +39,9 @@ public class ORCompilerManager {
         return Optional.empty();
     }
 
-    private static Class<? extends Compiler> getCompilerClass(CompilerType compilerType) {
-        switch (compilerType) {
-            case BS:
-                return BsCompiler.class;
-            case DUNE:
-                return DuneCompiler.class;
-            case ESY:
-                // @TODO add esy compiler
-            default:
-                throw new RuntimeException("Unsupported compiler type. Type = " + compilerType);
-        }
-    }
-
     public Optional<Compiler> getCompiler(VirtualFile editorFile) {
         FileType fileType = editorFile.getFileType();
-        if (!(fileType instanceof OclFileType) && !(fileType instanceof OclInterfaceFileType)
-                && !(fileType instanceof RmlFileType) && !(fileType instanceof RmlInterfaceFileType)) {
+        if (!Compiler.isSupportedFileType(fileType)) {
             return Optional.empty();
         }
         return traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>());
@@ -99,5 +86,18 @@ public class ORCompilerManager {
         }
         // move up a directory and try again
         return traverseAncestorsForCompiler(currentDir.getParent(), visited);
+    }
+
+    private static Class<? extends Compiler> getCompilerClass(CompilerType compilerType) {
+        switch (compilerType) {
+            case BS:
+                return BsCompiler.class;
+            case DUNE:
+                return DuneCompiler.class;
+            case ESY:
+                return EsyCompiler.class;
+            default:
+                throw new RuntimeException("Unsupported compiler type. Type = " + compilerType);
+        }
     }
 }
