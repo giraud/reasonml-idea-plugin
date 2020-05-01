@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class BsMakeAction extends CompilerAction {
 
     public BsMakeAction() {
-        super("Make", "Make", AllIcons.Actions.Compile);
+        super("Make bsb", "Make bsb", AllIcons.Actions.Compile);
     }
 
     @Override

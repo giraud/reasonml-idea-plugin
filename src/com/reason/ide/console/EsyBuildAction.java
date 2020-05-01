@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class EsyBuildAction extends CompilerAction {
 
     public EsyBuildAction() {
-        super("Build", "Build", AllIcons.Actions.Compile);
+        super("Build esy", "Build esy", AllIcons.Actions.Compile);
     }
 
     @Override

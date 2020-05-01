@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class EsyShellAction extends CompilerAction {
 
     public EsyShellAction() {
-        super("Shell", "Shell", AllIcons.Actions.Execute);
+        super("Shell esy", "Shell esy", AllIcons.Actions.Execute);
     }
 
     @Override

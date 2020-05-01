@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class DuneCleanAction extends CompilerAction {
 
     public DuneCleanAction() {
-        super("Clean", "Clean", AllIcons.Actions.CloseHovered);
+        super("Clean dune", "Clean dune", AllIcons.Actions.CloseHovered);
     }
 
     @Override

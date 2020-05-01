@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class DuneInstallAction extends CompilerAction {
 
     public DuneInstallAction() {
-        super("Install", "Install", AllIcons.Actions.Install);
+        super("Install dune", "Install dune", AllIcons.Actions.Install);
     }
 
     @Override
