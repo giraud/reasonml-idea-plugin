@@ -3,12 +3,12 @@ package com.reason.bs;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
-import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
-import com.reason.*;
+import com.reason.CompilerProcess;
+import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.settings.ReasonSettings;
@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.WARNING;
 import static com.reason.bs.BsBinaries.getBsbPath;
 import static com.reason.bs.BsBinaries.getBscPath;
 
@@ -60,7 +61,7 @@ public final class BsProcess implements CompilerProcess {
     }
 
     private void create(@Nullable VirtualFile sourceFile, @NotNull CliType.Bs cliType,
-            @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+                        @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             if (sourceFile != null) {
                 createProcessHandler(sourceFile, cliType, onProcessTerminated);
@@ -71,19 +72,21 @@ public final class BsProcess implements CompilerProcess {
     }
 
     @Override
+    @Nullable
     public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         throw new RuntimeException("Method not yet implemented.");
     }
 
     @Nullable
     public ProcessHandler recreate(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-        if (!(cliType instanceof CliType.Bs)) {
-            throw new CompilerProcessException("Invalid cliType command.", CompilerType.BS);
-        }
         try {
-            return createProcessHandler(sourceFile, (CliType.Bs) cliType, onProcessTerminated);
+            if (cliType instanceof CliType.Bs) {
+                return createProcessHandler(sourceFile, (CliType.Bs) cliType, onProcessTerminated);
+            } else {
+                Notifications.Bus.notify(new ORNotification("Bsb", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
+            }
         } catch (ExecutionException e) {
-            Notifications.Bus.notify(new ORNotification("Bsb", "Can't run bsb\n" + e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new ORNotification("Bsb", "Can't run bsb\n" + e.getMessage(), ERROR));
         }
 
         return null;

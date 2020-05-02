@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.WARNING;
 import static com.reason.dune.DuneConstants.DUNE_EXECUTABLE_NAME;
 import static com.reason.esy.EsyConstants.ESY_EXECUTABLE_NAME;
 import static com.reason.esy.EsyProcessException.esyNotFoundException;
@@ -154,21 +155,18 @@ public class EsyProcess implements CompilerProcess {
   }
 
   @Override
-  public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-    if (!(cliType instanceof CliType.Dune)) {
-      throw new CompilerProcessException("Invalid cliType command.", CompilerType.DUNE);
-    }
+  public @Nullable ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    if (cliType instanceof CliType.Esy) {
+      killIt();
 
-    killIt();
+      Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine((CliType.Dune) cliType);
+      if (!commandLineOptional.isPresent()) {
+        SHOW_DUNE_NOT_FOUND_NOTIFICATION.run();
+        return null;
+      }
 
-    Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine((CliType.Dune) cliType);
-    if (!commandLineOptional.isPresent()) {
-      SHOW_DUNE_NOT_FOUND_NOTIFICATION.run();
-      return null;
-    }
-
-    GeneralCommandLine commandLine = commandLineOptional.get();
-    try {
+      GeneralCommandLine commandLine = commandLineOptional.get();
+      try {
         processHandler = new KillableColoredProcessHandler(commandLine);
         processHandler.addProcessListener(outputListener);
         if (onProcessTerminated != null) {
@@ -179,11 +177,15 @@ public class EsyProcess implements CompilerProcess {
             }
           });
         }
-      return processHandler;
-    } catch (ExecutionException e) {
-      SHOW_DUNE_EXCEPTION_NOTIFICATION.accept(e);
-      LOG.error("Unable to recreate esy process.", e);
+        return processHandler;
+      } catch (ExecutionException e) {
+        SHOW_DUNE_EXCEPTION_NOTIFICATION.accept(e);
+        LOG.error("Unable to recreate esy process.", e);
+      }
+    } else {
+      Notifications.Bus.notify(new ORNotification("Esy", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
     }
+
     return null;
   }
 

@@ -9,7 +9,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
-import com.reason.*;
+import com.reason.CompilerProcess;
+import com.reason.ORNotification;
+import com.reason.Platform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.sdk.OCamlSdkType;
@@ -25,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.WARNING;
 
 public final class DuneProcess implements CompilerProcess {
 
@@ -60,27 +63,28 @@ public final class DuneProcess implements CompilerProcess {
     @Override
     @Nullable
     public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-        if (!(cliType instanceof CliType.Dune)) {
-            throw new CompilerProcessException("Invalid cliType command.", CompilerType.DUNE);
-        }
-        try {
-            killIt();
-            GeneralCommandLine cli = getGeneralCommandLine((CliType.Dune) cliType);
-            if (cli != null) {
-                m_processHandler = new KillableColoredProcessHandler(cli);
-                m_processHandler.addProcessListener(m_outputListener);
-                if (onProcessTerminated != null) {
-                    m_processHandler.addProcessListener(new ProcessAdapter() {
-                        @Override
-                        public void processTerminated(@NotNull ProcessEvent event) {
-                            onProcessTerminated.run();
-                        }
-                    });
+        if (cliType instanceof CliType.Dune) {
+            try {
+                killIt();
+                GeneralCommandLine cli = getGeneralCommandLine((CliType.Dune) cliType);
+                if (cli != null) {
+                    m_processHandler = new KillableColoredProcessHandler(cli);
+                    m_processHandler.addProcessListener(m_outputListener);
+                    if (onProcessTerminated != null) {
+                        m_processHandler.addProcessListener(new ProcessAdapter() {
+                            @Override
+                            public void processTerminated(@NotNull ProcessEvent event) {
+                                onProcessTerminated.run();
+                            }
+                        });
+                    }
                 }
+                return m_processHandler;
+            } catch (ExecutionException e) {
+                Notifications.Bus.notify(new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
             }
-            return m_processHandler;
-        } catch (ExecutionException e) {
-            Notifications.Bus.notify(new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
+        } else {
+            Notifications.Bus.notify(new ORNotification("Dune", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
         }
 
         return null;
