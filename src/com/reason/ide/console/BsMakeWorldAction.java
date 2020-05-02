@@ -9,7 +9,7 @@ public class BsMakeWorldAction extends CompilerAction {
 
     @SuppressWarnings("WeakerAccess")
     public BsMakeWorldAction() {
-        super("Clean and make world", "Clean and make world", AllIcons.General.Web);
+        super("Clean and make world bsb", "Clean and make world bsb", AllIcons.General.Web);
     }
 
     @Override

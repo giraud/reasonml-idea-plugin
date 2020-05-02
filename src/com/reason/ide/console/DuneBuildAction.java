@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class DuneBuildAction extends CompilerAction {
 
     public DuneBuildAction() {
-        super("Build", "Build", AllIcons.Actions.Compile);
+        super("Build dune", "Build dune", AllIcons.Actions.Compile);
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class EsyInstallAction extends CompilerAction {
 
     public EsyInstallAction() {
-        super("Install", "Install", AllIcons.Actions.Install);
+        super("Install esy", "Install esy", AllIcons.Actions.Install);
     }
 
     @Override
