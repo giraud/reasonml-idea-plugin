@@ -1,19 +1,15 @@
 package com.reason.ide.console;
 
-import com.intellij.facet.FacetManager;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.editor.actions.ScrollToTheEndToolbarAction;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.reason.ide.facet.DuneFacet;
 import icons.ORIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -43,20 +39,6 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
     @Override
     public String getStripeTitle() {
         return "Esy";
-    }
-
-    @Override
-    public boolean shouldBeAvailable(@NotNull Project project) {
-        ModuleManager moduleManager = ModuleManager.getInstance(project);
-        Module[] modules = moduleManager.getModules();
-        for (Module module : modules) {
-            FacetManager instance = FacetManager.getInstance(module);
-            DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
-            if (duneFacet != null) {
-                return duneFacet.getConfiguration().isEsy;
-            }
-        }
-        return false;
     }
 
     @Override

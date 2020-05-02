@@ -15,12 +15,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.reason.*;
 import com.reason.hints.InsightManager;
-import com.reason.ide.console.BsToolWindowFactory;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
+import com.reason.ide.console.ORToolWindowProvider;
 import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +28,10 @@ import org.jetbrains.coverage.gnu.trove.THashMap;
 
 import javax.swing.*;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
-public class BucklescriptImpl implements Bucklescript {
+public class BsCompilerImpl implements BsCompiler {
 
     @NotNull
     private final Project m_project;
@@ -38,7 +40,7 @@ public class BucklescriptImpl implements Bucklescript {
     @Nullable
     private Boolean m_disabled = null; // Never call directly, use isDisabled()
 
-    private BucklescriptImpl(@NotNull Project project) {
+    private BsCompilerImpl(@NotNull Project project) {
         m_project = project;
     }
 
@@ -53,11 +55,15 @@ public class BucklescriptImpl implements Bucklescript {
         return "";
     }
 
-    //region Compiler
-    @Nullable
     @Override
-    public VirtualFile findContentRoot(@NotNull Project project) {
-        return Platform.findORPackageJsonContentRoot(project);
+    @Deprecated
+    public Optional<VirtualFile> findFirstContentRoot(@NotNull Project project) {
+        return ORProjectManager.findFirstBsContentRoot(project);
+    }
+
+    @Override
+    public Set<VirtualFile> findContentRoots(@NotNull Project project) {
+        return ORProjectManager.findBsContentRoots(project);
     }
 
     @Override
@@ -76,7 +82,7 @@ public class BucklescriptImpl implements Bucklescript {
                 if (process.start()) {
                     ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
                     if (bscHandler != null) {
-                        ConsoleView console = getBsbConsole();
+                        ConsoleView console = getConsoleView();
                         if (console != null) {
                             long start = System.currentTimeMillis();
                             console.attachToProcess(bscHandler);
@@ -97,17 +103,11 @@ public class BucklescriptImpl implements Bucklescript {
         return CompilerType.BS;
     }
 
-    @NotNull
-    private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
-        String bsConfigPath = bsConfigFile.getCanonicalPath();
-        BsConfig bsConfig = m_configs.get(bsConfigPath);
-        if (bsConfig == null) {
-            refresh(bsConfigFile);
-            bsConfig = m_configs.get(bsConfigPath);
-        }
-        return bsConfig;
+    @Override
+    public boolean isConfigured(@NotNull Project project) {
+        // BuckleScript doesn't require any project-level configuration
+        return true;
     }
-    //endregion
 
     @Override
     public boolean isDependency(@Nullable VirtualFile file) {
@@ -172,23 +172,6 @@ public class BucklescriptImpl implements Bucklescript {
         }
     }
 
-    @Nullable
-    public ConsoleView getBsbConsole() {
-        ConsoleView console = null;
-
-        ToolWindow window = ToolWindowManager.getInstance(m_project).getToolWindow(BsToolWindowFactory.ID);
-        Content windowContent = window.getContentManager().getContent(0);
-        if (windowContent != null) {
-            SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
-            JComponent panelComponent = component.getComponent();
-            if (panelComponent != null) {
-                console = (ConsoleView) panelComponent.getComponent(0);
-            }
-        }
-
-        return console;
-    }
-
     @Override
     @NotNull
     public Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
@@ -203,6 +186,36 @@ public class BucklescriptImpl implements Bucklescript {
 
         return new Ninja(content);
     }
+    
+    @Nullable
+    @Override
+    public ConsoleView getConsoleView() {
+        ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(m_project);
+        ToolWindow bsToolWindow = windowProvider.getBsToolWindow();
+        Content windowContent = bsToolWindow.getContentManager().getContent(0);
+        if (windowContent == null) {
+            return null;
+        }
+        SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
+        JComponent panelComponent = component.getComponent();
+        if (panelComponent == null) {
+            return null;
+        }
+        return (ConsoleView) panelComponent.getComponent(0);
+    }
+
+
+    @NotNull
+    private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
+        String bsConfigPath = bsConfigFile.getCanonicalPath();
+        BsConfig bsConfig = m_configs.get(bsConfigPath);
+        if (bsConfig == null) {
+            refresh(bsConfigFile);
+            bsConfig = m_configs.get(bsConfigPath);
+        }
+        return bsConfig;
+    }
+    //endregion
 
     private boolean isDisabled() {
         if (m_disabled == null) {

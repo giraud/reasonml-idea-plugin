@@ -79,8 +79,10 @@
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
-            <border type="etched" title="Reformat"/>
+            <properties>
+              <name value="refmt"/>
+            </properties>
+            <border type="etched" title="Refmt"/>
             <children>
               <component id="8f79f" class="javax.swing.JLabel">
                 <constraints>
@@ -109,7 +111,7 @@
                 </constraints>
                 <properties>
                   <selected value="false"/>
-                  <text value="Reformat on save (warning: may break the undo command after save)"/>
+                  <text value="Format on save (warning: may break the undo command after save)"/>
                 </properties>
               </component>
             </children>

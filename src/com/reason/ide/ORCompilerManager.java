@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.facet.FacetManager;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
@@ -9,15 +10,19 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
-import com.reason.Log;
 import com.reason.CompilerType;
+import com.reason.Log;
 import com.reason.ORNotification;
-import com.reason.bs.Bucklescript;
+import com.reason.bs.BsCompiler;
 import com.reason.dune.DuneCompiler;
 import com.reason.ide.console.CliType;
 import com.reason.ide.facet.DuneFacet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
@@ -27,25 +32,36 @@ public class ORCompilerManager {
     private static final Log LOG = Log.create("manager.compiler");
 
     private static final Compiler DUMMY_COMPILER = new Compiler() {
-        @Nullable
         @Override
-        public VirtualFile findContentRoot(@NotNull Project project) {
-            return null;
+        public Optional<VirtualFile> findFirstContentRoot(@NotNull Project project) {
+            return Optional.empty();
         }
 
         @Override
-        public void refresh(@NotNull VirtualFile bsconfigFile) {
-            //nothing
+        public Set<VirtualFile> findContentRoots(@NotNull Project project) {
+            return Collections.emptySet();
         }
 
         @Override
-        public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-            //nothing
-        }
+        public void refresh(@NotNull VirtualFile bsconfigFile) {}
+
+        @Override
+        public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {}
 
         @Override
         public CompilerType getType() {
             return CompilerType.DUMMY;
+        }
+
+        @Override
+        public boolean isConfigured(@NotNull Project project) {
+            return true;
+        }
+
+        @Nullable
+        @Override
+        public ConsoleView getConsoleView() {
+            return null;
         }
     };
 
@@ -72,6 +88,6 @@ public class ORCompilerManager {
             }
         }
 
-        return ServiceManager.getService(project, Bucklescript.class);
+        return ServiceManager.getService(project, BsCompiler.class);
     }
 }

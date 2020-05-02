@@ -155,7 +155,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     }
 
     public void testPrivate() {
-        PsiLet e = first(letExpressions(parseCode("let x%private = 1;", true)));
+        PsiLet e = first(letExpressions(parseCode("let x%private = 1;")));
 
         assertEquals("x", e.getName());
         assertTrue(e.isPrivate());

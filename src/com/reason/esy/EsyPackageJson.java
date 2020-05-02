@@ -16,21 +16,17 @@ import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.EsyPackageJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 public class EsyPackageJson {
 
-    private EsyPackageJson() {
-    }
+    private EsyPackageJson() {}
 
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
-        try {
-            FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-            return createFilePattern().accepts(fileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO?
+        if (virtualFile.isDirectory()) {
+            return false;
         }
+        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+        return createFilePattern().accepts(fileContent);
     }
 
     public static FileType getFileType() {

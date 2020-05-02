@@ -1,17 +1,15 @@
 package com.reason.lang.reason;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
-import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScope.mark;
-import static com.reason.lang.ParserScope.markScope;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.reason.lang.ParserScope.*;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public class RmlParser extends CommonParser<RmlTypes> {
@@ -257,8 +255,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseFun(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(letNamedEq)) {
-            state.add(mark(builder, function, m_types.C_FUN_EXPR));
-            state.add(mark(builder, functionBody, m_types.C_FUN_BODY));
+            // let x = |>fun<| | ..
+            // fun keyword is equivalent to a switch body
+            state.add(mark(builder, funPattern, switchBody, m_types.C_FUN_EXPR).complete());
         }
     }
 
@@ -318,7 +317,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
             state.advance().
                     add(mark(builder, state.currentContext(), functionParameter,
-                            state.currentContext() == functionCall ? m_types.C_FUN_CALL_PARAM : m_types.C_FUN_PARAM));
+                             state.currentContext() == functionCall ? m_types.C_FUN_CALL_PARAM : m_types.C_FUN_PARAM));
             IElementType nextTokenType = builder.getTokenType();
             if (nextTokenType != m_types.RPAREN) {
                 // not at the end of a list: ie not => (p1, p2<,> )
@@ -357,7 +356,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             if (state.isCurrentResolution(patternMatch)) {
                 state.popEnd();
             }
-            state.add(mark(builder, patternMatch, m_types.C_PATTERN_MATCH_EXPR).complete());
+            state.add(mark(builder, state.currentContext(), patternMatch, m_types.C_PATTERN_MATCH_EXPR).complete());
         }
     }
 
@@ -1103,6 +1102,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseSemi(@NotNull ParserState state) {
+        // Special case for the `fun` keyword that must be seen like a switch
+        if (state.isCurrentContext(funPattern)) {
+            state.popEndUntilResolution(switchBody);
+        }
         // Don't pop the scopes
         state.popEndUntilStartScope();
     }
@@ -1156,7 +1159,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             if (!state.isCurrentResolution(moduleNamedEq) && nextElementType == m_types.LPAREN) {
                 // A variant with a constructor
                 state.add(mark(builder, state.currentContext(), state.isCurrentResolution(typeNamedEq) ? typeNamedEqVariant : variant,
-                        m_types.C_VARIANT_DECL/*CALL*/).complete());
+                               m_types.C_VARIANT_DECL/*CALL*/).complete());
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
                 state.wrapWith(m_types.C_VARIANT);
                 return;

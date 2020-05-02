@@ -3,13 +3,12 @@ package com.reason.ide.console;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.reason.CompilerType;
 import org.jetbrains.annotations.NotNull;
 
 public class EsyBuildAction extends CompilerAction {
 
     public EsyBuildAction() {
-        super("Build", "Build", AllIcons.Actions.Compile);
+        super("Build esy", "Build esy", AllIcons.Actions.Compile);
     }
 
     @Override
@@ -18,10 +17,5 @@ public class EsyBuildAction extends CompilerAction {
         if (project != null) {
             doAction(project, CliType.Esy.BUILD);
         }
-    }
-
-    @Override
-    public CompilerType getCompilerType() {
-        return CompilerType.ESY;
     }
 }

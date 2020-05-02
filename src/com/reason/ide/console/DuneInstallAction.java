@@ -3,13 +3,12 @@ package com.reason.ide.console;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.reason.CompilerType;
 import org.jetbrains.annotations.NotNull;
 
 public class DuneInstallAction extends CompilerAction {
 
     public DuneInstallAction() {
-        super("Install", "Install", AllIcons.Actions.Install);
+        super("Install dune", "Install dune", AllIcons.Actions.Install);
     }
 
     @Override
@@ -18,10 +17,5 @@ public class DuneInstallAction extends CompilerAction {
         if (project != null) {
             doAction(project, CliType.Dune.INSTALL);
         }
-    }
-
-    @Override
-    public CompilerType getCompilerType() {
-        return CompilerType.DUNE;
     }
 }

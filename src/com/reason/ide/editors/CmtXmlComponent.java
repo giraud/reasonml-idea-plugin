@@ -2,21 +2,15 @@ package com.reason.ide.editors;
 
 import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.lang.xhtml.XHTMLLanguage;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.fileTypes.PlainTextFileType;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.util.ui.components.BorderLayoutPanel;
-import com.reason.bs.Bucklescript;
-import com.reason.bs.BucklescriptImpl;
-import com.reason.hints.InsightManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.ChangeEvent;

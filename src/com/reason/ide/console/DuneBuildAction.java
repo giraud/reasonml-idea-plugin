@@ -3,13 +3,12 @@ package com.reason.ide.console;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.reason.CompilerType;
 import org.jetbrains.annotations.NotNull;
 
 public class DuneBuildAction extends CompilerAction {
 
     public DuneBuildAction() {
-        super("Build", "Build", AllIcons.Actions.Compile);
+        super("Build dune", "Build dune", AllIcons.Actions.Compile);
     }
 
     @Override
@@ -18,10 +17,5 @@ public class DuneBuildAction extends CompilerAction {
         if (project != null) {
             doAction(project, CliType.Dune.BUILD);
         }
-    }
-
-    @Override
-    public CompilerType getCompilerType() {
-        return CompilerType.DUNE;
     }
 }

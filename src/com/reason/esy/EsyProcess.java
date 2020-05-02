@@ -4,22 +4,22 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.configurations.PathEnvironmentVariableUtil;
 import com.intellij.execution.process.*;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ObjectUtils;
 import com.reason.*;
 import com.reason.Compiler;
 import com.reason.dune.DuneOutputListener;
+import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
@@ -32,19 +32,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.WARNING;
+import static com.reason.dune.DuneConstants.DUNE_EXECUTABLE_NAME;
+import static com.reason.esy.EsyConstants.ESY_EXECUTABLE_NAME;
 import static com.reason.esy.EsyProcessException.esyNotFoundException;
 
 public class EsyProcess implements CompilerProcess {
-
-  public static final String DUNE_EXECUTABLE_NAME = "dune";
-  public static final String ESY_EXECUTABLE_NAME = "esy";
-  public static final String WINDOWS_EXECUTABLE_SUFFIX =  ".exe";
 
   private static final Runnable SHOW_DUNE_NOT_FOUND_NOTIFICATION =
       () -> Notifications.Bus.notify(new ORNotification("Dune Missing", "Unable to find dune executable in esy PATH.", ERROR));
 
   private static final Runnable SHOW_ESY_NOT_FOUND_NOTIFICATION =
       () -> Notifications.Bus.notify(new ORNotification("Esy Missing", "Unable to find esy executable in system PATH.", ERROR));
+
+  private static final Runnable SHOW_ESY_PROJECT_ROOT_NOT_FOUND_NOTIFICATION =
+          () -> Notifications.Bus.notify(new ORNotification("Missing Project Configuration File",
+                  "Unable to find esy package.json. Has it been created?", ERROR));
 
   private static final Consumer<Exception> SHOW_EXEC_EXCEPTION_NOTIFICATION =
       (e) -> Notifications.Bus.notify(new ORNotification("Esy Exception", "Failed to execute esy command.\n" + e.getMessage(), ERROR));
@@ -106,15 +109,14 @@ public class EsyProcess implements CompilerProcess {
 
   private EsyProcess(@NotNull Project project) {
     FileSystem fileSystem = FileSystems.getDefault();
-    VirtualFile esyContentRoot = Platform.findOREsyContentRoot(project);
-    Path esyExecutable = findExecutableInPath(ESY_EXECUTABLE_NAME, System.getenv("PATH"))
+    Path esyExecutable = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, System.getenv("PATH"))
         .orElseThrow(() -> {
           SHOW_ESY_NOT_FOUND_NOTIFICATION.run();
           return esyNotFoundException();
         });
     this.project = project;
     this.outputListener = new DuneOutputListener(project, this);
-    this.workingDir = fileSystem.getPath(esyContentRoot.getPath());
+    this.workingDir = findOrDefaultEsyContentRoot(project);
     this.esyExecutable = esyExecutable;
     this.redirectErrors = true;
     this.started = new AtomicBoolean(false);
@@ -153,21 +155,18 @@ public class EsyProcess implements CompilerProcess {
   }
 
   @Override
-  public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-    if (!(cliType instanceof CliType.Dune)) {
-      throw new CompilerProcessException("Invalid cliType command.", CompilerType.DUNE);
-    }
+  public @Nullable ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    if (cliType instanceof CliType.Esy) {
+      killIt();
 
-    killIt();
+      Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine((CliType.Dune) cliType);
+      if (!commandLineOptional.isPresent()) {
+        SHOW_DUNE_NOT_FOUND_NOTIFICATION.run();
+        return null;
+      }
 
-    Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine((CliType.Dune) cliType);
-    if (!commandLineOptional.isPresent()) {
-      SHOW_DUNE_NOT_FOUND_NOTIFICATION.run();
-      return null;
-    }
-
-    GeneralCommandLine commandLine = commandLineOptional.get();
-    try {
+      GeneralCommandLine commandLine = commandLineOptional.get();
+      try {
         processHandler = new KillableColoredProcessHandler(commandLine);
         processHandler.addProcessListener(outputListener);
         if (onProcessTerminated != null) {
@@ -178,11 +177,15 @@ public class EsyProcess implements CompilerProcess {
             }
           });
         }
-      return processHandler;
-    } catch (ExecutionException e) {
-      SHOW_DUNE_EXCEPTION_NOTIFICATION.accept(e);
-      LOG.error("Unable to recreate esy process.", e);
+        return processHandler;
+      } catch (ExecutionException e) {
+        SHOW_DUNE_EXCEPTION_NOTIFICATION.accept(e);
+        LOG.error("Unable to recreate esy process.", e);
+      }
+    } else {
+      Notifications.Bus.notify(new ORNotification("Esy", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
     }
+
     return null;
   }
 
@@ -249,13 +252,11 @@ public class EsyProcess implements CompilerProcess {
       return Optional.empty();
     }
 
-    VirtualFile esyContentRoot = Platform.findOREsyContentRoot(project);
-
     String duneCommand = cliType == CliType.Dune.CLEAN ? "clean" : "build"; // @TODO support all actions
 
     GeneralCommandLine cli = new GeneralCommandLine(duneExecutable.get().toString(), duneCommand);
     cli.withEnvironment(getEsyEnvironment());
-    cli.setWorkDirectory(esyContentRoot.getPath());
+    cli.setWorkDirectory(workingDir.toString());
     cli.setRedirectErrorStream(true);
     return Optional.of(cli);
   }
@@ -266,14 +267,18 @@ public class EsyProcess implements CompilerProcess {
     if (paths == null) {
       return Optional.empty();
     }
-    return findExecutableInPath(DUNE_EXECUTABLE_NAME, paths);
+    return Platform.findExecutableInPath(DUNE_EXECUTABLE_NAME, paths);
   }
 
-  private static Optional<Path> findExecutableInPath(String filename, String shellPath) {
-    if (SystemInfo.isWindows) {
-      filename += WINDOWS_EXECUTABLE_SUFFIX;
+  // attempt to find esy package.json. if it's missing, show warning and return the project's root directory
+  private static Path findOrDefaultEsyContentRoot(@NotNull Project project) {
+    FileSystem fileSystem = FileSystems.getDefault();
+    Optional<VirtualFile> esyContentRoot = ORProjectManager.findFirstEsyContentRoot(project);
+    if (esyContentRoot.isPresent()) {
+      return fileSystem.getPath(esyContentRoot.get().getPath());
     }
-    File exeFile = PathEnvironmentVariableUtil.findInPath(filename, shellPath, null);
-    return exeFile == null ? Optional.empty() : Optional.of(exeFile.toPath());
+    SHOW_ESY_PROJECT_ROOT_NOT_FOUND_NOTIFICATION.run();
+    String defaultPath = ObjectUtils.notNull(project.getBasePath(), "");
+    return fileSystem.getPath(defaultPath);
   }
 }

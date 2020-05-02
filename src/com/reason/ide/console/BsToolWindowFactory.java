@@ -42,12 +42,6 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
     }
 
     @Override
-    public boolean shouldBeAvailable(@NotNull Project project) {
-        // @TODO TEMPORARY - replace with ORModuleManager::findFirstBsModule
-        return true;
-    }
-
-    @Override
     public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window) {
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
 

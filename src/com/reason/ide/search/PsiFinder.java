@@ -16,7 +16,7 @@ import com.intellij.util.containers.ArrayListSet;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.reason.Joiner;
 import com.reason.Log;
-import com.reason.bs.Bucklescript;
+import com.reason.bs.BsCompiler;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.files.RmlFileType;
@@ -87,7 +87,7 @@ public final class PsiFinder {
 
         PartitionedModules(@NotNull Project project, @Nullable Collection<PsiModule> modules, @Nullable ModuleFilter<PsiModule> filter) {
             if (modules != null) {
-                Bucklescript bucklescript = ServiceManager.getService(project, Bucklescript.class);
+                BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
 
                 for (PsiModule module : modules) {
                     PsiModule realModule = module instanceof PsiFakeModule ? (FileBase) module.getContainingFile() : module;
@@ -164,7 +164,7 @@ public final class PsiFinder {
 
         PsiModule module = modules.iterator().next();
         return ServiceManager.
-                getService(m_project, Bucklescript.class).
+                getService(m_project, BsCompiler.class).
                 isDependency(module.getContainingFile().getVirtualFile()) ? module : null;
     }
 
@@ -177,7 +177,7 @@ public final class PsiFinder {
 
         Set<PsiModule> result = new HashSet<>();
 
-        Bucklescript bucklescript = ServiceManager.getService(m_project, Bucklescript.class);
+        BsCompiler bucklescript = ServiceManager.getService(m_project, BsCompiler.class);
 
         ModuleComponentIndex componentIndex = ModuleComponentIndex.getInstance();
         ModuleIndex moduleIndex = ModuleIndex.getInstance();

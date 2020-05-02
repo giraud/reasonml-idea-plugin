@@ -12,6 +12,13 @@
 
 ## Unreleased
 
+## 0.88.1 - 2020/05/02
+
+0.88.1
+- :house: [#238](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/238) ![o] ![r] Add build system info to action labels by [@Coobaha](https://github.com/Coobaha)
+- :house: [#234](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/234) Display warning instead of exception
+
+0.88
 - :rocket: ![o] You can easily download OCaml SDK sources in SDK platform settings
 - :bug: [#231](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/231) Fix ClassCastException when reading bsconfig.json
 - :nail_care: [#220](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/220) ![o] ![r] Added BuckleScript file type and icon by [@pooch](https://github.com/JohnPucciarelli) 
@@ -520,5 +527,5 @@ This release contains a big rewrite of how modules are referenced, it may break 
 [0.81]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...0.81
 [0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
-[r]: jps-plugin/resources/icons/reason-file.png
-[o]: jps-plugin/resources/icons/ocaml-file.png
+[r]: docs/reason-file.png
+[o]: docs/ocaml-file.png

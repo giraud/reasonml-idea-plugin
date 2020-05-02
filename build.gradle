@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.18"
 }
 
-def pluginVersion = '0.88.0'
+def pluginVersion = '0.88.1'
 def ideaVersion = '2020.1'
 version = pluginVersion + '-' + ideaVersion
 
@@ -16,7 +16,9 @@ patchPluginXml {
             <li>Poly-variants can have a different highlighting, color scheme updated</li>
             <li>Use SVG icons</li>
             <li>#224 - Use bsb.exe instead of node.js wrapper in monorepo</li>
-            <li>#221 - Compilers have separate tool windows</li> 
+            <li>#221 - Compilers have separate tool windows</li>
+            <li>#238 - Add build system info to action labels</li>
+            <li>#234 - com.reason.CompilerProcessException: Dune process exception. Invalid cliType command</li>
             <li>Use rincewind@0.8</li>
         </ul>
 
@@ -75,6 +77,10 @@ repositories {
 
 dependencies {
     compile project('jps-plugin')
+    def powerMockVersion = "2.0.2"
+    testCompile 'org.mockito:mockito-core:3.3.3'
+    testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
+    testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
 }
 
 apply plugin: 'idea'

@@ -39,7 +39,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<ErrorAnnotator.
 
             int startOffset = editor.logicalPositionToOffset(start);
             int endOffset = editor.logicalPositionToOffset(end);
-            if (0 <= startOffset && 0 <= endOffset && startOffset < endOffset) {
+            if (0 < startOffset && 0 < endOffset && startOffset < endOffset) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
                 }
