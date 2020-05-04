@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class OCamlSourcesOrderRootType extends PersistentOrderRootType {
     public OCamlSourcesOrderRootType() {
-        super("OCAML_SOURCES", "sourcePath", null, null);
+        super("OCAML_SOURCES", "OCamlSourcePath", null, null);
     }
 
     @NotNull
