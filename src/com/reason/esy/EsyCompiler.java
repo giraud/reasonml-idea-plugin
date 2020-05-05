@@ -23,7 +23,7 @@ import java.util.Set;
 
 public class EsyCompiler implements Compiler {
 
-    private static final Log LOG = Log.create("esy.compiler");
+    private static final Log LOG = Log.create("compiler.esy");
 
     @NotNull
     private final Project m_project;
