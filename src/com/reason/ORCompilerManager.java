@@ -19,11 +19,7 @@ public class ORCompilerManager {
 
     private final Project project;
 
-    public static ORCompilerManager getInstance(@NotNull Project project) {
-        return new ORCompilerManager(project);
-    }
-
-    private ORCompilerManager(@NotNull Project project) {
+    public ORCompilerManager(@NotNull Project project) {
         this.project = project;
     }
 

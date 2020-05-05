@@ -39,7 +39,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
     ORFileEditorListener(@NotNull Project project) {
         m_project = project;
-        m_compilerManager = ORCompilerManager.getInstance(project);
+        m_compilerManager = ServiceManager.getService(ORCompilerManager.class);
     }
 
     public void updateQueues() {

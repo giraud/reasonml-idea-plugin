@@ -261,7 +261,7 @@
         <!--
          | Compiler
          -->
-
+        <projectService serviceImplementation="com.reason.ORCompilerManager"/>
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
         <projectService serviceInterface="com.reason.bs.BsCompiler"
                         serviceImplementation="com.reason.bs.BsCompilerImpl"/>

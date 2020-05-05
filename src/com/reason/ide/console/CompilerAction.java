@@ -2,6 +2,7 @@ package com.reason.ide.console;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -35,7 +36,7 @@ abstract class CompilerAction extends DumbAwareAction {
     }
 
     private static void compileDirectory(@NotNull Project project, CliType cliType) {
-        ORCompilerManager compilerManager = ORCompilerManager.getInstance(project);
+        ORCompilerManager compilerManager = ServiceManager.getService(ORCompilerManager.class);
         Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
         if (!compilerOptional.isPresent()) {
            return;
@@ -67,7 +68,7 @@ abstract class CompilerAction extends DumbAwareAction {
             compileDirectory(project, cliType);
             return;
         }
-        ORCompilerManager compilerManager = ORCompilerManager.getInstance(project);
+        ORCompilerManager compilerManager = ServiceManager.getService(ORCompilerManager.class);
         Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
         if (!compilerOptional.isPresent()) {
             return;
