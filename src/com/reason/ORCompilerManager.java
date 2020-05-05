@@ -17,6 +17,8 @@ import java.util.Optional;
 
 public class ORCompilerManager {
 
+    private static final Log LOG = Log.create("manager.compiler");
+
     private final Project project;
 
     public ORCompilerManager(@NotNull Project project) {
@@ -93,7 +95,9 @@ public class ORCompilerManager {
             case ESY:
                 return EsyCompiler.class;
             default:
-                throw new RuntimeException("Unsupported compiler type. Type = " + compilerType);
+                // this shouldn't happen. fall back to BuckleScript
+                LOG.error("Unsupported or null compilerType. compilerType = " + compilerType);
+                return BsCompiler.class;
         }
     }
 }
