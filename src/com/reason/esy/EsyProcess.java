@@ -29,6 +29,8 @@ import static com.reason.esy.EsyProcessException.esyNotFoundException;
 
 public class EsyProcess implements CompilerProcess {
 
+  private static final Log LOG = Log.create("process.esy");
+
   @Nls
   private static final Runnable SHOW_ESY_NOT_FOUND_NOTIFICATION =
           () -> Notifications.Bus.notify(new ORNotification("Esy Missing",
@@ -43,8 +45,6 @@ public class EsyProcess implements CompilerProcess {
   private static final Consumer<Exception> SHOW_EXEC_EXCEPTION_NOTIFICATION =
           (e) -> Notifications.Bus.notify(new ORNotification("Esy Exception",
                   "Failed to execute esy command.\n" + e.getMessage(), ERROR));
-
-  private static final Log LOG = Log.create("compiler.esy");
 
   public static class Command {
     public static final String ESY = "";
