@@ -41,10 +41,10 @@ public class ORCompilerManager {
 
     public Optional<Compiler> getCompiler(VirtualFile editorFile) {
         FileType fileType = editorFile.getFileType();
-        if (!Compiler.isSupportedFileType(fileType)) {
-            return Optional.empty();
+        if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
+            return traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>());
         }
-        return traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>());
+        return Optional.empty();
     }
 
     private Optional<Compiler> traverseAncestorsForCompiler(VirtualFile currentDir,

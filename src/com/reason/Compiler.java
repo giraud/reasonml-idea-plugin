@@ -17,11 +17,6 @@ import java.util.Set;
 
 public interface Compiler {
 
-    static boolean isSupportedFileType(@NotNull FileType fileType) {
-        return fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType
-                || fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType;
-    }
-
     @FunctionalInterface
     interface ProcessTerminated {
         void run();

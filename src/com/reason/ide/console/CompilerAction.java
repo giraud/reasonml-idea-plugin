@@ -5,6 +5,7 @@ import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -12,6 +13,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.reason.Compiler;
 import com.reason.ORCompilerManager;
+import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -60,7 +62,8 @@ abstract class CompilerAction extends DumbAwareAction {
         }
         PsiFile activeFile = activeFileOptional.get();
         // unsupported file type is open, compile the directory instead
-        if (!Compiler.isSupportedFileType(activeFile.getFileType())) {
+        FileType fileType = activeFile.getFileType();
+        if (!FileHelper.isOCaml(fileType) || !FileHelper.isReason(fileType)) {
             compileDirectory(project, cliType);
             return;
         }
