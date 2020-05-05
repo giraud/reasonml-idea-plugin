@@ -15,6 +15,8 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     private final ReasonSettings m_settings;
 
     private JPanel f_rootPanel;
+    private JTabbedPane tabbedPane1;
+    private JCheckBox enabledCheckBox;
     private TextFieldWithBrowseButton f_bsLocation;
     private JTextField f_columnWidth;
     private JCheckBox f_reformatOnSave;
