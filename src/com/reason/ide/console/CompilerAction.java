@@ -36,7 +36,7 @@ abstract class CompilerAction extends DumbAwareAction {
     }
 
     private static void compileDirectory(@NotNull Project project, CliType cliType) {
-        ORCompilerManager compilerManager = ServiceManager.getService(ORCompilerManager.class);
+        ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
         Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
         if (!compilerOptional.isPresent()) {
            return;
@@ -68,7 +68,7 @@ abstract class CompilerAction extends DumbAwareAction {
             compileDirectory(project, cliType);
             return;
         }
-        ORCompilerManager compilerManager = ServiceManager.getService(ORCompilerManager.class);
+        ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
         Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
         if (!compilerOptional.isPresent()) {
             return;
