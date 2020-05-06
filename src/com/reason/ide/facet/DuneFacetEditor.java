@@ -88,7 +88,9 @@ class DuneFacetEditor extends FacetEditorTab {
         Sdk odk = f_sdkSelect.getSelectedJdk();
         m_configuration.sdkName = odk == null ? null : odk.getName();
 
+        // @TODO see https://github.com/reasonml-editor/reasonml-idea-plugin/issues/243
         // show tool window if dune is now configured
+        // should use a listener instead as this doesn't trigger when the facet is removed
         ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(m_editorContext.getProject());
         toolWindowManager.showToolWindows();;
     }
