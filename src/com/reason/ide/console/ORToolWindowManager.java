@@ -1,13 +1,15 @@
 package com.reason.ide.console;
 
-import com.intellij.facet.FacetManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.reason.Compiler;
+import com.reason.CompilerType;
+import com.reason.ORCompilerManager;
 import com.reason.ide.ORProjectManager;
-import com.reason.ide.facet.DuneFacet;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class ORToolWindowManager {
 
@@ -45,20 +47,9 @@ public class ORToolWindowManager {
 
     private static boolean shouldShowDuneToolWindow(@NotNull Project project) {
         // if config is present, show the tool window
-        if (ORProjectManager.isDuneProject(project)) {
-            return true;
-        }
-        // if dune facet explicitly setup, also show the window
-        ModuleManager moduleManager = ModuleManager.getInstance(project);
-        Module[] modules = moduleManager.getModules();
-        for (Module module : modules) {
-            FacetManager instance = FacetManager.getInstance(module);
-            DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
-            if (duneFacet != null) {
-                return true;
-            }
-        }
-        return false;
+        ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
+        Optional<Compiler> duneCompiler = compilerManager.getCompiler(CompilerType.DUNE);
+        return duneCompiler.isPresent() && ORProjectManager.isDuneProject(project);
     }
 
     private static boolean shouldShowEsyToolWindow(@NotNull Project project) {
