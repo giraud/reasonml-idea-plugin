@@ -3,12 +3,10 @@ package com.reason.dune;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.facet.FacetManager;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
@@ -20,7 +18,6 @@ import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.ORToolWindowProvider;
 import com.reason.ide.facet.DuneFacet;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,18 +25,7 @@ import javax.swing.*;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
-import static com.intellij.notification.NotificationType.ERROR;
-
 public class DuneCompiler implements Compiler {
-
-    @Nls
-    private static final Runnable SHOW_OCAML_SDK_NOT_FOUND = () ->
-            Notifications.Bus.notify(new ORNotification("Dune",
-                    "<html>Can't find sdk.\n"
-                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
-                    ERROR, URL_OPENING_LISTENER));
 
     private static final Log LOG = Log.create("compiler.dune");
 
@@ -55,17 +41,18 @@ public class DuneCompiler implements Compiler {
         return CompilerType.DUNE;
     }
 
+//    Sdk odk = duneFacet.getODK();
+//                if (odk == null) {
+//        SHOW_OCAML_SDK_NOT_FOUND.run();
+//        return false;
+//    }
+
     @Override
     public boolean isConfigured(@NotNull Project project) {
         Module[] modules = ModuleManager.getInstance(project).getModules();
         for (Module module : modules) {
             DuneFacet duneFacet = FacetManager.getInstance(module).getFacetByType(DuneFacet.ID);
             if (duneFacet != null) {
-                Sdk odk = duneFacet.getODK();
-                if (odk == null) {
-                    SHOW_OCAML_SDK_NOT_FOUND.run();
-                    return false;
-                }
                 return true;
             }
         }
