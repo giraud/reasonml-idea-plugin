@@ -55,7 +55,8 @@ public class EsyCompiler implements Compiler {
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!(cliType instanceof CliType.Esy)) {
-            throw new IllegalArgumentException("Invalid cliType for esy compiler.");
+            LOG.error("Invalid cliType for esy compiler. cliType = " + cliType);
+            return;
         }
         EsyProcess process = EsyProcess.getInstance(m_project);
         ProcessHandler processHandler = process.recreate(cliType, onProcessTerminated);
