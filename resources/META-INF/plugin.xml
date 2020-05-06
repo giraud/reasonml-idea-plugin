@@ -262,9 +262,17 @@
          | Compiler
          -->
         <projectService serviceImplementation="com.reason.ORCompilerManager"/>
+
+        <!-- BuckleScript Compiler -->
+
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
         <projectService serviceInterface="com.reason.bs.BsCompiler"
                         serviceImplementation="com.reason.bs.BsCompilerImpl"/>
+
+        <!-- Esy Compiler -->
+
+        <projectService serviceImplementation="com.reason.esy.EsyCompiler"/>
+        <projectService serviceImplementation="com.reason.esy.EsyProcess"/>
 
         <!--
          | Insight

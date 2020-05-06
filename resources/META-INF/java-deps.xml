@@ -30,11 +30,6 @@
         <projectService serviceImplementation="com.reason.dune.DuneCompiler"/>
         <projectService serviceImplementation="com.reason.dune.DuneProcess"/>
 
-        <!-- Esy -->
-
-        <projectService serviceImplementation="com.reason.esy.EsyCompiler"/>
-        <projectService serviceImplementation="com.reason.esy.EsyProcess"/>
-
         <!-- Gutter icons -->
 
         <codeInsight.lineMarkerProvider language="Reason"
