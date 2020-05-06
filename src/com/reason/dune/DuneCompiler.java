@@ -41,12 +41,6 @@ public class DuneCompiler implements Compiler {
         return CompilerType.DUNE;
     }
 
-//    Sdk odk = duneFacet.getODK();
-//                if (odk == null) {
-//        SHOW_OCAML_SDK_NOT_FOUND.run();
-//        return false;
-//    }
-
     @Override
     public boolean isConfigured(@NotNull Project project) {
         Module[] modules = ModuleManager.getInstance(project).getModules();
