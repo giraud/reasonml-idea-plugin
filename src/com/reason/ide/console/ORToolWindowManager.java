@@ -46,10 +46,9 @@ public class ORToolWindowManager {
     }
 
     private static boolean shouldShowDuneToolWindow(@NotNull Project project) {
-        // if config is present, show the tool window
         ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
         Optional<Compiler> duneCompiler = compilerManager.getCompiler(CompilerType.DUNE);
-        return duneCompiler.isPresent() && ORProjectManager.isDuneProject(project);
+        return ORProjectManager.isDuneProject(project) && duneCompiler.isPresent();
     }
 
     private static boolean shouldShowEsyToolWindow(@NotNull Project project) {
