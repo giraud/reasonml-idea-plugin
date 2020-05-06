@@ -7,6 +7,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
+import com.reason.ide.console.ORToolWindowManager;
 import com.reason.sdk.OCamlSdkType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -86,5 +87,9 @@ class DuneFacetEditor extends FacetEditorTab {
         m_configuration.inheritProjectSdk = f_inheritProjectSDKCheck.isSelected();
         Sdk odk = f_sdkSelect.getSelectedJdk();
         m_configuration.sdkName = odk == null ? null : odk.getName();
+
+        // show tool window if dune is now configured
+        ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(m_editorContext.getProject());
+        toolWindowManager.showToolWindows();;
     }
 }

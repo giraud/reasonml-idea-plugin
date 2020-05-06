@@ -64,7 +64,7 @@ abstract class CompilerAction extends DumbAwareAction {
         PsiFile activeFile = activeFileOptional.get();
         // unsupported file type is open, compile the directory instead
         FileType fileType = activeFile.getFileType();
-        if (!FileHelper.isOCaml(fileType) || !FileHelper.isReason(fileType)) {
+        if (!FileHelper.isOCaml(fileType) && !FileHelper.isReason(fileType)) {
             compileDirectory(project, cliType);
             return;
         }
