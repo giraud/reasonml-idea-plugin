@@ -1,18 +1,19 @@
 package com.reason.ide.facet;
 
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import icons.ORIcons;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class DuneFacetType extends FacetType<DuneFacet, DuneFacetConfiguration> {
 
     public DuneFacetType() {
-        super(DuneFacet.ID, DuneFacet.ID_NAME, "Dune/Esy");
+        super(DuneFacet.ID, DuneFacet.ID_NAME, "Dune");
     }
 
     @NotNull

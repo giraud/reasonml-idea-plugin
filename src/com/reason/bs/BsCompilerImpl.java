@@ -73,6 +73,11 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
+    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+        run(file, CliType.Bs.MAKE, onProcessTerminated);
+    }
+
+    @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!isDisabled() && ReasonSettings.getInstance(m_project).isEnabled()) {
             VirtualFile bsconfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
@@ -186,7 +191,7 @@ public class BsCompilerImpl implements BsCompiler {
 
         return new Ninja(content);
     }
-    
+
     @Nullable
     @Override
     public ConsoleView getConsoleView() {

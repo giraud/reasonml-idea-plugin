@@ -15,7 +15,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.reason.Compiler;
 import com.reason.*;
-import com.reason.esy.EsyProcess;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
@@ -38,16 +37,12 @@ public class DuneCompiler implements Compiler {
     private static final Runnable SHOW_OCAML_SDK_NOT_FOUND = () ->
             Notifications.Bus.notify(new ORNotification("Dune",
                     "<html>Can't find sdk.\n"
-                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
 
     @NotNull
     private final Project project;
-
-    public static Compiler getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, DuneCompiler.class);
-    }
 
     DuneCompiler(@NotNull Project project) {
         this.project = project;
@@ -91,18 +86,20 @@ public class DuneCompiler implements Compiler {
     }
 
     @Override
+    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+        run(file, CliType.Dune.BUILD, onProcessTerminated);
+    }
+
+    @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-        CompilerProcess process = isEsyFacetConfigured()
-                ? EsyProcess.getInstance(project)
-                : DuneProcess.getInstance(project);
+        CompilerProcess process = DuneProcess.getInstance(project);
         if (process.start()) {
             ProcessHandler duneHandler = process.recreate(cliType, onProcessTerminated);
             if (duneHandler != null) {
                 ConsoleView console = getConsoleView();
                 if (console != null) {
-                    long start = System.currentTimeMillis();
                     console.attachToProcess(duneHandler);
-                    duneHandler.addProcessListener(new ProcessFinishedListener(start));
+                    duneHandler.addProcessListener(new ProcessFinishedListener());
                 }
                 process.startNotify();
                 ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(file);
@@ -112,18 +109,7 @@ public class DuneCompiler implements Compiler {
         }
     }
 
-    public boolean isEsyFacetConfigured() {
-        ModuleManager moduleManager = ModuleManager.getInstance(project);
-        for (Module module : moduleManager.getModules()) {
-            FacetManager instance = FacetManager.getInstance(module);
-            DuneFacet duneFacet = instance.getFacetByType(DuneFacet.ID);
-            if (duneFacet != null && duneFacet.getConfiguration().isEsy) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+    @Nullable
     @Override
     public ConsoleView getConsoleView() {
         ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(project);
@@ -138,4 +124,5 @@ public class DuneCompiler implements Compiler {
             return null;
         }
         return (ConsoleView) panelComponent.getComponent(0);
-    }}
+    }
+}
