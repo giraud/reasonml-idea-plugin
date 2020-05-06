@@ -41,6 +41,8 @@ public class DuneCompiler implements Compiler {
                             + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
                     ERROR, URL_OPENING_LISTENER));
 
+    private static final Log LOG = Log.create("compiler.dune");
+
     @NotNull
     private final Project project;
 
@@ -92,6 +94,10 @@ public class DuneCompiler implements Compiler {
 
     @Override
     public void run(@NotNull VirtualFile file, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+        if (!(cliType instanceof CliType.Dune)) {
+            LOG.error("Invalid cliType for dune compiler. cliType = " + cliType);
+            return;
+        }
         CompilerProcess process = DuneProcess.getInstance(project);
         if (process.start()) {
             ProcessHandler duneHandler = process.recreate(cliType, onProcessTerminated);
