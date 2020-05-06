@@ -363,7 +363,6 @@
          -->
 
         <toolWindow id="BuckleScript:" anchor="bottom" icon="ORIcons.bucklescriptTool" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
-        <toolWindow id="Dune:" anchor="bottom" icon="ORIcons.duneTool" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
         <toolWindow id="Esy:" anchor="bottom" icon="ORIcons.esyTool" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="Reason"

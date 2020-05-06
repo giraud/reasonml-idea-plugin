@@ -36,5 +36,12 @@
                                         implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="OCaml"
                                         implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+
+        <!--
+         | UI
+         -->
+
+        <toolWindow id="Dune:" anchor="bottom" icon="ORIcons.duneTool" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
+
     </extensions>
 </idea-plugin>
