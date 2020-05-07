@@ -51,7 +51,7 @@ public class BsCompilerImpl implements BsCompiler {
         VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
         if (bsConfigFile != null) {
             BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
-            return bsConfig.getNamespace();
+            return bsConfig == null ? "" : bsConfig.getNamespace();
         }
         return "";
     }
@@ -124,7 +124,8 @@ public class BsCompilerImpl implements BsCompiler {
         }
 
         VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, file);
-        return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getPath());
+        BsConfig bsConfig = bsConfigFile == null ? null : getOrRefreshBsConfig(bsConfigFile);
+        return bsConfig == null || bsConfig.accept(file.getPath());
     }
 
     @Override
@@ -212,7 +213,7 @@ public class BsCompilerImpl implements BsCompiler {
         return (ConsoleView) panelComponent.getComponent(0);
     }
 
-    @NotNull
+    @Nullable
     private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
         String bsConfigPath = bsConfigFile.getCanonicalPath();
         BsConfig bsConfig = m_configs.get(bsConfigPath);
