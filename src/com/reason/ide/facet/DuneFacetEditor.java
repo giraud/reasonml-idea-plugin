@@ -92,6 +92,6 @@ class DuneFacetEditor extends FacetEditorTab {
         // show tool window if dune is now configured
         // should use a listener instead as this doesn't trigger when the facet is removed
         ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(m_editorContext.getProject());
-        toolWindowManager.showToolWindows();;
+        toolWindowManager.showHideToolWindows();;
     }
 }

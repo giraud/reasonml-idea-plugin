@@ -16,6 +16,12 @@
         <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>
 
         <!--
+         | Listeners
+         -->
+
+        <projectService serviceImplementation="com.reason.ide.ORFacetListener"/>
+
+        <!--
          | OCaml module builder
          -->
 

@@ -26,19 +26,13 @@ public class ORToolWindowManager {
         this.toolWindowProvider = ORToolWindowProvider.getInstance(project);
     }
 
-    public void showToolWindows() {
-        if (shouldShowBsToolWindow(project)) {
-            ToolWindow bsToolWindow = toolWindowProvider.getBsToolWindow();
-            bsToolWindow.setAvailable(true, null);
-        }
-        if (shouldShowDuneToolWindow(project)) {
-            ToolWindow duneToolWindow = toolWindowProvider.getDuneToolWindow();
-            duneToolWindow.setAvailable(true, null);
-        }
-        if (shouldShowEsyToolWindow(project)) {
-            ToolWindow esyToolWindow = toolWindowProvider.getEsyToolWindow();
-            esyToolWindow.setAvailable(true, null);
-        }
+    public void showHideToolWindows() {
+        ToolWindow bsToolWindow = toolWindowProvider.getBsToolWindow();
+        ToolWindow duneToolWindow = toolWindowProvider.getDuneToolWindow();
+        ToolWindow esyToolWindow = toolWindowProvider.getEsyToolWindow();
+        bsToolWindow.setAvailable(shouldShowBsToolWindow(project), null);
+        duneToolWindow.setAvailable(shouldShowDuneToolWindow(project), null);
+        esyToolWindow.setAvailable(shouldShowEsyToolWindow(project), null);
     }
 
     private static boolean shouldShowBsToolWindow(@NotNull Project project) {
