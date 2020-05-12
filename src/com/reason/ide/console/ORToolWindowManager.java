@@ -13,26 +13,34 @@ import java.util.Optional;
 
 public class ORToolWindowManager {
 
-    private final Project project;
+    private final Project m_project;
 
-    private final ORToolWindowProvider toolWindowProvider;
+    private final ORToolWindowProvider m_toolWindowProvider;
 
     public static ORToolWindowManager getInstance(@NotNull Project project) {
         return new ORToolWindowManager(project);
     }
 
     private ORToolWindowManager(@NotNull Project project) {
-        this.project = project;
-        this.toolWindowProvider = ORToolWindowProvider.getInstance(project);
+        m_project = project;
+        m_toolWindowProvider = ORToolWindowProvider.getInstance(project);
     }
 
     public void showHideToolWindows() {
-        ToolWindow bsToolWindow = toolWindowProvider.getBsToolWindow();
-        ToolWindow duneToolWindow = toolWindowProvider.getDuneToolWindow();
-        ToolWindow esyToolWindow = toolWindowProvider.getEsyToolWindow();
-        bsToolWindow.setAvailable(shouldShowBsToolWindow(project), null);
-        duneToolWindow.setAvailable(shouldShowDuneToolWindow(project), null);
-        esyToolWindow.setAvailable(shouldShowEsyToolWindow(project), null);
+        ToolWindow bsToolWindow = m_toolWindowProvider.getBsToolWindow();
+        if (bsToolWindow != null) {
+            bsToolWindow.setAvailable(shouldShowBsToolWindow(m_project), null);
+        }
+
+        ToolWindow duneToolWindow = m_toolWindowProvider.getDuneToolWindow();
+        if (duneToolWindow != null) {
+            duneToolWindow.setAvailable(shouldShowDuneToolWindow(m_project), null);
+        }
+
+        ToolWindow esyToolWindow = m_toolWindowProvider.getEsyToolWindow();
+        if (esyToolWindow != null) {
+            esyToolWindow.setAvailable(shouldShowEsyToolWindow(m_project), null);
+        }
     }
 
     private static boolean shouldShowBsToolWindow(@NotNull Project project) {
