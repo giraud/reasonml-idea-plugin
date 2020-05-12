@@ -1,6 +1,7 @@
 package com.reason.bs;
 
 import com.intellij.framework.detection.FileContentPattern;
+import com.intellij.json.JsonFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
@@ -14,8 +15,11 @@ public class BsConfigJson {
     private BsConfigJson() {}
 
     public static boolean isBsConfigJson(@NotNull VirtualFile virtualFile) {
-        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-        return createFilePattern().accepts(fileContent);
+        if (virtualFile.getFileType() instanceof JsonFileType) {
+            FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+            return createFilePattern().accepts(fileContent);
+        }
+        return false;
     }
 
     public static FileType getFileType() {
