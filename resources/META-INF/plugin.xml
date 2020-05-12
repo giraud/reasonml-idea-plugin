@@ -255,9 +255,9 @@
          | Settings
          -->
 
-        <projectService serviceImplementation="com.reason.ide.settings.ReasonSettings"/>
-        <projectConfigurable id="settings.reason" groupId="language" displayName="Reason"
-                             instance="com.reason.ide.settings.ReasonSettingsConfigurable"/>
+        <projectService serviceImplementation="com.reason.ide.settings.ORSettings"/>
+        <projectConfigurable id="settings.reason" groupId="language" displayName="OCaml / Reason"
+                             instance="com.reason.ide.settings.ORSettingsConfigurable"/>
 
         <!--
          | Compiler

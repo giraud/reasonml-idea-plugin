@@ -30,6 +30,7 @@ public interface CliType {
     public enum Esy implements CliType {
         INSTALL,
         BUILD,
+        PRINT_ENV,
         SHELL;
 
         @Override

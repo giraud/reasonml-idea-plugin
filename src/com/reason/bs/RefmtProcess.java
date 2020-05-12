@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
 import com.reason.Streams;
-import com.reason.ide.settings.ReasonSettings;
+import com.reason.ide.settings.ORSettings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -41,7 +41,7 @@ public class RefmtProcess {
             return code;
         }
 
-        String columnsWidth = ReasonSettings.getInstance(m_project).getRefmtWidth();
+        String columnsWidth = ORSettings.getInstance(m_project).getFormatColumnWidth();
         ProcessBuilder processBuilder = new ProcessBuilder(refmtPath.get().getPath(), "-i", Boolean.toString(isInterface),
                 "--parse" +
                 "=" + fromFormat, "-p", toFormat, "-w", columnsWidth);

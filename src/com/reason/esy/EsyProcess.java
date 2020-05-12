@@ -34,6 +34,7 @@ public class EsyProcess implements CompilerProcess {
     public static final String ESY = "";
     public static final String INSTALL = "install";
     public static final String BUILD = "build";
+    public static final String PRINT_ENV = "print-env";
     public static final String SHELL = "shell";
   }
 
@@ -143,6 +144,8 @@ public class EsyProcess implements CompilerProcess {
         return Command.INSTALL;
       case BUILD:
         return Command.BUILD;
+      case PRINT_ENV:
+        return Command.PRINT_ENV;
       case SHELL:
         return Command.SHELL;
       default:

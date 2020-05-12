@@ -15,3 +15,4 @@ public class BsConstants {
     public static final String REFMT_EXECUTABLE_NAME = "refmt";
 
 }
+

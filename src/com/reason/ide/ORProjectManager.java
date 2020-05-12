@@ -3,8 +3,10 @@ package com.reason.ide;
 import com.google.common.collect.ImmutableMap;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.reason.bs.BsConstants;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.DuneFileType;
@@ -12,10 +14,14 @@ import com.reason.ide.files.EsyPackageJsonFileType;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.reason.bs.BsConstants.BS_PLATFORM_DIRECTORY_NAME;
 import static com.reason.dune.DuneConstants.*;
 
 /**
@@ -44,6 +50,14 @@ public class ORProjectManager {
 
     public static boolean isEsyProject(@NotNull Project project) {
         return !findEsyConfigurationFiles(project).isEmpty();
+    }
+
+    public static Optional<String> findOcamlformatExecutable(@NotNull Project project) {
+        return findFirstBsConfigurationFile(project)
+                .flatMap((bsConfigFile) -> Optional.ofNullable(bsConfigFile.getParent()))
+                .map((bsConfigFile) -> bsConfigFile.findFileByRelativePath("./node_modules/" + BS_PLATFORM_DIRECTORY_NAME))
+                .filter(VirtualFile::isDirectory)
+                .map(VirtualFile::getCanonicalPath);
     }
 
     public static Optional<VirtualFile> findFirstBsConfigurationFile(@NotNull Project project) {
