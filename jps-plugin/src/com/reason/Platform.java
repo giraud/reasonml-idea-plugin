@@ -24,10 +24,7 @@ import java.util.Optional;
 
 public class Platform {
 
-    public static final String LOCAL_BS_PLATFORM = "/node_modules/bs-platform";
-    public static final String LOCAL_NODE_MODULES_BIN = "/node_modules/.bin";
     public static final String PACKAGE_JSON_NAME = "package.json";
-    public static final String BSCONFIG_JSON_NAME = "bsconfig.json";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
     public static final String WINDOWS_EXECUTABLE_SUFFIX =  ".exe";
 
@@ -100,58 +97,6 @@ public class Platform {
             LOG.info("Many modules with " + filename + " file in it found (" + rootContents.size() + "), using first", rootContents);
             return file.getParent();
         }
-    }
-
-
-    /**
-     * Project Special finder that iterate through parents until a bsConfig.json is found.
-     * This is always needed, we can't use module itself.
-     * @deprecated move this logic out of jps-plugin. Break it up into 2 separate methods:
-     *  1. ORFileManager::findFirstAncestor
-     *  2. ORProjectManager::findAncestorBsConfig
-     *  This method currently used findContentRootsFor which is deprecated as a project might have multiple
-     *  content roots.
-     */
-    @Nullable
-    @Deprecated
-    public static VirtualFile findAncestorBsconfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        VirtualFile contentRoot = findContentRootFor(project, BSCONFIG_JSON_NAME);
-        if (sourceFile.equals(contentRoot)) {
-            if (contentRoot.isDirectory()) {
-                return contentRoot.findChild(BSCONFIG_JSON_NAME);
-            }
-            return sourceFile;
-        }
-
-        VirtualFile parent = sourceFile.getParent();
-        if (parent == null) {
-            return sourceFile;
-        }
-
-        VirtualFile child = parent.findChild(BSCONFIG_JSON_NAME);
-        while (child == null) {
-            VirtualFile grandParent = parent.getParent();
-            if (grandParent == null) {
-                break;
-            }
-
-            parent = grandParent;
-            child = parent.findChild(BSCONFIG_JSON_NAME);
-            if (parent.equals(contentRoot)) {
-                break;
-            }
-        }
-
-        return child;
-    }
-
-    /**
-     * @deprecated see {@link Platform::findAncestorBsconfig}
-     */
-    @Deprecated
-    public static VirtualFile findAncestorContentRoot(Project project, VirtualFile file) {
-        VirtualFile bsConfig = findAncestorBsconfig(project, file);
-        return bsConfig == null ? null : bsConfig.getParent();
     }
 
     /**

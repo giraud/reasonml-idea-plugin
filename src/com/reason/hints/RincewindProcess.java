@@ -1,10 +1,5 @@
 package com.reason.hints;
 
-import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
@@ -12,10 +7,20 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
-import com.reason.Platform;
-import com.reason.Streams;
 import com.reason.ORNotification;
+import com.reason.Streams;
+import com.reason.bs.BsPlatform;
 import com.reason.ide.hints.InferredTypesImplementation;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class RincewindProcess {
 
@@ -35,8 +40,8 @@ public class RincewindProcess {
                       @NotNull InsightManager.ProcessTerminated runAfter) {
         LOG.debug("Looking for types for file", sourceFile);
 
-        VirtualFile contentRoot = Platform.findAncestorContentRoot(m_project, sourceFile);
-        if (contentRoot == null) {
+        Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, sourceFile);
+        if (!contentRoot.isPresent()) {
             return;
         }
 
@@ -45,7 +50,7 @@ public class RincewindProcess {
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, cmiPath);
-        processBuilder.directory(new File(contentRoot.getPath()));
+        processBuilder.directory(new File(contentRoot.get().getPath()));
 
         Process rincewind = null;
         try {
@@ -121,12 +126,12 @@ public class RincewindProcess {
     }
 
     public void dumper(@NotNull String rincewindBinary, @NotNull VirtualFile cmtFile, String arg, DumpVisitor visitor) {
-        VirtualFile contentRoot = Platform.findAncestorContentRoot(m_project, cmtFile);
-        if (contentRoot != null) {
+        Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, cmtFile);
+        if (contentRoot.isPresent()) {
             Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());
 
             ProcessBuilder processBuilder = new ProcessBuilder(rincewindBinary, arg, cmtPath.toString());
-            processBuilder.directory(new File(contentRoot.getPath()));
+            processBuilder.directory(new File(contentRoot.get().getPath()));
 
             Process rincewind = null;
             try {

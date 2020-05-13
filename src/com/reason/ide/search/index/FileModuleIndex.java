@@ -2,6 +2,8 @@ package com.reason.ide.search.index;
 
 import java.io.*;
 import java.util.*;
+
+import com.reason.bs.BsPlatform;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -89,11 +91,12 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
                     Map<String, FileModuleData> map = new HashMap<>();
 
                     String namespace = "";
-                    VirtualFile bsconfigFile = Platform.findAncestorBsconfig(inputData.getProject(), inputData.getFile());
-                    if (bsconfigFile != null) {
-                        VirtualFile parent = bsconfigFile.getParent();
+                    Optional<VirtualFile> bsconfigFile = BsPlatform.findBsConfigForFile(inputData.getProject(),
+                            inputData.getFile());
+                    if (bsconfigFile.isPresent()) {
+                        VirtualFile parent = bsconfigFile.get().getParent();
                         boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-                        BsConfig bsConfig = BsConfigReader.read(bsconfigFile, useExternalAsSource);
+                        BsConfig bsConfig = BsConfigReader.read(bsconfigFile.get(), useExternalAsSource);
                         if (!bsConfig.isInSources(inputData.getFile())) {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);

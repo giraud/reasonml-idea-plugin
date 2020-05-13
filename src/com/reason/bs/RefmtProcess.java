@@ -10,6 +10,7 @@ import com.reason.ide.settings.ReasonSettings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.util.Optional;
 
 import static com.reason.Platform.UTF8;
 
@@ -34,14 +35,16 @@ public class RefmtProcess {
 
     @NotNull
     public String convert(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
-        String refmtPath = BsBinaries.getRefmtPath(m_project, sourceFile);
-        if (refmtPath == null) {
+        Optional<VirtualFile> refmtPath = BsPlatform.findRefmtExecutable(m_project, sourceFile);
+        if (!refmtPath.isPresent()) {
             LOG.debug("No refmt binary found, reformat cancelled");
             return code;
         }
 
         String columnsWidth = ReasonSettings.getInstance(m_project).getRefmtWidth();
-        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath, "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
+        ProcessBuilder processBuilder = new ProcessBuilder(refmtPath.get().getPath(), "-i", Boolean.toString(isInterface),
+                "--parse" +
+                "=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
         }

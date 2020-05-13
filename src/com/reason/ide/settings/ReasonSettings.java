@@ -1,14 +1,12 @@
 package com.reason.ide.settings;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Platform;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
 public class ReasonSettings implements PersistentStateComponent<ReasonSettings.ReasonSettingsState> {
@@ -18,8 +16,6 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
     private boolean m_refmtOnSave = true;
     @NotNull
     private String m_location = "";
-    @NotNull
-    private String m_workingDir = "";
     @Nullable
     private String m_refmtWidth;
 
@@ -36,7 +32,6 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
         state.enabled = m_enabled;
         state.refmtOnSave = m_refmtOnSave;
         state.location = m_location;
-        state.workingDir = m_workingDir;
         state.refmtWidth = m_refmtWidth;
         return state;
     }
@@ -46,7 +41,6 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
         m_enabled = state.enabled;
         m_refmtOnSave = state.refmtOnSave;
         m_location = state.location;
-        m_workingDir = state.workingDir;
         m_refmtWidth = state.refmtWidth;
     }
 
@@ -77,20 +71,6 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
         return m_location;
     }
 
-    @NotNull
-    public String getWorkingDir() {
-        return m_workingDir;
-    }
-
-    @NotNull
-    public String getWorkingDir(@NotNull VirtualFile sourceFile) {
-        if (m_workingDir.isEmpty()) {
-            VirtualFile contentRoot = Platform.findAncestorContentRoot(m_project, sourceFile);
-            return contentRoot == null ? "" : contentRoot.getPath();
-        }
-        return m_workingDir;
-    }
-
     public boolean isRefmtOnSave() {
         return m_refmtOnSave;
     }
@@ -101,10 +81,6 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
 
     public void setLocation(@NotNull String value) {
         m_location = value;
-    }
-
-    public void setWorkingDir(@NotNull String value) {
-        m_workingDir = value;
     }
 
     public void setRefmtOnSave(boolean value) {
@@ -122,8 +98,6 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
 
         @NotNull
         public String location = "";
-        @NotNull
-        public String workingDir = "";
         @Nullable
         public String refmtWidth;
     }

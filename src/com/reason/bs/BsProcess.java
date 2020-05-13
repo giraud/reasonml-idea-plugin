@@ -11,26 +11,48 @@ import com.reason.CompilerProcess;
 import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import com.reason.ide.settings.ReasonSettings;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.WARNING;
-import static com.reason.bs.BsBinaries.getBsbPath;
-import static com.reason.bs.BsBinaries.getBscPath;
+import static com.reason.bs.BsPlatform.findBsbExecutable;
+import static com.reason.bs.BsPlatform.findBscExecutable;
 
 public final class BsProcess implements CompilerProcess {
 
     private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
+
+    @Nls
+    private static final Runnable SHOW_WORKING_DIRECTORY_NOT_FOUND = () ->
+            Notifications.Bus.notify(new ORNotification("BuckleScript",
+                    "<html>"
+                            + "Can't determine working directory.\n"
+                            + "Ensure your project contains a <b>bsconfig.json</b> file."
+                            + "</html>",
+                    ERROR, URL_OPENING_LISTENER));
+
+    @Nls
+    private static final Consumer<String> SHOW_BSB_NOT_FOUND_NOTIFICATION = (String workingDirectory) ->
+            Notifications.Bus.notify(new ORNotification("Bsb",
+                    "<html>"
+                            + "Can't find bsb.\n"
+                            + "The working directory is '" + workingDirectory + "'.\n"
+                            + "Be sure that bsb is installed and reachable from that directory, "
+                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>."
+                            + "</html>",
+                    ERROR, URL_OPENING_LISTENER));
 
     private final Project m_project;
 
@@ -124,14 +146,18 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
-        String bsbPath = getBsbPath(m_project, sourceFile);
-        if (bsbPath == null) {
-            Notifications.Bus.notify(new ORNotification("Bsb", "<html>Can't find bsb.\n" + "The working directory is '" + ReasonSettings.getInstance(m_project)
-                    .getWorkingDir(sourceFile) + "'.\n" + "Be sure that bsb is installed and reachable from that directory, "
-                    + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>.</html>", ERROR, URL_OPENING_LISTENER));
+        Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRootForFile(m_project, sourceFile);
+        if (!bsContentRootOptional.isPresent()) {
+            SHOW_WORKING_DIRECTORY_NOT_FOUND.run();
             return null;
         }
-
+        String bsContentRoot = bsContentRootOptional.get().getPath();
+        Optional<VirtualFile> bsbExecutable = findBsbExecutable(m_project, sourceFile);
+        if (!bsbExecutable.isPresent()) {
+            SHOW_BSB_NOT_FOUND_NOTIFICATION.accept(bsContentRoot);
+            return null;
+        }
+        String bsbPath = bsbExecutable.get().getPath();
         GeneralCommandLine cli;
         switch (cliType) {
             case MAKE:
@@ -143,10 +169,8 @@ public final class BsProcess implements CompilerProcess {
             default:
                 cli = new GeneralCommandLine(bsbPath);
         }
-
-        cli.withWorkDirectory(ReasonSettings.getInstance(m_project).getWorkingDir(sourceFile));
+        cli.withWorkDirectory(bsContentRoot);
         cli.withEnvironment("NINJA_ANSI_FORCED", "1");
-
         return cli;
     }
 
@@ -167,8 +191,8 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
-        String bsc = getBscPath(m_project, sourceFile);
-        if (bsc != null) {
+        Optional<VirtualFile> bsc = findBscExecutable(m_project, sourceFile);
+        if (bsc.isPresent()) {
             Process p = null;
             try {
                 p = Runtime.getRuntime().exec(bsc + " -version");
@@ -184,7 +208,6 @@ public final class BsProcess implements CompilerProcess {
                 }
             }
         }
-
         return null;
     }
 

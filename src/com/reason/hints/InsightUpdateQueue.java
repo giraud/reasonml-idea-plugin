@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class InsightUpdateQueue extends MergingUpdateQueue {
@@ -56,7 +57,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
         super("hints", 200, true, null);
         setRestartTimerOnAdd(true);
 
-        m_contentRoot = Platform.findAncestorContentRoot(project, sourceFile);
+        m_contentRoot = BsPlatform.findContentRootForFile(project, sourceFile).orElse(null);
         m_libRoot = m_contentRoot == null ? null : m_contentRoot.findFileByRelativePath("lib/bs");
         m_sourceFile = sourceFile;
 
@@ -160,15 +161,15 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
 
                         // Compile temporary file
 
-                        String bscPath = BsBinaries.getBscPath(m_project, sourceFile);
-                        if (bscPath != null) {
+                        Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
+                        if (bscPath.isPresent()) {
                             File cmtFile = new File(m_tempDirectory, nameWithoutExtension + ".cmt");
                             if (isExpired()) {
                                 return;
                             }
 
                             List<String> arguments = new ArrayList<>();
-                            arguments.add(bscPath);
+                            arguments.add(bscPath.get().getPath());
                             arguments.add("-bs-super-errors");
                             arguments.add("-color");
                             arguments.add("never");

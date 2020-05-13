@@ -1,10 +1,5 @@
 package com.reason.bs;
 
-import java.util.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.coverage.gnu.trove.THashMap;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
@@ -24,13 +19,20 @@ import com.intellij.ui.content.Content;
 import com.reason.CompilerType;
 import com.reason.FileUtil;
 import com.reason.ORNotification;
-import com.reason.Platform;
 import com.reason.ProcessFinishedListener;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.ORToolWindowProvider;
 import com.reason.ide.settings.ReasonSettings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.coverage.gnu.trove.THashMap;
+
+import javax.swing.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class BsCompilerImpl implements BsCompiler {
 
@@ -48,9 +50,9 @@ public class BsCompilerImpl implements BsCompiler {
     @NotNull
     @Override
     public String getNamespace(@NotNull VirtualFile sourceFile) {
-        VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
-        if (bsConfigFile != null) {
-            BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
+        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
+        if (bsConfigFile.isPresent()) {
+            BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile.get());
             return bsConfig == null ? "" : bsConfig.getNamespace();
         }
         return "";
@@ -84,24 +86,25 @@ public class BsCompilerImpl implements BsCompiler {
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!isDisabled() && ReasonSettings.getInstance(m_project).isEnabled()) {
-            VirtualFile bsconfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
-            if (bsconfigFile != null) {
-                getOrRefreshBsConfig(bsconfigFile);
-                BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
-                if (process.start()) {
-                    ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
-                    if (bscHandler != null) {
-                        ConsoleView console = getConsoleView();
-                        if (console != null) {
-                            long start = System.currentTimeMillis();
-                            console.attachToProcess(bscHandler);
-                            bscHandler.addProcessListener(new ProcessFinishedListener(start));
-                        }
-                        process.startNotify();
-                        ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(sourceFile);
-                    } else {
-                        process.terminate();
+            Optional<VirtualFile> bsconfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
+            if (!bsconfigFile.isPresent()) {
+                return;
+            }
+            getOrRefreshBsConfig(bsconfigFile.get());
+            BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
+            if (process.start()) {
+                ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
+                if (bscHandler != null) {
+                    ConsoleView console = getConsoleView();
+                    if (console != null) {
+                        long start = System.currentTimeMillis();
+                        console.attachToProcess(bscHandler);
+                        bscHandler.addProcessListener(new ProcessFinishedListener(start));
                     }
+                    process.startNotify();
+                    ServiceManager.getService(m_project, InsightManager.class).downloadRincewindIfNeeded(sourceFile);
+                } else {
+                    process.terminate();
                 }
             }
         }
@@ -123,9 +126,8 @@ public class BsCompilerImpl implements BsCompiler {
         if (file == null) {
             return false;
         }
-
-        VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, file);
-        BsConfig bsConfig = bsConfigFile == null ? null : getOrRefreshBsConfig(bsConfigFile);
+        Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, file);
+        BsConfig bsConfig = bsConfigFile.map(this::getOrRefreshBsConfig).orElse(null);
         return bsConfig == null || bsConfig.accept(file.getPath());
     }
 
