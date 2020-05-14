@@ -69,7 +69,7 @@ public class BsPlatform {
     }
 
     private static Optional<VirtualFile> findBsPlatformPathForConfigFile(VirtualFile bsConfigFile) {
-        VirtualFile bsPlatform = bsConfigFile.findFileByRelativePath("./node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
+        VirtualFile bsPlatform = bsConfigFile.findFileByRelativePath("../node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
         return Optional.ofNullable(bsPlatform)
                 .filter(VirtualFile::isDirectory);
     }
