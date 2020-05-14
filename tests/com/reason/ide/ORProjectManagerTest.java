@@ -49,6 +49,40 @@ public class ORProjectManagerTest {
 
 
     @Test
+    public void testFindAncestorRecursive_startAtRootOfFileSystem() {
+        VirtualFile mockFile = spy(VirtualFile.class);
+        when(mockFile.isDirectory()).thenReturn(false);
+        when(mockFile.getParent()).thenReturn(null);
+        Optional<VirtualFile> ancestor = ORProjectManager.findAncestorRecursive(mockProject, "", mockFile);
+        verify(mockFile).isDirectory();
+        verify(mockFile).getParent();
+        assertFalse(ancestor.isPresent());
+    }
+
+    @Test
+    public void testFindAncestorRecursive_hitRootOfFileSystem() {
+        String mockProjectBasePath = "mock-path";
+        when(mockProject.getBasePath()).thenReturn(mockProjectBasePath);
+        VirtualFile mockStart = spy(VirtualFile.class);
+        when(mockStart.isDirectory()).thenReturn(true);
+        when(mockStart.getPath()).thenReturn(mockProjectBasePath);
+        Optional<VirtualFile> ancestor = ORProjectManager.findAncestorRecursive(mockProject, "", mockStart);
+        assertFalse(ancestor.isPresent());
+    }
+
+    @Test
+    public void testFindAncestorRecursive_targetFound() {
+        VirtualFile mockTarget = new MockVirtualFile("mock-target");
+        String targetName = mockTarget.getName();
+        VirtualFile mockStart = spy(VirtualFile.class);
+        when(mockStart.isDirectory()).thenReturn(true);
+        when(mockStart.findChild(targetName)).thenReturn(mockTarget);
+        Optional<VirtualFile> ancestor = ORProjectManager.findAncestorRecursive(mockProject, targetName, mockStart);
+        assertTrue(ancestor.isPresent());
+        assertEquals(mockTarget, ancestor.get());
+    }
+
+    @Test
     public void testIsModuleNoMatches() {
         when(FilenameIndex.getVirtualFilesByName(any(), any(), any())).thenReturn(Collections.emptyList());
         assertFalse(ORProjectManager.isBsProject(mockProject));

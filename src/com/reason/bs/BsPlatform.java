@@ -135,6 +135,10 @@ public class BsPlatform {
             return Optional.of(executable);
         }
         executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
+        if (executable != null) {
+            return Optional.of(executable);
+        }
+        executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + ".exe");
         return Optional.ofNullable(executable);
     }
 
@@ -143,7 +147,6 @@ public class BsPlatform {
         return SystemInfo.isWindows ? ".cmd" : "";
     }
 
-    @VisibleForTesting
     static Optional<String> getOsBsPrefix() {
         if (SystemInfo.isWindows) {
             return Optional.of("win32");
