@@ -116,6 +116,9 @@ public class Platform {
     public static VirtualFile findAncestorBsconfig(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         VirtualFile contentRoot = findContentRootFor(project, BSCONFIG_JSON_NAME);
         if (sourceFile.equals(contentRoot)) {
+            if (contentRoot.isDirectory()) {
+                return contentRoot.findChild(BSCONFIG_JSON_NAME);
+            }
             return sourceFile;
         }
 
