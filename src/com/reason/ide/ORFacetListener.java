@@ -3,6 +3,7 @@ package com.reason.ide;
 import com.intellij.facet.Facet;
 import com.intellij.facet.ProjectWideFacetListener;
 import com.intellij.facet.ProjectWideFacetListenersRegistry;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.reason.ide.console.ORToolWindowManager;
@@ -48,7 +49,7 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
   private static void showHideDuneToolWindow(Project project, Facet facet) {
    if (facet instanceof DuneFacet) {
      ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
-     toolWindowManager.showHideToolWindows();
+     ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
    }
   }
 }

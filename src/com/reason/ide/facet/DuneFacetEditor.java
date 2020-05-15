@@ -2,6 +2,7 @@ package com.reason.ide.facet;
 
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -92,6 +93,6 @@ class DuneFacetEditor extends FacetEditorTab {
         // show tool window if dune is now configured
         // should use a listener instead as this doesn't trigger when the facet is removed
         ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(m_editorContext.getProject());
-        toolWindowManager.showHideToolWindows();;
+        ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
     }
 }

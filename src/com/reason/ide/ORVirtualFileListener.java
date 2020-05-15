@@ -2,6 +2,7 @@ package com.reason.ide;
 
 import java.util.*;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.newvfs.events.*;
 import com.reason.bs.BsConfigJson;
 import com.reason.esy.EsyPackageJson;
@@ -67,7 +68,7 @@ class ORVirtualFileListener implements AsyncFileListener {
             if (BsConfigJson.isBsConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile)) {
                 for (Project project : ProjectManager.getInstance().getOpenProjects()) {
                     ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
-                    toolWindowManager.showHideToolWindows();
+                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
                 }
             }
         }
