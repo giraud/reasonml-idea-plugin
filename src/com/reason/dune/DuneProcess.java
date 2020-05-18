@@ -15,6 +15,7 @@ import com.reason.Platform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.sdk.OCamlSdkType;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +28,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
-import static com.intellij.notification.NotificationType.WARNING;
 
 public final class DuneProcess implements CompilerProcess {
+
+    @Nls
+    private static final Runnable SHOW_OCAML_SDK_NOT_FOUND = () ->
+            Notifications.Bus.notify(new ORNotification("Dune",
+                    "<html>Can't find sdk.\n"
+                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
+                    ERROR, URL_OPENING_LISTENER));
 
     @NotNull
     private final Project m_project;
@@ -63,31 +71,26 @@ public final class DuneProcess implements CompilerProcess {
     @Override
     @Nullable
     public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-        if (cliType instanceof CliType.Dune) {
-            try {
-                killIt();
-                GeneralCommandLine cli = getGeneralCommandLine((CliType.Dune) cliType);
-                if (cli != null) {
-                    m_processHandler = new KillableColoredProcessHandler(cli);
-                    m_processHandler.addProcessListener(m_outputListener);
-                    if (onProcessTerminated != null) {
-                        m_processHandler.addProcessListener(new ProcessAdapter() {
-                            @Override
-                            public void processTerminated(@NotNull ProcessEvent event) {
-                                onProcessTerminated.run();
-                            }
-                        });
-                    }
+        try {
+            killIt();
+            GeneralCommandLine cli = getGeneralCommandLine((CliType.Dune) cliType);
+            if (cli != null) {
+                m_processHandler = new KillableColoredProcessHandler(cli);
+                m_processHandler.addProcessListener(m_outputListener);
+                if (onProcessTerminated != null) {
+                    m_processHandler.addProcessListener(new ProcessAdapter() {
+                        @Override
+                        public void processTerminated(@NotNull ProcessEvent event) {
+                            onProcessTerminated.run();
+                        }
+                    });
                 }
-                return m_processHandler;
-            } catch (ExecutionException e) {
-                Notifications.Bus.notify(new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
             }
-        } else {
-            Notifications.Bus.notify(new ORNotification("Dune", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
+            return m_processHandler;
+        } catch (ExecutionException e) {
+            Notifications.Bus.notify(new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
+            return null;
         }
-
-        return null;
     }
 
     private void killIt() {
@@ -101,9 +104,7 @@ public final class DuneProcess implements CompilerProcess {
     private GeneralCommandLine getGeneralCommandLine(CliType.Dune cliType) {
         Sdk odk = OCamlSdkType.getSDK(m_project);
         if (odk == null) {
-            Notifications.Bus.notify(new ORNotification("Dune", "<html>Can't find sdk.\n"
-                    + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
-                    + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>", ERROR, URL_OPENING_LISTENER));
+            SHOW_OCAML_SDK_NOT_FOUND.run();
             return null;
         }
         assert odk.getHomePath() != null;

@@ -63,13 +63,9 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
         group.add(new ClearLogAction(console));
-        // @TODO replace with esy actions once EsyProcess supports them
-        group.add(new DuneInstallAction());
-        group.add(new DuneBuildAction());
-        group.add(new DuneCleanAction());
-        // group.add(new EsyInstallAction());
-        // group.add(new EsyBuildAction());
-        // group.add(new EsyShellAction());
+        group.add(new EsyInstallAction());
+        group.add(new EsyBuildAction());
+        group.add(new EsyShellAction());
 
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
         toolbar.setTargetComponent(console.getComponent());

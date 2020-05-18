@@ -1,104 +1,60 @@
 package com.reason.esy;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.*;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ObjectUtils;
-import com.reason.*;
 import com.reason.Compiler;
-import com.reason.dune.DuneOutputListener;
+import com.reason.*;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
+import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.intellij.notification.NotificationType.ERROR;
-import static com.intellij.notification.NotificationType.WARNING;
-import static com.reason.dune.DuneConstants.DUNE_EXECUTABLE_NAME;
 import static com.reason.esy.EsyConstants.ESY_EXECUTABLE_NAME;
-import static com.reason.esy.EsyProcessException.esyNotFoundException;
 
 public class EsyProcess implements CompilerProcess {
 
-  private static final Runnable SHOW_DUNE_NOT_FOUND_NOTIFICATION =
-      () -> Notifications.Bus.notify(new ORNotification("Dune Missing", "Unable to find dune executable in esy PATH.", ERROR));
+  private static final Log LOG = Log.create("process.esy");
 
+  @Nls
   private static final Runnable SHOW_ESY_NOT_FOUND_NOTIFICATION =
-      () -> Notifications.Bus.notify(new ORNotification("Esy Missing", "Unable to find esy executable in system PATH.", ERROR));
+          () -> Notifications.Bus.notify(new ORNotification("Esy Missing",
+                  "Unable to find esy executable in system PATH.", ERROR));
 
-  private static final Runnable SHOW_ESY_PROJECT_ROOT_NOT_FOUND_NOTIFICATION =
-          () -> Notifications.Bus.notify(new ORNotification("Missing Project Configuration File",
-                  "Unable to find esy package.json. Has it been created?", ERROR));
+  @Nls
+  private static final Runnable SHOW_ESY_PROJECT_NOT_FOUND_NOTIFICATION =
+          () -> Notifications.Bus.notify(new ORNotification("Esy Project Not Found",
+                  "Unable to find esy project. Have you run esy yet?", ERROR));
 
+  @Nls
   private static final Consumer<Exception> SHOW_EXEC_EXCEPTION_NOTIFICATION =
-      (e) -> Notifications.Bus.notify(new ORNotification("Esy Exception", "Failed to execute esy command.\n" + e.getMessage(), ERROR));
-
-  private static final Consumer<Exception> SHOW_DUNE_EXCEPTION_NOTIFICATION =
-      (e) -> Notifications.Bus.notify(new ORNotification("Dune Exception", "Failed to execute dune command.\n" + e.getMessage(), ERROR));
-
-  private static final Log LOG = Log.create("esy");
+          (e) -> Notifications.Bus.notify(new ORNotification("Esy Exception",
+                  "Failed to execute esy command.\n" + e.getMessage(), ERROR));
 
   public static class Command {
-    public static final String ENV = "env";
-    public static final String PRINT_ENV = "print-env";
-  }
-
-  public static class EnvironmentVariable {
-    public static final String CAML_LD_LIBRARY_PATH = "CAML_LD_LIBRARY_PATH";
-    public static final String DUNE_STORE_ORIG_SOURCE_DIR = "DUNE_STORE_ORIG_SOURCE_DIR";
-    public static final String ESY__ROOT_PACKAGE_CONFIG_PATH = "ESY__ROOT_PACKAGE_CONFIG_PATH";
-    public static final String DUNE_BUILD_DIR = "DUNE_BUILD_DIR";
-    public static final String MAN_PATH = "MAN_PATH";
-    public static final String OCAMLFIND_DESTDIR = "OCAMLFIND_DESTDIR";
-    public static final String OCAMLFIND_LDCONF = "OCAMLFIND_LDCONF";
-    public static final String OCAMLLIB = "OCAMLLIB";
-    public static final String OCAMLPATH = "OCAMLPATH";
-    public static final String PATH = "PATH";
-    public static final Set<String> ALL = ImmutableSet.of(
-        CAML_LD_LIBRARY_PATH,
-        DUNE_STORE_ORIG_SOURCE_DIR,
-        ESY__ROOT_PACKAGE_CONFIG_PATH,
-        CAML_LD_LIBRARY_PATH,
-        DUNE_BUILD_DIR,
-        MAN_PATH,
-        OCAMLFIND_DESTDIR,
-        OCAMLFIND_LDCONF,
-        OCAMLLIB,
-        OCAMLPATH,
-        PATH
-    );
+    public static final String ESY = "";
+    public static final String INSTALL = "install";
+    public static final String BUILD = "build";
+    public static final String SHELL = "shell";
   }
 
   private final Project project;
 
-  private final ProcessListener outputListener;
-
-  private final Path workingDir;
-
-  private final Path esyExecutable;
-
-  private final boolean redirectErrors;
-
-  private final AtomicBoolean started;
+  private final AtomicBoolean isStarted;
 
   @Nullable
   private KillableColoredProcessHandler processHandler;
@@ -108,22 +64,12 @@ public class EsyProcess implements CompilerProcess {
   }
 
   private EsyProcess(@NotNull Project project) {
-    FileSystem fileSystem = FileSystems.getDefault();
-    Path esyExecutable = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, System.getenv("PATH"))
-        .orElseThrow(() -> {
-          SHOW_ESY_NOT_FOUND_NOTIFICATION.run();
-          return esyNotFoundException();
-        });
     this.project = project;
-    this.outputListener = new DuneOutputListener(project, this);
-    this.workingDir = findOrDefaultEsyContentRoot(project);
-    this.esyExecutable = esyExecutable;
-    this.redirectErrors = true;
-    this.started = new AtomicBoolean(false);
+    this.isStarted = new AtomicBoolean(false);
   }
 
   public boolean isStarted() {
-    return started.get();
+    return isStarted.get();
   }
 
   @Override
@@ -131,7 +77,7 @@ public class EsyProcess implements CompilerProcess {
     if (isStarted()) {
       LOG.warn("Esy process already started.");
     }
-    return started.compareAndSet(false, true);
+    return isStarted.compareAndSet(false, true);
   }
 
   @Override
@@ -140,7 +86,7 @@ public class EsyProcess implements CompilerProcess {
       LOG.warn("Esy process already terminated.");
       return;
     }
-    started.set(false);
+    isStarted.set(false);
   }
 
   @Override
@@ -154,131 +100,96 @@ public class EsyProcess implements CompilerProcess {
     }
   }
 
+  @Nullable
   @Override
-  public @Nullable ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
-    if (cliType instanceof CliType.Esy) {
-      killIt();
+  public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    killIt();
 
-      Optional<GeneralCommandLine> commandLineOptional = getDuneCommandLine((CliType.Dune) cliType);
-      if (!commandLineOptional.isPresent()) {
-        SHOW_DUNE_NOT_FOUND_NOTIFICATION.run();
-        return null;
-      }
-
-      GeneralCommandLine commandLine = commandLineOptional.get();
-      try {
-        processHandler = new KillableColoredProcessHandler(commandLine);
-        processHandler.addProcessListener(outputListener);
-        if (onProcessTerminated != null) {
-          processHandler.addProcessListener(new ProcessAdapter() {
-            @Override
-            public void processTerminated(@NotNull ProcessEvent event) {
-              onProcessTerminated.run();
-            }
-          });
-        }
-        return processHandler;
-      } catch (ExecutionException e) {
-        SHOW_DUNE_EXCEPTION_NOTIFICATION.accept(e);
-        LOG.error("Unable to recreate esy process.", e);
-      }
-    } else {
-      Notifications.Bus.notify(new ORNotification("Esy", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
+    Optional<Path> workingDirOptional = findWorkingDirectory(project);
+    if (!workingDirOptional.isPresent()) {
+      return null;
     }
 
-    return null;
-  }
+    Optional<Path> esyExecutableOptional = findEsyExecutableInPath();
+    if (!esyExecutableOptional.isPresent()) {
+      return null;
+    }
 
-  public Map<String, String> getEsyEnvironment() {
-    ImmutableMap.Builder<String, String> envBuilder = ImmutableMap.builder();
-    Consumer<String> handleLine = line -> {
-      String[] keyValue = line.split("=");
-      if (EnvironmentVariable.ALL.contains(keyValue[0])) {
-        envBuilder.put(keyValue[0], keyValue[1]);
-      }
-    };
-    exec(Command.ENV, handleLine);
-    return envBuilder.build();
-  }
+    Path workingDir = workingDirOptional.get();
+    Path esyExecutable = esyExecutableOptional.get();
 
-  public void exec(String command, Consumer<String> handleLine) {
-    GeneralCommandLine commandLine = newEsyCommandLine(command);
+    GeneralCommandLine cli = newCommandLine(esyExecutable, workingDir, (CliType.Esy) cliType);
     try {
-      Process process = commandLine.createProcess();
-      InputStreamReader processInputStream = new InputStreamReader(process.getInputStream());
-      BufferedReader reader = new BufferedReader(processInputStream);
-      String line;
-      while ((line = reader.readLine()) != null) {
-        handleLine.accept(line);
-      }
-      int exitCode = process.waitFor();
-      if (exitCode != 0) {
-        LOG.error("Esy command exiting with non-zero code: " + exitCode);
-      }
-    } catch (IOException | InterruptedException | ExecutionException e) {
+      processHandler = new KillableColoredProcessHandler(cli);
+    } catch (ExecutionException e) {
       SHOW_EXEC_EXCEPTION_NOTIFICATION.accept(e);
-      LOG.error("Exception while executing esy command.", e);
+      return null;
     }
+
+    if (onProcessTerminated != null) {
+      processHandler.addProcessListener(processTerminatedListener.apply(onProcessTerminated));
+    }
+
+    return processHandler;
   }
 
   private void killIt() {
     if (processHandler == null
-        || processHandler.isProcessTerminating()
-        || processHandler.isProcessTerminated()) {
+            || processHandler.isProcessTerminating()
+            || processHandler.isProcessTerminated()) {
       return;
     }
     processHandler.killProcess();
     processHandler = null;
   }
 
-  private GeneralCommandLine newEsyCommandLine(String command) {
+  private static GeneralCommandLine newCommandLine(Path esyExecutable, Path workingDir, CliType.Esy cliType) {
     GeneralCommandLine commandLine;
-    if (SystemInfo.isWindows) {
-      commandLine = new GeneralCommandLine("cmd.exe");
-      commandLine.addParameter("/c");
-    } else {
-      commandLine = new GeneralCommandLine("sh");
-      commandLine.addParameter("-c");
-    }
+    commandLine = new GeneralCommandLine(esyExecutable.toString());
     commandLine.setWorkDirectory(workingDir.toFile());
-    commandLine.setRedirectErrorStream(redirectErrors);
-    commandLine.addParameter(esyExecutable + " " + command); // 'esy + command' must be a single parameter
+    commandLine.setRedirectErrorStream(true);
+    commandLine.addParameter(getCommand(cliType)); // 'esy + command' must be a single parameter
     return commandLine;
   }
 
-  private Optional<GeneralCommandLine> getDuneCommandLine(CliType.Dune cliType) {
-    Optional<Path> duneExecutable = findDuneExecutableWithinEsy();
-    if (!duneExecutable.isPresent()) {
-      return Optional.empty();
+  private static String getCommand(CliType.Esy cliType) {
+    switch (cliType) {
+      case INSTALL:
+        return Command.INSTALL;
+      case BUILD:
+        return Command.BUILD;
+      case SHELL:
+        return Command.SHELL;
+      default:
+        return Command.ESY;
     }
-
-    String duneCommand = cliType == CliType.Dune.CLEAN ? "clean" : "build"; // @TODO support all actions
-
-    GeneralCommandLine cli = new GeneralCommandLine(duneExecutable.get().toString(), duneCommand);
-    cli.withEnvironment(getEsyEnvironment());
-    cli.setWorkDirectory(workingDir.toString());
-    cli.setRedirectErrorStream(true);
-    return Optional.of(cli);
   }
 
-  private Optional<Path> findDuneExecutableWithinEsy() {
-    Map<String, String> esyEnv = getEsyEnvironment();
-    String paths = esyEnv.get(EnvironmentVariable.PATH);
-    if (paths == null) {
-      return Optional.empty();
+  private static Optional<Path> findEsyExecutableInPath() {
+    String systemPath = System.getenv("PATH");
+    Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
+    if (!esyExecutablePath.isPresent()) {
+      SHOW_ESY_NOT_FOUND_NOTIFICATION.run();
     }
-    return Platform.findExecutableInPath(DUNE_EXECUTABLE_NAME, paths);
+    return esyExecutablePath;
   }
 
-  // attempt to find esy package.json. if it's missing, show warning and return the project's root directory
-  private static Path findOrDefaultEsyContentRoot(@NotNull Project project) {
+  private static Optional<Path> findWorkingDirectory(@NotNull Project project) {
+    Optional<VirtualFile> esyContentRootOptional = ORProjectManager.findFirstEsyContentRoot(project);
+    if (!esyContentRootOptional.isPresent()) {
+      SHOW_ESY_PROJECT_NOT_FOUND_NOTIFICATION.run();
+      return Optional.empty();
+    }
+    VirtualFile esyContentRoot = esyContentRootOptional.get();
     FileSystem fileSystem = FileSystems.getDefault();
-    Optional<VirtualFile> esyContentRoot = ORProjectManager.findFirstEsyContentRoot(project);
-    if (esyContentRoot.isPresent()) {
-      return fileSystem.getPath(esyContentRoot.get().getPath());
-    }
-    SHOW_ESY_PROJECT_ROOT_NOT_FOUND_NOTIFICATION.run();
-    String defaultPath = ObjectUtils.notNull(project.getBasePath(), "");
-    return fileSystem.getPath(defaultPath);
+    return Optional.of(fileSystem.getPath(esyContentRoot.getPath()));
   }
+
+  private static final Function<Compiler.ProcessTerminated, ProcessListener> processTerminatedListener =
+      (onProcessTerminated) -> new ProcessAdapter() {
+        @Override
+        public void processTerminated(@NotNull ProcessEvent event) {
+          onProcessTerminated.run();
+        }
+      };
 }

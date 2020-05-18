@@ -261,11 +261,18 @@
         <!--
          | Compiler
          -->
+        <projectService serviceImplementation="com.reason.ORCompilerManager"/>
 
-        <applicationService serviceImplementation="com.reason.ide.ORCompilerManager"/>
+        <!-- BuckleScript Compiler -->
+
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
         <projectService serviceInterface="com.reason.bs.BsCompiler"
                         serviceImplementation="com.reason.bs.BsCompilerImpl"/>
+
+        <!-- Esy Compiler -->
+
+        <projectService serviceImplementation="com.reason.esy.EsyCompiler"/>
+        <projectService serviceImplementation="com.reason.esy.EsyProcess"/>
 
         <!--
          | Insight
@@ -356,7 +363,6 @@
          -->
 
         <toolWindow id="BuckleScript:" anchor="bottom" icon="ORIcons.bucklescriptTool" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
-        <toolWindow id="Dune:" anchor="bottom" icon="ORIcons.duneTool" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
         <toolWindow id="Esy:" anchor="bottom" icon="ORIcons.esyTool" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="Reason"

@@ -16,6 +16,12 @@
         <projectImportBuilder implementation="com.reason.ide.importWizard.DuneProjectImportBuilder"/>
 
         <!--
+         | Listeners
+         -->
+
+        <projectService serviceImplementation="com.reason.ide.ORFacetListener"/>
+
+        <!--
          | OCaml module builder
          -->
 
@@ -30,15 +36,18 @@
         <projectService serviceImplementation="com.reason.dune.DuneCompiler"/>
         <projectService serviceImplementation="com.reason.dune.DuneProcess"/>
 
-        <!-- Esy -->
-
-        <projectService serviceImplementation="com.reason.esy.EsyProcess"/>
-
         <!-- Gutter icons -->
 
         <codeInsight.lineMarkerProvider language="Reason"
                                         implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="OCaml"
                                         implementationClass="com.reason.ide.go.ORLineMarkerProvider"/>
+
+        <!--
+         | UI
+         -->
+
+        <toolWindow id="Dune:" anchor="bottom" icon="ORIcons.duneTool" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
+
     </extensions>
 </idea-plugin>

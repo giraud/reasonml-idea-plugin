@@ -1,5 +1,10 @@
 package com.reason.bs;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.coverage.gnu.trove.THashMap;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.notification.NotificationType;
@@ -16,20 +21,16 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
-import com.reason.*;
+import com.reason.CompilerType;
+import com.reason.FileUtil;
+import com.reason.ORNotification;
+import com.reason.Platform;
+import com.reason.ProcessFinishedListener;
 import com.reason.hints.InsightManager;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.ORToolWindowProvider;
 import com.reason.ide.settings.ReasonSettings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.coverage.gnu.trove.THashMap;
-
-import javax.swing.*;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 public class BsCompilerImpl implements BsCompiler {
 
@@ -50,7 +51,7 @@ public class BsCompilerImpl implements BsCompiler {
         VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, sourceFile);
         if (bsConfigFile != null) {
             BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile);
-            return bsConfig.getNamespace();
+            return bsConfig == null ? "" : bsConfig.getNamespace();
         }
         return "";
     }
@@ -68,8 +69,15 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void refresh(@NotNull VirtualFile bsConfigFile) {
-        BsConfig updatedConfig = BsConfigReader.read(bsConfigFile);
-        m_configs.put(bsConfigFile.getCanonicalPath(), updatedConfig);
+        // There is a problem here, todo fix it
+        VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(BsConstants.BS_CONFIG_FILENAME) : bsConfigFile;
+        BsConfig updatedConfig = BsConfigReader.read(file);
+        m_configs.put(file.getCanonicalPath(), updatedConfig);
+    }
+
+    @Override
+    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+        run(file, CliType.Bs.MAKE, onProcessTerminated);
     }
 
     @Override
@@ -116,7 +124,8 @@ public class BsCompilerImpl implements BsCompiler {
         }
 
         VirtualFile bsConfigFile = Platform.findAncestorBsconfig(m_project, file);
-        return bsConfigFile == null || getOrRefreshBsConfig(bsConfigFile).accept(file.getPath());
+        BsConfig bsConfig = bsConfigFile == null ? null : getOrRefreshBsConfig(bsConfigFile);
+        return bsConfig == null || bsConfig.accept(file.getPath());
     }
 
     @Override
@@ -186,7 +195,7 @@ public class BsCompilerImpl implements BsCompiler {
 
         return new Ninja(content);
     }
-    
+
     @Nullable
     @Override
     public ConsoleView getConsoleView() {
@@ -204,8 +213,7 @@ public class BsCompilerImpl implements BsCompiler {
         return (ConsoleView) panelComponent.getComponent(0);
     }
 
-
-    @NotNull
+    @Nullable
     private BsConfig getOrRefreshBsConfig(@NotNull VirtualFile bsConfigFile) {
         String bsConfigPath = bsConfigFile.getCanonicalPath();
         BsConfig bsConfig = m_configs.get(bsConfigPath);

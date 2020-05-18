@@ -1,22 +1,22 @@
 package com.reason.ide;
 
 import java.util.*;
+
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.vfs.newvfs.events.*;
+import com.reason.bs.BsConfigJson;
+import com.reason.esy.EsyPackageJson;
+import com.reason.ide.console.ORToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.json.JsonFileType;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.AsyncFileListener;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent;
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
-import com.intellij.util.containers.ContainerUtil;
 import com.reason.hints.InsightManager;
-import com.reason.ide.files.CmtFileType;
 
 /**
  * Listener that detects all modifications on project files
@@ -26,33 +26,69 @@ class ORVirtualFileListener implements AsyncFileListener {
     @Nullable
     @Override
     public ChangeApplier prepareChange(@NotNull List<? extends VFileEvent> events) {
-        List<? extends VFileEvent> relevantEvents = ContainerUtil.filter(events, this::isRelevantEvent);
-        return relevantEvents.isEmpty() ? null : new ChangeApplier() {
-            @Override
-            public void afterVfsChange() {
-                for (VFileEvent event : relevantEvents) {
-                    VirtualFile file = event.getFile();
-                    FileType fileType = file == null ? null : file.getFileType();
-                    if (fileType instanceof JsonFileType && "bsconfig.json".equals(file.getName())) {
-                        for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-                            Module module = ModuleUtil.findModuleForFile(file, project);
-                            if (module != null) {
-                                ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(file);
-                               OREditorTracker.getInstance(project).updateQueues();
-                            }
-                        }
-                    }
-                }
-            }
-        };
+        return ORChangeApplier.apply(events);
     }
 
-    private boolean isRelevantEvent(@NotNull VFileEvent event) {
-        if (event instanceof VFileContentChangeEvent) {
-            VirtualFile file = event.getFile();
-            FileType fileType = file == null ? null : file.getFileType();
-            return fileType instanceof CmtFileType || (fileType instanceof JsonFileType && "bsconfig.json".equals(file.getName()));
+    private static class ORChangeApplier implements ChangeApplier {
+
+        private final List<? extends VFileEvent> m_events;
+
+        public static ChangeApplier apply(List<? extends VFileEvent> events) {
+            return new ORChangeApplier(events);
         }
-        return false;
+
+        private ORChangeApplier(List<? extends VFileEvent> events) {
+            this.m_events = events;
+        }
+
+        @Override
+        public void afterVfsChange() {
+            m_events.forEach(ORChangeApplier::handleEvent);
+        }
+
+        private static <E extends VFileEvent> void handleEvent(E event) {
+            if (event instanceof VFileContentChangeEvent) {
+                handleFileContentChangeEvent((VFileContentChangeEvent) event);
+                return;
+            }
+            if (event instanceof VFileCreateEvent || event instanceof VFileDeleteEvent) {
+                showHideToolWindowsForConfigurationFiles(event);
+                return;
+            }
+            if (event instanceof VFilePropertyChangeEvent && ((VFilePropertyChangeEvent) event).isRename()) {
+                showHideToolWindowsForConfigurationFiles(event);
+            }
+        }
+
+        private static <E extends VFileEvent> void showHideToolWindowsForConfigurationFiles(E event) {
+            VirtualFile modifiedFile = event.getFile();
+            if (modifiedFile == null) {
+                return;
+            }
+            if (BsConfigJson.isBsConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile)) {
+                for (Project project : ProjectManager.getInstance().getOpenProjects()) {
+                    ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
+                    ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
+                }
+            }
+        }
+
+        private static void handleFileContentChangeEvent(VFileContentChangeEvent event) {
+            VirtualFile file = event.getFile();
+            if (BsConfigJson.isBsConfigJson(file)) {
+                handleBsConfigContentChange(file);
+            }
+            showHideToolWindowsForConfigurationFiles(event);
+        }
+
+        private static void handleBsConfigContentChange(VirtualFile bsConfigFile) {
+            for (Project project : ProjectManager.getInstance().getOpenProjects()) {
+                Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
+                if (module != null) {
+                    ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);
+                    OREditorTracker.getInstance(project).updateQueues();
+                }
+            }
+        }
     }
 }

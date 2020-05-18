@@ -14,29 +14,29 @@ import static com.reason.Platform.LOCAL_NODE_MODULES_BIN;
 
 public class BsBinaries {
 
-	@Nullable
-	public static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-		VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
-		String workingDir = FILE_PROTOCOL_PREFIX + ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
+    @Nullable
+    public static String getBsbPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
+        String workingDir = FILE_PROTOCOL_PREFIX + ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
-		VirtualFile bsbPath = getPathToBinary(virtualFileManager, "bsb", workingDir + LOCAL_BS_PLATFORM);
-		if (bsbPath == null) {
-			bsbPath = getPathToBinary(virtualFileManager, "bsb", workingDir + LOCAL_NODE_MODULES_BIN);
-		}
-		return bsbPath == null ? null : bsbPath.getPath();
-	}
+        VirtualFile bsbPath = getPathToBinary(virtualFileManager, "bsb", workingDir + LOCAL_BS_PLATFORM);
+        if (bsbPath == null) {
+            bsbPath = getPathToBinary(virtualFileManager, "bsb", workingDir + LOCAL_NODE_MODULES_BIN);
+        }
+        return bsbPath == null ? null : bsbPath.getPath();
+    }
 
-	@Nullable
-	public static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-		VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
-		String workingDir = FILE_PROTOCOL_PREFIX + ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
+    @Nullable
+    public static String getBscPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        VirtualFileManager virtualFileManager = VirtualFileManager.getInstance();
+        String workingDir = FILE_PROTOCOL_PREFIX + ReasonSettings.getInstance(project).getWorkingDir(sourceFile);
 
-		VirtualFile bscPath = getPathToBinary(virtualFileManager, "bsc", workingDir + LOCAL_BS_PLATFORM);
-		if (bscPath == null) {
-			bscPath = getPathToBinary(virtualFileManager, "bsc", workingDir + LOCAL_NODE_MODULES_BIN);
-		}
-		return bscPath == null ? null : bscPath.getPath();
-	}
+        VirtualFile bscPath = getPathToBinary(virtualFileManager, "bsc", workingDir + LOCAL_BS_PLATFORM);
+        if (bscPath == null) {
+            bscPath = getPathToBinary(virtualFileManager, "bsc", workingDir + LOCAL_NODE_MODULES_BIN);
+        }
+        return bscPath == null ? null : bscPath.getPath();
+    }
 
     @Nullable
     public static String getRefmtPath(@NotNull Project project, @NotNull VirtualFile sourceFile) {
@@ -47,7 +47,7 @@ public class BsBinaries {
         // First, try 7.2 locations
         VirtualFile refmtPath = virtualFileManager.findFileByUrl(workingDir + LOCAL_BS_PLATFORM + "/" + platform + "/refmt.exe");
         if (refmtPath == null) {
-            // Try oler locations
+            // Try older locations
             refmtPath = getRefmtBin(workingDir + LOCAL_BS_PLATFORM + "/lib");
             if (refmtPath == null) {
                 refmtPath = getRefmtBin(workingDir + LOCAL_BS_PLATFORM + "/bin");
@@ -70,6 +70,20 @@ public class BsBinaries {
             binary = vfManager.findFileByUrl(path + "/refmt3.exe");
             if (binary == null) {
                 binary = vfManager.findFileByUrl(path + "/bsrefmt" + (SystemInfo.isWindows ? ".cmd" : ""));
+                if (binary != null) {
+                    // if we've found a symbolic link, we try to follow it to find the real exe
+                    VirtualFile canonicalFile = binary.getCanonicalFile();
+                    VirtualFile canonicalDir = canonicalFile == null ? null : canonicalFile.getParent();
+                    String canonicalPath = canonicalDir == null ? null : canonicalDir.getPath();
+                    String binaryPath = binary.getParent().getPath();
+                    if (!binaryPath.equals(canonicalPath)) {
+                        assert canonicalDir != null;
+                        VirtualFile resolvedBin = canonicalDir.findChild("refmt.exe");
+                        if (resolvedBin != null) {
+                            binary = resolvedBin;
+                        }
+                    }
+                }
             }
         }
 
@@ -93,34 +107,36 @@ public class BsBinaries {
         return "";
     }
 
-	@Nullable
-	private static VirtualFile getPathToBinary(VirtualFileManager virtualFileManager, String target, String workingDir) {
-		String platform = getOsBsPrefix();
+    @Nullable
+    private static VirtualFile getPathToBinary(VirtualFileManager virtualFileManager, String target, String
+            workingDir) {
+        String platform = getOsBsPrefix();
 
-		// First, try 7.2 locations
-		VirtualFile bin = virtualFileManager.findFileByUrl(workingDir + "/" + platform + "/" + target + ".exe");
-		if (bin == null) {
-			// Try old locations
-			bin = virtualFileManager.findFileByUrl(workingDir + "/lib/" + target + ".exe");
-		}
+        // First, try 7.2 locations
+        VirtualFile bin = virtualFileManager.findFileByUrl(workingDir + "/" + platform + "/" + target + ".exe");
+        if (bin == null) {
+            // Try old locations
+            bin = virtualFileManager.findFileByUrl(workingDir + "/lib/" + target + ".exe");
+        }
 
-		if (bin == null) {
-			bin = virtualFileManager.findFileByUrl(workingDir + "/" + target + (SystemInfo.isWindows ? ".cmd" : ""));
-			if (bin != null) {
-				VirtualFile canonicalFile = bin.getCanonicalFile();
-				if (canonicalFile != null) {
-					VirtualFile bsDir = canonicalFile.getParent();
-					VirtualFile resolvedBin = virtualFileManager.findFileByUrl(bsDir + "/" + platform + "/" + target + ".exe");
-					if (resolvedBin == null) {
-                        resolvedBin = virtualFileManager.findFileByUrl(bsDir + "/lib/" + target + ".exe");
-					}
-					if (resolvedBin != null) {
-					    bin = resolvedBin;
+        if (bin == null) {
+            bin = virtualFileManager.findFileByUrl(workingDir + "/" + target + (SystemInfo.isWindows ? ".cmd" : ""));
+            if (bin != null) {
+                // if we've found a symbolic link, we try to follow it to find the real exe
+                VirtualFile canonicalFile = bin.getCanonicalFile();
+                VirtualFile canonicalDir = canonicalFile == null ? null : canonicalFile.getParent();
+                String canonicalPath = canonicalDir == null ? null : canonicalDir.getPath();
+                String binaryPath = bin.getParent().getPath();
+                if (!binaryPath.equals(canonicalPath)) {
+                    assert canonicalDir != null;
+                    VirtualFile resolvedBin = canonicalDir.findChild(target + ".exe");
+                    if (resolvedBin != null) {
+                        bin = resolvedBin;
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
-		return bin;
-	}
+        return bin;
+    }
 }

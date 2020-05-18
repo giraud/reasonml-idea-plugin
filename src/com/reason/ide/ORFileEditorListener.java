@@ -13,13 +13,14 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.WeakList;
 import com.reason.Compiler;
+import com.reason.ORCompilerManager;
 import com.reason.hints.InsightManager;
 import com.reason.hints.InsightUpdateQueue;
-import com.reason.ide.console.CliType;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
 import com.reason.ide.hints.InferredTypesService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,11 +33,13 @@ import java.util.List;
 public class ORFileEditorListener implements FileEditorManagerListener {
 
     private final Project m_project;
+    private final ORCompilerManager m_compilerManager;
     private final List<VirtualFile> m_openedFiles = new ArrayList<>();
     private final WeakList<InsightUpdateQueue> m_queues = new WeakList<>();
 
     ORFileEditorListener(@NotNull Project project) {
         m_project = project;
+        m_compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
     }
 
     public void updateQueues() {
@@ -98,14 +101,21 @@ public class ORFileEditorListener implements FileEditorManagerListener {
     }
 
     class ORPropertyChangeListener implements PropertyChangeListener, Disposable {
+
         private final VirtualFile m_file;
+
         private final Document m_document;
+
         private final InsightUpdateQueue m_updateQueue;
+
+        @Nullable
+        private final Compiler m_compiler;
 
         ORPropertyChangeListener(@NotNull VirtualFile file, @NotNull Document document, @NotNull InsightUpdateQueue insightUpdateQueue) {
             m_file = file;
             m_document = document;
             m_updateQueue = insightUpdateQueue;
+            m_compiler = m_compilerManager.getCompiler(m_file).orElse(null);
         }
 
         @Override
@@ -114,21 +124,11 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
         @Override
         public void propertyChange(@NotNull PropertyChangeEvent evt) {
-            if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
+            if ("modified".equals(evt.getPropertyName())
+                    && evt.getNewValue() == Boolean.FALSE
+                    && m_compiler != null) {
                 // Document is saved, run the compiler !!
-                Compiler compiler = ORCompilerManager.getInstance().getCompiler(m_project);
-                switch (compiler.getType()) {
-                    case BS:
-                        compiler.run(m_file, CliType.Bs.MAKE, () -> m_updateQueue.queue(m_project, m_document));
-                        break;
-                    case DUNE:
-                        compiler.run(m_file, CliType.Dune.BUILD, () -> m_updateQueue.queue(m_project, m_document));
-                        break;
-                    case ESY:
-                        compiler.run(m_file, CliType.Esy.BUILD, () -> m_updateQueue.queue(m_project, m_document));
-                        break;
-                }
-
+                m_compiler.runDefault(m_file, () -> m_updateQueue.queue(m_project, m_document));
 
                 //() -> ApplicationManager.getApplication().runReadAction(() -> {
                 //InferredTypesService.clearTypes(m_project, m_file);
