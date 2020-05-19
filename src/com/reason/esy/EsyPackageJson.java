@@ -1,5 +1,7 @@
 package com.reason.esy;
 
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.framework.detection.FileContentPattern;
 import com.intellij.json.JsonFileType;
 import com.intellij.json.psi.JsonFile;
@@ -14,25 +16,25 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.EsyPackageJsonFileType;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 public class EsyPackageJson {
 
-    private EsyPackageJson() {}
+    private EsyPackageJson() {
+    }
 
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
-        if (virtualFile.isDirectory()) {
-            return false;
+        if (virtualFile.getFileType() instanceof JsonFileType) {
+            try {
+                FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+                return createFilePattern().accepts(fileContent);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        try {
-            FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-            return createFilePattern().accepts(fileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return false;
     }
 
     public static FileType getFileType() {
@@ -40,8 +42,7 @@ public class EsyPackageJson {
     }
 
     private static ElementPattern<FileContent> createFilePattern() {
-        return FileContentPattern.fileContent()
-                .withName(EsyPackageJsonFileType.getDefaultFilename())
+        return FileContentPattern.fileContent().withName(EsyPackageJsonFileType.getDefaultFilename())
                 .with(new PatternCondition<FileContent>("esyPackageJsonPattern") {
                     @Override
                     public boolean accepts(@NotNull FileContent fileContent, ProcessingContext context) {
