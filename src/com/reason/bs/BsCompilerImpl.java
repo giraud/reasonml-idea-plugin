@@ -69,10 +69,11 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void refresh(@NotNull VirtualFile bsConfigFile) {
-        // There is a problem here, todo fix it
         VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(BsConstants.BS_CONFIG_FILENAME) : bsConfigFile;
-        BsConfig updatedConfig = BsConfigReader.read(file);
-        m_configs.put(file.getCanonicalPath(), updatedConfig);
+        if (file != null) {
+            BsConfig updatedConfig = BsConfigReader.read(file);
+            m_configs.put(file.getCanonicalPath(), updatedConfig);
+        }
     }
 
     @Override
@@ -201,16 +202,14 @@ public class BsCompilerImpl implements BsCompiler {
     public ConsoleView getConsoleView() {
         ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(m_project);
         ToolWindow bsToolWindow = windowProvider.getBsToolWindow();
-        Content windowContent = bsToolWindow.getContentManager().getContent(0);
+        Content windowContent = bsToolWindow == null ? null : bsToolWindow.getContentManager().getContent(0);
         if (windowContent == null) {
             return null;
         }
+
         SimpleToolWindowPanel component = (SimpleToolWindowPanel) windowContent.getComponent();
         JComponent panelComponent = component.getComponent();
-        if (panelComponent == null) {
-            return null;
-        }
-        return (ConsoleView) panelComponent.getComponent(0);
+        return panelComponent == null ? null : (ConsoleView) panelComponent.getComponent(0);
     }
 
     @Nullable
