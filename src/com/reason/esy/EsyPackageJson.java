@@ -22,11 +22,11 @@ public class EsyPackageJson {
 
     /* detects any "package.json" with a top-level "esy" property */
     public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
-        if (virtualFile.isDirectory()) {
-            return false;
+        if (virtualFile.getFileType() instanceof JsonFileType) {
+            FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+            return createFilePattern().accepts(fileContent);
         }
-        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-        return createFilePattern().accepts(fileContent);
+        return false;
     }
 
     public static FileType getFileType() {
