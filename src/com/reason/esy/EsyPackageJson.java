@@ -31,7 +31,7 @@ public class EsyPackageJson {
                 FileContent fileContent = FileContentImpl.createByFile(virtualFile);
                 return createFilePattern().accepts(fileContent);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return false;
             }
         }
         return false;

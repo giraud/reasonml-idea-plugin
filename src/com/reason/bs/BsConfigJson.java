@@ -22,7 +22,7 @@ public class BsConfigJson {
                 FileContent fileContent = FileContentImpl.createByFile(virtualFile);
                 return createFilePattern().accepts(fileContent);
             } catch (IOException e) {
-                throw new RuntimeException(e); // TODO?
+                return false;
             }
         }
         return false;
