@@ -49,12 +49,12 @@ allprojects {
     intellij {
         pluginName 'reasonml-plugin-idea'
         type 'IU'
-        version '193.5233.102' // https://www.jetbrains.com/intellij-repository/releases
+        version iuVersion
         updateSinceUntilBuild = false
         plugins = ['java',
                    'JavaScriptLanguage',
                    'com.jetbrains.hackathon.indices.viewer:1.3',
-                   'PsiViewer:193-SNAPSHOT' // https://plugins.jetbrains.com/plugin/227-psiviewer/versions
+                   'PsiViewer:' + psiVersion
         ]
     }
 
