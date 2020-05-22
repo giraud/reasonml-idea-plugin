@@ -42,11 +42,11 @@ the indices viewer.
 When you start an IntelliJ instance with gradle for debuging, 
 they are automatically downloaded for you and immediately available.
 
-[[/img/arch/psiviewer_01.png]]
+![PSIViewer tool](img/arch/psiviewer_01.png)
 
 > The PsiViewer tool to inspect PsiElements of the generated tree from parser
 
-[[/img/arch/indicesviewer_01.png]]
+![Îndices viewer](img/arch/indicesviewer_01.png)
 
 > The indices viewer tool let you verify the correctness of the indexing
 
@@ -81,7 +81,7 @@ Not only every element of a source code must be described as a PSIElement, but a
 could be used in one of the IDE functionality. For example, all files are also PSI elements: this is needed
 to get functionalities like navigation, refactoring, etc.
 
-[[img/arch/psi_hierarchy.png]]
+![](img/arch/psi_hierarchy.png)
 
 > Everything is a PSIElement, even the files
 
@@ -90,7 +90,7 @@ Every parser must create a tree of PSIElements.
 You will see three different types in the code: ORTokenElementType, ORCompositeElementType, and types that inherit from 
 IStubElementType.
 
-[[img/arch/types.png]]
+![](img/arch/types.png)
 
 > TODO: explain
 
@@ -119,7 +119,7 @@ languages was also challenging. Plus we wanted to add some semantic and context 
 to help desambiguate the syntax (unfortunaltely, that point is not really used with the new parser
  neither).
 
-[[docs/arch/parser2.png]]
+![](img/arch/parser2.png)
 
 > Generated types are defined in an abstract common class and implemented in two different subclasses.
 
