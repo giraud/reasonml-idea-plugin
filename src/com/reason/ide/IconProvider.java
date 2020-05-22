@@ -20,7 +20,8 @@ import javax.swing.*;
 public class IconProvider extends com.intellij.ide.IconProvider {
     @Nullable
     @Override
-    public Icon getIcon(@NotNull PsiElement element, int flags) {
+    public Icon getIcon(@NotNull PsiElement psiElement, int flags) {
+        PsiElement element = psiElement instanceof PsiFakeModule ? psiElement.getContainingFile() : psiElement;
         if (element instanceof PsiFile) {
             if (element instanceof OclFile) {
                 return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY) ? ORIcons.OCL_FILE_MODULE : ORIcons.OCL_FILE;
