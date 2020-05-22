@@ -35,7 +35,7 @@ public class BsPlatformTest {
     }
 
     @Test
-    public void findBsPlatformDirectory() {
+    public void testFindBsPlatformDirectory() {
         MockVirtualFile mockBsConfigFile = MockVirtualFile.file(BS_CONFIG_FILENAME);
         MockVirtualFile mockBsPlatformDirectory = MockVirtualFile.dir(BS_PLATFORM_DIRECTORY_NAME);
         MockVirtualFile mockNodeModulesDirectory = MockVirtualFile.dir("node_modules", mockBsPlatformDirectory);
@@ -46,17 +46,33 @@ public class BsPlatformTest {
     }
 
     @Test
-    public void findBsbExecutable_platformSpecificBinary() {
-        String osBsPrefix = BsPlatform.getOsBsPrefix()
-                .orElseThrow(() -> new RuntimeException("Unable to determine OS BS prefix."));
+    public void testFindBsbExecutable_platformSpecificBinary() {
         MockVirtualFile mockBsConfigFile = MockVirtualFile.file(BS_CONFIG_FILENAME);
         MockVirtualFile mockBsbExecutable = MockVirtualFile.file(BSB_EXECUTABLE_NAME + ".exe");
-        MockVirtualFile mockPlatformDirectory = MockVirtualFile.dir(osBsPrefix, mockBsbExecutable);
+        MockVirtualFile mockPlatformDirectory = MockVirtualFile.dir(getOsBsPrefix(), mockBsbExecutable);
         MockVirtualFile mockBsPlatformDirectory = MockVirtualFile.dir(BS_PLATFORM_DIRECTORY_NAME, mockPlatformDirectory);
         MockVirtualFile mockNodeModulesDirectory = MockVirtualFile.dir("node_modules", mockBsPlatformDirectory);
         MockVirtualFile mockSourceFile = MockVirtualFile.dir(MOCK_ROOT, mockBsConfigFile, mockNodeModulesDirectory);
         Optional<VirtualFile> bsbExecutable = BsPlatform.findBsbExecutable(mockProject, mockSourceFile);
         assertTrue(bsbExecutable.isPresent());
         assertEquals(mockBsbExecutable, bsbExecutable.get());
+    }
+
+    @Test
+    public void testFindBsbExecutable_platformAgnosticWrapper() {
+        String bsbWrapperFilename = BSB_EXECUTABLE_NAME + BsPlatform.getOsBinaryWrapperExtension();
+        MockVirtualFile mockBsConfigFile = MockVirtualFile.file(BS_CONFIG_FILENAME);
+        MockVirtualFile mockBsbExecutableWrapper = MockVirtualFile.file(bsbWrapperFilename);
+        MockVirtualFile mockBsPlatformDirectory = MockVirtualFile.dir(BS_PLATFORM_DIRECTORY_NAME, mockBsbExecutableWrapper);
+        MockVirtualFile mockNodeModulesDirectory = MockVirtualFile.dir("node_modules", mockBsPlatformDirectory);
+        MockVirtualFile mockSourceFile = MockVirtualFile.dir(MOCK_ROOT, mockBsConfigFile, mockNodeModulesDirectory);
+        Optional<VirtualFile> bsbExecutableWrapper = BsPlatform.findBsbExecutable(mockProject, mockSourceFile);
+        assertTrue(bsbExecutableWrapper.isPresent());
+        assertEquals(mockBsbExecutableWrapper, bsbExecutableWrapper.get());
+    }
+
+    private static String getOsBsPrefix() {
+        return BsPlatform.getOsBsPrefix()
+                .orElseThrow(() -> new RuntimeException("Unable to determine OS BS prefix."));
     }
 }

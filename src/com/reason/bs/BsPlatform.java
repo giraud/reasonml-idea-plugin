@@ -89,8 +89,7 @@ public class BsPlatform {
             return Optional.of(executable);
         }
         // next, try to find platform-agnostic wrappers / symlinks
-        executable = bsPlatformDirectory.findFileByRelativePath(executableName
-                + (SystemInfo.isWindows ? ".cmd" : ""));
+        executable = bsPlatformDirectory.findFileByRelativePath(executableName + getOsBinaryWrapperExtension());
         if (executable != null) {
             if (executable.is(VFileProperty.SYMLINK)) {
                 return Optional.ofNullable(executable.getCanonicalFile());
@@ -104,6 +103,11 @@ public class BsPlatform {
         }
         executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + ".exe");
         return Optional.ofNullable(executable);
+    }
+
+    @VisibleForTesting
+    static String getOsBinaryWrapperExtension() {
+        return SystemInfo.isWindows ? ".cmd" : "";
     }
 
     @VisibleForTesting
