@@ -1,6 +1,8 @@
 package com.reason.ide.go;
 
 import java.util.*;
+
+import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
@@ -14,14 +16,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import icons.ORIcons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVal;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     @Override
@@ -53,6 +47,8 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         } else if (element instanceof PsiLowerSymbol && parent instanceof PsiExternal && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, containingFile);
         } else if (element instanceof PsiUpperSymbol && parent instanceof PsiInnerModule && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
+            extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+        } else if (element instanceof PsiUpperSymbol && parent instanceof PsiException && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
             extractRelatedExpressions(element.getFirstChild(), result, containingFile);
         }
     }

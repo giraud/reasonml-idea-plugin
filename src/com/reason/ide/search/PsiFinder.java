@@ -12,10 +12,7 @@ import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.bs.BsCompiler;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.files.RmlFileType;
-import com.reason.ide.files.RmlInterfaceFileType;
+import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.*;
@@ -55,7 +52,13 @@ public final class PsiFinder {
         if (directory != null) {
             String filename = file.getVirtualFile().getNameWithoutExtension();
 
-            String relatedExtension = file.isInterface() ? RmlFileType.INSTANCE.getDefaultExtension() : RmlInterfaceFileType.INSTANCE.getDefaultExtension();
+            String relatedExtension;
+            if (FileHelper.isReason(file.getFileType())) {
+                relatedExtension = file.isInterface() ? RmlFileType.INSTANCE.getDefaultExtension() : RmlInterfaceFileType.INSTANCE.getDefaultExtension();
+            } else {
+                relatedExtension = file.isInterface() ? OclFileType.INSTANCE.getDefaultExtension() : OclInterfaceFileType.INSTANCE.getDefaultExtension();
+            }
+
             PsiFile relatedPsiFile = directory.findFile(filename + "." + relatedExtension);
             return relatedPsiFile instanceof FileBase ? (FileBase) relatedPsiFile : null;
         }
@@ -63,8 +66,8 @@ public final class PsiFinder {
     }
 
     static class PartitionedModules {
-        private List<PsiModule> m_interfaces = new ArrayList<>();
-        private List<PsiModule> m_implementations = new ArrayList<>();
+        private final List<PsiModule> m_interfaces = new ArrayList<>();
+        private final List<PsiModule> m_implementations = new ArrayList<>();
 
         PartitionedModules(@NotNull Project project, @Nullable Collection<PsiModule> modules, @Nullable ModuleFilter<PsiModule> filter) {
             if (modules != null) {
@@ -356,7 +359,7 @@ public final class PsiFinder {
 
         Set<PsiFakeModule> topModules = findTopModules(excludeNamespaces, scope);
         topModules.removeIf(module -> !module.getModuleName().equals(name));
-        return  topModules;
+        return topModules;
     }
 
     @NotNull
