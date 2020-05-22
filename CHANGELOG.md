@@ -12,6 +12,15 @@
 
 ## Unreleased
 
+## 0.89.0 - 2020/05/22
+
+- :rocket: [#239](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/239) - Experimental: start of ESY support work by [@pooch](https://github.com/JohnPucciarelli)
+- :bug: [#249](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/249) - Too many warnings in log (bsconfig not found)
+- :bug: [#241](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/241) - Fix bug that prevent IDEA to keep correctly the source of SDK by [@kayl669](https://github.com/kayl669)
+- :bug: [#236](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/236) - Cannot find a module definition if namespace is used
+- :house: Find real bsc/bsb binaries if a symlink is found
+- :house: Fix gutter icons for navigation in OCaml files
+
 ## 0.88.1 - 2020/05/02
 
 0.88.1

@@ -2,23 +2,18 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.18"
 }
 
-def pluginVersion = '0.89.0-SNAPSHOT'
+def pluginVersion = '0.89.0'
 version = pluginVersion + '-' + ideaVersion
 
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>You can easily download OCaml SDK sources in SDK platform settings</li>
-            <li>#231 - Fix ClassCastException when reading bsconfig.json</li>
-            <li>#220 - Added BuckleScript file type and icon</li> 
-            <li>#219 - Added file type support for Esy</li>
-            <li>Poly-variants can have a different highlighting, color scheme updated</li>
-            <li>Use SVG icons</li>
-            <li>#224 - Use bsb.exe instead of node.js wrapper in monorepo</li>
-            <li>#221 - Compilers have separate tool windows</li>
-            <li>#238 - Add build system info to action labels</li>
-            <li>#234 - com.reason.CompilerProcessException: Dune process exception. Invalid cliType command</li>
-            <li>Use rincewind@0.8</li>
+            <li>#239 - Experimental: start of ESY support work</li>
+            <li>#249 - Too many warnings in log (bsconfig not found)</li>
+            <li>#241 - Fix bug that prevent IDEA to keep correctly the source of SDK</li>
+            <li>#236 - Cannot find a module definition if namespace is used</li>
+            <li>Find real bsc/bsb binaries if a symlink is found</li>
+            <li>Fix gutter icons for navigation in OCaml files</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
