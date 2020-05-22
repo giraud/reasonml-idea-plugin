@@ -17,4 +17,4 @@
 
 You can launch a new idea instance with the run ide gradle task
 
-[[img/run_ide.png]]
+![](img/run_ide.png)
