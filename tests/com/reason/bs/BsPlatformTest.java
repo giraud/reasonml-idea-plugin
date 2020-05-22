@@ -16,14 +16,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Optional;
 
-import static com.reason.bs.BsConstants.BS_CONFIG_FILENAME;
-import static com.reason.bs.BsConstants.BS_PLATFORM_DIRECTORY_NAME;
+import static com.reason.bs.BsConstants.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 public class BsPlatformTest {
+
+    private static final String MOCK_ROOT = "MOCK_DIRECTORY";
 
     @Mock
     private Project mockProject;
@@ -35,12 +36,27 @@ public class BsPlatformTest {
 
     @Test
     public void findBsPlatformDirectory() {
-        MockVirtualFile mockBsConfigFile = new MockVirtualFile(BS_CONFIG_FILENAME);
+        MockVirtualFile mockBsConfigFile = MockVirtualFile.file(BS_CONFIG_FILENAME);
         MockVirtualFile mockBsPlatformDirectory = MockVirtualFile.dir(BS_PLATFORM_DIRECTORY_NAME);
         MockVirtualFile mockNodeModulesDirectory = MockVirtualFile.dir("node_modules", mockBsPlatformDirectory);
-        MockVirtualFile mockSourceFile = MockVirtualFile.dir("MOCK_DIR", mockBsConfigFile, mockNodeModulesDirectory);
+        MockVirtualFile mockSourceFile = MockVirtualFile.dir(MOCK_ROOT, mockBsConfigFile, mockNodeModulesDirectory);
         Optional<VirtualFile> bsPlatformDirectory = BsPlatform.findBsPlatformDirectory(mockProject, mockSourceFile);
         assertTrue(bsPlatformDirectory.isPresent());
         assertEquals(mockBsPlatformDirectory, bsPlatformDirectory.get());
+    }
+
+    @Test
+    public void findBsbExecutable_platformSpecificBinary() {
+        String osBsPrefix = BsPlatform.getOsBsPrefix()
+                .orElseThrow(() -> new RuntimeException("Unable to determine OS BS prefix."));
+        MockVirtualFile mockBsConfigFile = MockVirtualFile.file(BS_CONFIG_FILENAME);
+        MockVirtualFile mockBsbExecutable = MockVirtualFile.file(BSB_EXECUTABLE_NAME + ".exe");
+        MockVirtualFile mockPlatformDirectory = MockVirtualFile.dir(osBsPrefix, mockBsbExecutable);
+        MockVirtualFile mockBsPlatformDirectory = MockVirtualFile.dir(BS_PLATFORM_DIRECTORY_NAME, mockPlatformDirectory);
+        MockVirtualFile mockNodeModulesDirectory = MockVirtualFile.dir("node_modules", mockBsPlatformDirectory);
+        MockVirtualFile mockSourceFile = MockVirtualFile.dir(MOCK_ROOT, mockBsConfigFile, mockNodeModulesDirectory);
+        Optional<VirtualFile> bsbExecutable = BsPlatform.findBsbExecutable(mockProject, mockSourceFile);
+        assertTrue(bsbExecutable.isPresent());
+        assertEquals(mockBsbExecutable, bsbExecutable.get());
     }
 }

@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
 import com.reason.ide.ORProjectManager;
+import org.assertj.core.util.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -83,12 +84,12 @@ public class BsPlatform {
         }
         VirtualFile executable;
         // first, try to find platform-specific binary
-        executable = bsPlatformDirectory.findFileByRelativePath("./" + platform + "/" + executableName + ".exe");
+        executable = bsPlatformDirectory.findFileByRelativePath(platform.get() + "/" + executableName + ".exe");
         if (executable != null) {
             return Optional.of(executable);
         }
         // next, try to find platform-agnostic wrappers / symlinks
-        executable = bsPlatformDirectory.findFileByRelativePath("./" + executableName
+        executable = bsPlatformDirectory.findFileByRelativePath(executableName
                 + (SystemInfo.isWindows ? ".cmd" : ""));
         if (executable != null) {
             if (executable.is(VFileProperty.SYMLINK)) {
@@ -97,15 +98,16 @@ public class BsPlatform {
             return Optional.of(executable);
         }
         // last, try old locations of binary
-        executable = bsPlatformDirectory.findFileByRelativePath("./bin/" + executableName + ".exe");
+        executable = bsPlatformDirectory.findFileByRelativePath("bin/" + executableName + ".exe");
         if (executable != null) {
             return Optional.of(executable);
         }
-        executable = bsPlatformDirectory.findFileByRelativePath("./lib/" + executableName + ".exe");
+        executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + ".exe");
         return Optional.ofNullable(executable);
     }
 
-    private static Optional<String> getOsBsPrefix() {
+    @VisibleForTesting
+    static Optional<String> getOsBsPrefix() {
         if (SystemInfo.isWindows) {
             return Optional.of("win32");
         }
