@@ -8,11 +8,11 @@ You need to create a SDK to locate the compiled files and the source files of th
 
 First, open the project structure (File | Project structure), and go to SDK:
 
-[[img/sdk_01.png]]
+![](img/sdk_01.png)
 
 Locate your ocaml installation:
 
-[[img/sdk_02.png]]
+![](img/sdk_02.png)
 
 **NOTE**: SDK version extraction is based on a simple regex and it expects that ocaml installation contains the version number.
 If it's not the case, you should probably create a symlink to your real implementation with the version number.
@@ -25,10 +25,10 @@ This is needed because the plugin is working at the source level for completion.
 
 Use the + icon and locate the directory where you cloned the github project:
 
-[[img/sdk_03.png]]
+![](img/sdk_03.png)
 
 ## Set your project SDK
 
 Go to the project entry and select the OCaml SDK:
 
-[[img/sdk_04.png]] 
+![](img/sdk_04.png])
