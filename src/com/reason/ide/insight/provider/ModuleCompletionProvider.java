@@ -1,8 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
@@ -15,13 +12,19 @@ import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
 import com.reason.ide.IconProvider;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
@@ -33,6 +36,7 @@ public class ModuleCompletionProvider {
 
         Project project = element.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         // Compute module path (all module names before the last dot)
         ModulePath modulePath = computePathFromPsi(types, element);
@@ -42,25 +46,34 @@ public class ModuleCompletionProvider {
 
         if (modulePath.isEmpty()) {
             // First module to complete, use the list of files
-            Collection<FileBase> files = FileModuleIndexService.getService().getFiles/*WithoutNamespace*/(project, scope);
-            for (FileBase indexedFile : files) {
-                String moduleName = indexedFile.getModuleName();
-                if (moduleName != null) {
+            Set<PsiFakeModule> topModules = psiFinder.findTopModules(true, scope);
+            for (PsiFakeModule topModule : topModules) {
+                FileBase topFile = (FileBase) topModule.getContainingFile();
+                if (!topFile.equals(element.getContainingFile())) {
                     resultSet.addElement(LookupElementBuilder.
-                            create(moduleName).
-                            withTypeText(indexedFile.getVirtualFile().getPath()).
-                            withIcon(IconProvider.getFileModuleIcon(indexedFile)));
+                            create(topModule.getModuleName()).
+                            withTypeText(FileHelper.shortLocation(project, topFile.getVirtualFile().getPath())).
+                            withIcon(IconProvider.getFileModuleIcon(topFile)));
                 }
+
+            }
+
+            // Add virtual namespaces
+            Collection<String> namespaces = FileModuleIndexService.getService().getNamespaces(project);
+            LOG.debug("  namespaces", namespaces);
+
+            for (String namespace : namespaces) {
+                resultSet.addElement(LookupElementBuilder.
+                        create(namespace).
+                        withTypeText("Generated namespace").
+                        withIcon(ORIcons.VIRTUAL_NAMESPACE));
             }
         } else {
-            PsiFinder psiFinder = PsiFinder.getInstance(project);
-            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(modulePath.toString(), interfaceOrImplementation, scope);
+            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(modulePath.toString(), true, interfaceOrImplementation, scope);
             PsiModule foundModule = modulesFromQn.isEmpty() ? null : modulesFromQn.iterator().next();
             if (foundModule != null) {
                 LOG.debug("  Found module", foundModule);
-                Collection<PsiInnerModule> modules = foundModule instanceof FileBase ? ((FileBase) foundModule).getModules() :
-                        ((PsiInnerModule) foundModule).getModules();
-                for (PsiInnerModule module : modules) {
+                for (PsiModule module : foundModule.getModules()) {
                     resultSet.addElement(LookupElementBuilder.
                             create(module).
                             withIcon(PsiIconUtil.getProvidersIcon(module, 0)));

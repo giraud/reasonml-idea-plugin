@@ -219,6 +219,7 @@
          -->
 
         <stubIndex implementation="com.reason.ide.search.index.ModuleIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.ModuleTopLevelIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ModuleComponentIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.LetIndex"/>

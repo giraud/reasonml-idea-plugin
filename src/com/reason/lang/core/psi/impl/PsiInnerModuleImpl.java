@@ -1,9 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import java.util.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -12,28 +8,25 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import icons.ORIcons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 
 public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiInnerModule {
 
@@ -109,21 +102,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @NotNull
     @Override
-    public Collection<PsiOpen> getOpenExpressions() {
-        PsiElement body = getBody();
-        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiOpen.class);
-    }
-
-    @NotNull
-    @Override
-    public Collection<PsiInclude> getIncludeExpressions() {
-        PsiElement body = getBody();
-        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiInclude.class);
-    }
-
-    @NotNull
-    @Override
-    public Collection<PsiInnerModule> getModules() {
+    public Collection<PsiModule> getModules() {
         PsiElement body = getBody();
         return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiInnerModule.class);
     }
@@ -131,16 +110,14 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     @Nullable
     @Override
     public PsiModule getModuleExpression(@Nullable String name) {
-        if (name == null) {
-            return null;
-        }
-
-        Collection<PsiInnerModule> modules = getModules();
-        for (PsiInnerModule module : modules) {
-            if (name.equals(module.getName())) {
-                return module;
+        if (name != null) {
+            for (PsiModule module : getModules()) {
+                if (name.equals(module.getName())) {
+                    return module;
+                }
             }
         }
+
         return null;
     }
 
@@ -205,38 +182,19 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @Nullable
     @Override
-    public PsiExternal getExternalExpression(@NotNull String name) {
-        PsiExternal result = null;
-
-        PsiElement body = getBody();
-        if (body != null) {
-            List<PsiExternal> externals = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiExternal.class);
-            if (!externals.isEmpty()) {
-                for (PsiExternal external : externals) {
-                    if (name.equals(external.getName())) {
-                        result = external;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    @Nullable
-    @Override
-    public PsiType getTypeExpression(@NotNull String name) {
+    public PsiType getTypeExpression(@Nullable String name) {
         PsiType result = null;
 
-        PsiElement body = getBody();
-        if (body != null) {
-            List<PsiType> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class);
-            if (!expressions.isEmpty()) {
-                for (PsiType expression : expressions) {
-                    if (name.equals(expression.getName())) {
-                        result = expression;
-                        break;
+        if (name != null) {
+            PsiElement body = getBody();
+            if (body != null) {
+                List<PsiType> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class);
+                if (!expressions.isEmpty()) {
+                    for (PsiType expression : expressions) {
+                        if (name.equals(expression.getName())) {
+                            result = expression;
+                            break;
+                        }
                     }
                 }
             }

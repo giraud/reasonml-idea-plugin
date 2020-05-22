@@ -1,14 +1,13 @@
 package com.reason.ide;
 
-import java.util.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
 import static com.reason.lang.core.ORFileType.*;
@@ -57,12 +56,12 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         myFixture.configureByText("a.rei", "module A: { let x = 1; };");
         myFixture.configureByText("A.re", "module A = { let x = 1; };");
 
-        List<PsiModule> fileModules = new ArrayList<>(PsiFinder.getInstance(getProject()).findModulesFromQn("A", both, allScope(getProject())));
-        List<PsiModule> innerModules = new ArrayList<>(PsiFinder.getInstance(getProject()).findModulesFromQn("A.A", both, allScope(getProject())));
+        List<PsiModule> fileModules = new ArrayList<>(PsiFinder.getInstance(getProject()).findModulesFromQn("A", true, both, allScope(getProject())));
+        List<PsiModule> innerModules = new ArrayList<>(PsiFinder.getInstance(getProject()).findModulesFromQn("A.A", true, both, allScope(getProject())));
 
         assertSize(2, fileModules);
-        assertInstanceOf(fileModules.get(0), FileBase.class);
-        assertInstanceOf(fileModules.get(1), FileBase.class);
+        assertInstanceOf(fileModules.get(0), PsiFakeModule.class);
+        assertInstanceOf(fileModules.get(1), PsiFakeModule.class);
 
         assertSize(2, innerModules);
         assertInstanceOf(innerModules.get(0), PsiInnerModule.class);
@@ -92,8 +91,8 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         List<PsiModule> moduleAliases = new ArrayList<>(psiFinder.findModuleAlias("Belt.Option", allScope(getProject())));
 
         assertSize(2, moduleAliases);
-        assertInstanceOf(moduleAliases.get(0), FileBase.class);
-        assertInstanceOf(moduleAliases.get(1), FileBase.class);
+        assertInstanceOf(moduleAliases.get(0), PsiFakeModule.class);
+        assertInstanceOf(moduleAliases.get(1), PsiFakeModule.class);
     }
 
     public void testRml_letDeconstruction() {

@@ -14,6 +14,11 @@ public class ORFakeResolvedElement extends FakePsiElement {
         m_sourceElement = element;
     }
 
+    @Override
+    public PsiElement getOriginalElement() {
+        return m_sourceElement;
+    }
+
     @Nullable
     @Override
     public PsiElement getParent() {

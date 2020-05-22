@@ -56,14 +56,14 @@ public class DotExpressionCompletionProvider {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                Set<String> potentialPaths = qnameFinder.extractPotentialPaths(element);
+                Set<String> potentialPaths = qnameFinder.extractPotentialPaths(element, true);
                 if (LOG.isTraceEnabled()) {
                     LOG.debug(" -> paths", potentialPaths);
                 }
 
                 Set<PsiModule> resolvedModules = new ArrayListSet<>();
                 for (String qname : potentialPaths) {
-                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qname, interfaceOrImplementation, scope);
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qname, true, interfaceOrImplementation, scope);
                     if (!modulesFromQn.isEmpty()) {
                         resolvedModules.addAll(modulesFromQn);
                     }

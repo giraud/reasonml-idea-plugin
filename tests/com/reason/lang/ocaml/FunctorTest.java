@@ -56,7 +56,7 @@ public class FunctorTest extends BaseParsingTestCase {
     }
 
     public void testModuleFunctorInstanciation1() {
-        PsiInnerModule module = first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
+        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module Printing = Make (struct let encode = encode_record end)")));
         PsiStruct struct = PsiTreeUtil.findChildOfType(module.getBody(), PsiStruct.class);
 
         assertNotNull(struct);

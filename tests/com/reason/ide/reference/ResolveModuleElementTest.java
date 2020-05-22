@@ -32,9 +32,17 @@ public class ResolveModuleElementTest extends ORBasePlatformTestCase {
         assertEquals("A.A1", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
+    public void testWithLocalAlias() {
+        configureCode("Belt.re", "let x = 1;");
+        configureCode("A.re", "module B = Belt; B<caret>");
+
+        PsiElement elementAtCaret = myFixture.getElementAtCaret();
+        assertEquals("A.B", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());
+    }
+
     public void testWithAliasAndInterface() {
         configureCode("C.rei", "module A1 = {};");
-        configureCode("D.re", "module X = C; X.A1<caret>);");
+        configureCode("D.re", "module X = C; X.A1<caret>;");
 
         PsiElement elementAtCaret = myFixture.getElementAtCaret();
         assertEquals("C.A1", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());

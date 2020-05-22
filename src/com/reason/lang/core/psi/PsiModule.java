@@ -1,6 +1,8 @@
 package com.reason.lang.core.psi;
 
 import java.util.*;
+
+import com.reason.lang.core.PsiFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.NavigatablePsiElement;
@@ -20,11 +22,14 @@ public interface PsiModule extends PsiQualifiedElement, NavigatablePsiElement, P
     @NotNull
     Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope);
 
+    @NotNull
+    Collection<PsiModule> getModules();
+
     @Nullable
     PsiModule getModuleExpression(@Nullable String name);
 
     @Nullable
-    PsiType getTypeExpression(@NotNull String name);
+    PsiType getTypeExpression(@Nullable String name);
 
     @Nullable
     PsiLet getLetExpression(@Nullable String name);
