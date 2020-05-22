@@ -87,7 +87,8 @@ public class Platform {
         Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
 
         if (rootContents.isEmpty()) {
-            LOG.warn("No content roots with " + filename + " file found");
+            //https://github.com/reasonml-editor/reasonml-idea-plugin/issues/249
+            //LOG.warn("No content roots with " + filename + " file found");
             return null;
         } else if (rootContents.size() == 1) {
             Module module = rootContents.keySet().iterator().next();
