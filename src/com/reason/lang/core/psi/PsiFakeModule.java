@@ -168,8 +168,10 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
         return result;
     }
 
+    @Nullable
     public ItemPresentation getPresentation() {
-        throw new RuntimeException("Not implemented, use FileBase");
+        // FileBase presentation should be used
+        return null;
     }
 
     public boolean hasNamespace() {
