@@ -52,14 +52,6 @@ public class ORProjectManager {
         return !findEsyConfigurationFiles(project).isEmpty();
     }
 
-    public static Optional<String> findOcamlformatExecutable(@NotNull Project project) {
-        return findFirstBsConfigurationFile(project)
-                .flatMap((bsConfigFile) -> Optional.ofNullable(bsConfigFile.getParent()))
-                .map((bsConfigFile) -> bsConfigFile.findFileByRelativePath("./node_modules/" + BS_PLATFORM_DIRECTORY_NAME))
-                .filter(VirtualFile::isDirectory)
-                .map(VirtualFile::getCanonicalPath);
-    }
-
     public static Optional<VirtualFile> findFirstBsConfigurationFile(@NotNull Project project) {
         return findFirst(findBsConfigurationFiles(project));
     }
