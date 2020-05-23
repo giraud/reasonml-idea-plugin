@@ -1,3 +1,7 @@
+# Project Configuration
+ - OCaml
+ - ReasonML (BuckleScript)
+
 **prerequesites**: You need one of the IDEA product (community or ultimate).
 
 If you want to have completion and get type annotations, you need to define an SDK.
