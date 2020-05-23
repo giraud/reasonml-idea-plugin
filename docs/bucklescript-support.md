@@ -1,4 +1,4 @@
-## Settings
+## BuckleScript Settings
 
 Settings are per project.
 
