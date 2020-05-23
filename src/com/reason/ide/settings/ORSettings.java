@@ -1,6 +1,9 @@
 package com.reason.ide.settings;
 
+import a.f.P;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.reason.bs.BsPlatform;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +12,9 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
+
+import java.nio.file.FileSystem;
+import java.util.Optional;
 
 @State(name = "ORSettings", storages = {@Storage("reason.xml")})
 public class ORSettings implements PersistentStateComponent<ORSettings.ORSettingsState> {
@@ -110,17 +116,27 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ORSetting
         m_isBsEnabled = isBsEnabled;
     }
 
-    public String getBsPlatformLocation() {
-        if (StringUtils.isNotBlank(m_bsPlatformLocation)) {
-           return m_bsPlatformLocation;
+    public Optional<VirtualFile> getBsPlatformLocation() {
+        if (StringUtils.isBlank(m_bsPlatformLocation)) {
+            return BsPlatform.findFirstBsPlatformDirectory(m_project);
         }
-        return BsPlatform.findFirstBsPlatformDirectory(m_project)
-                .map(VirtualFile::getPath)
-                .orElse("");
+        VirtualFile bsPlatformDirectory = VirtualFileManager.getInstance().findFileByUrl(m_bsPlatformLocation);
+        if (bsPlatformDirectory == null) {
+            return Optional.empty();
+        }
+        return Optional.of(bsPlatformDirectory);
     }
 
     public void setBsPlatformLocation(String bsPlatformLocation) {
         m_bsPlatformLocation = bsPlatformLocation;
+    }
+
+    public Optional<VirtualFile> getBsbExecutable() {
+        return getBsPlatformLocation().flatMap(BsPlatform::findBsbExecutable);
+    }
+
+    public Optional<VirtualFile> getBscExecutable() {
+        return getBsPlatformLocation().flatMap(BsPlatform::findBscExecutable);
     }
 
     public String getDuneExecutable() {
