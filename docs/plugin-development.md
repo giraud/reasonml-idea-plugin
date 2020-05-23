@@ -1,3 +1,5 @@
+# Plugin Development
+
 ## Prepare your environment
 
 1. install the plugin prerequisites (from [intellij documentation](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support/prerequisites.html))
