@@ -6,6 +6,10 @@ ReasonML language plugin for idea
 
 ![screenshot](screenshot.png)
 
+## Questions / Feedback
+
+Feel free to post any questions or feedback in [Discord](https://discord.gg/etjAsHR) 
+
 ## Documentation
 
 Please see the [wiki](../../wiki).
