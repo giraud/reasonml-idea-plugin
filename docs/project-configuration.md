@@ -2,6 +2,8 @@
  - OCaml
  - ReasonML (BuckleScript)
 
+## OCaml Project Configuration
+
 **prerequesites**: You need one of the IDEA product (community or ultimate).
 
 If you want to have completion and get type annotations, you need to define an SDK.
@@ -36,3 +38,7 @@ Use the + icon and locate the directory where you cloned the github project:
 Go to the project entry and select the OCaml SDK:
 
 ![](img/sdk_04.png])
+
+---
+
+## Reason Project Configuration
