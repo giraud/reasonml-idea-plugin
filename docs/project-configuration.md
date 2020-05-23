@@ -2,6 +2,8 @@
  - OCaml
  - ReasonML (BuckleScript)
 
+---
+
 ## OCaml Project Configuration
 
 **prerequesites**: You need one of the IDEA product (community or ultimate).
@@ -42,3 +44,9 @@ Go to the project entry and select the OCaml SDK:
 ---
 
 ## Reason Project Configuration
+
+Settings are per project.
+
+You can find them in `Project settings | Languages & Frameworks | Reason`: 
+
+![](img/settings.png)
