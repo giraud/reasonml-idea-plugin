@@ -13,17 +13,17 @@ symbols for nice navigation, documentation, etc, caching and indexing for fast r
 On the other side, an IDE - as the name implies (Integrated) - already has these behaviors
 embedded in the software. With regard to Jetbrains, many man-hours have been invested through
 years of development into these exact problems of indexing, referencing, etc. They have their own 
-structures (PSIElements) that you must follow if you want to use the full power of the IDE.
-If you do so, you get a lot of functionalities for free.
+structures (`PSIElement`) that you must follow if you want to use the full power of the IDE.
+If you do so, you get a lot of functionalities for free. You won't find many IntelliJ plugins that
+are using LSP for - IMO - that exact reason. It would be more integration work if you externalize
+the parser or the indexing.
 
 Of course, the drawback of not using LSP is that creating a functional plugin needs more work.
 
-Another reason is that the goal of the plugin is to work out of the box as much as possible
-in the most cross platform way, it means that Windows users will have the same DX than Linux
-or OSX users.
-
-The focus of the plugin is to work at much as possible at the source level.
-In a second pass, to improve results, we also use information from compiled typed trees (the cmt files).
+The goal of the plugin is also to work out of the box, and be cross platform (this is the strength 
+of the JVM). The idea is to try to keep things at the JVM level, and thus work at much as possible
+at the source level. In a second pass, to improve results, we also use information from the 
+compiled typed trees (the cmt files) - but it is optional.
 
 Finally, these decisions give us the ability to provide multiple languages implementations easily:
 the plugin works at ReasonML and OCaml source code, and embed Dune, ML4, MLG, MLL, MLY syntaxes.
@@ -36,7 +36,7 @@ want to contribute occasionally, and Kotlin workflow is much slower than Java.
 
 # Tools
 
-When developing a functionality, two tools are very important: the PsiViewer and
+When developing a functionality, two tools are very important: the PSI viewer and
 the indices viewer.
  
 When you start an IntelliJ instance with gradle for debuging, 
