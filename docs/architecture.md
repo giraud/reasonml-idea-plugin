@@ -1,3 +1,5 @@
+**THIS IS A WORK IN PROGRESS**
+
 # Design decisions
 
 #### Language Server Protocol, or the lack of
