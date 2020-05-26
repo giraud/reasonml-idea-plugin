@@ -73,6 +73,28 @@ Structure of the sources is:
 - `ide` contains all editor functionalities
 - `lang` contains parser code, PSI definitions, stubs, etc. for the different languages
 
+# Modules
+
+When developing a plugin, you must be aware of the differences between the different products
+of the Jetbrains family. 
+
+Not every features are available to the editors (for ex: the JS functionality is not present in
+IntelliJ community). Moreover, modules are only exposed in the IntelliJ products.
+
+There are 2 important concepts:
+- project: a project is a container for a module. It can have different modules of different types.
+It doesn't know about the sources.
+- module: a module contains the root sources. They have a type that define what language they accept.
+
+For non-IntelliJ products, the project and the module is a 1-to-1 relation. Even if the module is not
+exposed, it is still present and must be used to find the root of the sources.
+
+Plugin functionalities are defined in an xml file that uses extension points of the IDE
+to register classes. there are different xml files:
+- `plugin.xml`: the main entry, contains all entries common to every product. It also references the other xml files.
+- `java-deps.xml`: depends on `com.intellij.modules.java` and is only loaded in IntelliJ products; 
+- `js-deps.xml`: special post activities when plugin is used in a javascript editor (ex: webstorm)
+
 # Lexer / Parser
 
 ## PsiElement
@@ -159,6 +181,22 @@ Only stub elements are indexed. Again, for everything you want to know about stu
 Stub elements are the serialized versions of the corresponding `PsiElement`. All the stubs are found
 in `com.reason.lang.core.stub` and you can see what properties for each stub are saved on disk.
 
+It's important to use the stub instead of the real component whenever possible, to
+skip heavy computations, and to avoid IntelliJ to load and parse the real file. For ex,
+this is how we use stub:
+
+```java
+public String getQualifiedName() {
+    PsiModuleStub stub = getGreenStub();
+    if (stub != null) {
+        // use serialized version of the PsiElement
+        return stub.getQualifiedName();
+    }
+    // else, normal - time consuming - operation
+    ...
+}
+```
+
 In `com.reason.lang.core.stub.type`, you can find the definition of `IStubElementType` for each of the composite 
 types that must be serialized (ex: `PsiLetStubElementType`, `PsiModuleStubElementType`, etc). Remember these 
 classes are used in `ORTypes` and are the equivalent of a `ORCompositeElementType` class. The `IStubElementType` is where you find the code
@@ -175,11 +213,36 @@ using the indices viewer. These constants are used in the stub element types whe
 
 > Relations between stubs, keys and indexes
 
+## Virtual namespaces / files
+
+Bucklescript has a directive to automatically generate files with a namespace.
+
+```json
+namespace: true | "name"
+```
+
+This is problematic when indexing the files at the source level, because the 
+namespace only exist at the generated code, and indexing files is different than 
+indexing inner modules of a file. Also, we want to use the same indexes for the 
+inner modules and for the files. 
+
+To solve these problems, we add a fake element at the end of the file. This 
+element implements the `PsiModule` interface, like any other module, and can be indexed
+with the same lifecycle.
+
+![](img/arch/fake_module_class.png)
+
+This is a 'fake' element, because there is no token associated with it.
+
+![](img/arch/fake_module.png)
+
+> An empty file always have a PSI element, the fake element that represents the file itself
+
+If there is a virtual namespace, the qualified name of the `PsiFakeModule` will contain it.
+
 # Other
 
-Indexing, LSymbol, USymbol
-Performance, stubs
+LSymbol, USymbol
 Resolving: qname finder, psifinder
-fakemodule
 modules and products / diff plugin.xml
 rincewind
