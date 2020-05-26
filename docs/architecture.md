@@ -150,10 +150,36 @@ module binding node.
 Also note, that even if it's possible, there are no errors produced by the parser: syntax errors are delegated
 to the compilers.
 
+# Indexing
+
+Before we can resolve symbols to their corresponding definition, we need to index them.
+Only stub elements are indexed. Again, for everything you want to know about stubs, go to the 
+[Jetbrains SDK doc](https://www.jetbrains.org/intellij/sdk/docs/basics/indexing_and_psi_stubs.html).
+
+Stub elements are the serialized versions of the corresponding `PsiElement`. All the stubs are found
+in `com.reason.lang.core.stub` and you can see what properties for each stub are saved on disk.
+
+In `com.reason.lang.core.stub.type`, you can find the definition of `IStubElementType` for each of the composite 
+types that must be serialized (ex: `PsiLetStubElementType`, `PsiModuleStubElementType`, etc). Remember these 
+classes are used in `ORTypes` and are the equivalent of a `ORCompositeElementType` class. The `IStubElementType` is where you find the code
+for serialization and deserialization of a stub/composite element.
+
+> A stub element can be referenced in different indexes. For example, `PsiLet` is referenced by name and by qualified name.   
+
+All the index are found in `com.reason.ide.search.index`.
+ 
+`com.reason.ide.search.index.IndexKeys` contains the constants that define the indexes you'll see when
+using the indices viewer. These constants are used in the stub element types when serializing/deserializing elements. 
+
+![](img/arch/stub_keys.png)
+
+> Relations between stubs, keys and indexes
+
 # Other
 
 Indexing, LSymbol, USymbol
 Performance, stubs
 Resolving: qname finder, psifinder
 fakemodule
+modules and products / diff plugin.xml
 rincewind
