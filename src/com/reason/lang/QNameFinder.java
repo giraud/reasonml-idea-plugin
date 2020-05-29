@@ -7,5 +7,5 @@ import com.intellij.psi.PsiElement;
 public interface QNameFinder {
 
     @NotNull
-    Set<String> extractPotentialPaths(@NotNull PsiElement element, boolean resolveLocalModuleAlias);
+    Set<String> extractPotentialPaths(@NotNull PsiElement element);
 }

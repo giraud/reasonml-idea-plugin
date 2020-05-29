@@ -22,8 +22,7 @@ import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 import static com.reason.lang.core.ORFileType.both;
 
@@ -120,7 +119,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
         QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
-        Set<String> paths = qnameFinder.extractPotentialPaths(myElement, false);
+        Set<String> paths = qnameFinder.extractPotentialPaths(myElement);
         if (LOG.isTraceEnabled()) {
             LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));
         }

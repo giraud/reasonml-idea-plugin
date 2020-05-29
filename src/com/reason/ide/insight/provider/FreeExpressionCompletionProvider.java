@@ -24,8 +24,7 @@ import com.reason.lang.core.signature.PsiSignatureUtil;
 import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
@@ -71,7 +70,7 @@ public class FreeExpressionCompletionProvider {
             }
         }
 
-        Set<String> paths = qnameFinder.extractPotentialPaths(element, true);
+        Set<String> paths = qnameFinder.extractPotentialPaths(element);
         paths.add("Pervasives");
         LOG.debug("potential paths", paths);
 
