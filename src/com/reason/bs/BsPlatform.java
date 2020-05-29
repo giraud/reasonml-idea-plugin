@@ -69,14 +69,14 @@ public class BsPlatform {
         return findBinaryInBsPlatform("bsrefmt", bsPlatformDirectory);
     }
 
-    private static Optional<VirtualFile> findBsPlatformPathForConfigFile(VirtualFile bsConfigFile) {
+    private static Optional<VirtualFile> findBsPlatformPathForConfigFile(@NotNull VirtualFile bsConfigFile) {
         VirtualFile bsPlatform = bsConfigFile.findFileByRelativePath("../node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
         return Optional.ofNullable(bsPlatform)
                 .filter(VirtualFile::isDirectory);
     }
 
-    private static Optional<VirtualFile> findBinaryInBsPlatform(String executableName,
-            VirtualFile bsPlatformDirectory) {
+    private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName,
+            @NotNull VirtualFile bsPlatformDirectory) {
         Optional<String> platform = getOsBsPrefix();
         if (!platform.isPresent()) {
             LOG.warn("Unable to determine OS prefix.");
