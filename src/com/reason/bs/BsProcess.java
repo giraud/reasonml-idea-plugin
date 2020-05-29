@@ -34,31 +34,10 @@ public final class BsProcess implements CompilerProcess {
 
     private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
-    @Nls
-    private static final Runnable SHOW_WORKING_DIRECTORY_NOT_FOUND = () ->
-            Notifications.Bus.notify(new ORNotification("BuckleScript",
-                    "<html>"
-                            + "Can't determine working directory.\n"
-                            + "Ensure your project contains a <b>bsconfig.json</b> file."
-                            + "</html>",
-                    ERROR, URL_OPENING_LISTENER));
-
-    @Nls
-    private static final Consumer<String> SHOW_BSB_NOT_FOUND_NOTIFICATION = (String workingDirectory) ->
-            Notifications.Bus.notify(new ORNotification("Bsb",
-                    "<html>"
-                            + "Can't find bsb.\n"
-                            + "The working directory is '" + workingDirectory + "'.\n"
-                            + "Be sure that bsb is installed and reachable from that directory, "
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#bucklescript\">github</a>."
-                            + "</html>",
-                    ERROR, URL_OPENING_LISTENER));
-
     private final Project m_project;
 
     @Nullable
     private BsProcessHandler m_bsb;
-    //private RawProcessListener m_outputListener;
 
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
@@ -148,13 +127,13 @@ public final class BsProcess implements CompilerProcess {
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
         Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRootForFile(m_project, sourceFile);
         if (!bsContentRootOptional.isPresent()) {
-            SHOW_WORKING_DIRECTORY_NOT_FOUND.run();
+            BsNotification.showWorkingDirectoryNotFound();
             return null;
         }
         String bsContentRoot = bsContentRootOptional.get().getPath();
         Optional<VirtualFile> bsbExecutable = findBsbExecutable(m_project, sourceFile);
         if (!bsbExecutable.isPresent()) {
-            SHOW_BSB_NOT_FOUND_NOTIFICATION.accept(bsContentRoot);
+            BsNotification.showBsbNotFound(bsContentRoot);
             return null;
         }
         String bsbPath = bsbExecutable.get().getPath();

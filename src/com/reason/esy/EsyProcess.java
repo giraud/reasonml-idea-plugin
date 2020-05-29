@@ -30,21 +30,6 @@ public class EsyProcess implements CompilerProcess {
 
   private static final Log LOG = Log.create("process.esy");
 
-  @Nls
-  private static final Runnable SHOW_ESY_NOT_FOUND_NOTIFICATION =
-          () -> Notifications.Bus.notify(new ORNotification("Esy Missing",
-                  "Unable to find esy executable in system PATH.", ERROR));
-
-  @Nls
-  private static final Runnable SHOW_ESY_PROJECT_NOT_FOUND_NOTIFICATION =
-          () -> Notifications.Bus.notify(new ORNotification("Esy Project Not Found",
-                  "Unable to find esy project. Have you run esy yet?", ERROR));
-
-  @Nls
-  private static final Consumer<Exception> SHOW_EXEC_EXCEPTION_NOTIFICATION =
-          (e) -> Notifications.Bus.notify(new ORNotification("Esy Exception",
-                  "Failed to execute esy command.\n" + e.getMessage(), ERROR));
-
   public static class Command {
     public static final String ESY = "";
     public static final String INSTALL = "install";
@@ -122,7 +107,7 @@ public class EsyProcess implements CompilerProcess {
     try {
       processHandler = new KillableColoredProcessHandler(cli);
     } catch (ExecutionException e) {
-      SHOW_EXEC_EXCEPTION_NOTIFICATION.accept(e);
+      EsyNotification.showExecutionException(e);
       return null;
     }
 
@@ -169,7 +154,7 @@ public class EsyProcess implements CompilerProcess {
     String systemPath = System.getenv("PATH");
     Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
     if (!esyExecutablePath.isPresent()) {
-      SHOW_ESY_NOT_FOUND_NOTIFICATION.run();
+      EsyNotification.showEsyNotFound();
     }
     return esyExecutablePath;
   }
@@ -177,7 +162,7 @@ public class EsyProcess implements CompilerProcess {
   private static Optional<Path> findWorkingDirectory(@NotNull Project project) {
     Optional<VirtualFile> esyContentRootOptional = ORProjectManager.findFirstEsyContentRoot(project);
     if (!esyContentRootOptional.isPresent()) {
-      SHOW_ESY_PROJECT_NOT_FOUND_NOTIFICATION.run();
+      EsyNotification.showEsyProjectNotFound();
       return Optional.empty();
     }
     VirtualFile esyContentRoot = esyContentRootOptional.get();
