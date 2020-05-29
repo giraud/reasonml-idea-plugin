@@ -56,7 +56,7 @@ public class DotExpressionCompletionProvider {
                 GlobalSearchScope scope = GlobalSearchScope.allScope(project);
 
                 // Find potential module paths, and filter the result
-                Set<String> potentialPaths = qnameFinder.extractPotentialPaths(element, true);
+                Set<String> potentialPaths = qnameFinder.extractPotentialPaths(element);
                 if (LOG.isTraceEnabled()) {
                     LOG.debug(" -> paths", potentialPaths);
                 }

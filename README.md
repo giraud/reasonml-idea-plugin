@@ -6,6 +6,10 @@ ReasonML language plugin for idea
 
 ![screenshot](screenshot.png)
 
+## Questions / Feedback
+
+Feel free to post any questions or feedback in [Discord](https://discord.gg/etjAsHR) 
+
 ## Documentation
 
 Please see the [wiki](../../wiki).
@@ -13,21 +17,21 @@ Please see the [wiki](../../wiki).
 ## Features
 
 <div style="float:left">
-    <div>Reason&nbsp;syntax</div><img src="docs/syntax-reason.png"/>
+    <div>Reason&nbsp;syntax</div><img src="docs/img/syntax-reason.png"/>
 </div>
 <div style="float:left">
-    <div>Ocaml&nbsp;syntax</div><img src="docs/syntax-ocaml.png"/>
+    <div>Ocaml&nbsp;syntax</div><img src="docs/img/syntax-ocaml.png"/>
 </div>
 <div style="float:left">
-    <div>Dune&nbsp;syntax (limited support)</div><img src="docs/syntax-dune.png"/>
+    <div>Dune&nbsp;syntax (limited support)</div><img src="docs/img/syntax-dune.png"/>
 </div>
-<span style="float:left;margin-right:10px"><div>Structured view</div><img src="docs/structure.png"/></span>
-<div style="float:left;margin-right:10px"><div>Code folding</div><img src="docs/folding.png"/></div>
-<div style="float:left;margin-right:10px"><div>js language injection</div><img src="docs/lang-inject.png"/></div>
-<div style="float:left;margin-right:10px"><div>Bucklescript compiler integration</div><img src="docs/bsb.png"/></div>
-<div style="float:left;margin-right:10px"><div>JSX syntax & completion</div><img src="docs/jsx.png"/></div>
-<div style="float:left;margin-right:10px"><div>Type annotation</div><img src="docs/type.png"/></div>
-<div style="float:left;margin-right:10px"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/intention.png"/></div>
+<span style="float:left;margin-right:10px"><div>Structured view</div><img src="docs/img/structure.png"/></span>
+<div style="float:left;margin-right:10px"><div>Code folding</div><img src="docs/img/folding.png"/></div>
+<div style="float:left;margin-right:10px"><div>js language injection</div><img src="docs/img/lang-inject.png"/></div>
+<div style="float:left;margin-right:10px"><div>Bucklescript compiler integration</div><img src="docs/img/bsb.png"/></div>
+<div style="float:left;margin-right:10px"><div>JSX syntax & completion</div><img src="docs/img/jsx.png"/></div>
+<div style="float:left;margin-right:10px"><div>Type annotation</div><img src="docs/img/type.png"/></div>
+<div style="float:left;margin-right:10px"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/img/intention.png"/></div>
 
 
 Other features:

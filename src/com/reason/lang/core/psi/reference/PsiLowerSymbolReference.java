@@ -284,7 +284,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         Map<String, Integer> result = new THashMap<>();
 
         List<PsiQualifiedElement> resolvedPaths = new ArrayList<>();
-        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(myElement, true);
+        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(myElement);
         for (String pathName : potentialPaths) {
             Set<PsiModule> moduleAlias = psiFinder.findModuleAlias(pathName, scope);
             if (moduleAlias.isEmpty()) {
