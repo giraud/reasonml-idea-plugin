@@ -1,15 +1,26 @@
 package com.reason.ide;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.WeakList;
 import com.reason.Compiler;
@@ -19,18 +30,13 @@ import com.reason.hints.InsightUpdateQueue;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.hints.CodeLensView;
 import com.reason.ide.hints.InferredTypesService;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Listen to editor events and query merlin for types when editor gets the focus.
  */
 public class ORFileEditorListener implements FileEditorManagerListener {
+
+    private static final Key<InsightUpdateQueue> INSIGHT_QUEUE = new Key<>("reasonml.insight.queue");
 
     private final Project m_project;
     private final ORCompilerManager m_compilerManager;
@@ -67,6 +73,9 @@ public class ORFileEditorListener implements FileEditorManagerListener {
                     selectedEditor.removePropertyChangeListener(propertyChangeListener);
                 });
 
+                // Store the queue in the document, for easy access
+                document.putUserData(INSIGHT_QUEUE, insightUpdateQueue);
+
                 // Initial query when opening the editor
                 insightUpdateQueue.queue(m_project, document);
 
@@ -95,6 +104,13 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         if (newFile != null) {
             FileType fileType = newFile.getFileType();
             if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
+                // On tab change, we redo the background compilation
+                Document document = FileDocumentManager.getInstance().getDocument(newFile);
+                InsightUpdateQueue insightUpdateQueue = document == null ? null : document.getUserData(INSIGHT_QUEUE);
+                if (insightUpdateQueue != null) {
+                    insightUpdateQueue.queue(m_project, document);
+                }
+                // and refresh inferred types
                 InferredTypesService.queryForSelectedTextEditor(m_project);
             }
         }
@@ -124,9 +140,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
         @Override
         public void propertyChange(@NotNull PropertyChangeEvent evt) {
-            if ("modified".equals(evt.getPropertyName())
-                    && evt.getNewValue() == Boolean.FALSE
-                    && m_compiler != null) {
+            if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE && m_compiler != null) {
                 // Document is saved, run the compiler !!
                 m_compiler.runDefault(m_file, () -> m_updateQueue.queue(m_project, m_document));
 
