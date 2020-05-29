@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
 import static com.reason.bs.BsConstants.*;
 
 public class BsPlatform {
@@ -84,7 +85,7 @@ public class BsPlatform {
         }
         VirtualFile executable;
         // first, try to find platform-specific binary
-        executable = bsPlatformDirectory.findFileByRelativePath(platform.get() + "/" + executableName + ".exe");
+        executable = bsPlatformDirectory.findFileByRelativePath(platform.get() + "/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
         if (executable != null) {
             return Optional.of(executable);
         }
@@ -97,11 +98,11 @@ public class BsPlatform {
             return Optional.of(executable);
         }
         // last, try old locations of binary
-        executable = bsPlatformDirectory.findFileByRelativePath("bin/" + executableName + ".exe");
+        executable = bsPlatformDirectory.findFileByRelativePath("bin/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
         if (executable != null) {
             return Optional.of(executable);
         }
-        executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + ".exe");
+        executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
         return Optional.ofNullable(executable);
     }
 
