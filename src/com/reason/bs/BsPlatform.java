@@ -5,6 +5,7 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
+import com.reason.ide.ORFileUtils;
 import com.reason.ide.ORProjectManager;
 import org.assertj.core.util.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public class BsPlatform {
     }
 
     public static Optional<VirtualFile> findBsConfigForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return ORProjectManager.findAncestorRecursive(project, BS_CONFIG_FILENAME, sourceFile);
+        return ORFileUtils.findAncestorRecursive(project, BS_CONFIG_FILENAME, sourceFile);
     }
 
     public static Optional<VirtualFile> findRefmtExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
