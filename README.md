@@ -1,5 +1,6 @@
 # reasonml-idea-plugin
 
+![Build Status](https://github.com/reasonml-editor/reasonml-idea-plugin/workflows/Build%20Status/badge.svg)
 ![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)
 
 ReasonML language plugin for IDEA. Supports both Reason and OCaml.
