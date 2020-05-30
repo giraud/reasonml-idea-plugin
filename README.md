@@ -2,13 +2,13 @@
 
 ![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)
 
-ReasonML language plugin for idea
+ReasonML language plugin for IDEA. Supports both Reason and OCaml.
 
 ![screenshot](screenshot.png)
 
 ## Questions / Feedback
 
-Feel free to post any questions or feedback in [Discord](https://discord.gg/etjAsHR) 
+Feel free to post any questions or feedback in [Discord](https://discord.gg/etjAsHR).
 
 ## Documentation
 
