@@ -12,7 +12,7 @@ Feel free to post any questions or feedback in [Discord](https://discord.gg/etjA
 
 ## Documentation
 
-Please see the [wiki](../../wiki).
+Please see the [docs](docs).
 
 ## Features
 
