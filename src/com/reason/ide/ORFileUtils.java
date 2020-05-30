@@ -10,6 +10,15 @@ public class ORFileUtils {
 
     private ORFileUtils() {}
 
+    /**
+     * Given a `start` directory (or file), searches that directory for `target`,
+     * continuing up directories until either `target` is found or the project
+     * base path is reached.
+     * @param project
+     * @param target file being searched for
+     * @param start starting directory (or file) to begin searching for `target`
+     * @return found target file
+     */
     public static Optional<VirtualFile> findAncestorRecursive(@NotNull Project project,
             @NotNull String target, @NotNull VirtualFile start) {
         // start must be a directory, should only happen on first iteration

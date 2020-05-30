@@ -26,6 +26,14 @@ public class BsPlatform {
                 .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
+    /**
+     * Find `bs-platform` directory.
+     * Given a `sourceFile`, searches from that file's location for a `bsconfig.json`
+     * file. If found, then checks for a `./node_modules/bs-platform` directory relative to the `bsconfig.json`.
+     * @param project
+     * @param sourceFile starting location for search
+     * @return `bs-platform` directory, if found
+     */
     public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project,
             @NotNull VirtualFile sourceFile) {
         return findBsConfigForFile(project, sourceFile)
@@ -47,6 +55,13 @@ public class BsPlatform {
         return findBsConfigForFile(project, sourceFile).map(VirtualFile::getParent);
     }
 
+    /**
+     * Finds the "nearest" `bsconfig.json` to a given file. Searches up the file-system until a `bsconfig.json`
+     * is found or the project root is reached.
+     * @param project
+     * @param sourceFile starting point for search
+     * @return `bsconfig.json` file, if found
+     */
     public static Optional<VirtualFile> findBsConfigForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         return ORFileUtils.findAncestorRecursive(project, BS_CONFIG_FILENAME, sourceFile);
     }
