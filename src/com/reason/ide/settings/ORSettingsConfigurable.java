@@ -129,7 +129,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         // Dune
         f_duneExecutable.setText(m_settings.getOrFindDuneExecutableAsString());
         // Esy
-        f_esyExecutable.setText(m_settings.getEsyExecutable());
+        f_esyExecutable.setText(m_settings.getOrFindEsyExecutableAsString());
     }
 
     private void createGeneralTab() {

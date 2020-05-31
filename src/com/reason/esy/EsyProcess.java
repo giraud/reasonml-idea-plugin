@@ -92,7 +92,7 @@ public class EsyProcess implements CompilerProcess {
       return null;
     }
 
-    Optional<VirtualFile> esyExecutableOptional = Esy.findEsyExecutable(project);
+    Optional<VirtualFile> esyExecutableOptional = Esy.findEsyExecutable();
     if (!esyExecutableOptional.isPresent()) {
       EsyNotification.showEsyNotFound();
       return null;
@@ -148,15 +148,6 @@ public class EsyProcess implements CompilerProcess {
       default:
         return Command.ESY;
     }
-  }
-
-  private static Optional<Path> findEsyExecutableInPath() {
-    String systemPath = System.getenv("PATH");
-    Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
-    if (!esyExecutablePath.isPresent()) {
-      EsyNotification.showEsyNotFound();
-    }
-    return esyExecutablePath;
   }
 
   private static Optional<Path> findWorkingDirectory(@NotNull Project project) {

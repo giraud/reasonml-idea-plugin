@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.bs.BsPlatform;
 import com.reason.dune.Dune;
+import com.reason.esy.Esy;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -173,10 +174,16 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ORSetting
 
     public Optional<VirtualFile> getOrFindEsyExecutable() {
         if (StringUtils.isBlank(m_esyExecutable)) {
-            return Esy.findEsyExecutable(m_project);
+            return Esy.findEsyExecutable();
         }
         VirtualFile esyExecutable = LocalFileSystem.getInstance().findFileByPath(m_esyExecutable);
         return Optional.ofNullable(esyExecutable);
+    }
+
+    public String getOrFindEsyExecutableAsString() {
+        return getOrFindEsyExecutable()
+                .map(VirtualFile::getPath)
+                .orElse("");
     }
 
     public void setEsyExecutable(String esyExecutable) {
