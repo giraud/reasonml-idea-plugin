@@ -133,7 +133,7 @@ public final class BsProcess implements CompilerProcess {
         }
         String bsContentRoot = bsContentRootOptional.get().getPath();
         ORSettings settings = ORSettings.getInstance(m_project);
-        Optional<VirtualFile> bsbExecutable = settings.getBsbExecutable();
+        Optional<VirtualFile> bsbExecutable = settings.findBsbExecutable();
         if (!bsbExecutable.isPresent()) {
             BsNotification.showBsbNotFound(bsContentRoot);
             return null;
@@ -173,7 +173,7 @@ public final class BsProcess implements CompilerProcess {
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
         ORSettings settings = ORSettings.getInstance(m_project);
-        Optional<VirtualFile> bscExecutable = settings.getBscExecutable();
+        Optional<VirtualFile> bscExecutable = settings.findBscExecutable();
         if (bscExecutable.isPresent()) {
             Process p = null;
             try {

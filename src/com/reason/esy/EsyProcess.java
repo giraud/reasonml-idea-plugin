@@ -3,7 +3,6 @@ package com.reason.esy;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.*;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -11,7 +10,6 @@ import com.reason.Compiler;
 import com.reason.*;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,10 +18,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.intellij.notification.NotificationType.ERROR;
 import static com.reason.esy.EsyConstants.ESY_EXECUTABLE_NAME;
 
 public class EsyProcess implements CompilerProcess {
@@ -96,13 +92,14 @@ public class EsyProcess implements CompilerProcess {
       return null;
     }
 
-    Optional<Path> esyExecutableOptional = findEsyExecutableInPath();
+    Optional<VirtualFile> esyExecutableOptional = Esy.findEsyExecutable(project);
     if (!esyExecutableOptional.isPresent()) {
+      EsyNotification.showEsyNotFound();
       return null;
     }
 
     Path workingDir = workingDirOptional.get();
-    Path esyExecutable = esyExecutableOptional.get();
+    VirtualFile esyExecutable = esyExecutableOptional.get();
 
     GeneralCommandLine cli = newCommandLine(esyExecutable, workingDir, (CliType.Esy) cliType);
     try {
@@ -129,9 +126,9 @@ public class EsyProcess implements CompilerProcess {
     processHandler = null;
   }
 
-  private static GeneralCommandLine newCommandLine(Path esyExecutable, Path workingDir, CliType.Esy cliType) {
+  private static GeneralCommandLine newCommandLine(VirtualFile esyExecutable, Path workingDir, CliType.Esy cliType) {
     GeneralCommandLine commandLine;
-    commandLine = new GeneralCommandLine(esyExecutable.toString());
+    commandLine = new GeneralCommandLine(esyExecutable.getPath());
     commandLine.setWorkDirectory(workingDir.toFile());
     commandLine.setRedirectErrorStream(true);
     commandLine.addParameter(getCommand(cliType)); // 'esy + command' must be a single parameter

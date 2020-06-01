@@ -98,7 +98,6 @@ public class BsPlatform {
         if (bsPlatform == null) {
             bsPlatform = parentDir.findFileByRelativePath("node_modules/.bin"); // In case of mono-repo, only the .bin with symlinks is found
         }
-
         return Optional.ofNullable(bsPlatform).filter(VirtualFile::isDirectory);
     }
 

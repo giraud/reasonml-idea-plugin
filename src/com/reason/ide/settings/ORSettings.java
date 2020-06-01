@@ -1,10 +1,10 @@
 package com.reason.ide.settings;
 
-import a.f.P;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.reason.bs.BsPlatform;
+import com.reason.dune.Dune;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -13,7 +13,6 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 
-import java.nio.file.FileSystem;
 import java.util.Optional;
 
 @State(name = "ORSettings", storages = {@Storage("reason.xml")})
@@ -86,7 +85,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ORSetting
     }
 
     public String getFormatColumnWidth() {
-        if (m_formatColumnWidth != null) {
+        if (!StringUtils.isBlank(m_formatColumnWidth)) {
             return m_formatColumnWidth;
         }
         String systemRefmtWidth = System.getProperties().getProperty("refmtWidth");
@@ -116,31 +115,52 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ORSetting
         m_isBsEnabled = isBsEnabled;
     }
 
-    public Optional<VirtualFile> getBsPlatformLocation() {
+    public String getBsPlatformLocation() {
+        return StringUtils.defaultString(m_bsPlatformLocation);
+    }
+
+    public Optional<VirtualFile> getOrFindBsPlatformLocation() {
         if (StringUtils.isBlank(m_bsPlatformLocation)) {
             return BsPlatform.findFirstBsPlatformDirectory(m_project);
         }
-        VirtualFile bsPlatformDirectory = VirtualFileManager.getInstance().findFileByUrl(m_bsPlatformLocation);
-        if (bsPlatformDirectory == null) {
-            return Optional.empty();
-        }
-        return Optional.of(bsPlatformDirectory);
+        VirtualFile bsPlatformDirectory = LocalFileSystem.getInstance().findFileByPath(m_bsPlatformLocation);
+        return Optional.ofNullable(bsPlatformDirectory);
+    }
+
+    public String getOrFindBsPlatformLocationAsString() {
+        return getOrFindBsPlatformLocation()
+                .map(VirtualFile::getPath)
+                .orElse("");
     }
 
     public void setBsPlatformLocation(String bsPlatformLocation) {
         m_bsPlatformLocation = bsPlatformLocation;
     }
 
-    public Optional<VirtualFile> getBsbExecutable() {
-        return getBsPlatformLocation().flatMap(BsPlatform::findBsbExecutable);
+    public Optional<VirtualFile> findBsbExecutable() {
+        return getOrFindBsPlatformLocation().flatMap(BsPlatform::findBsbExecutable);
     }
 
-    public Optional<VirtualFile> getBscExecutable() {
-        return getBsPlatformLocation().flatMap(BsPlatform::findBscExecutable);
+    public Optional<VirtualFile> findBscExecutable() {
+        return getOrFindBsPlatformLocation().flatMap(BsPlatform::findBscExecutable);
     }
 
     public String getDuneExecutable() {
         return StringUtils.defaultString(m_duneExecutable);
+    }
+
+    public Optional<VirtualFile> getOrFindDuneExecutable() {
+        if (StringUtils.isBlank(m_duneExecutable)) {
+            return Dune.findDuneExecutable(m_project);
+        }
+        VirtualFile duneExecutable = LocalFileSystem.getInstance().findFileByPath(m_duneExecutable);
+        return Optional.ofNullable(duneExecutable);
+    }
+
+    public String getOrFindDuneExecutableAsString() {
+        return getOrFindDuneExecutable()
+                .map(VirtualFile::getPath)
+                .orElse("");
     }
 
     public void setDuneExecutable(String duneExecutable) {
@@ -149,6 +169,14 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ORSetting
 
     public String getEsyExecutable() {
         return StringUtils.defaultString(m_esyExecutable);
+    }
+
+    public Optional<VirtualFile> getOrFindEsyExecutable() {
+        if (StringUtils.isBlank(m_esyExecutable)) {
+            return Esy.findEsyExecutable(m_project);
+        }
+        VirtualFile esyExecutable = LocalFileSystem.getInstance().findFileByPath(m_esyExecutable);
+        return Optional.ofNullable(esyExecutable);
     }
 
     public void setEsyExecutable(String esyExecutable) {
