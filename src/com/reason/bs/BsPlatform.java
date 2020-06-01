@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
 import com.reason.ide.ORFileUtils;
 import com.reason.ide.ORProjectManager;
@@ -19,7 +20,8 @@ public class BsPlatform {
 
     private static final Log LOG = Log.create("bs-platform");
 
-    private BsPlatform() {}
+    private BsPlatform() {
+    }
 
     public static Optional<VirtualFile> findFirstBsPlatformDirectory(@NotNull Project project) {
         return ORProjectManager.findFirstBsContentRoot(project)
@@ -30,18 +32,20 @@ public class BsPlatform {
      * Find `bs-platform` directory.
      * Given a `sourceFile`, searches from that file's location for a `bsconfig.json`
      * file. If found, then checks for a `./node_modules/bs-platform` directory relative to the `bsconfig.json`.
+     *
      * @param project
      * @param sourceFile starting location for search
      * @return `bs-platform` directory, if found
      */
     public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project,
-            @NotNull VirtualFile sourceFile) {
+                                                                @NotNull VirtualFile sourceFile) {
         return findBsConfigForFile(project, sourceFile)
                 .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
     public static Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsPlatformDirectory(project, sourceFile)
+        Optional<VirtualFile> bsPlatformDirectory1 = findBsPlatformDirectory(project, sourceFile);
+        return bsPlatformDirectory1
                 .flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory));
     }
 
@@ -51,13 +55,14 @@ public class BsPlatform {
     }
 
     public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project,
-            @NotNull VirtualFile sourceFile) {
+                                                               @NotNull VirtualFile sourceFile) {
         return findBsConfigForFile(project, sourceFile).map(VirtualFile::getParent);
     }
 
     /**
      * Finds the "nearest" `bsconfig.json` to a given file. Searches up the file-system until a `bsconfig.json`
      * is found or the project root is reached.
+     *
      * @param project
      * @param sourceFile starting point for search
      * @return `bsconfig.json` file, if found
@@ -73,6 +78,7 @@ public class BsPlatform {
         }
         VirtualFile bsPlatformDirectory = bsPlatformDirectoryOptional.get();
         Optional<VirtualFile> binaryInBsPlatform;
+
         // first, try standard name
         binaryInBsPlatform = findBinaryInBsPlatform(REFMT_EXECUTABLE_NAME, bsPlatformDirectory);
         if (binaryInBsPlatform.isPresent()) {
@@ -87,13 +93,17 @@ public class BsPlatform {
     }
 
     private static Optional<VirtualFile> findBsPlatformPathForConfigFile(@NotNull VirtualFile bsConfigFile) {
-        VirtualFile bsPlatform = bsConfigFile.findFileByRelativePath("../node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
-        return Optional.ofNullable(bsPlatform)
-                .filter(VirtualFile::isDirectory);
+        VirtualFile parentDir = bsConfigFile.getParent();
+        VirtualFile bsPlatform = parentDir.findFileByRelativePath("node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
+        if (bsPlatform == null) {
+            bsPlatform = parentDir.findFileByRelativePath("node_modules/.bin"); // In case of mono-repo, only the .bin with symlinks is found
+        }
+
+        return Optional.ofNullable(bsPlatform).filter(VirtualFile::isDirectory);
     }
 
     private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName,
-            @NotNull VirtualFile bsPlatformDirectory) {
+                                                                @NotNull VirtualFile bsPlatformDirectory) {
         Optional<String> platform = getOsBsPrefix();
         if (!platform.isPresent()) {
             LOG.warn("Unable to determine OS prefix.");
@@ -109,7 +119,13 @@ public class BsPlatform {
         executable = bsPlatformDirectory.findFileByRelativePath(executableName + getOsBinaryWrapperExtension());
         if (executable != null) {
             if (executable.is(VFileProperty.SYMLINK)) {
-                return Optional.ofNullable(executable.getCanonicalFile());
+                // a symlink references the node wrapper, so we need to follow it and try to resolve the native binary
+                VirtualFile canonicalFile = executable.getCanonicalFile();
+                if (canonicalFile != null) {
+                    String canonicalPath = canonicalFile.getPath();
+                    VirtualFile canonicalExecutable = VirtualFileManager.getInstance().findFileByUrl("file://" + canonicalPath + WINDOWS_EXECUTABLE_SUFFIX);
+                    return Optional.of(canonicalExecutable == null ? canonicalFile : canonicalExecutable);
+                }
             }
             return Optional.of(executable);
         }
