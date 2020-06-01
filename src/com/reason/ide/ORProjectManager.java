@@ -32,10 +32,7 @@ public class ORProjectManager {
     private static final Comparator<VirtualFile> FILE_DEPTH_COMPARATOR =
             Comparator.comparingInt(ORProjectManager::fileSeparatorCount);
 
-    //private static final Log LOG = Log.create("manager.project");
-
-    private ORProjectManager() {
-    }
+    private ORProjectManager() {}
 
     public static boolean isBsProject(@NotNull Project project) {
         return !findBsConfigurationFiles(project).isEmpty();

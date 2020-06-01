@@ -31,14 +31,6 @@ import static com.intellij.notification.NotificationType.ERROR;
 
 public final class DuneProcess implements CompilerProcess {
 
-    @Nls
-    private static final Runnable SHOW_OCAML_SDK_NOT_FOUND = () ->
-            Notifications.Bus.notify(new ORNotification("Dune",
-                    "<html>Can't find sdk.\n"
-                            + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
-                            + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin#ocaml\">github</a>.</html>",
-                    ERROR, URL_OPENING_LISTENER));
-
     @NotNull
     private final Project m_project;
     @NotNull
@@ -104,7 +96,7 @@ public final class DuneProcess implements CompilerProcess {
     private GeneralCommandLine getGeneralCommandLine(CliType.Dune cliType) {
         Sdk odk = OCamlSdkType.getSDK(m_project);
         if (odk == null) {
-            SHOW_OCAML_SDK_NOT_FOUND.run();
+            DuneNotification.showOcamlSdkNotFound();
             return null;
         }
         assert odk.getHomePath() != null;

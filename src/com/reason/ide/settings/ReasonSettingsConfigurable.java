@@ -60,7 +60,6 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     public void apply() {
         m_settings.setEnabled(f_enabled.isSelected());
         m_settings.setLocation(f_bsLocation.getText().trim());
-        m_settings.setWorkingDir(f_workingDir.getText().trim());
         m_settings.setRefmtOnSave(f_reformatOnSave.isSelected());
         m_settings.setRefmtWidth(f_columnWidth.getText().trim());
     }
@@ -69,19 +68,16 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     public boolean isModified() {
         boolean sameEnabled = f_enabled.isSelected() == m_settings.isEnabled();
         boolean sameLocation = f_bsLocation.getText().equals(m_settings.getLocation());
-        boolean sameWorkingDir = f_workingDir.getText().equals(m_settings.getWorkingDir());
         boolean sameRefmtOnSave = f_reformatOnSave.isSelected() == m_settings.isRefmtOnSave();
         boolean sameColWidth = f_columnWidth.getText().equals(m_settings.getRefmtWidth());
-        return !(sameEnabled && sameLocation && sameWorkingDir && sameRefmtOnSave && sameColWidth);
+        return !(sameEnabled && sameLocation && sameRefmtOnSave && sameColWidth);
     }
 
     @Override
     public void reset() {
         f_enabled.setSelected(m_settings.isEnabled());
         f_bsLocation.setText(m_settings.getLocation());
-        f_workingDir.setText(m_settings.getWorkingDir());
         f_columnWidth.setText(m_settings.getRefmtWidth());
         f_reformatOnSave.setSelected(m_settings.isRefmtOnSave());
     }
-
 }

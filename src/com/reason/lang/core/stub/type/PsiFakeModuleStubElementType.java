@@ -7,6 +7,7 @@ import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.io.StringRef;
 import com.reason.Platform;
 import com.reason.bs.BsConfigReader;
+import com.reason.bs.BsPlatform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiFakeModule;
@@ -15,6 +16,7 @@ import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub, PsiFakeModule> {
 
@@ -34,8 +36,9 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
         // Finding if it's using a bs virtual namespace
         VirtualFile virtualFile = file.getViewProvider().getVirtualFile();
         VirtualFile originalFile = virtualFile instanceof LightVirtualFile ? ((LightVirtualFile) virtualFile).getOriginalFile() : virtualFile;
-        VirtualFile ancestorBsconfig = Platform.findAncestorBsconfig(file.getProject(), originalFile);
-        String namespace = ancestorBsconfig == null ? null : BsConfigReader.read(ancestorBsconfig).getNamespace();
+        String namespace = BsPlatform.findBsConfigForFile(file.getProject(), originalFile)
+                .map((bsConfig) -> BsConfigReader.read(bsConfig).getNamespace())
+                .orElse(null);
 
         return new PsiModuleStub(parentStub, this, file.getModuleName(), namespace /*, isVirtualNamespace*/, null, file.isComponent(), file.isInterface());
     }
