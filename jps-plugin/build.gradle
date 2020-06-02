@@ -1,3 +1,8 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.jetbrains.intellij'
+
 jar.archiveName = "jps-plugin.jar"
 patchPluginXml.enabled = false
 verifyPlugin.enabled = false
+

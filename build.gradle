@@ -1,10 +1,9 @@
 plugins {
     id 'org.jetbrains.intellij' version "0.4.18"
-    id 'checkstyle'
 }
 
-def pluginVersion = '0.89.0'
-version = pluginVersion + '-' + ideaVersion
+apply plugin: 'java'
+apply plugin: 'idea'
 
 patchPluginXml {
     changeNotes """
@@ -24,14 +23,34 @@ patchPluginXml {
     """
 }
 
+intellij {
+    pluginName 'reasonml-plugin-idea'
+    type 'IU'
+    version iuVersion
+    updateSinceUntilBuild = false
+    plugins = ['java',
+               'JavaScriptLanguage',
+               'com.jetbrains.hackathon.indices.viewer:1.3',
+               'PsiViewer:' + psiVersion
+    ]
+}
 
 allprojects {
-    apply plugin: 'java'
-    apply plugin: 'checkstyle'
+    def jdkVersion = 1.8
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = jdkVersion
+    targetCompatibility = jdkVersion
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+    idea {
+        project {
+            jdkName = jdkVersion
+            languageLevel = jdkVersion
+        }
+        module {
+            generatedSourceDirs += file('gen')
+        }
+    }
 
     sourceSets {
         main {
@@ -43,56 +62,11 @@ allprojects {
         }
     }
 
-    apply plugin: 'org.jetbrains.intellij'
-    intellij {
-        pluginName 'reasonml-plugin-idea'
-        type 'IU'
-        version iuVersion
-        updateSinceUntilBuild = false
-        plugins = ['java',
-                   'JavaScriptLanguage',
-                   'com.jetbrains.hackathon.indices.viewer:1.3',
-                   'PsiViewer:' + psiVersion
-        ]
-    }
-
-    runIde {
-        systemProperty "refmtWidth", "120"
-        jvmArgs = ['--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED', '-Dcompiler.process.debug.port=5005', '-Xmx1024m']
-    }
-
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
         testLogging {
             exceptionFormat = 'full'
         }
     }
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile project('jps-plugin')
-    def powerMockVersion = "2.0.2"
-    testCompile 'org.mockito:mockito-core:3.3.3'
-    testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
-    testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
-}
-
-apply plugin: 'idea'
-idea {
-    project {
-        jdkName = 1.8
-        languageLevel = 1.8
-    }
-    module {
-        generatedSourceDirs += file('gen')
-    }
-}
-
-verifyPlugin {
-    pluginDirectory "resources"
 }
 
 /*
