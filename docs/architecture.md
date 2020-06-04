@@ -1,5 +1,3 @@
-**THIS IS A WORK IN PROGRESS**
-
 # Design decisions
 
 #### Language Server Protocol, or the lack of
@@ -8,7 +6,7 @@ The plugin is not using LSP and there is no plan to use it in the future. I'll t
 the reasoning behind that decision here.
 
 First, plain text editors (VSCode, Textmate, VIM, etc.) and IDE (Jetbrains editors) are
-two very different categories. Text editors need aditional mechanisms to be able to create
+two very different categories. Text editors need additional mechanisms to be able to create
 a nice developer experience, including adding semantic to the sources, adding referencing of
 symbols for nice navigation, documentation, etc, caching and indexing for fast response.
 
@@ -240,9 +238,62 @@ This is a 'fake' element, because there is no token associated with it.
 
 If there is a virtual namespace, the qualified name of the `PsiFakeModule` will contain it.
 
-# Other
+# Resolving
 
-LSymbol, USymbol
-Resolving: qname finder, psifinder
-modules and products / diff plugin.xml
-rincewind
+For advanced functionalities in the editor, a symbol must be resolved to its definition.
+
+Only `PsiLowerSymbol` and `PsiUpperSymbol` can be resolved. As you can see in the next screenshot,
+every token that may need a resolution must be wrapped with one of these composite element.
+
+![](img/arch/symbol_wrapper.png)
+
+> In that screenshot, `PsiElement(LIDENT)` is the token returned by the lexer (the `t` itself),
+> and `LSymbol` is the `PsiLowerSymbol` wrapped around that token in order to add resolution.
+
+There are two classes associated with them: `PsiLowerSymbolReference` and `PsiUpperSymbolReference`.
+This is where resolution happens.
+
+When resolving a symbol, the first thing is to build a list of potential paths for qualified name.
+Ex: file `Foo.re`
+```reason
+open M1;
+
+module M2 = {
+  include M3;
+  x()
+}
+```
+
+When user control-click on x, we need to resolve (find) its definition: we start at `x` and move backward
+up until the start of the file, and build a list of paths. Potential paths for this exemple are:
+`M3, Foo.M3, M2, Foo.M2, M1, pervasives`.
+
+The class that extract path is `QNameFinder`.
+ 
+Then, when we have a list of potential qualified names, we uses the indices to retrieve the
+corresponding `PsiElement` from that key. All the code that get Psi from indices is found
+in the `Psifinder` class.
+
+# Type inference
+
+Type inference is the signatures you see next to the code, and it can't be selected:
+
+![](img/arch/type_inference.png)
+
+> That information is retrieved from the `.cmt` files. These files contains the serialized
+content of a typed tree after compilation by OCaml.
+
+When a file is saved, it is compiled and that creates a cmt file. A process read that file
+, extract type information and store them in a cache in the PsiFile representing the source code
+(see `SignatureProvider.SIGNATURE_CONTEXT`). 
+
+We use an additional tool for that: [Rincewind](https://github.com/giraud/rincewind).
+
+Rincewind is a very lightweight implementation of a cmt information extractor. It is downloaded automatically
+by the plugin when the corresponding OCaml version is known.
+
+It returns a list of signatures, one per line. ex:
+```
+Va|1.4,1.5|i|int
+Va|2.4,2.5|f|float
+```
