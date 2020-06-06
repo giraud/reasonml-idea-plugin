@@ -1,26 +1,23 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'org.jetbrains.intellij'
-
 def pluginVersion = '0.89.0'
 version = pluginVersion + '-' + ideaVersion
+
+intellij {
+    pluginName 'reasonml-plugin-idea'
+    type 'IU'
+    version iuVersion
+    updateSinceUntilBuild = false
+    plugins = ['java',
+               'JavaScriptLanguage',
+               'com.jetbrains.hackathon.indices.viewer:1.3',
+               'PsiViewer:' + psiVersion
+    ]
+}
+
+idea.module.generatedSourceDirs += file('gen')
 
 runIde {
     systemProperty "refmtWidth", "120"
     jvmArgs = ['--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED', '-Dcompiler.process.debug.port=5005', '-Xmx1024m']
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile project(':jps-plugin')
-
-    def powerMockVersion = "2.0.2"
-    testCompile 'org.mockito:mockito-core:3.3.3'
-    testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
-    testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
 }
 
 verifyPlugin {
