@@ -1,18 +1,17 @@
 package com.reason.ide.settings;
 
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.reason.bs.BsPlatform;
-import com.reason.dune.Dune;
-import com.reason.esy.Esy;
-import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.bs.BsPlatform;
+import com.reason.dune.Dune;
+import com.reason.esy.Esy;
+import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -139,11 +138,13 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ORSetting
     }
 
     public Optional<VirtualFile> findBsbExecutable() {
-        return getOrFindBsPlatformLocation().flatMap(BsPlatform::findBsbExecutable);
+        return getOrFindBsPlatformLocation()
+                .flatMap(BsPlatform::findBsbExecutable);
     }
 
     public Optional<VirtualFile> findBscExecutable() {
-        return getOrFindBsPlatformLocation().flatMap(BsPlatform::findBscExecutable);
+        return getOrFindBsPlatformLocation()
+                .flatMap(BsPlatform::findBscExecutable);
     }
 
     public String getDuneExecutable() {

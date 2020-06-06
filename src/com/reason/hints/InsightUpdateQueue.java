@@ -22,11 +22,11 @@ import com.intellij.psi.PsiManager;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
 import com.reason.Log;
-import com.reason.Platform;
 import com.reason.bs.*;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
+import com.reason.ide.settings.ORSettings;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 
@@ -161,7 +161,9 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
 
                         // Compile temporary file
 
-                        Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
+                        ORSettings settings = ORSettings.getInstance(m_project);
+                        Optional<VirtualFile> bscPath = settings.getOrFindBsPlatformLocation()
+                                .flatMap(BsPlatform::findBscExecutable);
                         if (bscPath.isPresent()) {
                             File cmtFile = new File(m_tempDirectory, nameWithoutExtension + ".cmt");
                             if (isExpired()) {

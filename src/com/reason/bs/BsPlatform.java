@@ -43,15 +43,12 @@ public class BsPlatform {
                 .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
-    public static Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        Optional<VirtualFile> bsPlatformDirectory1 = findBsPlatformDirectory(project, sourceFile);
-        return bsPlatformDirectory1
-                .flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory));
+    public static Optional<VirtualFile> findBsbExecutable(@NotNull VirtualFile bsPlatformDirectory) {
+        return findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory);
     }
 
-    public static Optional<VirtualFile> findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsPlatformDirectory(project, sourceFile)
-                .flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
+    public static Optional<VirtualFile> findBscExecutable(@NotNull VirtualFile bsPlatformDirectory) {
+        return findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory);
     }
 
     public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project,
