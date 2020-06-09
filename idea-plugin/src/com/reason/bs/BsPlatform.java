@@ -1,5 +1,6 @@
 package com.reason.bs;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VFileProperty;
@@ -8,7 +9,6 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
 import com.reason.ide.ORFileUtils;
 import com.reason.ide.ORProjectManager;
-import org.assertj.core.util.VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
