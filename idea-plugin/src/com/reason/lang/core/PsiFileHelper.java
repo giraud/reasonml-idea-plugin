@@ -9,6 +9,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiDirective;
@@ -21,6 +22,9 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.ocaml.OclQNameFinder;
+import com.reason.lang.reason.RmlLanguage;
+import com.reason.lang.reason.RmlQNameFinder;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
@@ -33,31 +37,48 @@ public class PsiFileHelper {
     public static Collection<PsiNameIdentifierOwner> getExpressions(@Nullable PsiFile file, @NotNull ExpressionScope eScope) {
         ArrayList<PsiNameIdentifierOwner> result = new ArrayList<>();
 
-        if (file!=null) {
+        if (file != null) {
             PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
-            PsiElement element = file.getFirstChild();
-            processSiblingExpressions(psiFinder, element, eScope, result);
+            QNameFinder qnameFinder = file.getLanguage() == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+            processSiblingExpressions(psiFinder, qnameFinder, file.getFirstChild(), eScope, result);
         }
 
         return result;
     }
 
-    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @Nullable PsiElement element, @NotNull ExpressionScope eScope,
-                                                  @NotNull List<PsiNameIdentifierOwner> result) {
+    private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @NotNull QNameFinder qnameFinder, @Nullable PsiElement element,
+                                                  @NotNull ExpressionScope eScope, @NotNull List<PsiNameIdentifierOwner> result) {
         while (element != null) {
             if (element instanceof PsiInclude && psiFinder != null) {
                 // Recursively include everything from referenced module
                 PsiInclude include = (PsiInclude) element;
                 GlobalSearchScope scope = GlobalSearchScope.allScope(element.getProject());
-                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(include.getQualifiedName(), true, interfaceOrImplementation, scope);
-                for (PsiModule includedModule : modulesFromQn) {
+
+                PsiModule includedModule = null;
+
+                String includeName = include.getQualifiedName();
+                for (String path : qnameFinder.extractPotentialPaths(include)) {
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(path + "." + includeName, true, interfaceOrImplementation, scope);
+                    if (!modulesFromQn.isEmpty()) {
+                        includedModule = modulesFromQn.iterator().next();
+                        break;
+                    }
+                }
+                if (includedModule == null) {
+                    Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(includeName, true, interfaceOrImplementation, scope);
+                    if (!modulesFromQn.isEmpty()) {
+                        includedModule = modulesFromQn.iterator().next();
+                    }
+                }
+
+                if (includedModule != null) {
                     result.addAll(includedModule.getExpressions(eScope));
                 }
             }
 
             if (element instanceof PsiDirective) {
                 // add all elements found in a directive, can't be resolved
-                processSiblingExpressions(psiFinder, element.getFirstChild(), eScope, result);
+                processSiblingExpressions(psiFinder, qnameFinder, element.getFirstChild(), eScope, result);
             } else if (element instanceof PsiNameIdentifierOwner) {
                 boolean include = !(element instanceof PsiLet && ((PsiLet) element).isPrivate());
                 if (include) {
