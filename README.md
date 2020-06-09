@@ -1,18 +1,21 @@
 # reasonml-idea-plugin
 
-![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)
+![Build Status](https://github.com/reasonml-editor/reasonml-idea-plugin/workflows/Build%20Status/badge.svg)
+[![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)](https://plugins.jetbrains.com/plugin/9440-reasonml)
+[![Discord](https://img.shields.io/discord/713777184996589580)](https://discord.com/channels/713777184996589580)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-ReasonML language plugin for idea
+ReasonML language plugin for IDEA. Supports both Reason and OCaml.
 
 ![screenshot](screenshot.png)
 
 ## Questions / Feedback
 
-Feel free to post any questions or feedback in [Discord](https://discord.gg/etjAsHR) 
+Feel free to post any questions or feedback in [Discord](https://discord.com/channels/713777184996589580).
 
 ## Documentation
 
-Please see the [wiki](../../wiki).
+Please see the [docs](docs).
 
 ## Features
 
