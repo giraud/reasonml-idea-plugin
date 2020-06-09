@@ -20,4 +20,6 @@ public interface PsiInnerModule extends PsiNameIdentifierOwner, PsiModule, StubB
     Collection<PsiType> getTypeExpressions();
 
     boolean isComponent();
+
+    boolean isModuleType();
 }

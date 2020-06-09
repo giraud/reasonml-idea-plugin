@@ -20,6 +20,8 @@ import com.reason.ide.search.IndexedFileModule;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
@@ -64,8 +66,31 @@ public class DotExpressionCompletionProvider {
                 Set<PsiModule> resolvedModules = new ArrayListSet<>();
                 for (String qname : potentialPaths) {
                     Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(qname, true, interfaceOrImplementation, scope);
-                    if (!modulesFromQn.isEmpty()) {
-                        resolvedModules.addAll(modulesFromQn);
+                    for (PsiModule module : modulesFromQn) {
+                        PsiFunctorCall functorCall = module.getFunctorCall();
+                        if (functorCall != null) {
+                            // resolve functor definition
+                            String functorName = functorCall.getFunctorName();
+                            potentialPaths = qnameFinder.extractPotentialPaths(module);
+                            for (String qnameFunctorPath : potentialPaths) {
+                                Set<PsiModule> functorsFromQn = psiFinder
+                                        .findModulesFromQn(qnameFunctorPath + "." + functorName, true, interfaceOrImplementation, scope);
+                                for (PsiModule functorModule : functorsFromQn) {
+                                    PsiFunctor functor = (PsiFunctor) functorModule;
+                                    PsiElement returnType = functor.getReturnType();
+                                    if (returnType == null) {
+                                        resolvedModules.add(functor);
+                                    } else {
+                                        // resolve return type
+                                        Set<PsiModule> interfacesFromQn = psiFinder
+                                                .findModulesFromQn(qnameFunctorPath + "." + returnType.getText(), true, interfaceOrImplementation, scope);
+                                        resolvedModules.addAll(interfacesFromQn);
+                                    }
+                                }
+                            }
+                        } else if (!(module instanceof PsiFunctor)) {
+                            resolvedModules.add(module);
+                        }
                     }
                 }
                 LOG.debug(" -> resolved modules from path", resolvedModules);

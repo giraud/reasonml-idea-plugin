@@ -1,5 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -11,22 +15,27 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.ExpressionScope;
+import com.reason.lang.core.psi.PsiFunctorCall;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.ocaml.OclQNameFinder;
+import com.reason.lang.reason.RmlLanguage;
+import com.reason.lang.reason.RmlQNameFinder;
 import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
 public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiInnerModule {
 
@@ -66,6 +75,17 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     public String getModuleName() {
         String name = getName();
         return name == null ? "" : name;
+    }
+
+    @Override
+    public boolean isInterface() {
+        return ((FileBase) getContainingFile()).isInterface();
+    }
+
+    @Nullable
+    @Override
+    public PsiFunctorCall getFunctorCall() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
     }
 
     @NotNull
@@ -126,11 +146,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
         Collection<PsiNameIdentifierOwner> result = emptyList();
 
+        PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            Set<PsiModule> modulesbyName = PsiFinder.getInstance(getProject())
-                    .findModulesbyName(alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(getProject()));
+            Set<PsiModule> modulesbyName = psiFinder.findModulesbyName(alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(getProject()));
             if (!modulesbyName.isEmpty()) {
                 PsiModule moduleAlias = modulesbyName.iterator().next();
                 if (moduleAlias != null) {
@@ -141,7 +162,30 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
             PsiSignature signature = getSignature();
             if (signature == null) {
                 PsiElement body = getBody();
-                if (body != null) {
+                if (body == null) {
+                    PsiFunctorCall functorCall = ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorCall.class);
+                    if (functorCall != null) {
+                        result = new ArrayList<>();
+                        // Include all expressions from functor
+                        QNameFinder qnameFinder = getLanguage() == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+
+                        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
+                        for (String potentialPath : potentialPaths) {
+                            Set<PsiModule> modules = psiFinder
+                                    .findModulesFromQn(potentialPath + "." + functorCall.getFunctorName(), true, interfaceOrImplementation,
+                                                       GlobalSearchScope.allScope(getProject()));
+                            for (PsiModule module : modules) {
+                                result.addAll(module.getExpressions(eScope));
+                            }
+                        }
+
+                        Set<PsiModule> modules = psiFinder.findModulesFromQn(functorCall.getFunctorName(), true, interfaceOrImplementation,
+                                                                             GlobalSearchScope.allScope(getProject()));
+                        for (PsiModule module : modules) {
+                            result.addAll(module.getExpressions(eScope));
+                        }
+                    }
+                } else {
                     result = new ArrayList<>();
                     PsiElement element = body.getFirstChild();
                     while (element != null) {
@@ -258,13 +302,13 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
             @NotNull
             @Override
             public String getLocationString() {
-                return getPath().toString();
+                return "";
             }
 
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return ORIcons.MODULE;
+                return isModuleType() ? ORIcons.MODULE_TYPE : ORIcons.MODULE;
             }
         };
     }
@@ -277,6 +321,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         }
 
         return ModuleHelper.isComponent(getBody());
+    }
+
+    @Override
+    public boolean isModuleType() {
+        PsiElement psiElement = ORUtil.nextSibling(getFirstChild());
+        return psiElement != null && psiElement.getNode().getElementType() == m_types.TYPE;
     }
 
     @NotNull
@@ -305,11 +355,6 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         }
 
         return null;
-    }
-
-    @Override
-    public boolean isInterface() {
-        return ((FileBase) getContainingFile()).isInterface();
     }
 
     @Nullable

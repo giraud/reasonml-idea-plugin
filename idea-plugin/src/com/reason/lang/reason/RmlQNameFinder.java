@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInnerModule;
@@ -19,8 +20,14 @@ import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
+import com.reason.lang.ocaml.OclQNameFinder;
 
 public class RmlQNameFinder extends BaseQNameFinder {
+
+    public static final QNameFinder INSTANCE = new RmlQNameFinder();
+
+    private RmlQNameFinder() {
+    }
 
     // Find the expression paths
     @NotNull

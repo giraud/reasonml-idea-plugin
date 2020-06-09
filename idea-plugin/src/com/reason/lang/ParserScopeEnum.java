@@ -142,8 +142,12 @@ public enum ParserScopeEnum {
     functorParamColonSignature,
     functorNamedColon,
     functorNamedEqColon,
+    functorNamedColonResult,
     functorConstraints,
+    functorConstraint,
     functorBinding,
+    maybeFunctorCall,
+    functorCall,
 
     tryBody,
     tryBodyWith,

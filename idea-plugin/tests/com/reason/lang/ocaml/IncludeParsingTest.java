@@ -19,4 +19,11 @@ public class IncludeParsingTest extends BaseParsingTestCase {
 
         assertEquals("Belt.Array", e.getQualifiedName());
     }
+
+    public void testFunctor() {
+        PsiInclude e = first(includeExpressions(parseCode("include A.Make(struct type t end)")));
+
+        assertTrue(e.useFunctor());
+        assertEquals("A.Make", e.getQualifiedName());
+    }
 }

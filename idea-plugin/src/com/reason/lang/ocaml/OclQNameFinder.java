@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInnerModule;
@@ -21,6 +22,11 @@ import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
 
 public class OclQNameFinder extends BaseQNameFinder {
+
+    public static final QNameFinder INSTANCE = new OclQNameFinder();
+
+    private OclQNameFinder() {
+    }
 
     // Find the expression paths
     @NotNull
