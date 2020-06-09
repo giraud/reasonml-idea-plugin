@@ -136,6 +136,14 @@ public class PsiElementFactory {
             return new PsiParameterImpl(types, node);
         } else if (type == types.C_FUNCTOR_BINDING) {
             return new PsiFunctorBinding(types, node);
+        } else if (type == types.C_FUNCTOR_RESULT) {
+            return new PsiFunctorResult(types, node);
+        } else if (type == types.C_FUNCTOR_CALL) {
+            return new PsiFunctorCall(types, node);
+        } else if (type == types.C_FUNCTOR_CONSTRAINTS) {
+            return new PsiFunctorConstraints(types, node);
+        } else if (type == types.C_FUNCTOR_CONSTRAINT) {
+            return new PsiFunctorConstraint(types, node);
         } else if (type == types.C_STRUCT_EXPR) {
             return new PsiStruct(node);
         } else if (type == types.C_ML_INTERPOLATOR) {

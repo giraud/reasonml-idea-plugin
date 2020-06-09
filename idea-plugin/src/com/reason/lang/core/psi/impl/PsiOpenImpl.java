@@ -8,10 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.xml.model.gotosymbol.GoToSymbolProvider;
-import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
 
 public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
 
@@ -30,6 +31,9 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
     @Override
     public String getPath() {
         PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        if (firstChild instanceof PsiFunctorCall) {
+            return ((PsiFunctorCall) firstChild).getFunctorName();
+        }
         return firstChild == null ? "" : ORUtil.getTextUntilTokenType(firstChild, null);
     }
 
@@ -37,6 +41,12 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
     @Override
     public String getQualifiedName() {
         return getPath();
+    }
+
+    @Override
+    public boolean useFunctor() {
+        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        return firstChild instanceof PsiFunctorCall;
     }
 
     @Override

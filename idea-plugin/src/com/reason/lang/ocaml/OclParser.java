@@ -29,6 +29,7 @@ public class OclParser extends CommonParser<OclTypes> {
         Project project = parentElement.getProject();
 
         PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getText());
+        builder.setDebugMode(true);
         OclParser parser = new OclParser();
 
         return parser.parse(root, builder).getFirstChildNode();
@@ -315,6 +316,11 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseAnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+        if (state.isCurrentResolution(functorConstraint)) {
+            state.complete().popEnd();
+            return;
+        }
+
         // pop scopes until a known context is found
         endUntilStartExpression(state);
         if (state.isCurrentResolution(function)) {
@@ -389,10 +395,12 @@ public class OclParser extends CommonParser<OclTypes> {
             state.popEnd();
         }
 
-        if (state.isCurrentResolution(functorNamedColon)) {
-            // A functor with return signature
-            //    module Make (M : Input) : S |>with<| type input = M.t
-            state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.WITH));
+        if (state.isCurrentResolution(functorNamedColonResult)) {
+            // A functor with constraints
+            //    module Make (M : Input) : S |>with<| type t = M.t
+            state.complete().
+                    popEnd().
+                    add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.WITH));
         } else if (!state.isCurrentResolution(moduleNamedColon)) {
             // A try handler
             //   try .. |>with<| ..
@@ -503,13 +511,15 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(moduleNamed)) {
             state.updateCurrentResolution(moduleNamedColon).complete();
         } else if (state.isCurrentResolution(functorNamed)) {
-            state.updateCurrentResolution(functorNamedColon);
+            state.updateCurrentResolution(functorNamedColon).
+                    advance().
+                    add(mark(builder, state.currentContext(), functorNamedColonResult, m_types.C_FUNCTOR_RESULT));
         } else if (state.isCurrentResolution(externalNamed)) {
             state.advance().
                     add(mark(builder, signature, externalNamedSignature, m_types.C_SIG_EXPR).complete()).
                     add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(valNamed)) {
-            // val x <:> ...
+            // val x |>:<| ...
             state.advance().
                     add(mark(builder, signature, valNamedSignature, m_types.C_SIG_EXPR).complete()).
                     add(mark(builder, signature, signatureItem, m_types.C_SIG_ITEM).complete());
@@ -561,15 +571,14 @@ public class OclParser extends CommonParser<OclTypes> {
             IElementType nextElementType = builder.lookAhead(1);
             if (nextElementType == m_types.STRUCT) {
                 // Functor constraints
-                // module M (..) : S with type x = y |>=<| struct .. end
+                // module M (..) : S with type x = y |> =<| struct .. end
                 state.popEndUntilStartScope().complete();
                 state.popEnd();
+            } else {
+                // Must be multiple declaration
+                // type x = y |> =<| ...
+                // This is not correctly parsed, just to avoid to break next instructions
             }
-            //else {
-            // Must be multiple declaration
-            // type x = y |>=<| ...
-            // This is not correctly parsed, just to avoid to break next instructions
-            //}
         }
 
         if (state.isCurrentResolution(typeNamed)) {
@@ -593,9 +602,24 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.complete();
             }
         } else if (state.isCurrentContext(functorDeclaration)) {
+            if (state.isCurrentResolution(functorNamedColonResult)) {
+                state.complete().popEnd();
+            }
             if (state.isCurrentResolution(functorNamed) || state.isCurrentResolution(functorNamedColon)) {
                 state.updateCurrentResolution(functorNamedEq).
                         complete();
+            }
+        } else if (state.isCurrentContext(functorConstraints)) {
+            IElementType nextElementType = builder.lookAhead(1);
+            if (nextElementType == m_types.STRUCT) {
+                // Functor constraints
+                // module M (..) : S with type x = y |> =<| struct .. end
+                if (state.isCurrentResolution(functorConstraint)) {
+                    state.complete().popEnd();
+                }
+                state.popEndUntilStartScope().complete();
+                state.popEnd();
+                state.updateCurrentResolution(functorNamedEq).complete();
             }
         } else if (state.isCurrentResolution(clazzNamed)) {
             state.updateCurrentResolution(clazzNamedEq);
@@ -654,16 +678,18 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseLParen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
-            // Detecting a local open : M1.M2.<(> .. )
+            // Detecting a local open
+            //   M1.M2. |>(<| ... )
             state.add(markScope(builder, localOpenScope, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
         } else if (state.isCurrentResolution(external)) {
-            // Overloading an operator: external (...) = ...
+            // Overloading an operator
+            //   external |>(<| ... ) = ...
             state.updateCurrentResolution(externalNamed).complete();
             state.add(markScope(builder, localOpenScope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(let)) {
             // Overloading operator OR deconstructing a term
-            //  let |>(<| + ) =
-            //  let |>(<| a, b ) =
+            //   let |>(<| + ) =
+            //   let |>(<| a, b ) =
             state.add(markScope(builder, let, genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN));
         } else if (state.isCurrentResolution(val)) {
             // Overloading an operator
@@ -697,11 +723,18 @@ public class OclParser extends CommonParser<OclTypes> {
             }
         } else if (state.isCurrentResolution(moduleNamed)) {
             // This is a functor
-            //   module Make <(> ... )
+            //   module Make |>(<| ... )
             state.updateCurrentContext(functorDeclaration).
                     updateCurrentResolution(functorNamed).
                     updateCurrentCompositeElementType(m_types.C_FUNCTOR).
                     add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)).
+                    advance().
+                    add(mark(builder, state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM).complete());
+        } else if (state.isCurrentResolution(maybeFunctorCall)) {
+            // Yes, it is a functor call
+            //   module M = X |>(<| ... )
+            state.updateCurrentResolution(functorCall).complete();
+            state.add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)).
                     advance().
                     add(mark(builder, state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM).complete());
         } else {
@@ -829,17 +862,45 @@ public class OclParser extends CommonParser<OclTypes> {
         }
 
         if (state.isCurrentResolution(open)) {
-            // It is a module name/path
+            // It is a module name/path, or might be a functor call
+            //   open |>M<| ...
             state.complete();
-        } else if (state.isCurrentResolution(include)) {
-            // It is a module name/path
+            state.add(mark(builder, state.currentContext(), maybeFunctorCall, m_types.C_FUNCTOR_CALL));
+
+            state.wrapWith(m_types.C_UPPER_SYMBOL);
+            IElementType tokenType = builder.getTokenType();
+            if (tokenType != m_types.DOT && tokenType != m_types.LPAREN) {
+                state.popCancel();
+                state.popEnd();
+            }
+            return;
+        }
+
+        if (state.isCurrentResolution(include)) {
+            // It is a module name/path, or might be a functor call
+            //  include |>M<|
             state.complete();
-        } else if (state.isCurrentResolution(exception)) {
+            state.add(mark(builder, state.currentContext(), maybeFunctorCall, m_types.C_FUNCTOR_CALL));
+
+            state.wrapWith(m_types.C_UPPER_SYMBOL);
+            IElementType tokenType = builder.getTokenType();
+            if (tokenType != m_types.DOT && tokenType != m_types.LPAREN) {
+                state.popCancel();
+                state.popEnd();
+            }
+            return;
+        }
+
+        if (state.isCurrentResolution(exception)) {
             state.complete();
             state.updateCurrentResolution(exceptionNamed);
             builder.remapCurrentToken(m_types.EXCEPTION_NAME);
         } else if (state.isCurrentResolution(module)) {
             state.updateCurrentResolution(moduleNamed);
+        } else if (state.isCurrentResolution(moduleNamedEq)) {
+            // It might be a functor call
+            //   module M = |>X<| ( ... )
+            state.add(mark(builder, state.currentContext(), maybeFunctorCall, m_types.C_FUNCTOR_CALL));
         } else if (state.isCurrentResolution(typeNamedEq)) {
             // Might be a variant without a pipe
             IElementType nextTokenType = builder.lookAhead(1);
@@ -895,6 +956,8 @@ public class OclParser extends CommonParser<OclTypes> {
         if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
             if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
                 state.updateCurrentResolution(moduleNamedWithType);
+            } else if (state.isCurrentResolution(functorConstraints)) {
+                state.add(mark(builder, functorConstraints, functorConstraint, m_types.C_FUNCTOR_CONSTRAINT));
             } else {
                 endLikeSemi(state);
                 state.add(mark(builder, type, m_types.C_EXP_TYPE));

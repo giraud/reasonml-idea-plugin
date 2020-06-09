@@ -10,7 +10,7 @@ public class OclQNameFinderTest extends ORBasePlatformTestCase {
     public void testLetBinding() {
         configureCode("A.ml", "let make = increase<caret>()");
 
-        Set<String> paths = new OclQNameFinder().extractPotentialPaths(myFixture.getElementAtCaret());
+        Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(myFixture.getElementAtCaret());
         assertSameElements(paths, "A.make", "A");
     }
 
@@ -18,7 +18,7 @@ public class OclQNameFinderTest extends ORBasePlatformTestCase {
     public void testLocalModuleAliasResolution() {
         configureCode("A.ml", "module B = Belt module M = struct module O = B.Option let _ = O.m<caret>");
 
-        Set<String> paths = new OclQNameFinder().extractPotentialPaths(myFixture.getElementAtCaret());
+        Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(myFixture.getElementAtCaret());
         assertSameElements(paths, "A.O", "O", "A.Belt.Option", "Belt.Option");
     }
 }

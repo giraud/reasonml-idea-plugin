@@ -10,24 +10,17 @@ import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.impl.PsiInnerModuleImpl;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.stub.PsiModuleStub;
-import com.reason.lang.core.type.ORTypesUtil;
 
-public class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiInnerModule> {
+public abstract class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
 
     public PsiModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
     }
 
     @NotNull
-    public PsiInnerModuleImpl createPsi(@NotNull final PsiModuleStub stub) {
-        return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
-    }
-
-    @NotNull
-    public PsiModuleStub createStub(@NotNull final PsiInnerModule psi, final StubElement parentStub) {
+    public PsiModuleStub createStub(@NotNull final PsiModule psi, final StubElement parentStub) {
         return new PsiModuleStub(parentStub, this, psi.getName(), psi.getPath(), psi.getAlias(), psi.isComponent(), psi.isInterface());
     }
 

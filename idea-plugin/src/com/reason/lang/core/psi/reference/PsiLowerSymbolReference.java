@@ -276,7 +276,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @NotNull
     private Map<String, Integer> getPotentialPaths() {
-        QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
+        QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
         GlobalSearchScope scope = GlobalSearchScope.allScope(myElement.getProject()); // in api
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());

@@ -3,11 +3,13 @@ package com.reason.lang.core.psi;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.StubBasedPsiElement;
+import com.reason.lang.core.stub.PsiModuleStub;
 
-public interface PsiFunctor extends PsiNameIdentifierOwner, PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement {
+public interface PsiFunctor extends PsiNameIdentifierOwner, PsiModule, StubBasedPsiElement<PsiModuleStub> {
+
     @Nullable
     PsiFunctorBinding getBinding();
 
@@ -16,4 +18,7 @@ public interface PsiFunctor extends PsiNameIdentifierOwner, PsiQualifiedElement,
 
     @Nullable
     PsiElement getReturnType();
+
+    @NotNull
+    Collection<PsiFunctorConstraint> getConstraints();
 }

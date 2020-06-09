@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class RmlCompletionContributor extends CompletionContributor {
 
     RmlCompletionContributor() {
-        super(RmlTypes.INSTANCE, new RmlQNameFinder());
+        super(RmlTypes.INSTANCE, RmlQNameFinder.INSTANCE);
     }
 
     @Override

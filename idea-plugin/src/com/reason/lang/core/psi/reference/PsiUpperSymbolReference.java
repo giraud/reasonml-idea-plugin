@@ -118,7 +118,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-        QNameFinder qnameFinder = m_types instanceof RmlTypes ? new RmlQNameFinder() : new OclQNameFinder();
+        QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
         Set<String> paths = qnameFinder.extractPotentialPaths(myElement);
         if (LOG.isTraceEnabled()) {
             LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));

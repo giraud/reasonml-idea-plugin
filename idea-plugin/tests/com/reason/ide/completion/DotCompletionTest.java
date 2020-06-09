@@ -142,4 +142,92 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
 
         assertEmpty(strings);
     }
+
+    public void testRml_functorNoReturnType() {
+        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
+        configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
+        configureCode("C.re", "open B; Instance.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "y");
+    }
+
+    public void testOcl_functorNoReturnType() {
+        configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeOcl(I:Intf) = struct let y = 1 end");
+        configureCode("B.ml", "open A\n module Instance = MakeOcl(struct let x = true end)");
+        configureCode("C.ml", "open B let _ = Instance.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "y");
+    }
+
+    public void testRml_functorWithReturnType() {
+        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) : Intf => { let y = 1; };");
+        configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
+        configureCode("C.re", "open B; Instance.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "x");
+    }
+
+    public void testOcl_functorWithReturnType() {
+        configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeOcl(I:Intf) : Intf = struct let y = 1 end");
+        configureCode("B.ml", "open A\n module Instance = MakeOcl(struct let x = true end)");
+        configureCode("C.ml", "open B let _ = Instance.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "x");
+    }
+
+    public void testRml_functorInclude() {
+        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
+        configureCode("B.re", "include A.MakeIntf({let x = true});");
+        configureCode("C.re", "B.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "y");
+    }
+    public void testOcl_functorInclude() {
+        configureCode("A.ml", "module type Intf  = sig val x : bool end\n ");
+        configureCode("B.ml", "open A\n module MakeOcl(I:Intf) : Intf = struct let y = 1 end\n include MakeOcl(struct let x = true end)");
+        configureCode("C.ml", "let _ = B.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "MakeOcl", "x");
+    }
+
+    public void test_functorIncludeMultipleChoice() {
+        configureCode("A.re", "module Make = (I:{}) => { let a = 1; };");
+        configureCode("B.re", "module Make = (I:{}) => { let b = 1; }; include Make({});");
+        configureCode("C.re", "B.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "Make", "b");
+    }
+
+    public void testRml_functorIncludeAlias() {
+        configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
+        configureCode("B.re", "module Instance = A.MakeIntf({let x = true}); include Instance;");
+        configureCode("C.re", "B.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "Instance", "y");
+    }
+
 }

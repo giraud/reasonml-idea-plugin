@@ -9,7 +9,7 @@ import com.reason.lang.ocaml.OclTypes;
 public class OclCompletionContributor extends CompletionContributor {
 
     OclCompletionContributor() {
-        super(OclTypes.INSTANCE, new OclQNameFinder());
+        super(OclTypes.INSTANCE, OclQNameFinder.INSTANCE);
     }
 
     @Override

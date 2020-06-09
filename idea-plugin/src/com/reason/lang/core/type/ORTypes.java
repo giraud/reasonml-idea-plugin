@@ -37,9 +37,12 @@ public abstract class ORTypes {
     public IElementType C_FUN_BODY;
     public IElementType C_FUNCTOR;
     public IElementType C_FUNCTOR_BINDING;
+    public IElementType C_FUNCTOR_CALL;
     public IElementType C_FUNCTOR_CONSTRAINTS;
+    public IElementType C_FUNCTOR_CONSTRAINT;
     public IElementType C_FUNCTOR_PARAMS;
     public IElementType C_FUNCTOR_PARAM;
+    public IElementType C_FUNCTOR_RESULT;
     public IElementType C_JS_OBJECT;
     public IElementType C_MACRO_RAW_BODY;
     public IElementType C_MIXIN_FIELD;
