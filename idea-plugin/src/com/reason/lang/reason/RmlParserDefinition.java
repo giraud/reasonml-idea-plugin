@@ -20,7 +20,7 @@ import com.reason.lang.core.stub.type.RmlFileStubElementType;
 
 public class RmlParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.INSTANCE.COMMENT);
+    private static final TokenSet COMMENTS = TokenSet.create(RmlTypes.INSTANCE.MULTI_COMMENT, RmlTypes.INSTANCE.SINGLE_COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(RmlTypes.INSTANCE.STRING_VALUE);
 
     @NotNull

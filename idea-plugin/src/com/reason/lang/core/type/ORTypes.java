@@ -163,7 +163,8 @@ public abstract class ORTypes {
     public ORTokenElementType CARRET;
     public ORTokenElementType COLON;
     public ORTokenElementType COMMA;
-    public ORTokenElementType COMMENT;
+    public ORTokenElementType SINGLE_COMMENT;
+    public ORTokenElementType MULTI_COMMENT;
     public ORTokenElementType DIFF;
     public ORTokenElementType LT_OR_EQUAL;
     public ORTokenElementType GT_OR_EQUAL;

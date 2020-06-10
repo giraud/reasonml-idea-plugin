@@ -136,7 +136,8 @@ public class OclTypes extends ORTypes {
         CARRET = new ORTokenElementType("CARRET", OclLanguage.INSTANCE);
         COLON = new ORTokenElementType("COLON", OclLanguage.INSTANCE);
         COMMA = new ORTokenElementType("COMMA", OclLanguage.INSTANCE);
-        COMMENT = new ORTokenElementType("COMMENT", OclLanguage.INSTANCE);
+        SINGLE_COMMENT = new ORTokenElementType("SINGLE_COMMENT", OclLanguage.INSTANCE);
+        MULTI_COMMENT = new ORTokenElementType("MULTI_COMMENT", OclLanguage.INSTANCE);
         DIFF = new ORTokenElementType("DIFF", OclLanguage.INSTANCE);
         DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", OclLanguage.INSTANCE);
         DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", OclLanguage.INSTANCE);

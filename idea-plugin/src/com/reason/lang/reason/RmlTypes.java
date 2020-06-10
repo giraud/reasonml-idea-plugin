@@ -124,7 +124,8 @@ public class RmlTypes extends ORTypes {
         CARRET = new ORTokenElementType("CARRET", RmlLanguage.INSTANCE);
         COLON = new ORTokenElementType("COLON", RmlLanguage.INSTANCE);
         COMMA = new ORTokenElementType("COMMA", RmlLanguage.INSTANCE);
-        COMMENT = new ORTokenElementType("COMMENT", RmlLanguage.INSTANCE);
+        SINGLE_COMMENT = new ORTokenElementType("SINGLE_COMMENT", RmlLanguage.INSTANCE);
+        MULTI_COMMENT = new ORTokenElementType("MULTI_COMMENT", RmlLanguage.INSTANCE);
         DIFF = new ORTokenElementType("DIFF", RmlLanguage.INSTANCE);
         DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", RmlLanguage.INSTANCE);
         DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", RmlLanguage.INSTANCE);

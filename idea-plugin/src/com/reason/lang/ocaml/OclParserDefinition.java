@@ -20,7 +20,7 @@ import com.reason.lang.core.stub.type.OclFileStubElementType;
 
 public class OclParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.COMMENT);
+    private static final TokenSet COMMENTS = TokenSet.create(OclTypes.INSTANCE.MULTI_COMMENT);
     private static final TokenSet STRINGS = TokenSet.create(OclTypes.INSTANCE.STRING_VALUE);
 
     @NotNull
