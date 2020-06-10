@@ -47,7 +47,7 @@
          | UI
          -->
 
-        <toolWindow id="Dune:" anchor="bottom" icon="ORIcons.duneTool" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
+        <toolWindow id="Dune:" anchor="bottom" factoryClass="com.reason.ide.console.DuneToolWindowFactory"/>
 
     </extensions>
 </idea-plugin>

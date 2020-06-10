@@ -13,9 +13,9 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <depends optional="true" config-file="META-INF/java-deps.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="./java-deps.xml">com.intellij.modules.java</depends>
 
-    <depends optional="true" config-file="META-INF/js-deps.xml">JavaScript</depends>
+    <depends optional="true" config-file="./js-deps.xml">JavaScript</depends>
 
     <actions>
         <!-- CONSOLE ACTIONS - BUCKLESCRIPT -->
@@ -363,8 +363,8 @@
          | UI
          -->
 
-        <toolWindow id="BuckleScript:" anchor="bottom" icon="ORIcons.bucklescriptTool" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
-        <toolWindow id="Esy:" anchor="bottom" icon="ORIcons.esyTool" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
+        <toolWindow id="BuckleScript:" anchor="bottom" factoryClass="com.reason.ide.console.BsToolWindowFactory"/>
+        <toolWindow id="Esy:" anchor="bottom" factoryClass="com.reason.ide.console.EsyToolWindowFactory"/>
 
         <codeInsight.parameterInfo language="Reason"
                                    implementationClass="com.reason.ide.hints.ORParameterInfoHandlerWithTabActionSupport"/>

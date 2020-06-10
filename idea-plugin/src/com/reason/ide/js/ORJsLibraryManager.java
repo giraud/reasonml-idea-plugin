@@ -1,5 +1,7 @@
 package com.reason.ide.js;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.javascript.library.JSLibraryManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.DumbAware;
@@ -15,11 +17,6 @@ import com.reason.Log;
 import com.reason.bs.BsConfig;
 import com.reason.bs.BsConfigReader;
 import com.reason.ide.ORProjectManager;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static com.intellij.openapi.vfs.VirtualFile.EMPTY_ARRAY;
 import static com.intellij.util.ArrayUtilRt.EMPTY_STRING_ARRAY;
@@ -27,7 +24,7 @@ import static com.intellij.webcore.libraries.ScriptingLibraryModel.LibraryLevel.
 
 public class ORJsLibraryManager implements StartupActivity, DumbAware {
 
-    private static final Log LOG = Log.create("js.lib");
+    private static final Log LOG = Log.create("activity.js.lib");
     private static final String LIB_NAME = "Bucklescript";
 
     @Override
@@ -36,13 +33,17 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
     }
 
     private void runActivityLater(Project project) {
-        JSLibraryManager jsLibraryManager = JSLibraryManager.getInstance(project);
+        LOG.info("run Js library manager");
 
         Optional<VirtualFile> bsConfigFileOptional = ORProjectManager.findFirstBsConfigurationFile(project);
         if (bsConfigFileOptional.isPresent()) {
             VirtualFile bsConfigFile = bsConfigFileOptional.get();
+            LOG.debug("bucklescript config file", bsConfigFile);
+
             String baseDir = "file://" + bsConfigFile.getParent().getPath() + "/node_modules/";
             List<VirtualFile> sources = new ArrayList<>(readBsConfigDependencies(project, baseDir, bsConfigFile));
+
+            JSLibraryManager jsLibraryManager = JSLibraryManager.getInstance(project);
 
             ScriptingLibraryModel bucklescriptModel = jsLibraryManager.getLibraryByName(LIB_NAME);
             if (bucklescriptModel == null) {
