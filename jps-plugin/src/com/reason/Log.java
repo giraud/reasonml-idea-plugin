@@ -1,16 +1,18 @@
 package com.reason;
 
-import java.io.*;
-import java.nio.file.Path;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.ResolveResult;
 import com.reason.lang.core.psi.PsiQualifiedElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
 
 public class Log {
 
@@ -182,6 +184,12 @@ public class Log {
         }
     }
 
+    public void debug(String comment, String[] values) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(comment + SEP + "[" + Joiner.join(", ", values) + "]");
+        }
+    }
+
     public void error(String message, Exception e) {
         m_log.error(message, e);
     }
@@ -198,18 +206,6 @@ public class Log {
         m_log.warn(msg);
     }
 
-    public void trace(String msg) {
-        if (m_log.isTraceEnabled()) {
-            m_log.trace(msg);
-        }
-    }
-
-    public void trace(String msg, VirtualFile sourceFile) {
-        if (m_log.isTraceEnabled()) {
-            m_log.trace(msg + SEP + "file: " + sourceFile);
-        }
-    }
-
     public void warn(@NotNull Exception e) {
         m_log.warn(e);
     }
@@ -222,9 +218,22 @@ public class Log {
         m_log.info(msg + SEP + sb.toString());
     }
 
-    public void debug(String comment, String[] values) {
-        if (m_log.isDebugEnabled()) {
-            m_log.debug(comment + SEP + "[" + Joiner.join(", ", values) + "]");
+    public void trace(String msg) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(msg);
         }
     }
+
+    public void trace(String msg, VirtualFile sourceFile) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(msg + SEP + "file: " + sourceFile);
+        }
+    }
+
+    public void trace(String msg, String t) {
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(msg + SEP + " " + t);
+        }
+    }
+
 }

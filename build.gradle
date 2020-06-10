@@ -2,24 +2,26 @@ plugins {
     id 'org.jetbrains.intellij' version "0.4.18"
 }
 
-def pluginVersion = '0.88.1'
-def ideaVersion = '2019.3'
-version = pluginVersion + '-' + ideaVersion
+apply plugin: 'idea'
+
+def jdkVersion = 1.8
+
+idea {
+    project {
+        jdkName = jdkVersion
+        languageLevel = jdkVersion
+    }
+}
 
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>You can easily download OCaml SDK sources in SDK platform settings</li>
-            <li>#231 - Fix ClassCastException when reading bsconfig.json</li>
-            <li>#220 - Added BuckleScript file type and icon</li> 
-            <li>#219 - Added file type support for Esy</li>
-            <li>Poly-variants can have a different highlighting, color scheme updated</li>
-            <li>Use SVG icons</li>
-            <li>#224 - Use bsb.exe instead of node.js wrapper in monorepo</li>
-            <li>#221 - Compilers have separate tool windows</li>
-            <li>#238 - Add build system info to action labels</li>
-            <li>#234 - com.reason.CompilerProcessException: Dune process exception. Invalid cliType command</li>
-            <li>Use rincewind@0.8</li>
+            <li>#239 - Experimental: start of ESY support work</li>
+            <li>#249 - Too many warnings in log (bsconfig not found)</li>
+            <li>#241 - Fix bug that prevent IDEA to keep correctly the source of SDK</li>
+            <li>#236 - Cannot find a module definition if namespace is used</li>
+            <li>Find real bsc/bsb binaries if a symlink is found</li>
+            <li>Fix gutter icons for navigation in OCaml files</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
@@ -30,11 +32,28 @@ patchPluginXml {
 }
 
 allprojects {
-    apply plugin: 'java'
+    group 'com.reason'
+}
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.jetbrains.intellij'
+
+    sourceCompatibility = jdkVersion
+    targetCompatibility = jdkVersion
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        def powerMockVersion = '2.0.2'
+        testCompile 'org.mockito:mockito-core:3.3.3'
+        testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
+        testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
+    }
 
     sourceSets {
         main {
@@ -46,24 +65,6 @@ allprojects {
         }
     }
 
-    apply plugin: 'org.jetbrains.intellij'
-    intellij {
-        pluginName 'reasonml-plugin-idea'
-        type 'IU'
-        version '193.5233.102' // https://www.jetbrains.com/intellij-repository/releases
-        updateSinceUntilBuild = false
-        plugins = ['java',
-                   'JavaScriptLanguage',
-                   'com.jetbrains.hackathon.indices.viewer:1.3',
-                   'PsiViewer:193-SNAPSHOT' // https://plugins.jetbrains.com/plugin/227-psiviewer/versions
-        ]
-    }
-
-    runIde {
-        systemProperty "refmtWidth", "120"
-        jvmArgs = ['--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED', '-Dcompiler.process.debug.port=5005', '-Xmx1024m']
-    }
-
     task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
         testLogging {
             exceptionFormat = 'full'
@@ -71,31 +72,10 @@ allprojects {
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile project('jps-plugin')
-    def powerMockVersion = "2.0.2"
-    testCompile 'org.mockito:mockito-core:3.3.3'
-    testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
-    testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
-}
-
-apply plugin: 'idea'
-idea {
-    project {
-        jdkName = 1.8
-        languageLevel = 1.8
+project(':idea-plugin') {
+    dependencies {
+        compile project(':jps-plugin')
     }
-    module {
-        generatedSourceDirs += file('gen')
-    }
-}
-
-verifyPlugin {
-    pluginDirectory "resources"
 }
 
 /*
