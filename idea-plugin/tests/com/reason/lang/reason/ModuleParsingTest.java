@@ -29,7 +29,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleType() {
-        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module type RedFlagsSig = {};", true)));
+        PsiInnerModule module = (PsiInnerModule) first(moduleExpressions(parseCode("module type RedFlagsSig = {};")));
 
         assertEquals("RedFlagsSig", module.getName());
         assertTrue(module.isModuleType());

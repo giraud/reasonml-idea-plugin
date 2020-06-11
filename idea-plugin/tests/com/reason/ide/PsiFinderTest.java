@@ -27,13 +27,13 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         List<PsiModule> modulesD = new ArrayList<>(PsiFinder.getInstance(getProject()).findModulesbyName("Router", both, null, scope));
 
         assertSize(1, modulesA);
-        assertEquals("type api", modulesA.get(0).getExpressions(all).iterator().next().getText());
+        assertEquals("type api", modulesA.get(0).getExpressions(all, null).iterator().next().getText());
 
         assertSize(1, modulesB);
-        assertEquals("type impl", modulesB.get(0).getExpressions(all).iterator().next().getText());
+        assertEquals("type impl", modulesB.get(0).getExpressions(all, null).iterator().next().getText());
 
         assertSize(1, modulesC);
-        assertEquals("type api", modulesC.get(0).getExpressions(all).iterator().next().getText());
+        assertEquals("type api", modulesC.get(0).getExpressions(all, null).iterator().next().getText());
 
         assertSize(2, modulesD);
     }

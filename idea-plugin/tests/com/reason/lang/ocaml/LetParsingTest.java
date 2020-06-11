@@ -177,7 +177,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertEquals("Dummy.root", root.getQualifiedName());
         assertEquals("Dummy.root.inner", inner.getQualifiedName());
-        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions(ExpressionScope.all).iterator().next()).getQualifiedName());
+        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions(ExpressionScope.all, null).iterator().next()).getQualifiedName());
     }
 
     public void testDeconstruction() {

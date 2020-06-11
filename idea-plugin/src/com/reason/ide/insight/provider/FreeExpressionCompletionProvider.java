@@ -84,7 +84,7 @@ public class FreeExpressionCompletionProvider {
                     continue;
                 }
 
-                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub);
+                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub, null);
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.

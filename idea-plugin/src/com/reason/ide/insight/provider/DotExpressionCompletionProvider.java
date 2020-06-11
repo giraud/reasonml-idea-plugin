@@ -114,7 +114,7 @@ public class DotExpressionCompletionProvider {
                 // Use first resolved module
 
                 if (!resolvedModules.isEmpty()) {
-                    Collection<PsiNameIdentifierOwner> expressions = resolvedModules.iterator().next().getExpressions(pub);
+                    Collection<PsiNameIdentifierOwner> expressions = resolvedModules.iterator().next().getExpressions(pub, null);
                     LOG.trace(" -> expressions", expressions);
                     addExpressions(resultSet, expressions, element.getLanguage());
                 }

@@ -15,6 +15,7 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
@@ -29,7 +30,6 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclQNameFinder;
 import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
-import gnu.trove.THashMap;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.*;
@@ -92,8 +92,8 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         int resultPosition = Integer.MAX_VALUE;
 
         // Find potential paths of current element
-        Map<String, Integer> potentialPaths = getPotentialPaths();
-        LOG.debug("  potential paths", potentialPaths);
+        OrderedPaths potentialPaths = getPotentialPaths();
+        LOG.debug("  potential paths", potentialPaths.getValues());
 
         // Try to find val items
 
@@ -106,13 +106,13 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("  filtered vals", filteredVals);
 
             for (PsiVal valResult : filteredVals) {
-                Integer valPosition = potentialPaths.get(valResult.getQualifiedName());
-                if (valPosition < resultPosition) {
+                Integer valPosition = potentialPaths.getPosition(valResult.getQualifiedName());
+                if (valPosition != null && valPosition < resultPosition) {
                     result = valResult;
                     resultPosition = valPosition;
                     LOG.debug("  Found intermediate result", valResult, resultPosition);
                 } else {
-                    LOG.debug("  skip intermediate result", valResult, valPosition);
+                    LOG.debug("  skip intermediate result", valResult, valPosition == null ? -1 : valPosition);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                 if (letResult.isDeconsruction()) {
                     for (PsiElement deconstructedElement : letResult.getDeconstructedElements()) {
                         String qname = letResult.getPath() + "." + deconstructedElement.getText();
-                        letPosition = potentialPaths.get(qname);
+                        letPosition = potentialPaths.getPosition(qname);
                         if (letPosition != null) {
                             letIdentifier = deconstructedElement;
                             break;
@@ -141,7 +141,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                     }
                 } else {
                     letIdentifier = letResult;
-                    letPosition = potentialPaths.get(letResult.getQualifiedName());
+                    letPosition = potentialPaths.getPosition(letResult.getQualifiedName());
                 }
 
                 if (letPosition != null && letPosition < resultPosition) {
@@ -149,7 +149,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                     resultPosition = letPosition;
                     LOG.debug("  Found intermediate result", letResult, resultPosition);
                 } else {
-                    LOG.debug("  skip intermediate result", letResult, letPosition);
+                    LOG.debug("  skip intermediate result", letResult, letPosition == null ? -1 : letPosition);
                 }
             }
         }
@@ -165,13 +165,13 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("  filtered parameters", filteredParameters);
 
             for (PsiParameter parameter : filteredParameters) {
-                Integer parameterPosition = potentialPaths.get(parameter.getQualifiedName());
-                if (parameterPosition < resultPosition) {
+                Integer parameterPosition = potentialPaths.getPosition(parameter.getQualifiedName());
+                if (parameterPosition != null && parameterPosition < resultPosition) {
                     result = parameter;
                     resultPosition = parameterPosition;
                     LOG.debug("  Found intermediate result", parameter, resultPosition);
                 } else {
-                    LOG.debug("  skip intermediate result", parameter, parameterPosition);
+                    LOG.debug("  skip intermediate result", parameter, parameterPosition == null ? -1 : parameterPosition);
                 }
             }
         }
@@ -187,13 +187,13 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("  filtered externals", filteredExternals);
 
             for (PsiExternal externalResult : filteredExternals) {
-                Integer externalPosition = potentialPaths.get(externalResult.getQualifiedName());
-                if (externalPosition < resultPosition) {
+                Integer externalPosition = potentialPaths.getPosition(externalResult.getQualifiedName());
+                if (externalPosition != null && externalPosition < resultPosition) {
                     result = externalResult;
                     resultPosition = externalPosition;
                     LOG.debug("  Found intermediate result", externalResult, resultPosition);
                 } else {
-                    LOG.debug("  skip intermediate result", externalResult, externalPosition);
+                    LOG.debug("  skip intermediate result", externalResult, externalPosition == null ? -1 : externalPosition);
                 }
             }
         }
@@ -209,13 +209,13 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             LOG.debug("  filtered types", filteredTypes);
 
             for (PsiType typeResult : filteredTypes) {
-                Integer typePosition = potentialPaths.get(typeResult.getQualifiedName());
-                if (typePosition < resultPosition) {
+                Integer typePosition = potentialPaths.getPosition(typeResult.getQualifiedName());
+                if (typePosition != null && typePosition < resultPosition) {
                     result = typeResult;
                     resultPosition = typePosition;
                     LOG.debug("  Found intermediate result", typeResult, resultPosition);
                 } else {
-                    LOG.debug("  skip intermediate result", typeResult, typePosition);
+                    LOG.debug("  skip intermediate result", typeResult, typePosition == null ? -1 : typePosition);
                 }
             }
         }
@@ -229,12 +229,12 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             // Filter the fields, keep the ones with the same qualified name
             List<PsiRecordField> filteredFields = recordFields.stream().filter(element -> {
                 String qp = element.getPath();
-                return m_referenceName.equals(qp) || potentialPaths.containsKey(qp);
+                return m_referenceName.equals(qp) || potentialPaths.contains(qp);
             }).collect(toList());
             LOG.debug("  filtered fields", filteredFields);
 
             for (PsiRecordField fieldResult : filteredFields) {
-                Integer fieldPosition = potentialPaths.get(fieldResult.getPath());
+                Integer fieldPosition = potentialPaths.getPosition(fieldResult.getPath());
                 if (fieldPosition != null) {
                     if (fieldPosition < resultPosition) {
                         result = fieldResult;
@@ -243,6 +243,20 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                     } else {
                         LOG.debug("  skip intermediate result", fieldResult, fieldPosition);
                     }
+                }
+            }
+        }
+
+        // If module and inclusion is used, try to resolve included expressions from module
+        List<PsiQualifiedElement> resolvedElements = potentialPaths.getResolvedElements();
+        for (int i = 0; i < resolvedElements.size(); i++) {
+            PsiQualifiedElement resolvedElement = resolvedElements.get(i);
+            if (i < resultPosition && resolvedElement instanceof PsiModule) {
+                Collection<PsiNameIdentifierOwner> expressions = ((PsiModule) resolvedElement)
+                        .getExpressions(ExpressionScope.pub, element -> m_referenceName.equals(element.getName()));
+                if (!expressions.isEmpty()) {
+                    result = expressions.iterator().next();
+                    resultPosition = i;
                 }
             }
         }
@@ -257,12 +271,12 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     }
 
     @NotNull
-    private Predicate<? super PsiQualifiedElement> getPathPredicate(@NotNull Map<String, Integer> potentialPaths) {
+    private Predicate<? super PsiQualifiedElement> getPathPredicate(@NotNull OrderedPaths paths) {
         return element -> {
             if (element instanceof PsiLet && ((PsiLet) element).isDeconsruction()) {
                 for (PsiElement deconstructedElement : ((PsiLet) element).getDeconstructedElements()) {
                     String qn = element.getPath() + "." + deconstructedElement.getText();
-                    if ((m_referenceName != null && m_referenceName.equals(qn)) || potentialPaths.containsKey(qn)) {
+                    if ((m_referenceName != null && m_referenceName.equals(qn)) || paths.contains(qn)) {
                         return true;
                     }
                 }
@@ -270,18 +284,18 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             }
 
             String qn = element.getQualifiedName();
-            return (m_referenceName != null && m_referenceName.equals(qn)) || potentialPaths.containsKey(qn);
+            return (m_referenceName != null && m_referenceName.equals(qn)) || paths.contains(qn);
         };
     }
 
     @NotNull
-    private Map<String, Integer> getPotentialPaths() {
+    private OrderedPaths getPotentialPaths() {
         QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
         GlobalSearchScope scope = GlobalSearchScope.allScope(myElement.getProject()); // in api
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
 
-        Map<String, Integer> result = new THashMap<>();
+        OrderedPaths result = new OrderedPaths();
 
         List<PsiQualifiedElement> resolvedPaths = new ArrayList<>();
         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(myElement);
@@ -301,11 +315,9 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
             }
         }
 
-        Integer position = 0;
         for (PsiQualifiedElement element : resolvedPaths) {
-            if (element != null) {
-                result.put(element.getQualifiedName() + (element instanceof PsiParameter ? "" : "." + m_referenceName), position);
-                position++;
+            if (element != null && m_referenceName != null) {
+                result.add(element, m_referenceName);
             }
         }
 
@@ -316,5 +328,40 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     @Override
     public Object[] getVariants() {
         return EMPTY_ARRAY;
+    }
+
+    static class OrderedPaths {
+        List<PsiQualifiedElement> m_elements = new ArrayList<>();
+        List<String> m_paths = new ArrayList<>();
+        Map<String, Integer> m_elementIndices = new HashMap<>();
+        Map<String, Integer> m_pathIndices = new HashMap<>();
+
+        void add(@NotNull PsiQualifiedElement element, @NotNull String name) {
+            String value = element.getQualifiedName() + (element instanceof PsiParameter ? "" : "." + name);
+
+            m_elements.add(element);
+            m_elementIndices.put(value, m_elements.size() - 1);
+            m_paths.add(value);
+            m_pathIndices.put(value, m_paths.size() - 1);
+        }
+
+        @NotNull
+        public List<PsiQualifiedElement> getResolvedElements() {
+            return m_elements;
+        }
+
+        @NotNull
+        public List<String> getValues() {
+            return m_paths;
+        }
+
+        public boolean contains(@Nullable String value) {
+            return value != null && m_pathIndices.containsKey(value);
+        }
+
+        @Nullable
+        public Integer getPosition(@NotNull String value) {
+            return m_pathIndices.get(value);
+        }
     }
 }
