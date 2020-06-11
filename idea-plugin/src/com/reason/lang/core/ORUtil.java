@@ -1,10 +1,19 @@
 package com.reason.lang.core;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiInvalidElementAccessException;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -13,10 +22,6 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class ORUtil {
 
@@ -91,6 +96,7 @@ public class ORUtil {
         return found;
     }
 
+    @NotNull
     public static String getTextUntilTokenType(@NotNull PsiElement root, @Nullable IElementType elementType) {
         String text = root.getText();
 
@@ -104,7 +110,24 @@ public class ORUtil {
             }
         }
 
-        return text;
+        return text.trim();
+    }
+
+    @NotNull
+    public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class clazz) {
+        String text = root.getText();
+
+        PsiElement sibling = root.getNextSibling();
+        while (sibling != null) {
+            if (sibling.getClass().isAssignableFrom(clazz)) {
+                sibling = null;
+            } else {
+                text += sibling.getText();
+                sibling = sibling.getNextSibling();
+            }
+        }
+
+        return text.trim();
     }
 
     @NotNull

@@ -55,7 +55,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testModuleChaining() {
-        PsiFile file = parseCode(" module A = sig type t end\nmodule B = struct end");
+        PsiFile file = parseCode("module A = sig type t end\nmodule B = struct end");
 
         assertEquals(2, moduleExpressions(file).size());
     }

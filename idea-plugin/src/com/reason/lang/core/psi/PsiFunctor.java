@@ -20,5 +20,5 @@ public interface PsiFunctor extends PsiNameIdentifierOwner, PsiModule, StubBased
     PsiElement getReturnType();
 
     @NotNull
-    Collection<PsiFunctorConstraint> getConstraints();
+    Collection<PsiConstraint> getConstraints();
 }

@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.xml.model.gotosymbol.GoToSymbolProvider;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiConstraints;
 import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.type.ORTypes;
@@ -33,7 +34,7 @@ public class PsiIncludeImpl extends PsiToken<ORTypes> implements PsiInclude {
         if (firstChild instanceof PsiFunctorCall) {
             return ((PsiFunctorCall) firstChild).getFunctorName();
         }
-        return firstChild == null ? "" : ORUtil.getTextUntilTokenType(firstChild, null);
+        return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, PsiConstraints.class);
     }
 
     @NotNull
