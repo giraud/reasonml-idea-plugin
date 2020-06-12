@@ -29,4 +29,13 @@ public class ResolveInFunctorTest extends ORBasePlatformTestCase {
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.Make.a", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
     }
+
+    public void testRml_ResultWithAlias() {
+        configureCode("A.re", "module type Result = { let a: int; };");
+        configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
+        configureCode("C.re", "module Instance = Make({}); let c = Instance.a<caret>;");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.Result.a", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
+    }
 }

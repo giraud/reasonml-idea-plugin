@@ -14,7 +14,6 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ExpressionFilter;
-import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiConstraint;
@@ -37,6 +36,7 @@ import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlQNameFinder;
 import icons.ORIcons;
 
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.Collections.*;
 
 public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiFunctor {
@@ -141,11 +141,17 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
 
             Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);
             for (String potentialPath : potentialPaths) {
-                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(potentialPath + "." + name, true, ORFileType.interfaceOrImplementation, searchScope);
+                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(potentialPath + "." + name, true, interfaceOrImplementation, searchScope);
                 if (!modulesFromQn.isEmpty()) {
                     PsiModule module = modulesFromQn.iterator().next();
                     return module.getExpressions(eScope, filter);
                 }
+            }
+            // nothing found, try without path
+            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(name, true, interfaceOrImplementation, searchScope);
+            if (!modulesFromQn.isEmpty()) {
+                PsiModule module = modulesFromQn.iterator().next();
+                return module.getExpressions(eScope, filter);
             }
         } else {
             // Get expressions from functor body
@@ -216,7 +222,6 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
             }
         }
         return null;
-
     }
 
     @Nullable
