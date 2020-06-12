@@ -11,7 +11,6 @@ import com.reason.CompilerProcess;
 import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,11 +19,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.WARNING;
 import static com.reason.bs.BsPlatform.findBsbExecutable;
@@ -170,31 +167,33 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
-        Optional<VirtualFile> bsc = findBscExecutable(m_project, sourceFile);
-        if (bsc.isPresent()) {
-            Process p = null;
-            try {
-                p = Runtime.getRuntime().exec(bsc + " -version");
-                p.waitFor();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line = reader.readLine();
-                return line == null ? null : ocamlVersionExtractor(line);
-            } catch (@NotNull InterruptedException | IOException e) {
-                return null;
-            } finally {
-                if (p != null) {
-                    p.destroy();
-                }
-            }
-        }
-        return null;
+        return findBscExecutable(m_project, sourceFile).
+                map(bscFile -> {
+                    String bscExe = bscFile.getPath();
+                    Process p = null;
+                    try {
+                        p = Runtime.getRuntime().exec(bscExe + " -version");
+                        p.waitFor();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        return ocamlVersionExtractor(reader.readLine());
+                    } catch (@NotNull InterruptedException | IOException e) {
+                        return null;
+                    } finally {
+                        if (p != null) {
+                            p.destroy();
+                        }
+                    }
+                }).
+                orElse(null);
     }
 
     @Nullable
-    static String ocamlVersionExtractor(@NotNull String line) {
-        Matcher matcher = BS_VERSION_REGEXP.matcher(line);
-        if (matcher.matches()) {
-            return matcher.group(1);
+    static String ocamlVersionExtractor(@Nullable String line) {
+        if (line != null) {
+            Matcher matcher = BS_VERSION_REGEXP.matcher(line);
+            if (matcher.matches()) {
+                return matcher.group(1);
+            }
         }
 
         return null;
