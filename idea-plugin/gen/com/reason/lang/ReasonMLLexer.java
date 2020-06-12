@@ -926,15 +926,15 @@ public class ReasonMLLexer implements FlexLexer {
             }  // fall though
             case 375: break;
             case IN_REASON_ML_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
             case 376: break;
             case IN_REASON_SL_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
             }  // fall though
             case 377: break;
             case IN_OCAML_ML_COMMENT: {
-              yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+              yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT;
             }  // fall though
             case 378: break;
             default:
@@ -1144,7 +1144,7 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 193: break;
           case 41: 
-            { yybegin(INITIAL); tokenEnd(); return types.COMMENT;
+            { yybegin(INITIAL); tokenEnd(); return types.SINGLE_COMMENT;
             } 
             // fall through
           case 194: break;
@@ -1354,7 +1354,7 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 235: break;
           case 83: 
-            { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.COMMENT; } }
+            { if (!inCommentString) { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return types.MULTI_COMMENT; } }
             } 
             // fall through
           case 236: break;

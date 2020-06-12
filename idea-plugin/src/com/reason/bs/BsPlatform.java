@@ -18,7 +18,7 @@ import static com.reason.bs.BsConstants.*;
 
 public class BsPlatform {
 
-    private static final Log LOG = Log.create("bs-platform");
+    private static final Log LOG = Log.create("bs.platform");
 
     private BsPlatform() {
     }

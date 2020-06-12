@@ -5,6 +5,8 @@ public enum ParserScopeEnum {
 
     open,
     include,
+    includeConstraints,
+    includeConstraint,
 
     localOpen,
     localOpenScope,
@@ -174,5 +176,5 @@ public enum ParserScopeEnum {
     moduleNamedSignatureEq, array, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq,
     clazzBodyScope, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage, letNamedBindingFunction,
-    typeBinding, recordFieldAnnotation, option, optionParameter, name, unit, funPattern, localObjectOpen
+    typeBinding, recordFieldAnnotation, option, optionParameter, name, unit, funPattern,  localObjectOpen
 }

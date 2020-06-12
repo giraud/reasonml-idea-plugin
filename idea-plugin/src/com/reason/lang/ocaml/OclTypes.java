@@ -47,6 +47,8 @@ public class OclTypes extends ORTypes {
         C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", OclLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", OclLanguage.INSTANCE);
         C_CLASS_METHOD = new ORCompositeElementType("C_CLASS_METHOD", OclLanguage.INSTANCE);
+        C_CONSTRAINTS = new ORCompositeElementType("C_CONSTRAINTS", OclLanguage.INSTANCE);
+        C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", OclLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", OclLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
@@ -58,8 +60,6 @@ public class OclTypes extends ORTypes {
         C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", OclLanguage.INSTANCE);
         C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", OclLanguage.INSTANCE);
         C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", OclLanguage.INSTANCE);
-        C_FUNCTOR_CONSTRAINTS = new ORCompositeElementType("C_FUNCTOR_CONSTRAINTS", OclLanguage.INSTANCE);
-        C_FUNCTOR_CONSTRAINT = new ORCompositeElementType("C_FUNCTOR_CONSTRAINT", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", OclLanguage.INSTANCE);
         C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", OclLanguage.INSTANCE);
         C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", OclLanguage.INSTANCE);
@@ -136,7 +136,8 @@ public class OclTypes extends ORTypes {
         CARRET = new ORTokenElementType("CARRET", OclLanguage.INSTANCE);
         COLON = new ORTokenElementType("COLON", OclLanguage.INSTANCE);
         COMMA = new ORTokenElementType("COMMA", OclLanguage.INSTANCE);
-        COMMENT = new ORTokenElementType("COMMENT", OclLanguage.INSTANCE);
+        SINGLE_COMMENT = new ORTokenElementType("SINGLE_COMMENT", OclLanguage.INSTANCE);
+        MULTI_COMMENT = new ORTokenElementType("MULTI_COMMENT", OclLanguage.INSTANCE);
         DIFF = new ORTokenElementType("DIFF", OclLanguage.INSTANCE);
         DIRECTIVE_IF = new ORTokenElementType("DIRECTIVE_IF", OclLanguage.INSTANCE);
         DIRECTIVE_ELSE = new ORTokenElementType("DIRECTIVE_ELSE", OclLanguage.INSTANCE);

@@ -1,5 +1,8 @@
 package com.reason.ide.folding;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -9,7 +12,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
@@ -19,11 +27,6 @@ import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FoldingBuilder extends FoldingBuilderEx {
     @NotNull
@@ -47,12 +50,10 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldHeader(descriptors, (OclYaccHeader) element);
             } else if (element instanceof OclYaccRule) {
                 foldRule(descriptors, (OclYaccRule) element);
-            } else {
-                if (types.COMMENT == element.getNode().getElementType()) {
-                    FoldingDescriptor fold = fold(element);
-                    if (fold != null) {
-                        descriptors.add(fold);
-                    }
+            } else if (types.MULTI_COMMENT == element.getNode().getElementType()) {
+                FoldingDescriptor fold = fold(element);
+                if (fold != null) {
+                    descriptors.add(fold);
                 }
             }
 
@@ -129,9 +130,9 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
         IElementType elementType = node.getElementType();
-        if (elementType == RmlTypes.INSTANCE.COMMENT) {
+        if (elementType == RmlTypes.INSTANCE.MULTI_COMMENT) {
             return "/*...*/";
-        } else if (elementType == OclTypes.INSTANCE.COMMENT) {
+        } else if (elementType == OclTypes.INSTANCE.MULTI_COMMENT) {
             return "(*...*)";
         }
 

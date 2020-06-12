@@ -19,8 +19,8 @@ import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiFunctorBinding;
 import com.reason.lang.core.psi.PsiFunctorCall;
-import com.reason.lang.core.psi.PsiFunctorConstraint;
-import com.reason.lang.core.psi.PsiFunctorConstraints;
+import com.reason.lang.core.psi.PsiConstraint;
+import com.reason.lang.core.psi.PsiConstraints;
 import com.reason.lang.core.psi.PsiFunctorResult;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -221,8 +221,8 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
 
     @NotNull
     @Override
-    public Collection<PsiFunctorConstraint> getConstraints() {
-        return ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(this, PsiFunctorConstraints.class), PsiFunctorConstraint.class);
+    public Collection<PsiConstraint> getConstraints() {
+        return ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class), PsiConstraint.class);
     }
 
     public ItemPresentation getPresentation() {

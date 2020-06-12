@@ -12,6 +12,8 @@ public abstract class ORTypes {
     public IElementType C_CLASS_METHOD;
     public IElementType C_CLASS_PARAMS;
     public IElementType C_CLASS_STMT;
+    public IElementType C_CONSTRAINTS;
+    public IElementType C_CONSTRAINT;
     public IElementType C_DECONSTRUCTION;
     public IElementType C_DIRECTIVE;
     public IElementType C_EXTERNAL_STMT;
@@ -38,8 +40,6 @@ public abstract class ORTypes {
     public IElementType C_FUNCTOR;
     public IElementType C_FUNCTOR_BINDING;
     public IElementType C_FUNCTOR_CALL;
-    public IElementType C_FUNCTOR_CONSTRAINTS;
-    public IElementType C_FUNCTOR_CONSTRAINT;
     public IElementType C_FUNCTOR_PARAMS;
     public IElementType C_FUNCTOR_PARAM;
     public IElementType C_FUNCTOR_RESULT;
@@ -163,7 +163,8 @@ public abstract class ORTypes {
     public ORTokenElementType CARRET;
     public ORTokenElementType COLON;
     public ORTokenElementType COMMA;
-    public ORTokenElementType COMMENT;
+    public ORTokenElementType SINGLE_COMMENT;
+    public ORTokenElementType MULTI_COMMENT;
     public ORTokenElementType DIFF;
     public ORTokenElementType LT_OR_EQUAL;
     public ORTokenElementType GT_OR_EQUAL;

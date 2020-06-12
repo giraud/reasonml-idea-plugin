@@ -254,7 +254,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.isCurrentResolution(functorNamedColonResult)) {
             // module M (X) : ( S |>with<| ... ) = ...
             state.complete().popEnd();
-            state.add(mark(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS));
+            state.add(mark(builder, functorConstraints, m_types.C_CONSTRAINTS));
+        } else if (state.isCurrentResolution(include)) {
+            state.add(mark(builder, functorConstraints, m_types.C_CONSTRAINTS));
         }
     }
 
@@ -476,7 +478,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
     private void parseType(@NotNull PsiBuilder builder, @NotNull ParserState state) {
         if (state.isCurrentResolution(functorConstraints)) {
             // module M = (X) : ( S with |>type<| ... ) = ...
-            state.add(mark(builder, functorConstraints, functorConstraint, m_types.C_FUNCTOR_CONSTRAINT));
+            state.add(mark(builder, functorConstraints, functorConstraint, m_types.C_CONSTRAINT));
+        } else if (state.isCurrentResolution(includeConstraints)) {
+            // include M with |>type<| ...
+            state.add(mark(builder, includeConstraints, includeConstraint, m_types.C_CONSTRAINT));
         } else if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
             if (!state.isCurrentResolution(letNamedSignature)) {
                 state.popEndUntilStartScope();
@@ -903,7 +908,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     add(mark(builder, state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM).complete());
         } else if (state.isCurrentResolution(functorNamedEqColon)) {
             // Functor constraint :: module M = (..) : |>(<| .. ) =
-            state.add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.LPAREN));
+            state.add(markScope(builder, functorConstraints, m_types.C_CONSTRAINTS, m_types.LPAREN));
         } else if (state.isCurrentResolution(maybeFunctorCall)) {
             // We know now that it is really a functor call
             // module M = X |>(<| ... )
