@@ -12,6 +12,13 @@
 
 ## Unreleased
 
+- :memo: - Reworked documentation, moved from wiki to the [docs](https://github.com/reasonml-editor/reasonml-idea-plugin/docs) directory by [@pooch](https://github.com/JohnPucciarelli)
+- :memo: - [#252](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/252) Add an architecture documentation to explain some of the internal details
+- :bug: - [#205](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/205) Functors are now indexed (completion and resolution should work)
+- :bug: - ![r] [#254](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/254) Make a distinction between single-line and multi-line comments in parser
+- :house: - Add github action for CI (and badges) by [@pooch](https://github.com/JohnPucciarelli)
+- :house: - [#253](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/253) - Breaking apart modules to avoid extra instances of IntelliJ when testing by [@pooch](https://github.com/JohnPucciarelli)
+
 ## 0.89.0 - 2020/05/22
 
 - :rocket: [#239](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/239) - Experimental: start of ESY support work by [@pooch](https://github.com/JohnPucciarelli)
