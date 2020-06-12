@@ -13,18 +13,18 @@
 ## Unreleased
 
 - :memo: Reworked documentation, moved from wiki to the [docs](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) directory by [@pooch](https://github.com/JohnPucciarelli)
-- :memo: [#252](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/252) - Add an architecture documentation to explain some of the internal details
-- :bug: [#205](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/205) - Functors are now indexed (completion and resolution should work)
-- :bug: ![r] [#254](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/254) - Make a distinction between single-line and multi-line comments in parser
+- :memo: [#252](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/252) Add an architecture documentation to explain some of the internal details
+- :bug: [#205](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/205) Functors are now indexed (completion and resolution should work)
+- :bug: [#254](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/254) ![r] Make a distinction between single-line and multi-line comments in parser
 - :house: Add github action for CI (and badges) by [@pooch](https://github.com/JohnPucciarelli)
-- :house: [#253](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/253) - Breaking apart modules to avoid extra instances of IntelliJ when testing by [@pooch](https://github.com/JohnPucciarelli)
+- :house: [#253](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/253) Breaking apart modules to avoid extra instances of IntelliJ when testing by [@pooch](https://github.com/JohnPucciarelli)
 
 ## 0.89.0 - 2020/05/22
 
-- :rocket: [#239](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/239) - Experimental: start of ESY support work by [@pooch](https://github.com/JohnPucciarelli)
-- :bug: [#249](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/249) - Too many warnings in log (bsconfig not found)
-- :bug: [#241](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/241) - Fix bug that prevent IDEA to keep correctly the source of SDK by [@kayl669](https://github.com/kayl669)
-- :bug: [#236](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/236) - Cannot find a module definition if namespace is used
+- :rocket: [#239](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/239) Experimental: start of ESY support work by [@pooch](https://github.com/JohnPucciarelli)
+- :bug: [#249](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/249) Too many warnings in log (bsconfig not found)
+- :bug: [#241](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/241) Fix bug that prevent IDEA to keep correctly the source of SDK by [@kayl669](https://github.com/kayl669)
+- :bug: [#236](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/236) Cannot find a module definition if namespace is used
 - :house: Find real bsc/bsb binaries if a symlink is found
 - :house: Fix gutter icons for navigation in OCaml files
 
@@ -47,21 +47,21 @@
 
 ## 0.87.1 - 2020/04/03
 
+0.87.1
 - :bug: [#214](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/214) Infinite indexing
 
-## 0.87 - 2020/03/12
-
+0.87
 - :rocket: Compatible with bucklescript 7.2.2
 - :rocket: Add OCaml 4.10 to the list of downloadable SDKs
-- :bug: [#211](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/211) let%private support
+- :bug: [#211](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/211) `let%private` support
 - :bug: [#209](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/209) Deep dependenciess are not indexed in IDE that have javascript functionality (ultimate/webstorm)
 - :house: Use rincewind 0.7 (support of OCaml 4.10)
 
 ## 0.86.1 - 2020/02/21
 
-- Compatible with bucklescript 7.2
-- :rocket: ![r], [#204](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/204) New on-the-fly compilation to get faster inferred information
+- :rocket: [#204](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/204) ![r] New on-the-fly compilation to get faster inferred information
 - :bug: [#167](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/167) Go-to definition is not working correctly for deconstructed tuples
+- :house: Compatible with bucklescript 7.2
 
 ## 0.85 - 2020/02/04
 
@@ -95,8 +95,8 @@ many versions active. Older version of the plugin will be frozen and won't get a
   SDK can be automatically downloaded and indexed.
 - :rocket: Dune stanzas visible in the structure view
 - :rocket: Dune stanzas can be folded when they span on multiple lines
-- :bug: [#189](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189) ![o] Structure panel missing members/parse problem for "while"
-- :bug: [#175](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175) ![o] Structure panel missing top level functions defined after nested let foo = function
+- :bug: [#189](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/189) ![o] Structure panel missing members/parse problem for `while`
+- :bug: [#175](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175) ![o] Structure panel missing top level functions defined after nested `let foo = function`
 - :house: Fix bs version extractor (format changed in bucklescript 6.2.1)
 - :house: Improved Dune parser
 
@@ -107,7 +107,7 @@ many versions active. Older version of the plugin will be frozen and won't get a
 - :bug: [#88](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/88) ![r] ![o] GoTo/Declaration not looking for locally-defined symbol
 - :bug: [#83](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/83) ![r] ![o] Support GoTo/Declaration for function-local symbols
 - :nail_care: Try to improve quick navigation doc
-- :house: ![o] Parsing directives (#if, #else, #end)
+- :house: ![o] Parsing directives (`#if`, `#else`, `#end`)
 - :house: Get inferred type from definition if not found in usage
 - :house: Some deduplication of pervasives expressions in free completion contributor
 - :house: Work on signature conversion (partial conversion)
@@ -115,9 +115,9 @@ many versions active. Older version of the plugin will be frozen and won't get a
 
 ## [0.80] - 2019/09/23
 
-- :bug: [#155](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/155) ![r] - Quick documentation is not showing inside parenthesis
+- :bug: [#155](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/155) ![r] Quick documentation is not showing inside parenthesis
 - :bug: [#133](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/133) Syntax error popup is truncated
-- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) ![o] - Reworked the uncommenter
+- :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) ![o] Reworked the uncommenter
 - :nail_care: ![r] Better function folding
 - :nail_care: ![r] Better parsing/highlighting of js template string
 - :nail_care: Remove custom syntax highlighting for `options` in default style settings
@@ -208,7 +208,7 @@ many versions active. Older version of the plugin will be frozen and won't get a
 - :bug: [#136](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121) ![r] ![o] Unicode characters inside strings turn into question marks
 - :bug: [#135](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/135) ![o] Top-level declaration following "let f = function ... and" doesn't appear in the structure panel
 - :bug: [#109](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/109) ![r] ![o] Reformat interface
-- :house: - 2017.2 is the minimal idea version supported
+- :house: 2017.2 is the minimal idea version supported
 
 ## 0.70 - 2019/01/18
 
@@ -271,14 +271,14 @@ many versions active. Older version of the plugin will be frozen and won't get a
 
 - :nail_care: [#98](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/98) Add dates to changelog
 - :bug: Renaming inner module should work
-- :bug: ![r] ![o] [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
-- :bug: ![r] ![o] [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) Class names don't appear in Structure panel
+- :bug: [#99](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/99) ![r] ![o] Incorrect syntax highlighting when a comment contains "*)" (including the quotes)
+- :bug: [#95](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/95) ![r] ![o] Class names don't appear in Structure panel
 - :bug: Fix a bug that prevent plugin to work with 2018.3-EAP
 
 ## 0.62.1 - 2018/09/06
 
 - :rocket: Add a 'make' button to the bs console
-- :bug: ![o] [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) Awkward behavior when typing comments
+- :bug: [#62](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/62) ![o] Awkward behavior when typing comments
 - :bug: [#27](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/27) Uncommenting nested comments is incorrect
 
 ## 0.61 - 2018/08/29
@@ -512,12 +512,10 @@ This release contains a big rewrite of how modules are referenced, it may break 
 ## 0.27
 
 * :bug: Fixed an IllegalArgumentException in KillableColoredProcessHandler
-* :rocket: 
-  * Structure view enabled for OCaml files
-  * Inferring types using bsc if no merlin found (wip)
-* :house: 
-  * Using gradle for build
-  * Improving reason parser
+* :rocket: Structure view enabled for OCaml files
+* :rocket: Inferring types using bsc if no merlin found (wip)
+* :house: Using gradle for build
+* :house: Improving reason parser
 
 ## 0.26
 
