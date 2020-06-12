@@ -1,5 +1,9 @@
 package com.reason.lang;
 
+import java.io.*;
+import java.util.*;
+import java.util.stream.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -10,14 +14,20 @@ import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.PsiFileHelper;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
+import com.reason.lang.core.psi.ExpressionScope;
+import com.reason.lang.core.psi.PsiClass;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiInclude;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiVal;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
+import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 
 public abstract class BaseParsingTestCase extends ParsingTestCase {
     protected BaseParsingTestCase(@NotNull String dataPath, @NotNull String fileExt, @NotNull ParserDefinition... definitions) {
@@ -32,7 +42,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     @NotNull
     protected Collection<PsiNameIdentifierOwner> expressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file, ExpressionScope.all);
+        return PsiFileHelper.getExpressions(file, ExpressionScope.all, null);
     }
 
     @NotNull
@@ -67,7 +77,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     @NotNull
     protected Collection<PsiLet> letExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getLetExpressions(file);
+        return PsiFileHelper.getExpressions(file, ExpressionScope.all, FILTER_LET).stream().map(element -> (PsiLet) element).collect(Collectors.toList());
     }
 
     @NotNull

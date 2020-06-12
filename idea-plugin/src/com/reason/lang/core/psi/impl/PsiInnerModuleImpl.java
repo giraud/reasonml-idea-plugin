@@ -16,6 +16,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.QNameFinder;
+import com.reason.lang.core.ExpressionFilter;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiFunctorCall;
@@ -143,7 +144,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
+    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope, ExpressionFilter filter) {
         Collection<PsiNameIdentifierOwner> result = emptyList();
 
         PsiFinder psiFinder = PsiFinder.getInstance(getProject());
@@ -151,11 +152,11 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         String alias = getAlias();
         if (alias != null) {
             // Open alias and getExpressions on alias
-            Set<PsiModule> modulesbyName = psiFinder.findModulesbyName(alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(getProject()));
-            if (!modulesbyName.isEmpty()) {
-                PsiModule moduleAlias = modulesbyName.iterator().next();
+            Set<PsiModule> modulesByName = psiFinder.findModulesbyName(alias, interfaceOrImplementation, null, GlobalSearchScope.allScope(getProject()));
+            if (!modulesByName.isEmpty()) {
+                PsiModule moduleAlias = modulesByName.iterator().next();
                 if (moduleAlias != null) {
-                    result = moduleAlias.getExpressions(eScope);
+                    result = moduleAlias.getExpressions(eScope, filter);
                 }
             }
         } else {
@@ -175,21 +176,21 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                                     .findModulesFromQn(potentialPath + "." + functorCall.getFunctorName(), true, interfaceOrImplementation,
                                                        GlobalSearchScope.allScope(getProject()));
                             for (PsiModule module : modules) {
-                                result.addAll(module.getExpressions(eScope));
+                                result.addAll(module.getExpressions(eScope, filter));
                             }
                         }
 
-                        Set<PsiModule> modules = psiFinder.findModulesFromQn(functorCall.getFunctorName(), true, interfaceOrImplementation,
-                                                                             GlobalSearchScope.allScope(getProject()));
+                        Set<PsiModule> modules = psiFinder
+                                .findModulesFromQn(functorCall.getFunctorName(), true, interfaceOrImplementation, GlobalSearchScope.allScope(getProject()));
                         for (PsiModule module : modules) {
-                            result.addAll(module.getExpressions(eScope));
+                            result.addAll(module.getExpressions(eScope, filter));
                         }
                     }
                 } else {
                     result = new ArrayList<>();
                     PsiElement element = body.getFirstChild();
                     while (element != null) {
-                        if (element instanceof PsiNameIdentifierOwner) {
+                        if (element instanceof PsiNameIdentifierOwner && (filter == null || filter.accept((PsiNameIdentifierOwner) element))) {
                             result.add((PsiNameIdentifierOwner) element);
                         }
                         element = element.getNextSibling();
@@ -199,7 +200,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                 result = new ArrayList<>();
                 PsiElement element = signature.getFirstChild();
                 while (element != null) {
-                    if (element instanceof PsiNameIdentifierOwner) {
+                    if (element instanceof PsiNameIdentifierOwner && (filter == null || filter.accept((PsiNameIdentifierOwner) element))) {
                         result.add((PsiNameIdentifierOwner) element);
                     }
                     element = element.getNextSibling();
@@ -210,59 +211,30 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         return result;
     }
 
-    @NotNull
-    @Override
-    public List<PsiLet> getLetExpressions() {
-        PsiElement body = getBody();
-        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class);
-    }
-
-    @NotNull
-    @Override
-    public Collection<PsiType> getTypeExpressions() {
-        PsiElement body = getBody();
-        return body == null ? emptyList() : PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class);
-    }
-
     @Nullable
     @Override
     public PsiType getTypeExpression(@Nullable String name) {
-        PsiType result = null;
-
-        if (name != null) {
-            PsiElement body = getBody();
-            if (body != null) {
-                List<PsiType> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiType.class);
-                if (!expressions.isEmpty()) {
-                    for (PsiType expression : expressions) {
-                        if (name.equals(expression.getName())) {
-                            result = expression;
-                            break;
-                        }
-                    }
-                }
+        PsiElement body = name == null ? null : getBody();
+        if (body != null) {
+            ExpressionFilter expressionFilter = element -> element instanceof PsiType && name.equals(element.getName());
+            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            if (!expressions.isEmpty()) {
+                return (PsiType) expressions.iterator().next();
             }
         }
 
-        return result;
+        return null;
     }
 
     @Nullable
     @Override
     public PsiLet getLetExpression(@Nullable String name) {
-        if (name == null) {
-            return null;
-        }
-
-        PsiElement body = getBody();
+        PsiElement body = name == null ? null : getBody();
         if (body != null) {
-            List<PsiLet> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiLet.class);
+            ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
+            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
-                for (PsiLet expression : expressions) {
-                    if (name.equals(expression.getName())) {
-                        return expression;
-                    }
-                }
+                return (PsiLet) expressions.iterator().next();
             }
         }
 
@@ -272,19 +244,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     @Nullable
     @Override
     public PsiVal getValExpression(@Nullable String name) {
-        if (name == null) {
-            return null;
-        }
-
-        PsiElement body = getBody();
+        PsiElement body = name == null ? null : getBody();
         if (body != null) {
-            List<PsiVal> expressions = PsiTreeUtil.getStubChildrenOfTypeAsList(body, PsiVal.class);
+            ExpressionFilter expressionFilter = element -> element instanceof PsiVal && name.equals(element.getName());
+            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
-                for (PsiVal expression : expressions) {
-                    if (name.equals(expression.getName())) {
-                        return expression;
-                    }
-                }
+                return (PsiVal) expressions.iterator().next();
             }
         }
 

@@ -13,14 +13,14 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.ORFileType;
+import com.reason.lang.core.ExpressionFilter;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.ExpressionScope;
+import com.reason.lang.core.psi.PsiConstraint;
+import com.reason.lang.core.psi.PsiConstraints;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiFunctorBinding;
 import com.reason.lang.core.psi.PsiFunctorCall;
-import com.reason.lang.core.psi.PsiConstraint;
-import com.reason.lang.core.psi.PsiConstraints;
 import com.reason.lang.core.psi.PsiFunctorResult;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -36,6 +36,7 @@ import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlQNameFinder;
 import icons.ORIcons;
 
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.Collections.*;
 
 public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiFunctor {
@@ -124,7 +125,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
+    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
         Collection<PsiNameIdentifierOwner> result = emptyList();
 
         PsiElement returnType = getReturnType();
@@ -140,14 +141,19 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
 
             Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);
             for (String potentialPath : potentialPaths) {
-                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(potentialPath + "." + name, true, ORFileType.interfaceOrImplementation, searchScope);
+                Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(potentialPath + "." + name, true, interfaceOrImplementation, searchScope);
                 if (!modulesFromQn.isEmpty()) {
                     PsiModule module = modulesFromQn.iterator().next();
-                    return module.getExpressions(eScope);
+                    return module.getExpressions(eScope, filter);
                 }
             }
-        }
-        else {
+            // nothing found, try without path
+            Set<PsiModule> modulesFromQn = psiFinder.findModulesFromQn(name, true, interfaceOrImplementation, searchScope);
+            if (!modulesFromQn.isEmpty()) {
+                PsiModule module = modulesFromQn.iterator().next();
+                return module.getExpressions(eScope, filter);
+            }
+        } else {
             // Get expressions from functor body
             PsiElement body = getBinding();
             if (body != null) {
@@ -155,7 +161,9 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
                 PsiElement element = body.getFirstChild();
                 while (element != null) {
                     if (element instanceof PsiNameIdentifierOwner) {
-                        result.add((PsiNameIdentifierOwner) element);
+                        if (filter == null || filter.accept((PsiNameIdentifierOwner) element)) {
+                            result.add((PsiNameIdentifierOwner) element);
+                        }
                     }
                     element = element.getNextSibling();
                 }
@@ -171,12 +179,6 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
         return emptyList();
     }
 
-    @NotNull
-    @Override
-    public List<PsiLet> getLetExpressions() {
-        return emptyList();
-    }
-
     @Nullable
     @Override
     public PsiModule getModuleExpression(@Nullable String name) {
@@ -186,18 +188,39 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
     @Nullable
     @Override
     public PsiType getTypeExpression(@Nullable String name) {
+        if (name != null) {
+            ExpressionFilter expressionFilter = element -> element instanceof PsiType && name.equals(element.getName());
+            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            if (!expressions.isEmpty()) {
+                return (PsiType) expressions.iterator().next();
+            }
+        }
         return null;
     }
 
     @Nullable
     @Override
     public PsiLet getLetExpression(@Nullable String name) {
+        if (name != null) {
+            ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
+            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            if (!expressions.isEmpty()) {
+                return (PsiLet) expressions.iterator().next();
+            }
+        }
         return null;
     }
 
     @Nullable
     @Override
     public PsiVal getValExpression(@Nullable String name) {
+        if (name != null) {
+            ExpressionFilter expressionFilter = element -> element instanceof PsiVal && name.equals(element.getName());
+            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            if (!expressions.isEmpty()) {
+                return (PsiVal) expressions.iterator().next();
+            }
+        }
         return null;
     }
 

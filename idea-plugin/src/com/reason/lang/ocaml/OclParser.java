@@ -401,6 +401,10 @@ public class OclParser extends CommonParser<OclTypes> {
             state.complete().
                     popEnd().
                     add(markScope(builder, functorConstraints, m_types.C_CONSTRAINTS, m_types.WITH));
+        } else if (state.isCurrentResolution(moduleNamedSignature)) {
+            // A module with a signature and constraints
+            //    module G : sig ... end |>with<| type ...
+            state.add(markScope(builder, state.currentContext(), moduleNamedSignatureConstraints, m_types.C_CONSTRAINTS, m_types.WITH));
         } else if (state.isCurrentContext(include)) {
             // An include with constraints
             //   include M |>with<| type ...
@@ -408,8 +412,7 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.popEnd();
             }
             state.add(markScope(builder, includeConstraints, m_types.C_CONSTRAINTS, m_types.WITH).complete());
-        }
-        else if (!state.isCurrentResolution(moduleNamedColon)) {
+        } else if (!state.isCurrentResolution(moduleNamedColon)) {
             // A try handler
             //   try .. |>with<| ..
             if (state.isCurrentContext(try_)) {
@@ -580,8 +583,8 @@ public class OclParser extends CommonParser<OclTypes> {
             if (nextElementType == m_types.STRUCT) {
                 // Functor constraints
                 // module M (..) : S with type x = y |> =<| struct .. end
-                state.popEndUntilStartScope().complete();
-                state.popEnd();
+                state.popEndUntilStartScope();
+                state.complete().popEnd();
             } else {
                 // Must be multiple declaration
                 // type x = y |> =<| ...

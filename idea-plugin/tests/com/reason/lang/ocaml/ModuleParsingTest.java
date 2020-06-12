@@ -1,11 +1,10 @@
 package com.reason.lang.ocaml;
 
+import java.util.*;
 import com.intellij.psi.PsiFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiModule;
-
-import java.util.Collection;
 
 public class ModuleParsingTest extends BaseParsingTestCase {
     public ModuleParsingTest() {
@@ -60,4 +59,10 @@ public class ModuleParsingTest extends BaseParsingTestCase {
         assertEquals(2, moduleExpressions(file).size());
     }
 
+    public void testSignatureWithConstraints() {
+        FileBase file = parseCode("module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end", true); // From coq: PCoq
+
+        assertEquals(1, expressions(file).size());
+        assertEquals("G", first(moduleExpressions(file)).getName());
+    }
 }

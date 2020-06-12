@@ -1,5 +1,7 @@
 package com.reason.ide.insight.provider;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.completion.InsertionContext;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -19,13 +21,20 @@ import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.signature.PsiSignatureUtil;
 import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-
+import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
 
@@ -84,7 +93,7 @@ public class FreeExpressionCompletionProvider {
                     continue;
                 }
 
-                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub);
+                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub, NO_FILTER);
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.

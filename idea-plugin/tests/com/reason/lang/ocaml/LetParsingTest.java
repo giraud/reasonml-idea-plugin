@@ -1,16 +1,21 @@
 package com.reason.lang.ocaml;
 
+import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.ExpressionScope;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
@@ -177,7 +182,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertEquals("Dummy.root", root.getQualifiedName());
         assertEquals("Dummy.root.inner", inner.getQualifiedName());
-        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions(ExpressionScope.all).iterator().next()).getQualifiedName());
+        assertEquals("Dummy.M.m", ((PsiLet) mod.getExpressions(ExpressionScope.all, NO_FILTER).iterator().next()).getQualifiedName());
     }
 
     public void testDeconstruction() {

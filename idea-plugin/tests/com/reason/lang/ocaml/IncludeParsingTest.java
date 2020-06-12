@@ -28,7 +28,7 @@ public class IncludeParsingTest extends BaseParsingTestCase {
     }
 
     public void testWithType() {
-        PsiInclude e = first(includeExpressions(parseCode("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p\ntype t", true))); // Coq: pcoq.ml
+        PsiInclude e = first(includeExpressions(parseCode("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p\ntype t"))); // Coq: pcoq.ml
 
         assertEquals("Grammar.S", e.getQualifiedName());
         assertEquals("include Grammar.S with type te = Tok.t and type 'c pattern = 'c Tok.p", e.getText());

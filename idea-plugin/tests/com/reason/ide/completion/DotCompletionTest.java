@@ -197,6 +197,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
 
         assertSameElements(elements, "y");
     }
+
     public void testOcl_functorInclude() {
         configureCode("A.ml", "module type Intf  = sig val x : bool end\n ");
         configureCode("B.ml", "open A\n module MakeOcl(I:Intf) : Intf = struct let y = 1 end\n include MakeOcl(struct let x = true end)");
@@ -230,4 +231,25 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "Instance", "y");
     }
 
+    public void testRml_ResultWithAlias() {
+        configureCode("A.re", "module type Result = { let a: int; };");
+        configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
+        configureCode("C.re", "module Instance = B.Make({}); let c = Instance.<caret>;");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "a");
+    }
+
+    public void testRml_ResultWithAlias2() {
+        configureCode("A.re", "module type Result = { let a: int; };");
+        configureCode("B.re", "module Make = (M:Intf): (A.Result with type t := M.t) => {}; module Instance = Make({});");
+        configureCode("C.re", "B.Instance.<caret>");
+
+        myFixture.complete(CompletionType.BASIC, 1);
+        List<String> elements = myFixture.getLookupElementStrings();
+
+        assertSameElements(elements, "a");
+    }
 }

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -32,7 +33,9 @@ import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static com.reason.lang.core.psi.ExpressionScope.pub;
 
 public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     public PsiTagStartImpl(@NotNull ASTNode node) {
@@ -170,10 +173,10 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
 
             if (module != null) {
-                Collection<PsiLet> expressions = module.getLetExpressions();
-                for (PsiLet expression : expressions) {
+                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub, FILTER_LET);
+                for (PsiNameIdentifierOwner expression : expressions) {
                     if ("make".equals(expression.getName())) {
-                        PsiFunction function = expression.getFunction();
+                        PsiFunction function = ((PsiLet) expression).getFunction();
                         if (function != null) {
                             function.getParameters().
                                     stream().

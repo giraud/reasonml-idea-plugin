@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.reason.lang.core.ExpressionFilter;
 
 /**
  * Common interface to file-based modules and inner modules
@@ -25,7 +26,7 @@ public interface PsiModule extends PsiQualifiedElement, NavigatablePsiElement, P
     PsiFunctorCall getFunctorCall();
 
     @NotNull
-    Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope);
+    Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter);
 
     @NotNull
     Collection<PsiModule> getModules();
@@ -41,7 +42,4 @@ public interface PsiModule extends PsiQualifiedElement, NavigatablePsiElement, P
 
     @Nullable
     PsiVal getValExpression(@Nullable String name);
-
-    @NotNull
-    List<PsiLet> getLetExpressions();
 }
