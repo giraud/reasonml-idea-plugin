@@ -7,7 +7,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiFunctorCall;
-import com.reason.lang.core.psi.PsiFunctorConstraint;
+import com.reason.lang.core.psi.PsiConstraint;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiParameter;
 
@@ -35,7 +35,7 @@ public class FunctorTest extends BaseParsingTestCase {
         assertEquals("M: Input", first(f.getParameters()).getText());
         assertEquals("S", f.getReturnType().getText());
 
-        List<PsiFunctorConstraint> constraints = new ArrayList<>(f.getConstraints());
+        List<PsiConstraint> constraints = new ArrayList<>(f.getConstraints());
         assertEquals(2, constraints.size());
         assertEquals("type t('a) = M.t('a)", constraints.get(0).getText());
         assertEquals("type b = M.b", constraints.get(1).getText());

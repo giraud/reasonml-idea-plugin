@@ -5,15 +5,15 @@ import com.intellij.lang.ASTNode;
 import com.reason.lang.core.psi.impl.PsiToken;
 import com.reason.lang.core.type.ORTypes;
 
-public class PsiFunctorConstraints extends PsiToken<ORTypes> {
+public class PsiConstraint extends PsiToken<ORTypes> {
 
-    public PsiFunctorConstraints(@NotNull ORTypes types, @NotNull ASTNode node) {
+    public PsiConstraint(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
     @NotNull
     @Override
     public String toString() {
-        return "Functor constraints";
+        return "Constraint";
     }
 }

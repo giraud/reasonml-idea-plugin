@@ -108,19 +108,15 @@ public class InsightManagerImpl implements InsightManager {
         String ocamlVersion = ServiceManager.getService(m_project, BsProcess.class).getOCamlVersion(sourceFile);
         String rincewindVersion = getRincewindVersion(ocamlVersion);
 
-        if (ocamlVersion != null && rincewindVersion != null && !rincewindVersion.equals(excludedVersion)) {
+        if (ocamlVersion != null && !rincewindVersion.equals(excludedVersion)) {
             return "rincewind_" + getOsPrefix() + ocamlVersion + "-" + rincewindVersion + ".exe";
         }
 
         return null;
     }
 
-    @Nullable
+    @NotNull
     private String getRincewindVersion(@Nullable String ocamlVersion) {
-        if (ocamlVersion == null) {
-            return null;
-        }
-
         if ("4.02".equals(ocamlVersion)) {
             return "0.4";
         }

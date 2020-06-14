@@ -316,7 +316,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseAnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        if (state.isCurrentResolution(functorConstraint)) {
+        if (state.isCurrentResolution(functorConstraint) || state.isCurrentResolution(includeConstraint)) {
             state.complete().popEnd();
             return;
         }
@@ -400,7 +400,18 @@ public class OclParser extends CommonParser<OclTypes> {
             //    module Make (M : Input) : S |>with<| type t = M.t
             state.complete().
                     popEnd().
-                    add(markScope(builder, functorConstraints, m_types.C_FUNCTOR_CONSTRAINTS, m_types.WITH));
+                    add(markScope(builder, functorConstraints, m_types.C_CONSTRAINTS, m_types.WITH));
+        } else if (state.isCurrentResolution(moduleNamedSignature)) {
+            // A module with a signature and constraints
+            //    module G : sig ... end |>with<| type ...
+            state.add(markScope(builder, state.currentContext(), moduleNamedSignatureConstraints, m_types.C_CONSTRAINTS, m_types.WITH));
+        } else if (state.isCurrentContext(include)) {
+            // An include with constraints
+            //   include M |>with<| type ...
+            if (state.isCurrentResolution(maybeFunctorCall)) {
+                state.popEnd();
+            }
+            state.add(markScope(builder, includeConstraints, m_types.C_CONSTRAINTS, m_types.WITH).complete());
         } else if (!state.isCurrentResolution(moduleNamedColon)) {
             // A try handler
             //   try .. |>with<| ..
@@ -572,8 +583,8 @@ public class OclParser extends CommonParser<OclTypes> {
             if (nextElementType == m_types.STRUCT) {
                 // Functor constraints
                 // module M (..) : S with type x = y |> =<| struct .. end
-                state.popEndUntilStartScope().complete();
-                state.popEnd();
+                state.popEndUntilStartScope();
+                state.complete().popEnd();
             } else {
                 // Must be multiple declaration
                 // type x = y |> =<| ...
@@ -957,7 +968,9 @@ public class OclParser extends CommonParser<OclTypes> {
             if (state.isCurrentResolution(moduleNamedColon) || state.isCurrentResolution(moduleNamedColonWith)) {
                 state.updateCurrentResolution(moduleNamedWithType);
             } else if (state.isCurrentResolution(functorConstraints)) {
-                state.add(mark(builder, functorConstraints, functorConstraint, m_types.C_FUNCTOR_CONSTRAINT));
+                state.add(mark(builder, functorConstraints, functorConstraint, m_types.C_CONSTRAINT));
+            } else if (state.isCurrentResolution(includeConstraints)) {
+                state.add(mark(builder, includeConstraints, includeConstraint, m_types.C_CONSTRAINT));
             } else {
                 endLikeSemi(state);
                 state.add(mark(builder, type, m_types.C_EXP_TYPE));
@@ -1026,6 +1039,10 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void endLikeSemi(@NotNull ParserState state) {
+        if (state.isCurrentResolution(includeConstraint)) {
+            state.complete().popEnd().popEnd();
+        }
+
         if (state.previousElementType1 != m_types.EQ && state.previousElementType1 != m_types.RIGHT_ARROW && state.previousElementType1 != m_types.TRY
                 && state.previousElementType1 != m_types.SEMI && state.previousElementType1 != m_types.THEN && state.previousElementType1 != m_types.ELSE
                 && state.previousElementType1 != m_types.IN && state.previousElementType1 != m_types.LPAREN && state.previousElementType1 != m_types.DO

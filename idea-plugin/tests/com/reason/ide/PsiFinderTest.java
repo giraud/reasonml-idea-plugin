@@ -1,15 +1,17 @@
 package com.reason.ide;
 
+import java.util.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiModule;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
+import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
 import static com.reason.lang.core.ORFileType.*;
 import static com.reason.lang.core.psi.ExpressionScope.all;
 
@@ -27,13 +29,13 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         List<PsiModule> modulesD = new ArrayList<>(PsiFinder.getInstance(getProject()).findModulesbyName("Router", both, null, scope));
 
         assertSize(1, modulesA);
-        assertEquals("type api", modulesA.get(0).getExpressions(all).iterator().next().getText());
+        assertEquals("type api", modulesA.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
 
         assertSize(1, modulesB);
-        assertEquals("type impl", modulesB.get(0).getExpressions(all).iterator().next().getText());
+        assertEquals("type impl", modulesB.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
 
         assertSize(1, modulesC);
-        assertEquals("type api", modulesC.get(0).getExpressions(all).iterator().next().getText());
+        assertEquals("type api", modulesC.get(0).getExpressions(all, NO_FILTER).iterator().next().getText());
 
         assertSize(2, modulesD);
     }

@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.Language;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
@@ -33,10 +34,12 @@ import com.reason.ide.search.index.ParameterFqnIndex;
 import com.reason.ide.search.index.ValFqnIndex;
 import com.reason.ide.search.index.VariantFqnIndex;
 import com.reason.ide.search.index.VariantIndex;
+import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiParameter;
@@ -45,6 +48,9 @@ import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.ocaml.OclQNameFinder;
+import com.reason.lang.reason.RmlLanguage;
+import com.reason.lang.reason.RmlQNameFinder;
 import gnu.trove.THashMap;
 
 import static com.intellij.psi.search.GlobalSearchScope.allScope;
@@ -460,7 +466,29 @@ public final class PsiFinder {
             for (PsiModule module : modules) {
                 String alias = resolveAlias ? module.getAlias() : null;
                 if (alias == null) {
-                    result.add(module);
+                    // It's not an alias, but maybe it's a functor call that we must resolve if asked
+                    PsiFunctorCall functorCall = module.getFunctorCall();
+                    if (resolveAlias && functorCall != null) {
+                        String functorName = functorCall.getFunctorName();
+                        Set<PsiModule> modulesFromFunctor = null;
+
+                        QNameFinder qnameFinder = getQnameFinder(functorCall.getLanguage());
+                        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
+                        for (String path : potentialPaths) {
+                            modulesFromFunctor = findModulesFromQn(path + "." + functorName, true, fileType, scope);
+                        }
+                        if (modulesFromFunctor == null || modulesFromFunctor.isEmpty()) {
+                            modulesFromFunctor = findModulesFromQn(functorName, true, fileType, scope);
+                        }
+
+                        if (modulesFromFunctor.isEmpty()) {
+                            result.add(module);
+                        } else {
+                            result.addAll(modulesFromFunctor);
+                        }
+                    } else {
+                        result.add(module);
+                    }
                 } else {
                     result.addAll(findModulesFromQn(alias, true, fileType, scope));
                 }
@@ -468,6 +496,10 @@ public final class PsiFinder {
         }
 
         return result;
+    }
+
+    private QNameFinder getQnameFinder(Language language) {
+        return language == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
     }
 
     @Nullable

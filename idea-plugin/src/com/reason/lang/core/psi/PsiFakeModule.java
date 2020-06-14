@@ -1,5 +1,8 @@
 package com.reason.lang.core.psi;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -10,16 +13,11 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.ExpressionFilter;
 import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.impl.PsiTokenStub;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implements PsiModule, StubBasedPsiElement<PsiModuleStub> {
 
@@ -45,7 +43,8 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     public String getQualifiedName() {
         PsiModuleStub greenStub = getGreenStub();
         if (greenStub != null) {
-            return greenStub.getName();
+            String name = greenStub.getName();
+            return name == null ? "" : name;
         }
 
         // ?? Namespace ??
@@ -55,7 +54,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
     @Override
     public void navigate(boolean requestFocus) {
         PsiFile file = getContainingFile();
-            file.navigate(requestFocus);
+        file.navigate(requestFocus);
     }
 
     @Override
@@ -108,8 +107,8 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope) {
-        return PsiFileHelper.getExpressions(getContainingFile(), eScope);
+    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
+        return PsiFileHelper.getExpressions(getContainingFile(), eScope, filter);
     }
 
     @NotNull
@@ -129,12 +128,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
             }
         }
         return null;
-    }
-
-    @NotNull
-    @Override
-    public List<PsiLet> getLetExpressions() {
-        return PsiFileHelper.getLetExpressions(getContainingFile());
     }
 
     @Nullable

@@ -34,20 +34,22 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNameIdentifierOwner> getExpressions(@Nullable PsiFile file, @NotNull ExpressionScope eScope) {
+    public static Collection<PsiNameIdentifierOwner> getExpressions(@Nullable PsiFile file, @NotNull ExpressionScope eScope,
+                                                                    @Nullable ExpressionFilter filter) {
         ArrayList<PsiNameIdentifierOwner> result = new ArrayList<>();
 
         if (file != null) {
             PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
             QNameFinder qnameFinder = file.getLanguage() == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
-            processSiblingExpressions(psiFinder, qnameFinder, file.getFirstChild(), eScope, result);
+            processSiblingExpressions(psiFinder, qnameFinder, file.getFirstChild(), eScope, result, filter);
         }
 
         return result;
     }
 
     private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @NotNull QNameFinder qnameFinder, @Nullable PsiElement element,
-                                                  @NotNull ExpressionScope eScope, @NotNull List<PsiNameIdentifierOwner> result) {
+                                                  @NotNull ExpressionScope eScope, @NotNull List<PsiNameIdentifierOwner> result,
+                                                  @Nullable ExpressionFilter filter) {
         while (element != null) {
             if (element instanceof PsiInclude && psiFinder != null) {
                 // Recursively include everything from referenced module
@@ -72,16 +74,17 @@ public class PsiFileHelper {
                 }
 
                 if (includedModule != null) {
-                    result.addAll(includedModule.getExpressions(eScope));
+                    Collection<PsiNameIdentifierOwner> expressions = includedModule.getExpressions(eScope, filter);
+                    result.addAll(expressions);
                 }
             }
 
             if (element instanceof PsiDirective) {
                 // add all elements found in a directive, can't be resolved
-                processSiblingExpressions(psiFinder, qnameFinder, element.getFirstChild(), eScope, result);
+                processSiblingExpressions(psiFinder, qnameFinder, element.getFirstChild(), eScope, result, filter);
             } else if (element instanceof PsiNameIdentifierOwner) {
-                boolean include = !(element instanceof PsiLet && ((PsiLet) element).isPrivate());
-                if (include) {
+                boolean include = eScope == ExpressionScope.all || !(element instanceof PsiLet && ((PsiLet) element).isPrivate());
+                if (include && (filter == null || filter.accept((PsiNameIdentifierOwner) element))) {
                     result.add((PsiNameIdentifierOwner) element);
                 }
             }
@@ -125,11 +128,6 @@ public class PsiFileHelper {
     @NotNull
     public static List<PsiClass> getClassExpressions(@Nullable PsiFile file) {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiClass.class);
-    }
-
-    @NotNull
-    public static List<PsiLet> getLetExpressions(@Nullable PsiFile file) {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(file, PsiLet.class);
     }
 
     @NotNull

@@ -3,6 +3,7 @@ package com.reason.lang.reason;
 import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
@@ -11,6 +12,9 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.signature.ORSignature;
+
+import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
+import static com.reason.lang.core.psi.ExpressionScope.pub;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
@@ -124,7 +128,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
     public void testLetAndInModule() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
-        Collection<PsiLet> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getLetExpressions();
+        Collection<PsiNameIdentifierOwner> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
 
         assertSize(2, es);
         assertEquals("f2 = y => y", second(es).getText());
