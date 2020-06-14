@@ -122,9 +122,9 @@ public class BsPlatform {
                 // a symlink references the node wrapper, so we need to follow it and try to resolve the native binary
                 VirtualFile canonicalFile = executable.getCanonicalFile();
                 if (canonicalFile != null) {
-                    String canonicalPath = canonicalFile.getPath();
-                    VirtualFile canonicalExecutable = VirtualFileManager.getInstance().findFileByUrl("file://" + canonicalPath + WINDOWS_EXECUTABLE_SUFFIX);
-                    return Optional.of(canonicalExecutable == null ? canonicalFile : canonicalExecutable);
+                    String canonicalBsPlatformDirectory = canonicalFile.getParent().getPath();
+                    VirtualFile canonicalExecutable = VirtualFileManager.getInstance().findFileByUrl("file://" + canonicalBsPlatformDirectory + "/" + platform.get() + "/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
+                    return Optional.of(canonicalExecutable != null ? canonicalExecutable : canonicalFile);
                 }
             }
             return Optional.of(executable);
