@@ -96,7 +96,17 @@ public class BsPlatform {
         VirtualFile parentDir = bsConfigFile.getParent();
         VirtualFile bsPlatform = parentDir.findFileByRelativePath("node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
         if (bsPlatform == null) {
-            bsPlatform = parentDir.findFileByRelativePath("node_modules/.bin"); // In case of mono-repo, only the .bin with symlinks is found
+            VirtualFile bsbBinary = parentDir.findFileByRelativePath("node_modules/.bin/bsb"); // In case of mono-repo, only the .bin with symlinks is found
+            if (bsbBinary != null && bsbBinary.is(VFileProperty.SYMLINK)) {
+                VirtualFile canonicalFile = bsbBinary.getCanonicalFile();
+                if (canonicalFile != null) {
+                    VirtualFile canonicalBsPlatformDirectory = canonicalFile.getParent();
+                    while (canonicalBsPlatformDirectory != null && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_DIRECTORY_NAME)) {
+                        canonicalBsPlatformDirectory = canonicalBsPlatformDirectory.getParent();
+                    }
+                    return Optional.ofNullable(canonicalBsPlatformDirectory);
+                }
+            }
         }
 
         return Optional.ofNullable(bsPlatform).filter(VirtualFile::isDirectory);
@@ -115,18 +125,9 @@ public class BsPlatform {
         if (executable != null) {
             return Optional.of(executable);
         }
-        // next, try to find platform-agnostic wrappers / symlinks
+        // next, try to find platform-agnostic wrappers
         executable = bsPlatformDirectory.findFileByRelativePath(executableName + getOsBinaryWrapperExtension());
         if (executable != null) {
-            if (executable.is(VFileProperty.SYMLINK)) {
-                // a symlink references the node wrapper, so we need to follow it and try to resolve the native binary
-                VirtualFile canonicalFile = executable.getCanonicalFile();
-                if (canonicalFile != null) {
-                    String canonicalBsPlatformDirectory = canonicalFile.getParent().getPath();
-                    VirtualFile canonicalExecutable = VirtualFileManager.getInstance().findFileByUrl("file://" + canonicalBsPlatformDirectory + "/" + platform.get() + "/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
-                    return Optional.of(canonicalExecutable != null ? canonicalExecutable : canonicalFile);
-                }
-            }
             return Optional.of(executable);
         }
         // last, try old locations of binary
