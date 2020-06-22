@@ -16,6 +16,8 @@ import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiTag;
+import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
@@ -46,6 +48,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldFunction(descriptors, (PsiFunction) element);
             } else if (element instanceof PsiFunctor) {
                 foldFunctor(descriptors, (PsiFunctor) element);
+            } else if (element instanceof PsiTag) {
+                foldTag(descriptors, (PsiTag) element);
             } else if (element instanceof OclYaccHeader) {
                 foldHeader(descriptors, (OclYaccHeader) element);
             } else if (element instanceof OclYaccRule) {
@@ -107,6 +111,23 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
     private void foldFunctor(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunctor functor) {
         FoldingDescriptor foldBinding = fold(functor.getBinding());
+        if (foldBinding != null) {
+            descriptors.add(foldBinding);
+        }
+    }
+
+    private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag tag) {
+        FoldingDescriptor foldBinding;
+
+        PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(tag, PsiTagStart.class);
+        if (start != null) {
+            PsiElement lastChild = start.getLastChild();
+            TextRange textRange = TextRange.create(lastChild.getTextOffset(), tag.getTextRange().getEndOffset() - 1);
+            foldBinding = new FoldingDescriptor(tag, textRange);
+        } else {
+            foldBinding = fold(tag);
+        }
+
         if (foldBinding != null) {
             descriptors.add(foldBinding);
         }
