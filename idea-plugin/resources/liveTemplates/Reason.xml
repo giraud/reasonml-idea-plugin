@@ -1,0 +1,10 @@
+<templateSet group="Reason">
+    <template name="rrc"
+              value="[@react.component]&#10;let make = (~$PROP$, ~children) =&gt; {&#10;    $END$&#10;};&#10;"
+              description="Reason React component" toReformat="false" toShortenFQNames="true">
+        <variable name="PROP" expression="" defaultValue="" alwaysStopAt="true"/>
+        <context>
+            <option name="REASON_CODE" value="true"/>
+        </context>
+    </template>
+</templateSet>
