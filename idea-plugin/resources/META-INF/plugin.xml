@@ -122,10 +122,11 @@
 
         <fileEditorProvider implementation="com.reason.ide.editors.CmtFileEditorProvider"/>
 
-        <internalFileTemplate name="OCaml Interface"/>
-        <internalFileTemplate name="OCaml Module"/>
-        <internalFileTemplate name="Reason Interface"/>
-        <internalFileTemplate name="Reason Module"/>
+        <!-- https://github.com/reasonml-editor/reasonml-idea-plugin/issues/247 -->
+        <!-- internalFileTemplate name="OCaml Interface" -->
+        <!-- internalFileTemplate name="OCaml Module" -->
+        <!-- internalFileTemplate name="Reason Interface" -->
+        <!-- internalFileTemplate name="Reason Module" -->
 
         <!--
          | Parsers
