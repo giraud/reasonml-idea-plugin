@@ -17,6 +17,7 @@ import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiTag;
+import com.reason.lang.core.psi.PsiTagClose;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
@@ -117,19 +118,13 @@ public class FoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag tag) {
-        FoldingDescriptor foldBinding;
-
         PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(tag, PsiTagStart.class);
-        if (start != null) {
+        PsiTagClose close = start == null ? null : ORUtil.findImmediateFirstChildOfClass(tag, PsiTagClose.class);
+        // Auto-closed tags are not foldable
+        if (close != null) {
             PsiElement lastChild = start.getLastChild();
             TextRange textRange = TextRange.create(lastChild.getTextOffset(), tag.getTextRange().getEndOffset() - 1);
-            foldBinding = new FoldingDescriptor(tag, textRange);
-        } else {
-            foldBinding = fold(tag);
-        }
-
-        if (foldBinding != null) {
-            descriptors.add(foldBinding);
+            descriptors.add(new FoldingDescriptor(tag, textRange));
         }
     }
 
