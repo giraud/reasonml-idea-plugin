@@ -16,12 +16,15 @@ idea {
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>#239 - Experimental: start of ESY support work</li>
-            <li>#249 - Too many warnings in log (bsconfig not found)</li>
-            <li>#241 - Fix bug that prevent IDEA to keep correctly the source of SDK</li>
-            <li>#236 - Cannot find a module definition if namespace is used</li>
-            <li>Find real bsc/bsb binaries if a symlink is found</li>
-            <li>Fix gutter icons for navigation in OCaml files</li>
+            <li>Reworked documentation, moved from wiki to the docs directory</li>
+            <li>Add an architecture documentation to explain some of the internal details</li>
+            <li>#247 - Duplicated file templates</li>
+            <li>#205 - Functors are now indexed (completion and resolution should work)</li>
+            <li>#254 - Make a distinction between single-line and multi-line comments in parser</li>
+            <li>#254 - Fold multiline JSX tags</li>
+            <li>Add github action for CI (and badges)</li>
+            <li>#253 - Breaking apart modules to avoid extra instances of IntelliJ when testing</li>
+            <li>#257 - Fix monorepo executable</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

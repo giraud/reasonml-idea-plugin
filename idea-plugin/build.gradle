@@ -1,4 +1,3 @@
-def pluginVersion = '0.89.0'
 version = pluginVersion + '-' + ideaVersion
 
 intellij {
