@@ -12,6 +12,9 @@
 
 ## Unreleased
 
+
+## 0.90 - 2020/06/23
+
 - :memo: Reworked documentation, moved from wiki to the [docs](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) directory by [@pooch](https://github.com/JohnPucciarelli)
 - :memo: [#252](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/252) Add an architecture documentation to explain some of the internal details
 - :bug: [#247](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/247) Duplicated file templates
