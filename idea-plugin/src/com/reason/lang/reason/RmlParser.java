@@ -1206,10 +1206,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
             IElementType nextElementType = builder.lookAhead(1);
             if (!state.isCurrentResolution(moduleNamedEq) && !state.isCurrentResolution(maybeFunctorCall) && nextElementType == m_types.LPAREN) {
-                // A variant with a constructor
-                state.add(mark(builder, state.currentContext(), state.isCurrentResolution(typeNamedEq) ? typeNamedEqVariant : variant,
-                               m_types.C_VARIANT_DECL/*CALL*/).complete());
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
+                // A variant with a constructor
+                if (state.isCurrentResolution(typeNamedEq)) {
+                    state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
+                }
                 state.wrapWith(m_types.C_VARIANT);
                 return;
             } else if (state.isCurrentResolution(typeNamedEq) && nextElementType == m_types.PIPE) {

@@ -6,21 +6,32 @@ import com.reason.Joiner;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiPatternMatchBody;
 import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("ConstantConditions")
-public class VariantParsingTest extends BaseParsingTestCase {
+public class VariantCallParsingTest extends BaseParsingTestCase {
 
-    public VariantParsingTest() {
+    public VariantCallParsingTest() {
         super("", "re", new RmlParserDefinition());
     }
 
-    public void testBasic() {
+    public void testCallWithParam() {
+        PsiLet e = firstOfType(parseCode("let x = Var(1);"), PsiLet.class);
+        PsiLetBinding binding = e.getBinding();
+        assertEquals("Var(1)", binding.getText());
+        // Might be a functor or a variant
+        assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
+    }
+
+    public void testPatternMatch() {
         PsiSwitch e = firstOfType(parseCode("switch (action) { | UpdateDescription(desc) => ReasonReact.SideEffects.(_self => onDescriptionChange(desc)) };"), PsiSwitch.class);
         PsiPatternMatchBody body = PsiTreeUtil.findChildOfType(e, PsiPatternMatchBody.class);
         assertEquals("ReasonReact.SideEffects.(_self => onDescriptionChange(desc))", body.getText());
