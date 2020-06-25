@@ -2,14 +2,7 @@
     <id>reasonml</id>
     <name>ReasonML</name>
     <vendor email="giraud.contact@yahoo.fr" url="https://github.com/giraud/reasonml-idea-plugin">H.Giraud</vendor>
-    <description><![CDATA[Add support for ReasonML language. Also add support for OCaml, and Dune.]]></description>
-
-    <!-- This tags is overwritten during build, see build.gradle -->
-    <!-- We keep it in plugin.xml so that verifyPlugin task succeed -->
-    <version>0.0</version>
-
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="193" until-build="193.*"/>
+    <description><![CDATA[Add support for ReasonML language. Also add support for OCaml and Dune.]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
