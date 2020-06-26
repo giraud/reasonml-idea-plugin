@@ -3,7 +3,9 @@ package com.reason.ide.settings;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,14 +14,37 @@ import javax.swing.*;
 
 public class ReasonSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
 
+    @Nls
+    private static final String OCAMLFORMAT_EXECUTABLE_LABEL = "Choose ocamlformat Executable: ";
+
+    @Nls
+    private static final String BS_PLATFORM_LOCATION_LABEL = "Choose bs-platform Directory: ";
+
+    @Nls
+    private static final String DUNE_EXECTUABLE_LABEL = "Choose dune Executable: ";
+
+    @Nls
+    private static final String ESY_EXECTUABLE_LABEL = "Choose esy Executable: ";
+
     private final ReasonSettings m_settings;
 
     private JPanel f_rootPanel;
-    private TextFieldWithBrowseButton f_bsLocation;
-    private JTextField f_columnWidth;
-    private JCheckBox f_reformatOnSave;
-    private TextFieldWithBrowseButton f_workingDir;
-    private JCheckBox f_enabled;
+    private JTabbedPane f_tabs;
+
+    // General
+    private JTextField f_generalFormatWidthColumns;
+    private JCheckBox f_generalIsFormatOnSave;
+    private TextFieldWithBrowseButton f_generalOcamlformatExecutable;
+
+    // BuckleScript
+    private JCheckBox f_bsIsEnabled;
+    private TextFieldWithBrowseButton f_bsPlatformLocation;
+
+    // Dune
+    private TextFieldWithBrowseButton f_duneExecutable;
+
+    // Esy
+    private TextFieldWithBrowseButton f_esyExecutable;
 
     public ReasonSettingsConfigurable(ReasonSettings settings) {
         m_settings = settings;
@@ -35,7 +60,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     @Nls
     @Override
     public String getDisplayName() {
-        return "Reason";
+        return "OCaml / Reason";
     }
 
     @NotNull
@@ -47,37 +72,99 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     @Nullable
     @Override
     public JComponent createComponent() {
-        f_bsLocation.addBrowseFolderListener("Choose bs-platform directory: ", null, m_settings.getProject(),
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
-
-        f_workingDir.addBrowseFolderListener("Choose a working directory: ", null, m_settings.getProject(),
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
-
+        createGeneralTab();
+        createBsTab();
+        createDuneTab();
+        createEsyTab();
         return f_rootPanel;
     }
 
     @Override
     public void apply() {
-        m_settings.setEnabled(f_enabled.isSelected());
-        m_settings.setLocation(f_bsLocation.getText().trim());
-        m_settings.setRefmtOnSave(f_reformatOnSave.isSelected());
-        m_settings.setRefmtWidth(f_columnWidth.getText().trim());
+        // General
+        m_settings.setFormatOnSaveEnabled(f_generalIsFormatOnSave.isSelected());
+        m_settings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns));
+        m_settings.setOcamlformatExecutable(sanitizeInput(f_generalOcamlformatExecutable));
+        // BuckleScript
+        m_settings.setBsEnabled(f_bsIsEnabled.isSelected());
+        m_settings.setBsPlatformLocation(sanitizeInput(f_bsPlatformLocation));
+        // Dune
+        m_settings.setDuneExecutable(sanitizeInput(f_duneExecutable));
+        // Esy
+        m_settings.setEsyExecutable(sanitizeInput(f_esyExecutable));
     }
 
     @Override
     public boolean isModified() {
-        boolean sameEnabled = f_enabled.isSelected() == m_settings.isEnabled();
-        boolean sameLocation = f_bsLocation.getText().equals(m_settings.getLocation());
-        boolean sameRefmtOnSave = f_reformatOnSave.isSelected() == m_settings.isRefmtOnSave();
-        boolean sameColWidth = f_columnWidth.getText().equals(m_settings.getRefmtWidth());
-        return !(sameEnabled && sameLocation && sameRefmtOnSave && sameColWidth);
+        apply();
+        boolean isFormatOnSaveModified = f_generalIsFormatOnSave.isSelected() != m_settings.isFormatOnSaveEnabled();
+        boolean isFormatWidthColumnsModified = !StringUtils.equals(f_generalFormatWidthColumns.getText(),
+                m_settings.getFormatColumnWidth());
+        boolean isOcamlFormatExecutableModified = !StringUtils.equals(f_generalOcamlformatExecutable.getText(),
+                m_settings.getOcamlformatExecutable());
+        boolean isBsEnabledModified = f_bsIsEnabled.isSelected() != m_settings.isBsEnabled();
+        boolean isBsPlatformLocationModified = !StringUtils.equals(f_bsPlatformLocation.getText(),
+                m_settings.getBsPlatformLocation());
+        boolean isDuneExecutableModified = !StringUtils.equals(f_duneExecutable.getText(),
+                m_settings.getDuneExecutable());
+        boolean isEsyExecutableModified = !StringUtils.equals(f_esyExecutable.getText(), m_settings.getEsyExecutable());
+        return isFormatOnSaveModified
+                || isFormatWidthColumnsModified
+                || isOcamlFormatExecutableModified
+                || isBsEnabledModified
+                || isBsPlatformLocationModified
+                || isDuneExecutableModified
+                || isEsyExecutableModified;
     }
 
     @Override
     public void reset() {
-        f_enabled.setSelected(m_settings.isEnabled());
-        f_bsLocation.setText(m_settings.getLocation());
-        f_columnWidth.setText(m_settings.getRefmtWidth());
-        f_reformatOnSave.setSelected(m_settings.isRefmtOnSave());
+        // General
+        f_generalIsFormatOnSave.setSelected(m_settings.isFormatOnSaveEnabled());
+        f_generalFormatWidthColumns.setText(m_settings.getFormatColumnWidth());
+        f_generalOcamlformatExecutable.setText(m_settings.getOcamlformatExecutable());
+        // BuckleScript
+        f_bsIsEnabled.setSelected(m_settings.isBsEnabled());
+        f_bsPlatformLocation.setText(m_settings.getOrFindBsPlatformLocationAsString());
+        // Dune
+        f_duneExecutable.setText(m_settings.getOrFindDuneExecutableAsString());
+        // Esy
+        f_esyExecutable.setText(m_settings.getOrFindEsyExecutableAsString());
+    }
+
+    private void createGeneralTab() {
+        Project project = m_settings.getProject();
+        f_generalOcamlformatExecutable.addBrowseFolderListener(OCAMLFORMAT_EXECUTABLE_LABEL, null,
+                project, FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+    }
+
+    private void createBsTab() {
+        Project project = m_settings.getProject();
+        f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project,
+                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+    }
+
+    private void createDuneTab() {
+        Project project = m_settings.getProject();
+        f_duneExecutable.addBrowseFolderListener(DUNE_EXECTUABLE_LABEL, null, project,
+                FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+    }
+
+    private void createEsyTab() {
+        Project project = m_settings.getProject();
+        f_esyExecutable.addBrowseFolderListener(ESY_EXECTUABLE_LABEL, null, project,
+                FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+    }
+
+    private static String sanitizeInput(JTextField textField) {
+        return sanitizeInput(textField.getText());
+    }
+
+    private static String sanitizeInput(TextFieldWithBrowseButton textFieldWithBrowseButton) {
+        return sanitizeInput(textFieldWithBrowseButton.getText());
+    }
+
+    private static String sanitizeInput(String input) {
+        return input.trim();
     }
 }
