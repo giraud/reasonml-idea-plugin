@@ -10,14 +10,20 @@ import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.BsConfigJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
 public class BsConfigJson {
 
     private BsConfigJson() {}
 
     public static boolean isBsConfigJson(@NotNull VirtualFile virtualFile) {
         if (virtualFile.getFileType() instanceof JsonFileType) {
-            FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-            return createFilePattern().accepts(fileContent);
+            try {
+                FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+                return createFilePattern().accepts(fileContent);
+            } catch (IOException e) {
+                return false;
+            }
         }
         return false;
     }

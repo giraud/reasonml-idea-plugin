@@ -24,8 +24,7 @@ public class BsPlatform {
     }
 
     public static Optional<VirtualFile> findFirstBsPlatformDirectory(@NotNull Project project) {
-        return ORProjectManager.findFirstBsContentRoot(project)
-                .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
+        return ORProjectManager.findFirstBsContentRoot(project).flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
     /**
@@ -37,25 +36,20 @@ public class BsPlatform {
      * @param sourceFile starting location for search
      * @return `bs-platform` directory, if found
      */
-    public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project,
-                                                                @NotNull VirtualFile sourceFile) {
-        return findBsConfigForFile(project, sourceFile)
-                .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
+    public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return findBsConfigForFile(project, sourceFile).flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
     public static Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         Optional<VirtualFile> bsPlatformDirectory1 = findBsPlatformDirectory(project, sourceFile);
-        return bsPlatformDirectory1
-                .flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory));
+        return bsPlatformDirectory1.flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory));
     }
 
     public static Optional<VirtualFile> findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsPlatformDirectory(project, sourceFile)
-                .flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
+        return findBsPlatformDirectory(project, sourceFile).flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
     }
 
-    public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project,
-                                                               @NotNull VirtualFile sourceFile) {
+    public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         return findBsConfigForFile(project, sourceFile).map(VirtualFile::getParent);
     }
 
@@ -112,8 +106,7 @@ public class BsPlatform {
         return Optional.ofNullable(bsPlatform).filter(VirtualFile::isDirectory);
     }
 
-    private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName,
-                                                                @NotNull VirtualFile bsPlatformDirectory) {
+    private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName, @NotNull VirtualFile bsPlatformDirectory) {
         Optional<String> platform = getOsBsPrefix();
         if (!platform.isPresent()) {
             LOG.warn("Unable to determine OS prefix.");
