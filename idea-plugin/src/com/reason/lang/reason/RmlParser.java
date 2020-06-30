@@ -1220,6 +1220,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
                 state.wrapWith(m_types.C_VARIANT);
                 return;
+            } else if (!state.isCurrentResolution(moduleNamedEq) && !state.isCurrentResolution(maybeFunctorCall) && nextElementType != m_types.DOT) {
+                // Must be a variant call
+                builder.remapCurrentToken(m_types.VARIANT_NAME);
+                state.wrapWith(m_types.C_VARIANT);
+                return;
             }
         }
 

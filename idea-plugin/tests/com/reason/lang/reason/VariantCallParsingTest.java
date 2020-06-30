@@ -23,12 +23,20 @@ public class VariantCallParsingTest extends BaseParsingTestCase {
         super("", "re", new RmlParserDefinition());
     }
 
-    public void testCallWithParam() {
-        PsiLet e = firstOfType(parseCode("let x = Var(1);"), PsiLet.class);
-        PsiLetBinding binding = e.getBinding();
-        assertEquals("Var(1)", binding.getText());
-        // Might be a functor or a variant
+    public void test_basic() {
+        PsiLetBinding binding = firstOfType(parseCode("let x = Var;"), PsiLet.class).getBinding();
+
+        assertEquals("Var", binding.getText());
         assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
+        assertEquals(RmlTypes.INSTANCE.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+    }
+
+    public void test_withParam() {
+        PsiLetBinding binding = firstOfType(parseCode("let x = Var(1);"), PsiLet.class).getBinding();
+
+        assertEquals("Var(1)", binding.getText());
+        assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
+        assertEquals(RmlTypes.INSTANCE.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
     public void testPatternMatch() {
