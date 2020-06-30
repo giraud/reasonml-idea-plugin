@@ -29,7 +29,7 @@ public class OclParser extends CommonParser<OclTypes> {
         Project project = parentElement.getProject();
 
         PsiBuilder builder = PsiBuilderFactory.getInstance().createBuilder(project, chameleon, new OclLexer(), root.getLanguage(), chameleon.getText());
-        builder.setDebugMode(true);
+        //builder.setDebugMode(true);
         OclParser parser = new OclParser();
 
         return parser.parse(root, builder).getFirstChildNode();
@@ -872,24 +872,9 @@ public class OclParser extends CommonParser<OclTypes> {
             return;
         }
 
-        if (state.isCurrentResolution(open)) {
+        if (state.isCurrentResolution(open) || state.isCurrentResolution(include)) {
             // It is a module name/path, or might be a functor call
-            //   open |>M<| ...
-            state.complete();
-            state.add(mark(builder, state.currentContext(), maybeFunctorCall, m_types.C_FUNCTOR_CALL));
-
-            state.wrapWith(m_types.C_UPPER_SYMBOL);
-            IElementType tokenType = builder.getTokenType();
-            if (tokenType != m_types.DOT && tokenType != m_types.LPAREN) {
-                state.popCancel();
-                state.popEnd();
-            }
-            return;
-        }
-
-        if (state.isCurrentResolution(include)) {
-            // It is a module name/path, or might be a functor call
-            //  include |>M<|
+            //   open/include |>M<| ...
             state.complete();
             state.add(mark(builder, state.currentContext(), maybeFunctorCall, m_types.C_FUNCTOR_CALL));
 
@@ -928,9 +913,9 @@ public class OclParser extends CommonParser<OclTypes> {
             builder.remapCurrentToken(m_types.VARIANT_NAME);
             state.wrapWith(m_types.C_VARIANT);
             return;
-        } else if (state.isCurrentResolution(patternMatch)) {
+        } else {
             IElementType nextTokenType = builder.lookAhead(1);
-            if (nextTokenType != m_types.DOT) {
+            if (((state.isCurrentResolution(patternMatch)) || !state.isCurrentContext(moduleDeclaration)) && nextTokenType != m_types.DOT) {
                 // Pattern matching a variant
                 // match c with | |>X<| ..
                 builder.remapCurrentToken(m_types.VARIANT_NAME);
