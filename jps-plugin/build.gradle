@@ -1,4 +1,4 @@
-jar.archiveName = "jps-plugin.jar"
+jar.archiveFileName = "jps-plugin.jar"
 patchPluginXml.enabled = false
 verifyPlugin.enabled = false
 
