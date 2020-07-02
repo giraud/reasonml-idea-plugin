@@ -80,6 +80,11 @@
                   implementationClass="com.reason.ide.files.RmlInterfaceFileType"/>
         <fileType extensions="re" name="Reason file" fieldName="INSTANCE" language="Reason"
                   implementationClass="com.reason.ide.files.RmlFileType"/>
+        <!-- Bs/Napkin -->
+        <fileType extensions="resi" name="Bucklescript interface file" fieldName="INSTANCE" language="NapkinScript"
+                  implementationClass="com.reason.ide.files.NsInterfaceFileType"/>
+        <fileType extensions="res" name="Bucklescript file" fieldName="INSTANCE" language="NapkinScript"
+                  implementationClass="com.reason.ide.files.NsFileType"/>
         <!-- OCaml -->
         <fileType extensions="mli" name="OCaml interface file" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
@@ -129,6 +134,10 @@
         <lang.parserDefinition language="Reason" implementationClass="com.reason.lang.reason.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Reason"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
+        <!-- Reason -->
+        <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.reason.NsParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="NapkinScript"
+                                       implementationClass="com.reason.ide.highlight.NsSyntaxHighlighterFactory"/>
         <!-- OCaml -->
         <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OCaml"
@@ -160,6 +169,8 @@
 
         <lang.psiStructureViewFactory language="Reason"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
+        <lang.psiStructureViewFactory language="NapkinScript"
+                                      implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="OCaml"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
         <lang.psiStructureViewFactory language="OCamlP4"
@@ -174,6 +185,7 @@
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
         <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
+        <lang.foldingBuilder language="NapkinScript" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="OCamlP4" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
         <lang.foldingBuilder language="Mlg" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
@@ -182,6 +194,7 @@
         <lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>
 
         <lang.commenter language="Reason" implementationClass="com.reason.ide.comment.RmlCommenter"/>
+        <lang.commenter language="NapkinScript" implementationClass="com.reason.ide.comment.RmlCommenter"/>
         <lang.commenter language="OCaml" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="OCamlP4" implementationClass="com.reason.ide.comment.OclCommenter"/>
         <lang.commenter language="Mlg" implementationClass="com.reason.ide.comment.OclCommenter"/>
@@ -190,6 +203,7 @@
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="Reason" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
+        <lang.braceMatcher language="NapkinScript" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
         <lang.braceMatcher language="OCaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="OCamlP4" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Mlg" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
@@ -202,6 +216,8 @@
          -->
 
         <lang.documentationProvider language="Reason"
+                                    implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+        <lang.documentationProvider language="NapkinScript"
                                     implementationClass="com.reason.ide.docs.DocumentationProvider"/>
         <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
         <lang.documentationProvider language="OCamlP4" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
@@ -238,6 +254,7 @@
         <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
+        <lang.findUsagesProvider language="NapkinScript" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCamlP4" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="Mlg" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
@@ -301,11 +318,13 @@
         <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
-        <annotator language="" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>
+        <annotator language="NapkinScript" implementationClass="com.reason.ide.highlight.NsSyntaxAnnotator"/>
         <annotator language="OCaml" implementationClass="com.reason.ide.highlight.OclSyntaxAnnotator"/>
+        <annotator language="Dune" implementationClass="com.reason.ide.highlight.DuneSyntaxAnnotator"/>
 
         <externalAnnotator language="Reason" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
+        <externalAnnotator language="NapkinScript" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
         <externalAnnotator language="OCaml" implementationClass="com.reason.ide.annotations.ErrorAnnotator"/>
         <problemFileHighlightFilter implementation="com.reason.ide.annotations.ErrorFileHighlighter"/>
 
@@ -313,7 +332,10 @@
                                 implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
-
+        <completion.contributor language="NapkinScript"
+                                implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
+        <completion.contributor language="NapkinScript"
+                                implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
         <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>
