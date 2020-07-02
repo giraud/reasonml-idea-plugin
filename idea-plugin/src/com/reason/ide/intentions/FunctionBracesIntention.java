@@ -1,5 +1,7 @@
 package com.reason.ide.intentions;
 
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -9,8 +11,6 @@ import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
 
 public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> {
 
@@ -52,15 +52,17 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
 
     @Override
     void runInvoke(@NotNull Project project, @NotNull PsiFunction oldFunction) {
-        String text = oldFunction.getText();
-        String[] tokens = text.split("=>", 2);
-        PsiLet newSyntax = (PsiLet) ORCodeFactory.createExpression(project, "let x = " + tokens[0] + "=> {" + tokens[1] + "; };");
+        PsiFunctionBody oldBody = oldFunction.getBody();
+        if (oldBody != null) {
+            String text = oldFunction.getText();
+            int bodyOffset = oldBody.getStartOffsetInParent();
+            String def = text.substring(0, bodyOffset);
+            String body = text.substring(bodyOffset);
+            PsiLet newSyntax = (PsiLet) ORCodeFactory.createExpression(project, "let x = " + def + "{ " + body + "; };");
 
-        if (newSyntax != null) {
-            PsiFunction newFunction = newSyntax.getFunction();
-            if (newFunction != null) {
-                PsiFunctionBody oldBody = oldFunction.getBody();
-                if (oldBody != null) {
+            if (newSyntax != null) {
+                PsiFunction newFunction = newSyntax.getFunction();
+                if (newFunction != null) {
                     PsiFunctionBody newBody = newFunction.getBody();
                     if (newBody != null) {
                         oldFunction.getNode().replaceChild(oldBody.getNode(), newBody.getNode());

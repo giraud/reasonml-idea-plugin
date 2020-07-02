@@ -16,15 +16,7 @@ idea {
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>Reworked documentation, moved from wiki to the docs directory</li>
-            <li>Add an architecture documentation to explain some of the internal details</li>
-            <li>#247 - Duplicated file templates</li>
-            <li>#205 - Functors are now indexed (completion and resolution should work)</li>
-            <li>#254 - Make a distinction between single-line and multi-line comments in parser</li>
-            <li>#254 - Fold multiline JSX tags</li>
-            <li>Add github action for CI (and badges)</li>
-            <li>#253 - Breaking apart modules to avoid extra instances of IntelliJ when testing</li>
-            <li>#257 - Fix monorepo executable</li>
+            <li>This is a quick patch release to provide syntax highlighting to the new `.res` and `.resi` file types</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

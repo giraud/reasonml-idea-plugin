@@ -47,13 +47,13 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
 
     @NotNull
     @Override
-    public Set<Class> getArgumentListAllowedParentClasses() {
+    public Set<Class<?>> getArgumentListAllowedParentClasses() {
         return Collections.singleton(PsiFunctionCallParams.class);
     }
 
     @NotNull
     @Override
-    public Set<? extends Class> getArgListStopSearchClasses() {
+    public Set<? extends Class<?>> getArgListStopSearchClasses() {
         return java.util.Collections.emptySet();
     }
 
