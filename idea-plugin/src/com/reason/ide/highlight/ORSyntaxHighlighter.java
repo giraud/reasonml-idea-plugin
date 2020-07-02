@@ -11,6 +11,8 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
+import com.reason.lang.reason.NsLexer;
+import com.reason.lang.reason.NsTypes;
 import com.reason.lang.reason.RmlLexer;
 import com.reason.lang.reason.RmlTypes;
 
@@ -56,6 +58,44 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
                                                                          RmlTypes.INSTANCE.BRACKET_LT, RmlTypes.INSTANCE.BRACE_LT, RmlTypes.INSTANCE.DOTDOT);
 
     private static final Set<IElementType> RML_OPTIONS_TYPES = of(RmlTypes.INSTANCE.NONE, RmlTypes.INSTANCE.SOME);
+    
+    private static final Set<IElementType> NS_KEYWORD_TYPES = of(NsTypes.INSTANCE.OPEN, NsTypes.INSTANCE.MODULE, NsTypes.INSTANCE.FUN,
+                                                                  NsTypes.INSTANCE.LET, NsTypes.INSTANCE.TYPE, NsTypes.INSTANCE.INCLUDE,
+                                                                  NsTypes.INSTANCE.EXTERNAL, NsTypes.INSTANCE.IF, NsTypes.INSTANCE.ELSE,
+                                                                  NsTypes.INSTANCE.ENDIF, NsTypes.INSTANCE.SWITCH, NsTypes.INSTANCE.TRY,
+                                                                  NsTypes.INSTANCE.RAISE, NsTypes.INSTANCE.FOR, NsTypes.INSTANCE.IN, NsTypes.INSTANCE.TO,
+                                                                  NsTypes.INSTANCE.BOOL_VALUE, NsTypes.INSTANCE.REF, NsTypes.INSTANCE.EXCEPTION,
+                                                                  NsTypes.INSTANCE.WHEN, NsTypes.INSTANCE.AND, NsTypes.INSTANCE.REC, NsTypes.INSTANCE.WHILE,
+                                                                  NsTypes.INSTANCE.ASR, NsTypes.INSTANCE.CLASS, NsTypes.INSTANCE.CONSTRAINT,
+                                                                  NsTypes.INSTANCE.DOWNTO, NsTypes.INSTANCE.FUNCTOR, NsTypes.INSTANCE.INHERIT,
+                                                                  NsTypes.INSTANCE.INITIALIZER, NsTypes.INSTANCE.LAND, NsTypes.INSTANCE.LOR,
+                                                                  NsTypes.INSTANCE.LSL, NsTypes.INSTANCE.LSR, NsTypes.INSTANCE.LXOR,
+                                                                  NsTypes.INSTANCE.METHOD, NsTypes.INSTANCE.MOD, NsTypes.INSTANCE.NEW,
+                                                                  NsTypes.INSTANCE.NONREC, NsTypes.INSTANCE.OR, NsTypes.INSTANCE.PRIVATE,
+                                                                  NsTypes.INSTANCE.VIRTUAL, NsTypes.INSTANCE.VAL, NsTypes.INSTANCE.PUB,
+                                                                  NsTypes.INSTANCE.PRI, NsTypes.INSTANCE.OBJECT, NsTypes.INSTANCE.MUTABLE,
+                                                                  NsTypes.INSTANCE.UNIT, NsTypes.INSTANCE.WITH, NsTypes.INSTANCE.DIRECTIVE_IF,
+                                                                  NsTypes.INSTANCE.DIRECTIVE_ELSE, NsTypes.INSTANCE.DIRECTIVE_ELIF,
+                                                                  NsTypes.INSTANCE.DIRECTIVE_END, NsTypes.INSTANCE.DIRECTIVE_ENDIF);
+
+    private static final Set<IElementType> NS_OPERATION_SIGN_TYPES = of(NsTypes.INSTANCE.ANDAND, NsTypes.INSTANCE.SHORTCUT, NsTypes.INSTANCE.ARROW,
+                                                                         NsTypes.INSTANCE.PIPE_FIRST, NsTypes.INSTANCE.PIPE_FORWARD, NsTypes.INSTANCE.EQEQEQ,
+                                                                         NsTypes.INSTANCE.EQEQ, NsTypes.INSTANCE.EQ, NsTypes.INSTANCE.NOT_EQEQ,
+                                                                         NsTypes.INSTANCE.NOT_EQ, NsTypes.INSTANCE.DIFF, NsTypes.INSTANCE.COLON,
+                                                                         NsTypes.INSTANCE.SINGLE_QUOTE, NsTypes.INSTANCE.DOUBLE_QUOTE,
+                                                                         NsTypes.INSTANCE.CARRET, NsTypes.INSTANCE.PLUSDOT, NsTypes.INSTANCE.MINUSDOT,
+                                                                         NsTypes.INSTANCE.SLASHDOT, NsTypes.INSTANCE.STARDOT, NsTypes.INSTANCE.PLUS,
+                                                                         NsTypes.INSTANCE.MINUS, NsTypes.INSTANCE.SLASH, NsTypes.INSTANCE.STAR,
+                                                                         NsTypes.INSTANCE.PERCENT, NsTypes.INSTANCE.PIPE, NsTypes.INSTANCE.ARROBASE,
+                                                                         NsTypes.INSTANCE.SHARP, NsTypes.INSTANCE.SHARPSHARP, NsTypes.INSTANCE.QUESTION_MARK,
+                                                                         NsTypes.INSTANCE.EXCLAMATION_MARK, NsTypes.INSTANCE.LT_OR_EQUAL,
+                                                                         NsTypes.INSTANCE.GT_OR_EQUAL, NsTypes.INSTANCE.AMPERSAND,
+                                                                         NsTypes.INSTANCE.LEFT_ARROW, NsTypes.INSTANCE.RIGHT_ARROW,
+                                                                         NsTypes.INSTANCE.COLON_EQ, NsTypes.INSTANCE.COLON_GT, NsTypes.INSTANCE.GT,
+                                                                         NsTypes.INSTANCE.GT_BRACE, NsTypes.INSTANCE.GT_BRACKET, NsTypes.INSTANCE.BRACKET_GT,
+                                                                         NsTypes.INSTANCE.BRACKET_LT, NsTypes.INSTANCE.BRACE_LT, NsTypes.INSTANCE.DOTDOT);
+
+    private static final Set<IElementType> NS_OPTIONS_TYPES = of(NsTypes.INSTANCE.NONE, NsTypes.INSTANCE.SOME);
 
     private static final Set<IElementType> OCL_KEYWORD_TYPES = of(OclTypes.INSTANCE.OPEN, OclTypes.INSTANCE.MODULE, OclTypes.INSTANCE.FUN,
                                                                   OclTypes.INSTANCE.LET, OclTypes.INSTANCE.TYPE, OclTypes.INSTANCE.INCLUDE,
@@ -109,7 +149,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey KEYWORD_ = createTextAttributesKey("REASONML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey MARKUP_TAG_ = createTextAttributesKey("REASONML_MARKUP_TAG", DefaultLanguageHighlighterColors.MARKUP_TAG);
     public static final TextAttributesKey MARKUP_ATTRIBUTE_ = createTextAttributesKey("REASONML_MARKUP_ATTRIBUTE",
-            DefaultLanguageHighlighterColors.MARKUP_ATTRIBUTE);
+                                                                                      DefaultLanguageHighlighterColors.MARKUP_ATTRIBUTE);
     public static final TextAttributesKey MODULE_NAME_ = createTextAttributesKey("REASONML_MODULE_NAME", DefaultLanguageHighlighterColors.CLASS_NAME);
     public static final TextAttributesKey NUMBER_ = createTextAttributesKey("REASONML_NUMBER", DefaultLanguageHighlighterColors.NUMBER);
     public static final TextAttributesKey OPERATION_SIGN_ = createTextAttributesKey("REASONML_OPERATION_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
@@ -149,7 +189,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return m_types instanceof RmlTypes ? new RmlLexer() : new OclLexer();
+        return m_types instanceof RmlTypes ? new RmlLexer() : m_types instanceof NsTypes ? new NsLexer() : new OclLexer();
     }
 
     @NotNull
@@ -185,6 +225,14 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
             } else if (RML_OPERATION_SIGN_TYPES.contains(tokenType)) {
                 return OPERATION_SIGN_KEYS;
             } else if (RML_OPTIONS_TYPES.contains(tokenType)) {
+                return OPTION_KEYS;
+            }
+        } else if (m_types == NsTypes.INSTANCE) {
+            if (NS_KEYWORD_TYPES.contains(tokenType)) {
+                return KEYWORD_KEYS;
+            } else if (NS_OPERATION_SIGN_TYPES.contains(tokenType)) {
+                return OPERATION_SIGN_KEYS;
+            } else if (NS_OPTIONS_TYPES.contains(tokenType)) {
                 return OPTION_KEYS;
             }
         } else if (m_types == OclTypes.INSTANCE) {
