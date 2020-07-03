@@ -1,4 +1,4 @@
-package com.reason.lang.reason;
+package com.reason.lang.napkin;
 
 import java.util.*;
 import com.intellij.psi.PsiElement;
@@ -19,7 +19,7 @@ import static com.reason.lang.core.psi.ExpressionScope.pub;
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends BaseParsingTestCase {
     public LetParsingTest() {
-        super("", "re", new RmlParserDefinition());
+        super("", "res", new NsParserDefinition());
     }
 
     public void testConstant() {
@@ -82,7 +82,7 @@ public class LetParsingTest extends BaseParsingTestCase {
     public void testSignature() {
         PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
-        assertEquals("(style, style) => style", let.getORSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("(style, style) => style", let.getORSignature().asString(NsLanguage.INSTANCE));
         assertEquals("(a, b) => { }", let.getBinding().getText());
     }
 
@@ -156,7 +156,7 @@ public class LetParsingTest extends BaseParsingTestCase {
 
         assertEquals("(/)", e.getName());
         ORSignature signature = e.getORSignature();
-        assertEquals("(path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c", signature.asString(RmlLanguage.INSTANCE));
+        assertEquals("(path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c", signature.asString(NsLanguage.INSTANCE));
     }
 
     public void testPrivate() {

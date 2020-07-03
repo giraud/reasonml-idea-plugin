@@ -4,7 +4,7 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.reason.lang.reason.NsLanguage;
+import com.reason.lang.napkin.NsLanguage;
 import icons.ORIcons;
 
 public class NsInterfaceFileType extends LanguageFileType {

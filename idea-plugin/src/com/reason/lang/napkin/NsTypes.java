@@ -1,4 +1,4 @@
-package com.reason.lang.reason;
+package com.reason.lang.napkin;
 
 import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
 import com.reason.lang.core.stub.type.PsiExternalStubElementType;

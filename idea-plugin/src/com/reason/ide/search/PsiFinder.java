@@ -48,8 +48,10 @@ import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.napkin.NsLanguage;
+import com.reason.lang.napkin.NsQNameFinder;
+import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlQNameFinder;
 import gnu.trove.THashMap;
 
@@ -74,6 +76,11 @@ public final class PsiFinder {
 
     public PsiFinder(@NotNull Project project) {
         m_project = project;
+    }
+
+    @NotNull
+    public static QNameFinder getQNameFinder(@NotNull Language language) {
+        return language == OclLanguage.INSTANCE ? OclQNameFinder.INSTANCE : language == NsLanguage.INSTANCE ? NsQNameFinder.INSTANCE : RmlQNameFinder.INSTANCE;
     }
 
     @Nullable
@@ -472,7 +479,7 @@ public final class PsiFinder {
                         String functorName = functorCall.getFunctorName();
                         Set<PsiModule> modulesFromFunctor = null;
 
-                        QNameFinder qnameFinder = getQnameFinder(functorCall.getLanguage());
+                        QNameFinder qnameFinder = getQNameFinder(functorCall.getLanguage());
                         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
                         for (String path : potentialPaths) {
                             modulesFromFunctor = findModulesFromQn(path + "." + functorName, true, fileType, scope);
@@ -496,10 +503,6 @@ public final class PsiFinder {
         }
 
         return result;
-    }
-
-    private QNameFinder getQnameFinder(Language language) {
-        return language == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
     }
 
     @Nullable

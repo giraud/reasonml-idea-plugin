@@ -1,4 +1,4 @@
-package com.reason.lang.reason;
+package com.reason.lang.napkin;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.PsiBuilder;

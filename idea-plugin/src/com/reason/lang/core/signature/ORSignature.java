@@ -5,6 +5,7 @@ import com.intellij.util.ArrayUtil;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.ocaml.OclLanguage;
+import com.reason.lang.napkin.NsLanguage;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -151,7 +152,7 @@ public class ORSignature {
     private String buildSignature(@NotNull Language lang) {
         StringBuilder sb = new StringBuilder();
 
-        boolean reason = lang == RmlLanguage.INSTANCE;
+        boolean reason = lang == RmlLanguage.INSTANCE || lang == NsLanguage.INSTANCE;
         String inputSeparator = reason ? ", " : OCAML_SEPARATOR;
 
         if (m_items != null) {

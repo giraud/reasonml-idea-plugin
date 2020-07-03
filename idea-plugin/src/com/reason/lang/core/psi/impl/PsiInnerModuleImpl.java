@@ -168,7 +168,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                     if (functorCall != null) {
                         result = new ArrayList<>();
                         // Include all expressions from functor
-                        QNameFinder qnameFinder = getLanguage() == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+                        QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
 
                         Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorCall);
                         for (String potentialPath : potentialPaths) {

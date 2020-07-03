@@ -1,4 +1,4 @@
-package com.reason.lang.core;
+package com.reason.lang;
 
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +10,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
+import com.reason.lang.core.ExpressionFilter;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiDirective;
@@ -40,7 +41,7 @@ public class PsiFileHelper {
 
         if (file != null) {
             PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
-            QNameFinder qnameFinder = file.getLanguage() == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+            QNameFinder qnameFinder = PsiFinder.getQNameFinder(file.getLanguage());
             processSiblingExpressions(psiFinder, qnameFinder, file.getFirstChild(), eScope, result, filter);
         }
 
