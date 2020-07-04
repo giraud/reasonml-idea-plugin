@@ -31,6 +31,9 @@ public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
     @Override
     public String getPath() {
         PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+        if (firstChild != null && firstChild.getNode().getElementType() == m_types.EXCLAMATION_MARK) {
+            firstChild = PsiTreeUtil.skipWhitespacesForward(firstChild);
+        }
         if (firstChild instanceof PsiFunctorCall) {
             return ((PsiFunctorCall) firstChild).getFunctorName();
         }

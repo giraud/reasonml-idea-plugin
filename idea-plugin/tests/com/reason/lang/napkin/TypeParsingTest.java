@@ -1,7 +1,7 @@
 package com.reason.lang.napkin;
 
 import java.util.*;
-import com.reason.lang.BaseParsingTestCase;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiJsObject;
@@ -10,30 +10,47 @@ import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 @SuppressWarnings("ConstantConditions")
-public class TypeParsingTest extends BaseParsingTestCase {
-    public TypeParsingTest() {
-        super("", "res", new NsParserDefinition());
-    }
+public class TypeParsingTest extends NsParsingTestCase {
 
-    public void testAbstractType() {
-        PsiType e = first(typeExpressions(parseCode("type t;")));
+    public void test_abstract() {
+        PsiType e = first(typeExpressions(parseCode("type t")));
+        
         assertEquals("t", e.getName());
     }
 
-    public void testRecursiveType() {
-        PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
+    public void test_parameterized() {
+        PsiType e = first(typeExpressions(parseCode("type declaration_arity<'a, 'b> = | RegularArity('a)")));
+
+        assertEquals("declaration_arity", e.getName());
+        assertEquals("| RegularArity('a)", e.getBinding().getText());
+    }
+
+    public void test_recursive() {
+        PsiType e = first(typeExpressions(parseCode("type rec tree<'a> = | Leaf('a) | Tree(tree<'a>, tree<'a>)")));
+
         assertEquals("tree", e.getName());
     }
 
-    public void testTypeBindingWithVariant() {
-        PsiType e = first(typeExpressions(parseCode("type t = | Tick;")));
+    public void test_variant() {
+        PsiType e = first(typeExpressions(parseCode("type t = | Tick")));
+
         assertNotNull(e.getBinding());
+        assertEquals("t", e.getName());
+        Collection<PsiVariantDeclaration> vars = PsiTreeUtil.findChildrenOfType(e.getBinding(), PsiVariantDeclaration.class);
+        assertEquals("Tick", ORUtil.findImmediateFirstChildOfType(vars.iterator().next(), m_types.C_VARIANT).getText());
+    }
+
+    public void test_polyVariant() {
+        PsiType e = first(typeExpressions(parseCode("type t = [ #Red | #Blue ]", true)));
+        assertNotNull(e.getBinding());
+        assertEquals("t", e.getName());
     }
 
     public void testTypeBindingWithRecord() {
-        PsiType e = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
+        PsiType e = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n}")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         Collection<PsiRecordField> fields = record.getFields();
@@ -41,10 +58,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeSpecialProps() {
-        PsiType e = first(typeExpressions(parseCode("type props = { " +
-                "string: string, " +
-                "ref: Js.nullable(Dom.element) => unit, " +
-                "method: string };")));
+        PsiType e = first(typeExpressions(parseCode("type props = { " + "string: string, " + "ref: Js.nullable(Dom.element) => unit, " + "method: string }")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         Collection<PsiRecordField> fields = record.getFields();
@@ -52,7 +66,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testTypeBindingWithRecordAs() {
-        PsiType e = first(typeExpressions(parseCode("type branch_info('branch_type) = { kind: [> | `Master] as 'branch_type, pos: id, };")));
+        PsiType e = first(typeExpressions(parseCode("type branch_info('branch_type) = { kind: [> | `Master] as 'branch_type, pos: id, }")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -62,14 +76,9 @@ public class TypeParsingTest extends BaseParsingTestCase {
         assertEquals("pos", fields.get(1).getName());
     }
 
-    public void testTypeParameterized() {
-        PsiType e = first(typeExpressions(parseCode("type declaration_arity('a, 'b) = | RegularArity('a);")));
-        assertEquals("declaration_arity", e.getName());
-        assertEquals("| RegularArity('a)", e.getBinding().getText());
-    }
-
     public void testScope() {
-        PsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
+        PsiExternal e = first(externalExpressions(
+                parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
 
         PsiSignature signature = e.getPsiSignature();
         List<PsiSignatureItem> signatureItems = ORUtil.findImmediateChildrenOfClass(signature, PsiSignatureItem.class);
@@ -82,7 +91,7 @@ public class TypeParsingTest extends BaseParsingTestCase {
     }
 
     public void testJsObject() {
-        PsiType e = first(typeExpressions(parseCode("type t = {. a: string };")));
+        PsiType e = first(typeExpressions(parseCode("type t = {. a: string }")));
 
         assertInstanceOf(e.getBinding().getFirstChild(), PsiJsObject.class);
     }

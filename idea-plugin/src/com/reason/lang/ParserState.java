@@ -3,6 +3,7 @@ package com.reason.lang;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.WhitespaceSkippedCallback;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.Stack;
@@ -129,6 +130,27 @@ public class ParserState {
         return this;
     }
 
+    public ParserState markScope(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeElementType) {
+        add(ParserScope.markScope(m_builder, scope, resolution, compositeElementType, scopeElementType));
+        complete();
+        return this;
+    }
+
+    public ParserState markOptional(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType) {
+        add(ParserScope.mark(m_builder, scope, resolution, compositeElementType));
+        return this;
+    }
+
+    public ParserState mark(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType) {
+        add(ParserScope.mark(m_builder, scope, resolution, compositeElementType));
+        complete();
+        return this;
+    }
+
+    public ParserState mark(ParserScopeEnum resolution, IElementType compositeElementType) {
+        return mark(resolution, resolution, compositeElementType);
+    }
+
     boolean empty() {
         return m_scopes.isEmpty();
     }
@@ -248,10 +270,6 @@ public class ParserState {
         return m_currentScope.isScope();
     }
 
-    public void setTokenElementType(@NotNull ORTokenElementType tokenType) {
-        m_currentScope.setScopeTokenType(tokenType);
-    }
-
     @NotNull
     public ParserState updateCurrentCompositeElementType(@NotNull IElementType compositeElementType) {
         m_currentScope.updateCompositeElementType(compositeElementType);
@@ -310,5 +328,23 @@ public class ParserState {
 
     public void error(String message) {
         m_builder.error(message);
+    }
+
+    public ParserState remapCurrentToken(ORTokenElementType elementType) {
+        m_builder.remapCurrentToken(elementType);
+        return this;
+    }
+
+    public ParserState setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
+        m_builder.setWhitespaceSkippedCallback(callback);
+        return this;
+    }
+
+    public String getTokenText() {
+        return m_builder.getTokenText();
+    }
+
+    public IElementType rawLookup(int steps) {
+        return m_builder.rawLookup(steps);
     }
 }

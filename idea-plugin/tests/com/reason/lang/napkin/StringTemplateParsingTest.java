@@ -9,10 +9,12 @@ import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 
-public class StringTemplateParsingTest extends BaseParsingTestCase {
+public class StringTemplateParsingTest extends NsParsingTestCase {
 
-    public StringTemplateParsingTest() {
-        super("", "res", new NsParserDefinition());
+    public void test_basic() {
+        PsiInterpolation e = (PsiInterpolation) first(letExpressions(parseCode("let _ = `this is a template string`", true))).getBinding().getFirstChild();
+
+        assertEquals(e.getText(), "this is a template string");
     }
 
     public void testBasic() {
@@ -20,7 +22,7 @@ public class StringTemplateParsingTest extends BaseParsingTestCase {
         PsiLetBinding binding = e.getBinding();
         PsiInterpolation inter = (PsiInterpolation) binding.getFirstChild();
 
-        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, NsTypes.INSTANCE.C_INTERPOLATION_PART);
+        Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
         assertSize(2, parts);
         PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
         assertEquals(ref.getText(), "var");

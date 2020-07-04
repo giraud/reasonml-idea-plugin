@@ -284,9 +284,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
     //endregion
 
-    @Nullable
     @Override
-    public String getQualifiedName() {
+    public @NotNull String getQualifiedName() {
         PsiLetStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();

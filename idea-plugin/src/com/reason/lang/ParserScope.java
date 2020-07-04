@@ -35,8 +35,8 @@ public class ParserScope {
     }
 
     @NotNull
-    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull IElementType compositeElementType) {
-        return new ParserScope(builder, context, context, compositeElementType, null);
+    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType) {
+        return new ParserScope(builder, resolution, resolution, compositeElementType, null);
     }
 
     @NotNull

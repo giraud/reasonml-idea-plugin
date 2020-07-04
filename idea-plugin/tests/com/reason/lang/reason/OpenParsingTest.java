@@ -21,7 +21,7 @@ public class OpenParsingTest extends BaseParsingTestCase {
     }
 
     public void testFunctor() {
-        PsiOpen e = first(openExpressions(parseCode("open A.Make({ type t; })")));
+        PsiOpen e = first(openExpressions(parseCode("open A.Make({ type t; })", true)));
 
         assertTrue(e.useFunctor());
         assertEquals("A.Make", e.getQualifiedName());

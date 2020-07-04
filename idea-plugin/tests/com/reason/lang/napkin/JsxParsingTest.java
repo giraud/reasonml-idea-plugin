@@ -3,7 +3,6 @@ package com.reason.lang.napkin;
 import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
@@ -14,17 +13,14 @@ import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagPropertyValue;
 import com.reason.lang.core.psi.PsiTagStart;
 
-public class JsxParsingTest extends BaseParsingTestCase {
-    public JsxParsingTest() {
-        super("", "res", new NsParserDefinition());
-    }
-
+@SuppressWarnings("ConstantConditions")
+public class JsxParsingTest extends NsParsingTestCase {
     public void testEmptyTag() {
-        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>"));
+        PsiTag e = (PsiTag) firstElement(parseCode("<div>children</div>", true));
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), NsTypes.INSTANCE.TAG_GT));
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
@@ -38,7 +34,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testOptionAsTag() {
-        // option here is not a ReasonML keyword
+        // option here is not a Napkin keyword
         PsiLet let = first(letExpressions(parseCode("let _ = <option className/>")));
 
         PsiTagStart jsx = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
@@ -46,20 +42,19 @@ public class JsxParsingTest extends BaseParsingTestCase {
     }
 
     public void testTagNameWithDot() {
-        // option here is not a ReasonML keyword
         PsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
 
         PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
         PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
-        assertEquals(NsTypes.INSTANCE.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(NsTypes.INSTANCE.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
 
         PsiTagClose tagClose = first(PsiTreeUtil.findChildrenOfType(let, PsiTagClose.class));
         nextSibling = tagClose.getFirstChild().getNextSibling();
-        assertEquals(NsTypes.INSTANCE.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
         nextSibling = nextSibling.getNextSibling().getNextSibling();
-        assertEquals(NsTypes.INSTANCE.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
+        assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
     }
 
     public void testTagPropWithParen() {
@@ -93,7 +88,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
     public void testTagChaining() {
         Collection<PsiModule> psiModules = moduleExpressions(
-                parseCode("module GalleryItem = { let make = () => { let x = <div/>; }; };\nmodule GalleryContainer = {};"));
+                parseCode("module GalleryItem = { let make = () => { let x = <div/> } }\n module GalleryContainer = {}"));
         assertEquals(2, psiModules.size());
     }
 
@@ -106,7 +101,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
     public void testProp02() {
         PsiTag e = (PsiTag) firstElement(
-                parseCode("<Splitter left={<NotificationsList notifications />} right={<div> {ReasonReact.string(\"switch inside\")} </div>}/>"));
+                parseCode("<Splitter left={<NotificationsList notifications />} right={<div> {React.string(\"switch inside\")} </div>}/>"));
 
         List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
         assertEquals(2, properties.size());
