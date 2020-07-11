@@ -20,6 +20,7 @@ public abstract class ORTypes {
     public IElementType C_EXP_TYPE;
     public IElementType C_FAKE_MODULE;
     public IElementType C_LET_STMT;
+    public IElementType C_LOCAL_OPEN;
     public IElementType C_MODULE_STMT;
     public IElementType C_VAL_EXPR;
     public IElementType C_ANNOTATION_EXPR;
@@ -100,7 +101,9 @@ public abstract class ORTypes {
     public ORTokenElementType AND;
     public ORTokenElementType ANDAND;
     public ORTokenElementType ASSERT;
+    public ORTokenElementType BACKSLASH;
     public ORTokenElementType BEGIN;
+    public ORTokenElementType CATCH;
     public ORTokenElementType CLASS;
     public ORTokenElementType CONSTRAINT;
     public ORTokenElementType DIRECTIVE_IF;
@@ -153,7 +156,6 @@ public abstract class ORTypes {
     public ORTokenElementType RAW;
 
     public ORTokenElementType EXCEPTION_NAME;
-    public ORTokenElementType C_LOCAL_OPEN;
     public ORTokenElementType PROPERTY_NAME;
     public ORTokenElementType SHARPSHARP;
     public ORTokenElementType ARROBASE;
@@ -245,6 +247,7 @@ public abstract class ORTypes {
     public ORTokenElementType BRACKET_GT;
     public ORTokenElementType BRACKET_LT;
     public ORTokenElementType BRACE_LT;
+    public ORTokenElementType ML_STRING_VALUE;
     public ORTokenElementType ML_STRING_OPEN;
     public ORTokenElementType ML_STRING_CLOSE;
     public ORTokenElementType JS_STRING_OPEN;

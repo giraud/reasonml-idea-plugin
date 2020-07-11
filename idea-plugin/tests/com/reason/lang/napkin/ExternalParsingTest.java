@@ -8,7 +8,7 @@ import com.reason.lang.core.psi.PsiSignature;
 public class ExternalParsingTest extends NsParsingTestCase {
 
     public void test_signature() {
-        PsiExternal e = firstOfType(parseCode("external e : string => string", true), PsiExternal.class);
+        PsiExternal e = firstOfType(parseCode("external e : string => string"), PsiExternal.class);
 
         assertEquals("e", e.getName());
         PsiSignature signature = e.getPsiSignature();

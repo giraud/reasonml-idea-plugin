@@ -1,20 +1,15 @@
 package com.reason.lang.napkin;
 
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiTry;
 
 @SuppressWarnings("ConstantConditions")
-public class TryWithTest extends BaseParsingTestCase {
-    public TryWithTest() {
-        super("", "res", new NsParserDefinition());
-    }
-
-    public void testTryStructure() {
-        PsiTry e = (PsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
+public class TryWithTest extends NsParsingTestCase {
+    public void test_tryStructure() {
+        PsiTry e = (PsiTry) firstElement(parseCode("try x catch { | Not_found => () }"));
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());
-        assertEquals("(x)", e.getBody().getText());
+        assertEquals("x", e.getBody().getText());
         assertSize(1, e.getHandlers());
         assertEquals("| Not_found => ()", e.getHandlers().iterator().next().getText());
     }

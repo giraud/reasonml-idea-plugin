@@ -50,7 +50,11 @@ public class ParserState {
             while (scope != null && !scope.isScopeStart()) {
                 scope = pop();
                 if (scope != null) {
-                    scope.end();
+                    if (scope.isEmpty()) {
+                        scope.drop();
+                    } else {
+                        scope.end();
+                    }
                     latestKnownScope = scope;
                 }
                 scope = getLatestScope();
@@ -326,6 +330,12 @@ public class ParserState {
         return this;
     }
 
+    @NotNull
+    public ParserState setStart(boolean isStart) {
+        m_currentScope.setIsStart(isStart);
+        return this;
+    }
+
     public void error(String message) {
         m_builder.error(message);
     }
@@ -348,7 +358,16 @@ public class ParserState {
         return m_builder.rawLookup(steps);
     }
 
+    public IElementType lookAhead(int steps) {
+        return m_builder.lookAhead(steps);
+    }
+
     public IElementType getTokenType() {
         return m_builder.getTokenType();
+    }
+
+    public ParserState dummy() {
+        m_currentScope.dummy();
+        return this;
     }
 }

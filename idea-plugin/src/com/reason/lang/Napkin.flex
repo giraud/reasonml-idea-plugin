@@ -78,6 +78,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
 %state INITIAL
 %state IN_STRING
+%state IN_ML_STRING
 %state IN_ML_COMMENT
 %state IN_SL_COMMENT
 
@@ -94,6 +95,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "as"          { return types.AS; }
     "assert"      { return types.ASSERT; }
     "begin"       { return types.BEGIN; }
+    "catch"       { return types.CATCH; }
     "class"       { return types.CLASS; }
     "constraint"  { return types.CONSTRAINT; }
     "do"          { return types.DO; }
@@ -124,6 +126,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "or"          { return types.OR; }
     "pub"         { return types.PUB; }
     "pri"         { return types.PRI; }
+    "raw"         { return types.RAW; }
     "rec"         { return types.REC; }
     "sig"         { return types.SIG; }
     "struct"      { return types.STRUCT; }
@@ -137,7 +140,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "when"        { return types.WHEN; }
     "while"       { return types.WHILE; }
     "with"        { return types.WITH; }
-    "raw"         { return types.RAW; }
 
     "mod"         { return types.MOD; }
     "land"        { return types.LAND; }
@@ -162,6 +164,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "true"      { return types.BOOL_VALUE; }
 
     "_"   { return types.UNDERSCORE; }
+
+    "j`"                             { return types.JS_STRING_OPEN/*Template*/; }
 
     "'" ( {ESCAPE_CHAR} | . ) "'"    { return types.CHAR_VALUE; }
     {LOWERCASE}{IDENTCHAR}*          { return types.LIDENT; }
@@ -218,7 +222,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "?"   { return types.QUESTION_MARK; }
     "!"   { return types.EXCLAMATION_MARK; }
     "$"   { return types.DOLLAR; }
-    "`"   { return types.BACKTICK; }
+    "`"   { yybegin(IN_ML_STRING); tokenStart(); }
     "~"   { return types.TILDE; }
     "&"   { return types.AMPERSAND; }
 
@@ -235,6 +239,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/"   { return types.SLASH; }
     "*"   { return types.STAR; }
     "%"   { return types.PERCENT; }
+    "\\"  { return types.BACKSLASH; }
 }
 
 <IN_STRING> {
@@ -248,6 +253,19 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     { NEWLINE } { }
     . { }
     <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.STRING_VALUE; }
+}
+
+<IN_ML_STRING> {
+    "`" { yybegin(INITIAL); tokenEnd(); return types.ML_STRING_VALUE; }
+    "\\" { NEWLINE } ([ \t] *) { }
+    "\\" [\\\'\"ntbr ] { }
+    "\\" [0-9] [0-9] [0-9] { }
+    "\\" "o" [0-3] [0-7] [0-7] { }
+    "\\" "x" [0-9a-fA-F] [0-9a-fA-F] { }
+    "\\" . { }
+    { NEWLINE } { }
+    . { }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return types.ML_STRING_VALUE; }
 }
 
 <IN_ML_COMMENT> {

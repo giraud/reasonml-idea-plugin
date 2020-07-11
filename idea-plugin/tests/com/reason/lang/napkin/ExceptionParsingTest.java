@@ -16,20 +16,4 @@ public class ExceptionParsingTest extends NsParsingTestCase {
         assertEquals("Ex", e.getName());
         assertEquals("Dummy.Ex", e.getQualifiedName());
     }
-
-    public void test_alias() {
-        PsiException e = firstOfType(parseCode("exception Exit = Terminate"), PsiException.class);
-
-        assertEquals("Exit", e.getName());
-        assertEquals("Dummy.Exit", e.getQualifiedName());
-        assertEquals("Terminate", e.getAlias());
-    }
-
-    public void test_aliasPath() {
-        PsiException e = firstOfType(parseCode("exception Exit = Lib.Terminate"), PsiException.class);
-
-        assertEquals("Exit", e.getName());
-        assertEquals("Dummy.Exit", e.getQualifiedName());
-        assertEquals("Lib.Terminate", e.getAlias());
-    }
 }

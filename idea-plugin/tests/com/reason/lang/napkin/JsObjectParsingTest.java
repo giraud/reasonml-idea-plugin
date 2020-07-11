@@ -10,9 +10,10 @@ import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiLocalOpen;
 import com.reason.lang.core.psi.PsiObjectField;
 
+@SuppressWarnings("ConstantConditions")
 public class JsObjectParsingTest extends NsParsingTestCase {
-    public void testInFunction() {
-        PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0});")));
+    public void test_inFunction() {
+        PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0})")));
 
         PsiLetBinding binding = e.getBinding();
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
@@ -22,22 +23,24 @@ public class JsObjectParsingTest extends NsParsingTestCase {
         assertEquals(2, fields.size());
     }
 
-    public void testDeclaringOpen() {
-        PsiLet e = first(letExpressions(parseCode("let style = {" + "\"marginLeft\": marginLeft, \"marginRight\": marginRight,\"fontSize\": \"inherit\","
+    public void test_declaringOpen() {
+        PsiLet e = first(letExpressions(parseCode("let style = {" + //
+                                                          "\"marginLeft\": marginLeft, \"marginRight\": marginRight,\"fontSize\": \"inherit\","
                                                           + "\"fontWeight\": bold ? \"bold\" : \"inherit\","
-                                                          + "\"textTransform\": transform == \"uc\" ? \"uppercase\" : \"unset\",};")));
+                                                          + "\"textTransform\": transform == \"uc\" ? \"uppercase\" : \"unset\",}")));
 
         PsiLetBinding binding = e.getBinding();
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
         assertNotNull(object);
 
         Collection<PsiObjectField> fields = object.getFields();
-        assertEquals(5, fields.size());
+        assertEquals(6, fields.size());
     }
 
-    public void testModuleOpen() {
-        PsiLet e = first(letExpressions(parseCode(
-                "let computingProperties = createStructuredSelector(" + "    ComputingReducers.{ \"lastUpdate\": selectors.getLastUpdate },\n" + "  );")));
+    public void test_moduleOpen() {
+        PsiLet e = first(letExpressions(parseCode("let computingProperties = createStructuredSelector(" + //
+                                                          "    ComputingReducers.{ \"lastUpdate\": selectors.getLastUpdate },\n" + //
+                                                          "  );")));
 
         PsiLetBinding binding = e.getBinding();
         PsiFunctionCallParams call = PsiTreeUtil.findChildOfType(binding, PsiFunctionCallParams.class);

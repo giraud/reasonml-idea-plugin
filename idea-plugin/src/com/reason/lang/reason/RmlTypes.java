@@ -60,6 +60,7 @@ public class RmlTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", RmlLanguage.INSTANCE);
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", RmlLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", RmlLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", RmlLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", RmlLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);
@@ -103,6 +104,7 @@ public class RmlTypes extends ORTypes {
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", RmlLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", RmlLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", RmlLanguage.INSTANCE);
+        CATCH = new ORTokenElementType("CATCH", RmlLanguage.INSTANCE);
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", RmlLanguage.INSTANCE);
         INT_VALUE = new ORTokenElementType("INT_VALUE", RmlLanguage.INSTANCE);
         EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", RmlLanguage.INSTANCE);
@@ -112,7 +114,6 @@ public class RmlTypes extends ORTypes {
         FUN = new ORTokenElementType("FUN", RmlLanguage.INSTANCE);
         FUNCTOR = new ORTokenElementType("FUNCTOR", RmlLanguage.INSTANCE);
         IF = new ORTokenElementType("IF", RmlLanguage.INSTANCE);
-        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", RmlLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", RmlLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", RmlLanguage.INSTANCE);
         ARROBASE = new ORTokenElementType("ARROBASE", RmlLanguage.INSTANCE);
@@ -257,6 +258,7 @@ public class RmlTypes extends ORTypes {
         BRACKET_LT = new ORTokenElementType("BRACKET_LT", RmlLanguage.INSTANCE);
         BRACE_LT = new ORTokenElementType("BRACE_LT", RmlLanguage.INSTANCE);
 
+        ML_STRING_VALUE = new ORTokenElementType("ML_STRING_VALUE", RmlLanguage.INSTANCE);
         ML_STRING_OPEN = new ORTokenElementType("ML_STRING_OPEN", RmlLanguage.INSTANCE);
         ML_STRING_CLOSE = new ORTokenElementType("ML_STRING_CLOSE", RmlLanguage.INSTANCE);
         JS_STRING_OPEN = new ORTokenElementType("JS_STRING_OPEN", RmlLanguage.INSTANCE);

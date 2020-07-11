@@ -12,11 +12,7 @@ import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiParameter;
 
 @SuppressWarnings("ConstantConditions")
-public class FunctorTest extends BaseParsingTestCase {
-    public FunctorTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
+public class FunctorParsingTest extends RmlParsingTestCase {
     public void testBasic() {
         PsiNameIdentifierOwner e = first(expressions(parseCode("module Make = (M: Def) : S => {};")));
 
@@ -27,7 +23,7 @@ public class FunctorTest extends BaseParsingTestCase {
 
     public void testWithConstraints() {
         Collection<PsiNameIdentifierOwner> expressions = expressions(
-                parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {};"));
+                parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {};",true));
 
         assertEquals(1, expressions.size());
         PsiFunctor f = (PsiFunctor) first(expressions);
