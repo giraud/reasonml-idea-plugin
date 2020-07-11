@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ModulePath {
-    private String[] m_names;
+    private final String[] m_names;
 
     public ModulePath(@NotNull String name) {
         m_names = new String[]{name};

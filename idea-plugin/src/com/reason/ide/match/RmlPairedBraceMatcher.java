@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class RmlPairedBraceMatcher implements PairedBraceMatcher {
     @NotNull
-    private static BracePair[] PAIRS = new BracePair[]{ //
+    private static final BracePair[] PAIRS = new BracePair[]{ //
             new BracePair(RmlTypes.INSTANCE.LBRACE, RmlTypes.INSTANCE.RBRACE, true), //
             new BracePair(RmlTypes.INSTANCE.LPAREN, RmlTypes.INSTANCE.RPAREN, true),
             new BracePair(RmlTypes.INSTANCE.ML_STRING_OPEN, RmlTypes.INSTANCE.ML_STRING_CLOSE, true),

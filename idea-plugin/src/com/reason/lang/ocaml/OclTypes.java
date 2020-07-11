@@ -6,7 +6,6 @@ import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiParameterStubElementType;
 import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
 import com.reason.lang.core.stub.type.PsiTypeStubElementType;

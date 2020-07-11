@@ -9,7 +9,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ExpressionFilter;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
@@ -23,9 +22,6 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlQNameFinder;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 

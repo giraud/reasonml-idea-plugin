@@ -41,9 +41,7 @@ public class NsParser extends CommonParser<NsTypes> {
 
             // special analyse when inside an interpolation string
             if (state.isCurrentContext(interpolationString)) {
-                if (tokenType == m_types.JS_STRING_CLOSE) {
-                    parseJsStringClose(state);
-                } else if (tokenType == m_types.DOLLAR) {
+                if (tokenType == m_types.DOLLAR) {
                     if (state.isCurrentResolution(interpolationPart)) {
                         state.popEnd();
                         state.updateCurrentResolution(interpolationReference);
@@ -73,65 +71,32 @@ public class NsParser extends CommonParser<NsTypes> {
                     parseArrow(state);
                 } else if (tokenType == m_types.OPTION) {
                     parseOption(state);
-                } else if (tokenType == m_types.SOME) {
-                    parseSome(builder, state);
-                } else if (tokenType == m_types.NONE) {
-                    parseNone(builder, state);
                 } else if (tokenType == m_types.TRY) {
                     parseTry(state);
-                } else if (tokenType == m_types.SWITCH) {
-                    parseSwitch(builder, state);
                 } else if (tokenType == m_types.LIDENT) {
                     parseLIdent(state);
                 } else if (tokenType == m_types.UIDENT) {
                     parseUIdent(state);
                 } else if (tokenType == m_types.ARROBASE) {
                     parseArrobase(state);
-                } else if (tokenType == m_types.PERCENT) {
-                    parsePercent(state);
                 } else if (tokenType == m_types.COLON) {
-                    parseColon(builder, state);
-                } else if (tokenType == m_types.RAW) {
-                    parseRaw(builder, state);
-                } else if (tokenType == m_types.STRING_VALUE) {
-                    parseStringValue(builder, state);
+                    parseColon(state);
                 } else if (tokenType == m_types.PIPE) {
                     parsePipe(state);
-                } else if (tokenType == m_types.COMMA) {
-                    parseComma(builder, state);
-                } else if (tokenType == m_types.AND) {
-                    parseAnd(builder, state);
                 } else if (tokenType == m_types.ASSERT) {
                     parseAssert(state);
                 } else if (tokenType == m_types.IF) {
                     parseIf(state);
-                } else if (tokenType == m_types.DOT) {
-                    parseDot(builder, state);
-                } else if (tokenType == m_types.DOTDOTDOT) {
-                    parseDotDotDot(builder, state);
-                } else if (tokenType == m_types.WITH) {
-                    parseWith(builder, state);
                 }
                 // ( ... )
                 else if (tokenType == m_types.LPAREN) {
-                    parseLParen(builder, state);
-                } else if (tokenType == m_types.RPAREN) {
-                    parseRParen(builder, state);
+                    parseLParen(state);
                 }
                 // { ... }
                 else if (tokenType == m_types.LBRACE) {
-                    parseLBrace(builder, state);
+                    parseLBrace(state);
                 } else if (tokenType == m_types.RBRACE) {
                     parseRBrace(state);
-                }
-                // [ ... ]
-                // [> ... ]
-                else if (tokenType == m_types.LBRACKET) {
-                    parseLBracket(builder, state);
-                } else if (tokenType == m_types.BRACKET_GT) {
-                    parseBracketGt(builder, state);
-                } else if (tokenType == m_types.RBRACKET) {
-                    parseRBracket(builder, state);
                 }
                 // < ... >
                 else if (tokenType == m_types.LT) {
@@ -143,16 +108,6 @@ public class NsParser extends CommonParser<NsTypes> {
                 } else if (tokenType == m_types.TAG_AUTO_CLOSE) {
                     parseGtAutoClose(state);
                 }
-                // {| ... |}
-                //else if (tokenType == m_types.ML_STRING_OPEN) {
-                //    parseMlStringOpen(builder, state);
-                //} else if (tokenType == m_types.ML_STRING_CLOSE) {
-                //    parseMlStringClose(state);
-                //}
-                // {j| ... |j}
-                //else if (tokenType == m_types.JS_STRING_OPEN) {
-                //    parseJsStringOpen(builder, state);
-                //}
                 // Starts an expression
                 else if (tokenType == m_types.OPEN) {
                     parseOpen(state);
@@ -161,19 +116,13 @@ public class NsParser extends CommonParser<NsTypes> {
                 } else if (tokenType == m_types.EXTERNAL) {
                     parseExternal(state);
                 } else if (tokenType == m_types.TYPE) {
-                    parseType(builder, state);
+                    parseType(state);
                 } else if (tokenType == m_types.MODULE) {
-                    parseModule(builder, state);
-                } else if (tokenType == m_types.CLASS) {
-                    parseClass(builder, state);
+                    parseModule(state);
                 } else if (tokenType == m_types.LET) {
-                    parseLet(builder, state);
-                } else if (tokenType == m_types.VAL) {
-                    parseVal(builder, state);
-                } else if (tokenType == m_types.PUB) {
-                    parsePub(builder, state);
+                    parseLet(state);
                 } else if (tokenType == m_types.EXCEPTION) {
-                    parseException(builder, state);
+                    parseException(state);
                 }
             }
 
@@ -197,30 +146,6 @@ public class NsParser extends CommonParser<NsTypes> {
         state.mark(option, m_types.C_OPTION);
     }
 
-    private void parseSome(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-       /* if (state.isCurrentResolution(patternMatch)) {
-            // Defining a pattern match
-            // switch (c) { | |>Some<| .. }
-            builder.remapCurrentToken(m_types.VARIANT_NAME);
-            state.wrapWith(m_types.C_VARIANT).updateCurrentResolution(patternMatchVariant);
-        }*/
-    }
-
-    private void parseNone(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(patternMatch)) {
-        // Defining a pattern match
-        // switch (c) { | |>Some<| .. }
-        //builder.remapCurrentToken(m_types.VARIANT_NAME);
-        //state.wrapWith(m_types.C_VARIANT).updateCurrentResolution(patternMatchVariant);
-        //}
-    }
-
-    private void parseRaw(PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(macroName)) {
-        //    state.advance().complete().popEnd().updateCurrentContext(macroRaw).updateCurrentResolution(macroRawNamed);
-        //}
-    }
-
     private void parseUnderscore(@NotNull ParserState state) {
         if (state.isCurrentResolution(let)) {
             state.updateCurrentResolution(letNamed);
@@ -232,113 +157,8 @@ public class NsParser extends CommonParser<NsTypes> {
         state.mark(ifThenStatement, m_types.C_IF_STMT);
     }
 
-    private void parseDot(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.previousElementType1 == m_types.LBRACE && state.isCurrentResolution(jsObject)) {
-        // Js object definition
-        // ... { |>.<| ... }
-        //state.advance().
-        //        add(mark(builder, jsObject, objectField, m_types.C_OBJECT_FIELD));
-        //}
-    }
-
-    private void parseDotDotDot(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.previousElementType1 == m_types.LBRACE) {
-        // Mixin:  ... { <...> x ...
-        //state.updateCurrentContext(recordUsage).updateCurrentResolution(recordBinding).updateCurrentCompositeElementType(m_types.C_RECORD_EXPR)
-        //        .add(mark(builder, recordUsage, mixin, m_types.C_MIXIN_FIELD));
-        //}
-    }
-
-    private void parseWith(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(functorNamedColonResult)) {
-        // module M (X) : ( S |>with<| ... ) = ...
-        //state.complete().popEnd();
-        //state.add(mark(builder, functorConstraints, m_types.C_CONSTRAINTS));
-        //} else if (state.isCurrentResolution(include)) {
-        //    state.add(mark(builder, functorConstraints, m_types.C_CONSTRAINTS));
-        //}
-    }
-
     private void parseAssert(@NotNull ParserState state) {
         state.mark(assert_, m_types.C_ASSERT_STMT);
-    }
-
-    private void parseAnd(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(functorConstraint)) {
-        // module M = (X) : ( S with ... |>and<| ... ) = ...
-        //state.complete().popEnd();
-        //} else {
-        //    ParserScope latestScope = state.popEndUntilStartScope();
-        //
-        //    if (isTypeResolution(latestScope)) {
-        //        state.advance();
-        //        state.add(mark(builder, type, m_types.C_EXP_TYPE));
-        //        state.add(mark(builder, typeConstrName, m_types.C_TYPE_CONSTR_NAME));
-        //    } else if (isLetResolution(latestScope)) {
-        //        state.advance();
-        //        state.add(mark(builder, let, m_types.C_LET_STMT));
-        //    } else if (isModuleResolution(latestScope)) {
-        //        state.advance();
-        //        state.add(mark(builder, module, m_types.C_MODULE_STMT));
-        //    }
-        //}
-    }
-
-    private void parseComma(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(functionBody)) {
-        // a function is part of something else, close it first
-        //state.popEnd().popEnd();
-        //}
-
-        //if (state.isCurrentResolution(functionParameterNamedSignatureItem)) {
-        //    state.complete().
-        //            popEndUntilResolution(functionParameterNamed).updateCurrentResolution(functionParameterNamedSignature);
-        //}
-        //
-        //if ((state.isCurrentResolution(signatureItem) || state.isCurrentResolution(signatureItemEq)) && !state.isCurrentContext(recordSignature)) {
-        //    state.popEnd();
-        //    state.advance();
-        //    state.add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
-        //} else if (state.isCurrentContext(signature)) {
-        //    state.popEnd();
-        //}
-        //
-        //if (state.isCurrentContext(recordSignature)) {
-        //    state.complete().
-        //            popEndUntilResolution(recordField).popEnd().
-        //            advance().
-        //            add(mark(builder, state.currentContext(), recordField, m_types.C_RECORD_FIELD));
-        //} else if (state.isCurrentResolution(recordField)) {
-        //    state.popEnd().advance().add(mark(builder, state.currentContext(), recordField, m_types.C_RECORD_FIELD));
-        //} else if (state.isCurrentResolution(objectFieldNamed)) {
-        //    state.popEnd().advance().add(mark(builder, state.currentContext(), objectField, m_types.C_OBJECT_FIELD));
-        //} else if (state.isCurrentResolution(mixin)) {
-        //    state.popEnd();
-        //} else if (state.isCurrentResolution(functionParameter) || state.isCurrentResolution(functionParameterNamed) || state
-        //        .isCurrentResolution(functionParameterNamedSignature) || state.isCurrentResolution(functionParameterNamedBinding)) {
-        //    state.complete();
-        //    if (state.isCurrentResolution(functionParameterNamedBinding)) {
-        //        state.popEndUntilResolution(functionParameters);
-        //    } else {
-        //        state.popEnd();
-        //    }
-        //    state.advance().
-        //            add(mark(builder, state.currentContext(), functionParameter,
-        //                     state.currentContext() == functionCall ? m_types.C_FUN_CALL_PARAM : m_types.C_FUN_PARAM));
-        //    IElementType nextTokenType = builder.getTokenType();
-        //    if (nextTokenType != m_types.RPAREN) {
-        // not at the end of a list: ie not => (p1, p2<,> )
-        //state.complete();
-        //}
-        //} else if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
-        // We don't know yet but we need to complete the marker
-        //state.complete();
-        //state.popEnd();
-        //} else if (state.isCurrentContext(let) && state.isCurrentResolution(genericExpression)) {
-        // It must be a deconstruction
-        // let ( a |>,<| b ) = ..
-        //state.updateCurrentResolution(deconstruction).updateCurrentCompositeElementType(m_types.C_DECONSTRUCTION);
-        //}
     }
 
     private void parsePipe(@NotNull ParserState state) {
@@ -353,13 +173,7 @@ public class NsParser extends CommonParser<NsTypes> {
         if (state.isCurrentResolution(typeNamedEq)) {
             // type x = |> | <| ...
             state.mark(state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL);
-        }
-        // else if (state.isCurrentResolution(tryBodyWith)) {
-        // Start of a try handler
-        //   try (..) { |>|<| .. }
-        //state.add(mark(builder, state.currentContext(), tryBodyWithHandler, m_types.C_TRY_HANDLER).complete());
-        //}
-        else if (state.isCurrentResolution(variant) && state.isCurrentContext(typeBinding)) {
+        } else if (state.isCurrentResolution(variant) && state.isCurrentContext(typeBinding)) {
             state.popEndUntilResolution(typeNamedEqVariant).
                     mark(state.currentContext(), variant, m_types.C_VARIANT_DECL);
         } else {
@@ -370,116 +184,25 @@ public class NsParser extends CommonParser<NsTypes> {
         }
     }
 
-    private void parseStringValue(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentContext(macroRaw)) {
-        //    state.wrapWith(m_types.C_MACRO_RAW_BODY);
-        //} else if (state.isCurrentContext(raw)) {
-        //    state.complete().add(mark(builder, rawBody, m_types.C_MACRO_RAW_BODY).complete()).advance().popEnd();
-        //} else if (state.isCurrentResolution(annotationName)) {
-        //    state.popEndUntilStartScope();
-        //} else if (state.isCurrentResolution(maybeRecordUsage)) {
-        //    IElementType nextToken = builder.lookAhead(1);
-        //    if (m_types.COLON.equals(nextToken)) {
-        //        state.updateCurrentContext(object).updateCurrentResolution(object).updateCurrentCompositeElementType(m_types.C_JS_OBJECT);
-        //        state.add(markScope(builder, object, objectField, m_types.C_OBJECT_FIELD, m_types.STRING_VALUE));
-        //    }
-        //} else if (state.isCurrentResolution(object)) {
-        //    state.add(markScope(builder, object, objectField, m_types.C_OBJECT_FIELD, m_types.STRING_VALUE));
-        //}
-    }
-
-    private void parseMlStringOpen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) {
-        //    state.endAny();
-        //}
-        //
-        //if (state.isCurrentContext(macroRaw)) {
-        //    state.add(mark(builder, state.currentContext(), macroRawBody, m_types.C_MACRO_RAW_BODY).complete());
-        //}
-        //
-        //state.add(markScope(builder, state.currentContext(), multilineStart, m_types.C_ML_INTERPOLATOR, m_types.ML_STRING_OPEN));
-    }
-
-    private void parseMlStringClose(@NotNull ParserState state) {
-        //ParserScope scope = state.endUntilScopeToken(m_types.ML_STRING_OPEN);
-        //state.advance();
-        //
-        //if (scope != null) {
-        //    scope.complete();
-        //    state.popEnd();
-        //}
-    }
-
-    private void parseJsStringOpen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(annotationName) || state.isCurrentResolution(macroName)) { // use space notifier like in tag ?
-        //    state.endAny();
-        //}
-        //
-        //state.add(markScope(builder, interpolationString, m_types.C_INTERPOLATION_EXPR, m_types.JS_STRING_OPEN));
-    }
-
-    private void parseJsStringClose(@NotNull ParserState state) {
-        //ParserScope scope = state.endUntilScopeToken(m_types.JS_STRING_OPEN);
-        //state.advance();
-        //
-        //if (scope != null) {
-        //    scope.complete();
-        //    state.popEnd();
-        //}
-    }
-
-    private void parseLet(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+    private void parseLet(@NotNull ParserState state) {
         endLikeSemi(state);
         state.mark(let, m_types.C_LET_STMT);
     }
 
-    private void parseVal(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (!state.isCurrentResolution(annotationName)) {
-        //    state.popEndUntilStartScope();
-        //    if (state.isCurrentResolution(clazzBodyScope)) {
-        //        state.add(mark(builder, val, clazzField, m_types.C_CLASS_FIELD));
-        //    } else {
-        //        state.add(mark(builder, let, m_types.C_LET_STMT));
-        //    }
-        //}
-    }
-
-    private void parsePub(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //state.popEndUntilStartScope();
-        //if (state.isCurrentResolution(clazzBodyScope)) {
-        //    state.add(mark(builder, clazzMethod, m_types.C_CLASS_METHOD));
-        //}
-    }
-
-    private void parseModule(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+    private void parseModule(@NotNull ParserState state) {
         if (!state.isCurrentResolution(annotationName)) {
             endLikeSemi(state);
             state.mark(module, m_types.C_MODULE_STMT);
         }
     }
 
-    private void parseException(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+    private void parseException(@NotNull ParserState state) {
         endLikeSemi(state);
         state.mark(exception, m_types.C_EXCEPTION_EXPR);
     }
 
-    private void parseClass(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //state.popEndUntilStartScope();
-        //state.add(mark(builder, clazzDeclaration, clazz, m_types.C_CLASS_STMT));
-    }
-
-    private void parseType(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(functorConstraints)) {
-        // module M = (X) : ( S with |>type<| ... ) = ...
-        //state.add(mark(builder, functorConstraints, functorConstraint, m_types.C_CONSTRAINT));
-        //} else if (state.isCurrentResolution(includeConstraints)) {
-        // include M with |>type<| ...
-        //state.add(mark(builder, includeConstraints, includeConstraint, m_types.C_CONSTRAINT));
-        //} else
+    private void parseType(@NotNull ParserState state) {
         if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
-            //    if (!state.isCurrentResolution(letNamedSignature)) {
-            //        state.popEndUntilStartScope();
-            //    }
             endLikeSemi(state);
             state.mark(type, m_types.C_EXP_TYPE).
                     advance().
@@ -502,39 +225,7 @@ public class NsParser extends CommonParser<NsTypes> {
         state.mark(include, m_types.C_INCLUDE);
     }
 
-    private void parsePercent(@NotNull ParserState state) {
-        //if (state.isCurrentResolution(macro)) {
-        //    state.complete();
-        //    state.add(mark(builder, macro, macroName, m_types.C_MACRO_NAME));
-        //} else if (state.isCurrentResolution(letNamed)) {
-        // let name|>%<|private = ...
-        //state.add(mark(builder, state.currentContext(), letNamedAttribute, m_types.C_LET_ATTR));
-        //} else {
-        //    IElementType nextTokenType = builder.rawLookup(1);
-        //    if (nextTokenType == m_types.RAW) {
-        //        state.add(mark(builder, raw, m_types.C_RAW));
-        //    }
-        //}
-    }
-
-    private void parseColon(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentContext(maybeRecord) && state.isCurrentResolution(genericExpression)) {
-        // yes it is a record, remove the maybe
-        //ParserScope fieldState = state.pop();
-        //
-        //state.updateCurrentContext(recordUsage).updateCurrentCompositeElementType(m_types.C_RECORD_EXPR);
-        //if (state.isCurrentResolution(maybeRecordUsage)) {
-        //    state.updateCurrentResolution(record);
-        //}
-        //
-        //if (fieldState != null) {
-        //    fieldState.context(recordUsage);
-        //    fieldState.resolution(recordField);
-        //    fieldState.updateCompositeElementType(m_types.C_RECORD_FIELD);
-        //    state.add(fieldState);
-        //}
-        //}
-        //
+    private void parseColon(@NotNull ParserState state) {
         if (state.isCurrentResolution(externalNamed)) {
             state.updateCurrentResolution(externalNamedSignature).
                     advance().
@@ -543,7 +234,7 @@ public class NsParser extends CommonParser<NsTypes> {
         } else if (state.isCurrentResolution(letNamed)) {
             // let x |> :<| ...
             state.advance().mark(signature, letNamedSignature, m_types.C_SIG_EXPR);
-            IElementType nextTokenType = builder.getTokenType();
+            IElementType nextTokenType = state.getTokenType();
             if (nextTokenType != m_types.LPAREN) {
                 state.mark(signature, signatureItem, m_types.C_SIG_ITEM);
             }
@@ -552,38 +243,6 @@ public class NsParser extends CommonParser<NsTypes> {
             state.updateCurrentResolution(moduleNamedSignature).
                     complete();
         }
-        // else if (state.isCurrentResolution(functorNamedEq)) {
-        // module M = (X:Y) |> :<| ...
-        //state.updateCurrentResolution(functorNamedEqColon).advance();
-        //IElementType tokenType = builder.getTokenType();
-        //if (tokenType == m_types.LPAREN) {
-        // module M = (X:Y) : |>(<| S ... ) = ...
-        //state.add(markScope(builder, state.currentContext(), scope, m_types.C_SCOPED_EXPR, m_types.LPAREN)).advance();
-        //}
-        //state.add(mark(builder, state.currentContext(), functorNamedColonResult, m_types.C_FUNCTOR_RESULT));
-        //} else if (state.isCurrentResolution(functorParam)) {
-        //    state.updateCurrentResolution(functorParamColon);
-        //} else if (state.isCurrentResolution(recordField)) {
-        //    state.complete().advance();
-        //    if (!state.isCurrentContext(recordUsage)) {
-        //        state.add(mark(builder, recordSignature, signature, m_types.C_SIG_EXPR).complete());
-        //        state.add(mark(builder, recordSignature, signatureItem, m_types.C_SIG_ITEM).complete());
-        //    }
-        //} else if (state.isCurrentResolution(objectField)) {
-        //    state.complete();
-        //    state.updateCurrentResolution(objectFieldNamed);
-        //} else if (state.isCurrentResolution(functionParameter)) {
-        //    state.updateCurrentResolution(functionParameterNamed).
-        //            advance().
-        //            add(mark(builder, signature, functionParameterNamedSignature, m_types.C_SIG_EXPR).complete()).
-        //            add(mark(builder, signature, functionParameterNamedSignatureItem, m_types.C_SIG_ITEM).complete());
-        //} else if (state.isCurrentResolution(paren) && state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
-        //    state.complete().
-        //            updateCurrentContext(functionParameter).updateCurrentResolution(functionParameterNamed).
-        //            advance().
-        //            add(mark(builder, signature, functionParameterNamedSignature, m_types.C_SIG_EXPR).complete()).
-        //            add(mark(builder, signatureItem, functionParameterNamedSignatureItem, m_types.C_SIG_ITEM).complete());
-        //}
     }
 
     private void parseArrobase(@NotNull ParserState state) {
@@ -644,67 +303,16 @@ public class NsParser extends CommonParser<NsTypes> {
     }
 
     private void parseLIdent(@NotNull ParserState state) {
-        //if (state.isCurrentResolution(maybeRecord)) {
-        // Maybe a record, we must check
-        //IElementType nextTokenType = builder.lookAhead(1);
-        //if (nextTokenType == m_types.COLON) {
-        // Yes, this is a record binding
-        //state.updateCurrentResolution(recordBinding);
-        //state.updateCurrentCompositeElementType(m_types.C_RECORD_EXPR);
-        //}
-        //}
-
         if (state.isCurrentResolution(typeConstrName)) {
             // type |>x<| ...
             state.updateCurrentResolution(typeNamed);
-        }
-        // else if (state.isCurrentResolution(functionParameters)) {
-        //    state.add(mark(builder, functionParameter, m_types.C_FUN_PARAM).complete());
-        //}
-        else if (state.isCurrentResolution(external)) {
+        } else if (state.isCurrentResolution(external)) {
             // external |>x<| ...
             state.updateCurrentResolution(externalNamed);
         } else if (state.isCurrentResolution(let)) {
             // let |>x<| ..
             state.updateCurrentResolution(letNamed);
-        }
-        // else if (state.isCurrentResolution(letNamedEq)) {
-        //    if (state.previousElementType1 == m_types.EQ) {
-        // let x = |>c<| => ...
-        //IElementType nextElementType = builder.lookAhead(1);
-        //if (nextElementType == m_types.ARROW) {
-        // Single (paren less) function parameters
-        //state.add(mark(builder, function, letNamedBindingFunction, m_types.C_FUN_EXPR).complete());
-        //state.add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
-        //state.add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
-        //}
-        //}
-        //} else if (state.isCurrentResolution(macroName)) {
-        //    state.complete();
-        //    boolean isRaw = "raw".equals(builder.getTokenText());
-        //    if (isRaw) {
-        //        state.advance();
-        //    }
-        //    state.popEnd();
-        //    if (isRaw) {
-        //        state.updateCurrentContext(macroRaw);
-        //    }
-        //    state.updateCurrentResolution(macroNamed);
-        //    return;
-        //} else if (state.isCurrentResolution(clazz)) {
-        // class |>x<| ...
-        //state.updateCurrentResolution(clazzNamed);
-        //state.complete();
-        //} else if (state.isCurrentResolution(clazzField)) {
-        // class c ... val |>x<| ...
-        //state.updateCurrentResolution(clazzFieldNamed);
-        //state.complete();
-        //} else if (state.isCurrentResolution(clazzMethod)) {
-        // method |>x<| ...
-        //state.updateCurrentResolution(clazzMethodNamed);
-        //state.complete();
-        //}
-        else if (state.isCurrentResolution(jsxStartTag)) {
+        } else if (state.isCurrentResolution(jsxStartTag)) {
             // This is a property
             state.popEndUntilStartScope();
             state.remapCurrentToken(m_types.PROPERTY_NAME).
@@ -719,139 +327,22 @@ public class NsParser extends CommonParser<NsTypes> {
                         }
                     });
         }
-        // else if (state.isCurrentResolution(recordBinding)) {
-        //    state.add(mark(builder, state.currentContext(), recordField, m_types.C_RECORD_FIELD));
-        //} else if (state.isCurrentResolution(record)) {
-        //    state.add(mark(builder, recordUsage, recordField, m_types.C_RECORD_FIELD));
-        //} else if (state.isCurrentResolution(jsObject)) {
-        //    state.add(mark(builder, state.currentContext(), objectField, m_types.C_OBJECT_FIELD));
-        //} else if (state.isCurrentResolution(mixin)) {
-        //    state.complete();
-        //} else if (shouldStartExpression(state)) {
-        //    IElementType tokenType = builder.getTokenType();
-        //    if (tokenType != null) {
-        //        state.add(mark(builder, state.currentContext(), genericExpression, tokenType));
-        //    }
-        //} else if (!state.isCurrentContext(signature)) {
-        //    IElementType nextElementType = builder.lookAhead(1);
-        //    if (nextElementType == m_types.ARROW) {
-        //         Single (paren less) function parameters
-        //         <c> => ...
-        //state.add(mark(builder, function, function, m_types.C_FUN_EXPR).complete());
-        //state.add(mark(builder, function, functionParameters, m_types.C_FUN_PARAMS).complete());
-        //state.add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM).complete());
-        //}
-        //}
 
         if (!state.isCurrentResolution(jsxTagProperty)) {
             state.wrapWith(m_types.C_LOWER_SYMBOL);
         }
     }
 
-    private void parseLBracket(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //IElementType nextTokenType = builder.rawLookup(1);
-        //if (nextTokenType == m_types.ARROBASE) {
-        //    if (state.isCurrentResolution(recordField)) {
-        //        state.popEnd();
-        //        state.add(markScope(builder, recordFieldAnnotation, annotation, m_types.C_ANNOTATION_EXPR, m_types.LBRACKET));
-        //    } else {
-        //        state.add(markScope(builder, annotation, m_types.C_ANNOTATION_EXPR, m_types.LBRACKET));
-        //    }
-        //} else if (nextTokenType == m_types.PERCENT) {
-        //    state.add(markScope(builder, macro, m_types.C_MACRO_EXPR, m_types.LBRACKET));
-        //} else {
-        //    if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
-        // Local open
-        // M.|>[<| ... ]
-        //state.add(markScope(builder, localOpen, m_types.C_LOCAL_OPEN, m_types.LBRACKET).complete());
-        //} else {
-        //    state.add(markScope(builder, bracket, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
-        //}
-        //}
-    }
-
-    private void parseRBracket(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //ParserScope scope = state.endUntilScopeToken(m_types.LBRACKET);
-        //state.advance();
-        //
-        //if (scope != null) {
-        //    if (!scope.isResolution(annotation)) {
-        //        scope.complete();
-        //    }
-        //    state.popEnd();
-        //    if (scope.isContext(recordFieldAnnotation)) {
-        //        state.add(mark(builder, state.currentContext(), recordField, m_types.C_RECORD_FIELD));
-        //    }
-        //}
-    }
-
-    private void parseBracketGt(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //state.add(markScope(builder, bracketGt, m_types.C_SCOPED_EXPR, m_types.LBRACKET));
-    }
-
-    private void parseLBrace(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.previousElementType1 == m_types.DOT && state.previousElementType2 == m_types.UIDENT) {
-        // Local open a js object
-        // Xxx.|>{<| .. }
-        //state.add(markScope(builder, localOpen, localObjectOpen, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
-        //}
-        //
-        //if (state.isCurrentResolution(typeNamedEq)) {
-        //    boolean isJsObject = builder.lookAhead(1) == m_types.DOT;
-        //    state.add(markScope(builder, isJsObject ? jsObject : recordBinding, isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR, m_types.LBRACE));
-        //} else if (state.isCurrentResolution(tryBody)) {
-        // A try expression
-        //   try (..) |>{<| .. }
-        //state.updateCurrentResolution(tryBodyWith).
-        //        add(markScope(builder, state.currentContext(), tryBodyWith, m_types.C_TRY_HANDLERS, m_types.LBRACE));
-        //} else if (state.isCurrentResolution(moduleNamedEq) || state.isCurrentResolution(moduleNamedSignature)) {
-        //    state.add(markScope(builder, moduleBinding, m_types.C_SCOPED_EXPR, m_types.LBRACE));
-        //} else if (state.isCurrentResolution(letNamedEq)) {
-        //    state.add(markScope(builder, maybeRecord, maybeRecordUsage, m_types.C_SCOPED_EXPR, m_types.LBRACE));
-        //} else if (state.isCurrentResolution(ifThenStatement)) {
-        //    state.add(markScope(builder, scope, brace, m_types.C_SCOPED_EXPR, m_types.LBRACE));
-        //} else if (state.isCurrentResolution(clazzNamedEq)) {
-        //    state.add(markScope(builder, clazzBodyScope, m_types.C_SCOPED_EXPR, m_types.LBRACE));
-        //} else if (state.isCurrentResolution(switchBinaryCondition)) {
-        //    boolean isSwitch = state.popEndUntilContext(switch_).isCurrentResolution(switch_);
-        //    state.add(markScope(builder, isSwitch ? switchBody : brace, m_types.C_SCOPED_EXPR, isSwitch ? m_types.SWITCH : m_types.LBRACE));
-        //}
-        // else
+    private void parseLBrace(@NotNull ParserState state) {
         if (state.isCurrentResolution(jsxTagPropertyEqValue)) {
             // A scoped property
             state.updateScopeToken(m_types.LBRACE);
         }
-        // else if (state.isCurrentResolution(functorParamColon)) {
-        //    state.updateCurrentResolution(functorParamColonSignature).
-        //            add(markScope(builder, state.currentContext(), functorParamColonSignature, m_types.C_SIG_EXPR, m_types.LBRACE).complete());
-        //} else if (state.isCurrentContext(functorDeclaration) && state.previousElementType1 == m_types.ARROW) {
-        // Functor implementation
-        //    module M = (..) => |>{<| .. }
-        //state.add(markScope(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING, m_types.LBRACE).complete());
-        //} else {
-        // it might be a js object
-        //IElementType nextElement = builder.lookAhead(1);
-        //if (state.isCurrentResolution(signatureItem) && nextElement == m_types.DOT) {
-        // js object detected (in definition)
-        // let x: |>{<|. ___ }
-        //state.add(markScope(builder, state.currentContext(), jsObject, m_types.C_JS_OBJECT, m_types.LBRACE));
-        //} else if (nextElement == m_types.STRING_VALUE || nextElement == m_types.DOT) {
-        // js object detected (in usage)
-        // |>{<| "x" ___ }
-        //state.add(markScope(builder, state.currentContext(), jsObject, m_types.C_JS_OBJECT, m_types.LBRACE)).
-        //        advance().
-        //        add(mark(builder, state.currentContext(), objectField, m_types.C_OBJECT_FIELD));
-        //} else {
+
         state.markScope(scope, brace, m_types.C_SCOPED_EXPR, m_types.LBRACE);
-        //}
-        //}
     }
 
     private void parseRBrace(@NotNull ParserState state) {
-        //if (state.isCurrentResolution(recordField)) {
-        //    state.popEnd();
-        //}
-
         ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD, m_types.SWITCH);
         state.advance();
 
@@ -865,52 +356,11 @@ public class NsParser extends CommonParser<NsTypes> {
         }
     }
 
-    private void parseLParen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentResolution(switchBinaryCondition)) {
-        //    state.add(markScope(builder, state.currentContext(), paren, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        //    return;
-        //}
-        //
+    private void parseLParen(@NotNull ParserState state) {
         if (state.isCurrentResolution(annotationName)) {
             // @ann |>(<| ... )
             state.popEnd();
-        }
-        //if (state.isCurrentResolution(option)) {
-        //    state.complete().
-        //            add(markScope(builder, state.currentContext(), optionParameter, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        //} else if (state.isCurrentResolution(try_)) {
-        // Valid try expression
-        //   try |>(<| .. ) with ..
-        //state.updateCurrentResolution(tryBody).
-        //        complete().
-        //        add(markScope(builder, state.currentContext(), tryBody, m_types.C_TRY_BODY, m_types.LPAREN));
-        //} else if (state.isCurrentResolution(signatureItem) && state.previousElementType1 == m_types.COLON) {
-        // A ReasonML signature is written like a function, but it's not
-        //   (x, y) => z  alias x => y => z
-        //state.popCancel().
-        //        add(markScope(builder, signatureParams, signature, m_types.LPAREN, m_types.LPAREN).dummy()).
-        //        advance().
-        //        add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
-        //} else if (state.isCurrentResolution(letNamedSignature)) {
-        // A signature on a let definition
-        //   let x : |>(<| .. )
-        //state.add(markScope(builder, signatureScope, signatureScope, m_types.LPAREN, m_types.LPAREN)).
-        //        advance().
-        //        add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
-        //} else if (state.isCurrentResolution(moduleNamedEq) && state.previousElementType1 != m_types.UIDENT) {
-        // This is a functor
-        //   module M = |>(<| .. )
-        //state.updateCurrentContext(functorDeclaration).
-        //        updateCurrentResolution(functorNamedEq).
-        //        updateCurrentCompositeElementType(m_types.C_FUNCTOR).
-        //        add(markScope(builder, functorDeclarationParams, functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)).
-        //        advance().
-        //        add(mark(builder, state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM).complete());
-        //} else if (state.isCurrentResolution(functorNamedEqColon)) {
-        // Functor constraint :: module M = (..) : |>(<| .. ) =
-        //state.add(markScope(builder, functorConstraints, m_types.C_CONSTRAINTS, m_types.LPAREN));
-        //}
-        else if (state.isCurrentResolution(maybeFunctorCall)) {
+        } else if (state.isCurrentResolution(maybeFunctorCall)) {
             // We know now that it is really a functor call
             // module M = X |>(<| ... )
             // open X |>(<| ... )
@@ -919,196 +369,6 @@ public class NsParser extends CommonParser<NsTypes> {
                     advance().
                     mark(state.currentContext(), functorParam, m_types.C_FUNCTOR_PARAM);
         }
-        // else if (state.isCurrentResolution(typeNamedEqVariant)) {
-        // Variant params
-        // type t = | Variant |>(<| .. )
-        //state.add(markScope(builder, variantConstructor, m_types.C_FUN_PARAMS, m_types.LPAREN)).
-        //        advance().
-        //        add(mark(builder, variantConstructor, functionParameter, m_types.C_FUN_PARAM));
-        //} else if (state.isCurrentResolution(patternMatchVariant)) {
-        // It's a constructor
-        // | Variant |>(<| .. ) => ..
-        //state.add(markScope(builder, state.currentContext(), patternMatchVariantConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
-        //} else if (state.isCurrentResolution(variant)) {
-        // It's a variant constructor (not in a pattern match)
-        // Variant |>(<| .. )
-        //state.add(markScope(builder, state.currentContext(), variantConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN));
-        //} else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
-        // Local open
-        // M.|>(<| ...
-        //state.add(markScope(builder, localOpen, m_types.C_LOCAL_OPEN, m_types.LPAREN).complete());
-        //} else if (state.isCurrentResolution(clazzNamed)) {
-        //    state.add(markScope(builder, state.currentContext(), scope, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        //} else if (state.isCurrentResolution(clazzNamedParameters)) {
-        //    state.add(markScope(builder, state.currentContext(), clazzConstructor, m_types.C_CLASS_CONSTR, m_types.LPAREN));
-        //} else if (state.isCurrentResolution(ifThenStatement)) {
-        //    state.complete();
-        //    state.add(markScope(builder, binaryCondition, m_types.C_BIN_CONDITION, m_types.LPAREN).complete());
-        //} else if (state.isCurrentContext(typeConstrName)) {
-        // type parameter
-        // type x = t |>(<| 'a )
-        //state.add(markScope(builder, state.currentContext(), typeConstrNameParameters, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        //} else if (state.previousElementType1 == m_types.LIDENT) {
-        // calling a function
-        //state.
-        //        add(markScope(builder, functionCall, functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)).
-        //        advance().
-        //        add(mark(builder, functionCall, functionParameter, m_types.C_FUN_CALL_PARAM));
-        //} else if (state.isCurrentResolution(external)) {
-        // overloading an operator
-        //state.updateCurrentResolution(externalNamed);
-        //state.complete();
-        //} else if (state.isCurrentResolution(let)) {
-        // Overloading operator OR deconstructing a term
-        //  let |>(<| + ) =
-        //  let |>(<| a, b ) =
-        //state.add(markScope(builder, let, genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        //} else {
-        //    IElementType nextTokenType = builder.lookAhead(1);
-        //
-        //    if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {
-        // |>(<| .  OR  |>(<| ~
-        //state.add(mark(builder, function, m_types.C_FUN_EXPR)).
-        //        add(markScope(builder, functionParameters, m_types.C_FUN_PARAMS, m_types.LPAREN)).
-        //        advance();
-        //if (nextTokenType == m_types.DOT) {
-        //    state.advance();
-        //}
-        //state.add(mark(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM).complete());
-        //} else if (nextTokenType == m_types.RPAREN) {
-        //    IElementType nexNextTokenType = builder.lookAhead(2);
-        //    if (nexNextTokenType == m_types.ARROW) {
-        // Function in parameter
-        //state.add(mark(builder, function, m_types.C_FUN_EXPR).complete()).
-        //        add(mark(builder, functionParameters, m_types.C_FUN_PARAMS).complete()).
-        //        add(mark(builder, functionParameter, m_types.C_FUN_PARAM).complete()).
-        //        add(mark(builder, function, functionParameter, m_types.C_UNIT).complete()).
-        //        advance().
-        //        advance().
-        //        popEnd().
-        //        popEnd().
-        //        popEnd();
-        //} else {
-        // unit
-        //state.add(mark(builder, function, functionParameter, m_types.C_UNIT).complete()).advance().advance().popEnd();
-        //}
-        //} else {
-        //    if (state.previousElementType1 == m_types.LIDENT) {
-        //        state.add(markScope(builder, paren, functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN));
-        //    } else {
-        //        state.add(markScope(builder, genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN));
-        //    }
-        //}
-        //}
-    }
-
-    private void parseRParen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //if (state.isCurrentCompositeElementType(m_types.C_UNKNOWN_EXPR)) {
-        //    IElementType aheadType = builder.lookAhead(1);
-        //    if (aheadType == m_types.ARROW) {
-        // if current resolution is UNKNOWN and next item is an arrow, it means we are processing a function definition,
-        // we must rollback to the start of the scope and start the parsing again, but this time with exact information!
-        //ParserScope startScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
-        //if (startScope != null) {
-        //    startScope.rollbackTo();
-        //    state.pop();
-        //    state.add(mark(builder, function, m_types.C_FUN_EXPR).complete())
-        //            .add(markScope(builder, functionParameters, functionParameters, m_types.C_FUN_PARAMS, m_types.LPAREN)).advance()
-        //            .add(mark(builder, functionParameters, functionParameter, m_types.C_FUN_PARAM));
-        //    return;
-        //}
-        //}
-        //}
-
-        // pop intermediate constructions
-        //if (state.isCurrentResolution(signatureItem)) {
-        //    state.popEnd();
-        //}
-        //if (state.isCurrentResolution(signatureScope)) {
-        //    state.popEnd();
-        //}
-        //if (state.isCurrentResolution(functorConstraint)) {
-        //    state.complete().popEnd();
-        //}
-
-        // Stopping early when structure is well known
-        //if (state.isCurrentResolution(letNamedSignature)) {
-        //    return;
-        //} else if (state.isCurrentResolution(switchBinaryCondition)) {
-        //    state.popEnd();
-        //    return;
-        //} else if (state.isCurrentResolution(variantConstructor)) {
-        //    state.complete();
-        //    state.endUntilResolution(variant);
-        //    state.popEnd();
-        //    return;
-        //} else if (state.isCurrentResolution(functorConstraints)) {
-        //    state.complete().endUntilScopeToken(m_types.LPAREN);
-        //    state.popEnd();
-        //    return;
-        //}
-        //
-        //if (!state.isScopeTokenElementType(m_types.LPAREN) && !state.isCurrentEmpty()) {
-        //    state.complete();
-        //}
-        //
-        //ParserScope parenScope = state.endUntilScopeToken(m_types.LPAREN);
-        //state.advance();
-        //IElementType nextTokenType = builder.getTokenType();
-
-        //if (parenScope != null) {
-        // Remove the scope from the stack, we want to test its parent
-        //state.pop();
-        //
-        //if (nextTokenType == m_types.ARROW && !state.isCurrentResolution(function)) {
-        //    if (state.isCurrentResolution(functorNamedEq)) {
-        //        state.updateCurrentResolution(functorNamedEqParamsArrow);
-        //    } else if (state.isCurrentResolution(patternMatchVariant)) {
-        //        state.updateCurrentResolution(patternMatchVariantConstructor);
-        //    } else if (!state.isCurrentResolution(patternMatch) && !state.isCurrentContext(signature) && !state.isCurrentContext(functorDeclaration)) {
-        // we are processing a function definition,
-        // we must rollback to the start of the scope and start the parsing again, but this time with exact information!
-        //parenScope.rollbackTo();
-        //state.add(mark(builder, function, m_types.C_FUN_EXPR).complete())
-        //        .add(markScope(builder, function, functionParameters, m_types.C_FUN_PARAMS, m_types.LPAREN).complete()).advance()
-        //        .add(mark(builder, function, functionParameter, m_types.C_FUN_PARAM));
-        //return;
-        //}
-        //} else if (nextTokenType == m_types.LPAREN) {
-        //    if (state.isCurrentResolution(clazzNamed)) {
-        // First parens found, it must be a class parameter
-        //parenScope.updateCompositeElementType(m_types.C_CLASS_PARAMS);
-        //state.updateCurrentResolution(clazzNamedParameters);
-        //}
-        //} else if (nextTokenType == m_types.EQ) {
-        //    if (state.isCurrentResolution(clazzNamed)) {
-        //        parenScope.updateCompositeElementType(m_types.C_CLASS_CONSTR);
-        //        state.updateCurrentResolution(clazzNamedConstructor);
-        //    } else if (parenScope.isResolution(clazzConstructor)) {
-        //        state.updateCurrentResolution(clazzConstructor);
-        //    }
-        //} else if (nextTokenType == m_types.COLON) {
-        //    if (state.isCurrentResolution(let)) {
-        // let (op|>)<|: ...
-        //parenScope.updateCompositeElementType(m_types.C_OPERATOR);
-        //state.updateCurrentResolution(letNamed).complete();
-        //}
-        //}
-        //
-        //parenScope.complete();
-        //parenScope.end();
-        //
-        //if (state.isCurrentResolution(option)) {
-        //    state.popEnd();
-        //}
-        //
-        //ParserScope scope = state.getLatestScope();
-        //if (scope != null && ((scope.isResolution(jsxTagPropertyEqValue) && !scope.isScope()))) {
-        //    if (state.isCurrentResolution(jsxTagPropertyEqValue)) {
-        //        state.popEnd().popEnd();
-        //    }
-        //}
-        //}
     }
 
     private void parseEq(@NotNull ParserState state) {
@@ -1182,62 +442,8 @@ public class NsParser extends CommonParser<NsTypes> {
             state.remapCurrentToken(m_types.VARIANT_NAME).wrapWith(m_types.C_VARIANT);
             return;
         }
-        // else if (state.isCurrentResolution(exception)) {
-        // Declaring an exception
-        //   exception |>Ex<| ..
-        //state.complete().updateCurrentResolution(exceptionNamed);
-        //builder.remapCurrentToken(m_types.EXCEPTION_NAME);
-        //} else if (state.isCurrentResolution(patternMatch)) {
-        //    IElementType nextElementType = builder.lookAhead(1);
-        //    if (nextElementType != m_types.DOT) {
-        // Defining a pattern match
-        // switch (c) { | |>X<| .. }
-        //builder.remapCurrentToken(m_types.VARIANT_NAME);
-        //state.wrapWith(m_types.C_VARIANT).updateCurrentResolution(patternMatchVariant);
-        //
-        //return;
-        //}
-        //}
-        else {
-            //    if (shouldStartExpression(state)) {
-            //        IElementType tokenType = builder.getTokenType();
-            //        if (tokenType != null) {
-            //            state.add(mark(builder, genericExpression, tokenType));
-            //        }
-            //    }
-            //
-            //    IElementType nextElementType = builder.lookAhead(1);
-            //    if (!state.isCurrentResolution(moduleNamedEq) && !state.isCurrentResolution(maybeFunctorCall) && nextElementType == m_types.LPAREN) {
-            //        builder.remapCurrentToken(m_types.VARIANT_NAME);
-            // A variant with a constructor
-            //if (state.isCurrentResolution(typeNamedEq)) {
-            //    state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
-            //}
-            //state.wrapWith(m_types.C_VARIANT);
-            //return;
-            //} else if (state.isCurrentResolution(typeNamedEq) && nextElementType == m_types.PIPE) {
-            // We are declaring a variant without a pipe before
-            // type t = |>X<| | ..
-            //builder.remapCurrentToken(m_types.VARIANT_NAME);
-            //state.add(mark(builder, state.currentContext(), typeNamedEqVariant, m_types.C_VARIANT_DECL).complete());
-            //state.wrapWith(m_types.C_VARIANT);
-            //return;
-            //} else if (!state.isCurrentResolution(moduleNamedEq) && !state.isCurrentResolution(maybeFunctorCall) && nextElementType != m_types.DOT) {
-            // Must be a variant call
-            //builder.remapCurrentToken(m_types.VARIANT_NAME);
-            //state.wrapWith(m_types.C_VARIANT);
-            //return;
-            //}
-        }
 
         state.wrapWith(m_types.C_UPPER_SYMBOL);
-    }
-
-    private void parseSwitch(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        //boolean inScope = state.isScopeTokenElementType(m_types.LBRACE);
-        //state.add(mark(builder, switch_, m_types.C_SWITCH_EXPR).complete().setIsStart(inScope)).
-        //        advance().
-        //        add(mark(builder, switchBinaryCondition, m_types.C_BIN_CONDITION).complete());
     }
 
     private void parseTry(@NotNull ParserState state) {
@@ -1251,45 +457,9 @@ public class NsParser extends CommonParser<NsTypes> {
                     advance().
                     mark(state.currentContext(), signatureItem, m_types.C_SIG_ITEM);
         }
-        // else if (state.isCurrentContext(typeConstrName)) {
-        //    state.advance().popEndUntilContext(type).popEnd();
-        //} else if (state.isCurrentResolution(functionParameter)) {
-        //    state.popEndUnlessFirstContext(function).advance().add(mark(builder, function, functionBody, m_types.C_FUN_BODY).complete());
-        //} else if (state.isCurrentResolution(function)) {
-        // let x = ( .. ) |>=><| ..
-        //state.complete().advance().add(mark(builder, state.currentContext(), functionBody, m_types.C_FUN_BODY).complete());
-        //} else if (state.isCurrentResolution(functorNamedEqColon) || state.isCurrentResolution(functorNamedColonResult)) {
-        // module Make = (M) : R |>=><| ..
-        //if (state.isCurrentResolution(functorNamedColonResult)) {
-        //    state.complete().popEnd();
-        //}
-        //state.advance().add(mark(builder, functorBinding, functorBinding, m_types.C_FUNCTOR_BINDING).complete());
-        //} else if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(patternMatchVariantConstructor)) {
-        // switch ( .. ) { | .. |>=><| .. }
-        //state.advance().add(mark(builder, state.currentContext(), patternMatchBody, m_types.C_PATTERN_MATCH_BODY).complete()).setStart();
-        //}
-    }
-
-    private boolean shouldStartExpression(@NotNull ParserState state) {
-        return state.isInScopeExpression() && state.isScopeTokenElementType(m_types.LBRACE);
     }
 
     private void endLikeSemi(@NotNull ParserState state) {
-        //if (state.isCurrentResolution(includeConstraint)) {
-        //    state.complete().popEnd().popEnd();
-        //}
-        //
-        //if (state.previousElementType1 != m_types.EQ && state.previousElementType1 != m_types.RIGHT_ARROW && state.previousElementType1 != m_types.TRY
-        //        && state.previousElementType1 != m_types.SEMI && state.previousElementType1 != m_types.THEN && state.previousElementType1 != m_types.ELSE
-        //        && state.previousElementType1 != m_types.IN && state.previousElementType1 != m_types.LPAREN && state.previousElementType1 != m_types.DO
-        //        && state.previousElementType1 != m_types.STRUCT && state.previousElementType1 != m_types.SIG && state.previousElementType1 != m_types.COLON) {
         state.popEndUntilStartScope();
-        //ParserScope parserScope = state.getLatestScope();
-        //while (parserScope != null && (parserScope.isContext(function) || parserScope.isContext(match))) {
-        //    state.popEnd();
-        //    state.popEndUntilStartScope();
-        //    parserScope = state.getLatestScope();
-        //}
-        //}
     }
 }

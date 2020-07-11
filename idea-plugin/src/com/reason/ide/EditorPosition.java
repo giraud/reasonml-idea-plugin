@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  * Offset <-> Position converter
  */
 public class EditorPosition {
-    private int[] m_lineLengths;
+    private final int[] m_lineLengths;
 
     /**
      * Extract each line length, needed to compute an offset without a ref to the editor.

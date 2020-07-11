@@ -23,7 +23,7 @@ public class BsConfig {
     private final Set<String> m_devSources = new THashSet<>();
     private final Set<String> m_deps = new THashSet<>();
     private final Set<Path> m_paths = new THashSet<>();
-    private String[] m_ppx;
+    private final String[] m_ppx;
     private boolean m_useExternalAsSource = false;
     private Path m_basePath = null;
 

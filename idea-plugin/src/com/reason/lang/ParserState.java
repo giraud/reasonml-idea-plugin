@@ -347,4 +347,8 @@ public class ParserState {
     public IElementType rawLookup(int steps) {
         return m_builder.rawLookup(steps);
     }
+
+    public IElementType getTokenType() {
+        return m_builder.getTokenType();
+    }
 }

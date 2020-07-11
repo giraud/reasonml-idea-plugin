@@ -17,8 +17,6 @@ import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.EsyPackageJsonFileType;
 
-import java.io.IOException;
-
 public class EsyPackageJson {
 
     private EsyPackageJson() {

@@ -5,7 +5,6 @@ import com.intellij.psi.stubs.PsiFileStubImpl;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.stub.type.NsFileStubElementType;
-import com.reason.lang.core.stub.type.RmlFileStubElementType;
 
 public class NsFileStub extends PsiFileStubImpl<FileBase> {
 

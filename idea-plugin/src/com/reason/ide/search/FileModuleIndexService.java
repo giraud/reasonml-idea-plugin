@@ -42,7 +42,6 @@ public class FileModuleIndexService {
         return FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project);
     }
 
-    @NotNull
     public boolean isNamespace(@Nullable String name, @NotNull Project project) {
         return name != null && FileBasedIndex.getInstance().getAllKeys(m_nsIndex.getName(), project).contains(name);
     }

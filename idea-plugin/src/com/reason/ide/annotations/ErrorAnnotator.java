@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
+import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -21,7 +22,7 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<ErrorAnnotator.
     @Nullable
     @Override
     public Collection<ErrorAnnotator.BsbErrorAnnotation> collectInformation(@NotNull PsiFile file, @NotNull Editor editor, boolean hasErrors) {
-        List<BsbErrorAnnotation> result = null;
+        List<BsbErrorAnnotation> result = new ArrayList<>();
 
         String filename = file.getVirtualFile().getName();
         ErrorsManager service = ServiceManager.getService(file.getProject(), ErrorsManager.class);
@@ -29,8 +30,6 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<ErrorAnnotator.
         if (LOG.isDebugEnabled()) {
             LOG.debug("Collected info for file " + filename + ": " + collectedInfo.size());
         }
-
-        result = new ArrayList<>();
 
         for (OutputInfo info : collectedInfo) {
             LogicalPosition start = new LogicalPosition(info.lineStart < 1 ? 0 : info.lineStart - 1, info.colStart < 1 ? 0 : info.colStart);
@@ -68,11 +67,11 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<ErrorAnnotator.
 
         for (BsbErrorAnnotation annotation : annotationResult) {
             if (annotation.isError) {
-                holder.createErrorAnnotation(annotation.range, annotation.message);
+                holder.newAnnotation(HighlightSeverity.ERROR, annotation.message).range(annotation.range).create();
                 problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.startPos.line, annotation.startPos.column,
                                                             new String[]{annotation.message}));
             } else {
-                holder.createWarningAnnotation(annotation.range, annotation.message);
+                holder.newAnnotation(HighlightSeverity.WARNING, annotation.message).range(annotation.range).create();
             }
         }
 

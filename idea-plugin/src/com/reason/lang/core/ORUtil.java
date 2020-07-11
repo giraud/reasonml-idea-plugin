@@ -121,7 +121,7 @@ public class ORUtil {
 
         PsiElement sibling = root.getNextSibling();
         while (sibling != null) {
-            if (sibling.getClass().isAssignableFrom(clazz)) {
+            if (clazz != null && sibling.getClass().isAssignableFrom(clazz)) {
                 sibling = null;
             } else {
                 text += sibling.getText();

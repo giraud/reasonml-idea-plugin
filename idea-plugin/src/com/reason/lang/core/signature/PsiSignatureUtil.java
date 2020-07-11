@@ -1,13 +1,13 @@
 package com.reason.lang.core.signature;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiVal;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PsiSignatureUtil {
 
@@ -27,10 +27,8 @@ public class PsiSignatureUtil {
             ORSignature signature = val.getORSignature();
             return signature.asString(targetLanguage);
         } else if (element instanceof PsiInnerModule) {
-            String qualifiedName = ((PsiInnerModule) element).getQualifiedName();
-            return qualifiedName == null ? "" : qualifiedName;
+            return ((PsiInnerModule) element).getQualifiedName();
         }
         return "";
     }
-
 }
