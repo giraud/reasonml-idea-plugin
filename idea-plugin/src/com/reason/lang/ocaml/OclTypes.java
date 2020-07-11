@@ -6,7 +6,6 @@ import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiParameterStubElementType;
 import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
 import com.reason.lang.core.stub.type.PsiTypeStubElementType;
@@ -68,6 +67,7 @@ public class OclTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", OclLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
@@ -115,6 +115,7 @@ public class OclTypes extends ORTypes {
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", OclLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", OclLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", OclLanguage.INSTANCE);
+        CATCH = new ORTokenElementType("CATCH", OclLanguage.INSTANCE);
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", OclLanguage.INSTANCE);
         INT_VALUE = new ORTokenElementType("INT_VALUE", OclLanguage.INSTANCE);
         SWITCH = new ORTokenElementType("SWITCH", OclLanguage.INSTANCE);
@@ -123,7 +124,6 @@ public class OclTypes extends ORTypes {
         FUNCTOR = new ORTokenElementType("FUNCTOR", OclLanguage.INSTANCE);
         IF = new ORTokenElementType("IF", OclLanguage.INSTANCE);
         EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", OclLanguage.INSTANCE);
-        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", OclLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", OclLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", OclLanguage.INSTANCE);
@@ -269,6 +269,7 @@ public class OclTypes extends ORTypes {
         BRACKET_LT = new ORTokenElementType("BRACKET_LT", OclLanguage.INSTANCE);
         BRACE_LT = new ORTokenElementType("BRACE_LT", OclLanguage.INSTANCE);
 
+        ML_STRING_VALUE = new ORTokenElementType("ML_STRING_VALUE", OclLanguage.INSTANCE);
         ML_STRING_OPEN = new ORTokenElementType("ML_STRING_OPEN", OclLanguage.INSTANCE);
         ML_STRING_CLOSE = new ORTokenElementType("ML_STRING_CLOSE", OclLanguage.INSTANCE);
         JS_STRING_OPEN = new ORTokenElementType("JS_STRING_OPEN", OclLanguage.INSTANCE);

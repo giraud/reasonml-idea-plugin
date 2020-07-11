@@ -1,5 +1,9 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -10,17 +14,22 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiDeconstruction;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiJsObject;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.*;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
 
@@ -86,7 +95,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
 
     @NotNull
-    private static List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
+    private static List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path,
+                                                          int offset) {
         List<PsiObjectField> fields = new ArrayList<>();
         PsiElement prevParent = null;
         boolean isAdding = false;
@@ -284,9 +294,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     }
     //endregion
 
-    @Nullable
     @Override
-    public String getQualifiedName() {
+    public @NotNull String getQualifiedName() {
         PsiLetStub stub = getGreenStub();
         if (stub != null) {
             return stub.getQualifiedName();
@@ -382,5 +391,4 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     public String toString() {
         return "Let " + getQualifiedName();
     }
-
 }

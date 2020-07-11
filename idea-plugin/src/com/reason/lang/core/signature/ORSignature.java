@@ -49,19 +49,24 @@ public class ORSignature {
         m_types = new SignatureType[items.size()];
         int i = 0;
         for (PsiSignatureItem item : items) {
-            String[] tokens = item.getText().split("=");
-            String normalizedValue = tokens[0].
-                    replaceAll("\\s+", " ").
-                    replaceAll("\\( ", "\\(").
-                    replaceAll(", \\)", "\\)").
-                    replaceAll("=>", "->");
-            SignatureType signatureType = new SignatureType();
-            signatureType.item = item;
-            signatureType.value = normalizedValue; //(isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
-            signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
-            signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
+            String text = item.getText();
+            if (text.isEmpty()) {
+                m_types[i] = new SignatureType();
+            } else {
+                String[] tokens = text.split("=");
+                String normalizedValue = tokens[0].
+                        replaceAll("\\s+", " ").
+                        replaceAll("\\( ", "\\(").
+                        replaceAll(", \\)", "\\)").
+                        replaceAll("=>", "->");
+                SignatureType signatureType = new SignatureType();
+                signatureType.item = item;
+                signatureType.value = normalizedValue; //(isOcaml && item.isNamedItem()) ? "~" + normalizedValue : normalizedValue;
+                signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
+                signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
 
-            m_types[i] = signatureType;
+                m_types[i] = signatureType;
+            }
             i++;
         }
     }

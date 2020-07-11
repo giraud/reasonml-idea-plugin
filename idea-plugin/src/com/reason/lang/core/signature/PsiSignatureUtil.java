@@ -27,8 +27,7 @@ public class PsiSignatureUtil {
             ORSignature signature = val.getORSignature();
             return signature.asString(targetLanguage);
         } else if (element instanceof PsiInnerModule) {
-            String qualifiedName = ((PsiInnerModule) element).getQualifiedName();
-            return qualifiedName == null ? "" : qualifiedName;
+            return ((PsiInnerModule) element).getQualifiedName();
         }
         return "";
     }

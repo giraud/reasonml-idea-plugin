@@ -70,6 +70,7 @@ public class NsTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", NsLanguage.INSTANCE);
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", NsLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", NsLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", NsLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", NsLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", NsLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", NsLanguage.INSTANCE);
@@ -110,25 +111,26 @@ public class NsTypes extends ORTypes {
 
         // Token element types
 
-        BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", NsLanguage.INSTANCE);
-        STRING_VALUE = new ORTokenElementType("STRING_VALUE", NsLanguage.INSTANCE);
-        FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", NsLanguage.INSTANCE);
-        CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", NsLanguage.INSTANCE);
-        INT_VALUE = new ORTokenElementType("INT_VALUE", NsLanguage.INSTANCE);
-        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", NsLanguage.INSTANCE);
-        PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", NsLanguage.INSTANCE);
-        SWITCH = new ORTokenElementType("SWITCH", NsLanguage.INSTANCE);
-        FUNCTION = new ORTokenElementType("FUNCTION", NsLanguage.INSTANCE);
-        FUN = new ORTokenElementType("FUN", NsLanguage.INSTANCE);
-        FUNCTOR = new ORTokenElementType("FUNCTOR", NsLanguage.INSTANCE);
-        IF = new ORTokenElementType("IF", NsLanguage.INSTANCE);
-        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", NsLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", NsLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", NsLanguage.INSTANCE);
         ARROBASE = new ORTokenElementType("ARROBASE", NsLanguage.INSTANCE);
         ARROW = new ORTokenElementType("ARROW", NsLanguage.INSTANCE);
         ASSERT = new ORTokenElementType("ASSERT", NsLanguage.INSTANCE);
         AS = new ORTokenElementType("AS", NsLanguage.INSTANCE);
+        BACKSLASH = new ORTokenElementType("BACKSLASH", NsLanguage.INSTANCE);
+        BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", NsLanguage.INSTANCE);
+        CATCH = new ORTokenElementType("CATCH", NsLanguage.INSTANCE);
+        CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", NsLanguage.INSTANCE);
+        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", NsLanguage.INSTANCE);
+        FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", NsLanguage.INSTANCE);
+        FUNCTION = new ORTokenElementType("FUNCTION", NsLanguage.INSTANCE);
+        FUN = new ORTokenElementType("FUN", NsLanguage.INSTANCE);
+        FUNCTOR = new ORTokenElementType("FUNCTOR", NsLanguage.INSTANCE);
+        INT_VALUE = new ORTokenElementType("INT_VALUE", NsLanguage.INSTANCE);
+        PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", NsLanguage.INSTANCE);
+        STRING_VALUE = new ORTokenElementType("STRING_VALUE", NsLanguage.INSTANCE);
+        SWITCH = new ORTokenElementType("SWITCH", NsLanguage.INSTANCE);
+        IF = new ORTokenElementType("IF", NsLanguage.INSTANCE);
         BACKTICK = new ORTokenElementType("BACKTICK", NsLanguage.INSTANCE);
         BEGIN = new ORTokenElementType("BEGIN", NsLanguage.INSTANCE);
         CARRET = new ORTokenElementType("CARRET", NsLanguage.INSTANCE);
@@ -267,6 +269,7 @@ public class NsTypes extends ORTypes {
         BRACKET_LT = new ORTokenElementType("BRACKET_LT", NsLanguage.INSTANCE);
         BRACE_LT = new ORTokenElementType("BRACE_LT", NsLanguage.INSTANCE);
 
+        ML_STRING_VALUE = new ORTokenElementType("ML_STRING_VALUE", NsLanguage.INSTANCE);
         ML_STRING_OPEN = new ORTokenElementType("ML_STRING_OPEN", NsLanguage.INSTANCE);
         ML_STRING_CLOSE = new ORTokenElementType("ML_STRING_CLOSE", NsLanguage.INSTANCE);
         JS_STRING_OPEN = new ORTokenElementType("JS_STRING_OPEN", NsLanguage.INSTANCE);

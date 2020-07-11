@@ -7,12 +7,8 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 @SuppressWarnings("ConstantConditions")
-public class VariantDeclarationParsingTest extends BaseParsingTestCase {
-    public VariantDeclarationParsingTest() {
-        super("", "res", new NsParserDefinition());
-    }
-
-    public void testBasic() {
+public class VariantDeclarationParsingTest extends NsParsingTestCase {
+    public void test_basic() {
         PsiType e = first(typeExpressions(parseCode("type color = | Black | White")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -23,7 +19,7 @@ public class VariantDeclarationParsingTest extends BaseParsingTestCase {
         assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
-    public void testBasic2() {
+    public void test_basic2() {
         PsiType e = first(typeExpressions(parseCode("type color = Black | White")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -34,7 +30,7 @@ public class VariantDeclarationParsingTest extends BaseParsingTestCase {
         assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
-    public void testConstructor() {
+    public void test_constructor() {
         PsiType e = first(typeExpressions(parseCode("type color = | Hex(string) | Rgb(int, int, int)")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -46,7 +42,7 @@ public class VariantDeclarationParsingTest extends BaseParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
-    public void testConstructor2() {
+    public void test_constructor2() {
         PsiType e = first(typeExpressions(parseCode("type color = Hex(string) | Rgb(int, int, int)")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -58,7 +54,7 @@ public class VariantDeclarationParsingTest extends BaseParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
-    public void testMixed() {
+    public void test_mixed() {
         PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot(reason) | Loose | Strict")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
