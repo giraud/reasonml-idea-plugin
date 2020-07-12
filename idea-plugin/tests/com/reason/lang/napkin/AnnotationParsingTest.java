@@ -1,0 +1,25 @@
+package com.reason.lang.napkin;
+
+import com.reason.lang.BaseParsingTestCase;
+import com.reason.lang.core.psi.PsiAnnotation;
+
+public class AnnotationParsingTest extends BaseParsingTestCase {
+    public AnnotationParsingTest() {
+        super("", "res", new NsParserDefinition());
+    }
+
+    public void testAnnotationWithString() {
+        PsiAnnotation annotation = (PsiAnnotation) firstElement(parseCode("[@bs.module \"xyz\"]"));
+
+        assertEquals("@bs.module", annotation.getName());
+    }
+
+    public void testAnnotationName() {
+        assertEquals("@bs.module", ((PsiAnnotation) firstElement(parseCode("[@bs.module]"))).getName());
+        assertEquals("@bs.val", ((PsiAnnotation) firstElement(parseCode("[@bs.val]"))).getName());
+    }
+
+    public void testAnnotationString() {
+        assertEquals("[@bs.module \"react-intl\"]", firstElement(parseCode("[@bs.module \"react-intl\"]")).getText());
+    }
+}

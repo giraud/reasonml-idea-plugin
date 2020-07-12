@@ -16,6 +16,9 @@ import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiTag;
+import com.reason.lang.core.psi.PsiTagClose;
+import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
@@ -25,7 +28,6 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
-import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 
 public class FoldingBuilder extends FoldingBuilderEx {
@@ -33,7 +35,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
-        ORTypes types = root.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = ORUtil.getTypes(root.getLanguage());
 
         PsiTreeUtil.processElements(root, element -> {
             if (element instanceof PsiLet) {
@@ -46,6 +48,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
                 foldFunction(descriptors, (PsiFunction) element);
             } else if (element instanceof PsiFunctor) {
                 foldFunctor(descriptors, (PsiFunctor) element);
+            } else if (element instanceof PsiTag) {
+                foldTag(descriptors, (PsiTag) element);
             } else if (element instanceof OclYaccHeader) {
                 foldHeader(descriptors, (OclYaccHeader) element);
             } else if (element instanceof OclYaccRule) {
@@ -109,6 +113,17 @@ public class FoldingBuilder extends FoldingBuilderEx {
         FoldingDescriptor foldBinding = fold(functor.getBinding());
         if (foldBinding != null) {
             descriptors.add(foldBinding);
+        }
+    }
+
+    private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag tag) {
+        PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(tag, PsiTagStart.class);
+        PsiTagClose close = start == null ? null : ORUtil.findImmediateFirstChildOfClass(tag, PsiTagClose.class);
+        // Auto-closed tags are not foldable
+        if (close != null) {
+            PsiElement lastChild = start.getLastChild();
+            TextRange textRange = TextRange.create(lastChild.getTextOffset(), tag.getTextRange().getEndOffset() - 1);
+            descriptors.add(new FoldingDescriptor(tag, textRange));
         }
     }
 

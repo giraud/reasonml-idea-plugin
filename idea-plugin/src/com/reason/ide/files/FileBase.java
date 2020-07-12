@@ -9,7 +9,7 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.PsiFileHelper;
+import com.reason.lang.PsiFileHelper;
 import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

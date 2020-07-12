@@ -24,8 +24,7 @@ public class BsPlatform {
     }
 
     public static Optional<VirtualFile> findFirstBsPlatformDirectory(@NotNull Project project) {
-        return ORProjectManager.findFirstBsContentRoot(project)
-                .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
+        return ORProjectManager.findFirstBsContentRoot(project).flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
     /**
@@ -37,22 +36,20 @@ public class BsPlatform {
      * @param sourceFile starting location for search
      * @return `bs-platform` directory, if found
      */
-    public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project,
-                                                                @NotNull VirtualFile sourceFile) {
-        return findBsConfigForFile(project, sourceFile)
-                .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
+    public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return findBsConfigForFile(project, sourceFile).flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
-    public static Optional<VirtualFile> findBsbExecutable(@NotNull VirtualFile bsPlatformDirectory) {
-        return findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory);
+    public static Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        Optional<VirtualFile> bsPlatformDirectory1 = findBsPlatformDirectory(project, sourceFile);
+        return bsPlatformDirectory1.flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatformDirectory));
     }
 
-    public static Optional<VirtualFile> findBscExecutable(@NotNull VirtualFile bsPlatformDirectory) {
-        return findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory);
+    public static Optional<VirtualFile> findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
+        return findBsPlatformDirectory(project, sourceFile).flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
     }
 
-    public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project,
-                                                               @NotNull VirtualFile sourceFile) {
+    public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {
         return findBsConfigForFile(project, sourceFile).map(VirtualFile::getParent);
     }
 
@@ -93,13 +90,22 @@ public class BsPlatform {
         VirtualFile parentDir = bsConfigFile.getParent();
         VirtualFile bsPlatform = parentDir.findFileByRelativePath("node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
         if (bsPlatform == null) {
-            bsPlatform = parentDir.findFileByRelativePath("node_modules/.bin"); // In case of mono-repo, only the .bin with symlinks is found
+            VirtualFile bsbBinary = parentDir.findFileByRelativePath("node_modules/.bin/bsb"); // In case of mono-repo, only the .bin with symlinks is found
+            if (bsbBinary != null && bsbBinary.is(VFileProperty.SYMLINK)) {
+                VirtualFile canonicalFile = bsbBinary.getCanonicalFile();
+                if (canonicalFile != null) {
+                    VirtualFile canonicalBsPlatformDirectory = canonicalFile.getParent();
+                    while (canonicalBsPlatformDirectory != null && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_DIRECTORY_NAME)) {
+                        canonicalBsPlatformDirectory = canonicalBsPlatformDirectory.getParent();
+                    }
+                    return Optional.ofNullable(canonicalBsPlatformDirectory);
+                }
+            }
         }
         return Optional.ofNullable(bsPlatform).filter(VirtualFile::isDirectory);
     }
 
-    private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName,
-                                                                @NotNull VirtualFile bsPlatformDirectory) {
+    private static Optional<VirtualFile> findBinaryInBsPlatform(@NotNull String executableName, @NotNull VirtualFile bsPlatformDirectory) {
         Optional<String> platform = getOsBsPrefix();
         if (!platform.isPresent()) {
             LOG.warn("Unable to determine OS prefix.");
@@ -111,18 +117,9 @@ public class BsPlatform {
         if (executable != null) {
             return Optional.of(executable);
         }
-        // next, try to find platform-agnostic wrappers / symlinks
+        // next, try to find platform-agnostic wrappers
         executable = bsPlatformDirectory.findFileByRelativePath(executableName + getOsBinaryWrapperExtension());
         if (executable != null) {
-            if (executable.is(VFileProperty.SYMLINK)) {
-                // a symlink references the node wrapper, so we need to follow it and try to resolve the native binary
-                VirtualFile canonicalFile = executable.getCanonicalFile();
-                if (canonicalFile != null) {
-                    String canonicalPath = canonicalFile.getPath();
-                    VirtualFile canonicalExecutable = VirtualFileManager.getInstance().findFileByUrl("file://" + canonicalPath + WINDOWS_EXECUTABLE_SUFFIX);
-                    return Optional.of(canonicalExecutable == null ? canonicalFile : canonicalExecutable);
-                }
-            }
             return Optional.of(executable);
         }
         // last, try old locations of binary
@@ -131,10 +128,6 @@ public class BsPlatform {
             return Optional.of(executable);
         }
         executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + WINDOWS_EXECUTABLE_SUFFIX);
-        if (executable != null) {
-            return Optional.of(executable);
-        }
-        executable = bsPlatformDirectory.findFileByRelativePath("lib/" + executableName + ".exe");
         return Optional.ofNullable(executable);
     }
 
@@ -143,6 +136,7 @@ public class BsPlatform {
         return SystemInfo.isWindows ? ".cmd" : "";
     }
 
+    @VisibleForTesting
     static Optional<String> getOsBsPrefix() {
         if (SystemInfo.isWindows) {
             return Optional.of("win32");
@@ -156,4 +150,3 @@ public class BsPlatform {
         return Optional.empty();
     }
 }
-

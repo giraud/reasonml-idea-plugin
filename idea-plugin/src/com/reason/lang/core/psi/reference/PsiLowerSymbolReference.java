@@ -27,9 +27,6 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlQNameFinder;
-import com.reason.lang.reason.RmlTypes;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.*;
@@ -290,7 +287,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @NotNull
     private OrderedPaths getPotentialPaths() {
-        QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+        QNameFinder qnameFinder = PsiFinder.getQNameFinder(myElement.getLanguage());
         GlobalSearchScope scope = GlobalSearchScope.allScope(myElement.getProject()); // in api
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());

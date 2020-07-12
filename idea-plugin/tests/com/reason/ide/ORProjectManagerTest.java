@@ -1,10 +1,12 @@
 package com.reason.ide;
 
 import com.intellij.mock.MockVirtualFile;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.util.indexing.ID;
 import com.reason.bs.BsConstants;
 import com.reason.dune.DuneConstants;
 import com.reason.esy.EsyConstants;
@@ -31,7 +33,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({EsyPackageJson.class, FilenameIndex.class, GlobalSearchScope.class})
+@PrepareForTest({EsyPackageJson.class, FilenameIndex.class, GlobalSearchScope.class, ID.class})
 public class ORProjectManagerTest {
 
     @Mock
@@ -43,6 +45,8 @@ public class ORProjectManagerTest {
     @Before
     public void setUp() {
         initMocks(this);
+        mockStatic(ID.class);
+        when(ID.create(any())).thenReturn(null);
         mockStatic(EsyPackageJson.class);
         mockStatic(FilenameIndex.class);
         mockStatic(GlobalSearchScope.class);

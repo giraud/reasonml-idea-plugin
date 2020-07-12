@@ -19,6 +19,8 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.napkin.NsLanguage;
+import com.reason.lang.napkin.NsTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -305,12 +307,17 @@ public class ORUtil {
         return name == null ? qualifiedPath + ".UNKNOWN" : qualifiedPath + "." + name;
     }
 
+    @NotNull
+    public static ORTypes getTypes(@NotNull Language language) {
+        return language == NsLanguage.INSTANCE ? NsTypes.INSTANCE : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+    }
+
     @Nullable
     public static String computeAlias(@Nullable PsiElement rootElement, @NotNull Language language, boolean lowerAccepted) {
         boolean isALias = true;
 
         PsiElement currentElement = rootElement;
-        ORTypes types = language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = getTypes(language);
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI) {

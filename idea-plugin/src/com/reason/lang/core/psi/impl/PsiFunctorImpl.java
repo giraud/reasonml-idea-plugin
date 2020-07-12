@@ -31,9 +31,6 @@ import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlQNameFinder;
 import icons.ORIcons;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
@@ -135,8 +132,8 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
             result = new ArrayList<>();
 
             String name = functorResult.getText();
-            QNameFinder qnameFinder = getLanguage() == RmlLanguage.INSTANCE ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
             PsiFinder psiFinder = PsiFinder.getInstance(getProject());
+            QNameFinder qnameFinder = PsiFinder.getQNameFinder(getLanguage());
             GlobalSearchScope searchScope = GlobalSearchScope.allScope(getProject());
 
             Set<String> potentialPaths = qnameFinder.extractPotentialPaths(functorResult);

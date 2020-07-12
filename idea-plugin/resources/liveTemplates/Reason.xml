@@ -1,7 +1,7 @@
 <templateSet group="Reason">
-    <template name="rrslc"
-              value="let component = ReasonReact.statelessComponent(__MODULE__);&#10;&#10;let make = (~$PROP$, _children) =&gt; {...component, render: _self =&gt; &lt;div /&gt;};&#10;$END$&#10;/* JS interop */&#10;let jsComponent =&#10;  ReasonReact.wrapReasonForJs(~component, jsProps =&gt;&#10;    make(~$PROP$=jsProps##$PROP$, [||])&#10;  );"
-              description="Reason React stateless component" toReformat="false" toShortenFQNames="true">
+    <template name="rrc"
+              value="[@react.component]&#10;let make = (~$PROP$, ~children) =&gt; {&#10;    $END$&#10;};&#10;"
+              description="Reason React component" toReformat="false" toShortenFQNames="true">
         <variable name="PROP" expression="" defaultValue="" alwaysStopAt="true"/>
         <context>
             <option name="REASON_CODE" value="true"/>

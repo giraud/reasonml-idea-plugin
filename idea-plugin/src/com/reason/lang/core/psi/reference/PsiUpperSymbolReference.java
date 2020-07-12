@@ -58,14 +58,14 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        Set<PsiQualifiedElement> potentialPaths = getPotentialPaths();
-        if (potentialPaths.isEmpty()) {
-            LOG.debug(" -> No potential path found");
+        Set<PsiQualifiedElement> referencedElements = resolveElementsFromPaths();
+        if (referencedElements.isEmpty()) {
+            LOG.debug(" -> No resolved elements found from paths");
         } else {
-            ResolveResult[] resolveResults = new ResolveResult[potentialPaths.size()];
+            ResolveResult[] resolveResults = new ResolveResult[referencedElements.size()];
 
             int i = 0;
-            for (PsiQualifiedElement referencedElement : potentialPaths) {
+            for (PsiQualifiedElement referencedElement : referencedElements) {
                 if (LOG.isDebugEnabled()) {
                     boolean isInnerModule = referencedElement instanceof PsiInnerModule;
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
@@ -113,12 +113,12 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         return myElement;
     }
 
-    private Set<PsiQualifiedElement> getPotentialPaths() {
+    private Set<PsiQualifiedElement> resolveElementsFromPaths() {
         Project project = myElement.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-        QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+        QNameFinder qnameFinder = PsiFinder.getQNameFinder(myElement.getLanguage());
         Set<String> paths = qnameFinder.extractPotentialPaths(myElement);
         if (LOG.isTraceEnabled()) {
             LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));

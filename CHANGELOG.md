@@ -12,12 +12,27 @@
 
 ## Unreleased
 
+
+## 0.90.1 - 2020/07/02
+
+0.90.1
+
+This is a quick patch release to provide syntax highlighting to the new `.res` and `.resi` file types.
+Don't expect anything more than just highlighting.
+
+- :bug: Fix 'add braces' action when function has signature
+
+0.90.0
+
 - :memo: Reworked documentation, moved from wiki to the [docs](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) directory by [@pooch](https://github.com/JohnPucciarelli)
 - :memo: [#252](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/252) Add an architecture documentation to explain some of the internal details
+- :bug: [#247](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/247) Duplicated file templates
 - :bug: [#205](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/205) Functors are now indexed (completion and resolution should work)
 - :bug: [#254](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/254) ![r] Make a distinction between single-line and multi-line comments in parser
+- :bug: [#254](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/254) ![r] Fold multiline JSX tags
 - :house: Add github action for CI (and badges) by [@pooch](https://github.com/JohnPucciarelli)
 - :house: [#253](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/253) Breaking apart modules to avoid extra instances of IntelliJ when testing by [@pooch](https://github.com/JohnPucciarelli)
+- :house: [#257](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/257) Fix monorepo executable by [@Coobaha](https://github.com/Coobaha)
 
 ## 0.89.0 - 2020/05/22
 

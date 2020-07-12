@@ -13,7 +13,6 @@ import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiExternal;
