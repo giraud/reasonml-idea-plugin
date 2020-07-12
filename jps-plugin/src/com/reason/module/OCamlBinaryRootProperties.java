@@ -1,6 +1,5 @@
 package com.reason.module;
 
-import com.intellij.openapi.util.Comparing;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.ex.JpsElementBase;
 
@@ -30,7 +29,7 @@ public class OCamlBinaryRootProperties extends JpsElementBase<OCamlBinaryRootPro
     }
 
     public void setRelativeOutputPath(@NotNull String relativeOutputPath) {
-        if (!Comparing.equal(m_relativeOutputPath, relativeOutputPath)) {
+        if (!m_relativeOutputPath.equals(relativeOutputPath)) {
             m_relativeOutputPath = relativeOutputPath;
             fireElementChanged();
         }

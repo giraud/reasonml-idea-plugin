@@ -1,17 +1,15 @@
 package com.reason.lang.core.signature;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
 import com.intellij.util.ArrayUtil;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.napkin.NsLanguage;
+import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Unified signature between OCaml and Reason.
@@ -20,6 +18,7 @@ import java.util.Collections;
 public class ORSignature {
 
     public static final ORSignature EMPTY = new ORSignature(RmlLanguage.INSTANCE, Collections.emptyList());
+    public static final PsiSignatureItem[] EMPTY_ITEMS = new PsiSignatureItem[0];
     private static final String REASON_SEPARATOR = " => ";
     private static final String OCAML_SEPARATOR = " -> ";
 
@@ -33,8 +32,7 @@ public class ORSignature {
         PsiSignatureItem item;
         String value;
         boolean mandatory = false;
-        @NotNull
-        String defaultValue = "";
+        @NotNull String defaultValue = "";
 
         @NotNull
         @Override
@@ -86,7 +84,6 @@ public class ORSignature {
             m_types[i] = signatureType;
             i++;
         }
-
 
         SignatureType signatureType = new SignatureType();
         signatureType.value = "'a";
@@ -150,7 +147,7 @@ public class ORSignature {
 
     @NotNull
     public PsiSignatureItem[] getItems() {
-        return m_items;
+        return m_items == null ? EMPTY_ITEMS : m_items;
     }
 
     @NotNull
@@ -170,7 +167,9 @@ public class ORSignature {
                     sb.append(inputSeparator);
                 }
                 PsiSignatureItem type = m_items[i];
-                sb.append(type.asText(lang).trim());
+                if (type != null) {
+                    sb.append(type.asText(lang).trim());
+                }
             }
 
             if (reason && 2 < m_items.length) {
@@ -180,7 +179,10 @@ public class ORSignature {
                 sb.append(reason ? REASON_SEPARATOR : OCAML_SEPARATOR);
             }
             if (0 < m_items.length) {
-                sb.append(m_items[m_items.length - 1].asText(lang));
+                PsiSignatureItem type = m_items[m_items.length - 1];
+                if (type != null) {
+                    sb.append(type.asText(lang));
+                }
             }
 
             return sb.toString().

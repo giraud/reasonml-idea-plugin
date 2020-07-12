@@ -1,10 +1,10 @@
 package com.reason.lang.core.stub;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.stubs.PsiFileStubImpl;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.stub.type.RmlFileStubElementType;
-import org.jetbrains.annotations.NotNull;
 
 public class RmlFileStub extends PsiFileStubImpl<FileBase> {
 
@@ -17,7 +17,7 @@ public class RmlFileStub extends PsiFileStubImpl<FileBase> {
 
     @NotNull
     @Override
-    public IStubFileElementType getType() {
+    public IStubFileElementType<RmlFileStub> getType() {
         return RmlFileStubElementType.INSTANCE;
     }
 

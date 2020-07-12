@@ -585,11 +585,12 @@ public class OclParser extends CommonParser<OclTypes> {
                 // module M (..) : S with type x = y |> =<| struct .. end
                 state.popEndUntilStartScope();
                 state.complete().popEnd();
-            } else {
-                // Must be multiple declaration
-                // type x = y |> =<| ...
-                // This is not correctly parsed, just to avoid to break next instructions
             }
+            //else {
+            // Must be multiple declaration
+            // type x = y |> =<| ...
+            // This is not correctly parsed, just to avoid to break next instructions
+            //}
         }
 
         if (state.isCurrentResolution(typeNamed)) {

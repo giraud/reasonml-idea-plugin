@@ -30,7 +30,7 @@ public class BsPlatform {
      * Given a `sourceFile`, searches from that file's location for a `bsconfig.json`
      * file. If found, then checks for a `./node_modules/bs-platform` directory relative to the `bsconfig.json`.
      *
-     * @param project
+     * @param project    project to use
      * @param sourceFile starting location for search
      * @return `bs-platform` directory, if found
      */
@@ -55,7 +55,7 @@ public class BsPlatform {
      * Finds the "nearest" `bsconfig.json` to a given file. Searches up the file-system until a `bsconfig.json`
      * is found or the project root is reached.
      *
-     * @param project
+     * @param project    project to use
      * @param sourceFile starting point for search
      * @return `bsconfig.json` file, if found
      */

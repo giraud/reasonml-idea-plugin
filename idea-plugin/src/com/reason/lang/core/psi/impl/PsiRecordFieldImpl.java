@@ -42,7 +42,8 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub
         }
 
         PsiType parent = PsiTreeUtil.getParentOfType(this, PsiType.class);
-        return (parent == null) ? getName() : (ORUtil.getQualifiedPath(parent) + "." + getName());
+        String name = getName();
+        return (parent == null) ? name : (ORUtil.getQualifiedPath(parent) + "." + name);
     }
 
     @NotNull
@@ -56,6 +57,7 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub
         return ORUtil.getQualifiedName(this);
     }
 
+    @NotNull
     @Override
     public String getName() {
         PsiElement nameElement = getNameIdentifier();

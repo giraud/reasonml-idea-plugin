@@ -17,7 +17,7 @@ public class NsFileStub extends PsiFileStubImpl<FileBase> {
 
     @NotNull
     @Override
-    public IStubFileElementType getType() {
+    public IStubFileElementType<NsFileStub> getType() {
         return NsFileStubElementType.INSTANCE;
     }
 
