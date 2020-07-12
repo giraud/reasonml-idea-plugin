@@ -1505,7 +1505,7 @@ public class NapkinLexer implements FlexLexer {
             // fall through
           case 256: break;
           case 114: 
-            { return types.C_UNIT;
+            { return types.UNIT;
             } 
             // fall through
           case 257: break;

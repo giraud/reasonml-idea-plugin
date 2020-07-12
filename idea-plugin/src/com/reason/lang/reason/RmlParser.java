@@ -638,9 +638,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (state.isCurrentResolution(jsxStartTag)) {
-            state.wrapWith(m_types.TAG_GT).popEnd().add(mark(builder, jsxTagBody, m_types.C_TAG_BODY).complete());
+            state.wrapWith(m_types.C_TAG_GT).popEnd().add(mark(builder, jsxTagBody, m_types.C_TAG_BODY).complete());
         } else if (state.isCurrentResolution(jsxTagClose)) {
-            state.wrapWith(m_types.TAG_GT).popEnd().popEnd();
+            state.wrapWith(m_types.C_TAG_GT).popEnd().popEnd();
         }
     }
 
@@ -735,10 +735,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(mixin)) {
             state.complete();
         } else if (shouldStartExpression(state)) {
-            IElementType tokenType = builder.getTokenType();
-            if (tokenType != null) {
-                state.add(mark(builder, state.currentContext(), genericExpression, tokenType));
-            }
+            //IElementType tokenType = builder.getTokenType();
+            //if (tokenType != null) {
+            //    state.add(mark(builder, state.currentContext(), genericExpression, tokenType));
+            //}
         } else if (!state.isCurrentContext(signature)) {
             IElementType nextElementType = builder.lookAhead(1);
             if (nextElementType == m_types.ARROW) {
@@ -888,13 +888,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // A ReasonML signature is written like a function, but it's not
             //   (x, y) => z  alias x => y => z
             state.popCancel().
-                    add(markScope(builder, signatureParams, signature, m_types.LPAREN, m_types.LPAREN).dummy()).
+                    add(markScope(builder, signatureParams, signature, m_types.C_SCOPED_EXPR, m_types.LPAREN).dummy()).
                     advance().
                     add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(letNamedSignature)) {
             // A signature on a let definition
             //   let x : |>(<| .. )
-            state.add(markScope(builder, signatureScope, signatureScope, m_types.LPAREN, m_types.LPAREN)).
+            state.add(markScope(builder, signatureScope, signatureScope, m_types.C_SCOPED_EXPR, m_types.LPAREN)).
                     advance().
                     add(mark(builder, state.currentContext(), signatureItem, m_types.C_SIG_ITEM).complete());
         } else if (state.isCurrentResolution(moduleNamedEq) && state.previousElementType1 != m_types.UIDENT) {
@@ -1197,12 +1197,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 return;
             }
         } else {
-            if (shouldStartExpression(state)) {
-                IElementType tokenType = builder.getTokenType();
-                if (tokenType != null) {
-                    state.add(mark(builder, genericExpression, tokenType));
-                }
-            }
+            //if (shouldStartExpression(state)) {
+            //    IElementType tokenType = builder.getTokenType();
+            //    if (tokenType != null) {
+            //        state.add(mark(builder, genericExpression, tokenType));
+            //    }
+            //}
 
             IElementType nextElementType = builder.lookAhead(1);
             if (!state.isCurrentResolution(moduleNamedEq) && !state.isCurrentResolution(maybeFunctorCall) && nextElementType == m_types.LPAREN) {

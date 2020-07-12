@@ -88,6 +88,7 @@ public class OclTypes extends ORTypes {
         C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", OclLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", OclLanguage.INSTANCE);
+        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", OclLanguage.INSTANCE);
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", OclLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", OclLanguage.INSTANCE);
         C_TAG_START = new ORCompositeElementType("C_TAG_START", OclLanguage.INSTANCE);
@@ -217,7 +218,6 @@ public class OclTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", OclLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", OclLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", OclLanguage.INSTANCE);
-        TAG_GT = new ORTokenElementType("TAG_GT", OclLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", OclLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", OclLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", OclLanguage.INSTANCE);

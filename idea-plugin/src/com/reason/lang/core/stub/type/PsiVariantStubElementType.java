@@ -6,12 +6,13 @@ import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.stub.PsiVariantDeclarationStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class PsiVariantStubElementType extends IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
+public class PsiVariantStubElementType extends IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> implements ORCompositeType {
 
     public PsiVariantStubElementType(@NotNull String name, Language language) {
         super(name, language);

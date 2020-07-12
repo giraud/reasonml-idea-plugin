@@ -2,6 +2,7 @@ package com.reason.lang.napkin;
 
 import java.util.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
@@ -45,7 +46,7 @@ public class FunctionCallTest extends NsParsingTestCase {
 
         PsiFunctionCallParams params = PsiTreeUtil.findChildOfType(e, PsiFunctionCallParams.class);
         assertSize(2, params.getParametersList());
-        assertEquals("()", ORUtil.findImmediateFirstChildOfType(new ArrayList<>(params.getParametersList()).get(1), m_types.C_UNIT).getText());
+        assertEquals("()", ORUtil.findImmediateFirstChildOfType(new ArrayList<>(params.getParametersList()).get(1), (IElementType) m_types.C_UNIT).getText());
     }
 
     public void test_params() {

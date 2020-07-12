@@ -644,9 +644,9 @@ public class NsParser extends CommonParser<NsTypes> {
         }
 
         if (state.isCurrentResolution(jsxStartTag)) {
-            state.wrapWith(m_types.TAG_GT).popEnd().mark(jsxTagBody, m_types.C_TAG_BODY);
+            state.wrapWith(m_types.C_TAG_GT).popEnd().mark(jsxTagBody, m_types.C_TAG_BODY);
         } else if (state.isCurrentResolution(jsxTagClose)) {
-            state.wrapWith(m_types.TAG_GT).popEnd().popEnd();
+            state.wrapWith(m_types.C_TAG_GT).popEnd().popEnd();
         } else if (state.isCurrentResolution(optionParameter)) {
             state.advance().popEnd().popEnd();
         }

@@ -20,13 +20,12 @@ public class NsTypes extends ORTypes {
     public static final NsTypes INSTANCE = new NsTypes();
 
     private NsTypes() {
-        C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", NsLanguage.INSTANCE);
-
         // Stubbed element types
 
         C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", NsLanguage.INSTANCE);
         C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", NsLanguage.INSTANCE);
         C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", NsLanguage.INSTANCE);
+        C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", NsLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", NsLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", NsLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", NsLanguage.INSTANCE);
@@ -95,6 +94,7 @@ public class NsTypes extends ORTypes {
         C_TAG_START = new ORCompositeElementType("C_TAG_START", NsLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", NsLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", NsLanguage.INSTANCE);
+        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", NsLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", NsLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", NsLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);
@@ -217,7 +217,6 @@ public class NsTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", NsLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", NsLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", NsLanguage.INSTANCE);
-        TAG_GT = new ORTokenElementType("TAG_GT", NsLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", NsLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", NsLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", NsLanguage.INSTANCE);

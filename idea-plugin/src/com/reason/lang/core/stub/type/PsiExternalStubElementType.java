@@ -7,13 +7,14 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
 import com.reason.lang.core.stub.PsiExternalStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub, PsiExternal> {
+public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub, PsiExternal> implements ORCompositeType {
 
     public PsiExternalStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);

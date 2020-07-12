@@ -7,6 +7,7 @@ import com.intellij.lang.WhitespaceSkippedCallback;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.Stack;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTokenElementType;
 
 public class ParserState {
@@ -134,24 +135,24 @@ public class ParserState {
         return this;
     }
 
-    public ParserState markScope(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeElementType) {
-        add(ParserScope.markScope(m_builder, scope, resolution, compositeElementType, scopeElementType));
+    public ParserState markScope(ParserScopeEnum scope, ParserScopeEnum resolution, ORCompositeType compositeType, ORTokenElementType scopeType) {
+        add(ParserScope.markScope(m_builder, scope, resolution, compositeType, scopeType));
         complete();
         return this;
     }
 
-    public ParserState markOptional(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType) {
+    public ParserState markOptional(ParserScopeEnum scope, ParserScopeEnum resolution, ORCompositeType compositeElementType) {
         add(ParserScope.mark(m_builder, scope, resolution, compositeElementType));
         return this;
     }
 
-    public ParserState mark(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType) {
-        add(ParserScope.mark(m_builder, scope, resolution, compositeElementType));
+    public ParserState mark(ParserScopeEnum scope, ParserScopeEnum resolution, ORCompositeType compositeType) {
+        add(ParserScope.mark(m_builder, scope, resolution, compositeType));
         complete();
         return this;
     }
 
-    public ParserState mark(ParserScopeEnum resolution, IElementType compositeElementType) {
+    public ParserState mark(ParserScopeEnum resolution, ORCompositeType compositeElementType) {
         return mark(resolution, resolution, compositeElementType);
     }
 
@@ -252,8 +253,8 @@ public class ParserState {
         return this;
     }
 
-    public boolean isCurrentCompositeElementType(IElementType compositeElementType) {
-        return m_currentScope.isCompositeEqualTo(compositeElementType);
+    public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
+        return m_currentScope.isCompositeEqualTo(compositeType);
     }
 
     public boolean isScopeTokenElementType(ORTokenElementType scopeTokenElementType) {
@@ -275,7 +276,7 @@ public class ParserState {
     }
 
     @NotNull
-    public ParserState updateCurrentCompositeElementType(@NotNull IElementType compositeElementType) {
+    public ParserState updateCurrentCompositeElementType(@NotNull ORCompositeType compositeElementType) {
         m_currentScope.updateCompositeElementType(compositeElementType);
         return this;
     }
@@ -316,11 +317,14 @@ public class ParserState {
     }
 
     @NotNull
-    public ParserState wrapWith(@NotNull IElementType elementType) {
-        PsiBuilder.Marker mark = m_builder.mark();
-        m_builder.advanceLexer();
-        mark.done(elementType);
-        dontMove = true;
+    public ParserState wrapWith(@NotNull ORCompositeType compositeType) {
+        if (compositeType instanceof IElementType) {
+            IElementType elementType = (IElementType) compositeType;
+            PsiBuilder.Marker mark = m_builder.mark();
+            m_builder.advanceLexer();
+            mark.done(elementType);
+            dontMove = true;
+        }
         return this;
     }
 
