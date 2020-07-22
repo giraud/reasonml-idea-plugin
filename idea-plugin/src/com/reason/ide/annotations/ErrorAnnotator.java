@@ -67,11 +67,11 @@ public class ErrorAnnotator extends ExternalAnnotator<Collection<ErrorAnnotator.
 
         for (BsbErrorAnnotation annotation : annotationResult) {
             if (annotation.isError) {
-                holder.newAnnotation(HighlightSeverity.ERROR, annotation.message).range(annotation.range).create();
+                holder.createErrorAnnotation(annotation.range, annotation.message);
                 problems.add(problemSolver.convertToProblem(file.getVirtualFile(), annotation.startPos.line, annotation.startPos.column,
                                                             new String[]{annotation.message}));
             } else {
-                holder.newAnnotation(HighlightSeverity.WARNING, annotation.message).range(annotation.range).create();
+                holder.createWarningAnnotation(annotation.range, annotation.message);
             }
         }
 
