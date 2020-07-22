@@ -1,23 +1,26 @@
 package com.reason.ide.files;
 
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.reason.Platform;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
 
 public class FileHelper {
     private FileHelper() {
     }
 
     public static boolean isCompilable(@Nullable FileType fileType) {
-        return isReason(fileType) || isOCaml(fileType) || isOCamlLexer(fileType) || isOCamlParser(fileType);
+        return isReason(fileType) || isNapkinScript(fileType) || isOCaml(fileType) || isOCamlLexer(fileType) || isOCamlParser(fileType);
     }
 
     public static boolean isReason(@Nullable FileType fileType) {
         return fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType;
+    }
+
+    public static boolean isNapkinScript(@Nullable FileType fileType) {
+        return fileType instanceof NsFileType || fileType instanceof NsInterfaceFileType;
     }
 
     private static boolean isOCamlLexer(@Nullable FileType fileType) {
@@ -33,7 +36,7 @@ public class FileHelper {
     }
 
     public static boolean isInterface(@Nullable FileType fileType) {
-        return fileType instanceof RmlInterfaceFileType || fileType instanceof OclInterfaceFileType;
+        return fileType instanceof RmlInterfaceFileType || fileType instanceof NsInterfaceFileType || fileType instanceof OclInterfaceFileType;
     }
 
     @NotNull

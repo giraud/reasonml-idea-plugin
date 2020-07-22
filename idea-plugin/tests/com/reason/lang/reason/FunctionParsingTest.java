@@ -1,13 +1,15 @@
 package com.reason.lang.reason;
 
+import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiFunctionBody;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiSwitch;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends BaseParsingTestCase {
@@ -123,7 +125,8 @@ public class FunctionParsingTest extends BaseParsingTestCase {
     }
 
     public void testParametersNamedSymbols2() {
-        PsiLet e = first(letExpressions(parseCode("let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
+        PsiLet e = first(letExpressions(parseCode(
+                "let make = (~text, ~id=?, ~values=?, ~className=\"\", ~tag=\"span\", ~transform=\"unset\", ~marginLeft=\"0\", ~onClick=?, ~onKeyPress=?, _children, ) => {}")));
 
         PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
         assertSize(10, function.getParameters());

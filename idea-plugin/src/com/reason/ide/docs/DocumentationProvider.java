@@ -218,7 +218,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     @Override
-    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement) {
+    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement,
+                                                    int targetOffset) {
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
         if (contextElement != null && contextElement.getParent() instanceof PsiFunctionCallParams && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
@@ -230,7 +231,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 }
             }
         }
-        return null;
+
+        return super.getCustomDocumentationElement(editor, file, contextElement, targetOffset);
     }
 
     @Nullable

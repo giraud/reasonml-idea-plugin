@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.lang.reason.NsTypes;
+import com.reason.lang.napkin.NsTypes;
 
 public class NsSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull

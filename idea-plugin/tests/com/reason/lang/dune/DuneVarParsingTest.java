@@ -9,7 +9,7 @@ public class DuneVarParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiElement e = firstElement(parseRawCode("%{x}", false));
+        PsiElement e = firstElement(parseRawCode("%{x}"));
 
         assertEquals(DuneTypes.INSTANCE.C_VAR, e.getNode().getElementType());
         assertEquals("%{x}", e.getText());

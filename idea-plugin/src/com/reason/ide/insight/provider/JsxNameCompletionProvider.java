@@ -39,12 +39,14 @@ public class JsxNameCompletionProvider {
         LOG.debug(" -> Modules found", modules);
         for (PsiModule module : modules) {
             String moduleName = module.getModuleName();
-            FileBase containingFile = module instanceof FileBase ? (FileBase) module : (FileBase) module.getContainingFile();
-            resultSet.addElement(LookupElementBuilder.
-                    create(moduleName).
-                    withIcon(getProvidersIcon(module, 0)).
-                    withTypeText(module instanceof PsiInnerModule ? containingFile.getModuleName() : containingFile.shortLocation(project)).
-                    withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName)));
+            if (moduleName != null) {
+                FileBase containingFile = module instanceof FileBase ? (FileBase) module : (FileBase) module.getContainingFile();
+                resultSet.addElement(LookupElementBuilder.
+                        create(moduleName).
+                        withIcon(getProvidersIcon(module, 0)).
+                        withTypeText(module instanceof PsiInnerModule ? containingFile.getModuleName() : containingFile.shortLocation(project)).
+                        withInsertHandler((context, item) -> insertTagNameHandler(project, context, moduleName)));
+            }
         }
     }
 

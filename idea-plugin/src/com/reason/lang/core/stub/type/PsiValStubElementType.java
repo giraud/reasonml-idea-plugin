@@ -7,13 +7,14 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.impl.PsiValImpl;
 import com.reason.lang.core.stub.PsiValStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal> {
+public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal> implements ORCompositeType {
 
     public PsiValStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);

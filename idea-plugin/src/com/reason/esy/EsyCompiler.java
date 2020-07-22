@@ -1,5 +1,9 @@
 package com.reason.esy;
 
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.project.Project;
@@ -14,12 +18,6 @@ import com.reason.ProcessFinishedListener;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.ORToolWindowProvider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.Optional;
-import java.util.Set;
 
 public class EsyCompiler implements Compiler {
 
@@ -58,12 +56,15 @@ public class EsyCompiler implements Compiler {
             LOG.error("Invalid cliType for esy compiler. cliType = " + cliType);
             return;
         }
+
         EsyProcess process = EsyProcess.getInstance(m_project);
         ProcessHandler processHandler = process.recreate(cliType, onProcessTerminated);
         if (processHandler != null) {
             processHandler.addProcessListener(new ProcessFinishedListener());
             ConsoleView console = getConsoleView();
-            console.attachToProcess(processHandler);
+            if (console != null) {
+                console.attachToProcess(processHandler);
+            }
             process.startNotify();
         }
     }
@@ -79,11 +80,12 @@ public class EsyCompiler implements Compiler {
         return true;
     }
 
+    @Nullable
     @Override
     public ConsoleView getConsoleView() {
         ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(m_project);
         ToolWindow esyToolWindow = windowProvider.getEsyToolWindow();
-        Content windowContent = esyToolWindow.getContentManager().getContent(0);
+        Content windowContent = esyToolWindow == null ? null : esyToolWindow.getContentManager().getContent(0);
         if (windowContent == null) {
             return null;
         }

@@ -12,8 +12,10 @@
 
 ## Unreleased
 
+- :house: Reworked parsers
+- :house: .res files are automatically compiled when saved, like .re
 
-## 0.90.1 - 2020/07/02
+## 0.90.2 - 2020/07/02
 
 0.90.1
 

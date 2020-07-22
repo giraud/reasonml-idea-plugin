@@ -77,7 +77,7 @@ public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfo
     @NotNull
     @Override
     public PsiElement[] getActualParameters(@NotNull PsiFunctionCallParams paramsOwner) {
-        Collection<PsiElement> childrenOfType = paramsOwner.getParametersList();
+        Collection<PsiParameter> childrenOfType = paramsOwner.getParametersList();
         return childrenOfType.toArray(new PsiElement[0]);
     }
 

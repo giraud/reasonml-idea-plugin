@@ -69,9 +69,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
                 ORPropertyChangeListener propertyChangeListener = new ORPropertyChangeListener(sourceFile, document, insightUpdateQueue);
                 selectedEditor.addPropertyChangeListener(propertyChangeListener);
-                Disposer.register(selectedEditor, () -> {
-                    selectedEditor.removePropertyChangeListener(propertyChangeListener);
-                });
+                Disposer.register(selectedEditor, () -> selectedEditor.removePropertyChangeListener(propertyChangeListener));
 
                 // Store the queue in the document, for easy access
                 document.putUserData(INSIGHT_QUEUE, insightUpdateQueue);

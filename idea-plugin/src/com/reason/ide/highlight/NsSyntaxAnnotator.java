@@ -1,6 +1,6 @@
 package com.reason.ide.highlight;
 
-import com.reason.lang.reason.NsTypes;
+import com.reason.lang.napkin.NsTypes;
 
 public class NsSyntaxAnnotator extends ORSyntaxAnnotator {
 

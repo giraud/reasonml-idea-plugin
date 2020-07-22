@@ -1,4 +1,4 @@
-package com.reason.lang.reason;
+package com.reason.lang.napkin;
 
 import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
@@ -17,7 +17,6 @@ import com.reason.ide.files.NsInterfaceFile;
 import com.reason.ide.files.NsInterfaceFileType;
 import com.reason.lang.core.PsiElementFactory;
 import com.reason.lang.core.stub.type.NsFileStubElementType;
-import com.reason.lang.core.stub.type.RmlFileStubElementType;
 
 public class NsParserDefinition implements ParserDefinition {
     private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);

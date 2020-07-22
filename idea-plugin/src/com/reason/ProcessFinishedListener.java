@@ -8,7 +8,7 @@ import com.intellij.execution.process.ProcessOutputTypes;
 
 public class ProcessFinishedListener extends ProcessAdapter {
 
-    private long m_start;
+    private final long m_start;
     
     public ProcessFinishedListener() {
         this(System.currentTimeMillis());

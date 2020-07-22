@@ -9,6 +9,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
 import com.reason.lang.core.stub.PsiLetStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> {
+public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> implements ORCompositeType {
 
     public PsiLetStubElementType(@NotNull String name, @Nullable Language language) {
         super(name, language);

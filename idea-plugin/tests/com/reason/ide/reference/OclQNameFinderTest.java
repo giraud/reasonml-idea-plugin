@@ -7,7 +7,7 @@ import java.util.*;
 
 public class OclQNameFinderTest extends ORBasePlatformTestCase {
 
-    public void testLetBinding() {
+    public void test_letBinding() {
         configureCode("A.ml", "let make = increase<caret>()");
 
         Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(myFixture.getElementAtCaret());
@@ -15,7 +15,7 @@ public class OclQNameFinderTest extends ORBasePlatformTestCase {
     }
 
     // Local module alias can be resolved/replaced in the qname finder
-    public void testLocalModuleAliasResolution() {
+    public void test_localModuleAliasResolution() {
         configureCode("A.ml", "module B = Belt\n module M = struct module O = B.Option let _ = O.m<caret>");
 
         Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(myFixture.getElementAtCaret());

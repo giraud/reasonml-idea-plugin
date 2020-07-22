@@ -18,7 +18,10 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.napkin.NsLanguage;
+import com.reason.lang.napkin.NsTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
@@ -96,6 +99,11 @@ public class ORUtil {
         return found;
     }
 
+    @Nullable
+    public static PsiElement nextSiblingWithTokenType(@NotNull PsiElement root, @NotNull ORCompositeType elementType) {
+        return nextSiblingWithTokenType(root, (IElementType) elementType);
+    }
+
     @NotNull
     public static String getTextUntilTokenType(@NotNull PsiElement root, @Nullable IElementType elementType) {
         String text = root.getText();
@@ -114,12 +122,12 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class clazz) {
+    public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class<?> clazz) {
         String text = root.getText();
 
         PsiElement sibling = root.getNextSibling();
         while (sibling != null) {
-            if (sibling.getClass().isAssignableFrom(clazz)) {
+            if (clazz != null && sibling.getClass().isAssignableFrom(clazz)) {
                 sibling = null;
             } else {
                 text += sibling.getText();
@@ -218,10 +226,20 @@ public class ORUtil {
         return result;
     }
 
+    @NotNull
+    public static Collection<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
+        return findImmediateChildrenOfType(element, (IElementType) elementType);
+    }
+
     @Nullable
     public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
         Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
         return children.isEmpty() ? null : children.iterator().next();
+    }
+
+    @Nullable
+    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
+        return findImmediateFirstChildOfType(element, (IElementType) elementType);
     }
 
     @Nullable
@@ -239,11 +257,11 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class... clazz) {
+    public static PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class<?>... clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
-            for (Class aClazz : clazz) {
+            for (Class<?> aClazz : clazz) {
                 if (aClazz.isInstance(child)) {
                     return child;
                 }
@@ -255,7 +273,7 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildWithoutClass(@NotNull PsiElement element, @NotNull Class clazz) {
+    public static PsiElement findImmediateFirstChildWithoutClass(@NotNull PsiElement element, @NotNull Class<?> clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
@@ -305,12 +323,17 @@ public class ORUtil {
         return name == null ? qualifiedPath + ".UNKNOWN" : qualifiedPath + "." + name;
     }
 
+    @NotNull
+    public static ORTypes getTypes(@NotNull Language language) {
+        return language == NsLanguage.INSTANCE ? NsTypes.INSTANCE : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+    }
+
     @Nullable
     public static String computeAlias(@Nullable PsiElement rootElement, @NotNull Language language, boolean lowerAccepted) {
         boolean isALias = true;
 
         PsiElement currentElement = rootElement;
-        ORTypes types = language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = getTypes(language);
         StringBuilder aliasName = new StringBuilder();
         IElementType elementType = currentElement == null ? null : currentElement.getNode().getElementType();
         while (elementType != null && elementType != types.SEMI) {

@@ -7,5 +7,5 @@ import java.util.Collection;
 
 public interface PsiFunctionCallParams extends PsiElement {
     @NotNull
-    Collection<PsiElement> getParametersList();
+    Collection<PsiParameter> getParametersList();
 }

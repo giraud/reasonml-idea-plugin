@@ -14,7 +14,7 @@ public class OclFileStub extends PsiFileStubImpl<OclFile> {
 
     @NotNull
     @Override
-    public IStubFileElementType getType() {
+    public IStubFileElementType<OclFileStub> getType() {
         return OclFileStubElementType.INSTANCE;
     }
 }
