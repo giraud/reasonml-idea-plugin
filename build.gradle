@@ -16,7 +16,8 @@ idea {
 patchPluginXml {
     changeNotes """
         <ul>
-            <li>This is a quick patch release to provide syntax highlighting to the new `.res` and `.resi` file types</li>
+            <li>Reworked parsers</li>
+            <li>.res files are automatically compiled when saved, like .re</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
