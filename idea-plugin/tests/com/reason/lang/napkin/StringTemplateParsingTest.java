@@ -1,5 +1,6 @@
 package com.reason.lang.napkin;
 
+import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiInterpolation;
@@ -21,8 +22,10 @@ public class StringTemplateParsingTest extends NsParsingTestCase {
         PsiLetBinding binding = e.getBinding();
         PsiInterpolation inter = (PsiInterpolation) binding.getFirstChild();
 
-        //Collection<PsiElement> parts = ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
-        //assertSize(2, parts);
+        List<PsiElement> parts = (List<PsiElement>) ORUtil.findImmediateChildrenOfType(inter, m_types.C_INTERPOLATION_PART);
+        assertSize(2, parts);
+        assertEquals("this is a", parts.get(0).getText());
+        assertEquals("Template string", parts.get(1).getText());
         PsiInterpolationReference ref = ORUtil.findImmediateFirstChildOfClass(inter, PsiInterpolationReference.class);
         assertEquals("var", ref.getText());
     }

@@ -13,7 +13,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
     }
 
     public void testBasic() {
-        PsiStanza e = (PsiStanza) firstElement(parseRawCode("(library (name x) (wrapped true))", false));
+        PsiStanza e = (PsiStanza) firstElement(parseRawCode("(library (name x) (wrapped true))"));
 
         assertEquals("library", e.getName());
         assertSize(2, e.getFields());
@@ -22,7 +22,7 @@ public class DuneStanzaParsingTest extends BaseParsingTestCase {
     }
 
     public void testChain() {
-        PsiFile e = parseRawCode("(library (name x)) (version 1)", false);
+        PsiFile e = parseRawCode("(library (name x)) (version 1)");
 
         Collection<PsiStanza> stanzas = ORUtil.findImmediateChildrenOfClass(e, PsiStanza.class);
         assertSize(2, stanzas);

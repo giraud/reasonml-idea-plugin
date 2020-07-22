@@ -37,7 +37,7 @@ public class FunctorParsingTest extends NsParsingTestCase {
         assertEquals("{}", f.getBinding().getText());
     }
 
-    public void testSignature() {
+    public void test_signature() {
         Collection<PsiFunctor> functors = functorExpressions(parseCode(//
                                                                        "module GlobalBindings = (M: {\n" //
                                                                                + "           let relation_classes: list(string)\n"

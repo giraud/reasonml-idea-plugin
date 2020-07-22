@@ -14,21 +14,21 @@ public class RmlTypes extends ORTypes {
 
         // Stubbed element types
 
-        C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", RmlLanguage.INSTANCE);
-        C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", RmlLanguage.INSTANCE);
-        C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", RmlLanguage.INSTANCE);
+        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", RmlLanguage.INSTANCE);
+        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", RmlLanguage.INSTANCE);
+        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXTERNAL_STMT", RmlLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", RmlLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", RmlLanguage.INSTANCE);
-        C_LET_STMT = new PsiLetStubElementType("C_LET_STMT", RmlLanguage.INSTANCE);
-        C_MODULE_STMT = new PsiInnerModuleStubElementType("C_MODULE_STMT", RmlLanguage.INSTANCE);
+        C_EXPR_LET = new PsiLetStubElementType("C_LET_STMT", RmlLanguage.INSTANCE);
+        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_MODULE_STMT", RmlLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", RmlLanguage.INSTANCE);
-        C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", RmlLanguage.INSTANCE);
+        C_EXPR_VAL = new PsiValStubElementType("C_VAL_EXPR", RmlLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
 
         // Composite element types
 
-        C_ANNOTATION_EXPR = new ORCompositeElementType("C_ANNOTATION_EXPR", RmlLanguage.INSTANCE);
+        C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", RmlLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", RmlLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
@@ -43,7 +43,6 @@ public class RmlTypes extends ORTypes {
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", RmlLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
-        C_FUN_CALL_PARAM = new ORCompositeElementType("C_FUN_CALL_PARAM", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", RmlLanguage.INSTANCE);
         C_FUN_PARAM_BINDING = new ORCompositeElementType("C_FUN_PARAM_BINDING", RmlLanguage.INSTANCE);

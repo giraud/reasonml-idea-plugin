@@ -1,13 +1,20 @@
 package com.reason.lang.core.type;
 
-import com.intellij.psi.tree.IElementType;
-
 public abstract class ORTypes {
+    // Stubbed expressions
 
-    public ORCompositeType C_EXCEPTION_EXPR;
+    public ORCompositeType C_EXPR_EXCEPTION;
+    public ORCompositeType C_EXPR_TYPE;
+    public ORCompositeType C_EXPR_EXTERNAL;
+    public ORCompositeType C_EXPR_LET;
+    public ORCompositeType C_EXPR_MODULE;
+    public ORCompositeType C_EXPR_VAL;
+
+    // Stubbed element types
 
     // Composite element types
 
+    public ORCompositeType C_ANNOTATION;
     public ORCompositeType C_ASSERT_STMT;
     public ORCompositeType C_CLASS_CONSTR;
     public ORCompositeType C_CLASS_FIELD;
@@ -18,14 +25,8 @@ public abstract class ORTypes {
     public ORCompositeType C_CONSTRAINT;
     public ORCompositeType C_DECONSTRUCTION;
     public ORCompositeType C_DIRECTIVE;
-    public ORCompositeType C_EXTERNAL_STMT;
-    public ORCompositeType C_EXP_TYPE;
     public ORCompositeType C_FAKE_MODULE;
-    public ORCompositeType C_LET_STMT;
     public ORCompositeType C_LOCAL_OPEN;
-    public ORCompositeType C_MODULE_STMT;
-    public ORCompositeType C_VAL_EXPR;
-    public ORCompositeType C_ANNOTATION_EXPR;
     public ORCompositeType C_OPEN;
     public ORCompositeType C_INCLUDE;
     public ORCompositeType C_LET_ATTR;
@@ -33,7 +34,6 @@ public abstract class ORTypes {
     public ORCompositeType C_MACRO_EXPR;
     public ORCompositeType C_MACRO_NAME;
     public ORCompositeType C_FUN_CALL_PARAMS;
-    public ORCompositeType C_FUN_CALL_PARAM;
     public ORCompositeType C_FUN_EXPR;
     public ORCompositeType C_FUN_PARAMS;
     public ORCompositeType C_FUN_PARAM;

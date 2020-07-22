@@ -1,13 +1,8 @@
 package com.reason.lang.napkin;
 
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiInclude;
 
-public class IncludeParsingTest extends BaseParsingTestCase {
-    public IncludeParsingTest() {
-        super("", "res", new NsParserDefinition());
-    }
-
+public class IncludeParsingTest extends NsParsingTestCase {
     public void test_one() {
         PsiInclude e = first(includeExpressions(parseCode("include Belt")));
         assertEquals("Belt", e.getQualifiedName());

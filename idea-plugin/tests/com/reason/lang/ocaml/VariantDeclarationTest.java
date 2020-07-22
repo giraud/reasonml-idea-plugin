@@ -1,19 +1,13 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.BaseParsingTestCase;
+import java.util.*;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 
-import java.util.List;
-
 @SuppressWarnings("ConstantConditions")
-public class VariantDeclarationTest extends BaseParsingTestCase {
-    public VariantDeclarationTest() {
-        super("", "ml", new OclParserDefinition());
-    }
-
-    public void testBasic() {
+public class VariantDeclarationTest extends OclParsingTestCase {
+    public void test_basic() {
         PsiType e = first(typeExpressions(parseCode("type color = | Black | White")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -24,7 +18,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
-    public void testBasic2() {
+    public void test_basic2() {
         PsiType e = first(typeExpressions(parseCode("type color = Black | White")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -35,7 +29,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         assertTrue(declarations.get(1).getVariant().isVariant());
     }
 
-    public void testConstructor() {
+    public void test_constructor() {
         PsiType e = first(typeExpressions(parseCode("type color = | Hex of string | Rgb of int * int * int")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);
@@ -48,7 +42,7 @@ public class VariantDeclarationTest extends BaseParsingTestCase {
         assertEquals(3, declarations.get(1).getParameterList().size());
     }
 
-    public void testMixed() {
+    public void test_mixed() {
         PsiType e = first(typeExpressions(parseCode("type unfocusable = | Cannot of reason | Loose | Strict")));
 
         List<PsiVariantDeclaration> declarations = ORUtil.findImmediateChildrenOfClass(e.getBinding(), PsiVariantDeclaration.class);

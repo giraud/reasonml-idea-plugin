@@ -2,15 +2,17 @@ package com.reason.lang.napkin;
 
 import java.util.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.PsiFileHelper;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiFunction;
+import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.signature.ORSignature;
+import com.reason.lang.core.psi.PsiTag;
 
 import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
@@ -20,29 +22,36 @@ public class LetParsingTest extends NsParsingTestCase {
 
     public void test_constant() {
         PsiLet let = first(letExpressions(parseCode("let x = 1")));
+
         assertEquals("x", let.getName());
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
-    public void test_functionLetBinding() {
+    public void test_functionBinding() {
         PsiLet let = first(letExpressions(parseCode("let getAttributes = node => { node }")));
-        assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
+
+        PsiLetBinding binding = first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class));
+        assertEquals("node => { node }", binding.getText());
+        assertTrue(let.isFunction());
+        PsiFunction f = let.getFunction();
+        assertEquals("node", f.getParameters().iterator().next().getText());
+        assertEquals("{ node }", f.getBody().getText());
     }
 
-    public void test_letBinding() {
+    public void test_jsObjectBinding() {
         PsiLet let = first(letExpressions(parseCode("let x = {\"u\": \"r\", \"l\": \"lr\"}")));
         assertFalse(let.isFunction());
         assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
     }
 
-    public void test_letBindingWithJsx() {
-        PsiFile file = parseCode("let make = (~p) => <div/>");
-        PsiElement[] children = file.getChildren();
-        PsiElement element = PsiTreeUtil.nextLeaf(children[1]);
+    public void test_jsxBinding() {
+        PsiLet e = first(letExpressions(parseCode("let make = (~p) => <div/>")));
 
-        assertNull(element);
-        assertSize(1, expressions(file));
+        assertEquals("make", e.getName());
+        assertTrue(e.isFunction());
+        PsiFunctionBody body = e.getFunction().getBody();
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(body, PsiTag.class));
     }
 
     public void test_scopeWithSome() {
@@ -76,10 +85,11 @@ public class LetParsingTest extends NsParsingTestCase {
     }
 
     public void test_signature() {
-        PsiLet let = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { }")));
+        PsiLet e = first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { }")));
 
-        assertEquals("(style, style) => style", let.getORSignature().asString(myLanguage));
-        assertEquals("(a, b) => { }", let.getBinding().getText());
+        assertEquals("(style, style) => style", e.getORSignature().asString(myLanguage));
+        assertEquals("(a, b) => { }", e.getBinding().getText());
+        assertTrue(e.isFunction());
     }
 
     public void test_rec() {
@@ -124,10 +134,10 @@ public class LetParsingTest extends NsParsingTestCase {
     }
 
     //public void test_customOperator() {
-        // let \"/" = ...
-        //PsiLet e = first(letExpressions(parseCode("let \\\"try\" = true")));
-        //
-        //assertEquals("try", e.getName());
+    // let \"/" = ...
+    //PsiLet e = first(letExpressions(parseCode("let \\\"try\" = true")));
+    //
+    //assertEquals("try", e.getName());
     //}
 
     // zzz DEPRECATED ?

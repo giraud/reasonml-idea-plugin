@@ -9,12 +9,8 @@ import com.reason.lang.core.psi.PsiScopedExpr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IfParsingTest extends BaseParsingTestCase {
-    public IfParsingTest() {
-        super("", "re", new OclParserDefinition());
-    }
-
-    public void testBasicIfParsing() {
+public class IfParsingTest extends OclParsingTestCase {
+    public void test_basicIf() {
         PsiFile psiFile = parseCode("let _ = if x then ()");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
@@ -25,7 +21,7 @@ public class IfParsingTest extends BaseParsingTestCase {
         assertEquals("()", ifScope.getText());
     }
 
-    public void testBasicIfElseParsing() {
+    public void test_basicIfElse() {
         PsiFile psiFile = parseCode("let _ = if x then 1 else 2");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
@@ -37,7 +33,7 @@ public class IfParsingTest extends BaseParsingTestCase {
         assertEquals("2", scopes.get(1).getText());
     }
 
-    public void testIfWithIn() {
+    public void test_ifWithIn() {
         PsiFile file = parseCode("let _ =  if x then let init = y in let data = z");
 
         assertEquals(1, letExpressions(file).size());

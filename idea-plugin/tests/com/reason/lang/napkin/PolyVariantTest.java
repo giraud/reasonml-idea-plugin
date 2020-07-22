@@ -27,7 +27,7 @@ public class PolyVariantTest extends NsParsingTestCase {
     }
 
     public void test_patternMatchConstant() {
-        PsiFile file = parseCode("let unwrapValue = switch (x) {" + //
+        PsiFile file = parseCode("let unwrapValue = switch x {" + //
                                          "  | #String(s) => toJsUnsafe(s) " + //
                                          "  | #bool(b) => toJsUnsafe(Js.Boolean.to_js_boolean(b))" + //
                                          "}");

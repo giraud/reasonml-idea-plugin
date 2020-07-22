@@ -8,6 +8,7 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiSignature;
@@ -81,7 +82,8 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> im
         if (stub != null) {
             return stub.getQualifiedName();
         }
-        return getPath() + "[" + getName() + "]";
+        PsiElement parent = getParent();
+        return getPath() + (parent instanceof PsiFunctionCallParams ? "." + getName() : "[" + getName() + "]");
     }
 
     @Nullable

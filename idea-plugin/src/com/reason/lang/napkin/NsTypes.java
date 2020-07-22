@@ -20,24 +20,28 @@ public class NsTypes extends ORTypes {
     public static final NsTypes INSTANCE = new NsTypes();
 
     private NsTypes() {
+        C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", NsLanguage.INSTANCE);
+
+        // Stubbed expressions
+
+        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXPR_EXCEPTION", NsLanguage.INSTANCE);
+        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXPR_TYPE", NsLanguage.INSTANCE);
+        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", NsLanguage.INSTANCE);
+        C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", NsLanguage.INSTANCE);
+        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_EXPR_MODULE", NsLanguage.INSTANCE);
+        C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", NsLanguage.INSTANCE);
+
         // Stubbed element types
 
-        C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", NsLanguage.INSTANCE);
-        C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", NsLanguage.INSTANCE);
-        C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", NsLanguage.INSTANCE);
-        C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", NsLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", NsLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", NsLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", NsLanguage.INSTANCE);
-        C_LET_STMT = new PsiLetStubElementType("C_LET_STMT", NsLanguage.INSTANCE);
-        C_MODULE_STMT = new PsiInnerModuleStubElementType("C_MODULE_STMT", NsLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", NsLanguage.INSTANCE);
-        C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", NsLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", NsLanguage.INSTANCE);
 
         // Composite element types
 
-        C_ANNOTATION_EXPR = new ORCompositeElementType("C_ANNOTATION_EXPR", NsLanguage.INSTANCE);
+        C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", NsLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", NsLanguage.INSTANCE);
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", NsLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", NsLanguage.INSTANCE);
@@ -52,7 +56,6 @@ public class NsTypes extends ORTypes {
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", NsLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", NsLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", NsLanguage.INSTANCE);
-        C_FUN_CALL_PARAM = new ORCompositeElementType("C_FUN_CALL_PARAM", NsLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", NsLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", NsLanguage.INSTANCE);
         C_FUN_PARAM_BINDING = new ORCompositeElementType("C_FUN_PARAM_BINDING", NsLanguage.INSTANCE);

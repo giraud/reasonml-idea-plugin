@@ -11,9 +11,9 @@ public class ExternalParsingTest extends NsParsingTestCase {
         PsiExternal e = firstOfType(parseCode("external e : string => string"), PsiExternal.class);
 
         assertEquals("e", e.getName());
+        assertTrue(e.isFunction());
         PsiSignature signature = e.getPsiSignature();
         assertEquals("string => string", signature.getText());
-        assertTrue(e.isFunction());
     }
 
     public void test_withString() {
@@ -33,9 +33,9 @@ public class ExternalParsingTest extends NsParsingTestCase {
     }
 
     public void test_array() {
-        PsiExternal e = firstOfType(parseCode("external array : array<reactElement> => reactElement = \"%identity\""), PsiExternal.class);
+        PsiExternal e = firstOfType(parseCode("external myArray : array<reactElement> => reactElement = \"%identity\""), PsiExternal.class);
 
-        assertEquals("array", e.getName());
+        assertEquals("myArray", e.getName());
         assertEquals("array<reactElement> => reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
