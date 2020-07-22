@@ -1,4 +1,4 @@
-package com.reason.lang.reason;
+package com.reason.lang.napkin;
 
 import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
 import com.reason.lang.core.stub.type.PsiExternalStubElementType;
@@ -22,23 +22,26 @@ public class NsTypes extends ORTypes {
     private NsTypes() {
         C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", NsLanguage.INSTANCE);
 
+        // Stubbed expressions
+
+        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXPR_EXCEPTION", NsLanguage.INSTANCE);
+        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXPR_TYPE", NsLanguage.INSTANCE);
+        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", NsLanguage.INSTANCE);
+        C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", NsLanguage.INSTANCE);
+        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_EXPR_MODULE", NsLanguage.INSTANCE);
+        C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", NsLanguage.INSTANCE);
+
         // Stubbed element types
 
-        C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", NsLanguage.INSTANCE);
-        C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", NsLanguage.INSTANCE);
-        C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", NsLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", NsLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", NsLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", NsLanguage.INSTANCE);
-        C_LET_STMT = new PsiLetStubElementType("C_LET_STMT", NsLanguage.INSTANCE);
-        C_MODULE_STMT = new PsiInnerModuleStubElementType("C_MODULE_STMT", NsLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", NsLanguage.INSTANCE);
-        C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", NsLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", NsLanguage.INSTANCE);
 
         // Composite element types
 
-        C_ANNOTATION_EXPR = new ORCompositeElementType("C_ANNOTATION_EXPR", NsLanguage.INSTANCE);
+        C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", NsLanguage.INSTANCE);
         C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", NsLanguage.INSTANCE);
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", NsLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", NsLanguage.INSTANCE);
@@ -53,7 +56,6 @@ public class NsTypes extends ORTypes {
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", NsLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", NsLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", NsLanguage.INSTANCE);
-        C_FUN_CALL_PARAM = new ORCompositeElementType("C_FUN_CALL_PARAM", NsLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", NsLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", NsLanguage.INSTANCE);
         C_FUN_PARAM_BINDING = new ORCompositeElementType("C_FUN_PARAM_BINDING", NsLanguage.INSTANCE);
@@ -70,6 +72,7 @@ public class NsTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", NsLanguage.INSTANCE);
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", NsLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", NsLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", NsLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", NsLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", NsLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", NsLanguage.INSTANCE);
@@ -94,6 +97,7 @@ public class NsTypes extends ORTypes {
         C_TAG_START = new ORCompositeElementType("C_TAG_START", NsLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", NsLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", NsLanguage.INSTANCE);
+        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", NsLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", NsLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", NsLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);
@@ -110,25 +114,26 @@ public class NsTypes extends ORTypes {
 
         // Token element types
 
-        BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", NsLanguage.INSTANCE);
-        STRING_VALUE = new ORTokenElementType("STRING_VALUE", NsLanguage.INSTANCE);
-        FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", NsLanguage.INSTANCE);
-        CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", NsLanguage.INSTANCE);
-        INT_VALUE = new ORTokenElementType("INT_VALUE", NsLanguage.INSTANCE);
-        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", NsLanguage.INSTANCE);
-        PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", NsLanguage.INSTANCE);
-        SWITCH = new ORTokenElementType("SWITCH", NsLanguage.INSTANCE);
-        FUNCTION = new ORTokenElementType("FUNCTION", NsLanguage.INSTANCE);
-        FUN = new ORTokenElementType("FUN", NsLanguage.INSTANCE);
-        FUNCTOR = new ORTokenElementType("FUNCTOR", NsLanguage.INSTANCE);
-        IF = new ORTokenElementType("IF", NsLanguage.INSTANCE);
-        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", NsLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", NsLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", NsLanguage.INSTANCE);
         ARROBASE = new ORTokenElementType("ARROBASE", NsLanguage.INSTANCE);
         ARROW = new ORTokenElementType("ARROW", NsLanguage.INSTANCE);
         ASSERT = new ORTokenElementType("ASSERT", NsLanguage.INSTANCE);
         AS = new ORTokenElementType("AS", NsLanguage.INSTANCE);
+        BACKSLASH = new ORTokenElementType("BACKSLASH", NsLanguage.INSTANCE);
+        BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", NsLanguage.INSTANCE);
+        CATCH = new ORTokenElementType("CATCH", NsLanguage.INSTANCE);
+        CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", NsLanguage.INSTANCE);
+        EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", NsLanguage.INSTANCE);
+        FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", NsLanguage.INSTANCE);
+        FUNCTION = new ORTokenElementType("FUNCTION", NsLanguage.INSTANCE);
+        FUN = new ORTokenElementType("FUN", NsLanguage.INSTANCE);
+        FUNCTOR = new ORTokenElementType("FUNCTOR", NsLanguage.INSTANCE);
+        INT_VALUE = new ORTokenElementType("INT_VALUE", NsLanguage.INSTANCE);
+        PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", NsLanguage.INSTANCE);
+        STRING_VALUE = new ORTokenElementType("STRING_VALUE", NsLanguage.INSTANCE);
+        SWITCH = new ORTokenElementType("SWITCH", NsLanguage.INSTANCE);
+        IF = new ORTokenElementType("IF", NsLanguage.INSTANCE);
         BACKTICK = new ORTokenElementType("BACKTICK", NsLanguage.INSTANCE);
         BEGIN = new ORTokenElementType("BEGIN", NsLanguage.INSTANCE);
         CARRET = new ORTokenElementType("CARRET", NsLanguage.INSTANCE);
@@ -215,7 +220,6 @@ public class NsTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", NsLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", NsLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", NsLanguage.INSTANCE);
-        TAG_GT = new ORTokenElementType("TAG_GT", NsLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", NsLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", NsLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", NsLanguage.INSTANCE);
@@ -267,6 +271,7 @@ public class NsTypes extends ORTypes {
         BRACKET_LT = new ORTokenElementType("BRACKET_LT", NsLanguage.INSTANCE);
         BRACE_LT = new ORTokenElementType("BRACE_LT", NsLanguage.INSTANCE);
 
+        ML_STRING_VALUE = new ORTokenElementType("ML_STRING_VALUE", NsLanguage.INSTANCE);
         ML_STRING_OPEN = new ORTokenElementType("ML_STRING_OPEN", NsLanguage.INSTANCE);
         ML_STRING_CLOSE = new ORTokenElementType("ML_STRING_CLOSE", NsLanguage.INSTANCE);
         JS_STRING_OPEN = new ORTokenElementType("JS_STRING_OPEN", NsLanguage.INSTANCE);

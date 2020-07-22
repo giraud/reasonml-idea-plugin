@@ -135,7 +135,7 @@
         <lang.syntaxHighlighterFactory language="Reason"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
         <!-- Reason -->
-        <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.reason.NsParserDefinition"/>
+        <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.napkin.NsParserDefinition"/>
         <lang.syntaxHighlighterFactory language="NapkinScript"
                                        implementationClass="com.reason.ide.highlight.NsSyntaxHighlighterFactory"/>
         <!-- OCaml -->

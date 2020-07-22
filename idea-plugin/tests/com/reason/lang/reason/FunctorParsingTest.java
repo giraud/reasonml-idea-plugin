@@ -12,11 +12,7 @@ import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiParameter;
 
 @SuppressWarnings("ConstantConditions")
-public class FunctorTest extends BaseParsingTestCase {
-    public FunctorTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
+public class FunctorParsingTest extends RmlParsingTestCase {
     public void testBasic() {
         PsiNameIdentifierOwner e = first(expressions(parseCode("module Make = (M: Def) : S => {};")));
 

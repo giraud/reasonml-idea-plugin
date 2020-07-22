@@ -8,12 +8,12 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
-import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.stub.PsiExceptionStub;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
 
 public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiExceptionStub> implements PsiException {
 
@@ -66,6 +66,21 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiExceptionStub> im
         }
 
         return ORUtil.getQualifiedName(this);
+    }
+
+    @Override
+    public @Nullable String getAlias() {
+        //zzz PsiModuleStub stub = getGreenStub();
+        //if (stub != null) {
+        //    return stub.getAlias();
+        //}
+
+        PsiElement eq = findChildByType(m_types.EQ);
+        if (eq != null) {
+            return ORUtil.computeAlias(eq.getNextSibling(), getLanguage(), false);
+        }
+
+        return null;
     }
 
     @Override

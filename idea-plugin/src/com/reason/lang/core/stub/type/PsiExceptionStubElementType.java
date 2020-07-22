@@ -7,12 +7,13 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.impl.PsiExceptionImpl;
 import com.reason.lang.core.stub.PsiExceptionStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionStub, PsiException> {
+public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionStub, PsiException> implements ORCompositeType {
 
     public PsiExceptionStubElementType(@NotNull String name, Language language) {
         super(name, language);

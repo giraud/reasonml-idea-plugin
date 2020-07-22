@@ -7,12 +7,13 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiParameterImpl;
 import com.reason.lang.core.stub.PsiParameterStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class PsiParameterStubElementType extends IStubElementType<PsiParameterStub, PsiParameter> {
+public class PsiParameterStubElementType extends IStubElementType<PsiParameterStub, PsiParameter> implements ORCompositeType {
 
     public PsiParameterStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);

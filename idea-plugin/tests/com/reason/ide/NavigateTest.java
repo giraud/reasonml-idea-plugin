@@ -2,7 +2,7 @@ package com.reason.ide;
 
 import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.PsiFileHelper;
+import com.reason.lang.PsiFileHelper;
 
 public class NavigateTest extends ORBasePlatformTestCase {
 

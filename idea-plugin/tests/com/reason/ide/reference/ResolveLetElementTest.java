@@ -67,7 +67,7 @@ public class ResolveLetElementTest extends ORBasePlatformTestCase {
         assertEquals("A.fn.x", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
     }
 
-    public void testInnerScopeInImpl() {
+    public void testRml_innerScopeInImpl() {
         configureCode("A.rei", "let x:int;");
         configureCode("A.re", "let x = 1; let fn = { let foo = 2; fn1(foo<caret>); };");
 

@@ -11,8 +11,8 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclLexer;
 import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.NsLexer;
-import com.reason.lang.reason.NsTypes;
+import com.reason.lang.napkin.NsLexer;
+import com.reason.lang.napkin.NsTypes;
 import com.reason.lang.reason.RmlLexer;
 import com.reason.lang.reason.RmlTypes;
 

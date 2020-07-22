@@ -7,11 +7,7 @@ import com.reason.lang.core.psi.*;
 
 import java.util.Collection;
 
-public class JsObjectParsingTest extends BaseParsingTestCase {
-    public JsObjectParsingTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
+public class JsObjectParsingTest extends RmlParsingTestCase {
     public void testInFunction() {
         PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0});")));
 

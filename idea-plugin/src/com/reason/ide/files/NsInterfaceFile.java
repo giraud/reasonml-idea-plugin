@@ -3,7 +3,7 @@ package com.reason.ide.files;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
-import com.reason.lang.reason.NsLanguage;
+import com.reason.lang.napkin.NsLanguage;
 
 public class NsInterfaceFile extends FileBase {
     public NsInterfaceFile(@NotNull FileViewProvider viewProvider) {

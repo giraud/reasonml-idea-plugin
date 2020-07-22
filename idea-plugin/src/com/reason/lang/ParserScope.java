@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTokenElementType;
 
 public class ParserScope {
@@ -13,17 +14,17 @@ public class ParserScope {
     private final int m_offset;
 
     private ParserScopeEnum m_resolution;
-    private IElementType m_compositeElementType;
+    private ORCompositeType m_compositeElementType;
     private ORTokenElementType m_scopeTokenElementType;
     private ParserScopeEnum m_context;
     private boolean m_isComplete = false;
     private boolean m_isDummy = false; // Always drop
     private boolean m_isScope = false;
-    private boolean m_scopeStart = false;
+    private boolean m_isStart = false;
     @Nullable
-    private PsiBuilder.Marker m_mark;
+    public PsiBuilder.Marker m_mark;
 
-    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, IElementType compositeElementType,
+    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, ORCompositeType compositeElementType,
                         ORTokenElementType scopeTokenElementType) {
         m_builder = builder;
         m_mark = builder.mark();
@@ -35,26 +36,26 @@ public class ParserScope {
     }
 
     @NotNull
-    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull IElementType compositeElementType) {
-        return new ParserScope(builder, context, context, compositeElementType, null);
+    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull ORCompositeType compositeElementType) {
+        return new ParserScope(builder, resolution, resolution, compositeElementType, null);
     }
 
     @NotNull
     public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution,
-                                   @NotNull IElementType compositeElementType) {
+                                   @NotNull ORCompositeType compositeElementType) {
         return new ParserScope(builder, context, resolution, compositeElementType, null);
     }
 
     @NotNull
     public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution,
-                                        @NotNull IElementType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
-        ParserScope parserScope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType).setIsStart(true);
+                                        @NotNull ORCompositeType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
+        ParserScope parserScope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType)/*.setIsStart(true)*/;
         parserScope.m_isScope = true;
         return parserScope;
     }
 
     @NotNull
-    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull IElementType compositeElementType,
+    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull ORCompositeType compositeElementType,
                                         @NotNull ORTokenElementType scopeTokenElementType) {
         return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
     }
@@ -80,8 +81,8 @@ public class ParserScope {
 
     private void done() {
         if (m_mark != null) {
-            if (m_compositeElementType != null) {
-                m_mark.done(m_compositeElementType);
+            if (m_compositeElementType instanceof IElementType) {
+                m_mark.done((IElementType) m_compositeElementType);
             } else {
                 m_mark.drop();
             }
@@ -118,8 +119,8 @@ public class ParserScope {
         return this;
     }
 
-    boolean isCompositeEqualTo(IElementType compositeElementType) {
-        return m_compositeElementType == compositeElementType;
+    boolean isCompositeEqualTo(ORCompositeType compositeType) {
+        return m_compositeElementType == compositeType;
     }
 
     boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
@@ -132,8 +133,8 @@ public class ParserScope {
     }
 
     @NotNull
-    public ParserScope updateCompositeElementType(IElementType compositeElementType) {
-        m_compositeElementType = compositeElementType;
+    public ParserScope updateCompositeElementType(ORCompositeType compositeType) {
+        m_compositeElementType = compositeType;
         return this;
     }
 
@@ -151,17 +152,17 @@ public class ParserScope {
         return m_context;
     }
 
-    public boolean isScopeStart() {
-        return m_scopeStart;
+    public boolean isStart() {
+        return m_isStart;
     }
 
     @NotNull
     public ParserScope setIsStart(boolean isStart) {
-        m_scopeStart = isStart;
+        m_isStart = isStart;
         return this;
     }
 
-    ParserScopeEnum getResolution() {
+    public ParserScopeEnum getResolution() {
         return m_resolution;
     }
 
@@ -177,5 +178,13 @@ public class ParserScope {
         if (m_mark != null) {
             m_mark.rollbackTo();
         }
+    }
+
+    public boolean isCompositeType(ORCompositeType elementType) {
+        return m_compositeElementType == elementType;
+    }
+
+    public ORCompositeType getCompositeType() {
+        return m_compositeElementType;
     }
 }

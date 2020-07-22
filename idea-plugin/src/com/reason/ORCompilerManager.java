@@ -39,7 +39,7 @@ public class ORCompilerManager {
 
     public Optional<Compiler> getCompiler(VirtualFile editorFile) {
         FileType fileType = editorFile.getFileType();
-        if (FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType)) {
+        if (FileHelper.isCompilable(fileType)) {
             return traverseAncestorsForCompiler(editorFile.getParent(), new HashMap<>());
         }
         return Optional.empty();

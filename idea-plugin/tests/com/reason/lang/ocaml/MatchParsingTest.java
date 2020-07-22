@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
@@ -17,12 +16,8 @@ import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 
 @SuppressWarnings("ConstantConditions")
-public class MatchParsingTest extends BaseParsingTestCase {
-    public MatchParsingTest() {
-        super("", "ml", new OclParserDefinition());
-    }
-
-    public void testMatch() {
+public class MatchParsingTest extends OclParsingTestCase {
+    public void test_match() {
         FileBase psiFile = parseCode("let path_of_dirpath dir = match DirPath.repr dir with [] -> failwith \"path_of_dirpath\"");
         assertEquals(1, childrenCount(psiFile));
 
@@ -31,7 +26,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
         PsiTreeUtil.findChildOfType(let, PsiFunction.class);
     }
 
-    public void testMatchExpr() {
+    public void test_matchExpr() {
         FileBase psiFileModule = parseCode("let _ = match c with | VtMeta -> let _ = x");
         assertEquals(1, childrenCount(psiFileModule));
 
@@ -40,12 +35,12 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiSwitch.class));
     }
 
-    public void testMatchWithException() {
+    public void test_matchWithException() {
         FileBase psiFile = parseCode("match x with | exception Failure -> Printf.printf");
         assertEquals(1, childrenCount(psiFile));
     }
 
-    public void testComplexMatch() {
+    public void test_complexMatch() {
         FileBase file = parseCode("begin match Repr.repr o with\n" + "    | BLOCK (0, [|id; o|]) ->\n" + "      [|(Int, id, 0 :: pos); (tpe, o, 1 :: pos)|]\n"
                                           + "    | _ -> raise Exit\n" + "    end");
         PsiElement[] children = file.getChildren();
@@ -54,7 +49,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertInstanceOf(children[0], PsiScopedExpr.class);
     }
 
-    public void testPatternTokenType() {
+    public void test_patternTokenType() {
         PsiFile psiFile = parseCode("let _ = match action with | Incr -> counter + 1");
 
         PsiSwitch switch_ = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
@@ -67,7 +62,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertEquals("counter + 1", patternMatch.getBody().getText());
     }
 
-    public void testPatternMatch() {
+    public void test_patternMatch() {
         PsiFile psiFile = parseCode("let _ = match p with | Typedtree.Partial -> \"Partial\" | Total -> \"Total\"");
 
         PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
@@ -82,7 +77,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertEquals("\"Total\"", m2.getBody().getText());
     }
 
-    public void testFunctionShortcut() {
+    public void test_functionShortcut() {
         PsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
 
         PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
@@ -90,7 +85,7 @@ public class MatchParsingTest extends BaseParsingTestCase {
         assertEquals("1", PsiTreeUtil.findChildOfType(fun.getBody(), PsiPatternMatchBody.class).getText());
     }
 
-    public void testFunctionShortcutNoPipe() {
+    public void test_functionShortcutNoPipe() {
         PsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
 
         PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();

@@ -27,9 +27,6 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlQNameFinder;
-import com.reason.lang.reason.RmlTypes;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.*;
@@ -40,13 +37,10 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @Nullable
     private final String m_referenceName;
-    @NotNull
-    private final ORTypes m_types;
 
-    public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes types) {
+    public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes _types) {
         super(element, ORUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
-        m_types = types;
     }
 
     @Override
@@ -290,7 +284,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @NotNull
     private OrderedPaths getPotentialPaths() {
-        QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+        QNameFinder qnameFinder = PsiFinder.getQNameFinder(myElement.getLanguage());
         GlobalSearchScope scope = GlobalSearchScope.allScope(myElement.getProject()); // in api
 
         PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
@@ -331,10 +325,10 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     }
 
     static class OrderedPaths {
-        List<PsiQualifiedElement> m_elements = new ArrayList<>();
-        List<String> m_paths = new ArrayList<>();
-        Map<String, Integer> m_elementIndices = new HashMap<>();
-        Map<String, Integer> m_pathIndices = new HashMap<>();
+        final List<PsiQualifiedElement> m_elements = new ArrayList<>();
+        final List<String> m_paths = new ArrayList<>();
+        final Map<String, Integer> m_elementIndices = new HashMap<>();
+        final Map<String, Integer> m_pathIndices = new HashMap<>();
 
         void add(@NotNull PsiQualifiedElement element, @NotNull String name) {
             String value = element.getQualifiedName() + (element instanceof PsiParameter ? "" : "." + name);

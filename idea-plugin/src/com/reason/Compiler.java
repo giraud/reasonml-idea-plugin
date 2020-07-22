@@ -1,19 +1,12 @@
 package com.reason;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.ide.console.CliType;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.ide.files.RmlFileType;
-import com.reason.ide.files.RmlInterfaceFileType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
-import java.util.Set;
 
 public interface Compiler {
 
@@ -36,7 +29,5 @@ public interface Compiler {
 
     boolean isConfigured(@NotNull Project project);
 
-    @Nullable
-    ConsoleView getConsoleView();
-
+    @Nullable ConsoleView getConsoleView();
 }

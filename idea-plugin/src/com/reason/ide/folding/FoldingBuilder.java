@@ -28,7 +28,6 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
-import com.reason.lang.reason.RmlLanguage;
 import com.reason.lang.reason.RmlTypes;
 
 public class FoldingBuilder extends FoldingBuilderEx {
@@ -36,7 +35,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     @Override
     public FoldingDescriptor[] buildFoldRegions(@NotNull PsiElement root, @NotNull Document document, boolean quick) {
         List<FoldingDescriptor> descriptors = new ArrayList<>();
-        ORTypes types = root.getLanguage() == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+        ORTypes types = ORUtil.getTypes(root.getLanguage());
 
         PsiTreeUtil.processElements(root, element -> {
             if (element instanceof PsiLet) {

@@ -6,7 +6,6 @@ import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiModuleStubElementType;
 import com.reason.lang.core.stub.type.PsiParameterStubElementType;
 import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
 import com.reason.lang.core.stub.type.PsiTypeStubElementType;
@@ -25,21 +24,21 @@ public class OclTypes extends ORTypes {
 
         // Stubbed element types
 
-        C_EXCEPTION_EXPR = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", OclLanguage.INSTANCE);
-        C_EXP_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
-        C_EXTERNAL_STMT = new PsiExternalStubElementType("C_EXTERNAL_STMT", OclLanguage.INSTANCE);
+        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXPR_EXCEPTION", OclLanguage.INSTANCE);
+        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
+        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", OclLanguage.INSTANCE);
+        C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", OclLanguage.INSTANCE);
+        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_EXPR_MODULE", OclLanguage.INSTANCE);
+        C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", OclLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", OclLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
-        C_LET_STMT = new PsiLetStubElementType("C_LET_STMT", OclLanguage.INSTANCE);
-        C_MODULE_STMT = new PsiInnerModuleStubElementType("C_MODULE_STMT", OclLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
-        C_VAL_EXPR = new PsiValStubElementType("C_VAL_EXPR", OclLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
 
         // Composite element types
 
-        C_ANNOTATION_EXPR = new ORCompositeElementType("C_ANNOTATION_EXPR", OclLanguage.INSTANCE);
+        C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", OclLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", OclLanguage.INSTANCE);
         C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", OclLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
@@ -53,7 +52,6 @@ public class OclTypes extends ORTypes {
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
-        C_FUN_CALL_PARAM = new ORCompositeElementType("C_FUN_CALL_PARAM", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", OclLanguage.INSTANCE);
         C_FUN_PARAM_BINDING = new ORCompositeElementType("C_FUN_PARAM_BINDING", OclLanguage.INSTANCE);
@@ -68,6 +66,7 @@ public class OclTypes extends ORTypes {
         C_JS_OBJECT = new ORCompositeElementType("C_JS_OBJECT", OclLanguage.INSTANCE);
         C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", OclLanguage.INSTANCE);
         C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", OclLanguage.INSTANCE);
+        C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
         C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", OclLanguage.INSTANCE);
         C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
         C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
@@ -88,6 +87,7 @@ public class OclTypes extends ORTypes {
         C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", OclLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", OclLanguage.INSTANCE);
+        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", OclLanguage.INSTANCE);
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", OclLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", OclLanguage.INSTANCE);
         C_TAG_START = new ORCompositeElementType("C_TAG_START", OclLanguage.INSTANCE);
@@ -115,6 +115,7 @@ public class OclTypes extends ORTypes {
         BOOL_VALUE = new ORTokenElementType("BOOL_VALUE", OclLanguage.INSTANCE);
         STRING_VALUE = new ORTokenElementType("STRING_VALUE", OclLanguage.INSTANCE);
         FLOAT_VALUE = new ORTokenElementType("FLOAT_VALUE", OclLanguage.INSTANCE);
+        CATCH = new ORTokenElementType("CATCH", OclLanguage.INSTANCE);
         CHAR_VALUE = new ORTokenElementType("CHAR_VALUE", OclLanguage.INSTANCE);
         INT_VALUE = new ORTokenElementType("INT_VALUE", OclLanguage.INSTANCE);
         SWITCH = new ORTokenElementType("SWITCH", OclLanguage.INSTANCE);
@@ -123,7 +124,6 @@ public class OclTypes extends ORTypes {
         FUNCTOR = new ORTokenElementType("FUNCTOR", OclLanguage.INSTANCE);
         IF = new ORTokenElementType("IF", OclLanguage.INSTANCE);
         EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", OclLanguage.INSTANCE);
-        C_LOCAL_OPEN = new ORTokenElementType("C_LOCAL_OPEN", OclLanguage.INSTANCE);
         PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", OclLanguage.INSTANCE);
         AND = new ORTokenElementType("AND", OclLanguage.INSTANCE);
         ANDAND = new ORTokenElementType("ANDAND", OclLanguage.INSTANCE);
@@ -217,7 +217,6 @@ public class OclTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", OclLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", OclLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", OclLanguage.INSTANCE);
-        TAG_GT = new ORTokenElementType("TAG_GT", OclLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", OclLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", OclLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", OclLanguage.INSTANCE);
@@ -269,6 +268,7 @@ public class OclTypes extends ORTypes {
         BRACKET_LT = new ORTokenElementType("BRACKET_LT", OclLanguage.INSTANCE);
         BRACE_LT = new ORTokenElementType("BRACE_LT", OclLanguage.INSTANCE);
 
+        ML_STRING_VALUE = new ORTokenElementType("ML_STRING_VALUE", OclLanguage.INSTANCE);
         ML_STRING_OPEN = new ORTokenElementType("ML_STRING_OPEN", OclLanguage.INSTANCE);
         ML_STRING_CLOSE = new ORTokenElementType("ML_STRING_CLOSE", OclLanguage.INSTANCE);
         JS_STRING_OPEN = new ORTokenElementType("JS_STRING_OPEN", OclLanguage.INSTANCE);

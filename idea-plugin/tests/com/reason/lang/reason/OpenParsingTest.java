@@ -1,13 +1,8 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiOpen;
 
-public class OpenParsingTest extends BaseParsingTestCase {
-    public OpenParsingTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
+public class OpenParsingTest extends RmlParsingTestCase {
     public void testOne() {
         PsiOpen e = first(openExpressions(parseCode("open Belt;")));
 

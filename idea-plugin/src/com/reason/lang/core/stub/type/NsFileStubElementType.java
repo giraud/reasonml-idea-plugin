@@ -12,10 +12,10 @@ import com.intellij.psi.tree.IStubFileElementType;
 import com.reason.ide.files.NsFile;
 import com.reason.ide.files.NsInterfaceFile;
 import com.reason.lang.core.stub.NsFileStub;
-import com.reason.lang.reason.NsLanguage;
+import com.reason.lang.napkin.NsLanguage;
 
 public class NsFileStubElementType extends IStubFileElementType<NsFileStub> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     public static final IStubFileElementType<NsFileStub> INSTANCE = new NsFileStubElementType();
 
     private NsFileStubElementType() {

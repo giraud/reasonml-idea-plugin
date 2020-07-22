@@ -1544,7 +1544,7 @@ public class ReasonMLLexer implements FlexLexer {
             // fall through
           case 273: break;
           case 121: 
-            { return types.C_UNIT;
+            { return types.UNIT;
             } 
             // fall through
           case 274: break;

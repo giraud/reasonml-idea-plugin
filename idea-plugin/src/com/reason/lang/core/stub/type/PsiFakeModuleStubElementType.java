@@ -1,24 +1,26 @@
 package com.reason.lang.core.stub.type;
 
+import java.io.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.Language;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.io.StringRef;
-import com.reason.Platform;
 import com.reason.bs.BsConfigReader;
 import com.reason.bs.BsPlatform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.stub.PsiModuleStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.Optional;
-
-public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub, PsiFakeModule> {
+public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub, PsiFakeModule> implements ORCompositeType {
 
     public PsiFakeModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);
@@ -36,9 +38,8 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
         // Finding if it's using a bs virtual namespace
         VirtualFile virtualFile = file.getViewProvider().getVirtualFile();
         VirtualFile originalFile = virtualFile instanceof LightVirtualFile ? ((LightVirtualFile) virtualFile).getOriginalFile() : virtualFile;
-        String namespace = BsPlatform.findBsConfigForFile(file.getProject(), originalFile)
-                .map((bsConfig) -> BsConfigReader.read(bsConfig).getNamespace())
-                .orElse(null);
+        String namespace = originalFile == null ? null :
+                BsPlatform.findBsConfigForFile(file.getProject(), originalFile).map((bsConfig) -> BsConfigReader.read(bsConfig).getNamespace()).orElse(null);
 
         return new PsiModuleStub(parentStub, this, file.getModuleName(), namespace /*, isVirtualNamespace*/, null, file.isComponent(), file.isInterface());
     }
@@ -64,9 +65,8 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
         String name = stub.getName();
         if (name != null) {
             sink.occurrence(IndexKeys.MODULES, name);
+            sink.occurrence(IndexKeys.MODULES_TOP_LEVEL, name);
         }
-
-        sink.occurrence(IndexKeys.MODULES_TOP_LEVEL, name);
 
         String fqn = stub.getQualifiedName();
         sink.occurrence(IndexKeys.MODULES_FQN, fqn.hashCode());
