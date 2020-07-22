@@ -1,6 +1,7 @@
 package com.reason.lang.napkin;
 
 import java.util.*;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
@@ -9,9 +10,33 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiLocalOpen;
 import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.PsiType;
 
 @SuppressWarnings("ConstantConditions")
 public class JsObjectParsingTest extends NsParsingTestCase {
+    public void test_basic() {
+        PsiLet e = first(letExpressions(parseCode("let x = {\"a\": 1, \"b\": 0};")));
+
+        PsiLetBinding binding = e.getBinding();
+        PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
+        assertNotNull(object);
+
+        Collection<PsiObjectField> fields = object.getFields();
+        assertEquals(2, fields.size());
+    }
+
+    public void test_definition() {
+        PsiType e = first(typeExpressions(parseCode("type t = {. a: string, b: int};")));
+
+        PsiElement binding = e.getBinding();
+        PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
+        assertNotNull(object);
+
+        Collection<PsiObjectField> fields = object.getFields();
+        assertEquals(2, fields.size());
+    }
+
     public void test_inFunction() {
         PsiLet e = first(letExpressions(parseCode("let x = fn(~props={\"a\": id, \"b\": 0})")));
 
@@ -34,7 +59,8 @@ public class JsObjectParsingTest extends NsParsingTestCase {
         assertNotNull(object);
 
         Collection<PsiObjectField> fields = object.getFields();
-        assertEquals(6, fields.size());
+        assertEquals(5, fields.size());
+        assertSize(0, PsiTreeUtil.findChildrenOfType(object, PsiSignature.class));
     }
 
     public void test_moduleOpen() {

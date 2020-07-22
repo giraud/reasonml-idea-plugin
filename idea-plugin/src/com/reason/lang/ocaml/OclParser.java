@@ -252,9 +252,6 @@ public class OclParser extends CommonParser<OclTypes> {
                     }
                 }
             }
-            //else {
-            //        state.complete();
-            //    }
 
             state.popEnd();
         }
@@ -438,7 +435,7 @@ public class OclParser extends CommonParser<OclTypes> {
         //    state.popEnd();
         //}
 
-        if (state.isCurrentResolution(functorNamedColonResult)) {
+        if (state.isCurrentResolution(functorResult)) {
             // A functor with constraints
             //  module Make (M : Input) : S |>with<| ...
             state.popEnd().
@@ -608,7 +605,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(functorNamed)) {
             state.updateCurrentResolution(functorNamedColon).
                     advance().
-                    mark(functorNamedColonResult, m_types.C_FUNCTOR_RESULT);
+                    mark(functorResult, m_types.C_FUNCTOR_RESULT);
         } else if (state.isCurrentResolution(functorParam)) {
             state.updateCurrentResolution(functorParamColon);
         }
@@ -647,7 +644,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.isCurrentResolution(signatureItem) || state.isCurrentResolution(functionParameters)) {
             state.popEnd();
         }
-        if (state.isCurrentResolution(functorNamedColonResult)) {
+        if (state.isCurrentResolution(functorResult)) {
             state.popEnd();
         }
 

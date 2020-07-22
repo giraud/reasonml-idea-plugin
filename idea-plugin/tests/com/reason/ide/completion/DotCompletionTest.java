@@ -7,7 +7,7 @@ import com.reason.ide.ORBasePlatformTestCase;
 @SuppressWarnings("ConstantConditions")
 public class DotCompletionTest extends ORBasePlatformTestCase {
 
-    public void testRml_Basic() {
+    public void test_Rml_Basic() {
         configureCode("A.re", "let x = 1;");
         configureCode("B.re", "type t; let y = 2; module B = {}; A.<caret>");
 
@@ -17,7 +17,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "x");
     }
 
-    public void testOcl_Basic() {
+    public void test_Ocl_Basic() {
         configureCode("A.ml", "let x = 1");
         configureCode("B.ml", "type t let y = 2 module B = struct end A.<caret>");
 
@@ -27,7 +27,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "x");
     }
 
-    public void testRml_ModuleOverride() {
+    public void test_Rml_ModuleOverride() {
         configureCode("A.re", "let x = 1;");
         configureCode("B.re", "module A = { let y = 2; }; A.<caret>");
 
@@ -37,7 +37,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "y");
     }
 
-    public void testOcl_ModuleOverride() {
+    public void test_Ocl_ModuleOverride() {
         configureCode("A.ml", "let x = 1");
         configureCode("B.ml", "module A = struct let y = 2 end A.<caret>");
 
@@ -67,7 +67,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "x");
     }
 
-    public void testOcl_multipleAlias() {
+    public void test_Ocl_multipleAlias() {
         // like Belt
         configureCode("string.mli", "external length : string -> int = \"%string_length\"");
         configureCode("belt_MapString.mli", "type key = string");
@@ -83,7 +83,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertEquals("key", elements.get(0));
     }
 
-    public void testRml_singleAlias() {
+    public void test_Rml_singleAlias() {
         // like ReasonReact.Router
         configureCode("ReasonReactRouter.rei", "type watcherID;");
         configureCode("ReasonReact.rei", "module Router = ReasonReactRouter;");
@@ -97,7 +97,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertEquals("watcherID", elements.get(0));
     }
 
-    public void testRml_aliasInFile() {
+    public void test_Rml_aliasInFile() {
         // like ReasonReact.Router
         configureCode("View.re", "module Detail = { let alias = \"a\"; };");
         configureCode("Dummy.re", "module V = View.Detail; V.<caret>");
@@ -109,7 +109,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertEquals("alias", elements.get(0));
     }
 
-    public void testOcl_noPervasives() {
+    public void test_Ocl_noPervasives() {
         configureCode("pervasives.mli", "val int_of_string : str -> int");
         configureCode("belt_Array.mli", "val length: t -> int");
         configureCode("belt.ml", "module Array = Belt_Array");
@@ -123,7 +123,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertEquals("length", elements.get(0));
     }
 
-    public void testRml_uncurried() {
+    public void test_Rml_uncurried() {
         configureCode("A.re", "let x = 1;");
         configureCode("B.re", "send(. <caret>)"); // should use free completion
 
@@ -133,7 +133,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "A");
     }
 
-    public void testRml_letprivate() {
+    public void test_Rml_letprivate() {
         configureCode("A.re", "let x%private = 1;");
         configureCode("B.re", "A.<caret>");
 
@@ -143,7 +143,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertEmpty(strings);
     }
 
-    public void testRml_functorNoReturnType() {
+    public void test_Rml_functorNoReturnType() {
         configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
         configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
         configureCode("C.re", "open B; Instance.<caret>");
@@ -154,7 +154,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "y");
     }
 
-    public void testOcl_functorNoReturnType() {
+    public void test_Ocl_functorNoReturnType() {
         configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeOcl(I:Intf) = struct let y = 1 end");
         configureCode("B.ml", "open A\n module Instance = MakeOcl(struct let x = true end)");
         configureCode("C.ml", "open B let _ = Instance.<caret>");
@@ -165,7 +165,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "y");
     }
 
-    public void testRml_functorWithReturnType() {
+    public void test_Rml_functorWithReturnType() {
         configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) : Intf => { let y = 1; };");
         configureCode("B.re", "open A; module Instance = MakeIntf({let x = true});");
         configureCode("C.re", "open B; Instance.<caret>");
@@ -176,8 +176,8 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "x");
     }
 
-    public void testOcl_functorWithReturnType() {
-        configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeIntf(I:Intf) : Intf = struct let y = 1 end", true);
+    public void test_Ocl_functorWithReturnType() {
+        configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeIntf(I:Intf) : Intf = struct let y = 1 end");
         configureCode("B.ml", "open A\n module Instance = MakeIntf(struct let x = true end)");
         configureCode("C.ml", "open B let _ = Instance.<caret>");
 
@@ -187,7 +187,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "x");
     }
 
-    public void testRml_functorInclude() {
+    public void test_Rml_functorInclude() {
         configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
         configureCode("B.re", "include A.MakeIntf({let x = true});");
         configureCode("C.re", "B.<caret>");
@@ -198,7 +198,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "y");
     }
 
-    public void testOcl_functorInclude() {
+    public void test_Ocl_functorInclude() {
         configureCode("A.ml", "module type Intf  = sig val x : bool end\n module MakeIntf(I:Intf) = struct let y = 1 end");
         configureCode("B.ml", "include A.MakeIntf(struct let x = true end)");
         configureCode("C.ml", "let _ = B.<caret>");
@@ -209,7 +209,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "y");
     }
 
-    public void testRml_functorIncludeMultipleChoice() {
+    public void test_Rml_functorIncludeMultipleChoice() {
         configureCode("A.re", "module Make = (I:{}) => { let a = 1; };");
         configureCode("B.re", "module Make = (I:{}) => { let b = 1; }; include Make({});");
         configureCode("C.re", "B.<caret>");
@@ -220,7 +220,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "Make", "b");
     }
 
-    public void testRml_functorIncludeAlias() {
+    public void test_Rml_functorIncludeAlias() {
         configureCode("A.re", "module type Intf = { let x: bool; }; module MakeIntf = (I:Intf) => { let y = 1; };");
         configureCode("B.re", "module Instance = A.MakeIntf({let x = true}); include Instance;");
         configureCode("C.re", "B.<caret>");
@@ -231,7 +231,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "Instance", "y");
     }
 
-    public void testRml_ResultWithAlias() {
+    public void test_Rml_ResultWithAlias() {
         configureCode("A.re", "module type Result = { let a: int; };");
         configureCode("B.re", "module T = A; module Make = (M:Intf): T.Result => { let b = 3; };");
         configureCode("C.re", "module Instance = B.Make({}); let c = Instance.<caret>;");
@@ -242,7 +242,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(elements, "a");
     }
 
-    public void testRml_resultWithAlias2() {
+    public void test_Rml_resultWithAlias2() {
         configureCode("A.re", "module type Result = { let a: int; };");
         configureCode("B.re", "module Make = (M:Intf): (A.Result with type t := M.t) => {}; module Instance = Make({});");
         configureCode("C.re", "B.Instance.<caret>");

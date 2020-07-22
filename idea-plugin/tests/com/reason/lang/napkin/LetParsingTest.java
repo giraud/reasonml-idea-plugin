@@ -11,6 +11,7 @@ import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiTag;
 
@@ -90,6 +91,15 @@ public class LetParsingTest extends NsParsingTestCase {
         assertEquals("(style, style) => style", e.getORSignature().asString(myLanguage));
         assertEquals("(a, b) => { }", e.getBinding().getText());
         assertTrue(e.isFunction());
+    }
+
+    public void test_signatureJsObject() {
+        PsiLet let = first(letExpressions(parseCode("let x: {. a:string, b:int } => unit;")));
+
+        assertEquals("{. a:string, b:int } => unit", let.getPsiSignature().getText());
+        List<PsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiObjectField.class));
+        assertEquals("a:string", fields.get(0).getText());
+        assertEquals("b:int", fields.get(1).getText());
     }
 
     public void test_rec() {

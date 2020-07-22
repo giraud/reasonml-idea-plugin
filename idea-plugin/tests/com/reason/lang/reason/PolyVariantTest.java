@@ -11,26 +11,22 @@ import com.reason.lang.core.psi.PsiPatternMatch;
 
 import java.util.Collection;
 
-public class PolyVariantTest extends BaseParsingTestCase {
-    public PolyVariantTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
-    public void testBasicLIdent() {
+public class PolyVariantTest extends RmlParsingTestCase {
+    public void test_basicLIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = `red;")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.POLY_VARIANT));
 
         assertEquals("`red", variant.getText());
     }
 
-    public void testBasicUIdent() {
+    public void test_basicUIdent() {
         PsiLet e = first(letExpressions(parseCode("let x = `Red;")));
         PsiElement variant = first(ORUtil.findImmediateChildrenOfType(e.getBinding(), RmlTypes.INSTANCE.POLY_VARIANT));
 
         assertEquals("`Red", variant.getText());
     }
 
-    public void testPatternMatchConstant() {
+    public void test_patternMatchConstant() {
         PsiFile file = parseCode("let unwrapValue = fun " +
                 "  | `String(s) => toJsUnsafe(s) " +
                 "  | `bool(b) => toJsUnsafe(Js.Boolean.to_js_boolean(b));");

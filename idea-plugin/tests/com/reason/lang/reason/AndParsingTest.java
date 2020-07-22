@@ -11,12 +11,8 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class AndParsingTest extends BaseParsingTestCase {
-    public AndParsingTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
-    public void testLetChaining() {
+public class AndParsingTest extends RmlParsingTestCase {
+    public void test_letChaining() {
         List<PsiLet> lets = new ArrayList(letExpressions(parseCode("let rec lx = x => x + 1 and ly = y => 3 + lx(y)")));
 
         assertEquals(2, lets.size());
@@ -24,7 +20,7 @@ public class AndParsingTest extends BaseParsingTestCase {
         assertEquals("ly", lets.get(1).getName());
     }
 
-    public void testModuleChaining() {
+    public void test_moduleChaining() {
         PsiFile file = parseCode("module rec X: {} = {} and Y: {} = {};");
         List<PsiInnerModule> mods = new ArrayList(moduleExpressions(file));
 
@@ -34,7 +30,7 @@ public class AndParsingTest extends BaseParsingTestCase {
     }
 
     /* type update = | NoUpdate and 'state self = {state: 'state;}*/
-    public void testAnd() {
+    public void test_and() {
         PsiFile file = parseCode("type update = | NoUpdate and self('state) = {state: 'state};");
         Collection<PsiType> types = typeExpressions(file);
 

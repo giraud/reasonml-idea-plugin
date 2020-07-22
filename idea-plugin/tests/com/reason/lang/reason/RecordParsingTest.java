@@ -1,30 +1,23 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.BaseParsingTestCase;
+import java.util.*;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SuppressWarnings("ConstantConditions")
-public class RecordParsingTest extends BaseParsingTestCase {
-    public RecordParsingTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
-    public void testDeclaration() {
+public class RecordParsingTest extends RmlParsingTestCase {
+    public void test_declaration() {
         PsiType e = first(typeExpressions(parseCode("type r = { a: int };")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
         assertEquals("a", fields.get(0).getName());
-        assertEquals("int", fields.get(0).getPsiSignature().asString(RmlLanguage.INSTANCE));
+        assertEquals("int", fields.get(0).getPsiSignature().asString(myLanguage));
     }
 
-    public void testUsage() {
+    public void test_usage() {
         PsiLet e = first(letExpressions(parseCode("let r = { a: 1, b: 2, c: 3, };")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
@@ -38,7 +31,7 @@ public class RecordParsingTest extends BaseParsingTestCase {
         assertNull(fields.get(2).getPsiSignature());
     }
 
-    public void testMixin() {
+    public void test_mixin() {
         PsiLet let = first(letExpressions(parseCode("let x = {...component, otherField: 1};")));
 
         PsiRecord record = (PsiRecord) let.getBinding().getFirstChild();
@@ -46,8 +39,9 @@ public class RecordParsingTest extends BaseParsingTestCase {
         assertEquals(field.getName(), "otherField");
     }
 
-    public void testAnnotations() {
-        PsiType e = first(typeExpressions(parseCode("type props = { [@bs.optional] key: string, [@bs.optional] [@bs.as \"aria-label\"] ariaLabel: string, };")));
+    public void test_annotations() {
+        PsiType e = first(
+                typeExpressions(parseCode("type props = { [@bs.optional] key: string, [@bs.optional] [@bs.as \"aria-label\"] ariaLabel: string, };")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -55,5 +49,4 @@ public class RecordParsingTest extends BaseParsingTestCase {
         assertEquals("key", fields.get(0).getName());
         assertEquals("ariaLabel", fields.get(1).getName());
     }
-
 }
