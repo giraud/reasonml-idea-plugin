@@ -3,6 +3,7 @@ package com.reason.lang;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.WhitespaceSkippedCallback;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.Stack;
@@ -49,7 +50,11 @@ public class ParserState {
             while (scope != null && !scope.isScopeStart()) {
                 scope = pop();
                 if (scope != null) {
-                    scope.end();
+                    if (scope.isEmpty()) {
+                        scope.drop();
+                    } else {
+                        scope.end();
+                    }
                     latestKnownScope = scope;
                 }
                 scope = getLatestScope();
@@ -127,6 +132,27 @@ public class ParserState {
         m_scopes.add(scope);
         m_currentScope = scope;
         return this;
+    }
+
+    public ParserState markScope(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType, ORTokenElementType scopeElementType) {
+        add(ParserScope.markScope(m_builder, scope, resolution, compositeElementType, scopeElementType));
+        complete();
+        return this;
+    }
+
+    public ParserState markOptional(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType) {
+        add(ParserScope.mark(m_builder, scope, resolution, compositeElementType));
+        return this;
+    }
+
+    public ParserState mark(ParserScopeEnum scope, ParserScopeEnum resolution, IElementType compositeElementType) {
+        add(ParserScope.mark(m_builder, scope, resolution, compositeElementType));
+        complete();
+        return this;
+    }
+
+    public ParserState mark(ParserScopeEnum resolution, IElementType compositeElementType) {
+        return mark(resolution, resolution, compositeElementType);
     }
 
     boolean empty() {
@@ -248,10 +274,6 @@ public class ParserState {
         return m_currentScope.isScope();
     }
 
-    public void setTokenElementType(@NotNull ORTokenElementType tokenType) {
-        m_currentScope.setScopeTokenType(tokenType);
-    }
-
     @NotNull
     public ParserState updateCurrentCompositeElementType(@NotNull IElementType compositeElementType) {
         m_currentScope.updateCompositeElementType(compositeElementType);
@@ -308,7 +330,44 @@ public class ParserState {
         return this;
     }
 
+    @NotNull
+    public ParserState setStart(boolean isStart) {
+        m_currentScope.setIsStart(isStart);
+        return this;
+    }
+
     public void error(String message) {
         m_builder.error(message);
+    }
+
+    public ParserState remapCurrentToken(ORTokenElementType elementType) {
+        m_builder.remapCurrentToken(elementType);
+        return this;
+    }
+
+    public ParserState setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
+        m_builder.setWhitespaceSkippedCallback(callback);
+        return this;
+    }
+
+    public String getTokenText() {
+        return m_builder.getTokenText();
+    }
+
+    public IElementType rawLookup(int steps) {
+        return m_builder.rawLookup(steps);
+    }
+
+    public IElementType lookAhead(int steps) {
+        return m_builder.lookAhead(steps);
+    }
+
+    public IElementType getTokenType() {
+        return m_builder.getTokenType();
+    }
+
+    public ParserState dummy() {
+        m_currentScope.dummy();
+        return this;
     }
 }

@@ -27,7 +27,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testAliasPath() {
-        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z", true)));
+        PsiModule module = first(moduleExpressions(parseCode("module M = Y.Z")));
 
         assertEquals("M", module.getName());
         assertEquals("Y.Z", module.getAlias());
@@ -67,7 +67,7 @@ public class ModuleParsingTest extends BaseParsingTestCase {
     }
 
     public void testSignatureWithConstraints() {
-        FileBase file = parseCode("module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end", true); // From coq: PCoq
+        FileBase file = parseCode("module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end"); // From coq: PCoq
 
         assertEquals(1, expressions(file).size());
         assertEquals("G", first(moduleExpressions(file)).getName());

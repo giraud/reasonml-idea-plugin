@@ -1,10 +1,10 @@
 package com.reason.lang.core.psi;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.reason.lang.ocaml.OclLanguage;
-import org.jetbrains.annotations.NotNull;
 
 public class PsiObject extends ASTWrapperPsiElement implements PsiLanguageConverter {
 
@@ -15,22 +15,22 @@ public class PsiObject extends ASTWrapperPsiElement implements PsiLanguageConver
     @NotNull
     @Override
     public String asText(@NotNull Language language) {
+        String text = getText();
         if (getLanguage() == language) {
-            return getText();
+            return text;
         }
 
         String convertedText;
 
         if (language == OclLanguage.INSTANCE) {
             // Convert from Reason to OCaml
-            convertedText = getText();
+            convertedText = text;
         } else {
             // Convert from OCaml to Reason
-            convertedText = "{. " + getText().substring(1, getTextLength() - 1) + " }";
+            convertedText = "{. " + text.substring(1, getTextLength() - 1) + " }";
         }
 
-
-        return convertedText == null ? getText() : convertedText;
+        return convertedText == null ? text : convertedText;
     }
 
     @NotNull
@@ -38,5 +38,4 @@ public class PsiObject extends ASTWrapperPsiElement implements PsiLanguageConver
     public String toString() {
         return "Object";
     }
-
 }

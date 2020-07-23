@@ -32,7 +32,6 @@ public class RincewindDownloader extends Task.Backgroundable {
     private final VirtualFile m_sourceFile;
 
     RincewindDownloader(@Nullable Project project, @NotNull VirtualFile sourceFile) {
-        //noinspection DialogTitleCapitalization
         super(project, "Downloading Rincewind binary");
         m_sourceFile = sourceFile;
     }

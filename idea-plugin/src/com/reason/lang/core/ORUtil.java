@@ -116,12 +116,12 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class clazz) {
+    public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class<?> clazz) {
         String text = root.getText();
 
         PsiElement sibling = root.getNextSibling();
         while (sibling != null) {
-            if (sibling.getClass().isAssignableFrom(clazz)) {
+            if (clazz != null && sibling.getClass().isAssignableFrom(clazz)) {
                 sibling = null;
             } else {
                 text += sibling.getText();
@@ -241,11 +241,11 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class... clazz) {
+    public static PsiElement findImmediateFirstChildOfAnyClass(@NotNull PsiElement element, @NotNull Class<?>... clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {
-            for (Class aClazz : clazz) {
+            for (Class<?> aClazz : clazz) {
                 if (aClazz.isInstance(child)) {
                     return child;
                 }
@@ -257,7 +257,7 @@ public class ORUtil {
     }
 
     @Nullable
-    public static PsiElement findImmediateFirstChildWithoutClass(@NotNull PsiElement element, @NotNull Class clazz) {
+    public static PsiElement findImmediateFirstChildWithoutClass(@NotNull PsiElement element, @NotNull Class<?> clazz) {
         PsiElement child = element.getFirstChild();
 
         while (child != null) {

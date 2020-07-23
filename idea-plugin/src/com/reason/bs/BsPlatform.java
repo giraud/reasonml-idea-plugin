@@ -1,17 +1,15 @@
 package com.reason.bs;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.reason.Log;
 import com.reason.ide.ORFileUtils;
 import com.reason.ide.ORProjectManager;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
 import static com.reason.bs.BsConstants.*;
@@ -32,7 +30,7 @@ public class BsPlatform {
      * Given a `sourceFile`, searches from that file's location for a `bsconfig.json`
      * file. If found, then checks for a `./node_modules/bs-platform` directory relative to the `bsconfig.json`.
      *
-     * @param project
+     * @param project    project to use
      * @param sourceFile starting location for search
      * @return `bs-platform` directory, if found
      */
@@ -57,7 +55,7 @@ public class BsPlatform {
      * Finds the "nearest" `bsconfig.json` to a given file. Searches up the file-system until a `bsconfig.json`
      * is found or the project root is reached.
      *
-     * @param project
+     * @param project    project to use
      * @param sourceFile starting point for search
      * @return `bsconfig.json` file, if found
      */

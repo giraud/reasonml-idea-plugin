@@ -326,10 +326,7 @@ public final class PsiFinder {
         Collection<PsiVariantDeclaration> variants = VariantIndex.getInstance().get(name, m_project, scope);
         if (!variants.isEmpty() && path != null) {
             // Keep variants that have correct path
-            return variants.stream().filter(variant -> {
-                String qualifiedName = variant.getQualifiedName();
-                return qualifiedName != null && qualifiedName.startsWith(path);
-            }).collect(Collectors.toList());
+            return variants.stream().filter(variant -> variant.getQualifiedName().startsWith(path)).collect(Collectors.toList());
         }
 
         return variants;

@@ -61,7 +61,7 @@ public class PsiJsObject extends ASTWrapperPsiElement implements PsiLanguageConv
         }
 
 
-        return convertedText == null ? getText() : convertedText;
+        return convertedText;
     }
 
     @NotNull

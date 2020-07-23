@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public final class OREditorTracker implements Disposable {
 
     @NotNull
-    private ORFileEditorListener m_fileEditorListener;
+    private final ORFileEditorListener m_fileEditorListener;
 
     public static OREditorTracker getInstance(@NotNull Project project) {
         return ServiceManager.getService(project, OREditorTracker.class);

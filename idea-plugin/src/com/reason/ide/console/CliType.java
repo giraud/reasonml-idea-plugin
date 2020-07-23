@@ -6,7 +6,7 @@ public interface CliType {
 
     CompilerType getCompilerType();
 
-    public static enum Bs implements CliType {
+    enum Bs implements CliType {
         MAKE,
         CLEAN_MAKE;
 
@@ -16,7 +16,7 @@ public interface CliType {
         }
     }
 
-    public static enum Dune implements CliType {
+    enum Dune implements CliType {
         BUILD,
         CLEAN,
         INSTALL;
@@ -27,7 +27,7 @@ public interface CliType {
         }
     }
 
-    public enum Esy implements CliType {
+    enum Esy implements CliType {
         INSTALL,
         BUILD,
         PRINT_ENV,

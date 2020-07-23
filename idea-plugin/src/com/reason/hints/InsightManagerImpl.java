@@ -21,7 +21,7 @@ public class InsightManagerImpl implements InsightManager {
     private static final Log LOG = Log.create("hints");
 
     @NotNull
-    AtomicBoolean isDownloading = new AtomicBoolean(false);
+    final AtomicBoolean isDownloading = new AtomicBoolean(false);
 
     @NotNull
     private final Project m_project;

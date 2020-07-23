@@ -35,7 +35,7 @@ import com.reason.sdk.SdkDownloader;
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
     private static final String SDK_HOME = "reasonml.sdk.home";
-    private static String[] SDKS = new String[]{"4.02.3", "4.03.0", "4.04.2", "4.05.0", "4.06.1", "4.07.1", "4.08.1", "4.09.0", "4.10.0"};
+    private static final String[] SDKS = new String[]{"4.02.3", "4.03.0", "4.04.2", "4.05.0", "4.06.1", "4.07.1", "4.08.1", "4.09.0", "4.10.0"};
     private static final Log LOG = Log.create("import.sdk");
 
     private JPanel c_pnlRoot;

@@ -135,7 +135,7 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
         return new ItemPresentation() {
             @Override
             public String getPresentableText() {
-                PsiTypeConstrName constr = findChildByClass(PsiTypeConstrName.class);
+                PsiTypeConstrName constr = getConstrName();
                 return constr == null ? null : constr.getText();
             }
 

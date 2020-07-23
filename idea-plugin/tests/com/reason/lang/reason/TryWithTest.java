@@ -10,7 +10,7 @@ public class TryWithTest extends BaseParsingTestCase {
     }
 
     public void testTryStructure() {
-        PsiTry e = (PsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
+        PsiTry e = (PsiTry) firstElement(parseCode("try (x) { | Not_found => () };",true));
 
         assertEquals("try", e.getFirstChild().getText());
         assertNotNull(e.getBody());

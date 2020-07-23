@@ -1,19 +1,12 @@
 package com.reason.lang;
 
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.napkin.NsLanguage;
-import com.reason.lang.napkin.NsQNameFinder;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlQNameFinder;
 
 public class ModuleHelper {
 

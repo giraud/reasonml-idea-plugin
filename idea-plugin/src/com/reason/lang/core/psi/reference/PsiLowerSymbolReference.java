@@ -37,13 +37,10 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
 
     @Nullable
     private final String m_referenceName;
-    @NotNull
-    private final ORTypes m_types;
 
-    public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes types) {
+    public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes _types) {
         super(element, ORUtil.getTextRangeForReference(element));
         m_referenceName = element.getName();
-        m_types = types;
     }
 
     @Override
@@ -328,10 +325,10 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     }
 
     static class OrderedPaths {
-        List<PsiQualifiedElement> m_elements = new ArrayList<>();
-        List<String> m_paths = new ArrayList<>();
-        Map<String, Integer> m_elementIndices = new HashMap<>();
-        Map<String, Integer> m_pathIndices = new HashMap<>();
+        final List<PsiQualifiedElement> m_elements = new ArrayList<>();
+        final List<String> m_paths = new ArrayList<>();
+        final Map<String, Integer> m_elementIndices = new HashMap<>();
+        final Map<String, Integer> m_pathIndices = new HashMap<>();
 
         void add(@NotNull PsiQualifiedElement element, @NotNull String name) {
             String value = element.getQualifiedName() + (element instanceof PsiParameter ? "" : "." + name);

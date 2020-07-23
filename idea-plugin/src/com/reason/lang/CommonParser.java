@@ -14,7 +14,7 @@ import static com.reason.lang.ParserScopeEnum.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
-    protected T m_types;
+    protected final T m_types;
 
     protected CommonParser(T types) {
         m_types = types;
