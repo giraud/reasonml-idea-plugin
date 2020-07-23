@@ -24,6 +24,7 @@ import com.reason.hints.InsightManager;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.ORToolWindowProvider;
+import com.reason.ide.settings.ORSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.coverage.gnu.trove.THashMap;
@@ -32,7 +33,6 @@ import javax.swing.*;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import com.reason.ide.settings.ORSettings;
 
 public class BsCompilerImpl implements BsCompiler {
 

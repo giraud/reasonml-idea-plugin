@@ -23,7 +23,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
 
     public void testWithConstraints() {
         Collection<PsiNameIdentifierOwner> expressions = expressions(
-                parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {};",true));
+                parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {};"));
 
         assertEquals(1, expressions.size());
         PsiFunctor f = (PsiFunctor) first(expressions);

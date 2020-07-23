@@ -1,6 +1,7 @@
 package com.reason.lang.napkin;
 
 import java.util.*;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
@@ -40,7 +41,7 @@ public class TypeParsingTest extends NsParsingTestCase {
         assertNotNull(e.getBinding());
         assertEquals("t", e.getName());
         Collection<PsiVariantDeclaration> vars = PsiTreeUtil.findChildrenOfType(e.getBinding(), PsiVariantDeclaration.class);
-        assertEquals("Tick", ORUtil.findImmediateFirstChildOfType(vars.iterator().next(), m_types.C_VARIANT).getText());
+        assertEquals("Tick", ORUtil.findImmediateFirstChildOfType(vars.iterator().next(),(IElementType)  m_types.C_VARIANT).getText());
     }
 
     public void test_polyVariant() {
@@ -58,7 +59,7 @@ public class TypeParsingTest extends NsParsingTestCase {
     }
 
     public void test_typeSpecialProps() {
-        PsiType e = first(typeExpressions(parseCode("type props = { string: string,\n ref: Js.nullable<Dom.element> => unit,\n method: string }",true)));
+        PsiType e = first(typeExpressions(parseCode("type props = { string: string,\n ref: Js.nullable<Dom.element> => unit,\n method: string }")));
 
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
         Collection<PsiRecordField> fields = record.getFields();
@@ -78,15 +79,15 @@ public class TypeParsingTest extends NsParsingTestCase {
 
     public void test_scope() {
         PsiExternal e = first(externalExpressions(
-                parseCode("external createElement : (reactClass, ~props: Js.t<{..}>=?, array(reactElement)) => reactElement =  \"createElement\"")));
+                parseCode("external createElement : (reactClass, ~props: Js.t<{..}>=?, array<reactElement>) => reactElement =  \"createElement\"")));
 
         PsiSignature signature = e.getPsiSignature();
-        List<PsiSignatureItem> signatureItems = ORUtil.findImmediateChildrenOfClass(signature, PsiSignatureItem.class);
+        List<PsiSignatureItem> signatureItems = new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
 
         assertSize(4, signatureItems);
         assertEquals("reactClass", signatureItems.get(0).getText());
         assertEquals("~props: Js.t<{..}>=?", signatureItems.get(1).getText());
-        assertEquals("array(reactElement)", signatureItems.get(2).getText());
+        assertEquals("array<reactElement>", signatureItems.get(2).getText());
         assertEquals("reactElement", signatureItems.get(3).getText());
     }
 

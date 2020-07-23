@@ -1,32 +1,26 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.BaseParsingTestCase;
+import java.util.*;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiClassField;
 import com.reason.lang.core.psi.PsiClassMethod;
 
-import java.util.Collection;
-
-public class ClassParsingTest extends BaseParsingTestCase {
-    public ClassParsingTest() {
-        super("", "ml", new OclParserDefinition());
-    }
-
-    public void testBasic() {
+public class ClassParsingTest extends OclParsingTestCase {
+    public void test_basic() {
         Collection<PsiClass> classes = classExpressions(parseCode("class foo = object end"));
 
         assertEquals(1, classes.size());
         assertEquals("foo", first(classes).getName());
     }
 
-    public void testClassType() {
+    public void test_classType() {
         Collection<PsiClass> classes = classExpressions(parseCode("class type restricted_point_type = object method get_x : int method bump : unit end"));
 
         assertEquals(1, classes.size());
         assertEquals("restricted_point_type", first(classes).getName());
     }
 
-    public void testFields() {
+    public void test_fields() {
         Collection<PsiClass> classes = classExpressions(parseCode("class foo = object val mutable a = [] val b = 2 end"));
 
         PsiClass clazz = first(classes);
@@ -34,7 +28,7 @@ public class ClassParsingTest extends BaseParsingTestCase {
         assertEquals(fields.size(), 2);
     }
 
-    public void testMethods() {
+    public void test_methods() {
         Collection<PsiClass> classes = classExpressions(parseCode("class foo = object method get_x = x method get_y = y end"));
 
         PsiClass clazz = first(classes);
@@ -42,7 +36,7 @@ public class ClassParsingTest extends BaseParsingTestCase {
         assertEquals(methods.size(), 2);
     }
 
-    public void testBoth() {
+    public void test_both() {
         Collection<PsiClass> classes = classExpressions(parseCode("class foo = object val mutable x = [] method get_x = x end"));
 
         PsiClass clazz = first(classes);
@@ -50,8 +44,9 @@ public class ClassParsingTest extends BaseParsingTestCase {
         assertEquals(clazz.getMethods().size(), 1);
     }
 
-    public void testClassConstraint() {
-        Collection<PsiClass> classes = classExpressions(parseCode("class ['a] circle (c : 'a) = object constraint 'a = #point val mutable center = c method set_center c = center <- c method move = center#move end"));
+    public void test_classConstraint() {
+        Collection<PsiClass> classes = classExpressions(parseCode(
+                "class ['a] circle (c : 'a) = object constraint 'a = #point val mutable center = c method set_center c = center <- c method move = center#move end"));
 
         PsiClass clazz = first(classes);
         assertEquals("circle", first(classes).getName());

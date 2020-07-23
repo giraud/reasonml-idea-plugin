@@ -21,7 +21,7 @@ public class JsxParsingTest extends BaseParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), RmlTypes.INSTANCE.TAG_GT));
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), RmlTypes.INSTANCE.C_TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }

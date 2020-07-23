@@ -25,7 +25,7 @@ public class RecordParsingTest extends BaseParsingTestCase {
     }
 
     public void testUsage() {
-        PsiLet e = first(letExpressions(parseCode("let r = { a: 1, b: 2, c: 3, };",true)));
+        PsiLet e = first(letExpressions(parseCode("let r = { a: 1, b: 2, c: 3, };")));
         PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());

@@ -18,7 +18,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 @SuppressWarnings("ConstantConditions")
 public class SwitchParsingTest extends RmlParsingTestCase {
-    public void testPatternUSymbol() {
+    public void test_patternUSymbol() {
         FileBase f = parseCode("switch (x) { | Variant1(x) => x; (); | Variant2 => () }");
 
         assertEquals(1, childrenCount(f));
@@ -47,7 +47,7 @@ public class SwitchParsingTest extends RmlParsingTestCase {
         assertNotNull(ORUtil.findImmediateFirstChildOfClass(p1Body, PsiUnit.class));
     }
 
-    public void testPatternOption() {
+    public void test_patternOption() {
         FileBase f = parseCode("switch (x) { | Some(x) => x; (); | None => () }");
 
         assertEquals(1, childrenCount(f));

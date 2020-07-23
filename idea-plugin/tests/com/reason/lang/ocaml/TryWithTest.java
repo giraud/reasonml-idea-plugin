@@ -2,16 +2,11 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiTry;
 
 @SuppressWarnings("ConstantConditions")
-public class TryWithTest extends BaseParsingTestCase {
-    public TryWithTest() {
-        super("", "ml", new OclParserDefinition());
-    }
-
-    public void testTryStructure() {
+public class TryWithTest extends OclParsingTestCase {
+    public void test_tryStructure() {
         PsiTry e = (PsiTry) firstElement(parseCode("try x with Not_found -> ()"));
 
         assertEquals("try", e.getFirstChild().getText());
@@ -22,17 +17,17 @@ public class TryWithTest extends BaseParsingTestCase {
         assertEquals("Not_found -> ()", e.getHandlers().iterator().next().getText());
     }
 
-    public void testTryIn() {
+    public void test_tryIn() {
         FileBase file = parseCode("try x with Not_found -> assert false in otherExpression");
         assertEquals(1, childrenCount(file));
     }
 
-    public void testTryLet() {
+    public void test_tryLet() {
         FileBase file = parseCode("let e = try let t = 6 with Not_found -> ()");
         assertEquals(1, childrenCount(file));
     }
 
-    public void testTry() {
+    public void test_try() {
         PsiFile file = parseCode("try f() with e -> let e = CErrors.push e");
         PsiTry try_ = (PsiTry) firstElement(file);
 

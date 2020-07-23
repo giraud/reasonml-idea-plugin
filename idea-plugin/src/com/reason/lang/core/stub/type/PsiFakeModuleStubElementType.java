@@ -17,9 +17,10 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.stub.PsiModuleStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 
-public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub, PsiFakeModule> {
+public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub, PsiFakeModule> implements ORCompositeType {
 
     public PsiFakeModuleStubElementType(@NotNull String name, Language language) {
         super(name, language);

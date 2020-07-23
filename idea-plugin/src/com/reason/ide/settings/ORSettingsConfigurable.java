@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ReasonSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
+public class ORSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
 
     @Nls
     private static final String OCAMLFORMAT_EXECUTABLE_LABEL = "Choose ocamlformat Executable: ";
@@ -26,7 +26,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     @Nls
     private static final String ESY_EXECTUABLE_LABEL = "Choose esy Executable: ";
 
-    private final ReasonSettings m_settings;
+    private final ORSettings m_settings;
 
     private JPanel f_rootPanel;
     private JTabbedPane f_tabs;
@@ -46,7 +46,7 @@ public class ReasonSettingsConfigurable implements SearchableConfigurable, Confi
     // Esy
     private TextFieldWithBrowseButton f_esyExecutable;
 
-    public ReasonSettingsConfigurable(ReasonSettings settings) {
+    public ORSettingsConfigurable(ORSettings settings) {
         m_settings = settings;
     }
 

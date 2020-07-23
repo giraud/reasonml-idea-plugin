@@ -5,7 +5,6 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.reason.RmlLanguage;
 
 @SuppressWarnings("ConstantConditions")
 public class RecordParsingTest extends NsParsingTestCase {

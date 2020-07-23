@@ -149,7 +149,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "lsr"         { return types.LSR; }
     "asr"         { return types.ASR; }
 
-    "unit"        { return types.C_UNIT; }
+    "unit"        { return types.UNIT; }
     "ref"         { return types.REF; }
     "raise"       { return types.RAISE; }
     "method"      { return types.METHOD; }

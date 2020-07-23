@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 public class RmlFileStubElementType extends IStubFileElementType<RmlFileStub> {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     public static final IStubFileElementType<RmlFileStub> INSTANCE = new RmlFileStubElementType();
 
     private RmlFileStubElementType() {

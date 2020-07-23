@@ -5,6 +5,7 @@ import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.ocaml.OclLexer;
@@ -19,7 +20,7 @@ public class OclFindUsagesProvider implements com.intellij.lang.findUsages.FindU
         OclTypes types = OclTypes.INSTANCE;
         return new DefaultWordsScanner(
                 new OclLexer(),
-                TokenSet.create(types.C_UPPER_SYMBOL, types.C_LOWER_SYMBOL, types.C_VARIANT),
+                TokenSet.create((IElementType) types.C_UPPER_SYMBOL, (IElementType) types.C_LOWER_SYMBOL, (IElementType) types.C_VARIANT),
                 TokenSet.EMPTY,
                 TokenSet.EMPTY);
     }

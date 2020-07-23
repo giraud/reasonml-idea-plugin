@@ -1,7 +1,6 @@
 package com.reason.lang.napkin;
 
 import java.util.*;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVariantDeclaration;

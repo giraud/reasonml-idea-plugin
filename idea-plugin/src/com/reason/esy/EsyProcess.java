@@ -1,70 +1,36 @@
 package com.reason.esy;
 
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.atomic.*;
-import java.util.function.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-<<<<<<< HEAD
 import com.intellij.execution.process.*;
-=======
-import com.intellij.execution.process.KillableColoredProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessListener;
->>>>>>> 68c3ef4f7783b8315b7cce33d52358293024c237
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.CompilerProcess;
 import com.reason.Log;
-import com.reason.Platform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-<<<<<<< HEAD
+import com.reason.ide.settings.ORSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-=======
->>>>>>> 68c3ef4f7783b8315b7cce33d52358293024c237
-
-import static com.reason.esy.EsyConstants.ESY_EXECUTABLE_NAME;
 
 public class EsyProcess implements CompilerProcess {
 
     private static final Log LOG = Log.create("process.esy");
 
-<<<<<<< HEAD
-  public static class Command {
-    public static final String ESY = "";
-    public static final String INSTALL = "install";
-    public static final String BUILD = "build";
-    public static final String PRINT_ENV = "print-env";
-    public static final String SHELL = "shell";
-  }
-=======
     public static class Command {
         public static final String ESY = "";
         public static final String INSTALL = "install";
         public static final String BUILD = "build";
         public static final String SHELL = "shell";
     }
->>>>>>> 68c3ef4f7783b8315b7cce33d52358293024c237
 
-    private final Project project;
+    private final Project m_project;
 
     private final AtomicBoolean isStarted;
 
@@ -75,8 +41,8 @@ public class EsyProcess implements CompilerProcess {
         return ServiceManager.getService(project, EsyProcess.class);
     }
 
-    private EsyProcess(@NotNull Project project) {
-        this.project = project;
+    private EsyProcess(@NotNull Project m_project) {
+        this.m_project = m_project;
         this.isStarted = new AtomicBoolean(false);
     }
 
@@ -117,29 +83,19 @@ public class EsyProcess implements CompilerProcess {
     public ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         killIt();
 
-        Optional<Path> workingDirOptional = findWorkingDirectory(project);
+        Optional<VirtualFile> workingDirOptional = findWorkingDirectory(m_project);
         if (!workingDirOptional.isPresent()) {
             return null;
         }
 
-<<<<<<< HEAD
-    Optional<VirtualFile> esyExecutableOptional = Esy.findEsyExecutable();
-    if (!esyExecutableOptional.isPresent()) {
-      EsyNotification.showEsyNotFound();
-      return null;
-    }
-
-    Path workingDir = workingDirOptional.get();
-    VirtualFile esyExecutable = esyExecutableOptional.get();
-=======
-        Optional<Path> esyExecutableOptional = findEsyExecutableInPath();
+        ORSettings settings = ORSettings.getInstance(m_project);
+        Optional<VirtualFile> esyExecutableOptional = settings.getOrFindEsyExecutable();
         if (!esyExecutableOptional.isPresent()) {
             return null;
         }
 
-        Path workingDir = workingDirOptional.get();
-        Path esyExecutable = esyExecutableOptional.get();
->>>>>>> 68c3ef4f7783b8315b7cce33d52358293024c237
+        VirtualFile workingDir = workingDirOptional.get();
+        VirtualFile esyExecutable = esyExecutableOptional.get();
 
         GeneralCommandLine cli = newCommandLine(esyExecutable, workingDir, (CliType.Esy) cliType);
         try {
@@ -164,41 +120,14 @@ public class EsyProcess implements CompilerProcess {
         processHandler = null;
     }
 
-    private static GeneralCommandLine newCommandLine(Path esyExecutable, Path workingDir, CliType.Esy cliType) {
+    private static GeneralCommandLine newCommandLine(VirtualFile esyExecutable, VirtualFile workingDir, CliType.Esy cliType) {
         GeneralCommandLine commandLine;
-        commandLine = new GeneralCommandLine(esyExecutable.toString());
-        commandLine.setWorkDirectory(workingDir.toFile());
+        commandLine = new GeneralCommandLine(esyExecutable.getPath());
+        commandLine.setWorkDirectory(workingDir.getPath());
         commandLine.setRedirectErrorStream(true);
         commandLine.addParameter(getCommand(cliType)); // 'esy + command' must be a single parameter
         return commandLine;
     }
-<<<<<<< HEAD
-    processHandler.killProcess();
-    processHandler = null;
-  }
-
-  private static GeneralCommandLine newCommandLine(VirtualFile esyExecutable, Path workingDir, CliType.Esy cliType) {
-    GeneralCommandLine commandLine;
-    commandLine = new GeneralCommandLine(esyExecutable.getPath());
-    commandLine.setWorkDirectory(workingDir.toFile());
-    commandLine.setRedirectErrorStream(true);
-    commandLine.addParameter(getCommand(cliType)); // 'esy + command' must be a single parameter
-    return commandLine;
-  }
-
-  private static String getCommand(CliType.Esy cliType) {
-    switch (cliType) {
-      case INSTALL:
-        return Command.INSTALL;
-      case BUILD:
-        return Command.BUILD;
-      case PRINT_ENV:
-        return Command.PRINT_ENV;
-      case SHELL:
-        return Command.SHELL;
-      default:
-        return Command.ESY;
-=======
 
     private static String getCommand(CliType.Esy cliType) {
         switch (cliType) {
@@ -211,35 +140,24 @@ public class EsyProcess implements CompilerProcess {
             default:
                 return Command.ESY;
         }
->>>>>>> 68c3ef4f7783b8315b7cce33d52358293024c237
     }
 
-<<<<<<< HEAD
-  private static Optional<Path> findWorkingDirectory(@NotNull Project project) {
-    Optional<VirtualFile> esyContentRootOptional = ORProjectManager.findFirstEsyContentRoot(project);
-    if (!esyContentRootOptional.isPresent()) {
-      EsyNotification.showEsyProjectNotFound();
-      return Optional.empty();
-=======
-    private static Optional<Path> findEsyExecutableInPath() {
-        String systemPath = System.getenv("PATH");
-        Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
-        if (!esyExecutablePath.isPresent()) {
-            EsyNotification.showEsyNotFound();
-        }
-        return esyExecutablePath;
-    }
+//    private static Optional<Path> findEsyExecutableInPath() {
+//        String systemPath = System.getenv("PATH");
+//        Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
+//        if (!esyExecutablePath.isPresent()) {
+//            EsyNotification.showEsyNotFound();
+//        }
+//        return esyExecutablePath;
+//    }
 
-    private static Optional<Path> findWorkingDirectory(@NotNull Project project) {
+    private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {
         Optional<VirtualFile> esyContentRootOptional = ORProjectManager.findFirstEsyContentRoot(project);
         if (!esyContentRootOptional.isPresent()) {
             EsyNotification.showEsyProjectNotFound();
             return Optional.empty();
         }
-        VirtualFile esyContentRoot = esyContentRootOptional.get();
-        FileSystem fileSystem = FileSystems.getDefault();
-        return Optional.of(fileSystem.getPath(esyContentRoot.getPath()));
->>>>>>> 68c3ef4f7783b8315b7cce33d52358293024c237
+        return esyContentRootOptional;
     }
 
     private static final Function<Compiler.ProcessTerminated, ProcessListener> processTerminatedListener = (onProcessTerminated) -> new ProcessAdapter() {

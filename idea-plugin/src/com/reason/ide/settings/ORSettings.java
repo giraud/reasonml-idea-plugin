@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 @State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
-public class ReasonSettings implements PersistentStateComponent<ReasonSettings.ReasonSettingsState> {
+public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSettingsState> {
 
     public static final boolean IS_FORMAT_ON_SAVE_DEFAULT = true;
     public static final String FORMAT_WIDTH_COLUMNS_DEFAULT = "80";
@@ -39,11 +39,11 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
     // Esy
     private String m_esyExecutable = "";
 
-    public static ReasonSettings getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, ReasonSettings.class);
+    public static ORSettings getInstance(@NotNull Project project) {
+        return ServiceManager.getService(project, ORSettings.class);
     }
 
-    private ReasonSettings(@NotNull Project project) {
+    private ORSettings(@NotNull Project project) {
         m_project = project;
     }
 
@@ -139,12 +139,12 @@ public class ReasonSettings implements PersistentStateComponent<ReasonSettings.R
 
     public Optional<VirtualFile> findBsbExecutable() {
         return getOrFindBsPlatformLocation()
-                .flatMap(BsPlatform::findBsbExecutable);
+                .flatMap((directory) -> BsPlatform.findBsbExecutable(m_project, directory));
     }
 
     public Optional<VirtualFile> findBscExecutable() {
         return getOrFindBsPlatformLocation()
-                .flatMap(BsPlatform::findBscExecutable);
+                .flatMap((directory) -> BsPlatform.findBscExecutable(m_project, directory));
     }
 
     public String getDuneExecutable() {

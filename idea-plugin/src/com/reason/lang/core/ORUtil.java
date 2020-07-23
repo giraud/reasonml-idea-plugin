@@ -18,6 +18,7 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.napkin.NsLanguage;
 import com.reason.lang.napkin.NsTypes;
@@ -96,6 +97,11 @@ public class ORUtil {
         }
 
         return found;
+    }
+
+    @Nullable
+    public static PsiElement nextSiblingWithTokenType(@NotNull PsiElement root, @NotNull ORCompositeType elementType) {
+        return nextSiblingWithTokenType(root, (IElementType) elementType);
     }
 
     @NotNull
@@ -220,10 +226,20 @@ public class ORUtil {
         return result;
     }
 
+    @NotNull
+    public static Collection<PsiElement> findImmediateChildrenOfType(@Nullable PsiElement element, @NotNull ORCompositeType elementType) {
+        return findImmediateChildrenOfType(element, (IElementType) elementType);
+    }
+
     @Nullable
     public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull IElementType elementType) {
         Collection<PsiElement> children = findImmediateChildrenOfType(element, elementType);
         return children.isEmpty() ? null : children.iterator().next();
+    }
+
+    @Nullable
+    public static PsiElement findImmediateFirstChildOfType(@NotNull PsiElement element, @NotNull ORCompositeType elementType) {
+        return findImmediateFirstChildOfType(element, (IElementType) elementType);
     }
 
     @Nullable
