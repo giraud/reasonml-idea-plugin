@@ -1,7 +1,9 @@
 package com.reason.ide;
 
+import com.intellij.mock.MockApplication;
 import com.intellij.mock.MockVirtualFile;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -33,8 +35,17 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({EsyPackageJson.class, FilenameIndex.class, GlobalSearchScope.class, ID.class})
+@PrepareForTest({
+        ApplicationManager.class,
+        EsyPackageJson.class,
+        FilenameIndex.class,
+        GlobalSearchScope.class,
+        ID.class
+})
 public class ORProjectManagerTest {
+
+    @Mock
+    Disposable mockDisposable;
 
     @Mock
     GlobalSearchScope mockScope;
@@ -47,9 +58,11 @@ public class ORProjectManagerTest {
         initMocks(this);
         mockStatic(ID.class);
         when(ID.create(any())).thenReturn(null);
+        mockStatic(ApplicationManager.class);
         mockStatic(EsyPackageJson.class);
         mockStatic(FilenameIndex.class);
         mockStatic(GlobalSearchScope.class);
+        when(ApplicationManager.getApplication()).thenReturn(new MockApplication(mockDisposable));
         when(GlobalSearchScope.allScope(mockProject)).thenReturn(mockScope);
     }
 

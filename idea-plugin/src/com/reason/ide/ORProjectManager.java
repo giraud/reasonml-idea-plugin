@@ -1,12 +1,11 @@
 package com.reason.ide;
 
 import com.google.common.collect.ImmutableMap;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.reason.bs.BsConstants;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.DuneFileType;
@@ -14,14 +13,10 @@ import com.reason.ide.files.EsyPackageJsonFileType;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.reason.bs.BsConstants.BS_PLATFORM_DIRECTORY_NAME;
 import static com.reason.dune.DuneConstants.*;
 
 /**
@@ -97,8 +92,11 @@ public class ORProjectManager {
 
     public static Set<VirtualFile> findFilesInProject(@NotNull String filename, @NotNull Project project) {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
-        return new HashSet<>(virtualFilesByName);
+        if (ApplicationManager.getApplication().isReadAccessAllowed()) {
+            Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
+            return new HashSet<>(virtualFilesByName);
+        }
+        return Collections.emptySet();
     }
 
     public static Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
