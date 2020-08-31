@@ -1,7 +1,9 @@
 package com.reason.ide;
 
+import com.intellij.mock.MockApplication;
 import com.intellij.mock.MockVirtualFile;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -13,7 +15,6 @@ import com.reason.esy.EsyConstants;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,17 +23,29 @@ import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({EsyPackageJson.class, FilenameIndex.class, GlobalSearchScope.class, ID.class})
+@PrepareForTest({
+        ApplicationManager.class,
+        EsyPackageJson.class,
+        FilenameIndex.class,
+        GlobalSearchScope.class,
+        ID.class
+})
 public class ORProjectManagerTest {
+
+    @Mock
+    Disposable mockDisposable;
 
     @Mock
     GlobalSearchScope mockScope;
@@ -45,12 +58,13 @@ public class ORProjectManagerTest {
         initMocks(this);
         mockStatic(ID.class);
         when(ID.create(any())).thenReturn(null);
+        mockStatic(ApplicationManager.class);
         mockStatic(EsyPackageJson.class);
         mockStatic(FilenameIndex.class);
         mockStatic(GlobalSearchScope.class);
+        when(ApplicationManager.getApplication()).thenReturn(new MockApplication(mockDisposable));
         when(GlobalSearchScope.allScope(mockProject)).thenReturn(mockScope);
     }
-
 
     @Test
     public void testIsModuleNoMatches() {

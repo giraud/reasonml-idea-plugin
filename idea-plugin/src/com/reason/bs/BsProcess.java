@@ -11,6 +11,7 @@ import com.reason.CompilerProcess;
 import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
+import com.reason.ide.settings.ORSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,8 +25,6 @@ import java.util.regex.Pattern;
 
 import static com.intellij.notification.NotificationType.ERROR;
 import static com.intellij.notification.NotificationType.WARNING;
-import static com.reason.bs.BsPlatform.findBsbExecutable;
-import static com.reason.bs.BsPlatform.findBscExecutable;
 
 public final class BsProcess implements CompilerProcess {
 
@@ -92,7 +91,7 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType,
-                                                @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
+        @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
@@ -128,7 +127,8 @@ public final class BsProcess implements CompilerProcess {
             return null;
         }
         String bsContentRoot = bsContentRootOptional.get().getPath();
-        Optional<VirtualFile> bsbExecutable = findBsbExecutable(m_project, sourceFile);
+        ORSettings settings = ORSettings.getInstance(m_project);
+        Optional<VirtualFile> bsbExecutable = settings.findBsbExecutable();
         if (!bsbExecutable.isPresent()) {
             BsNotification.showBsbNotFound(bsContentRoot);
             return null;
@@ -167,8 +167,9 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
-        return findBscExecutable(m_project, sourceFile).
-                map(bscFile -> {
+        ORSettings settings = ORSettings.getInstance(m_project);
+        return settings.findBscExecutable()
+                .map(bscFile -> {
                     String bscExe = bscFile.getPath();
                     Process p = null;
                     try {

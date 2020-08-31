@@ -1,10 +1,5 @@
 package com.reason.hints;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.concurrent.atomic.*;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -27,16 +22,21 @@ import com.intellij.psi.PsiManager;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
 import com.reason.Log;
-import com.reason.bs.BsCompiler;
-import com.reason.bs.BsConfig;
-import com.reason.bs.BsConfigReader;
-import com.reason.bs.BsLineProcessor;
-import com.reason.bs.BsPlatform;
-import com.reason.bs.Ninja;
+import com.reason.bs.*;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
+import com.reason.ide.settings.ORSettings;
 import com.reason.lang.reason.RmlLanguage;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class InsightUpdateQueue extends MergingUpdateQueue {
 
@@ -160,8 +160,8 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                         LOG.debug("Created temporary file", tempFile);
 
                         // Compile temporary file
-
-                        Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
+                        ORSettings settings = ORSettings.getInstance(m_project);
+                        Optional<VirtualFile> bscPath = settings.getOrFindBsPlatformLocation();
                         if (bscPath.isPresent()) {
                             File cmtFile = new File(m_tempDirectory, nameWithoutExtension + ".cmt");
                             if (isExpired()) {

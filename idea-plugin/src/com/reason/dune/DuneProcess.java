@@ -25,6 +25,7 @@ import com.reason.ORNotification;
 import com.reason.Platform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
+import com.reason.ide.settings.ORSettings;
 import com.reason.sdk.OCamlSdkType;
 
 import static com.intellij.notification.NotificationType.ERROR;
@@ -106,9 +107,7 @@ public final class DuneProcess implements CompilerProcess {
             return null;
         }
 
-        FileSystem fileSystem = FileSystems.getDefault();
-
-        String duneBinary = fileSystem.getPath(odk.getHomePath(), "bin", "dune" + (Platform.isWindows() ? ".exe" : "")).toString();
+        String duneBinary = ORSettings.getInstance(m_project).getOrFindDuneExecutableAsString();
         GeneralCommandLine cli;
         switch (cliType) {
             case CLEAN:
@@ -119,6 +118,7 @@ public final class DuneProcess implements CompilerProcess {
                 cli = new GeneralCommandLine(duneBinary, "build");
         }
 
+        FileSystem fileSystem = FileSystems.getDefault();
         String ocamlPath = fileSystem.getPath(odk.getHomePath(), "share") + File.pathSeparator + //
                 fileSystem.getPath(odk.getHomePath(), "sbin") + File.pathSeparator + //
                 fileSystem.getPath(odk.getHomePath(), "lib") + File.pathSeparator + //
