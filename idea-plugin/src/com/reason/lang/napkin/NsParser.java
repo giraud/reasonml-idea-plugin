@@ -296,6 +296,7 @@ public class NsParser extends CommonParser<NsTypes> {
             // a function is part of something else, close it first
             state.popEnd().popEnd();
         }
+
         if (state.isCurrentResolution(variantDeclaration)) {
             state.popEnd();
         } else if (state.isCurrentResolution(functionParameter) && state.isPreviousResolution(variantConstructor)) {
@@ -446,8 +447,8 @@ public class NsParser extends CommonParser<NsTypes> {
         } else if (!state.isCurrentResolution(signatureItem)) {
             // Can be a symbol or a JSX tag
             IElementType nextTokenType = state.rawLookup(1);
-            if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT
-                    || nextTokenType == m_types.OPTION) { // Note that option is a ReasonML keyword but also a JSX keyword !
+            if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
+                // Note that option is a ReasonML keyword but also a JSX keyword !
                 // Surely a tag
                 state.remapCurrentToken(m_types.TAG_LT).
                         mark(jsxTag, m_types.C_TAG).
@@ -519,7 +520,6 @@ public class NsParser extends CommonParser<NsTypes> {
             state.updateCurrentResolution(letNamed);
         } else if (state.isCurrentResolution(jsxStartTag)) {
             // This is a property
-            //    state.popEndUntilStartScope();
             state.remapCurrentToken(m_types.PROPERTY_NAME).
                     mark(jsxTagProperty, m_types.C_TAG_PROPERTY).
                     setWhitespaceSkippedCallback((type, start, end) -> {

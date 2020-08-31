@@ -30,20 +30,8 @@ public class ParserState {
         m_currentScope = rootCompositeMarker;
     }
 
-    // End everything
-    public void endAny() {
-        if (!m_composites.isEmpty()) {
-            ParserScope scope = m_composites.peek();
-            while (scope != null) {
-                popEnd();
-                scope = getLatestScope();
-            }
-        }
-    }
-
-    @NotNull
-    public ParserScope popEndUntilStart() {
-        ParserScope latestKnownScope = null;
+    public void popEndUntilStart() {
+        ParserScope latestKnownScope;
 
         if (!m_composites.isEmpty()) {
             latestKnownScope = m_composites.peek();
@@ -56,13 +44,10 @@ public class ParserState {
                     } else {
                         scope.end();
                     }
-                    latestKnownScope = scope;
                 }
                 scope = getLatestScope();
             }
         }
-
-        return latestKnownScope == null ? m_rootComposite : latestKnownScope;
     }
 
     @NotNull
@@ -87,18 +72,6 @@ public class ParserState {
         }
 
         return latestKnownScope == null ? m_rootComposite : latestKnownScope;
-    }
-
-    @NotNull
-    public ParserState endUntilResolution(@NotNull ParserScopeEnum resolution) {
-        if (!m_composites.isEmpty()) {
-            ParserScope scope = m_composites.peek();
-            while (scope != null && !scope.isResolution(resolution)) {
-                popEnd();
-                scope = getLatestScope();
-            }
-        }
-        return this;
     }
 
     @Nullable
@@ -143,10 +116,6 @@ public class ParserState {
     public ParserState complete() {
         m_currentScope.complete();
         return this;
-    }
-
-    public void setPreviousCompleteOLD() {
-        m_composites.get(1).complete();
     }
 
     @NotNull
@@ -211,13 +180,11 @@ public class ParserState {
         return this;
     }
 
-    @NotNull
-    public ParserState popCancel() {
+    public void popCancel() {
         ParserScope scope = pop();
         if (scope != null) {
             scope.drop();
         }
-        return this;
     }
 
     @Nullable
@@ -293,10 +260,6 @@ public class ParserState {
         return this;
     }
 
-    public boolean isCurrentEmpty() {
-        return m_currentScope.isEmpty();
-    }
-
     @NotNull
     public ParserState wrapWith(@NotNull ORCompositeType compositeType) {
         if (compositeType instanceof IElementType) {
@@ -330,9 +293,8 @@ public class ParserState {
         return this;
     }
 
-    public ParserState setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
+    public void setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
         m_builder.setWhitespaceSkippedCallback(callback);
-        return this;
     }
 
     public String getTokenText() {
