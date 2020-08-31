@@ -14,6 +14,7 @@ import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiType;
 
+@SuppressWarnings("ConstantConditions")
 public class JsObjectParsingTest extends RmlParsingTestCase {
     public void test_basic() {
         PsiLet e = first(letExpressions(parseCode("let x = {\"a\": 1, \"b\": 0};")));
@@ -27,14 +28,18 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
     }
 
     public void test_definition() {
-        PsiType e = first(typeExpressions(parseCode("type t = {. a: string, b: int};")));
+        PsiType e = first(typeExpressions(parseCode("type t = {. \"a\": UUID.t, \"b\": int};")));
 
         PsiElement binding = e.getBinding();
         PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
         assertNotNull(object);
 
-        Collection<PsiObjectField> fields = object.getFields();
+        List<PsiObjectField> fields = new ArrayList<>(object.getFields());
         assertEquals(2, fields.size());
+        assertEquals("a", fields.get(0).getName());
+        assertEquals("UUID.t", fields.get(0).getSignature().getText());
+        assertEquals("b", fields.get(1).getName());
+        assertEquals("int", fields.get(1).getSignature().getText());
     }
 
     public void test_inFunction() {

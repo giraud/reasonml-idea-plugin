@@ -94,6 +94,18 @@ public class ParserState {
         return m_composites.isEmpty() ? null : m_composites.peek();
     }
 
+    public boolean is(ORCompositeType compositeType) {
+        return m_currentScope.isCompositeEqualTo(compositeType);
+    }
+
+    public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
+        return is(compositeType);
+    }
+
+    public boolean isScopeTokenElementType(ORTokenElementType scopeTokenElementType) {
+        return m_currentScope.isScopeTokenEqualTo(scopeTokenElementType);
+    }
+
     public boolean isCurrentResolution(ParserScopeEnum scope) {
         return m_currentScope.isResolution(scope);
     }
@@ -213,14 +225,6 @@ public class ParserState {
         }
 
         return this;
-    }
-
-    public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
-        return m_currentScope.isCompositeEqualTo(compositeType);
-    }
-
-    public boolean isScopeTokenElementType(ORTokenElementType scopeTokenElementType) {
-        return m_currentScope.isScopeTokenEqualTo(scopeTokenElementType);
     }
 
     @NotNull

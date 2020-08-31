@@ -236,7 +236,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseDot(@NotNull ParserState state) {
-        if (state.previousElementType1 == m_types.LBRACE && state.isCurrentResolution(jsObject)) {
+        if (state.previousElementType1 == m_types.LBRACE && (state.isCurrentResolution(jsObject) || state.isCurrentResolution(jsObjectBinding))) {
             // Js object definition
             // ... { |>.<| ... }
             state.advance().
@@ -369,7 +369,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                         updateCurrentCompositeElementType(m_types.C_JS_OBJECT).
                         mark(objectField, m_types.C_OBJECT_FIELD);
             }
-        } else if (state.isCurrentResolution(jsObject)) {
+        } else if (state.isCurrentResolution(jsObject) || state.isCurrentResolution(jsObjectBinding)) {
             state.mark(objectField, m_types.C_OBJECT_FIELD);
         }
     }
@@ -485,8 +485,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseColon(@NotNull ParserState state) {
-        if (state.isCurrentResolution(maybeRecordUsage)
-            /*state.isCurrentContextRml(maybeRecord) && state.isCurrentCompositeElementType(m_types.C_SCOPED_EXPR)*/) {
+        if (state.isCurrentResolution(maybeRecordUsage)) {
             // yes it is a record, remove the maybe
             ParserScope latestScope = state.getLatestScope();
             state.pop();
@@ -523,7 +522,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.mark(functorResult, m_types.C_FUNCTOR_RESULT);
         } else if (state.isCurrentResolution(functorParam)) {
             state.updateCurrentResolution(functorParamColon);
-        } else if (state.isCurrentResolution(recordField)) {
+        } else if (state.isCurrentResolution(recordField) || state.isCurrentResolution(objectField)) {
             state.advance();
             if (!state.isPreviousResolution(recordUsage) && !state.isPreviousResolution(jsObject)) {
                 state.mark(signature, m_types.C_SIG_EXPR).
@@ -534,8 +533,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     mark(signature, m_types.C_SIG_EXPR).
                     mark(signatureItem, m_types.C_SIG_ITEM);
         } else if (state.isCurrentResolution(namedItem)) {
-            state.//popEnd().
-                    advance().
+            state.advance().
                     mark(signatureItem, m_types.C_SIG_ITEM);
         }
     }
@@ -643,7 +641,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.mark(recordField, m_types.C_RECORD_FIELD);
         } else {
             IElementType nextElementType = state.lookAhead(1);
-            if (nextElementType == m_types.ARROW) {
+            if (nextElementType == m_types.ARROW && !state.is(m_types.C_SIG_ITEM)) {
                 // Single (paren less) function parameters
                 // |>x<| => ...
                 state.mark(function, m_types.C_FUN_EXPR).
@@ -689,13 +687,16 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseLBrace(@NotNull ParserState state) {
         if (state.previousElementType1 == m_types.DOT && state.previousElementType2 == m_types.UIDENT) {
-            // Local open a js object
+            // Local open a js object or a record
             // Xxx.|>{<| ... }
-            state.mark(localOpen, m_types.C_LOCAL_OPEN).
-                    markScope(jsObject, m_types.C_JS_OBJECT, m_types.LPAREN);
-        }
-
-        if (state.isCurrentResolution(typeBinding)) {
+            state.mark(localOpen, m_types.C_LOCAL_OPEN);
+            IElementType nextElementType = state.lookAhead(1);
+            if (nextElementType == m_types.LIDENT) {
+                state.markScope(record, m_types.C_RECORD_EXPR, m_types.LBRACE);
+            } else {
+                state.markScope(jsObject, m_types.C_JS_OBJECT, m_types.LBRACE);
+            }
+        } else if (state.isCurrentResolution(typeBinding)) {
             boolean isJsObject = state.lookAhead(1) == m_types.DOT;
             state.markScope(isJsObject ? jsObjectBinding : recordBinding, isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(tryBody)) {
@@ -726,7 +727,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             IElementType nextElement = state.lookAhead(1);
             if (state.isCurrentResolution(signatureItem) && nextElement == m_types.DOT) {
                 // js object detected (in definition)
-                // let x: |>{<|. ... }
+                // let x: |>{<| . ... }
                 state.markScope(jsObject, m_types.C_JS_OBJECT, m_types.LBRACE);
             } else if (nextElement == m_types.STRING_VALUE || nextElement == m_types.DOT) {
                 // js object detected (in usage)
@@ -747,7 +748,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEnd();
         }
 
-        if (state.isCurrentResolution(jsxTagPropertyValue) /*|| state.isCurrentResolution(localObjectOpen)*/) {
+        if (state.isCurrentResolution(jsxTagPropertyValue) || state.isCurrentResolution(localOpen)) {
             state.popEnd().popEnd();
         }
     }

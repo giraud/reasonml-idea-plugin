@@ -75,8 +75,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiLet> letExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file, ExpressionScope.all, FILTER_LET).stream().map(element -> (PsiLet) element).collect(Collectors.toList());
+    protected List<PsiLet> letExpressions(@NotNull PsiFile file) {
+        return PsiFileHelper.
+                getExpressions(file, ExpressionScope.all, FILTER_LET).stream().map(element -> (PsiLet) element).
+                collect(Collectors.toList());
     }
 
     @NotNull

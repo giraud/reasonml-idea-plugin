@@ -12,6 +12,9 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiSignatureItem;
 
 import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
@@ -90,6 +93,15 @@ public class LetParsingTest extends RmlParsingTestCase {
 
         assertEquals("(style, style) => style", let.getPsiSignature().getText());
         assertEquals("(a, b) => { }", let.getBinding().getText());
+    }
+
+    public void test_signature_dot() {
+        PsiLet let = first(letExpressions(parseCode("let x: M1.y => M2.z;")));
+
+        assertNull(PsiTreeUtil.findChildOfType(let, PsiFunction.class));
+        assertEquals("M1.y => M2.z", let.getPsiSignature().getText());
+        List<PsiSignatureItem> items = new ArrayList<>(PsiTreeUtil.findChildrenOfType(let.getPsiSignature(), PsiSignatureItem.class));
+        assertEquals("M1.y", items.get(0).getText());
     }
 
     public void test_signatureJsObject() {
@@ -179,5 +191,14 @@ public class LetParsingTest extends RmlParsingTestCase {
 
         assertEquals("x", e.getName());
         assertTrue(e.isPrivate());
+    }
+
+    public void test_function_record() {
+        List<PsiLet> es = letExpressions(parseCode("let x = y(M.{i: 1}); let z=2;"));
+
+        assertSize(2, es);
+        assertNull(PsiTreeUtil.findChildOfType(es.get(0), PsiScopedExpr.class));
+        assertEquals("i", PsiTreeUtil.findChildOfType(es.get(0), PsiRecordField.class).getName());
+        assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.get(0), PsiRecord.class).getText());
     }
 }

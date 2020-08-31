@@ -81,7 +81,7 @@ public class SignatureParsingTest extends NsParsingTestCase {
         List<PsiRecordField> fields = new ArrayList<>(record.getFields());
 
         assertEquals(1, fields.size());
-        assertEquals("{. \"__html\": string}", fields.get(0).getPsiSignature().asString(myLanguage));
+        assertEquals("{. \"__html\": string}", fields.get(0).getPsiSignature().getText());
     }
 
     public void test_externalFun() {

@@ -209,7 +209,8 @@ public class NsParser extends CommonParser<NsTypes> {
 
     private void parseDotDotDot(@NotNull ParserState state) {
         if (state.previousElementType1 == m_types.LBRACE) {
-            // Mixin:  ... { <...> x ...
+            // Mixin
+            // ... { |>...<| x ...
             state.updateCurrentResolution(recordUsage).
                     updateCurrentCompositeElementType(m_types.C_RECORD_EXPR).
                     mark(mixin, m_types.C_MIXIN_FIELD);
@@ -225,6 +226,7 @@ public class NsParser extends CommonParser<NsTypes> {
     }
 
     private void parseAssert(@NotNull ParserState state) {
+        // |>assert<| ...
         state.mark(assert_, m_types.C_ASSERT_STMT);
     }
 
@@ -251,11 +253,11 @@ public class NsParser extends CommonParser<NsTypes> {
 
     private void parseComma(@NotNull ParserState state) {
         // Intermediate structures
-        if (state.isCurrentResolution(functionBody)) {
+        if (state.is(m_types.C_FUN_BODY)) {
             // a function is part of something else, close it first
             state.popEnd().popEnd();
         }
-        if (state.isCurrentResolution(signatureItem)) {
+        if (state.is(m_types.C_SIG_ITEM)) {
             state.popEnd();
             if (!state.isCurrentResolution(signatureScope)) {
                 state.popEnd();
@@ -269,7 +271,7 @@ public class NsParser extends CommonParser<NsTypes> {
             if (nextToken != m_types.RBRACE) {
                 state.mark(recordField, m_types.C_RECORD_FIELD);
             }
-        } else if (state.isCurrentResolution(fieldNamed)) {
+        } else if (state.is(m_types.C_OBJECT_FIELD) || state.isCurrentResolution(fieldNamed)) {
             boolean isJsObject = state.isCurrentCompositeElementType(m_types.C_OBJECT_FIELD);
             state.popEnd().
                     advance();
@@ -416,9 +418,9 @@ public class NsParser extends CommonParser<NsTypes> {
                 state.markScope(scope, m_types.C_SCOPED_EXPR, m_types.LPAREN).dummy().advance();
             }
             state.mark(functorResult, m_types.C_FUNCTOR_RESULT);
-        } else if (state.isCurrentResolution(recordField)) {
+        } else if (state.isCurrentResolution(recordField) || state.is(m_types.C_OBJECT_FIELD)) {
             state.complete().advance();
-            if (!state.isPreviousResolution(recordUsage)) {
+            if (state.isInContext(typeBinding)) {
                 state.mark(signature, m_types.C_SIG_EXPR).
                         mark(signatureItem, m_types.C_SIG_ITEM);
             }
@@ -576,15 +578,23 @@ public class NsParser extends CommonParser<NsTypes> {
         if (state.previousElementType1 == m_types.DOT && state.previousElementType2 == m_types.UIDENT) {
             // Local open a js object
             // Xxx.|>{<| "y" : ... }
-            state.mark(localObjectOpen, m_types.C_LOCAL_OPEN).
-                    markScope(jsObject, m_types.C_JS_OBJECT, m_types.LBRACE).
-                    advance().
-                    mark(field, m_types.C_OBJECT_FIELD);
+            state.mark(localObjectOpen, m_types.C_LOCAL_OPEN);
+            IElementType nextElementType = state.lookAhead(1);
+            if (nextElementType == m_types.LIDENT) {
+                state.markScope(record, m_types.C_RECORD_EXPR, m_types.LBRACE).
+                        advance().
+                        mark(field, m_types.C_RECORD_FIELD);
+            } else {
+                state.markScope(jsObject, m_types.C_JS_OBJECT, m_types.LBRACE).
+                        advance().
+                        mark(field, m_types.C_OBJECT_FIELD);
+            }
         } else if (state.isCurrentResolution(typeBinding)) {
             boolean isJsObject = state.lookAhead(1) == m_types.DOT;
             state.markScope(isJsObject ? jsObject : recordBinding, isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR, m_types.LBRACE);
             if (isJsObject) {
                 state.advance().
+                        advance().
                         mark(field, m_types.C_OBJECT_FIELD);
             }
         } else if (state.isCurrentResolution(tryBodyWith)) {
