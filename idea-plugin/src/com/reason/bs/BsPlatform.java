@@ -1,16 +1,19 @@
 package com.reason.bs;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
+import com.reason.dune.Dune;
+import com.reason.esy.Esy;
 import com.reason.ide.ORFileUtils;
 import com.reason.ide.ORProjectManager;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
+import com.reason.ide.settings.ORSettings;
 
 import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
 import static com.reason.bs.BsConstants.*;
@@ -36,16 +39,35 @@ public class BsPlatform {
      * @return `bs-platform` directory, if found
      */
     public static Optional<VirtualFile> findBsPlatformDirectory(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsConfigForFile(project, sourceFile).flatMap(BsPlatform::findBsPlatformPathForConfigFile);
+        return findBsConfigForFile(project, sourceFile).
+                flatMap(BsPlatform::findBsPlatformPathForConfigFile);
     }
 
     public static Optional<VirtualFile> findBsbExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        Optional<VirtualFile> bsPlatformDirectory = findBsPlatformDirectory(project, sourceFile);
-        return bsPlatformDirectory.flatMap((directory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, directory));
+        return findBsPlatformDirectory(project, sourceFile).
+                flatMap((directory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, directory));
     }
 
     public static Optional<VirtualFile> findBscExecutable(@NotNull Project project, @NotNull VirtualFile sourceFile) {
-        return findBsPlatformDirectory(project, sourceFile).flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
+        return findBsPlatformDirectory(project, sourceFile).
+                flatMap((bsPlatformDirectory) -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
+    }
+
+    public static Optional<VirtualFile> findDuneExecutable(Project project) {
+        String duneExecutable = ORSettings.getInstance(project).getDuneExecutable();
+        if (duneExecutable.isEmpty()) {
+            return Dune.findDuneExecutable(project);
+        }
+
+        return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(duneExecutable));
+    }
+
+    public static Optional<VirtualFile> findEsyExecutable(Project project) {
+        String esyExecutable = ORSettings.getInstance(project).getEsyExecutable();
+        if (esyExecutable.isEmpty()) {
+            return Esy.findEsyExecutable();
+        }
+        return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(esyExecutable));
     }
 
     public static Optional<VirtualFile> findContentRootForFile(@NotNull Project project, @NotNull VirtualFile sourceFile) {

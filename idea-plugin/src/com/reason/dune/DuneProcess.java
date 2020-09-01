@@ -22,10 +22,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.CompilerProcess;
 import com.reason.ORNotification;
-import com.reason.Platform;
+import com.reason.bs.BsPlatform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import com.reason.ide.settings.ORSettings;
 import com.reason.sdk.OCamlSdkType;
 
 import static com.intellij.notification.NotificationType.ERROR;
@@ -107,7 +106,7 @@ public final class DuneProcess implements CompilerProcess {
             return null;
         }
 
-        String duneBinary = ORSettings.getInstance(m_project).getOrFindDuneExecutableAsString();
+        String duneBinary = BsPlatform.findDuneExecutable(m_project).map(VirtualFile::getPath).orElse("");
         GeneralCommandLine cli;
         switch (cliType) {
             case CLEAN:

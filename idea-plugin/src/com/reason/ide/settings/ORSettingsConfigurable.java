@@ -114,11 +114,11 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         f_generalOcamlformatExecutable.setText(m_settings.getOcamlformatExecutable());
         // BuckleScript
         f_bsIsEnabled.setSelected(m_settings.isBsEnabled());
-        f_bsPlatformLocation.setText(m_settings.getOrFindBsPlatformLocationAsString());
+        f_bsPlatformLocation.setText(m_settings.getBsPlatformLocation());
         // Dune
-        f_duneExecutable.setText(m_settings.getOrFindDuneExecutableAsString());
+        f_duneExecutable.setText(m_settings.getDuneExecutable());
         // Esy
-        f_esyExecutable.setText(m_settings.getOrFindEsyExecutableAsString());
+        f_esyExecutable.setText(m_settings.getEsyExecutable());
     }
 
     private void createGeneralTab() {

@@ -1,23 +1,26 @@
 package com.reason.esy;
 
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import java.util.function.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.*;
+import com.intellij.execution.process.KillableColoredProcessHandler;
+import com.intellij.execution.process.ProcessAdapter;
+import com.intellij.execution.process.ProcessEvent;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.CompilerProcess;
 import com.reason.Log;
+import com.reason.bs.BsPlatform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import com.reason.ide.settings.ORSettings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 public class EsyProcess implements CompilerProcess {
 
@@ -88,8 +91,7 @@ public class EsyProcess implements CompilerProcess {
             return null;
         }
 
-        ORSettings settings = ORSettings.getInstance(m_project);
-        Optional<VirtualFile> esyExecutableOptional = settings.getOrFindEsyExecutable();
+        Optional<VirtualFile> esyExecutableOptional = BsPlatform.findEsyExecutable(m_project);
         if (!esyExecutableOptional.isPresent()) {
             return null;
         }
@@ -142,14 +144,14 @@ public class EsyProcess implements CompilerProcess {
         }
     }
 
-//    private static Optional<Path> findEsyExecutableInPath() {
-//        String systemPath = System.getenv("PATH");
-//        Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
-//        if (!esyExecutablePath.isPresent()) {
-//            EsyNotification.showEsyNotFound();
-//        }
-//        return esyExecutablePath;
-//    }
+    //    private static Optional<Path> findEsyExecutableInPath() {
+    //        String systemPath = System.getenv("PATH");
+    //        Optional<Path> esyExecutablePath = Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
+    //        if (!esyExecutablePath.isPresent()) {
+    //            EsyNotification.showEsyNotFound();
+    //        }
+    //        return esyExecutablePath;
+    //    }
 
     private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {
         Optional<VirtualFile> esyContentRootOptional = ORProjectManager.findFirstEsyContentRoot(project);

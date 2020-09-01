@@ -1,18 +1,11 @@
 package com.reason.ide.settings;
 
-import java.util.*;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.bs.BsPlatform;
-import com.reason.dune.Dune;
-import com.reason.esy.Esy;
 
 @State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
 public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSettingsState> {
@@ -115,47 +108,28 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getBsPlatformLocation() {
-        return StringUtils.defaultString(m_bsPlatformLocation);
+        return m_bsPlatformLocation == null ? "" : m_bsPlatformLocation;
     }
 
-    public Optional<VirtualFile> getOrFindBsPlatformLocation() {
-        if (StringUtils.isBlank(m_bsPlatformLocation)) {
-            return BsPlatform.findFirstBsPlatformDirectory(m_project);
-        }
-        VirtualFile bsPlatformDirectory = LocalFileSystem.getInstance().findFileByPath(m_bsPlatformLocation);
-        return Optional.ofNullable(bsPlatformDirectory);
-    }
-
-    public String getOrFindBsPlatformLocationAsString() {
-        return getOrFindBsPlatformLocation().map(VirtualFile::getPath).orElse("");
-    }
+    //public Optional<VirtualFile> getOrFindBsPlatformLocation() {
+    //    if (StringUtils.isBlank(m_bsPlatformLocation)) {
+    //        return BsPlatform.findFirstBsPlatformDirectory(m_project);
+    //    }
+    //    VirtualFile bsPlatformDirectory = LocalFileSystem.getInstance().findFileByPath(m_bsPlatformLocation);
+    //    return Optional.ofNullable(bsPlatformDirectory);
+    //}
+    //
+    //public String getOrFindBsPlatformLocationAsString() {
+    //    return getOrFindBsPlatformLocation().map(VirtualFile::getPath).orElse("");
+    //}
 
     public void setBsPlatformLocation(String bsPlatformLocation) {
         m_bsPlatformLocation = bsPlatformLocation;
     }
 
-    public Optional<VirtualFile> findBsbExecutable() {
-        return getOrFindBsPlatformLocation().flatMap((directory) -> BsPlatform.findBsbExecutable(m_project, directory));
-    }
-
-    public Optional<VirtualFile> findBscExecutable() {
-        return getOrFindBsPlatformLocation().flatMap((directory) -> BsPlatform.findBscExecutable(m_project, directory));
-    }
-
+    @NotNull
     public String getDuneExecutable() {
-        return StringUtils.defaultString(m_duneExecutable);
-    }
-
-    public Optional<VirtualFile> getOrFindDuneExecutable() {
-        if (StringUtils.isBlank(m_duneExecutable)) {
-            return Dune.findDuneExecutable(m_project);
-        }
-        VirtualFile duneExecutable = LocalFileSystem.getInstance().findFileByPath(m_duneExecutable);
-        return Optional.ofNullable(duneExecutable);
-    }
-
-    public String getOrFindDuneExecutableAsString() {
-        return getOrFindDuneExecutable().map(VirtualFile::getPath).orElse("");
+        return m_duneExecutable == null ? "" : m_duneExecutable;
     }
 
     public void setDuneExecutable(String duneExecutable) {
@@ -163,19 +137,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getEsyExecutable() {
-        return StringUtils.defaultString(m_esyExecutable);
-    }
-
-    public Optional<VirtualFile> getOrFindEsyExecutable() {
-        if (StringUtils.isBlank(m_esyExecutable)) {
-            return Esy.findEsyExecutable();
-        }
-        VirtualFile esyExecutable = LocalFileSystem.getInstance().findFileByPath(m_esyExecutable);
-        return Optional.ofNullable(esyExecutable);
-    }
-
-    public String getOrFindEsyExecutableAsString() {
-        return getOrFindEsyExecutable().map(VirtualFile::getPath).orElse("");
+        return m_esyExecutable == null ? "" : m_esyExecutable;
     }
 
     public void setEsyExecutable(String esyExecutable) {

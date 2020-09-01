@@ -1,5 +1,11 @@
 package com.reason.bs;
 
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import java.util.regex.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
@@ -11,20 +17,9 @@ import com.reason.CompilerProcess;
 import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import com.reason.ide.settings.ORSettings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.intellij.notification.NotificationType.ERROR;
-import static com.intellij.notification.NotificationType.WARNING;
+import static com.intellij.notification.NotificationType.*;
+import static com.reason.bs.BsPlatform.*;
 
 public final class BsProcess implements CompilerProcess {
 
@@ -57,8 +52,7 @@ public final class BsProcess implements CompilerProcess {
         }
     }
 
-    private void create(@Nullable VirtualFile sourceFile, @NotNull CliType.Bs cliType,
-                        @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    private void create(@Nullable VirtualFile sourceFile, @NotNull CliType.Bs cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             if (sourceFile != null) {
                 createProcessHandler(sourceFile, cliType, onProcessTerminated);
@@ -91,7 +85,7 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     private ProcessHandler createProcessHandler(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType,
-        @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
+                                                @Nullable Compiler.ProcessTerminated onProcessTerminated) throws ExecutionException {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
@@ -127,8 +121,7 @@ public final class BsProcess implements CompilerProcess {
             return null;
         }
         String bsContentRoot = bsContentRootOptional.get().getPath();
-        ORSettings settings = ORSettings.getInstance(m_project);
-        Optional<VirtualFile> bsbExecutable = settings.findBsbExecutable();
+        Optional<VirtualFile> bsbExecutable = findBsbExecutable(m_project, sourceFile);
         if (!bsbExecutable.isPresent()) {
             BsNotification.showBsbNotFound(bsContentRoot);
             return null;
@@ -167,9 +160,8 @@ public final class BsProcess implements CompilerProcess {
 
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
-        ORSettings settings = ORSettings.getInstance(m_project);
-        return settings.findBscExecutable()
-                .map(bscFile -> {
+        return findBscExecutable(m_project, sourceFile).
+                map(bscFile -> {
                     String bscExe = bscFile.getPath();
                     Process p = null;
                     try {

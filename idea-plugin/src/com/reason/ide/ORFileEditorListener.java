@@ -99,6 +99,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
     @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+        System.out.println("ORFileEditorListener.selectionChanged");
         VirtualFile newFile = event.getNewFile();
         if (newFile != null) {
             FileType fileType = newFile.getFileType();
@@ -107,6 +108,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
                 Document document = FileDocumentManager.getInstance().getDocument(newFile);
                 InsightUpdateQueue insightUpdateQueue = document == null ? null : document.getUserData(INSIGHT_QUEUE);
                 if (insightUpdateQueue != null) {
+                    System.out.println("event = " + event);
                     insightUpdateQueue.queue(m_project, document);
                 }
                 // and refresh inferred types
