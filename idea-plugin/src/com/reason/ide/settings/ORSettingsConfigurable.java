@@ -1,16 +1,14 @@
 package com.reason.ide.settings;
 
+import javax.swing.*;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 
 public class ORSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
 
@@ -98,23 +96,14 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     public boolean isModified() {
         apply();
         boolean isFormatOnSaveModified = f_generalIsFormatOnSave.isSelected() != m_settings.isFormatOnSaveEnabled();
-        boolean isFormatWidthColumnsModified = !StringUtils.equals(f_generalFormatWidthColumns.getText(),
-                m_settings.getFormatColumnWidth());
-        boolean isOcamlFormatExecutableModified = !StringUtils.equals(f_generalOcamlformatExecutable.getText(),
-                m_settings.getOcamlformatExecutable());
+        boolean isFormatWidthColumnsModified = !f_generalFormatWidthColumns.getText().equals(m_settings.getFormatColumnWidth());
+        boolean isOcamlFormatExecutableModified = !f_generalOcamlformatExecutable.getText().equals(m_settings.getOcamlformatExecutable());
         boolean isBsEnabledModified = f_bsIsEnabled.isSelected() != m_settings.isBsEnabled();
-        boolean isBsPlatformLocationModified = !StringUtils.equals(f_bsPlatformLocation.getText(),
-                m_settings.getBsPlatformLocation());
-        boolean isDuneExecutableModified = !StringUtils.equals(f_duneExecutable.getText(),
-                m_settings.getDuneExecutable());
-        boolean isEsyExecutableModified = !StringUtils.equals(f_esyExecutable.getText(), m_settings.getEsyExecutable());
-        return isFormatOnSaveModified
-                || isFormatWidthColumnsModified
-                || isOcamlFormatExecutableModified
-                || isBsEnabledModified
-                || isBsPlatformLocationModified
-                || isDuneExecutableModified
-                || isEsyExecutableModified;
+        boolean isBsPlatformLocationModified = !f_bsPlatformLocation.getText().equals(m_settings.getBsPlatformLocation());
+        boolean isDuneExecutableModified = !f_duneExecutable.getText().equals(m_settings.getDuneExecutable());
+        boolean isEsyExecutableModified = !f_esyExecutable.getText().equals(m_settings.getEsyExecutable());
+        return isFormatOnSaveModified || isFormatWidthColumnsModified || isOcamlFormatExecutableModified || isBsEnabledModified || isBsPlatformLocationModified
+                || isDuneExecutableModified || isEsyExecutableModified;
     }
 
     @Override
@@ -134,26 +123,24 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
 
     private void createGeneralTab() {
         Project project = m_settings.getProject();
-        f_generalOcamlformatExecutable.addBrowseFolderListener(OCAMLFORMAT_EXECUTABLE_LABEL, null,
-                project, FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+        f_generalOcamlformatExecutable
+                .addBrowseFolderListener(OCAMLFORMAT_EXECUTABLE_LABEL, null, project, FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
     }
 
     private void createBsTab() {
         Project project = m_settings.getProject();
-        f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+        f_bsPlatformLocation.addBrowseFolderListener(BS_PLATFORM_LOCATION_LABEL, null, project, FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }
 
     private void createDuneTab() {
         Project project = m_settings.getProject();
-        f_duneExecutable.addBrowseFolderListener(DUNE_EXECTUABLE_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+        f_duneExecutable
+                .addBrowseFolderListener(DUNE_EXECTUABLE_LABEL, null, project, FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
     }
 
     private void createEsyTab() {
         Project project = m_settings.getProject();
-        f_esyExecutable.addBrowseFolderListener(ESY_EXECTUABLE_LABEL, null, project,
-                FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
+        f_esyExecutable.addBrowseFolderListener(ESY_EXECTUABLE_LABEL, null, project, FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
     }
 
     private static String sanitizeInput(JTextField textField) {

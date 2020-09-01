@@ -1,5 +1,8 @@
 package com.reason.ide.settings;
 
+import java.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -10,10 +13,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.bs.BsPlatform;
 import com.reason.dune.Dune;
 import com.reason.esy.Esy;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 @State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
 public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSettingsState> {
@@ -85,13 +84,13 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getFormatColumnWidth() {
-        if (!StringUtils.isBlank(m_formatColumnWidth)) {
-            return m_formatColumnWidth;
+        if (m_formatColumnWidth == null) {
+            String systemRefmtWidth = System.getProperties().getProperty("refmtWidth");
+            if (systemRefmtWidth != null) {
+                return systemRefmtWidth;
+            }
         }
-        String systemRefmtWidth = System.getProperties().getProperty("refmtWidth");
-        if (systemRefmtWidth != null) {
-           return systemRefmtWidth;
-        }
+
         return FORMAT_WIDTH_COLUMNS_DEFAULT;
     }
 
@@ -100,7 +99,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getOcamlformatExecutable() {
-        return StringUtils.defaultString(m_ocamlformatExecutable);
+        return m_ocamlformatExecutable == null ? "" : m_ocamlformatExecutable;
     }
 
     public void setOcamlformatExecutable(String ocamlformatExecutable) {
@@ -128,9 +127,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getOrFindBsPlatformLocationAsString() {
-        return getOrFindBsPlatformLocation()
-                .map(VirtualFile::getPath)
-                .orElse("");
+        return getOrFindBsPlatformLocation().map(VirtualFile::getPath).orElse("");
     }
 
     public void setBsPlatformLocation(String bsPlatformLocation) {
@@ -138,13 +135,11 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public Optional<VirtualFile> findBsbExecutable() {
-        return getOrFindBsPlatformLocation()
-                .flatMap((directory) -> BsPlatform.findBsbExecutable(m_project, directory));
+        return getOrFindBsPlatformLocation().flatMap((directory) -> BsPlatform.findBsbExecutable(m_project, directory));
     }
 
     public Optional<VirtualFile> findBscExecutable() {
-        return getOrFindBsPlatformLocation()
-                .flatMap((directory) -> BsPlatform.findBscExecutable(m_project, directory));
+        return getOrFindBsPlatformLocation().flatMap((directory) -> BsPlatform.findBscExecutable(m_project, directory));
     }
 
     public String getDuneExecutable() {
@@ -160,9 +155,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getOrFindDuneExecutableAsString() {
-        return getOrFindDuneExecutable()
-                .map(VirtualFile::getPath)
-                .orElse("");
+        return getOrFindDuneExecutable().map(VirtualFile::getPath).orElse("");
     }
 
     public void setDuneExecutable(String duneExecutable) {
@@ -182,9 +175,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     }
 
     public String getOrFindEsyExecutableAsString() {
-        return getOrFindEsyExecutable()
-                .map(VirtualFile::getPath)
-                .orElse("");
+        return getOrFindEsyExecutable().map(VirtualFile::getPath).orElse("");
     }
 
     public void setEsyExecutable(String esyExecutable) {
@@ -195,7 +186,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     public static class ReasonSettingsState {
         // General
         public boolean isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
-        public String formatColumnWidth = FORMAT_WIDTH_COLUMNS_DEFAULT;
+        public String formatColumnWidth;
         public String ocamlformatExecutable = "";
         // BuckleScript
         public boolean isBsEnabled = IS_BS_ENABLED_DEFAULT;
