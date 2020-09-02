@@ -1,6 +1,7 @@
 package com.reason.ide.settings;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -18,7 +19,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
 
     // General
     private boolean m_isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
-    private String m_formatColumnWidth = FORMAT_WIDTH_COLUMNS_DEFAULT;
+    private String m_formatColumnWidth;
     private String m_ocamlformatExecutable = "";
 
     // BuckleScript
@@ -76,19 +77,18 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         m_isFormatOnSaveEnabled = isFormatOnSaveEnabled;
     }
 
+    @NotNull
     public String getFormatColumnWidth() {
         if (m_formatColumnWidth == null) {
             String systemRefmtWidth = System.getProperties().getProperty("refmtWidth");
-            if (systemRefmtWidth != null) {
-                return systemRefmtWidth;
-            }
+            return systemRefmtWidth == null ? FORMAT_WIDTH_COLUMNS_DEFAULT : systemRefmtWidth;
         }
 
-        return FORMAT_WIDTH_COLUMNS_DEFAULT;
+        return m_formatColumnWidth;
     }
 
-    public void setFormatColumnWidth(String formatColumnWidth) {
-        m_formatColumnWidth = formatColumnWidth;
+    public void setFormatColumnWidth(@Nullable String formatColumnWidth) {
+        m_formatColumnWidth = formatColumnWidth != null && formatColumnWidth.isEmpty() ? null : formatColumnWidth;
     }
 
     public String getOcamlformatExecutable() {
@@ -110,18 +110,6 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     public String getBsPlatformLocation() {
         return m_bsPlatformLocation == null ? "" : m_bsPlatformLocation;
     }
-
-    //public Optional<VirtualFile> getOrFindBsPlatformLocation() {
-    //    if (StringUtils.isBlank(m_bsPlatformLocation)) {
-    //        return BsPlatform.findFirstBsPlatformDirectory(m_project);
-    //    }
-    //    VirtualFile bsPlatformDirectory = LocalFileSystem.getInstance().findFileByPath(m_bsPlatformLocation);
-    //    return Optional.ofNullable(bsPlatformDirectory);
-    //}
-    //
-    //public String getOrFindBsPlatformLocationAsString() {
-    //    return getOrFindBsPlatformLocation().map(VirtualFile::getPath).orElse("");
-    //}
 
     public void setBsPlatformLocation(String bsPlatformLocation) {
         m_bsPlatformLocation = bsPlatformLocation;

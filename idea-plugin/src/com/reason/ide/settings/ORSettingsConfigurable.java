@@ -94,7 +94,6 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
 
     @Override
     public boolean isModified() {
-        apply();
         boolean isFormatOnSaveModified = f_generalIsFormatOnSave.isSelected() != m_settings.isFormatOnSaveEnabled();
         boolean isFormatWidthColumnsModified = !f_generalFormatWidthColumns.getText().equals(m_settings.getFormatColumnWidth());
         boolean isOcamlFormatExecutableModified = !f_generalOcamlformatExecutable.getText().equals(m_settings.getOcamlformatExecutable());
