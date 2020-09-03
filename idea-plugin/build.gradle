@@ -1,11 +1,9 @@
-def pluginVersion = '0.89.0'
-version = pluginVersion + '-' + ideaVersion
+version = pluginVersion + '-' + platformVersion
 
 intellij {
-    pluginName 'reasonml-plugin-idea'
-    type 'IU'
-    version iuVersion
-    updateSinceUntilBuild = false
+    pluginName = pluginName
+    type = platformType
+    version = platformVersion
     plugins = [
             'java',
            'JavaScriptLanguage',
