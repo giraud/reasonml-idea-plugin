@@ -15,7 +15,7 @@ import static com.reason.lang.ocamlyacc.OclYaccTypes.*;
 public class OclYaccParser implements PsiParser, LightPsiParser {
 
     @NotNull
-    public ASTNode parse(IElementType t, @NotNull PsiBuilder b) {
+    public ASTNode parse(@NotNull IElementType t, @NotNull PsiBuilder b) {
         parseLight(t, b);
         return b.getTreeBuilt();
     }

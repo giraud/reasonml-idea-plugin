@@ -14,6 +14,7 @@ import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiObject;
 import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.type.ORTypes;
@@ -39,11 +40,9 @@ public class ObjectCompletionProvider {
             while (previousLeaf != null && previousElementType == types.LIDENT || previousElementType == types.SHARPSHARP
                     || previousElementType == types.SHARP) {
                 if (previousElementType == types.LIDENT) {
-                    //noinspection ConstantConditions
                     LeafPsiElement node = (LeafPsiElement) previousLeaf.getNode();
                     path.add(((PsiLowerSymbol) node.getParent()).getName());
                 }
-                //noinspection ConstantConditions
                 previousLeaf = PsiTreeUtil.prevLeaf(previousLeaf);
                 previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();
             }

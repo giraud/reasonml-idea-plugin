@@ -16,15 +16,15 @@ public class PsiElementFactory {
     public static PsiElement createElement(@NotNull ORTypes types, @NotNull ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == types.C_EXTERNAL_STMT) {
+        if (type == types.C_EXPR_EXTERNAL) {
             return new PsiExternalImpl(types, node);
-        } else if (type == types.C_EXCEPTION_EXPR) {
+        } else if (type == types.C_EXPR_EXCEPTION) {
             return new PsiExceptionImpl(types, node);
         } else if (type == types.C_OPEN) {
             return new PsiOpenImpl(types, node);
         } else if (type == types.C_INCLUDE) {
             return new PsiIncludeImpl(types, node);
-        } else if (type == types.C_EXP_TYPE) {
+        } else if (type == types.C_EXPR_TYPE) {
             return new PsiTypeImpl(types, node);
         } else if (type == types.C_ASSERT_STMT) {
             return new PsiAssert(node);
@@ -36,7 +36,7 @@ public class PsiElementFactory {
             return new PsiTypeConstrName(node);
         } else if (type == types.C_TYPE_BINDING) {
             return new PsiTypeBinding(node);
-        } else if (type == types.C_MODULE_STMT) {
+        } else if (type == types.C_EXPR_MODULE) {
             return new PsiInnerModuleImpl(types, node);
         } else if (type == types.C_CLASS_STMT) {
             return new PsiClassImpl(types, node);
@@ -54,15 +54,15 @@ public class PsiElementFactory {
             return new PsiDirective(node);
         } else if (type == types.C_MODULE_PATH) {
             return new PsiModulePath(node);
-        } else if (type == types.C_LET_STMT) {
+        } else if (type == types.C_EXPR_LET) {
             return new PsiLetImpl(types, node);
         } else if (type == types.C_LET_ATTR) {
             return new PsiLetAttribute(node);
         } else if (type == types.C_LET_BINDING) {
             return new PsiLetBinding(node);
-        } else if (type == types.C_VAL_EXPR) {
+        } else if (type == types.C_EXPR_VAL) {
             return new PsiValImpl(types, node);
-        } else if (type == types.C_ANNOTATION_EXPR) {
+        } else if (type == types.C_ANNOTATION) {
             return new PsiAnnotationImpl(types, node);
         } else if (type == types.C_FAKE_MODULE) {
             return new PsiFakeModule(types, node);

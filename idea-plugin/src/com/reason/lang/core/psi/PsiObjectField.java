@@ -1,5 +1,7 @@
 package com.reason.lang.core.psi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
@@ -7,8 +9,6 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.impl.PsiToken;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclLanguage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PsiObjectField extends PsiToken<ORTypes> implements PsiLanguageConverter {
 
@@ -25,6 +25,11 @@ public class PsiObjectField extends PsiToken<ORTypes> implements PsiLanguageConv
     public String getName() {
         PsiElement nameElement = getNameIdentifier();
         return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
+    }
+
+    @Nullable
+    public PsiSignature getSignature() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);
     }
 
     @NotNull

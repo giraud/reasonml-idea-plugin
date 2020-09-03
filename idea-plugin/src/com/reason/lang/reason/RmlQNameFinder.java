@@ -20,7 +20,6 @@ import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
-import com.reason.lang.ocaml.OclQNameFinder;
 
 public class RmlQNameFinder extends BaseQNameFinder {
 

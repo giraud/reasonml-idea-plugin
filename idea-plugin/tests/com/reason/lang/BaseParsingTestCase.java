@@ -13,7 +13,6 @@ import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.PsiFileHelper;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiExternal;
@@ -76,8 +75,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     }
 
     @NotNull
-    protected Collection<PsiLet> letExpressions(@NotNull PsiFile file) {
-        return PsiFileHelper.getExpressions(file, ExpressionScope.all, FILTER_LET).stream().map(element -> (PsiLet) element).collect(Collectors.toList());
+    protected List<PsiLet> letExpressions(@NotNull PsiFile file) {
+        return PsiFileHelper.
+                getExpressions(file, ExpressionScope.all, FILTER_LET).stream().map(element -> (PsiLet) element).
+                collect(Collectors.toList());
     }
 
     @NotNull
@@ -120,47 +121,28 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
     @NotNull
     protected PsiFile parseFile(String name) throws IOException {
-        return parseFile(name, false);
-    }
-
-    @NotNull
-    protected PsiFile parseFile(String name, @SuppressWarnings("SameParameterValue") boolean print) throws IOException {
         String text = loadFile(name + "." + myFileExt);
-        return parseCode(text, print);
+        return parseRawCode(text);
     }
 
     @NotNull
     protected FileBase parseCode(@NotNull String code) {
-        return parseCode(code, false);
-    }
-
-    @NotNull
-    protected FileBase parseCode(@NotNull String code, boolean print) {
-        parseRawCode(code, print);
+        parseRawCode(code);
         return (FileBase) myFile;
     }
 
-    protected PsiFile parseRawCode(@NotNull String code, boolean print) {
+    protected PsiFile parseRawCode(@NotNull String code) {
         myFile = createPsiFile("dummy", code);
-        if (print) {
-            System.out.println("» " + this.getClass());
-            System.out.println(DebugUtil.psiToString(myFile, true, true));
-        }
+        System.out.println("» " + this.getClass());
+        System.out.println(DebugUtil.psiToString(myFile, true, true));
         return myFile;
     }
 
     @NotNull
     protected DuneFile parseDuneCode(@NotNull String code) {
-        return parseDuneCode(code, false);
-    }
-
-    @NotNull
-    protected DuneFile parseDuneCode(@NotNull String code, boolean print) {
         myFile = createFile("jbuild", code);
-        if (print) {
-            System.out.println("» " + this.getClass());
-            System.out.println(DebugUtil.psiToString(myFile, true, true));
-        }
+        System.out.println("» " + this.getClass());
+        System.out.println(DebugUtil.psiToString(myFile, true, true));
         return (DuneFile) myFile;
     }
 

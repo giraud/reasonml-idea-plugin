@@ -6,6 +6,7 @@ import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -69,9 +70,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
                 ORPropertyChangeListener propertyChangeListener = new ORPropertyChangeListener(sourceFile, document, insightUpdateQueue);
                 selectedEditor.addPropertyChangeListener(propertyChangeListener);
-                Disposer.register(selectedEditor, () -> {
-                    selectedEditor.removePropertyChangeListener(propertyChangeListener);
-                });
+                Disposer.register(selectedEditor, () -> selectedEditor.removePropertyChangeListener(propertyChangeListener));
 
                 // Store the queue in the document, for easy access
                 document.putUserData(INSIGHT_QUEUE, insightUpdateQueue);
@@ -142,7 +141,8 @@ public class ORFileEditorListener implements FileEditorManagerListener {
         public void propertyChange(@NotNull PropertyChangeEvent evt) {
             if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE && m_compiler != null) {
                 // Document is saved, run the compiler !!
-                m_compiler.runDefault(m_file, () -> m_updateQueue.queue(m_project, m_document));
+                // We invokeLater because compiler needs access to index files and can't do it in the event thread
+                ApplicationManager.getApplication().invokeLater(() -> m_compiler.runDefault(m_file, () -> m_updateQueue.queue(m_project, m_document)));
 
                 //() -> ApplicationManager.getApplication().runReadAction(() -> {
                 //InferredTypesService.clearTypes(m_project, m_file);

@@ -1,15 +1,10 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiTry;
 
 @SuppressWarnings("ConstantConditions")
-public class TryWithTest extends BaseParsingTestCase {
-    public TryWithTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
-    public void testTryStructure() {
+public class TryWithTest extends RmlParsingTestCase {
+    public void test_tryStructure() {
         PsiTry e = (PsiTry) firstElement(parseCode("try (x) { | Not_found => () };"));
 
         assertEquals("try", e.getFirstChild().getText());

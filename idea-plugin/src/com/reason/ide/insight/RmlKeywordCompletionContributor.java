@@ -9,7 +9,7 @@ import com.reason.lang.reason.RmlTypes;
 import static com.reason.ide.insight.CompletionUtils.KEYWORD_PRIORITY;
 
 public class RmlKeywordCompletionContributor extends KeywordCompletionContributor {
-    private static String[] KEYWORDS = new String[]{"open", "include", "module", "type", "let", "external", "exception"};
+    private static final String[] KEYWORDS = new String[]{"open", "include", "module", "type", "let", "external", "exception"};
 
     RmlKeywordCompletionContributor() {
         super(RmlTypes.INSTANCE);

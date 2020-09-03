@@ -101,7 +101,7 @@ public class DuneCompiler implements Compiler {
     public ConsoleView getConsoleView() {
         ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(project);
         ToolWindow duneToolWindow = windowProvider.getDuneToolWindow();
-        Content windowContent = duneToolWindow.getContentManager().getContent(0);
+        Content windowContent = duneToolWindow == null ? null : duneToolWindow.getContentManager().getContent(0);
         if (windowContent == null) {
             return null;
         }

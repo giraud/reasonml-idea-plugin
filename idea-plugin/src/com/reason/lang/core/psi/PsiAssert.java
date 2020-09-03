@@ -1,9 +1,10 @@
 package com.reason.lang.core.psi;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.util.PsiTreeUtil;
 
 public class PsiAssert extends ASTWrapperPsiElement {
 
@@ -23,6 +24,6 @@ public class PsiAssert extends ASTWrapperPsiElement {
     }
 
     public PsiElement getAssertion() {
-        return getFirstChild().getNextSibling();
+        return PsiTreeUtil.skipWhitespacesForward(getFirstChild());
     }
 }

@@ -7,6 +7,7 @@ import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiQualifiedElement;
@@ -19,8 +20,8 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Override
     public WordsScanner getWordsScanner() {
         RmlTypes types = RmlTypes.INSTANCE;
-        return new DefaultWordsScanner(new RmlLexer(), TokenSet.create(types.C_UPPER_SYMBOL, types.C_LOWER_SYMBOL, types.C_VARIANT), TokenSet.EMPTY,
-                                       TokenSet.EMPTY);
+        return new DefaultWordsScanner(new RmlLexer(), TokenSet.create((IElementType) types.C_UPPER_SYMBOL, (IElementType) types.C_LOWER_SYMBOL,
+                                                                       (IElementType) types.C_VARIANT), TokenSet.EMPTY, TokenSet.EMPTY);
     }
 
     @Override

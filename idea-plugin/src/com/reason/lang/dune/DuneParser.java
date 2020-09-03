@@ -1,15 +1,11 @@
 package com.reason.lang.dune;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserState;
-import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScope.mark;
-import static com.reason.lang.ParserScope.markScope;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public class DuneParser extends CommonParser<DuneTypes> {
@@ -23,7 +19,6 @@ public class DuneParser extends CommonParser<DuneTypes> {
 
         //long parseStart = System.currentTimeMillis();
 
-        int c = current_position_(builder);
         while (true) {
             //long parseTime = System.currentTimeMillis();
             //if (5 < parseTime - parseStart) {
@@ -37,30 +32,20 @@ public class DuneParser extends CommonParser<DuneTypes> {
                 break;
             }
 
-            // ( .. )
-            if (tokenType == m_types.LPAREN) {
-                parseLParen(builder, state);
-            } else if (tokenType == m_types.RPAREN) {
-                if (state.isCurrentResolution(stanzaNamedFields)) {
-                    state.popEnd();
-                }
-
-                if (state.isInScopeExpression()) {
-                    state.complete();
-                    state.advance();
-                    state.popEnd();
-                } else {
-                    builder.error("Unbalanced parenthesis");
-                }
+            if (tokenType == m_types.ATOM) {
+                parseAtom(state);
             }
-
-            // %{ .. }
+            // ( ... )
+            else if (tokenType == m_types.LPAREN) {
+                parseLParen(state);
+            } else if (tokenType == m_types.RPAREN) {
+                parseRParen(state);
+            }
+            // %{ ... }
             else if (tokenType == m_types.VAR_START) {
-                parseVarStart(builder, state);
+                parseVarStart(state);
             } else if (tokenType == m_types.VAR_END) {
-                parseVarEnd(builder, state);
-            } else if (tokenType == m_types.ATOM) {
-                parseAtom(builder, state);
+                parseVarEnd(state);
             }
 
             if (state.dontMove) {
@@ -68,43 +53,47 @@ public class DuneParser extends CommonParser<DuneTypes> {
             } else {
                 builder.advanceLexer();
             }
-
-            if (!empty_element_parsed_guard_(builder, "duneFile", c)) {
-                break;
-            }
-
-            c = builder.rawTokenIndex();
         }
     }
 
-    private void parseAtom(@NotNull PsiBuilder builder, @NotNull ParserState state) {
+    private void parseAtom(@NotNull ParserState state) {
         if (state.isCurrentResolution(stanza)) {
-            state.updateCurrentResolution(stanzaNamed).
-                    advance().
-                    add(mark(builder, state.currentContext(), stanzaNamedFields, m_types.C_FIELDS).complete());
+            state.advance().
+                    mark(stanzaNamedFields, m_types.C_FIELDS);
         }
     }
 
-    private void parseLParen(@NotNull PsiBuilder builder, @NotNull ParserState state) {
-        if (state.isCurrentContext(file)) {
-            state.add(markScope(builder, stanza, m_types.C_STANZA, m_types.LPAREN));
+    private void parseLParen(@NotNull ParserState state) {
+        if (state.isCurrentResolution(file)) {
+            state.markScope(stanza, m_types.C_STANZA, m_types.LPAREN);
         } else if (state.isCurrentResolution(stanzaNamedFields)) {
-            state.add(markScope(builder, stanzaFields, field, m_types.C_FIELD, m_types.LPAREN));
+            state.markScope(field, m_types.C_FIELD, m_types.LPAREN);
         } else {
-            state.add(markScope(builder, sexpr, m_types.C_SEXPR, m_types.LPAREN));
+            state.markScope(sexpr, m_types.C_SEXPR, m_types.LPAREN);
         }
     }
 
-    /* |>%{<| .. } */
-    private void parseVarStart(PsiBuilder builder, @NotNull ParserState state) {
-        state.add(markScope(builder, duneVariable, m_types.C_VAR, m_types.VAR_START));
-    }
+    private void parseRParen(ParserState state) {
+        if (state.isCurrentResolution(stanzaNamedFields)) {
+            state.popEnd();
+        }
 
-    /* %{ .. |>}<| */
-    private void parseVarEnd(PsiBuilder builder, @NotNull ParserState state) {
-        if (state.isCurrentContext(duneVariable)) {
-            state.complete().advance().popEnd();
+        if (state.isInScopeExpression()) {
+            state.advance().popEnd();
+        } else {
+            state.error("Unbalanced parenthesis");
         }
     }
 
+    private void parseVarStart(@NotNull ParserState state) {
+        // |>%{<| ... }
+        state.markScope(duneVariable, m_types.C_VAR, m_types.VAR_START);
+    }
+
+    private void parseVarEnd(@NotNull ParserState state) {
+        if (state.isCurrentResolution(duneVariable)) {
+            // %{ ... |>}<|
+            state.advance().popEnd();
+        }
+    }
 }

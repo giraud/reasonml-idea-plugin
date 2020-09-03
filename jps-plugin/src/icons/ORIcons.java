@@ -34,6 +34,8 @@ public class ORIcons {
     public static final Icon ESY_FILE = getIcon("/icons/esyFile.svg");
     public static final Icon RML_FILE = getIcon("/icons/reFile.svg");
     public static final Icon RML_INTERFACE_FILE = getIcon("/icons/reiFile.svg");
+    public static final Icon NS_FILE = getIcon("/icons/resFile.svg");
+    public static final Icon NS_INTERFACE_FILE = getIcon("/icons/resiFile.svg");
     public static final Icon OCL_FILE = getIcon("/icons/mlFile.svg");
     public static final Icon OCL_INTERFACE_FILE = getIcon("/icons/mliFile.png");
     public static final Icon DUNE_FILE = getIcon("/icons/duneFile.svg");

@@ -13,8 +13,8 @@ import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 
 public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
-    private static final int VERSION = 2;
-    public static final IStubFileElementType INSTANCE = new OclFileStubElementType();
+    private static final int VERSION = 4;
+    public static final IStubFileElementType<OclFileStub> INSTANCE = new OclFileStubElementType();
 
     private OclFileStubElementType() {
         super("OCAML_FILE", OclLanguage.INSTANCE);

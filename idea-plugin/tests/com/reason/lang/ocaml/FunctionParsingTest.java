@@ -1,22 +1,15 @@
 package com.reason.lang.ocaml;
 
+import java.util.*;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameters;
 
-import java.util.Collection;
-
 @SuppressWarnings("ConstantConditions")
-public class FunctionParsingTest extends BaseParsingTestCase {
-    public FunctionParsingTest() {
-        super("", "ml", new OclParserDefinition());
-    }
-
-    public void testSingleParamFunction() {
+public class FunctionParsingTest extends OclParsingTestCase {
+    public void test_singleParam() {
         PsiLet e = first(letExpressions(parseCode("let fn x = x")));
 
         assertTrue(e.isFunction());
@@ -25,7 +18,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertNotNull(function.getBody());
     }
 
-    public void testMultipleParamsFunction() {
+    public void test_multipleParams() {
         PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
         assertTrue(e.isFunction());
@@ -34,7 +27,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertNotNull(function.getBody());
     }
 
-    public void testFunctionLetBinding() {
+    public void test_letBinding() {
         PsiLet e = first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
 
         assertTrue(e.isFunction());
@@ -43,7 +36,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertNotNull(function.getBody());
     }
 
-    public void testFunctionLetBinding2() {
+    public void test_letBinding2() {
         PsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
 
         assertTrue(e.isFunction());
@@ -51,7 +44,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals("Printf.printf \"a\"; Printf.printf \"b\"", function.getBody().getText());
     }
 
-    public void testFunctionFun() {
+    public void test_fun() {
         PsiLet e = first(letExpressions(parseCode("let _ = fun (_, info as ei) -> x")));
 
         assertTrue(e.isFunction());
@@ -60,7 +53,7 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertEquals("x", function.getBody().getText());
     }
 
-    public void testComplexParams() {
+    public void test_complexParams() {
         Collection<PsiNameIdentifierOwner> expressions = expressions(parseCode("let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
 
         assertSize(1, expressions);
@@ -69,5 +62,4 @@ public class FunctionParsingTest extends BaseParsingTestCase {
         assertSize(4, let.getFunction().getParameters());
         assertEquals("let x = 1", let.getFunction().getBody().getText());
     }
-
 }

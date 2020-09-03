@@ -2,13 +2,14 @@ package com.reason.ide.completion;
 
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class Jsx2NameCompletionTest extends BasePlatformTestCase {
+public class Jsx2NameCompletionTest extends ORBasePlatformTestCase {
 
     @NotNull
     @Override
@@ -17,7 +18,7 @@ public class Jsx2NameCompletionTest extends BasePlatformTestCase {
     }
 
     public void testShouldDisplayComponents() {
-        myFixture.configureByFiles("Component.re", "CompMessage.re");
+        myFixture.configureByFiles("Component.re", "CompMessage.res");
         myFixture.configureByText(RmlFileType.INSTANCE, "let _ = <Comp<caret>");
 
         myFixture.completeBasic();

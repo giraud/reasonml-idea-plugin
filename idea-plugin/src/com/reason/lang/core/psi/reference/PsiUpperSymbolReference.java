@@ -1,8 +1,15 @@
 package com.reason.lang.core.psi.reference;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiPolyVariantReferenceBase;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -14,15 +21,14 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlQNameFinder;
-import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 import static com.reason.lang.core.ORFileType.both;
 
@@ -58,24 +64,26 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        Set<PsiQualifiedElement> potentialPaths = getPotentialPaths();
-        if (potentialPaths.isEmpty()) {
-            LOG.debug(" -> No potential path found");
+        Set<PsiQualifiedElement> referencedElements = resolveElementsFromPaths();
+        if (referencedElements.isEmpty()) {
+            LOG.debug(" -> No resolved elements found from paths");
         } else {
-            ResolveResult[] resolveResults = new ResolveResult[potentialPaths.size()];
+            ResolveResult[] resolveResults = new ResolveResult[referencedElements.size()];
 
             int i = 0;
-            for (PsiQualifiedElement referencedElement : potentialPaths) {
+            for (PsiQualifiedElement referencedElement : referencedElements) {
                 if (LOG.isDebugEnabled()) {
                     boolean isInnerModule = referencedElement instanceof PsiInnerModule;
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
-                    String source = referencedElement instanceof FileBase ? ((FileBase) referencedElement).shortLocation(referencedElement.getProject()) : referencedElement.getClass().getName();
+                    String source = referencedElement instanceof FileBase ? ((FileBase) referencedElement).shortLocation(referencedElement.getProject()) :
+                            referencedElement.getClass().getName();
                     LOG.debug(" -> " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + referencedElement
                             .getContainingFile() + " [" + source + "]");
                 }
 
                 // A fake module resolve to its file
-                resolveResults[i] = new UpperResolveResult(referencedElement instanceof PsiFakeModule ? (FileBase) referencedElement.getContainingFile() : referencedElement);
+                resolveResults[i] = new UpperResolveResult(
+                        referencedElement instanceof PsiFakeModule ? (FileBase) referencedElement.getContainingFile() : referencedElement);
                 i++;
             }
 
@@ -113,12 +121,12 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         return myElement;
     }
 
-    private Set<PsiQualifiedElement> getPotentialPaths() {
+    private Set<PsiQualifiedElement> resolveElementsFromPaths() {
         Project project = myElement.getProject();
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
         PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-        QNameFinder qnameFinder = m_types instanceof RmlTypes ? RmlQNameFinder.INSTANCE : OclQNameFinder.INSTANCE;
+        QNameFinder qnameFinder = PsiFinder.getQNameFinder(myElement.getLanguage());
         Set<String> paths = qnameFinder.extractPotentialPaths(myElement);
         if (LOG.isTraceEnabled()) {
             LOG.trace(" -> Paths before resolution: " + Joiner.join(", ", paths));

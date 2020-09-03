@@ -1,14 +1,13 @@
 package com.reason.ide.completion;
 
+import java.util.*;
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
-import java.util.List;
-
 public class JsObjectCompletionTest extends ORBasePlatformTestCase {
 
-    public void testBasicJsFieldCompletion() {
-        myFixture.configureByText("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");
+    public void test_Rml_basicJsFieldCompletion() {
+        configureCode("JsObj.re", "let oo = {\"asd\": 1, \"qwe\": 2}");
         myFixture.configureByText(RmlFileType.INSTANCE, "open JsObj; oo##<caret>");
 
         myFixture.completeBasic();
@@ -56,7 +55,7 @@ public class JsObjectCompletionTest extends ORBasePlatformTestCase {
     }
 
     public void testComposedJsObject() {
-        myFixture.configureByText("JsObj.re", "let o = {\"f22\": 222}; let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }");
+        configureCode("JsObj.re", "let o = {\"f22\": 222}; let oo = {\"f1\": {\"f11\": 111}, \"f2\": o,\"f3\": {\"f33\": 333} }");
         myFixture.configureByText(RmlFileType.INSTANCE, "open JsObj; oo##f2##<caret>");
 
         myFixture.completeBasic();
@@ -91,5 +90,4 @@ public class JsObjectCompletionTest extends ORBasePlatformTestCase {
         assertSize(2, elements);
         assertContainsElements(elements, "ooo", "f22");
     }
-
 }

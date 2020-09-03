@@ -1,6 +1,7 @@
 package com.reason.lang;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
@@ -9,12 +10,11 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ParserScope.mark;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
-    protected T m_types;
+    protected final T m_types;
 
     protected CommonParser(T types) {
         m_types = types;
@@ -23,7 +23,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     @Override
     @NotNull
     public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-        builder.setDebugMode(false);
+        builder.setDebugMode(true);
 
         //System.out.println("start parsing ");
         //long start = System.currentTimeMillis();
@@ -60,7 +60,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
         fileScope.end();
 
         if (m_types instanceof ORTypes) {
-            state.add(mark(builder, file, ((ORTypes) m_types).C_FAKE_MODULE).complete()).popEnd();
+            state.mark(file, ((ORTypes) m_types).C_FAKE_MODULE).popEnd();
         }
 
         exit_section_(builder, 0, m, elementType, true, true, TRUE_CONDITION);
@@ -69,11 +69,21 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     protected abstract void parseFile(PsiBuilder builder, ParserState parserState);
 
     protected boolean isTypeResolution(@NotNull ParserScope scope) {
-        return scope.isResolution(typeNamed) || scope.isResolution(typeNamedEq) || scope.isResolution(typeNamedEqVariant);
+        if (m_types instanceof ORTypes) {
+            return scope.isCompositeEqualTo(((ORTypes) m_types).C_EXPR_TYPE);
+        }
+        return false;
     }
 
     protected boolean isModuleResolution(@NotNull ParserScope scope) {
-        return scope.isResolution(moduleNamed) || scope.isResolution(moduleNamedSignature) || scope.isResolution(moduleNamedColon);
+        if (m_types instanceof ORTypes) {
+            return scope.isCompositeEqualTo(((ORTypes) m_types).C_EXPR_MODULE);
+        }
+        return false;
+    }
+
+    protected boolean isFunctorResolution(@Nullable ParserScope scope) {
+        return scope != null && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
     }
 
     protected boolean isLetResolution(@NotNull ParserScope scope) {

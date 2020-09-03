@@ -100,9 +100,9 @@ public class Platform {
     }
 
     /**
-     * @deprecated Move this out of jps-plugin and replace implementation with ORProjectManager.
-     *             This incorrectly assumes that the project is a BuckleScript project which might
-     *             not be the case. Could be Dune, Esy, mono-repo, etc.
+     * Move this out of jps-plugin and replace implementation with ORProjectManager.
+     * This incorrectly assumes that the project is a BuckleScript project which might
+     * not be the case. Could be Dune, Esy, mono-repo, etc.
      */
     @NotNull
     @Deprecated

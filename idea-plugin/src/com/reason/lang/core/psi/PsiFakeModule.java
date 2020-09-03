@@ -14,7 +14,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ExpressionFilter;
-import com.reason.lang.core.PsiFileHelper;
+import com.reason.lang.PsiFileHelper;
 import com.reason.lang.core.psi.impl.PsiTokenStub;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;

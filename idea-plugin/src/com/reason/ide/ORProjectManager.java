@@ -1,6 +1,7 @@
 package com.reason.ide;
 
 import com.google.common.collect.ImmutableMap;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
@@ -91,8 +92,11 @@ public class ORProjectManager {
 
     public static Set<VirtualFile> findFilesInProject(@NotNull String filename, @NotNull Project project) {
         GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
-        return new HashSet<>(virtualFilesByName);
+        if (ApplicationManager.getApplication().isReadAccessAllowed()) {
+            Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
+            return new HashSet<>(virtualFilesByName);
+        }
+        return Collections.emptySet();
     }
 
     public static Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {

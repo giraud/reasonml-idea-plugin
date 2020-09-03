@@ -1,13 +1,13 @@
 package com.reason.lang.core.psi.impl;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiMacroName;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PsiAnnotationImpl extends PsiToken<ORTypes> implements PsiAnnotation {
 
@@ -21,9 +21,11 @@ public class PsiAnnotationImpl extends PsiToken<ORTypes> implements PsiAnnotatio
         return findNotNullChildByClass(PsiMacroName.class);
     }
 
+    @Nullable
     @Override
     public String getName() {
-        return getNameIdentifier().getText();
+        PsiElement identifier = getNameIdentifier();
+        return identifier == null ? null : identifier.getText();
     }
 
     @NotNull
@@ -32,7 +34,6 @@ public class PsiAnnotationImpl extends PsiToken<ORTypes> implements PsiAnnotatio
         return this;
     }
 
-    @Nullable
     @Override
     public String toString() {
         return "Annotation " + getName();

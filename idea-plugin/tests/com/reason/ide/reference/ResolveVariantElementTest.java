@@ -55,4 +55,21 @@ public class ResolveVariantElementTest extends ORBasePlatformTestCase {
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("Aaa.Option.t.Test", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
     }
+
+    public void testRml_constructor() {
+        configureCode("A.re", "type a = | Variant(int);");
+        configureCode("B.re", "A.Variant<caret>(1)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+    }
+
+    public void testOcl_constructor() {
+        configureCode("A.ml", "type a = | Variant(int)");
+        configureCode("B.ml", "A.Variant<caret>(1)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+    }
+
 }

@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
 
     public static class InferredTypesWithLines {
-        private InferredTypes m_types;
-        private EditorPosition m_editorPosition;
+        private final InferredTypes m_types;
+        private final EditorPosition m_editorPosition;
 //        private InferredTypes types;
 
         InferredTypesWithLines(InferredTypes types, @NotNull String[] lines) {

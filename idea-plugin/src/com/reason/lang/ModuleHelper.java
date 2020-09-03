@@ -1,13 +1,12 @@
 package com.reason.lang;
 
+import java.util.*;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiAnnotation;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLet;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class ModuleHelper {
 

@@ -1,25 +1,16 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiAnnotation;
 
-public class AnnotationParsingTest extends BaseParsingTestCase {
-    public AnnotationParsingTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
-    public void testAnnotationWithString() {
-        PsiAnnotation annotation = (PsiAnnotation) firstElement(parseCode("[@bs.module \"xyz\"]"));
-
-        assertEquals("@bs.module", annotation.getName());
-    }
-
-    public void testAnnotationName() {
+public class AnnotationParsingTest extends RmlParsingTestCase {
+    public void test_annotationName() {
         assertEquals("@bs.module", ((PsiAnnotation) firstElement(parseCode("[@bs.module]"))).getName());
         assertEquals("@bs.val", ((PsiAnnotation) firstElement(parseCode("[@bs.val]"))).getName());
     }
 
-    public void testAnnotationString() {
-        assertEquals("[@bs.module \"react-intl\"]", firstElement(parseCode("[@bs.module \"react-intl\"]")).getText());
+    public void test_annotationWithString() {
+        PsiAnnotation annotation = (PsiAnnotation) firstElement(parseCode("[@bs.module \"xyz\"]"));
+
+        assertEquals("@bs.module", annotation.getName());
     }
 }

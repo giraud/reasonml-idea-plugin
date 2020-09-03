@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.DumbAwareAction;
 
 class ClearLogAction extends DumbAwareAction {
-    private ConsoleView m_console;
+    private final ConsoleView m_console;
 
     ClearLogAction(ConsoleView console) {
         super("Clear All", "Clear the contents of the logs", AllIcons.Actions.GC);

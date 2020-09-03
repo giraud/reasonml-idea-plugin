@@ -13,9 +13,10 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.impl.PsiRecordFieldImpl;
 import com.reason.lang.core.stub.PsiRecordFieldStub;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 
-public class PsiRecordFieldStubElementType extends IStubElementType<PsiRecordFieldStub, PsiRecordField> {
+public class PsiRecordFieldStubElementType extends IStubElementType<PsiRecordFieldStub, PsiRecordField> implements ORCompositeType {
 
     public PsiRecordFieldStubElementType(@NotNull String name, @NotNull Language language) {
         super(name, language);

@@ -57,7 +57,7 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
         if (odk == null && !ApplicationManager.getApplication().isUnitTestMode()) {
             int result = Messages.showOkCancelDialog(
                     "Do you want to create a project with no SDK assigned?\\nAn SDK is required for compiling as well as for the standard SDK modules resolution and type inference.",
-                    IdeBundle.message("title.no.jdk.specified"), Messages.OK_BUTTON, Messages.CANCEL_BUTTON, Messages.getWarningIcon());
+                    IdeBundle.message("title.no.jdk.specified"), Messages.getOkButton(), Messages.getCancelButton(), Messages.getWarningIcon());
             return result == Messages.OK;
         }
         return true;

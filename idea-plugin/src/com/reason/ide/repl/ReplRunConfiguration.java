@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationBase;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
@@ -17,7 +16,7 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 
-public class ReplRunConfiguration extends RunConfigurationBase {
+public class ReplRunConfiguration extends RunConfigurationBase<ReplRunConfiguration> {
     @Nullable
     private Sdk m_sdk;
     private boolean m_cygwinEnabled = false;
@@ -37,7 +36,7 @@ public class ReplRunConfiguration extends RunConfigurationBase {
 
     @NotNull
     @Override
-    public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
+    public SettingsEditor<ReplRunConfiguration> getConfigurationEditor() {
         return new ReplRunSettingsEditor(getProject());
     }
 
@@ -54,8 +53,7 @@ public class ReplRunConfiguration extends RunConfigurationBase {
         return new ReplGenericState(executionEnvironment);
     }
 
-    @Nullable
-    Sdk getSdk() {
+    @Nullable Sdk getSdk() {
         return m_sdk;
     }
 
