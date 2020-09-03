@@ -160,7 +160,6 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                         LOG.debug("Created temporary file", tempFile);
 
                         // Compile temporary file
-
                         Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
                         if (bscPath.isPresent()) {
                             File cmtFile = new File(m_tempDirectory, nameWithoutExtension + ".cmt");
@@ -259,13 +258,12 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                                 if (exitCode == null) {
                                     LOG.debug("Something wrong happened during compilation, enable trace to see more details");
                                 }
-
-                                ReadAction.run(() -> {
+                                ApplicationManager.getApplication().invokeLater(() -> {
                                     PsiFile psiFile = PsiManager.getInstance(m_project).findFile(sourceFile);
-                                    if (LOG.isTraceEnabled()) {
-                                        LOG.trace("Restart daemon code analyzer for " + psiFile);
-                                    }
                                     if (psiFile != null) {
+                                        if (LOG.isTraceEnabled()) {
+                                            LOG.trace("Restart daemon code analyzer for " + psiFile);
+                                        }
                                         DaemonCodeAnalyzer.getInstance(m_project).restart(psiFile);
                                     }
                                 });

@@ -22,7 +22,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Compiler;
 import com.reason.CompilerProcess;
 import com.reason.ORNotification;
-import com.reason.Platform;
+import com.reason.bs.BsPlatform;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.sdk.OCamlSdkType;
@@ -106,9 +106,7 @@ public final class DuneProcess implements CompilerProcess {
             return null;
         }
 
-        FileSystem fileSystem = FileSystems.getDefault();
-
-        String duneBinary = fileSystem.getPath(odk.getHomePath(), "bin", "dune" + (Platform.isWindows() ? ".exe" : "")).toString();
+        String duneBinary = BsPlatform.findDuneExecutable(m_project).map(VirtualFile::getPath).orElse("");
         GeneralCommandLine cli;
         switch (cliType) {
             case CLEAN:
@@ -119,6 +117,7 @@ public final class DuneProcess implements CompilerProcess {
                 cli = new GeneralCommandLine(duneBinary, "build");
         }
 
+        FileSystem fileSystem = FileSystems.getDefault();
         String ocamlPath = fileSystem.getPath(odk.getHomePath(), "share") + File.pathSeparator + //
                 fileSystem.getPath(odk.getHomePath(), "sbin") + File.pathSeparator + //
                 fileSystem.getPath(odk.getHomePath(), "lib") + File.pathSeparator + //

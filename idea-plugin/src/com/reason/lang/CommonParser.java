@@ -1,6 +1,7 @@
 package com.reason.lang;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
@@ -9,7 +10,6 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ParserScope.mark;
 import static com.reason.lang.ParserScopeEnum.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
@@ -80,6 +80,10 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
             return scope.isCompositeEqualTo(((ORTypes) m_types).C_EXPR_MODULE);
         }
         return false;
+    }
+
+    protected boolean isFunctorResolution(@Nullable ParserScope scope) {
+        return scope != null && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
     }
 
     protected boolean isLetResolution(@NotNull ParserScope scope) {

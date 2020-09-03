@@ -43,7 +43,6 @@ public abstract class PsiModuleStubElementType extends IStubElementType<PsiModul
         String path = dataStream.readUTFFast();
         boolean isComponent = dataStream.readBoolean();
         boolean isInterface = dataStream.readBoolean();
-        assert moduleName != null;
 
         String alias = null;
         boolean isAlias = dataStream.readBoolean();

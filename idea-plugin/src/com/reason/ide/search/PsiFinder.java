@@ -368,9 +368,6 @@ public final class PsiFinder {
 
         ModuleTopLevelIndex index = ModuleTopLevelIndex.getInstance();
 
-        Collection<String> allKeys = index.getAllKeys(m_project);
-        System.out.println(allKeys);
-
         index.processAllKeys(m_project, name -> {
             Collection<PsiFakeModule> collection = index.get(name, m_project, scope);
             for (PsiFakeModule psiFakeModule : collection) {

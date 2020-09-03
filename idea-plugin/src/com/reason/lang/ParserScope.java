@@ -16,7 +16,6 @@ public class ParserScope {
     private ParserScopeEnum m_resolution;
     private ORCompositeType m_compositeElementType;
     private ORTokenElementType m_scopeTokenElementType;
-    private ParserScopeEnum m_context;
     private boolean m_isComplete = false;
     private boolean m_isDummy = false; // Always drop
     private boolean m_isScope = false;
@@ -24,12 +23,11 @@ public class ParserScope {
     @Nullable
     public PsiBuilder.Marker m_mark;
 
-    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum context, ParserScopeEnum resolution, ORCompositeType compositeElementType,
+    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum resolution, ORCompositeType compositeElementType,
                         ORTokenElementType scopeTokenElementType) {
         m_builder = builder;
         m_mark = builder.mark();
         m_offset = builder.getCurrentOffset();
-        m_context = context;
         m_resolution = resolution;
         m_compositeElementType = compositeElementType;
         m_scopeTokenElementType = scopeTokenElementType;
@@ -37,32 +35,20 @@ public class ParserScope {
 
     @NotNull
     public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull ORCompositeType compositeElementType) {
-        return new ParserScope(builder, resolution, resolution, compositeElementType, null);
+        return new ParserScope(builder, resolution, compositeElementType, null);
     }
 
     @NotNull
-    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution,
-                                   @NotNull ORCompositeType compositeElementType) {
-        return new ParserScope(builder, context, resolution, compositeElementType, null);
-    }
-
-    @NotNull
-    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum context, @NotNull ParserScopeEnum resolution,
+    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution,
                                         @NotNull ORCompositeType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
-        ParserScope parserScope = new ParserScope(builder, context, resolution, compositeElementType, scopeTokenElementType)/*.setIsStart(true)*/;
+        ParserScope parserScope = new ParserScope(builder, resolution, compositeElementType, scopeTokenElementType);
         parserScope.m_isScope = true;
         return parserScope;
     }
 
     @NotNull
-    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull ORCompositeType compositeElementType,
-                                        @NotNull ORTokenElementType scopeTokenElementType) {
-        return markScope(builder, resolution, resolution, compositeElementType, scopeTokenElementType);
-    }
-
-    @NotNull
     static ParserScope markRoot(@NotNull PsiBuilder builder) {
-        return new ParserScope(builder, ParserScopeEnum.file, ParserScopeEnum.file, null, null);
+        return new ParserScope(builder, ParserScopeEnum.file, null, null);
     }
 
     public boolean isEmpty() {
@@ -136,20 +122,6 @@ public class ParserScope {
     public ParserScope updateCompositeElementType(ORCompositeType compositeType) {
         m_compositeElementType = compositeType;
         return this;
-    }
-
-    public boolean isContext(ParserScopeEnum context) {
-        return m_context == context;
-    }
-
-    @NotNull
-    public ParserScope context(@NotNull ParserScopeEnum context) {
-        m_context = context;
-        return this;
-    }
-
-    public ParserScopeEnum getContext() {
-        return m_context;
     }
 
     public boolean isStart() {
