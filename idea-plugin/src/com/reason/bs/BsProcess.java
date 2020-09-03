@@ -1,5 +1,11 @@
 package com.reason.bs;
 
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import java.util.regex.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
@@ -11,21 +17,9 @@ import com.reason.CompilerProcess;
 import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.intellij.notification.NotificationType.ERROR;
-import static com.intellij.notification.NotificationType.WARNING;
-import static com.reason.bs.BsPlatform.findBsbExecutable;
-import static com.reason.bs.BsPlatform.findBscExecutable;
+import static com.intellij.notification.NotificationType.*;
+import static com.reason.bs.BsPlatform.*;
 
 public final class BsProcess implements CompilerProcess {
 
@@ -58,8 +52,7 @@ public final class BsProcess implements CompilerProcess {
         }
     }
 
-    private void create(@Nullable VirtualFile sourceFile, @NotNull CliType.Bs cliType,
-                        @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    private void create(@Nullable VirtualFile sourceFile, @NotNull CliType.Bs cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             if (sourceFile != null) {
                 createProcessHandler(sourceFile, cliType, onProcessTerminated);

@@ -50,6 +50,7 @@ public abstract class ORTypes {
     public ORCompositeType C_MIXIN_FIELD;
     public ORCompositeType C_ML_INTERPOLATOR;
     public ORCompositeType C_MODULE_PATH;
+    public ORCompositeType C_NAMED_PARAM;
     public ORCompositeType C_OBJECT;
     public ORCompositeType C_OBJECT_FIELD;
     public ORCompositeType C_OPTION;

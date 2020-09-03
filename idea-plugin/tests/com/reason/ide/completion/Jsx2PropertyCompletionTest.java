@@ -2,11 +2,11 @@ package com.reason.ide.completion;
 
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
-import com.intellij.testFramework.fixtures.BasePlatformTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 @SuppressWarnings("ConstantConditions")
-public class Jsx2PropertyCompletionTest extends BasePlatformTestCase {
+public class Jsx2PropertyCompletionTest extends ORBasePlatformTestCase {
 
     @NotNull
     @Override
@@ -15,7 +15,7 @@ public class Jsx2PropertyCompletionTest extends BasePlatformTestCase {
     }
 
     public void testShouldDisplayProperties() {
-        myFixture.configureByFiles("pervasives.ml", "component/Component.re", "component/CompMessage.re");
+        myFixture.configureByFiles("pervasives.ml", "component/Component.re", "component/CompMessage.res");
         myFixture.configureByText(RmlFileType.INSTANCE, "let _ = <Component <caret>>");
 
         myFixture.completeBasic();
@@ -26,7 +26,7 @@ public class Jsx2PropertyCompletionTest extends BasePlatformTestCase {
     }
 
     public void testShouldDisplayPropertiesAfterPropName() {
-        myFixture.configureByFiles("pervasives.ml", "component/Component.re", "component/CompMessage.re");
+        myFixture.configureByFiles("pervasives.ml", "component/Component.re", "component/CompMessage.res");
         myFixture.configureByText(RmlFileType.INSTANCE, "let _ = <Component d<caret> >");
 
         myFixture.completeBasic();

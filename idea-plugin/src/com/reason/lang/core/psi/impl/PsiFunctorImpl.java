@@ -242,7 +242,8 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
     @NotNull
     @Override
     public Collection<PsiConstraint> getConstraints() {
-        return ORUtil.findImmediateChildrenOfClass(ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class), PsiConstraint.class);
+        PsiConstraints constraints = ORUtil.findImmediateFirstChildOfClass(this, PsiConstraints.class);
+        return ORUtil.findImmediateChildrenOfClass(constraints, PsiConstraint.class);
     }
 
     public ItemPresentation getPresentation() {

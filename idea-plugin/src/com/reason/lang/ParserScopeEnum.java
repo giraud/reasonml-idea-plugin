@@ -44,8 +44,7 @@ public enum ParserScopeEnum {
     functionParameter,
     functionParameterNamed,
     functionParameterNamedSignature,
-    functionParameterNamedSignatureItem,
-    functionParameterNamedBinding,
+    functionParameterNamedSignatureItem, functionParameterBinding,
     functionBody,
     functionCall,
     functionCallParams,
@@ -57,8 +56,7 @@ public enum ParserScopeEnum {
     jsxTag,
     jsxStartTag,
     jsxTagProperty,
-    jsxTagPropertyEq,
-    jsxTagPropertyEqValue,
+    jsxTagPropertyEq, jsxTagPropertyValue,
     jsxTagBody,
     jsxTagClose,
 
@@ -95,14 +93,11 @@ public enum ParserScopeEnum {
     binaryCondition,
     ifThenStatement,
     match,
-    matchBinaryCondition,
     matchWith,
     switch_,
-    switchBinaryCondition,
     switchBody,
 
     try_,
-    tryScope,
 
     variant,
     variantConstructor,
@@ -147,7 +142,7 @@ public enum ParserScopeEnum {
     functorParamColonSignature,
     functorNamedColon,
     functorNamedEqColon,
-    functorNamedColonResult,
+    functorResult,
     functorConstraints,
     functorConstraint,
     functorBinding,
@@ -177,6 +172,7 @@ public enum ParserScopeEnum {
     valNamedSymbol, struct, matchException, beginScope, ifElseStatement, bracketGt, moduleDeclaration,
     moduleInstanciation, moduleNamedColonWith, moduleNamedWithType, letBinding, scope,
     moduleNamedSignatureEq, array, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, clazzBody, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
-    clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage, letNamedBindingFunction,
-    typeBinding, recordFieldAnnotation, option, optionParameter, name, unit, funPattern, variantDeclaration, jsObjectField, fieldNamed, constraints, constraint, localObjectOpen
+    clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage,
+    //letNamedBindingFunction,
+    typeBinding, recordFieldAnnotation, option, optionParameter, name, unit, funPattern, variantDeclaration, jsObjectField, fieldNamed, constraints, constraint, jsObjectBinding, namedItem, localObjectOpen
 }

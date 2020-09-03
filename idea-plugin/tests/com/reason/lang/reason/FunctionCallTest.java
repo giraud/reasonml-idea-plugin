@@ -3,7 +3,6 @@ package com.reason.lang.reason;
 import java.util.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
@@ -39,7 +38,6 @@ public class FunctionCallTest extends RmlParsingTestCase {
 
         PsiFunctionCallParams params = PsiTreeUtil.findChildOfType(e, PsiFunctionCallParams.class);
         assertSize(2, params.getParametersList());
-        assertEquals("()", ORUtil.findImmediateFirstChildOfType(new ArrayList<>(params.getParametersList()).get(1), RmlTypes.INSTANCE.C_UNIT).getText());
     }
 
     public void test_params() {

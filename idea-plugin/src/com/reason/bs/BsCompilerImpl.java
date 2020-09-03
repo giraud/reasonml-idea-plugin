@@ -24,7 +24,7 @@ import com.reason.hints.InsightManager;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
 import com.reason.ide.console.ORToolWindowProvider;
-import com.reason.ide.settings.ReasonSettings;
+import com.reason.ide.settings.ORSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.coverage.gnu.trove.THashMap;
@@ -85,12 +85,12 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
-        if (!isDisabled() && ReasonSettings.getInstance(m_project).isEnabled()) {
-            Optional<VirtualFile> bsconfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
-            if (!bsconfigFile.isPresent()) {
+        if (!isDisabled() && ORSettings.getInstance(m_project).isBsEnabled()) {
+            Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
+            if (!bsConfigFile.isPresent()) {
                 return;
             }
-            getOrRefreshBsConfig(bsconfigFile.get());
+            getOrRefreshBsConfig(bsConfigFile.get());
             BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
             if (process.start()) {
                 ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
@@ -154,7 +154,7 @@ public class BsCompilerImpl implements BsCompiler {
             return;
         }
 
-        if (ReasonSettings.getInstance(m_project).isEnabled()) {
+        if (ORSettings.getInstance(m_project).isBsEnabled()) {
             long before = document.getModificationStamp();
 
             RefmtProcess refmt = RefmtProcess.getInstance(m_project);

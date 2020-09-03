@@ -14,6 +14,7 @@ import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiObject;
 import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.type.ORTypes;

@@ -1,31 +1,25 @@
 package com.reason.lang.reason;
 
+import java.util.*;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiIfStatement;
 import com.reason.lang.core.psi.PsiScopedExpr;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class IfParsingTest extends BaseParsingTestCase {
-    public IfParsingTest() {
-        super("", "re", new RmlParserDefinition());
-    }
-
-    public void testBasicIfParsing() {
+public class IfParsingTest extends RmlParsingTestCase {
+    public void test_basicIfParsing() {
         PsiFile psiFile = parseCode("if (x) { (); }");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
         assertNotNull(e);
         assertNotNull(e.getBinaryCondition());
+        assertEquals("(x)", e.getBinaryCondition().getText());
         PsiScopedExpr ifScope = PsiTreeUtil.findChildOfType(e, PsiScopedExpr.class);
         assertNotNull(ifScope);
-        // zzz assertEquals("{ (); }", ifScope.getText());
+        assertEquals("{ (); }", ifScope.getText());
     }
 
-    public void testBasicIfElseNoBraceParsing() {
+    public void test_basicIfElseNoBraceParsing() {
         PsiFile psiFile = parseCode("let test = x => if (x) 1 else 2;");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
@@ -38,7 +32,7 @@ public class IfParsingTest extends BaseParsingTestCase {
         //assertEquals("2", scopes.get(1).getText());
     }
 
-    public void testBasicIfElseParsing() {
+    public void test_basicIfElseParsing() {
         PsiFile psiFile = parseCode("let test = x => if (x) { 1; } else { 2; };");
         PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 

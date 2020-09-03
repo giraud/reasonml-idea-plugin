@@ -1,18 +1,12 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiAssert;
 
-public class AssertParsingTest extends BaseParsingTestCase {
-    public AssertParsingTest() {
-        super("", "re", new RmlParserDefinition());
+public class AssertParsingTest extends RmlParsingTestCase {
+    public void test_basic() {
+        PsiAssert e = firstOfType(parseCode("assert (i < Array.length(t));"), PsiAssert.class);
+
+        assertNotNull(e);
+        assertEquals("(i < Array.length(t))", e.getAssertion().getText());
     }
-
-    public void testBasic() {
-        PsiAssert assertExp = firstOfType(parseCode("assert (i < Array.length(t));"), PsiAssert.class);
-
-        assertNotNull(assertExp);
-        assertNotNull(assertExp.getAssertion());
-    }
-
 }
