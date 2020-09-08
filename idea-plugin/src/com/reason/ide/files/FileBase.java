@@ -74,13 +74,13 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
     }
 
     @NotNull
-    public <T extends PsiNamedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+    public <T extends PsiQualifiedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
         List<T> result = new ArrayList<>();
 
         if (name != null) {
             Collection<T> children = PsiTreeUtil.findChildrenOfType(this, clazz);
             for (T child : children) {
-                if (name.equals(child.getName())) {
+                if (name.equals(child.getQualifiedName())) {
                     result.add(child);
                 }
             }
