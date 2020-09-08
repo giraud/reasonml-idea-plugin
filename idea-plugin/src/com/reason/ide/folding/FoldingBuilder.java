@@ -20,7 +20,7 @@ import com.reason.lang.core.psi.PsiTag;
 import com.reason.lang.core.psi.PsiTagClose;
 import com.reason.lang.core.psi.PsiTagStart;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
@@ -75,7 +75,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
     }
 
     private void foldType(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiType typeExpression) {
-        PsiElement constrName = PsiTreeUtil.findChildOfType(typeExpression, PsiTypeConstrName.class);
+        PsiElement constrName = ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerIdentifier.class);
         if (constrName != null) {
             ORTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
             PsiElement eqElement = ORUtil.nextSiblingWithTokenType(constrName, types.EQ);

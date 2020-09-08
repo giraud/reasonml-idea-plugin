@@ -4,7 +4,7 @@ public abstract class ORTypes {
     // Stubbed expressions
 
     public ORCompositeType C_EXCEPTION_DECLARATION;
-    public ORCompositeType C_EXPR_TYPE;
+    public ORCompositeType C_TYPE_DECLARATION;
     public ORCompositeType C_EXPR_EXTERNAL;
     public ORCompositeType C_EXPR_LET;
     public ORCompositeType C_MODULE_DECLARATION;
@@ -86,7 +86,6 @@ public abstract class ORTypes {
     public ORCompositeType C_TRY_BODY;
     public ORCompositeType C_TRY_HANDLERS;
     public ORCompositeType C_TRY_HANDLER;
-    public ORCompositeType C_TYPE_CONSTR_NAME;
     public ORCompositeType C_TYPE_BINDING;
     public ORCompositeType C_UPPER_SYMBOL;
     public ORCompositeType C_LOWER_SYMBOL;

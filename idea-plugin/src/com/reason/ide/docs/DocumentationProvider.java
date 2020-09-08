@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -27,10 +26,11 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
@@ -71,11 +71,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (!text.isEmpty()) {
                 return DocFormatter.format(element.getContainingFile(), element, text);
             }
-        } else if (element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol) {
+        } else if (element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier) {
             element = element.getParent();
-            if (element instanceof PsiTypeConstrName) {
-                element = element.getParent();
-            }
 
             // If it's an alias, resolve to the alias
             if (element instanceof PsiLet) {
@@ -167,12 +164,15 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 return relative_path + "<br/>" + resolvedElement.getContainingFile();
             }
 
-            if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
+            //if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
+            //    resolvedElement = resolvedElement.getParent();
+            //}
+            if (resolvedElement instanceof PsiLowerIdentifier || resolvedElement instanceof PsiUpperIdentifier) {
                 resolvedElement = resolvedElement.getParent();
             }
 
-            if (resolvedElement instanceof PsiTypeConstrName) {
-                PsiType type = (PsiType) resolvedElement.getParent();
+            if (resolvedElement instanceof PsiType) {
+                PsiType type = (PsiType) resolvedElement;
                 String path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
                 return createQuickDocTemplate(path, "type", resolvedElement.getText(), typeBinding);
@@ -192,16 +192,17 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             }
 
             // No signature found, but resolved
-            if (resolvedElement instanceof PsiNameIdentifierOwner) {
+            if (resolvedElement instanceof PsiQualifiedElement) {
                 String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                String desc = ((PsiNameIdentifierOwner) resolvedElement).getName();
-                String path = ORUtil.getQualifiedPath((PsiNameIdentifierOwner) resolvedElement);
+                String desc = ((PsiQualifiedElement) resolvedElement).getName();
+                String path = ORUtil.getQualifiedPath((PsiQualifiedElement) resolvedElement);
 
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
-                    PsiElement nameIdentifier = ((PsiNameIdentifierOwner) resolvedElement).getNameIdentifier();
-                    inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(),
-                                                        resolvedElement.getLanguage());
+                    // zzz
+                    //PsiElement nameIdentifier = ((PsiQualifiedElement) resolvedElement).getNameIdentifier();
+                    //inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(),
+                    //                                    resolvedElement.getLanguage());
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);

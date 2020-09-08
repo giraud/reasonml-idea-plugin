@@ -25,7 +25,7 @@ public class NsTypes extends ORTypes {
         // Stubbed expressions
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", NsLanguage.INSTANCE);
-        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXPR_TYPE", NsLanguage.INSTANCE);
+        C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", NsLanguage.INSTANCE);
         C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", NsLanguage.INSTANCE);
         C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", NsLanguage.INSTANCE);
         C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", NsLanguage.INSTANCE);
@@ -105,7 +105,6 @@ public class NsTypes extends ORTypes {
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", NsLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", NsLanguage.INSTANCE);
-        C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", NsLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", NsLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", NsLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", NsLanguage.INSTANCE);

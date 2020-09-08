@@ -13,6 +13,7 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 
 import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
 
@@ -141,7 +142,9 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
         assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
     }
 
     public void test_GH_116() {

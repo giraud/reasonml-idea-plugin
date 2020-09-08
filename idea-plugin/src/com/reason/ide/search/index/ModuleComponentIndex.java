@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.PsiModule;
 
 public class ModuleComponentIndex extends StringStubIndexExtension<PsiModule> {
 
-    private static final int VERSION = 6;
+    private static final int VERSION = 7;
     private static final ModuleComponentIndex INSTANCE = new ModuleComponentIndex();
 
     @NotNull

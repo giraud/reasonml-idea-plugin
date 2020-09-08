@@ -10,8 +10,6 @@ import com.reason.lang.core.stub.PsiTypeStub;
 
 public interface PsiType extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
 
-    @Nullable PsiTypeConstrName getConstrName();
-
     @Nullable PsiElement getBinding();
 
     @NotNull Collection<PsiVariantDeclaration> getVariants();

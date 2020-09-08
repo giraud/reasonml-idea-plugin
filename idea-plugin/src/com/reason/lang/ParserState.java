@@ -75,7 +75,7 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+    public ParserScope popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!m_composites.isEmpty()) {
@@ -101,6 +101,15 @@ public class ParserState {
     public boolean in(ORCompositeType composite) {
         for (ParserScope scope : m_composites) {
             if (scope.isCompositeEqualTo(composite)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean inAny(ORCompositeType... composite) {
+        for (ParserScope scope : m_composites) {
+            if (scope.isCompositeIn(composite)) {
                 return true;
             }
         }

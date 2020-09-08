@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.lang.core.psi.PsiRecordField;
 
 public class RecordFieldIndex extends StringStubIndexExtension<PsiRecordField> {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     @Override
     public int getVersion() {

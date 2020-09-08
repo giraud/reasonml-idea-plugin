@@ -15,6 +15,7 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.Log;
+import com.reason.Platform;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
@@ -76,8 +77,9 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
                     String source = referencedElement instanceof FileBase ? ((FileBase) referencedElement).shortLocation(referencedElement.getProject()) :
                             referencedElement.getClass().getName();
-                    LOG.debug(" => " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + referencedElement
-                            .getContainingFile() + " [" + source + "]");
+                    LOG.debug(" => " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + Platform
+                            .removeProjectDir(referencedElement.getProject(), referencedElement.getContainingFile().getVirtualFile().getPath()) + " [" + source
+                                      + "]");
                 }
 
                 // A fake module resolve to its file
@@ -96,10 +98,26 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     @Override
     public PsiElement resolve() {
         ResolveResult[] resolveResults = multiResolve(false);
-        if (resolveResults.length > 1) {
-            LOG.debug("Can't resolve element because too many results", resolveResults);
+        if (resolveResults.length > 0) {
+            if (resolveResults.length == 1) {
+                return resolveResults[0].getElement();
+            }
+
+            // return implementation if one exist
+            for (ResolveResult resolved : resolveResults) {
+                PsiElement element = resolved.getElement();
+                if (element != null) {
+                    FileBase file = (FileBase) element.getContainingFile();
+                    if (!file.isInterface()) {
+                        return element;
+                    }
+                }
+            }
+
+            LOG.debug("Multiple results with no implementation !!", resolveResults);
         }
-        return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+
+        return null;
     }
 
     @Override

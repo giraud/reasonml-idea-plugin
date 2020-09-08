@@ -1,12 +1,82 @@
 package com.reason.lang.core;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.PsiAssert;
+import com.reason.lang.core.psi.PsiBinaryCondition;
+import com.reason.lang.core.psi.PsiClassConstructor;
+import com.reason.lang.core.psi.PsiClassField;
+import com.reason.lang.core.psi.PsiClassMethod;
+import com.reason.lang.core.psi.PsiClassParameters;
+import com.reason.lang.core.psi.PsiConstraint;
+import com.reason.lang.core.psi.PsiConstraints;
+import com.reason.lang.core.psi.PsiDeconstruction;
+import com.reason.lang.core.psi.PsiDirective;
+import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.PsiFunctionBody;
+import com.reason.lang.core.psi.PsiFunctorBinding;
+import com.reason.lang.core.psi.PsiFunctorCall;
+import com.reason.lang.core.psi.PsiFunctorResult;
+import com.reason.lang.core.psi.PsiIfStatement;
+import com.reason.lang.core.psi.PsiInterpolation;
+import com.reason.lang.core.psi.PsiInterpolationReference;
+import com.reason.lang.core.psi.PsiJsObject;
+import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.PsiLocalOpen;
+import com.reason.lang.core.psi.PsiMacro;
+import com.reason.lang.core.psi.PsiMacroName;
+import com.reason.lang.core.psi.PsiMixinField;
+import com.reason.lang.core.psi.PsiModulePath;
+import com.reason.lang.core.psi.PsiMultiLineInterpolator;
+import com.reason.lang.core.psi.PsiObject;
+import com.reason.lang.core.psi.PsiObjectField;
+import com.reason.lang.core.psi.PsiOption;
+import com.reason.lang.core.psi.PsiPatternMatch;
+import com.reason.lang.core.psi.PsiPatternMatchBody;
+import com.reason.lang.core.psi.PsiRaw;
+import com.reason.lang.core.psi.PsiRawBody;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.PsiStruct;
+import com.reason.lang.core.psi.PsiTag;
+import com.reason.lang.core.psi.PsiTagBody;
+import com.reason.lang.core.psi.PsiTagClose;
+import com.reason.lang.core.psi.PsiTry;
+import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.PsiUnit;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.PsiWhile;
+import com.reason.lang.core.psi.impl.PsiAnnotationImpl;
+import com.reason.lang.core.psi.impl.PsiClassImpl;
+import com.reason.lang.core.psi.impl.PsiExceptionImpl;
+import com.reason.lang.core.psi.impl.PsiExternalImpl;
+import com.reason.lang.core.psi.impl.PsiFunctionCallParamsImpl;
+import com.reason.lang.core.psi.impl.PsiFunctionImpl;
+import com.reason.lang.core.psi.impl.PsiFunctorImpl;
+import com.reason.lang.core.psi.impl.PsiIncludeImpl;
+import com.reason.lang.core.psi.impl.PsiInnerModuleImpl;
+import com.reason.lang.core.psi.impl.PsiLetAttribute;
+import com.reason.lang.core.psi.impl.PsiLetImpl;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiLowerSymbolImpl;
+import com.reason.lang.core.psi.impl.PsiOpenImpl;
+import com.reason.lang.core.psi.impl.PsiParameterImpl;
+import com.reason.lang.core.psi.impl.PsiParametersImpl;
+import com.reason.lang.core.psi.impl.PsiRecordFieldImpl;
+import com.reason.lang.core.psi.impl.PsiSignatureImpl;
+import com.reason.lang.core.psi.impl.PsiSignatureItemImpl;
+import com.reason.lang.core.psi.impl.PsiSwitchImpl;
+import com.reason.lang.core.psi.impl.PsiTagPropertyImpl;
+import com.reason.lang.core.psi.impl.PsiTagPropertyValueImpl;
+import com.reason.lang.core.psi.impl.PsiTagStartImpl;
+import com.reason.lang.core.psi.impl.PsiToken;
+import com.reason.lang.core.psi.impl.PsiTypeImpl;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
+import com.reason.lang.core.psi.impl.PsiUpperSymbolImpl;
+import com.reason.lang.core.psi.impl.PsiValImpl;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
 
 public class PsiElementFactory {
     private PsiElementFactory() {
@@ -24,7 +94,7 @@ public class PsiElementFactory {
             return new PsiOpenImpl(types, node);
         } else if (type == types.C_INCLUDE) {
             return new PsiIncludeImpl(types, node);
-        } else if (type == types.C_EXPR_TYPE) {
+        } else if (type == types.C_TYPE_DECLARATION) {
             return new PsiTypeImpl(types, node);
         } else if (type == types.C_ASSERT_STMT) {
             return new PsiAssert(node);
@@ -32,8 +102,6 @@ public class PsiElementFactory {
             return new PsiIfStatement(node);
         } else if (type == types.C_BIN_CONDITION || type == types.C_WHILE_CONDITION) {
             return new PsiBinaryCondition(node);
-        } else if (type == types.C_TYPE_CONSTR_NAME) {
-            return new PsiTypeConstrName(node);
         } else if (type == types.C_TYPE_BINDING) {
             return new PsiTypeBinding(node);
         } else if (type == types.C_MODULE_DECLARATION) {
