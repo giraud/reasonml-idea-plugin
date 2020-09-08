@@ -14,14 +14,14 @@ public class RmlTypes extends ORTypes {
 
         // Stubbed element types
 
-        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", RmlLanguage.INSTANCE);
+        C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", RmlLanguage.INSTANCE);
         C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", RmlLanguage.INSTANCE);
         C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXTERNAL_STMT", RmlLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", RmlLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", RmlLanguage.INSTANCE);
         C_EXPR_LET = new PsiLetStubElementType("C_LET_STMT", RmlLanguage.INSTANCE);
-        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_MODULE_STMT", RmlLanguage.INSTANCE);
+        C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", RmlLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", RmlLanguage.INSTANCE);
         C_EXPR_VAL = new PsiValStubElementType("C_VAL_EXPR", RmlLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
@@ -42,6 +42,8 @@ public class RmlTypes extends ORTypes {
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", RmlLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", RmlLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
+        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", RmlLanguage.INSTANCE);
+        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", RmlLanguage.INSTANCE);

@@ -245,7 +245,7 @@ public class NsParser extends CommonParser<NsTypes> {
                 } else if (isLetResolution(latestScope)) {
                     state.markStart(let, m_types.C_EXPR_LET);
                 } else if (isModuleResolution(latestScope)) {
-                    state.markStart(module, m_types.C_EXPR_MODULE);
+                    state.markStart(module, m_types.C_MODULE_DECLARATION);
                 }
             }
         }
@@ -308,15 +308,18 @@ public class NsParser extends CommonParser<NsTypes> {
         }
 
         if (state.isCurrentResolution(typeBinding)) {
-            // type x = |> | <| ...
-            state.mark(variantDeclaration, m_types.C_VARIANT_DECL);
+            // type x = |>|<| ...
+            state.advance().
+                    mark(variantDeclaration, m_types.C_VARIANT_DECL);
         } else if (state.isCurrentResolution(switchBody)) {
-            // switch x { |> | <| ... }
-            state.mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
+            // switch x { |>|<| ... }
+            state.advance().
+                    mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
         } else if (state.isCurrentResolution(tryBodyWith)) {
             // Start of a try handler
             //   try (...) { |>|<| ... }
-            state.mark(tryBodyWithHandler, m_types.C_TRY_HANDLER);
+            state.advance().
+                    mark(tryBodyWithHandler, m_types.C_TRY_HANDLER);
         }
     }
 
@@ -346,13 +349,13 @@ public class NsParser extends CommonParser<NsTypes> {
     private void parseModule(@NotNull ParserState state) {
         if (!state.isCurrentResolution(annotationName)) {
             endLikeSemi(state);
-            state.markStart(module, m_types.C_EXPR_MODULE);
+            state.markStart(module, m_types.C_MODULE_DECLARATION);
         }
     }
 
     private void parseException(@NotNull ParserState state) {
         endLikeSemi(state);
-        state.markStart(exception, m_types.C_EXPR_EXCEPTION);
+        state.markStart(exception, m_types.C_EXCEPTION_DECLARATION);
     }
 
     private void parseType(@NotNull ParserState state) {
@@ -510,44 +513,49 @@ public class NsParser extends CommonParser<NsTypes> {
             }
         }
 
-        if (state.isCurrentResolution(type)) {
-            // type |>x<| ...
-            state.updateCurrentResolution(typeNamed).
-                    mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME);
-        } else if (state.isCurrentResolution(external)) {
+        if (state.isCurrentResolution(external)) {
             // external |>x<| ...
-            state.updateCurrentResolution(externalNamed);
+            state.updateCurrentResolution(externalNamed).
+                    wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else if (state.isCurrentResolution(let)) {
             // let |>x<| ...
-            state.updateCurrentResolution(letNamed);
-        } else if (state.isCurrentResolution(jsxStartTag)) {
-            // This is a property
-            state.remapCurrentToken(m_types.PROPERTY_NAME).
-                    mark(jsxTagProperty, m_types.C_TAG_PROPERTY).
-                    setWhitespaceSkippedCallback((type, start, end) -> {
-                        if (state.isCurrentResolution(jsxTagProperty) || (state.isCurrentResolution(jsxTagPropertyValue) && state.notInScopeExpression())) {
-                            if (state.isCurrentResolution(jsxTagPropertyValue)) {
-                                state.popEnd();
-                            }
-                            state.popEnd();
-                            state.setWhitespaceSkippedCallback(null);
-                        }
-                    });
-        } else if (state.isCurrentResolution(recordBinding)) {
-            state.mark(recordField, m_types.C_RECORD_FIELD);
+            state.updateCurrentResolution(letNamed).
+                    wrapWith(m_types.C_LOWER_IDENTIFIER);
+        } else if (state.isCurrentResolution(type)) {
+            // type |>x<| ...
+            state.updateCurrentResolution(typeNamed).
+                    mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME).
+                    wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else {
-            IElementType nextElementType = state.lookAhead(1);
-            if (!state.isCurrentResolution(signatureItem) && nextElementType == m_types.ARROW) {
-                // Single (paren less) function parameters
-                // |>x<| => ...
-                state.mark(function, m_types.C_FUN_EXPR).
-                        mark(functionParameters, m_types.C_FUN_PARAMS).
-                        mark(functionParameter, m_types.C_FUN_PARAM);
+            if (state.isCurrentResolution(jsxStartTag)) {
+                // This is a property
+                state.remapCurrentToken(m_types.PROPERTY_NAME).
+                        mark(jsxTagProperty, m_types.C_TAG_PROPERTY).
+                        setWhitespaceSkippedCallback((type, start, end) -> {
+                            if (state.isCurrentResolution(jsxTagProperty) || (state.isCurrentResolution(jsxTagPropertyValue) && state.notInScopeExpression())) {
+                                if (state.isCurrentResolution(jsxTagPropertyValue)) {
+                                    state.popEnd();
+                                }
+                                state.popEnd();
+                                state.setWhitespaceSkippedCallback(null);
+                            }
+                        });
+            } else if (state.isCurrentResolution(recordBinding)) {
+                state.mark(recordField, m_types.C_RECORD_FIELD);
+            } else {
+                IElementType nextElementType = state.lookAhead(1);
+                if (!state.isCurrentResolution(signatureItem) && nextElementType == m_types.ARROW) {
+                    // Single (paren less) function parameters
+                    // |>x<| => ...
+                    state.mark(function, m_types.C_FUN_EXPR).
+                            mark(functionParameters, m_types.C_FUN_PARAMS).
+                            mark(functionParameter, m_types.C_FUN_PARAM);
+                }
             }
-        }
 
-        if (!state.isCurrentResolution(jsxTagProperty)) {
-            state.wrapWith(m_types.C_LOWER_SYMBOL);
+            if (!state.isCurrentResolution(jsxTagProperty)) {
+                state.wrapWith(m_types.C_LOWER_SYMBOL);
+            }
         }
     }
 
@@ -663,10 +671,11 @@ public class NsParser extends CommonParser<NsTypes> {
         } else if (state.isCurrentResolution(macroRawNamed)) {
             state.popEnd().
                     markScope(rawBody, m_types.C_MACRO_RAW_BODY, m_types.LPAREN);
-        } else if (state.isCurrentResolution(moduleNamedEq) && state.previousElementType1 != m_types.UIDENT) {
+        } else if (state.isCurrentResolution(moduleBinding) && state.previousElementType1 != m_types.UIDENT) {
             // This is a functor
             //  module M = |>(<| ... )
-            state.updateCurrentResolution(functorNamedEq).
+            state.popCancel(). // remove previous module binding
+                    updateCurrentResolution(functorNamedEq).
                     updateCurrentCompositeElementType(m_types.C_FUNCTOR).
                     markScope(functorParams, m_types.C_FUNCTOR_PARAMS, m_types.LPAREN).
                     advance().
@@ -768,8 +777,10 @@ public class NsParser extends CommonParser<NsTypes> {
             state.updateCurrentResolution(letNamedEq).
                     advance().
                     mark(letBinding, m_types.C_LET_BINDING);
-        } else if (state.isCurrentResolution(moduleNamed)) {
-            state.updateCurrentResolution(moduleNamedEq);
+        } else if (state.isCurrentResolution(module)) {
+            // module M |> = <| ...
+            state.advance().
+                    markDummy(moduleBinding, m_types.C_UNKNOWN_EXPR/*C_DUMMY*/);
         } else if (state.isCurrentResolution(jsxTagProperty)) {
             state.updateCurrentResolution(jsxTagPropertyEq).
                     advance().
@@ -786,6 +797,16 @@ public class NsParser extends CommonParser<NsTypes> {
         if (DUMMY_IDENTIFIER_TRIMMED.equals(state.getTokenText())) {
             return;
         }
+        if (state.is(m_types.C_MODULE_DECLARATION)) {
+            // module |>M<| ...
+            state.wrapWith(m_types.C_UPPER_IDENTIFIER);
+            return;
+        }
+        if (state.is(m_types.C_EXCEPTION_DECLARATION)) {
+            // exception |>E<| ...
+            state.wrapWith(m_types.C_UPPER_IDENTIFIER);
+            return;
+        }
 
         if (state.isCurrentResolution(open)) {
             // It is a module name/path, or maybe a functor call
@@ -795,10 +816,7 @@ public class NsParser extends CommonParser<NsTypes> {
             // It is a module name/path, or maybe a functor call
             // include |>M<| ...
             state.markOptional(maybeFunctorCall, m_types.C_FUNCTOR_CALL);
-        } else if (state.isCurrentResolution(module)) {
-            // module |>M<| ...
-            state.updateCurrentResolution(moduleNamed);
-        } else if (state.isCurrentResolution(moduleNamedEq)) {
+        } else if (state.isCurrentResolution(moduleBinding)) {
             // it might be a module functor call
             // module M = |>X<| ( ... )
             state.markOptional(maybeFunctorCall, m_types.C_FUNCTOR_CALL);
@@ -808,7 +826,7 @@ public class NsParser extends CommonParser<NsTypes> {
         } else if (state.isCurrentResolution(variantDeclaration)) {
             // Declaring a variant
             // type t = | |>X<| ..
-            state.remapCurrentToken(m_types.VARIANT_NAME).wrapWith(m_types.C_VARIANT);
+            state.wrapWith(m_types.C_UPPER_IDENTIFIER);
             return;
         } else if (state.isCurrentResolution(patternMatch)) {
             IElementType nextElementType = state.lookAhead(1);
@@ -830,7 +848,7 @@ public class NsParser extends CommonParser<NsTypes> {
                 // type t = |>X<| (...) | ...
                 state.remapCurrentToken(m_types.VARIANT_NAME).
                         mark(variantDeclaration, m_types.C_VARIANT_DECL).
-                        wrapWith(m_types.C_VARIANT);
+                        wrapWith(m_types.C_UPPER_IDENTIFIER);
                 return;
             } else if (!state.isCurrentResolution(moduleNamedEq) && !state.isCurrentResolution(maybeFunctorCall)) {
                 if (nextElementType == m_types.LPAREN) {

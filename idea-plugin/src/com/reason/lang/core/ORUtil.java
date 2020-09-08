@@ -243,8 +243,8 @@ public class ORUtil {
     }
 
     @Nullable
-    public static <T extends PsiElement> T findImmediateFirstChildOfClass(@NotNull PsiElement element, @NotNull Class<T> clazz) {
-        PsiElement child = element.getFirstChild();
+    public static <T extends PsiElement> T findImmediateFirstChildOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz) {
+        PsiElement child = element == null ? null : element.getFirstChild();
 
         while (child != null) {
             if (clazz.isInstance(child)) {
@@ -287,7 +287,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getQualifiedPath(@NotNull PsiNameIdentifierOwner element) {
+    public static String getQualifiedPath(@NotNull PsiNamedElement element) {
         String path = "";
 
         PsiElement parent = element.getParent();
@@ -317,7 +317,7 @@ public class ORUtil {
     }
 
     @NotNull
-    public static String getQualifiedName(@NotNull PsiNameIdentifierOwner element) {
+    public static String getQualifiedName(@NotNull PsiNamedElement element) {
         String name = element.getName();
         String qualifiedPath = getQualifiedPath(element);
         return name == null ? qualifiedPath + ".UNKNOWN" : qualifiedPath + "." + name;

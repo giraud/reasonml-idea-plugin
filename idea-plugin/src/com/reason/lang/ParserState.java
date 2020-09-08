@@ -149,6 +149,11 @@ public class ParserState {
         return this;
     }
 
+    public ParserState markDummy(ParserScopeEnum resolution, ORCompositeType compositeElementType) {
+        add(ParserScope.mark(m_builder, resolution, compositeElementType).dummy());
+        return this;
+    }
+
     public ParserState mark(ParserScopeEnum resolution, ORCompositeType compositeType) {
         add(ParserScope.mark(m_builder, resolution, compositeType));
         m_currentScope.complete();
@@ -192,11 +197,12 @@ public class ParserState {
         return this;
     }
 
-    public void popCancel() {
+    public ParserState popCancel() {
         ParserScope scope = pop();
         if (scope != null) {
             scope.drop();
         }
+        return this;
     }
 
     @Nullable

@@ -11,7 +11,7 @@ public class TryWithTest extends NsParsingTestCase {
         assertNotNull(e.getBody());
         assertEquals("x", e.getBody().getText());
         assertSize(1, e.getHandlers());
-        assertEquals("| Not_found => ()", e.getHandlers().iterator().next().getText());
+        assertEquals("Not_found => ()", e.getHandlers().iterator().next().getText());
     }
 /*
     public void testTryLet() {

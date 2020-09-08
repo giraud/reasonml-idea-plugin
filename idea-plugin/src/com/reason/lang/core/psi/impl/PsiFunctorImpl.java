@@ -8,6 +8,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
@@ -59,7 +60,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
     }
 
     @Nullable
@@ -122,8 +123,8 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
-        Collection<PsiNameIdentifierOwner> result = emptyList();
+    public Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
+        Collection<PsiNamedElement> result = emptyList();
 
         PsiElement returnType = getReturnType();
         if (returnType instanceof PsiFunctorResult) {
@@ -157,9 +158,9 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
                 result = new ArrayList<>();
                 PsiElement element = body.getFirstChild();
                 while (element != null) {
-                    if (element instanceof PsiNameIdentifierOwner) {
-                        if (filter == null || filter.accept((PsiNameIdentifierOwner) element)) {
-                            result.add((PsiNameIdentifierOwner) element);
+                    if (element instanceof PsiNamedElement) {
+                        if (filter == null || filter.accept((PsiNamedElement) element)) {
+                            result.add((PsiNamedElement) element);
                         }
                     }
                     element = element.getNextSibling();
@@ -187,7 +188,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
     public PsiType getTypeExpression(@Nullable String name) {
         if (name != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiType && name.equals(element.getName());
-            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiType) expressions.iterator().next();
             }
@@ -200,7 +201,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
     public PsiLet getLetExpression(@Nullable String name) {
         if (name != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
-            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiLet) expressions.iterator().next();
             }
@@ -213,7 +214,7 @@ public class PsiFunctorImpl extends PsiTokenStub<ORTypes, PsiModuleStub> impleme
     public PsiVal getValExpression(@Nullable String name) {
         if (name != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiVal && name.equals(element.getName());
-            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiVal) expressions.iterator().next();
             }

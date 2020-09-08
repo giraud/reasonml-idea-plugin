@@ -7,7 +7,7 @@ import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 
-public interface PsiClass extends PsiNameIdentifierOwner, PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement {
+public interface PsiClass extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement {
     @Nullable
     PsiElement getClassBody();
 

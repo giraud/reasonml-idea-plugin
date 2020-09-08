@@ -19,39 +19,6 @@ public class PsiLowerSymbolImpl extends PsiToken<ORTypes> implements PsiLowerSym
     }
     //endregion
 
-    //region NamedElement
-    @Override
-    public String getName() {
-        PsiElement nameElement = getNameIdentifier();
-        return nameElement == null ? "" : nameElement.getText();
-    }
-
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        return this;
-    }
-
-    @NotNull
-    @Override
-    public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORCodeFactory.createLetName(getProject(), newName);
-
-        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
-        if (newNameNode != null) {
-            PsiElement nameIdentifier = getFirstChild();
-            if (nameIdentifier == null) {
-                getNode().addChild(newNameNode);
-            } else {
-                ASTNode oldNameNode = nameIdentifier.getNode();
-                getNode().replaceChild(oldNameNode, newNameNode);
-            }
-        }
-
-        return this;
-    }
-    //endregion
-
     @Override
     public PsiReference getReference() {
         return new PsiLowerSymbolReference(this, m_types);
@@ -60,6 +27,6 @@ public class PsiLowerSymbolImpl extends PsiToken<ORTypes> implements PsiLowerSym
     @Nullable
     @Override
     public String toString() {
-        return "LSymbol " + getName();
+        return "LSymbol";
     }
 }

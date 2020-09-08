@@ -24,11 +24,11 @@ public class OclTypes extends ORTypes {
 
         // Stubbed element types
 
-        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXPR_EXCEPTION", OclLanguage.INSTANCE);
+        C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", OclLanguage.INSTANCE);
         C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
         C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", OclLanguage.INSTANCE);
         C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", OclLanguage.INSTANCE);
-        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_EXPR_MODULE", OclLanguage.INSTANCE);
+        C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", OclLanguage.INSTANCE);
         C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", OclLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", OclLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", OclLanguage.INSTANCE);
@@ -50,6 +50,8 @@ public class OclTypes extends ORTypes {
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", OclLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", OclLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
+        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", OclLanguage.INSTANCE);
+        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", OclLanguage.INSTANCE);
         C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", OclLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", OclLanguage.INSTANCE);

@@ -10,7 +10,6 @@ import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.stub.PsiExceptionStub;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
@@ -29,21 +28,15 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiExceptionStub> im
 
     @Nullable
     @Override
-    public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiUpperSymbol.class);
-    }
-
-    @Nullable
-    @Override
     public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
+        PsiElement nameIdentifier = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
         return nameIdentifier == null ? null : nameIdentifier.getText();
     }
 
     @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this;
+        throw new IncorrectOperationException("Not implemented");
     }
 
     @NotNull

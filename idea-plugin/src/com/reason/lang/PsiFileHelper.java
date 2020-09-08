@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.search.PsiFinder;
@@ -14,6 +14,7 @@ import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiClass;
 import com.reason.lang.core.psi.PsiDirective;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInnerModule;
@@ -31,9 +32,8 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNameIdentifierOwner> getExpressions(@Nullable PsiFile file, @NotNull ExpressionScope eScope,
-                                                                    @Nullable ExpressionFilter filter) {
-        ArrayList<PsiNameIdentifierOwner> result = new ArrayList<>();
+    public static Collection<PsiNamedElement> getExpressions(@Nullable PsiFile file, @NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
+        ArrayList<PsiNamedElement> result = new ArrayList<>();
 
         if (file != null) {
             PsiFinder psiFinder = PsiFinder.getInstance(file.getProject());
@@ -45,8 +45,7 @@ public class PsiFileHelper {
     }
 
     private static void processSiblingExpressions(@Nullable PsiFinder psiFinder, @NotNull QNameFinder qnameFinder, @Nullable PsiElement element,
-                                                  @NotNull ExpressionScope eScope, @NotNull List<PsiNameIdentifierOwner> result,
-                                                  @Nullable ExpressionFilter filter) {
+                                                  @NotNull ExpressionScope eScope, @NotNull List<PsiNamedElement> result, @Nullable ExpressionFilter filter) {
         while (element != null) {
             if (element instanceof PsiInclude && psiFinder != null) {
                 // Recursively include everything from referenced module
@@ -71,7 +70,7 @@ public class PsiFileHelper {
                 }
 
                 if (includedModule != null) {
-                    Collection<PsiNameIdentifierOwner> expressions = includedModule.getExpressions(eScope, filter);
+                    Collection<PsiNamedElement> expressions = includedModule.getExpressions(eScope, filter);
                     result.addAll(expressions);
                 }
             }
@@ -79,10 +78,10 @@ public class PsiFileHelper {
             if (element instanceof PsiDirective) {
                 // add all elements found in a directive, can't be resolved
                 processSiblingExpressions(psiFinder, qnameFinder, element.getFirstChild(), eScope, result, filter);
-            } else if (element instanceof PsiNameIdentifierOwner) {
+            } else if (element instanceof PsiNamedElement) {
                 boolean include = eScope == ExpressionScope.all || !(element instanceof PsiLet && ((PsiLet) element).isPrivate());
-                if (include && (filter == null || filter.accept((PsiNameIdentifierOwner) element))) {
-                    result.add((PsiNameIdentifierOwner) element);
+                if (include && (!(element instanceof PsiFakeModule)) && (filter == null || filter.accept((PsiNamedElement) element))) {
+                    result.add((PsiNamedElement) element);
                 }
             }
 
@@ -91,14 +90,14 @@ public class PsiFileHelper {
     }
 
     @NotNull
-    public static Collection<PsiNameIdentifierOwner> getExpressions(@NotNull PsiFile file, @Nullable String name) {
-        Collection<PsiNameIdentifierOwner> result = new ArrayList<>();
+    public static Collection<PsiNamedElement> getExpressions(@NotNull PsiFile file, @Nullable String name) {
+        Collection<PsiNamedElement> result = new ArrayList<>();
 
         if (name != null) {
             PsiElement element = file.getFirstChild();
             while (element != null) {
-                if (element instanceof PsiNameIdentifierOwner && name.equals(((PsiNameIdentifierOwner) element).getName())) {
-                    result.add((PsiNameIdentifierOwner) element);
+                if (element instanceof PsiNamedElement && name.equals(((PsiNamedElement) element).getName())) {
+                    result.add((PsiNamedElement) element);
                 }
                 element = element.getNextSibling();
             }

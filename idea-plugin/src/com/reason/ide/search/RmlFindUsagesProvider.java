@@ -9,9 +9,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.reason.RmlLexer;
 import com.reason.lang.reason.RmlTypes;
 
@@ -20,13 +21,15 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @Override
     public WordsScanner getWordsScanner() {
         RmlTypes types = RmlTypes.INSTANCE;
-        return new DefaultWordsScanner(new RmlLexer(), TokenSet.create((IElementType) types.C_UPPER_SYMBOL, (IElementType) types.C_LOWER_SYMBOL,
-                                                                       (IElementType) types.C_VARIANT), TokenSet.EMPTY, TokenSet.EMPTY);
+        return new DefaultWordsScanner(new RmlLexer(), //
+                                       TokenSet.create((IElementType) types.C_UPPER_IDENTIFIER), //
+                                       TokenSet.EMPTY, //
+                                       TokenSet.create((IElementType) types.C_UPPER_SYMBOL, (IElementType) types.C_LOWER_SYMBOL));
     }
 
     @Override
     public boolean canFindUsagesFor(@NotNull PsiElement element) {
-        return element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol;
+        return element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier;
     }
 
     @Nullable
@@ -45,12 +48,14 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
     @NotNull
     @Override
     public String getDescriptiveName(@NotNull PsiElement element) {
-        if (element instanceof PsiNamedElement) {
+        if (element instanceof PsiModule) {
+            return "Module " + ((PsiModule) element).getName();
+        } else if (element instanceof PsiNamedElement) {
             String name = ((PsiNamedElement) element).getName();
             return name == null ? "" : name;
         }
 
-        return "desc name of element ";
+        return "";
     }
 
     @NotNull
@@ -66,6 +71,6 @@ public class RmlFindUsagesProvider implements com.intellij.lang.findUsages.FindU
             }
         }
 
-        return "";
+        return element.getText();
     }
 }

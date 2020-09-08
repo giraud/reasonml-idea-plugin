@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import java.util.*;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,17 +7,15 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiValStub;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
 
 public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements PsiVal {
 
@@ -34,10 +31,8 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
 
     //region PsiNamedElement
     @Nullable
-    @Override
     public PsiElement getNameIdentifier() {
-        Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(this, PsiLowerSymbol.class, PsiScopedExpr.class);
-        return elements.isEmpty() ? null : elements.iterator().next();
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class);
     }
 
     @NotNull

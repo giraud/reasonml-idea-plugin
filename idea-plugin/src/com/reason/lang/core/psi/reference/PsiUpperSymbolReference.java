@@ -5,9 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -21,13 +20,13 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.reason.lang.core.ORFileType.both;
@@ -42,8 +41,8 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     private final ORTypes m_types;
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
-        super(element, ORUtil.getTextRangeForReference(element));
-        m_referenceName = element.getName();
+        super(element, TextRange.create(0, element.getTextLength()));
+        m_referenceName = element.getText();
         m_types = types;
     }
 
@@ -56,7 +55,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        PsiNameIdentifierOwner parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class, PsiVariantDeclaration.class, PsiException.class);
+        PsiUpperIdentifier parent = PsiTreeUtil.getParentOfType(myElement, PsiUpperIdentifier.class);
         if (parent != null && parent.getNameIdentifier() == myElement) {
             return ResolveResult.EMPTY_ARRAY;
         }
@@ -77,7 +76,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                     String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
                     String source = referencedElement instanceof FileBase ? ((FileBase) referencedElement).shortLocation(referencedElement.getProject()) :
                             referencedElement.getClass().getName();
-                    LOG.debug(" -> " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + referencedElement
+                    LOG.debug(" => " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + referencedElement
                             .getContainingFile() + " [" + source + "]");
                 }
 
@@ -105,7 +104,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORCodeFactory.createModuleName(myElement.getProject(), newName);
+        PsiUpperIdentifier newNameIdentifier = ORCodeFactory.createModuleName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {
@@ -179,8 +178,8 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         private final PsiElement m_referencedIdentifier;
 
         public UpperResolveResult(PsiQualifiedElement referencedElement) {
-            m_referencedIdentifier = referencedElement instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) referencedElement).getNameIdentifier() :
-                    referencedElement;
+            PsiUpperIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperIdentifier.class);
+            m_referencedIdentifier = identifier == null ? referencedElement : identifier;
         }
 
         @Nullable
@@ -192,11 +191,6 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         @Override
         public boolean isValidResult() {
             return true;
-        }
-
-        @Override
-        public String toString() {
-            return m_referencedIdentifier instanceof PsiNamedElement ? ((PsiNamedElement) m_referencedIdentifier).getName() : m_referencedIdentifier.getText();
         }
     }
 }

@@ -1,13 +1,11 @@
 package com.reason.lang.core;
 
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiFakeModule;
-import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.reason.RmlLanguage;
 
 public class ORUtilTest extends ORBasePlatformTestCase {
 
@@ -29,14 +27,15 @@ public class ORUtilTest extends ORBasePlatformTestCase {
         assertEquals("Upper", ORUtil.fileNameToModuleName("Upper.ml"));
     }
 
-    public void testLetQualifiedName() {
-        configureCode("A.re", "let make = () => { let x<caret> = 1; }");
+    public void test_Rml_letQualifiedPath() {
+        FileBase f = configureCode("A.re", "let make = () => { let x = 1; }");
+        PsiLet e = PsiTreeUtil.findChildOfType(f, PsiFakeModule.class).getLetExpression("x");
 
-        String qPath = ORUtil.getQualifiedPath((PsiNameIdentifierOwner) myFixture.getElementAtCaret());
+        String qPath = ORUtil.getQualifiedPath(e);
         assertEquals("A.make", qPath);
     }
 
-    public void testLetDestructuredQualifiedName() {
+    public void test_Rml_letDestructuredQualifiedPath() {
         FileBase f = configureCode("A.re", "module M = { let make = () => { let (x, y) = other; }; }");
         PsiLet letExpression = PsiTreeUtil.findChildOfType(f, PsiFakeModule.class).getLetExpression("(x, y)");
         String qualifiedPath = ORUtil.getQualifiedPath(letExpression);

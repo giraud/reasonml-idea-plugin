@@ -32,7 +32,7 @@ public class ResolveModuleElementTest extends ORBasePlatformTestCase {
         assertEquals("A.A1", ((PsiQualifiedElement) elementAtCaret.getParent()).getQualifiedName());
     }
 
-    public void testWithLocalAlias() {
+    public void test_Rml_withLocalAlias() {
         configureCode("Belt.re", "let x = 1;");
         configureCode("A.re", "module B = Belt; B<caret>");
 

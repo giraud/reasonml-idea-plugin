@@ -18,7 +18,7 @@ public class PsiElementFactory {
 
         if (type == types.C_EXPR_EXTERNAL) {
             return new PsiExternalImpl(types, node);
-        } else if (type == types.C_EXPR_EXCEPTION) {
+        } else if (type == types.C_EXCEPTION_DECLARATION) {
             return new PsiExceptionImpl(types, node);
         } else if (type == types.C_OPEN) {
             return new PsiOpenImpl(types, node);
@@ -36,8 +36,10 @@ public class PsiElementFactory {
             return new PsiTypeConstrName(node);
         } else if (type == types.C_TYPE_BINDING) {
             return new PsiTypeBinding(node);
-        } else if (type == types.C_EXPR_MODULE) {
+        } else if (type == types.C_MODULE_DECLARATION) {
             return new PsiInnerModuleImpl(types, node);
+        } else if (type == types.C_UPPER_IDENTIFIER) {
+            return new PsiUpperIdentifier(types, node);
         } else if (type == types.C_CLASS_STMT) {
             return new PsiClassImpl(types, node);
         } else if (type == types.C_CLASS_PARAMS) {
@@ -76,6 +78,8 @@ public class PsiElementFactory {
             return new PsiParameterImpl(types, node);
         } else if (type == types.C_FUN_BODY) {
             return new PsiFunctionBody(node);
+        } else if (type == types.C_LOWER_IDENTIFIER) {
+            return new PsiLowerIdentifier(types, node);
         } else if (type == types.C_OBJECT) {
             return new PsiObject(node);
         } else if (type == types.C_OPTION) {
