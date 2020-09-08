@@ -27,7 +27,6 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
@@ -73,9 +72,6 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             }
         } else if (element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol) {
             element = element.getParent();
-            if (element instanceof PsiTypeConstrName) {
-                element = element.getParent();
-            }
 
             // If it's an alias, resolve to the alias
             if (element instanceof PsiLet) {
@@ -171,8 +167,8 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 resolvedElement = resolvedElement.getParent();
             }
 
-            if (resolvedElement instanceof PsiTypeConstrName) {
-                PsiType type = (PsiType) resolvedElement.getParent();
+            if (resolvedElement instanceof PsiType) {
+                PsiType type = (PsiType) resolvedElement;
                 String path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
                 return createQuickDocTemplate(path, "type", resolvedElement.getText(), typeBinding);

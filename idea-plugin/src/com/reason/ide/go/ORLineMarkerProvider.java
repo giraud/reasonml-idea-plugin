@@ -10,16 +10,12 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
@@ -31,6 +27,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
         PsiElement parent = element.getParent();
         FileBase containingFile = (FileBase) element.getContainingFile();
 
+        /* zzz
         if (element instanceof PsiTypeConstrName) {
             FileBase psiRelatedFile = PsiFinder.getInstance(containingFile.getProject()).findRelatedFile(containingFile);
             if (psiRelatedFile != null) {
@@ -48,16 +45,22 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
                     }
                 }
             }
-        } else if (element instanceof PsiLowerIdentifier && parent instanceof PsiLet) {
-            extractRelatedExpressions(element.getFirstChild(), result, containingFile);
-        } else if (element instanceof PsiLowerIdentifier && parent instanceof PsiVal) {
-            extractRelatedExpressions(element.getFirstChild(), result, containingFile);
-        } else if (element instanceof PsiLowerIdentifier && parent instanceof PsiExternal) {
-            extractRelatedExpressions(element.getFirstChild(), result, containingFile);
-        } else if (element instanceof PsiUpperIdentifier && parent instanceof PsiInnerModule) {
-            extractRelatedExpressions(element.getFirstChild(), result, containingFile);
-        } else if (element instanceof PsiUpperIdentifier && parent instanceof PsiException) {
-            extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+        } else
+         */
+        if (element instanceof PsiLowerIdentifier) {
+            if (parent instanceof PsiLet) {
+                extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+            } else if (parent instanceof PsiVal) {
+                extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+            } else if (parent instanceof PsiExternal) {
+                extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+            }
+        } else if (element instanceof PsiUpperIdentifier) {
+            if (parent instanceof PsiInnerModule) {
+                extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+            } else if (parent instanceof PsiException) {
+                extractRelatedExpressions(element.getFirstChild(), result, containingFile);
+            }
         }
     }
 

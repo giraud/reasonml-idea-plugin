@@ -241,7 +241,7 @@ public class NsParser extends CommonParser<NsTypes> {
 
             if (latestScope != null) {
                 if (isTypeResolution(latestScope)) {
-                    state.markStart(type, m_types.C_EXPR_TYPE);
+                    state.markStart(type, m_types.C_TYPE_DECLARATION);
                 } else if (isLetResolution(latestScope)) {
                     state.markStart(let, m_types.C_EXPR_LET);
                 } else if (isModuleResolution(latestScope)) {
@@ -364,7 +364,7 @@ public class NsParser extends CommonParser<NsTypes> {
             state.mark(functorConstraint, m_types.C_CONSTRAINT);
         } else if (!state.isCurrentResolution(module)) {
             endLikeSemi(state);
-            state.markStart(type, m_types.C_EXPR_TYPE);
+            state.markStart(type, m_types.C_TYPE_DECLARATION);
         }
     }
 
@@ -445,9 +445,9 @@ public class NsParser extends CommonParser<NsTypes> {
     private void parseLt(@NotNull ParserState state) {
         if (state.isCurrentResolution(option)) {
             state.markScope(optionParameter, m_types.C_SCOPED_EXPR, m_types.LT);
-        } else if (state.isCurrentResolution(typeConstrName)) {
-            // type parameter ::  type x = t |> < <| 'a >
-            state.markScope(typeConstrNameParameters, m_types.C_SCOPED_EXPR, m_types.LT);
+        } else if (state.isCurrentResolution(typeNamed)) {
+            // type parameters ::  type t |> < <| 'a >
+            state.markScope(typeNamedParameters, m_types.C_SCOPED_EXPR, m_types.LT);
         } else if (!(state.isCurrentResolution(signatureItem) || state.is(m_types.C_TYPE_BINDING))) {
             // Can be a symbol or a JSX tag
             IElementType nextTokenType = state.rawLookup(1);
@@ -481,7 +481,7 @@ public class NsParser extends CommonParser<NsTypes> {
                     popEnd();
         } else if (state.isCurrentResolution(optionParameter)) {
             state.advance().popEnd().popEnd();
-        } else if (state.isCurrentResolution(typeConstrNameParameters)) {
+        } else if (state.isCurrentResolution(typeNamedParameters)) {
             state.advance().popEnd();
         }
     }
@@ -529,7 +529,6 @@ public class NsParser extends CommonParser<NsTypes> {
         } else if (state.isCurrentResolution(type)) {
             // type |>x<| ...
             state.updateCurrentResolution(typeNamed).
-                    mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME).
                     wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else {
             if (state.isCurrentResolution(jsxStartTag)) {
@@ -771,10 +770,9 @@ public class NsParser extends CommonParser<NsTypes> {
             state.popEndUntilResolution(signature).popEnd();
         }
 
-        if (state.isCurrentResolution(typeConstrName)) {
+        if (state.isCurrentResolution(typeNamed)) {
             // type t |> = <| ...
-            state.popEnd().
-                    updateCurrentResolution(typeNamedEq).
+            state.updateCurrentResolution(typeNamedEq).
                     advance().
                     mark(typeBinding, m_types.C_TYPE_BINDING);
         } else if (state.isCurrentResolution(let) || state.isCurrentResolution(letNamed)/* || state.isCurrentResolution(letNamedAttribute)*/ || state
