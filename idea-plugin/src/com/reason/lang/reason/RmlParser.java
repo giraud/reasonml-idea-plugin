@@ -564,7 +564,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         // Note that option is a ReasonML keyword but also a JSX keyword !
         if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
             // A closing tag
-            if (state.isCurrentResolution(jsxTagBody)) { //context?
+            if (state.is(m_types.C_TAG_BODY)) {
                 state.popEnd();
             }
 
@@ -577,10 +577,17 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseGt(@NotNull ParserState state) {
-        if (state.isCurrentResolution(jsxStartTag)) {
-            state.wrapWith(m_types.C_TAG_GT).
+        if (state.is(m_types.C_TAG_START)) {
+            state.remapCurrentToken(m_types.TAG_GT).
+                    advance().
                     popEnd().
                     mark(jsxTagBody, m_types.C_TAG_BODY);
+        } else if (state.is(m_types.C_TAG_CLOSE)) {
+            // end the tag
+            state.remapCurrentToken(m_types.TAG_GT).
+                    advance().
+                    popEndUntilResolution(jsxTag).
+                    popEnd();
         }
     }
 

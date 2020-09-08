@@ -20,7 +20,7 @@ public class JsxParsingTest extends RmlParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.C_TAG_GT));
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
@@ -33,12 +33,20 @@ public class JsxParsingTest extends RmlParsingTestCase {
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
 
+    public void test_multipleClosingTag() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div><div></div></div>"));
+
+        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
+        assertEquals("<div></div>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
+    }
+
     public void test_optionTag() {
         PsiTag e = (PsiTag) firstElement(parseCode("<option>children</option>"));
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<option>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.C_TAG_GT));
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</option>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }

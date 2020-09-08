@@ -21,7 +21,7 @@ public class JsxParsingTest extends NsParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), (IElementType) m_types.C_TAG_GT));
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
@@ -31,6 +31,14 @@ public class JsxParsingTest extends NsParsingTestCase {
 
         assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
         assertEquals("<div/>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
+    }
+
+    public void test_multipleClosingTag() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div><div></div></div>"));
+
+        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
+        assertEquals("<div></div>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
 

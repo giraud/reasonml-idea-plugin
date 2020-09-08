@@ -100,7 +100,6 @@ public class NsTypes extends ORTypes {
         C_TAG_START = new ORCompositeElementType("C_TAG_START", NsLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", NsLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", NsLanguage.INSTANCE);
-        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", NsLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", NsLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", NsLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);
@@ -223,6 +222,7 @@ public class NsTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", NsLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", NsLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", NsLanguage.INSTANCE);
+        TAG_GT = new ORTokenElementType("TAG_GT", NsLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", NsLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", NsLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", NsLanguage.INSTANCE);

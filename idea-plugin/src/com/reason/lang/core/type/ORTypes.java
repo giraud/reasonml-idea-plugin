@@ -64,7 +64,6 @@ public abstract class ORTypes {
     public ORCompositeType C_TAG;
     public ORCompositeType C_TAG_PROP_VALUE;
     public ORCompositeType C_TAG_BODY;
-    public ORCompositeType C_TAG_GT;
     public ORCompositeType C_UNIT;
     public ORCompositeType C_UNKNOWN_EXPR;
     public ORCompositeType C_VARIANT;
@@ -226,6 +225,7 @@ public abstract class ORTypes {
     public ORTokenElementType TAG_NAME;
     public ORTokenElementType TAG_LT;
     public ORTokenElementType TAG_LT_SLASH;
+    public ORTokenElementType TAG_GT;
     public ORTokenElementType TILDE;
     public ORTokenElementType UIDENT;
     public ORTokenElementType UNIT;
