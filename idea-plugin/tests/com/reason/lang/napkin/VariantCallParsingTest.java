@@ -13,6 +13,7 @@ import com.reason.lang.core.psi.PsiPatternMatchBody;
 import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 
 @SuppressWarnings("ConstantConditions")
 public class VariantCallParsingTest extends NsParsingTestCase {
@@ -22,6 +23,16 @@ public class VariantCallParsingTest extends NsParsingTestCase {
         assertEquals("Var", binding.getText());
         assertNull(ORUtil.findImmediateFirstChildOfClass(binding, PsiVariantDeclaration.class));
         assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
+    }
+
+
+    public void test_withPath() {
+        PsiLetBinding binding = firstOfType(parseCode("let x = A.Variant(1);"), PsiLet.class).getBinding();
+
+        assertEquals("A.Variant(1)", binding.getText());
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiVariantDeclaration.class));
+        assertNull(PsiTreeUtil.findChildOfType(binding, PsiUpperIdentifier.class));
+        //assertEquals(m_types.VARIANT_NAME, PsiTreeUtil.findChildOfType(binding, PsiUpperSymbol.class).getFirstChild().getNode().getElementType());
     }
 
     public void test_withParam() {

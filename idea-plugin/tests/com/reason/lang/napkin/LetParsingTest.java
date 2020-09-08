@@ -2,7 +2,7 @@ package com.reason.lang.napkin;
 
 import java.util.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.PsiFileHelper;
@@ -132,7 +132,7 @@ public class LetParsingTest extends NsParsingTestCase {
 
     public void test_letAndInModule() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y }");
-        Collection<PsiNameIdentifierOwner> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
+        Collection<PsiNamedElement> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
 
         assertSize(2, es);
         assertEquals("f2 = y => y", second(es).getText());

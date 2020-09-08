@@ -30,16 +30,15 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
 
     //region NamedElement
     @Nullable
-    @Override
-    public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+    public PsiElement getNameIdentifier() {
+        return findChildByClass(PsiLowerIdentifier.class);
     }
 
     @Nullable
     @Override
-    public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+    public String getName() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
     @NotNull

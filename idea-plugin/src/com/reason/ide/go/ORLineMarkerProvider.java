@@ -1,8 +1,6 @@
 package com.reason.ide.go;
 
 import java.util.*;
-
-import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
@@ -12,10 +10,20 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import icons.ORIcons;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
+import com.reason.lang.core.psi.PsiException;
+import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeConstrName;
+import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiVal;
+import icons.ORIcons;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     @Override
@@ -61,18 +69,19 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
 
         FileBase psiRelatedFile = PsiFinder.getInstance(containingFile.getProject()).findRelatedFile(containingFile);
         if (psiRelatedFile != null) {
-            Collection<PsiNameIdentifierOwner> expressions = psiRelatedFile.getExpressions(element.getText());
+            Collection<PsiNamedElement> expressions = psiRelatedFile.getExpressions(element.getText());
             if (expressions.size() == 1) {
-                PsiNameIdentifierOwner relatedElement = expressions.iterator().next();
-                PsiElement nameIdentifier = relatedElement.getNameIdentifier();
-                if (nameIdentifier != null) {
+                PsiNamedElement relatedElement = expressions.iterator().next();
+                //PsiElement nameIdentifier = ORUtil.findImmediateFirstChildOfClass(relatedElement, PsiUpperIdentifier.class);
+                if (relatedElement != null) {
                     String tooltip = GutterIconTooltipHelper
-                            .composeText(new PsiElement[]{psiRelatedFile}, "", "Implements method <b>" + nameIdentifier.getText() + "</b> in <b>{0}</b>");
+                            .composeText(new PsiElement[]{psiRelatedFile}, "", "Implements method <b>" + relatedElement.getName() + "</b> in <b>{0}</b>");
                     result.add(NavigationGutterIconBuilder.
                             create(containingFile.isInterface() ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING).
                             setTooltipText(tooltip).
                             setAlignment(GutterIconRenderer.Alignment.RIGHT).
-                            setTargets(Collections.singleton(nameIdentifier instanceof PsiLowerSymbol ? nameIdentifier.getFirstChild() : nameIdentifier)).
+                            setTargets(Collections.singleton(/*nameIdentifier instanceof PsiLowerSymbol ? nameIdentifier.getFirstChild() : nameIdentifier*/
+                                    relatedElement)).
                             createLineMarkerInfo(element));
                 }
             }

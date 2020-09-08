@@ -5,10 +5,14 @@ import java.util.function.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiPolyVariantReferenceBase;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
@@ -24,14 +28,14 @@ import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static java.util.stream.Collectors.*;
 
-public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
+public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowerSymbol> {
 
     private final Log LOG = Log.create("ref.lower");
 
@@ -39,44 +43,21 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
     private final String m_referenceName;
 
     public PsiLowerSymbolReference(@NotNull PsiLowerSymbol element, @NotNull ORTypes _types) {
-        super(element, ORUtil.getTextRangeForReference(element));
-        m_referenceName = element.getName();
+        super(element, TextRange.create(0, element.getTextLength()));
+        m_referenceName = element.getText();
     }
 
+    @NotNull
     @Override
-    public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORCodeFactory.createLetName(myElement.getProject(), newName);
-
-        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
-        if (newNameNode != null) {
-            PsiElement nameIdentifier = myElement.getFirstChild();
-            if (nameIdentifier == null) {
-                myElement.getNode().addChild(newNameNode);
-            } else {
-                ASTNode oldNameNode = nameIdentifier.getNode();
-                myElement.getNode().replaceChild(oldNameNode, newNameNode);
-            }
-        }
-
-        return myElement;
-    }
-
-    @Nullable
-    @Override
-    public PsiElement resolve() {
+    public ResolveResult[] multiResolve(boolean incompleteCode) {
         if (m_referenceName == null) {
-            return null;
+            return ResolveResult.EMPTY_ARRAY;
         }
-
-        PsiElement parent = myElement.getParent();
-        if (parent instanceof PsiTypeConstrName) {
-            parent = parent.getParent();
-        }
-        PsiNameIdentifierOwner namedParent = parent instanceof PsiNameIdentifierOwner ? (PsiNameIdentifierOwner) parent : null;
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        if (namedParent != null && namedParent.getNameIdentifier() == myElement) {
+        PsiLowerIdentifier parent = PsiTreeUtil.getParentOfType(myElement, PsiLowerIdentifier.class);
+        if (parent != null && parent.getNameIdentifier() == myElement) {
             return null;
         }
 
@@ -246,7 +227,7 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         for (int i = 0; i < resolvedElements.size(); i++) {
             PsiQualifiedElement resolvedElement = resolvedElements.get(i);
             if (i < resultPosition && resolvedElement instanceof PsiModule) {
-                Collection<PsiNameIdentifierOwner> expressions = ((PsiModule) resolvedElement)
+                Collection<PsiNamedElement> expressions = ((PsiModule) resolvedElement)
                         .getExpressions(ExpressionScope.pub, element -> m_referenceName.equals(element.getName()));
                 if (!expressions.isEmpty()) {
                     result = expressions.iterator().next();
@@ -260,8 +241,37 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
                     result) + ")");
         }
 
-        return result == null ? new ORFakeResolvedElement(getElement()) :
-                result instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) result).getNameIdentifier() : result;
+        PsiElement referencedElement = result == null ? new ORFakeResolvedElement(getElement()) : result;
+        ResolveResult[] resolveResults = new ResolveResult[]{new LowerResolveResult(referencedElement)};
+        return resolveResults;
+    }
+
+    @Nullable
+    @Override
+    public PsiElement resolve() {
+        ResolveResult[] resolveResults = multiResolve(false);
+        if (resolveResults.length > 1) {
+            LOG.debug("Can't resolve element because too many results", resolveResults);
+        }
+        return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+    }
+
+    @Override
+    public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
+        PsiElement newNameIdentifier = ORCodeFactory.createLetName(myElement.getProject(), newName);
+
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
+        if (newNameNode != null) {
+            PsiElement nameIdentifier = myElement.getFirstChild();
+            if (nameIdentifier == null) {
+                myElement.getNode().addChild(newNameNode);
+            } else {
+                ASTNode oldNameNode = nameIdentifier.getNode();
+                myElement.getNode().replaceChild(oldNameNode, newNameNode);
+            }
+        }
+
+        return myElement;
     }
 
     @NotNull
@@ -318,12 +328,6 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         return result;
     }
 
-    @NotNull
-    @Override
-    public Object[] getVariants() {
-        return EMPTY_ARRAY;
-    }
-
     static class OrderedPaths {
         final List<PsiQualifiedElement> m_elements = new ArrayList<>();
         final List<String> m_paths = new ArrayList<>();
@@ -356,6 +360,26 @@ public class PsiLowerSymbolReference extends PsiReferenceBase<PsiLowerSymbol> {
         @Nullable
         public Integer getPosition(@NotNull String value) {
             return m_pathIndices.get(value);
+        }
+    }
+
+    private static class LowerResolveResult implements ResolveResult {
+        private final PsiElement m_referencedIdentifier;
+
+        public LowerResolveResult(PsiElement referencedElement) {
+            PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiLowerIdentifier.class);
+            m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+        }
+
+        @Nullable
+        @Override
+        public PsiElement getElement() {
+            return m_referencedIdentifier;
+        }
+
+        @Override
+        public boolean isValidResult() {
+            return true;
         }
     }
 }

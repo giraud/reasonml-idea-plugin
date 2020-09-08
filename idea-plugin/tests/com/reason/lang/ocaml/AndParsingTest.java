@@ -2,8 +2,7 @@ package com.reason.lang.ocaml;
 
 import java.util.*;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.reason.lang.BaseParsingTestCase;
+import com.intellij.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiSwitch;
@@ -29,7 +28,7 @@ public class AndParsingTest extends OclParsingTestCase {
 
     public void test_patternChaining() {
         PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
-        Collection<PsiNameIdentifierOwner> exps = expressions(file);
+        Collection<PsiNamedElement> exps = expressions(file);
 
         assertInstanceOf(firstElement(file), PsiSwitch.class);
         assertEquals(0, exps.size());
@@ -52,8 +51,8 @@ public class AndParsingTest extends OclParsingTestCase {
     }
 
     public void test_GH_175() {
-        List<PsiLet> lets = new ArrayList<>(letExpressions(
-                parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n")));
+        List<PsiLet> lets = new ArrayList<>(
+                letExpressions(parseCode("let f1 = let f11 = function | _ -> \"\" in ()\n and f2 = let f21 = function | _ -> \"\" in ()\n and f3 = ()\n")));
 
         assertSize(3, lets);
         assertEquals("f1", lets.get(0).getName());

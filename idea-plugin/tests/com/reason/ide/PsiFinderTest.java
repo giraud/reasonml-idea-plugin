@@ -97,7 +97,16 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         assertInstanceOf(moduleAliases.get(1), PsiFakeModule.class);
     }
 
-    public void testRml_letDeconstruction() {
+    public void test_Ns_letDeconstruction() {
+        configureCode("A.res", "let x = something;");
+        configureCode("B.res", "let (x, y) = other;");
+
+        Set<PsiLet> lets = PsiFinder.getInstance(getProject()).findLets("x", both);
+
+        assertSize(2, lets);
+    }
+
+    public void test_Rml_letDeconstruction() {
         configureCode("A.re", "let x = something;");
         configureCode("B.re", "let (x, y) = other;");
 
@@ -106,7 +115,7 @@ public class PsiFinderTest extends ORBasePlatformTestCase {
         assertSize(2, lets);
     }
 
-    public void testOcl_letDeconstruction() {
+    public void test_Ocl_letDeconstruction() {
         configureCode("A.ml", "let x = something");
         configureCode("B.ml", "let (x, y) = other");
 

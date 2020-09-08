@@ -1,7 +1,7 @@
 package com.reason.lang.napkin;
 
 import java.util.*;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.reason.lang.core.psi.PsiAnnotation;
 
 public class AnnotationParsingTest extends NsParsingTestCase {
@@ -10,7 +10,7 @@ public class AnnotationParsingTest extends NsParsingTestCase {
     }
 
     public void test_chaining() {
-        List<PsiNameIdentifierOwner> es = new ArrayList<>(expressions(parseCode("@bs.module(\"xyz\") @react.component")));
+        List<PsiNamedElement> es = new ArrayList<>(expressions(parseCode("@bs.module(\"xyz\") @react.component")));
 
         assertSize(2, es);
         assertEquals("@bs.module", es.get(0).getName());

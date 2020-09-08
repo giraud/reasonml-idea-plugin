@@ -1,6 +1,6 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiElement;
 
-public interface PsiLowerSymbol extends PsiNameIdentifierOwner {
+public interface PsiLowerSymbol extends PsiElement {
 }

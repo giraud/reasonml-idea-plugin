@@ -3,11 +3,11 @@ package com.reason.lang.core.type;
 public abstract class ORTypes {
     // Stubbed expressions
 
-    public ORCompositeType C_EXPR_EXCEPTION;
+    public ORCompositeType C_EXCEPTION_DECLARATION;
     public ORCompositeType C_EXPR_TYPE;
     public ORCompositeType C_EXPR_EXTERNAL;
     public ORCompositeType C_EXPR_LET;
-    public ORCompositeType C_EXPR_MODULE;
+    public ORCompositeType C_MODULE_DECLARATION;
     public ORCompositeType C_EXPR_VAL;
 
     // Stubbed element types
@@ -25,6 +25,8 @@ public abstract class ORTypes {
     public ORCompositeType C_CONSTRAINT;
     public ORCompositeType C_DECONSTRUCTION;
     public ORCompositeType C_DIRECTIVE;
+    public ORCompositeType C_LOWER_IDENTIFIER;
+    public ORCompositeType C_UPPER_IDENTIFIER;
     public ORCompositeType C_FAKE_MODULE;
     public ORCompositeType C_LOCAL_OPEN;
     public ORCompositeType C_OPEN;

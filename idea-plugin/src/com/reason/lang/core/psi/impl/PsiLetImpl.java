@@ -47,9 +47,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     //region PsiNamedElement
     @Nullable
-    @Override
     public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class, PsiDeconstruction.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
     }
 
     @Nullable
@@ -144,7 +143,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                     continue;
                 }
 
-                String name = ((PsiLowerSymbol) element).getName();
+                String name = ((PsiLowerSymbol) element).getText();
 
                 if (name != null) {
                     Collection<PsiLet> lets = PsiFinder.getInstance(element.getProject()).findLets(name, ORFileType.interfaceOrImplementation);
