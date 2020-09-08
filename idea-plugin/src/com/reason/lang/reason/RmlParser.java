@@ -820,7 +820,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(switch_)) {
             // switch |>(<| ...
             state.markScope(binaryCondition, m_types.C_BIN_CONDITION, m_types.LPAREN);
-        } else if (state.previousElementType1 == m_types.LIDENT /*&& !state.isCurrentResolution(signatureItem)*/) {
+        } else if (state.previousElementType1 == m_types.LIDENT && !(state.is(m_types.C_TYPE_CONSTR_NAME) || state
+                .in(m_types.C_TYPE_BINDING)/*&& !state.isCurrentResolution(signatureItem)*/)) {
             // calling a function
             state.markScope(functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN).
                     advance();

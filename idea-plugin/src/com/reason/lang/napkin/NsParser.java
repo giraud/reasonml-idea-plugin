@@ -446,10 +446,9 @@ public class NsParser extends CommonParser<NsTypes> {
         if (state.isCurrentResolution(option)) {
             state.markScope(optionParameter, m_types.C_SCOPED_EXPR, m_types.LT);
         } else if (state.isCurrentResolution(typeConstrName)) {
-            // type parameter
-            // type x = t |> < <| 'a >
+            // type parameter ::  type x = t |> < <| 'a >
             state.markScope(typeConstrNameParameters, m_types.C_SCOPED_EXPR, m_types.LT);
-        } else if (!state.isCurrentResolution(signatureItem)) {
+        } else if (!(state.isCurrentResolution(signatureItem) || state.is(m_types.C_TYPE_BINDING))) {
             // Can be a symbol or a JSX tag
             IElementType nextTokenType = state.rawLookup(1);
             if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {

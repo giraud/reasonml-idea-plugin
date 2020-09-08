@@ -1,13 +1,16 @@
 package com.reason.lang.ocaml;
 
+import java.util.*;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
+import com.reason.lang.core.psi.PsiObject;
+import com.reason.lang.core.psi.PsiRecord;
+import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.PsiTypeBinding;
+import com.reason.lang.core.psi.PsiTypeConstrName;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 
@@ -40,7 +43,9 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_bindingWithRecordAs() {
-        PsiTypeBinding typeBinding = first(findChildrenOfType(first(typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))), PsiTypeBinding.class));
+        PsiTypeBinding typeBinding = first(
+                findChildrenOfType(first(typeExpressions(parseCode("type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
+                                   PsiTypeBinding.class));
         PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
         List<PsiRecordField> fields = new ArrayList(record.getFields());
         assertEquals(2, fields.size());
@@ -49,7 +54,8 @@ public class TypeParsingTest extends OclParsingTestCase {
     }
 
     public void test_chainDef() {
-        FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
+        FileBase file = parseCode(
+                "type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
 
         assertEquals(1, childrenCount(file));
     }
@@ -64,4 +70,9 @@ public class TypeParsingTest extends OclParsingTestCase {
         assertTrue(cname.hasParameters());
     }
 
+    public void test_applyParams() {
+        PsiType e = first(typeExpressions(parseCode("type 'value t = (key,'value,Comparator.identity) Belt.Map.t")));
+
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+    }
 }

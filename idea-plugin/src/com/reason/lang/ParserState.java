@@ -94,8 +94,17 @@ public class ParserState {
         return m_composites.isEmpty() ? null : m_composites.peek();
     }
 
-    public boolean is(ORCompositeType compositeType) {
-        return m_currentScope.isCompositeEqualTo(compositeType);
+    public boolean is(ORCompositeType composite) {
+        return m_currentScope.isCompositeEqualTo(composite);
+    }
+
+    public boolean in(ORCompositeType composite) {
+        for (ParserScope scope : m_composites) {
+            if (scope.isCompositeEqualTo(composite)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
