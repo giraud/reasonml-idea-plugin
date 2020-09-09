@@ -15,7 +15,7 @@ public class RmlTypes extends ORTypes {
         // Stubbed element types
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", RmlLanguage.INSTANCE);
-        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", RmlLanguage.INSTANCE);
+        C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", RmlLanguage.INSTANCE);
         C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXTERNAL_STMT", RmlLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", RmlLanguage.INSTANCE);
@@ -85,7 +85,6 @@ public class RmlTypes extends ORTypes {
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", RmlLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", RmlLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", RmlLanguage.INSTANCE);
-        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", RmlLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", RmlLanguage.INSTANCE);
         C_TAG_START = new ORCompositeElementType("C_TAG_START", RmlLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", RmlLanguage.INSTANCE);
@@ -93,7 +92,6 @@ public class RmlTypes extends ORTypes {
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", RmlLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
-        C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
@@ -209,6 +207,7 @@ public class RmlTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", RmlLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", RmlLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", RmlLanguage.INSTANCE);
+        TAG_GT = new ORTokenElementType("TAG_GT", RmlLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", RmlLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", RmlLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", RmlLanguage.INSTANCE);

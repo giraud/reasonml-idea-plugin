@@ -284,8 +284,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
             if (isTypeResolution(latestScope)) {
                 state.advance().
-                        markStart(type, m_types.C_EXPR_TYPE).
-                        mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME);
+                        markStart(type, m_types.C_TYPE_DECLARATION);
             } else if (isLetResolution(latestScope)) {
                 state.advance().
                         markStart(let, m_types.C_EXPR_LET);
@@ -448,9 +447,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // module M = (X) : ( S with |>type<| ... ) = ...
             state.mark(constraint, m_types.C_CONSTRAINT);
         } else if (!state.isCurrentResolution(module) && !state.isCurrentResolution(clazz)) {
-            state.mark(type, m_types.C_EXPR_TYPE).
-                    advance().
-                    mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME);
+            // a type definition ::  |>type<| ...
+            state.mark(type, m_types.C_TYPE_DECLARATION);
         }
     }
 
@@ -564,7 +562,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         // Note that option is a ReasonML keyword but also a JSX keyword !
         if (nextTokenType == m_types.LIDENT || nextTokenType == m_types.UIDENT || nextTokenType == m_types.OPTION) {
             // A closing tag
-            if (state.isCurrentResolution(jsxTagBody)) { //context?
+            if (state.is(m_types.C_TAG_BODY)) {
                 state.popEnd();
             }
 
@@ -577,10 +575,17 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseGt(@NotNull ParserState state) {
-        if (state.isCurrentResolution(jsxStartTag)) {
-            state.wrapWith(m_types.C_TAG_GT).
+        if (state.is(m_types.C_TAG_START)) {
+            state.remapCurrentToken(m_types.TAG_GT).
+                    advance().
                     popEnd().
                     mark(jsxTagBody, m_types.C_TAG_BODY);
+        } else if (state.is(m_types.C_TAG_CLOSE)) {
+            // end the tag
+            state.remapCurrentToken(m_types.TAG_GT).
+                    advance().
+                    popEndUntilResolution(jsxTag).
+                    popEnd();
         }
     }
 
@@ -608,7 +613,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // let |>x<| ...
             state.updateCurrentResolution(letNamed).
                     wrapWith(m_types.C_LOWER_IDENTIFIER);
-        } else if (state.isCurrentResolution(typeConstrName)) {
+        } else if (state.is(m_types.C_TYPE_DECLARATION)) {
             // type |>x<| ...
             state.updateCurrentResolution(typeNamed).
                     wrapWith(m_types.C_LOWER_IDENTIFIER);
@@ -813,7 +818,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(switch_)) {
             // switch |>(<| ...
             state.markScope(binaryCondition, m_types.C_BIN_CONDITION, m_types.LPAREN);
-        } else if (state.previousElementType1 == m_types.LIDENT /*&& !state.isCurrentResolution(signatureItem)*/) {
+        } else if (state.previousElementType1 == m_types.LIDENT && !(state.is(m_types.C_TYPE_DECLARATION) || state
+                .in(m_types.C_TYPE_BINDING)/*&& !state.isCurrentResolution(signatureItem)*/)) {
             // calling a function
             state.markScope(functionCallParams, m_types.C_FUN_CALL_PARAMS, m_types.LPAREN).
                     advance();
@@ -917,8 +923,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
 
         if (state.isCurrentResolution(typeNamed)) {
-            state.popEnd().
-                    updateCurrentResolution(typeNamedEq).
+            state.updateCurrentResolution(typeNamedEq).
                     advance().
                     mark(typeBinding, m_types.C_TYPE_BINDING);
         } else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedAttribute) || state.isCurrentResolution(letNamedSignature)) {

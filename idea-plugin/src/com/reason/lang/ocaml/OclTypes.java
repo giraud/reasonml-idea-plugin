@@ -25,7 +25,7 @@ public class OclTypes extends ORTypes {
         // Stubbed element types
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", OclLanguage.INSTANCE);
-        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", OclLanguage.INSTANCE);
+        C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", OclLanguage.INSTANCE);
         C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", OclLanguage.INSTANCE);
         C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", OclLanguage.INSTANCE);
         C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", OclLanguage.INSTANCE);
@@ -90,7 +90,6 @@ public class OclTypes extends ORTypes {
         C_TAG = new ORCompositeElementType("C_TAG", OclLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", OclLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", OclLanguage.INSTANCE);
-        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", OclLanguage.INSTANCE);
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", OclLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", OclLanguage.INSTANCE);
         C_TAG_START = new ORCompositeElementType("C_TAG_START", OclLanguage.INSTANCE);
@@ -99,7 +98,6 @@ public class OclTypes extends ORTypes {
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", OclLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", OclLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", OclLanguage.INSTANCE);
-        C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", OclLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", OclLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", OclLanguage.INSTANCE);
         C_VARIANT = new ORCompositeElementType("C_VARIANT", OclLanguage.INSTANCE);
@@ -219,6 +217,7 @@ public class OclTypes extends ORTypes {
         TAG_AUTO_CLOSE = new ORTokenElementType("TAG_AUTO_CLOSE", OclLanguage.INSTANCE);
         TAG_NAME = new ORTokenElementType("TAG_NAME", OclLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", OclLanguage.INSTANCE);
+        TAG_GT = new ORTokenElementType("TAG_GT", OclLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", OclLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", OclLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", OclLanguage.INSTANCE);

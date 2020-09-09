@@ -334,9 +334,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.markStart(module, m_types.C_MODULE_DECLARATION);
             } else if (latestScope.isCompositeType(m_types.C_EXPR_LET)) {
                 state.markStart(let, m_types.C_EXPR_LET);
-            } else if (latestScope.isCompositeType(m_types.C_EXPR_TYPE)) {
-                state.markStart(type, m_types.C_EXPR_TYPE).
-                        mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME);
+            } else if (latestScope.isCompositeType(m_types.C_TYPE_DECLARATION)) {
+                state.markStart(type, m_types.C_TYPE_DECLARATION);
             }
         }
     }
@@ -569,8 +568,8 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseEq(@NotNull ParserState state) {
         // Remove intermediate constructions
-        if (state.isCurrentResolution(typeConstrName)) {
-            state.popEnd().updateCurrentResolution(typeNamed);
+        if (state.isCurrentResolution(type)) {
+            state.updateCurrentResolution(typeNamed);
         }
         if (state.isCurrentResolution(signatureItem) || state.isCurrentResolution(functionParameters)) {
             state.popEnd();
@@ -745,7 +744,7 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(external)) {
             state.updateCurrentResolution(externalNamed).
                     wrapWith(m_types.C_LOWER_IDENTIFIER);
-        } else if (state.isCurrentResolution(typeConstrName)) {
+        } else if (state.is(m_types.C_TYPE_DECLARATION)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else if (state.isCurrentResolution(val)) {
             state.updateCurrentResolution(valNamed).
@@ -850,9 +849,7 @@ public class OclParser extends CommonParser<OclTypes> {
             // class |>type<| ...
         } else {
             state.popEndUntilScope();
-            state.markStart(type, m_types.C_EXPR_TYPE).
-                    advance().
-                    mark(typeConstrName, m_types.C_TYPE_CONSTR_NAME);
+            state.markStart(type, m_types.C_TYPE_DECLARATION);
         }
     }
 

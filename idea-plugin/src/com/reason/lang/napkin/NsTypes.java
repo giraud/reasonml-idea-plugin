@@ -25,7 +25,7 @@ public class NsTypes extends ORTypes {
         // Stubbed expressions
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", NsLanguage.INSTANCE);
-        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXPR_TYPE", NsLanguage.INSTANCE);
+        C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", NsLanguage.INSTANCE);
         C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", NsLanguage.INSTANCE);
         C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", NsLanguage.INSTANCE);
         C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", NsLanguage.INSTANCE);
@@ -100,13 +100,11 @@ public class NsTypes extends ORTypes {
         C_TAG_START = new ORCompositeElementType("C_TAG_START", NsLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", NsLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", NsLanguage.INSTANCE);
-        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", NsLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", NsLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", NsLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", NsLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", NsLanguage.INSTANCE);
-        C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", NsLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", NsLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", NsLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", NsLanguage.INSTANCE);
@@ -223,6 +221,7 @@ public class NsTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", NsLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", NsLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", NsLanguage.INSTANCE);
+        TAG_GT = new ORTokenElementType("TAG_GT", NsLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", NsLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", NsLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", NsLanguage.INSTANCE);

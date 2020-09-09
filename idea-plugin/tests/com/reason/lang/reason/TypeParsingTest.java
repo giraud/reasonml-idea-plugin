@@ -3,6 +3,7 @@ package com.reason.lang.reason;
 import java.util.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiJsObject;
 import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiRecord;
@@ -21,6 +22,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
     public void test_RecursiveType() {
         PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
         assertEquals("tree", e.getName());
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
     }
 
     public void test_TypeBindingWithVariant() {
@@ -82,5 +84,11 @@ public class TypeParsingTest extends RmlParsingTestCase {
         PsiObjectField f = PsiTreeUtil.findChildOfType(e.getBinding(), PsiObjectField.class);
         assertEquals("a", f.getName());
         //assertEquals("string", f.getPsiSignature().getText());
+    }
+
+    public void test_applyParams() {
+        PsiType e = first(typeExpressions(parseCode("type t('value) = Belt.Map.t(key, 'value, Comparator.identity);")));
+
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
     }
 }

@@ -7,13 +7,19 @@ import com.reason.lang.core.psi.PsiType;
 
 public class ResolveTypeElementTest extends ORBasePlatformTestCase {
 
+    public void test_Rml_basicSameFile() {
+        configureCode("A.rei", "type t; type t' = t<caret>;");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.t", ((PsiType) e.getParent()).getQualifiedName());
+    }
+
     public void test_Ns_SameNameWithPath() {
         configureCode("A.res", "type t;");
         configureCode("B.res", "type t = A.t<caret>;");
 
         PsiElement e = myFixture.getElementAtCaret();
-        assertInstanceOf(e, PsiType.class);
-        assertEquals("A.t", ((PsiType) e).getQualifiedName());
+        assertEquals("A.t", ((PsiType) e.getParent()).getQualifiedName());
     }
 
     public void test_Rml_SameNameWithPath() {
@@ -21,8 +27,7 @@ public class ResolveTypeElementTest extends ORBasePlatformTestCase {
         configureCode("B.re", "type t = A.t<caret>;");
 
         PsiElement e = myFixture.getElementAtCaret();
-        assertInstanceOf(e, PsiType.class);
-        assertEquals("A.t", ((PsiType) e).getQualifiedName());
+        assertEquals("A.t", ((PsiType) e.getParent()).getQualifiedName());
     }
 
     public void test_Ocl_SameNameWithPath() {
@@ -30,7 +35,6 @@ public class ResolveTypeElementTest extends ORBasePlatformTestCase {
         configureCode("B.ml", "type t = A.t<caret>");
 
         PsiElement e = myFixture.getElementAtCaret();
-        assertInstanceOf(e, PsiType.class);
-        assertEquals("A.t", ((PsiType) e).getQualifiedName());
+        assertEquals("A.t", ((PsiType) e.getParent()).getQualifiedName());
     }
 }
