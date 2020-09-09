@@ -63,7 +63,7 @@ public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiExceptionStub> im
 
     @Override
     public @Nullable String getAlias() {
-        //zzz PsiModuleStub stub = getGreenStub();
+        //PsiExceptionStub stub = getGreenStub(); zzz
         //if (stub != null) {
         //    return stub.getAlias();
         //}
