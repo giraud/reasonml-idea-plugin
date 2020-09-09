@@ -109,6 +109,14 @@ public class ParserScope {
         return m_compositeElementType == compositeType;
     }
 
+    boolean isCompositeIn(ORCompositeType... compositeType) {
+        for (ORCompositeType composite : compositeType) {
+            if (m_compositeElementType == composite)
+                return true;
+        }
+        return false;
+    }
+
     boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
         return m_scopeTokenElementType == tokenElementType;
     }

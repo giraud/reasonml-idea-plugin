@@ -107,6 +107,15 @@ public class ParserState {
         return false;
     }
 
+    public boolean inAny(ORCompositeType... composite) {
+        for (ParserScope scope : m_composites) {
+            if (scope.isCompositeIn(composite)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
         return is(compositeType);
     }
