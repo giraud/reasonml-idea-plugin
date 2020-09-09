@@ -96,10 +96,22 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     @Override
     public PsiElement resolve() {
         ResolveResult[] resolveResults = multiResolve(false);
-        if (resolveResults.length > 1) {
-            LOG.debug("Can't resolve element because too many results", resolveResults);
+        if (resolveResults.length > 0) {
+            if (resolveResults.length == 1) {
+                return resolveResults[0].getElement();
+            }
+            // return implementation if one exist
+            for (ResolveResult resolved : resolveResults) {
+                PsiElement element = resolved.getElement();
+                if (element != null) {
+                    FileBase file = (FileBase) element.getContainingFile();
+                    if (!file.isInterface()) {
+                        return element;
+                    }
+                }
+            }
         }
-        return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+        return null;
     }
 
     @Override

@@ -292,7 +292,7 @@ public final class PsiFinder {
         Set<T> result = new ArrayListSet<>();
         result.addAll(intfNames.values());
         for (Map.Entry<String, T> entry : implNames.entrySet()) {
-            if (!intfNames.containsKey(entry.getKey())) {
+            if (fileType == both || !intfNames.containsKey(entry.getKey())) {
                 result.add(entry.getValue());
             }
         }

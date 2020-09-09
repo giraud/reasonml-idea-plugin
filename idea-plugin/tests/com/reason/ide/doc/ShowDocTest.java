@@ -12,7 +12,7 @@ public class ShowDocTest extends ORBasePlatformTestCase {
 
     public void testMultipleSpaceTest() {
         FileBase f = configureCode("Doc.ml", "let x = 1;  \t\n  (** doc for x *)");
-        PsiLet e = BaseParsingTestCase.first(f.getExpressions("x", PsiLet.class));
+        PsiLet e = BaseParsingTestCase.first(f.getExpressions("Doc.x", PsiLet.class));
 
         // zzz
         //String doc = new DocumentationProvider().generateDoc(e.getNameIdentifier(), e.getNameIdentifier().getFirstChild());
