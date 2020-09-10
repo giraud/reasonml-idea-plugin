@@ -9,6 +9,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.impl.DebugUtil;
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
@@ -20,6 +24,10 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         System.out.println(DebugUtil.psiToString(file, true, true));
 
         return (FileBase) file;
+    }
+
+    protected PsiElement getNameIdentifier(PsiQualifiedElement e) {
+        return ORUtil.findImmediateFirstChildOfAnyClass(e, PsiUpperIdentifier.class, PsiLowerIdentifier.class);
     }
 
     protected PsiElement getFromCaret(PsiFile f) {

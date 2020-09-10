@@ -1,6 +1,7 @@
 package com.reason.lang.reason;
 
 import java.util.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
@@ -68,13 +69,11 @@ public class TypeParsingTest extends RmlParsingTestCase {
                 parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
 
         PsiSignature signature = e.getPsiSignature();
-        List<PsiSignatureItem> signatureItems = new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
+        @NotNull PsiSignatureItem[] signatureItems = signature.asHMSignature().getItems();
 
-        assertSize(4, signatureItems);
-        assertEquals("reactClass", signatureItems.get(0).getText());
-        assertEquals("Js.t({..})=?", signatureItems.get(1).getText());
-        assertEquals("array(reactElement)", signatureItems.get(2).getText());
-        assertEquals("reactElement", signatureItems.get(3).getText());
+        assertSize(4, signatureItems); // zzz
+        assertEquals("(reactClass, ~props: Js.t({..})=?, array(reactElement))", signatureItems[0].getText());
+        assertEquals("reactElement", signatureItems[3].getText());
     }
 
     public void test_JsObject() {

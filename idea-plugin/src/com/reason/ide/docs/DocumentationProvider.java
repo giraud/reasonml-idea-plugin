@@ -71,7 +71,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             if (!text.isEmpty()) {
                 return DocFormatter.format(element.getContainingFile(), element, text);
             }
-        } else if (element instanceof PsiUpperSymbol || element instanceof PsiLowerSymbol) {
+        } else if (element instanceof PsiUpperIdentifier || element instanceof PsiLowerIdentifier) {
             element = element.getParent();
 
             // If it's an alias, resolve to the alias

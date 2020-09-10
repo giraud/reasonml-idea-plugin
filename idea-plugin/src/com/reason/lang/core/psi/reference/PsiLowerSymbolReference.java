@@ -261,7 +261,7 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         ResolveResult[] resolveResults = new ResolveResult[result.size()];
         int i = 0;
         for (PsiElement element : result) {
-            resolveResults[i] = new LowerResolveResult(element);
+            resolveResults[i] = new LowerResolveResult(element, m_referenceName);
             i++;
         }
 
@@ -402,9 +402,20 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
     private static class LowerResolveResult implements ResolveResult {
         private final PsiElement m_referencedIdentifier;
 
-        public LowerResolveResult(PsiElement referencedElement) {
-            PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiLowerIdentifier.class);
-            m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+        public LowerResolveResult(PsiElement referencedElement, String sourceName) {
+            if (referencedElement instanceof PsiLet && ((PsiLet) referencedElement).isDeconsruction()) {
+                PsiElement identifierElement = referencedElement;
+                for (PsiElement deconstructedElement : ((PsiLet) referencedElement).getDeconstructedElements()) {
+                    if (deconstructedElement.getText().equals(sourceName)) {
+                        identifierElement = deconstructedElement;
+                        break;
+                    }
+                }
+                m_referencedIdentifier = identifierElement;
+            } else {
+                PsiLowerIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiLowerIdentifier.class);
+                m_referencedIdentifier = identifier == null ? referencedElement : identifier;
+            }
         }
 
         @Nullable

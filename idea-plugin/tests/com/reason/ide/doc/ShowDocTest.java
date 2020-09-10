@@ -14,9 +14,8 @@ public class ShowDocTest extends ORBasePlatformTestCase {
         FileBase f = configureCode("Doc.ml", "let x = 1;  \t\n  (** doc for x *)");
         PsiLet e = BaseParsingTestCase.first(f.getExpressions("Doc.x", PsiLet.class));
 
-        // zzz
-        //String doc = new DocumentationProvider().generateDoc(e.getNameIdentifier(), e.getNameIdentifier().getFirstChild());
-        //assertNotNull(doc);
+        String doc = new DocumentationProvider().generateDoc(getNameIdentifier(e), getNameIdentifier(e).getFirstChild());
+        assertNotNull(doc);
     }
 
     public void testGH_155() {
@@ -34,5 +33,4 @@ public class ShowDocTest extends ORBasePlatformTestCase {
         ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
         // TODO test !?
     }
-
 }

@@ -557,7 +557,9 @@ public class NsParser extends CommonParser<NsTypes> {
                 }
             }
 
-            if (!state.isCurrentResolution(jsxTagProperty)) {
+            if (state.is(m_types.C_DECONSTRUCTION)) {
+                state.wrapWith(m_types.C_LOWER_IDENTIFIER);
+            } else if (!state.isCurrentResolution(jsxTagProperty)) {
                 state.wrapWith(m_types.C_LOWER_SYMBOL);
             }
         }
