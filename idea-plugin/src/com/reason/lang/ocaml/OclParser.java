@@ -207,10 +207,14 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseComma(@NotNull ParserState state) {
         if (state.isCurrentResolution(genericExpression) && state.isPreviousResolution(let)) {
-            // It must be a deconstruction
-            // let ( a |>,<| b ) = ..
-            state.updateCurrentResolution(deconstruction).
-                    updateCurrentCompositeElementType(m_types.C_DECONSTRUCTION);
+            // It must be a deconstruction ::  let ( a |>,<| b ) = ...
+            // We need to do it again because lower symbols must be wrapped with identifiers
+            ParserScope scope = state.pop();
+            if (scope != null) {
+                scope.rollbackTo();
+                state.markScope(deconstruction, m_types.C_DECONSTRUCTION, m_types.LPAREN).
+                        advance();
+            }
         }
     }
 
@@ -752,6 +756,8 @@ public class OclParser extends CommonParser<OclTypes> {
         } else if (state.isCurrentResolution(clazz)) {
             state.updateCurrentResolution(clazzNamed).
                     wrapWith(m_types.C_LOWER_IDENTIFIER);
+        } else if (state.is(m_types.C_DECONSTRUCTION)) {
+            state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else {
             state.wrapWith(m_types.C_LOWER_SYMBOL);
         }

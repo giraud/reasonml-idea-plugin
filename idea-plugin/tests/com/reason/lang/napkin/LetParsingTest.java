@@ -17,6 +17,7 @@ import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.psi.PsiTag;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 
 import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
@@ -152,7 +153,9 @@ public class LetParsingTest extends NsParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
         assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
     }
 
     public void test_function_record() {

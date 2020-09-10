@@ -315,10 +315,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.mark(recordField, isJsObjectField ? m_types.C_OBJECT_FIELD : m_types.C_RECORD_FIELD);
             }
         } else if (state.isPreviousResolution(let) && state.isCurrentResolution(genericExpression)) {
-            // It must be a deconstruction
-            // let ( a |>,<| b ) = ...
-            state.updateCurrentResolution(deconstruction).
-                    updateCurrentCompositeElementType(m_types.C_DECONSTRUCTION);
+            // It must be a deconstruction ::  let ( a |>,<| b ) = ...
+            // We need to do it again because lower symbols must be wrapped with identifiers
+            ParserScope scope = state.pop();
+            if (scope != null) {
+                scope.rollbackTo();
+                state.markScope(deconstruction, m_types.C_DECONSTRUCTION, m_types.LPAREN).
+                        advance();
+            }
         } else if (state.isCurrentResolution(functionCallParams) || state.isCurrentResolution(functionParameters)) {
             state.advance();
             IElementType nextTokenType = state.getTokenType();
@@ -660,7 +664,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 }
             }
 
-            if (!state.isCurrentResolution(jsxTagProperty)) {
+            if (state.is(m_types.C_DECONSTRUCTION)) {
+                state.wrapWith(m_types.C_LOWER_IDENTIFIER);
+            } else if (!state.isCurrentResolution(jsxTagProperty)) {
                 state.wrapWith(m_types.C_LOWER_SYMBOL);
             }
         }

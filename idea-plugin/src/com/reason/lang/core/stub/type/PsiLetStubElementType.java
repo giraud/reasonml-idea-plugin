@@ -9,6 +9,7 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
@@ -36,7 +37,7 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet> 
         if (psi.isDeconsruction()) {
             List<PsiElement> elements = psi.getDeconstructedElements();
             for (PsiElement element : elements) {
-                if (element instanceof PsiLowerSymbol) {
+                if (element instanceof PsiLowerIdentifier) {
                     deconstructedNames.add(element.getText());
                 }
             }
