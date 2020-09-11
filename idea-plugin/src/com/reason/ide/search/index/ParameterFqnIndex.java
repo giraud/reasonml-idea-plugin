@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class ParameterFqnIndex extends IntStubIndexExtension<PsiParameter> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final ParameterFqnIndex INSTANCE = new ParameterFqnIndex();
 
     @NotNull

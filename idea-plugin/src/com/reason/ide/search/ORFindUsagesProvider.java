@@ -8,7 +8,6 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
@@ -30,9 +29,9 @@ public abstract class ORFindUsagesProvider implements com.intellij.lang.findUsag
     @Override
     public WordsScanner getWordsScanner() {
         return new DefaultWordsScanner(m_lexer, //
-                                       TokenSet.create((IElementType) m_types.C_UPPER_IDENTIFIER, (IElementType) m_types.C_LOWER_IDENTIFIER), //
+                                       TokenSet.create(m_types.UIDENT, m_types.LIDENT), //
                                        TokenSet.EMPTY, //
-                                       TokenSet.create((IElementType) m_types.C_UPPER_SYMBOL, (IElementType) m_types.C_LOWER_SYMBOL));
+                                       TokenSet.EMPTY);
     }
 
     @Override

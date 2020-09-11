@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class ExceptionFqnIndex extends IntStubIndexExtension<PsiException> {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final ExceptionFqnIndex INSTANCE = new ExceptionFqnIndex();
 
     @NotNull

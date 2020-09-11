@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     @Override
     public int getVersion() {

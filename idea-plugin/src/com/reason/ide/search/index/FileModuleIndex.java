@@ -26,10 +26,11 @@ import com.reason.ide.search.FileModuleData;
 
 public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleData> {
 
+    private static final int VERSION = 7;
+
     private static final Log LOG = Log.create("index.file");
 
     private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
-    private static final int VERSION = 6;
     private static final FileModuleIndex INSTANCE = new FileModuleIndex();
 
     @NotNull

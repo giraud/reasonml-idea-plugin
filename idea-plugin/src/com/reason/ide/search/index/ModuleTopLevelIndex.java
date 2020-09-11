@@ -6,7 +6,7 @@ import com.reason.lang.core.psi.PsiFakeModule;
 import org.jetbrains.annotations.NotNull;
 
 public class ModuleTopLevelIndex extends StringStubIndexExtension<PsiFakeModule> {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final ModuleTopLevelIndex INSTANCE = new ModuleTopLevelIndex();
 
     @NotNull

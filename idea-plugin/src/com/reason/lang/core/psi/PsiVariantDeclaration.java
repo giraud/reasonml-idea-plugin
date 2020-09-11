@@ -36,10 +36,15 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
-    @NotNull
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
+    }
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiUpperIdentifier id = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        return id == null ? this : id;
     }
 
     @NotNull
