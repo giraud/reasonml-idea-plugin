@@ -179,6 +179,7 @@ public class LetParsingTest extends RmlParsingTestCase {
         assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
         assertEquals("b", names.get(1).getText());
         assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiLowerIdentifier.class));
     }
 
     public void test_operator() {

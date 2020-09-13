@@ -335,7 +335,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             ParserScope scope = state.pop();
             if (scope != null) {
                 scope.rollbackTo();
-                state.markScope(deconstruction, m_types.C_DECONSTRUCTION, m_types.LPAREN).
+                state.updateCurrentResolution(letNamed).
+                        markScope(deconstruction, m_types.C_DECONSTRUCTION, m_types.LPAREN).
                         advance();
             }
         } else if (state.isCurrentResolution(functionCallParams) || state.isCurrentResolution(functionParameters)) {
