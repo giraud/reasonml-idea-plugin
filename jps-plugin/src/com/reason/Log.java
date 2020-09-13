@@ -139,7 +139,7 @@ public class Log {
         }
     }
 
-    public void debug(String comment, @Nullable Collection<? extends PsiElement> t) {
+    public void debug(String comment, @Nullable Collection<?> t) {
         if (m_log.isDebugEnabled()) {
             m_log.debug(comment + SEP + (t == null ? "" : t.size() + " ") + "[" + Joiner.join(", ", t) + "]");
         }

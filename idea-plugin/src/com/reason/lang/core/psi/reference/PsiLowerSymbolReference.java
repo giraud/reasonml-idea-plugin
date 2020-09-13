@@ -15,6 +15,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
@@ -399,10 +400,10 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         }
     }
 
-    private static class LowerResolveResult implements ResolveResult {
+    public static class LowerResolveResult implements ResolveResult {
         private final PsiElement m_referencedIdentifier;
 
-        public LowerResolveResult(PsiElement referencedElement, String sourceName) {
+        public LowerResolveResult(@NotNull PsiElement referencedElement, String sourceName) {
             if (referencedElement instanceof PsiLet && ((PsiLet) referencedElement).isDeconsruction()) {
                 PsiElement identifierElement = referencedElement;
                 for (PsiElement deconstructedElement : ((PsiLet) referencedElement).getDeconstructedElements()) {
@@ -427,6 +428,10 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         @Override
         public boolean isValidResult() {
             return true;
+        }
+
+        public boolean isInterface() {
+            return FileHelper.isInterface(m_referencedIdentifier.getContainingFile().getFileType());
         }
     }
 }

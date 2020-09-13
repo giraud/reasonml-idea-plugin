@@ -1,5 +1,6 @@
 package com.reason.ide.docs;
 
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
@@ -9,8 +10,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
@@ -26,12 +29,12 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
+import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
@@ -129,14 +132,12 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     private PsiElement findBelowComment(@Nullable PsiElement element) {
-        if (element == null) {
-            return null;
-        }
-
-        PsiElement nextSibling = element.getNextSibling();
-        PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
-        if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
-            return nextNextSibling;
+        if (element != null) {
+            PsiElement nextSibling = element.getNextSibling();
+            PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
+            if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
+                return nextNextSibling;
+            }
         }
 
         return null;
@@ -219,8 +220,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     @Override
-    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement,
-                                                    int targetOffset) {
+    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
         if (contextElement != null && contextElement.getParent() instanceof PsiFunctionCallParams && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
@@ -229,6 +229,19 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 PsiReference reference = prevSibling.getReference();
                 if (reference != null) {
                     return reference.resolve();
+                }
+            }
+        }
+
+        if (contextElement != null && contextElement.getParent() instanceof PsiLowerSymbol) {
+            PsiReference reference = contextElement.getParent().getReference();
+            if (reference instanceof PsiPolyVariantReference) {
+                PsiLowerSymbolReference lowerReference = (PsiLowerSymbolReference) reference;
+                ResolveResult[] resolveResults = lowerReference.multiResolve(false);
+                if (0 < resolveResults.length) {
+                    Arrays.sort(resolveResults, (rr1, rr2) -> ((PsiLowerSymbolReference.LowerResolveResult) rr1).isInterface() ? -1 :
+                            (((PsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
+                    return resolveResults[0].getElement();
                 }
             }
         }
