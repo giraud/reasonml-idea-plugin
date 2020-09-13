@@ -252,7 +252,7 @@ public class NsParser extends CommonParser<NsTypes> {
                 if (isTypeResolution(latestScope)) {
                     state.markStart(type, m_types.C_TYPE_DECLARATION);
                 } else if (isLetResolution(latestScope)) {
-                    state.markStart(let, m_types.C_EXPR_LET);
+                    state.markStart(let, m_types.C_LET_DECLARATION);
                 } else if (isModuleResolution(latestScope)) {
                     state.markStart(module, m_types.C_MODULE_DECLARATION);
                 }
@@ -352,7 +352,7 @@ public class NsParser extends CommonParser<NsTypes> {
 
     private void parseLet(@NotNull ParserState state) {
         endLikeSemi(state);
-        state.markStart(let, m_types.C_EXPR_LET);
+        state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
     private void parseModule(@NotNull ParserState state) {
@@ -379,7 +379,7 @@ public class NsParser extends CommonParser<NsTypes> {
 
     private void parseExternal(@NotNull ParserState state) {
         endLikeSemi(state);
-        state.markStart(external, m_types.C_EXPR_EXTERNAL);
+        state.markStart(external, m_types.C_EXTERNAL_DECLARATION);
     }
 
     private void parseOpen(@NotNull ParserState state) {

@@ -1,5 +1,6 @@
 package com.reason.ide.docs;
 
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.Language;
@@ -9,8 +10,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.ResolveResult;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
@@ -24,14 +27,13 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
+import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
@@ -129,14 +131,12 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     private PsiElement findBelowComment(@Nullable PsiElement element) {
-        if (element == null) {
-            return null;
-        }
-
-        PsiElement nextSibling = element.getNextSibling();
-        PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
-        if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
-            return nextNextSibling;
+        if (element != null) {
+            PsiElement nextSibling = element.getNextSibling();
+            PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
+            if (nextNextSibling instanceof PsiComment && nextSibling instanceof PsiWhiteSpace && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
+                return nextNextSibling;
+            }
         }
 
         return null;
@@ -151,49 +151,45 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
-            PsiElement resolvedElement = reference.resolve();
+            PsiElement resolvedIdentifier = reference.resolve();
 
-            if (resolvedElement instanceof ORFakeResolvedElement) {
+            if (resolvedIdentifier instanceof ORFakeResolvedElement) {
                 // A fake element, used to query inferred types
-                return "Show usages of fake element '" + resolvedElement.getText() + "'";
+                return "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
             }
 
-            if (resolvedElement instanceof FileBase) {
-                FileBase resolvedFile = (FileBase) resolvedElement;
+            if (resolvedIdentifier instanceof FileBase) {
+                FileBase resolvedFile = (FileBase) resolvedIdentifier;
                 String relative_path = Platform.removeProjectDir(resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
-                return relative_path + "<br/>" + resolvedElement.getContainingFile();
+                return relative_path + "<br/>" + resolvedIdentifier.getContainingFile();
             }
 
-            //if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
-            //    resolvedElement = resolvedElement.getParent();
-            //}
-            if (resolvedElement instanceof PsiLowerIdentifier || resolvedElement instanceof PsiUpperIdentifier) {
-                resolvedElement = resolvedElement.getParent();
-            }
+            PsiElement resolvedElement = (resolvedIdentifier instanceof PsiLowerIdentifier || resolvedIdentifier instanceof PsiUpperIdentifier) ?
+                    resolvedIdentifier.getParent() : resolvedIdentifier;
 
             if (resolvedElement instanceof PsiType) {
                 PsiType type = (PsiType) resolvedElement;
                 String path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
-                return createQuickDocTemplate(path, "type", resolvedElement.getText(), typeBinding);
+                return createQuickDocTemplate(path, "type", resolvedIdentifier.getText(), typeBinding);
             }
 
-            if (resolvedElement instanceof PsiSignatureElement) {
-                ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
-                if (!signature.isEmpty()) {
-                    String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
-                    if (resolvedElement instanceof PsiQualifiedElement) {
-                        PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedElement;
-                        String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                        return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
-                    }
-                    return sig;
-                }
-            }
+            //if (resolvedElement instanceof PsiSignatureElement) {
+            //    ORSignature signature = ((PsiSignatureElement) resolvedIdentifier).getORSignature();
+            //    if (!signature.isEmpty()) {
+            //        String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
+            //        if (resolvedIdentifier instanceof PsiQualifiedElement) {
+            //            PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedIdentifier;
+            //            String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
+            //            return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
+            //        }
+            //        return sig;
+            //    }
+            //}
 
             // No signature found, but resolved
             if (resolvedElement instanceof PsiQualifiedElement) {
-                String elementType = PsiTypeElementProvider.getType(resolvedElement);
+                String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
                 String desc = ((PsiQualifiedElement) resolvedElement).getName();
                 String path = ORUtil.getQualifiedPath((PsiQualifiedElement) resolvedElement);
 
@@ -219,8 +215,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     @Nullable
     @Override
-    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement,
-                                                    int targetOffset) {
+    public PsiElement getCustomDocumentationElement(@NotNull Editor editor, @NotNull PsiFile file, @Nullable PsiElement contextElement, int targetOffset) {
         // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
         // functionName(<caret>) ==> functionName<caret>()
         if (contextElement != null && contextElement.getParent() instanceof PsiFunctionCallParams && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
@@ -229,6 +224,19 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
                 PsiReference reference = prevSibling.getReference();
                 if (reference != null) {
                     return reference.resolve();
+                }
+            }
+        }
+
+        if (contextElement != null && contextElement.getParent() instanceof PsiLowerSymbol) {
+            PsiReference reference = contextElement.getParent().getReference();
+            if (reference instanceof PsiPolyVariantReference) {
+                PsiLowerSymbolReference lowerReference = (PsiLowerSymbolReference) reference;
+                ResolveResult[] resolveResults = lowerReference.multiResolve(false);
+                if (0 < resolveResults.length) {
+                    Arrays.sort(resolveResults, (rr1, rr2) -> ((PsiLowerSymbolReference.LowerResolveResult) rr1).isInterface() ? -1 :
+                            (((PsiLowerSymbolReference.LowerResolveResult) rr2).isInterface() ? 1 : 0));
+                    return resolveResults[0].getElement();
                 }
             }
         }

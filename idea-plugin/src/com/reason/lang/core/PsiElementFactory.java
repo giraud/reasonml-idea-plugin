@@ -86,7 +86,7 @@ public class PsiElementFactory {
     public static PsiElement createElement(@NotNull ORTypes types, @NotNull ASTNode node) {
         IElementType type = node.getElementType();
 
-        if (type == types.C_EXPR_EXTERNAL) {
+        if (type == types.C_EXTERNAL_DECLARATION) {
             return new PsiExternalImpl(types, node);
         } else if (type == types.C_EXCEPTION_DECLARATION) {
             return new PsiExceptionImpl(types, node);
@@ -124,13 +124,13 @@ public class PsiElementFactory {
             return new PsiDirective(node);
         } else if (type == types.C_MODULE_PATH) {
             return new PsiModulePath(node);
-        } else if (type == types.C_EXPR_LET) {
+        } else if (type == types.C_LET_DECLARATION) {
             return new PsiLetImpl(types, node);
         } else if (type == types.C_LET_ATTR) {
             return new PsiLetAttribute(node);
         } else if (type == types.C_LET_BINDING) {
             return new PsiLetBinding(node);
-        } else if (type == types.C_EXPR_VAL) {
+        } else if (type == types.C_VAL_DECLARATION) {
             return new PsiValImpl(types, node);
         } else if (type == types.C_ANNOTATION) {
             return new PsiAnnotationImpl(types, node);

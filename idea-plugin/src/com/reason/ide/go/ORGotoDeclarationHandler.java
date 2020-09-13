@@ -30,6 +30,7 @@ public class ORGotoDeclarationHandler extends GotoDeclarationHandlerBase {
                             }
                         }
                     }
+                    return resolveResults[0].getElement();
                 }
             }
         }

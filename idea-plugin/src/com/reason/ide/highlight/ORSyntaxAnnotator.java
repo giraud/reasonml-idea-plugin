@@ -12,6 +12,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;
@@ -39,6 +40,9 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             IElementType nextElementType = nextElement == null ? null : nextElement.getNode().getElementType();
             if (nextElementType == m_types.DOT) {
                 holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.MODULE_NAME_));
+            } else {
+                // a guess
+                holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.VARIANT_NAME_));
             }
         } else if (elementType == m_types.C_VARIANT_DECL) {
             PsiElement identifier = element.getNavigationElement();

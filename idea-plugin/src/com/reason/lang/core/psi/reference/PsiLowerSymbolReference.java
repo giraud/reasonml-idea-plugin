@@ -13,8 +13,10 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.Joiner;
 import com.reason.Log;
-import com.reason.ide.files.FileBase;
+import com.reason.Platform;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
@@ -254,8 +256,13 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
             }
         }
 
+        // return implementation if an interface file exists
+        result.sort((item1, item2) -> FileHelper.isInterface(item1.getContainingFile().getFileType()) ? 1 :
+                (FileHelper.isInterface(item2.getContainingFile().getFileType()) ? -1 : 0));
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  => resolved to", result);
+            LOG.debug("  => found", Joiner.join(", ", result, item -> ((PsiQualifiedElement) item).getQualifiedName() + " [" + Platform
+                    .removeProjectDir(item.getProject(), item.getContainingFile().getVirtualFile().getPath()) + "]"));
         }
 
         ResolveResult[] resolveResults = new ResolveResult[result.size()];
@@ -272,22 +279,7 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
     @Override
     public PsiElement resolve() {
         ResolveResult[] resolveResults = multiResolve(false);
-        if (resolveResults.length > 0) {
-            if (resolveResults.length == 1) {
-                return resolveResults[0].getElement();
-            }
-            // return implementation if one exist
-            for (ResolveResult resolved : resolveResults) {
-                PsiElement element = resolved.getElement();
-                if (element != null) {
-                    FileBase file = (FileBase) element.getContainingFile();
-                    if (!file.isInterface()) {
-                        return element;
-                    }
-                }
-            }
-        }
-        return null;
+        return 0 < resolveResults.length ? resolveResults[0].getElement() : null;
     }
 
     @Override
@@ -399,10 +391,10 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         }
     }
 
-    private static class LowerResolveResult implements ResolveResult {
+    public static class LowerResolveResult implements ResolveResult {
         private final PsiElement m_referencedIdentifier;
 
-        public LowerResolveResult(PsiElement referencedElement, String sourceName) {
+        public LowerResolveResult(@NotNull PsiElement referencedElement, String sourceName) {
             if (referencedElement instanceof PsiLet && ((PsiLet) referencedElement).isDeconsruction()) {
                 PsiElement identifierElement = referencedElement;
                 for (PsiElement deconstructedElement : ((PsiLet) referencedElement).getDeconstructedElements()) {
@@ -427,6 +419,10 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         @Override
         public boolean isValidResult() {
             return true;
+        }
+
+        public boolean isInterface() {
+            return FileHelper.isInterface(m_referencedIdentifier.getContainingFile().getFileType());
         }
     }
 }
