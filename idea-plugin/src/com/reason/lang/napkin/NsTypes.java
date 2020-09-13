@@ -26,10 +26,10 @@ public class NsTypes extends ORTypes {
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", NsLanguage.INSTANCE);
         C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", NsLanguage.INSTANCE);
-        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", NsLanguage.INSTANCE);
-        C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", NsLanguage.INSTANCE);
+        C_EXTERNAL_DECLARATION = new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", NsLanguage.INSTANCE);
+        C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", NsLanguage.INSTANCE);
         C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", NsLanguage.INSTANCE);
-        C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", NsLanguage.INSTANCE);
+        C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", NsLanguage.INSTANCE);
 
         // Stubbed element types
 

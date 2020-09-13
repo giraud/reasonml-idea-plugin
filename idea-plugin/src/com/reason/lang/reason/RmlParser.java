@@ -302,7 +302,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                         markStart(type, m_types.C_TYPE_DECLARATION);
             } else if (isLetResolution(latestScope)) {
                 state.advance().
-                        markStart(let, m_types.C_EXPR_LET);
+                        markStart(let, m_types.C_LET_DECLARATION);
             } else if (isModuleResolution(latestScope)) {
                 state.advance().
                         markStart(module, m_types.C_MODULE_DECLARATION);
@@ -426,7 +426,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseLet(@NotNull ParserState state) {
         state.popEndUntilScope();
-        state.markStart(let, m_types.C_EXPR_LET);
+        state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
     private void parseVal(@NotNull ParserState state) {
@@ -474,7 +474,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseExternal(@NotNull ParserState state) {
         state.popEndUntilScope();
-        state.markStart(external, m_types.C_EXPR_EXTERNAL);
+        state.markStart(external, m_types.C_EXTERNAL_DECLARATION);
     }
 
     private void parseOpen(@NotNull ParserState state) {

@@ -26,10 +26,10 @@ public class OclTypes extends ORTypes {
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", OclLanguage.INSTANCE);
         C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", OclLanguage.INSTANCE);
-        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", OclLanguage.INSTANCE);
-        C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", OclLanguage.INSTANCE);
+        C_EXTERNAL_DECLARATION = new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", OclLanguage.INSTANCE);
+        C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", OclLanguage.INSTANCE);
         C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", OclLanguage.INSTANCE);
-        C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", OclLanguage.INSTANCE);
+        C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", OclLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", OclLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", OclLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);

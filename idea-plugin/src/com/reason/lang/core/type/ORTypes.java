@@ -6,10 +6,10 @@ public abstract class ORTypes {
     public ORCompositeType C_CLASS_DECLARATION;
     public ORCompositeType C_EXCEPTION_DECLARATION;
     public ORCompositeType C_TYPE_DECLARATION;
-    public ORCompositeType C_EXPR_EXTERNAL;
-    public ORCompositeType C_EXPR_LET;
+    public ORCompositeType C_EXTERNAL_DECLARATION;
+    public ORCompositeType C_LET_DECLARATION;
     public ORCompositeType C_MODULE_DECLARATION;
-    public ORCompositeType C_EXPR_VAL;
+    public ORCompositeType C_VAL_DECLARATION;
 
     // Stubbed element types
 
