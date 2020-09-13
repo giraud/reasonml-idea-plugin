@@ -108,7 +108,7 @@ public class PsiElementFactory {
             return new PsiInnerModuleImpl(types, node);
         } else if (type == types.C_UPPER_IDENTIFIER) {
             return new PsiUpperIdentifier(types, node);
-        } else if (type == types.C_CLASS_STMT) {
+        } else if (type == types.C_CLASS_DECLARATION) {
             return new PsiClassImpl(types, node);
         } else if (type == types.C_CLASS_PARAMS) {
             return new PsiClassParameters(node);

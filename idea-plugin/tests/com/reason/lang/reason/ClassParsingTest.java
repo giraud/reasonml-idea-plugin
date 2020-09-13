@@ -7,10 +7,11 @@ import com.reason.lang.core.psi.PsiClassMethod;
 
 public class ClassParsingTest extends RmlParsingTestCase {
     public void test_basic() {
-        Collection<PsiClass> classes = classExpressions(parseCode("class foo = {  as _; }"));
+        Collection<PsiClass> classes = classExpressions(parseCode("class foo = { as _; }"));
 
         assertEquals(1, classes.size());
         assertEquals("foo", first(classes).getName());
+        assertEquals("{ as _; }", first(classes).getClassBody().getText());
     }
 
     public void test_classType() {

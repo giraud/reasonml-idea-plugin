@@ -458,7 +458,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseClass(@NotNull ParserState state) {
         state.popEndUntilScope();
-        state.markStart(clazz, m_types.C_CLASS_STMT);
+        state.markStart(clazz, m_types.C_CLASS_DECLARATION);
     }
 
     private void parseType(@NotNull ParserState state) {
@@ -757,10 +757,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(moduleNamedSignature)) {
             state.markScope(signature, m_types.C_SCOPED_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(letBinding)) {
-            // let x = |>{<| ...
+            // let x = |>{<| ... }
             state.markScope(maybeRecordUsage, m_types.C_SCOPED_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(clazzNamedEq)) {
-            state.markScope(clazzBody, m_types.C_SCOPED_EXPR, m_types.LBRACE);
+            // class x = |>{<| ... }
+            state.markScope(clazzBody, m_types.C_OBJECT, m_types.LBRACE);
         } else if (state.isCurrentResolution(switch_)) {
             state.markScope(switchBody, m_types.C_SCOPED_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(functionParameters)) {

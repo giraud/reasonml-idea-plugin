@@ -504,9 +504,9 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseObject(@NotNull ParserState state) {
-        if (state.isCurrentResolution(clazzNamedEq)) {
-            state.markScope(clazzBody, m_types.C_SCOPED_EXPR, m_types.OBJECT);
-        }
+        //        if (state.isCurrentResolution(clazzNamedEq)) {
+        state.markScope(clazzBody, m_types.C_OBJECT, m_types.OBJECT);
+        //}
     }
 
     private void parseEnd(@NotNull ParserState state) {
@@ -520,11 +520,14 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseColon(@NotNull ParserState state) {
         if (state.isCurrentResolution(moduleNamed)) {
+            // module M |> : <| ...
             state.updateCurrentResolution(moduleNamedColon);
-        } else if (state.isCurrentResolution(externalNamed) || state.isCurrentResolution(valNamed) || state.isCurrentResolution(letNamed)) {
+        } else if (state.isCurrentResolution(externalNamed) || state.isCurrentResolution(valNamed) || state.isCurrentResolution(letNamed) || state
+                .is(m_types.C_CLASS_DECLARATION)) {
             // external x |> : <| ...
             // val x |> : <| ...
-            // let x |> : <|
+            // let x |> : <| ...
+            // class x |> : <| ...
             state.advance().
                     mark(signature, m_types.C_SIG_EXPR).
                     mark(signatureItem, m_types.C_SIG_ITEM);
@@ -913,7 +916,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseClass(@NotNull ParserState state) {
         endLikeSemi(state);
-        state.markStart(clazz, m_types.C_CLASS_STMT);
+        state.markStart(clazz, m_types.C_CLASS_DECLARATION);
     }
 
     private void endLikeSemi(@NotNull ParserState state) {
