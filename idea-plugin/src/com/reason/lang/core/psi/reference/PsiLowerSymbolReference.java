@@ -13,7 +13,9 @@ import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.Joiner;
 import com.reason.Log;
+import com.reason.Platform;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
@@ -254,8 +256,13 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
             }
         }
 
+        // return implementation if an interface file exists
+        result.sort((item1, item2) -> FileHelper.isInterface(item1.getContainingFile().getFileType()) ? -1 :
+                (FileHelper.isInterface(item2.getContainingFile().getFileType()) ? 1 : 0));
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug("  => resolved to", result);
+            LOG.debug("  => found", Joiner.join(", ", result, item -> ((PsiQualifiedElement) item).getQualifiedName() + " [" + Platform
+                    .removeProjectDir(item.getProject(), item.getContainingFile().getVirtualFile().getPath()) + "]"));
         }
 
         ResolveResult[] resolveResults = new ResolveResult[result.size()];
@@ -272,17 +279,7 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
     @Override
     public PsiElement resolve() {
         ResolveResult[] resolveResults = multiResolve(false);
-        if (resolveResults.length > 0) {
-            if (resolveResults.length == 1) {
-                return resolveResults[0].getElement();
-            }
-            // return implementation if an interface file exists
-            Arrays.sort(resolveResults, (o1, o2) -> FileHelper.isInterface(o1.getElement().getContainingFile().getFileType()) ? 1 :
-                    (FileHelper.isInterface(o2.getElement().getContainingFile().getFileType()) ? -1 : 0));
-
-            resolveResults[0].getElement();
-        }
-        return null;
+        return 0 < resolveResults.length ? resolveResults[0].getElement() : null;
     }
 
     @Override
