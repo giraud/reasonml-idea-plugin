@@ -496,6 +496,9 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseIn(@NotNull ParserState state) {
+        if (state.is(m_types.C_TRY_HANDLER)) {
+            state.popEndUntilResolution(try_);
+        }
         state.popEnd();
     }
 
@@ -504,9 +507,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseObject(@NotNull ParserState state) {
-        //        if (state.isCurrentResolution(clazzNamedEq)) {
         state.markScope(clazzBody, m_types.C_OBJECT, m_types.OBJECT);
-        //}
     }
 
     private void parseEnd(@NotNull ParserState state) {
