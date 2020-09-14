@@ -14,7 +14,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.Log;
-import com.reason.ide.files.FileBase;
 import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
@@ -277,16 +276,11 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
             if (resolveResults.length == 1) {
                 return resolveResults[0].getElement();
             }
-            // return implementation if one exist
-            for (ResolveResult resolved : resolveResults) {
-                PsiElement element = resolved.getElement();
-                if (element != null) {
-                    FileBase file = (FileBase) element.getContainingFile();
-                    if (!file.isInterface()) {
-                        return element;
-                    }
-                }
-            }
+            // return implementation if an interface file exists
+            Arrays.sort(resolveResults, (o1, o2) -> FileHelper.isInterface(o1.getElement().getContainingFile().getFileType()) ? 1 :
+                    (FileHelper.isInterface(o2.getElement().getContainingFile().getFileType()) ? -1 : 0));
+
+            resolveResults[0].getElement();
         }
         return null;
     }

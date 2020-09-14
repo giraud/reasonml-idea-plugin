@@ -21,15 +21,16 @@ public class ORGotoDeclarationHandler extends GotoDeclarationHandlerBase {
                 ResolveResult[] resolveResults = ((PsiPolyVariantReference) reference).multiResolve(false);
                 if (resolveResults.length > 0) {
                     // return interface if one exist
-                    for (ResolveResult resolved : resolveResults) {
-                        PsiElement element = resolved.getElement();
-                        if (element != null) {
-                            FileBase file = (FileBase) element.getContainingFile();
-                            if (file.isInterface()) {
-                                return element;
-                            }
-                        }
-                    }
+                    //for (ResolveResult resolved : resolveResults) {
+                    //    PsiElement element = resolved.getElement();
+                    //    if (element != null) {
+                    //        FileBase file = (FileBase) element.getContainingFile();
+                            //if (file.isInterface()) {
+                            //    return element;
+                            //}
+                        //}
+                    //}
+                    return resolveResults[0].getElement();
                 }
             }
         }
