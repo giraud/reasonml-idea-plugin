@@ -63,6 +63,8 @@ public class NsParser extends CommonParser<NsTypes> {
                     parseEq(state);
                 } else if (tokenType == m_types.ARROW) {
                     parseArrow(state);
+                } else if (tokenType == m_types.REF) {
+                    parseRef(state);
                 } else if (tokenType == m_types.OPTION) {
                     parseOption(state);
                 } else if (tokenType == m_types.SOME) {
@@ -169,6 +171,13 @@ public class NsParser extends CommonParser<NsTypes> {
         endLikeSemi(state);
     }
 
+    private void parseRef(@NotNull ParserState state) {
+        if (state.is(m_types.C_TAG_START)) {
+            state.remapCurrentToken(m_types.PROPERTY_NAME).
+                    mark(jsxTagProperty, m_types.C_TAG_PROPERTY);
+        }
+    }
+
     private void parseOption(@NotNull ParserState state) {
         state.mark(option, m_types.C_OPTION);
     }
@@ -243,7 +252,7 @@ public class NsParser extends CommonParser<NsTypes> {
                 if (isTypeResolution(latestScope)) {
                     state.markStart(type, m_types.C_TYPE_DECLARATION);
                 } else if (isLetResolution(latestScope)) {
-                    state.markStart(let, m_types.C_EXPR_LET);
+                    state.markStart(let, m_types.C_LET_DECLARATION);
                 } else if (isModuleResolution(latestScope)) {
                     state.markStart(module, m_types.C_MODULE_DECLARATION);
                 }
@@ -343,7 +352,7 @@ public class NsParser extends CommonParser<NsTypes> {
 
     private void parseLet(@NotNull ParserState state) {
         endLikeSemi(state);
-        state.markStart(let, m_types.C_EXPR_LET);
+        state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
     private void parseModule(@NotNull ParserState state) {
@@ -370,7 +379,7 @@ public class NsParser extends CommonParser<NsTypes> {
 
     private void parseExternal(@NotNull ParserState state) {
         endLikeSemi(state);
-        state.markStart(external, m_types.C_EXPR_EXTERNAL);
+        state.markStart(external, m_types.C_EXTERNAL_DECLARATION);
     }
 
     private void parseOpen(@NotNull ParserState state) {

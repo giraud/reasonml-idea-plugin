@@ -1,6 +1,16 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.core.stub.type.*;
+import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
+import com.reason.lang.core.stub.type.PsiExternalStubElementType;
+import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiLetStubElementType;
+import com.reason.lang.core.stub.type.PsiParameterStubElementType;
+import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
+import com.reason.lang.core.stub.type.PsiTypeStubElementType;
+import com.reason.lang.core.stub.type.PsiValStubElementType;
+import com.reason.lang.core.stub.type.PsiVariantStubElementType;
 import com.reason.lang.core.type.ORCompositeElementType;
 import com.reason.lang.core.type.ORTokenElementType;
 import com.reason.lang.core.type.ORTypes;
@@ -16,14 +26,14 @@ public class RmlTypes extends ORTypes {
 
         C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", RmlLanguage.INSTANCE);
         C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", RmlLanguage.INSTANCE);
-        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXTERNAL_STMT", RmlLanguage.INSTANCE);
+        C_EXTERNAL_DECLARATION = new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", RmlLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", RmlLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", RmlLanguage.INSTANCE);
-        C_EXPR_LET = new PsiLetStubElementType("C_LET_STMT", RmlLanguage.INSTANCE);
+        C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", RmlLanguage.INSTANCE);
         C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", RmlLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", RmlLanguage.INSTANCE);
-        C_EXPR_VAL = new PsiValStubElementType("C_VAL_EXPR", RmlLanguage.INSTANCE);
+        C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", RmlLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
 
         // Composite element types
@@ -33,7 +43,7 @@ public class RmlTypes extends ORTypes {
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", RmlLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
         C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", RmlLanguage.INSTANCE);
-        C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", RmlLanguage.INSTANCE);
+        C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", RmlLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
         C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", RmlLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", RmlLanguage.INSTANCE);

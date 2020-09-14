@@ -1,5 +1,6 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
@@ -30,17 +31,38 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> im
 
     @Nullable
     public PsiElement getNameIdentifier() {
-        PsiElement firstChild = getFirstChild();
-        if (firstChild != null && firstChild.getNode().getElementType() == m_types.TILDE) {
-            return firstChild.getNextSibling();
+        PsiElement identifier = null;
+        PsiElement parent = getParent();
+        if (!(parent instanceof PsiFunctionCallParams)) {
+            identifier = getFirstChild();
+            if (identifier != null && identifier.getNode().getElementType() == m_types.TILDE) {
+                return identifier.getNextSibling();
+            }
         }
-        return firstChild;
+        return identifier;
     }
 
     @Override
-    public String getName() {
+    public @Nullable String getName() {
         PsiElement identifier = getNameIdentifier();
-        return identifier == null ? "" : identifier.getText();
+        if (identifier != null) {
+            return identifier.getText();
+        }
+
+        PsiElement parent = getParent();
+        if (parent instanceof PsiFunctionCallParams) {
+            List<PsiParameter> parameters = ((PsiFunctionCallParams) parent).getParametersList();
+            int i = 0;
+            for (PsiParameter parameter : parameters) {
+                if (parameter == this) {
+                    PsiElement prevSibling = parent.getPrevSibling();
+                    return (prevSibling == null ? "" : prevSibling.getText()) + "[" + i + "]";
+                }
+                i++;
+            }
+        }
+
+        return null;
     }
 
     @NotNull

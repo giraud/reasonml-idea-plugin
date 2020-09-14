@@ -55,4 +55,10 @@ public class ClassParsingTest extends OclParsingTestCase {
         assertEquals(clazz.getFields().size(), 1);
         assertEquals(clazz.getMethods().size(), 2);
     }
+
+    public void test_GH_268() {
+        PsiClass clazz = first(classExpressions(parseCode("class tag : text_tag -> object method as_tag : text_tag method connect : tag_signals end")));
+
+        assertEquals(clazz.getMethods().size(), 2);
+    }
 }

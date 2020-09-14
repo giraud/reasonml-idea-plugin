@@ -75,7 +75,7 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+    public ParserScope popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!m_composites.isEmpty()) {

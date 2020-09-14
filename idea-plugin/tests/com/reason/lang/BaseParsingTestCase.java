@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.impl.DebugUtil;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.testFramework.ParsingTestCase;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
@@ -73,6 +73,11 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
     @NotNull
     protected Collection<PsiClass> classExpressions(@NotNull PsiFile file) {
         return PsiFileHelper.getClassExpressions(file);
+    }
+
+    @NotNull
+    protected List<PsiLet> letAllExpressions(@NotNull PsiFile file) {
+        return new ArrayList<>(PsiTreeUtil.findChildrenOfType(file, PsiLet.class));
     }
 
     @NotNull

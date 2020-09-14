@@ -67,6 +67,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     parseUnderscore(state);
                 } else if (tokenType == m_types.ARROW) {
                     parseArrow(state);
+                } else if (tokenType == m_types.REF) {
+                    parseRef(state);
                 } else if (tokenType == m_types.OPTION) {
                     parseOption(state);
                 } else if (tokenType == m_types.SOME) {
@@ -123,6 +125,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     parseLBrace(state);
                 } else if (tokenType == m_types.RBRACE) {
                     parseRBrace(state);
+                }
+                // [| ... |]
+                else if (tokenType == m_types.LARRAY) {
+                    parseLArray(state);
+                } else if (tokenType == m_types.RARRAY) {
+                    parseRArray(state);
                 }
                 // [ ... ]
                 // [> ... ]
@@ -192,8 +200,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
     }
 
+    private void parseRef(@NotNull ParserState state) {
+        if (state.is(m_types.C_TAG_START)) {
+            state.remapCurrentToken(m_types.PROPERTY_NAME).
+                    mark(jsxTagProperty, m_types.C_TAG_PROPERTY);
+        }
+    }
+
     private void parseOption(@NotNull ParserState state) {
-        //state.mark(option, m_types.C_OPTION);
+        state.mark(option, m_types.C_OPTION);
     }
 
     private void parseSome(@NotNull ParserState state) {
@@ -287,7 +302,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
                         markStart(type, m_types.C_TYPE_DECLARATION);
             } else if (isLetResolution(latestScope)) {
                 state.advance().
-                        markStart(let, m_types.C_EXPR_LET);
+                        markStart(let, m_types.C_LET_DECLARATION);
             } else if (isModuleResolution(latestScope)) {
                 state.advance().
                         markStart(module, m_types.C_MODULE_DECLARATION);
@@ -320,7 +335,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
             ParserScope scope = state.pop();
             if (scope != null) {
                 scope.rollbackTo();
-                state.markScope(deconstruction, m_types.C_DECONSTRUCTION, m_types.LPAREN).
+                state.updateCurrentResolution(letNamed).
+                        markScope(deconstruction, m_types.C_DECONSTRUCTION, m_types.LPAREN).
                         advance();
             }
         } else if (state.isCurrentResolution(functionCallParams) || state.isCurrentResolution(functionParameters)) {
@@ -386,7 +402,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseMlStringClose(@NotNull ParserState state) {
-        ParserScope scope = state.endUntilScopeToken(m_types.ML_STRING_OPEN);
+        ParserScope scope = state.popEndUntilScopeToken(m_types.ML_STRING_OPEN);
         state.advance();
 
         if (scope != null) {
@@ -400,7 +416,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseJsStringClose(@NotNull ParserState state) {
-        ParserScope scope = state.endUntilScopeToken(m_types.JS_STRING_OPEN);
+        ParserScope scope = state.popEndUntilScopeToken(m_types.JS_STRING_OPEN);
         state.advance();
 
         if (scope != null) {
@@ -410,7 +426,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseLet(@NotNull ParserState state) {
         state.popEndUntilScope();
-        state.markStart(let, m_types.C_EXPR_LET);
+        state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
     private void parseVal(@NotNull ParserState state) {
@@ -443,7 +459,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseClass(@NotNull ParserState state) {
         state.popEndUntilScope();
-        state.markStart(clazz, m_types.C_CLASS_STMT);
+        state.markStart(clazz, m_types.C_CLASS_DECLARATION);
     }
 
     private void parseType(@NotNull ParserState state) {
@@ -458,7 +474,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     private void parseExternal(@NotNull ParserState state) {
         state.popEndUntilScope();
-        state.markStart(external, m_types.C_EXPR_EXTERNAL);
+        state.markStart(external, m_types.C_EXTERNAL_DECLARATION);
     }
 
     private void parseOpen(@NotNull ParserState state) {
@@ -672,6 +688,19 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
     }
 
+    private void parseLArray(@NotNull ParserState state) {
+        state.markScope(array, m_types.C_SCOPED_EXPR, m_types.LARRAY);
+    }
+
+    private void parseRArray(@NotNull ParserState state) {
+        ParserScope scope = state.popEndUntilScopeToken(m_types.LARRAY);
+        state.advance();
+
+        if (scope != null) {
+            state.popEnd();
+        }
+    }
+
     private void parseLBracket(@NotNull ParserState state) {
         IElementType nextTokenType = state.rawLookup(1);
         if (nextTokenType == m_types.ARROBASE) {
@@ -690,7 +719,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseRBracket(@NotNull ParserState state) {
-        ParserScope scope = state.endUntilScopeToken(m_types.LBRACKET);
+        ParserScope scope = state.popEndUntilScopeToken(m_types.LBRACKET);
         state.advance();
 
         if (scope != null) {
@@ -729,10 +758,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(moduleNamedSignature)) {
             state.markScope(signature, m_types.C_SCOPED_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(letBinding)) {
-            // let x = |>{<| ...
+            // let x = |>{<| ... }
             state.markScope(maybeRecordUsage, m_types.C_SCOPED_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(clazzNamedEq)) {
-            state.markScope(clazzBody, m_types.C_SCOPED_EXPR, m_types.LBRACE);
+            // class x = |>{<| ... }
+            state.markScope(clazzBody, m_types.C_OBJECT, m_types.LBRACE);
         } else if (state.isCurrentResolution(switch_)) {
             state.markScope(switchBody, m_types.C_SCOPED_EXPR, m_types.LBRACE);
         } else if (state.isCurrentResolution(functionParameters)) {
@@ -880,7 +910,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             }
         }
 
-        ParserScope parenScope = state.endUntilScopeToken(m_types.LPAREN);
+        ParserScope parenScope = state.popEndUntilScopeToken(m_types.LPAREN);
         state.advance();
         IElementType nextTokenType = state.getTokenType();
 
