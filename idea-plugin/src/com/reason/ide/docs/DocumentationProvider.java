@@ -27,7 +27,6 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiSignatureElement;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
@@ -152,58 +151,51 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
         PsiReference reference = originalElement.getReference();
         if (reference != null) {
-            PsiElement resolvedElement = reference.resolve();
+            PsiElement resolvedIdentifier = reference.resolve();
 
-            if (resolvedElement instanceof ORFakeResolvedElement) {
+            if (resolvedIdentifier instanceof ORFakeResolvedElement) {
                 // A fake element, used to query inferred types
-                return "Show usages of fake element '" + resolvedElement.getText() + "'";
+                return "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
             }
 
-            if (resolvedElement instanceof FileBase) {
-                FileBase resolvedFile = (FileBase) resolvedElement;
+            if (resolvedIdentifier instanceof FileBase) {
+                FileBase resolvedFile = (FileBase) resolvedIdentifier;
                 String relative_path = Platform.removeProjectDir(resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
-                return relative_path + "<br/>" + resolvedElement.getContainingFile();
+                return relative_path + "<br/>" + resolvedIdentifier.getContainingFile();
             }
 
-            //if (!(resolvedElement instanceof PsiSignatureElement) && resolvedElement != null) {
-            //    resolvedElement = resolvedElement.getParent();
-            //}
-            if (resolvedElement instanceof PsiLowerIdentifier || resolvedElement instanceof PsiUpperIdentifier) {
-                resolvedElement = resolvedElement.getParent();
-            }
+            PsiElement resolvedElement = (resolvedIdentifier instanceof PsiLowerIdentifier || resolvedIdentifier instanceof PsiUpperIdentifier) ?
+                    resolvedIdentifier.getParent() : resolvedIdentifier;
 
             if (resolvedElement instanceof PsiType) {
                 PsiType type = (PsiType) resolvedElement;
                 String path = ORUtil.getQualifiedPath(type);
                 String typeBinding = type.isAbstract() ? "This is an abstract type" : DocFormatter.escapeCodeForHtml(type.getBinding());
-                return createQuickDocTemplate(path, "type", resolvedElement.getText(), typeBinding);
+                return createQuickDocTemplate(path, "type", resolvedIdentifier.getText(), typeBinding);
             }
 
-            if (resolvedElement instanceof PsiSignatureElement) {
-                ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
-                if (!signature.isEmpty()) {
-                    String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
-                    if (resolvedElement instanceof PsiQualifiedElement) {
-                        PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedElement;
-                        String elementType = PsiTypeElementProvider.getType(resolvedElement);
-                        return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
-                    }
-                    return sig;
-                }
-            }
+            //if (resolvedElement instanceof PsiSignatureElement) {
+            //    ORSignature signature = ((PsiSignatureElement) resolvedIdentifier).getORSignature();
+            //    if (!signature.isEmpty()) {
+            //        String sig = DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
+            //        if (resolvedIdentifier instanceof PsiQualifiedElement) {
+            //            PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedIdentifier;
+            //            String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
+            //            return createQuickDocTemplate(qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
+            //        }
+            //        return sig;
+            //    }
+            //}
 
             // No signature found, but resolved
             if (resolvedElement instanceof PsiQualifiedElement) {
-                String elementType = PsiTypeElementProvider.getType(resolvedElement);
+                String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
                 String desc = ((PsiQualifiedElement) resolvedElement).getName();
                 String path = ORUtil.getQualifiedPath((PsiQualifiedElement) resolvedElement);
 
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
-                    // zzz
-                    //PsiElement nameIdentifier = ((PsiQualifiedElement) resolvedElement).getNameIdentifier();
-                    //inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(),
-                    //                                    resolvedElement.getLanguage());
+                    inferredType = getInferredSignature(resolvedIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);

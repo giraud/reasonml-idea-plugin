@@ -257,8 +257,8 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
         }
 
         // return implementation if an interface file exists
-        result.sort((item1, item2) -> FileHelper.isInterface(item1.getContainingFile().getFileType()) ? -1 :
-                (FileHelper.isInterface(item2.getContainingFile().getFileType()) ? 1 : 0));
+        result.sort((item1, item2) -> FileHelper.isInterface(item1.getContainingFile().getFileType()) ? 1 :
+                (FileHelper.isInterface(item2.getContainingFile().getFileType()) ? -1 : 0));
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("  => found", Joiner.join(", ", result, item -> ((PsiQualifiedElement) item).getQualifiedName() + " [" + Platform

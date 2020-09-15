@@ -74,16 +74,16 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
                 // Hack because bucklescript duplicate files into lib/ocaml
                 String p1 = Platform.removeProjectDir(r1.getProject(), f1.getVirtualFile().getPath());
                 if (p1.contains("lib")) {
-                    return 1;
+                    return -1;
                 }
 
                 PsiFile f2 = r2.getContainingFile();
                 String p2 = Platform.removeProjectDir(r2.getProject(), f2.getVirtualFile().getPath());
                 if (p2.contains("lib")) {
-                    return -1;
+                    return 1;
                 }
 
-                return FileHelper.isInterface(f1.getFileType()) ? -1 : (FileHelper.isInterface(f2.getFileType()) ? 1 : 0);
+                return FileHelper.isInterface(f1.getFileType()) ? 1 : (FileHelper.isInterface(f2.getFileType()) ? -1 : 0);
             });
 
             if (LOG.isDebugEnabled()) {

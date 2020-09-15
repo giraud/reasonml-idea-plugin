@@ -179,6 +179,6 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub> implemen
 
     @Override
     public String toString() {
-        return "PsiFakeModule:" + getModuleName();
+        return "PsiFakeModule";
     }
 }
