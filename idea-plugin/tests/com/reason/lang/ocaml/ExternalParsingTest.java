@@ -3,6 +3,8 @@ package com.reason.lang.ocaml;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.impl.PsiExternalImpl;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends OclParsingTestCase {
@@ -29,37 +31,37 @@ public class ExternalParsingTest extends OclParsingTestCase {
     }
 
     public void test_string() {
-        PsiExternal e = firstOfType(parseCode("external string : string -> reactElement = \"%identity\""), PsiExternal.class);
+        PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external string : string -> reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
         assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
         assertEquals("string -> reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
 
     public void test_array() {
-        PsiExternal e = firstOfType(parseCode("external array : reactElement array -> reactElement = \"%identity\""), PsiExternal.class);
+        PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external array : reactElement array -> reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("array", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
         assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
         assertEquals("reactElement array -> reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }
 
     public void test_raise() {
-        PsiExternal e = firstOfType(parseCode("external raise : exn -> 'a = \"%raise\""), PsiExternal.class);
+        PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external raise : exn -> 'a = \"%raise\""), PsiExternal.class);
 
         assertEquals("raise", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
         assertEquals(e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
         assertEquals("exn -> 'a", e.getPsiSignature().getText());
         assertEquals("%raise", e.getExternalName());
     }
 
     public void test_operator1() {
-        PsiExternal e = firstOfType(parseCode("external ( = ) : 'a -> 'a -> bool = \"%equal\""), PsiExternal.class);
+        PsiExternalImpl e = (PsiExternalImpl) firstOfType(parseCode("external ( = ) : 'a -> 'a -> bool = \"%equal\""), PsiExternal.class);
 
         assertEquals("( = )", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
@@ -68,7 +70,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     }
 
     public void test_operator2() {
-        PsiExternal e = firstOfType(parseCode("external ( <> ) : 'a -> 'a -> bool = \"%notequal\""), PsiExternal.class);
+        PsiExternalImpl e = firstOfType(parseCode("external ( <> ) : 'a -> 'a -> bool = \"%notequal\""), PsiExternalImpl.class);
 
         assertEquals("( <> )", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
@@ -77,7 +79,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     }
 
     public void test_operator3() {
-        PsiExternal e = firstOfType(parseCode("external ( < ) : 'a -> 'a -> bool = \"%lessthan\""), PsiExternal.class);
+        PsiExternalImpl e = firstOfType(parseCode("external ( < ) : 'a -> 'a -> bool = \"%lessthan\""), PsiExternalImpl.class);
 
         assertEquals("( < )", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
@@ -86,7 +88,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     }
 
     public void test_operator4() {
-        PsiExternal e = firstOfType(parseCode("external ( > ) : 'a -> 'a -> bool = \"%greaterthan\""), PsiExternal.class);
+        PsiExternalImpl e = firstOfType(parseCode("external ( > ) : 'a -> 'a -> bool = \"%greaterthan\""), PsiExternalImpl.class);
 
         assertEquals("( > )", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
@@ -95,7 +97,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     }
 
     public void test_operator5() {
-        PsiExternal e = firstOfType(parseCode("external ( <= ) : 'a -> 'a -> bool = \"%lessequal\""), PsiExternal.class);
+        PsiExternalImpl e = firstOfType(parseCode("external ( <= ) : 'a -> 'a -> bool = \"%lessequal\""), PsiExternalImpl.class);
 
         assertEquals("( <= )", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
@@ -104,7 +106,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     }
 
     public void test_operator6() {
-        PsiExternal e = firstOfType(parseCode("external ( >= ) : 'a -> 'a -> bool = \"%greaterequal\""), PsiExternal.class);
+        PsiExternalImpl e = firstOfType(parseCode("external ( >= ) : 'a -> 'a -> bool = \"%greaterequal\""), PsiExternalImpl.class);
 
         assertEquals("( >= )", e.getName());
         assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);

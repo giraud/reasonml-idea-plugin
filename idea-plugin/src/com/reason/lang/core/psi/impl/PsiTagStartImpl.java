@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -173,8 +173,8 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
             }
 
             if (module != null) {
-                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub, FILTER_LET);
-                for (PsiNameIdentifierOwner expression : expressions) {
+                Collection<PsiNamedElement> expressions = module.getExpressions(pub, FILTER_LET);
+                for (PsiNamedElement expression : expressions) {
                     if ("make".equals(expression.getName())) {
                         PsiFunction function = ((PsiLet) expression).getFunction();
                         if (function != null) {

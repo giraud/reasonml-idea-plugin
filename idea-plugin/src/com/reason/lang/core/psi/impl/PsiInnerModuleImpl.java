@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -26,7 +26,6 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
@@ -51,14 +50,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
     @Nullable
     @Override
     public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
+        PsiElement nameIdentifier = findChildByClass(PsiUpperIdentifier.class);
         return nameIdentifier == null ? null : nameIdentifier.getText();
-    }
-
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiUpperSymbol.class);
     }
 
     @NotNull
@@ -141,8 +134,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
 
     @NotNull
     @Override
-    public Collection<PsiNameIdentifierOwner> getExpressions(@NotNull ExpressionScope eScope, ExpressionFilter filter) {
-        Collection<PsiNameIdentifierOwner> result = emptyList();
+    public Collection<PsiNamedElement> getExpressions(@NotNull ExpressionScope eScope, ExpressionFilter filter) {
+        Collection<PsiNamedElement> result = emptyList();
 
         PsiFinder psiFinder = PsiFinder.getInstance(getProject());
 
@@ -187,8 +180,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                     result = new ArrayList<>();
                     PsiElement element = body.getFirstChild();
                     while (element != null) {
-                        if (element instanceof PsiNameIdentifierOwner && (filter == null || filter.accept((PsiNameIdentifierOwner) element))) {
-                            result.add((PsiNameIdentifierOwner) element);
+                        if (element instanceof PsiNamedElement && (filter == null || filter.accept((PsiNamedElement) element))) {
+                            result.add((PsiNamedElement) element);
                         }
                         element = element.getNextSibling();
                     }
@@ -197,8 +190,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
                 result = new ArrayList<>();
                 PsiElement element = signature.getFirstChild();
                 while (element != null) {
-                    if (element instanceof PsiNameIdentifierOwner && (filter == null || filter.accept((PsiNameIdentifierOwner) element))) {
-                        result.add((PsiNameIdentifierOwner) element);
+                    if (element instanceof PsiNamedElement && (filter == null || filter.accept((PsiNamedElement) element))) {
+                        result.add((PsiNamedElement) element);
                     }
                     element = element.getNextSibling();
                 }
@@ -214,7 +207,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         PsiElement body = name == null ? null : getBody();
         if (body != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiType && name.equals(element.getName());
-            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiType) expressions.iterator().next();
             }
@@ -229,7 +222,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         PsiElement body = name == null ? null : getBody();
         if (body != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiLet && name.equals(element.getName());
-            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiLet) expressions.iterator().next();
             }
@@ -244,7 +237,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub> imp
         PsiElement body = name == null ? null : getBody();
         if (body != null) {
             ExpressionFilter expressionFilter = element -> element instanceof PsiVal && name.equals(element.getName());
-            Collection<PsiNameIdentifierOwner> expressions = getExpressions(ExpressionScope.all, expressionFilter);
+            Collection<PsiNamedElement> expressions = getExpressions(ExpressionScope.all, expressionFilter);
             if (!expressions.isEmpty()) {
                 return (PsiVal) expressions.iterator().next();
             }

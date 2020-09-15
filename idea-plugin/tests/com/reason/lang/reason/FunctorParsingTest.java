@@ -1,18 +1,19 @@
 package com.reason.lang.reason;
 
+import java.util.*;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.reason.lang.core.psi.PsiConstraint;
+import com.reason.lang.core.psi.PsiFunctor;
+import com.reason.lang.core.psi.PsiFunctorCall;
+import com.reason.lang.core.psi.PsiInnerModule;
+import com.reason.lang.core.psi.PsiParameter;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends RmlParsingTestCase {
     public void test_basic() {
-        PsiNameIdentifierOwner e = first(expressions(parseCode("module Make = (M: Def) : S => {};")));
+        PsiNamedElement e = first(expressions(parseCode("module Make = (M: Def) : S => {};")));
 
         PsiFunctor f = (PsiFunctor) e;
         assertEquals("{}", f.getBinding().getText());
@@ -20,8 +21,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
     }
 
     public void test_withConstraints() {
-        Collection<PsiNameIdentifierOwner> expressions = expressions(
-                parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {};"));
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make = (M: Input) : (S with type t('a) = M.t('a) and type b = M.b) => {};"));
 
         assertEquals(1, expressions.size());
         PsiFunctor f = (PsiFunctor) first(expressions);
@@ -37,14 +37,13 @@ public class FunctorParsingTest extends RmlParsingTestCase {
     }
 
     public void test_signature() {
-        Collection<PsiFunctor> functors = functorExpressions(parseCode(
-                "module GlobalBindings = (M: {\n" + //
-                        "           let relation_classes: list(string);\n" + //
-                        "           let morphisms: list(string);\n" + //
-                        "           let arrow: evars => evars;\n" + //
-                        "         },\n" + "       ) => {\n" + //
-                        "  open M;\n" + //
-                        "};"));
+        Collection<PsiFunctor> functors = functorExpressions(parseCode("module GlobalBindings = (M: {\n" + //
+                                                                               "           let relation_classes: list(string);\n" + //
+                                                                               "           let morphisms: list(string);\n" + //
+                                                                               "           let arrow: evars => evars;\n" + //
+                                                                               "         },\n" + "       ) => {\n" + //
+                                                                               "  open M;\n" + //
+                                                                               "};"));
 
         assertEquals(1, functors.size());
         PsiFunctor functor = first(functors);
@@ -67,7 +66,7 @@ public class FunctorParsingTest extends RmlParsingTestCase {
 
     public void test_functorInstantiationChaining() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash);\ntype infos;");
-        List<PsiNameIdentifierOwner> expressions = new ArrayList<>(expressions(file));
+        List<PsiNamedElement> expressions = new ArrayList<>(expressions(file));
 
         assertEquals(2, expressions.size());
 

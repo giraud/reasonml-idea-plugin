@@ -3,7 +3,7 @@ package com.reason.lang.reason;
 import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.PsiFileHelper;
@@ -15,6 +15,7 @@ import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignatureItem;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 
 import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
@@ -155,7 +156,7 @@ public class LetParsingTest extends RmlParsingTestCase {
 
     public void test_letAndInModule() {
         FileBase file = parseCode("module M = { let f1 = x => x and f2 = y => y; };");
-        Collection<PsiNameIdentifierOwner> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
+        Collection<PsiNamedElement> es = PsiFileHelper.getModuleExpressions(file).iterator().next().getExpressions(pub, FILTER_LET);
 
         assertSize(2, es);
         assertEquals("f2 = y => y", second(es).getText());
@@ -175,7 +176,10 @@ public class LetParsingTest extends RmlParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
         assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+        assertSize(2, PsiTreeUtil.findChildrenOfType(e, PsiLowerIdentifier.class));
     }
 
     public void test_operator() {

@@ -9,7 +9,7 @@ import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.*;
 
 public class PsiTry extends PsiToken<ORTypes> {
 
@@ -23,7 +23,7 @@ public class PsiTry extends PsiToken<ORTypes> {
     }
 
     @Nullable
-    public Collection<PsiElement> getHandlers() {
+    public List<PsiElement> getHandlers() {
         PsiElement scopedElement = ORUtil.findImmediateFirstChildOfType(this, (IElementType) m_types.C_TRY_HANDLERS);
         return ORUtil.findImmediateChildrenOfType(scopedElement, (IElementType) m_types.C_TRY_HANDLER);
     }

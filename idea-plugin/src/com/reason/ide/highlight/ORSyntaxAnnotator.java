@@ -1,5 +1,6 @@
 package com.reason.ide.highlight;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
@@ -10,9 +11,9 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiInterpolationReference;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.markup.TextAttributes.ERASE_MARKER;
 
@@ -28,16 +29,30 @@ public abstract class ORSyntaxAnnotator implements Annotator {
         EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
         IElementType elementType = element.getNode().getElementType();
 
-        if (element instanceof PsiUpperSymbol) {
-            PsiUpperSymbol symbol = (PsiUpperSymbol) element;
-            TextAttributes colorAttribute = globalScheme.getAttributes(symbol.isVariant() ? ORSyntaxHighlighter.VARIANT_NAME_ : ORSyntaxHighlighter.MODULE_NAME_);
-            Annotation annotation = holder.createInfoAnnotation(element, null);
-            annotation.setEnforcedTextAttributes(colorAttribute);
+        if (elementType == m_types.C_UPPER_IDENTIFIER) {
+            PsiElement parent = element.getParent();
+            if (parent instanceof PsiModule) {
+                PsiElement identifier = element.getNavigationElement();
+                holder.createInfoAnnotation(identifier, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.MODULE_NAME_));
+            }
+        } else if (elementType == m_types.C_UPPER_SYMBOL) {
+            PsiElement nextElement = element.getNextSibling();
+            IElementType nextElementType = nextElement == null ? null : nextElement.getNode().getElementType();
+            if (nextElementType == m_types.DOT) {
+                holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.MODULE_NAME_));
+            } else {
+                // a guess
+                holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.VARIANT_NAME_));
+            }
+        } else if (elementType == m_types.C_VARIANT_DECL) {
+            PsiElement identifier = element.getNavigationElement();
+            holder.createInfoAnnotation(identifier, null).setEnforcedTextAttributes(ERASE_MARKER);
+            holder.createInfoAnnotation(identifier, null).setEnforcedTextAttributes(globalScheme.getAttributes(ORSyntaxHighlighter.VARIANT_NAME_));
         } else if (elementType == m_types.C_MACRO_NAME) {
             TextAttributes scheme = globalScheme.getAttributes(ORSyntaxHighlighter.ANNOTATION_);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(ERASE_MARKER);
             holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(scheme);
-        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.C_TAG_GT || elementType == m_types.TAG_AUTO_CLOSE) {
+        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_GT || elementType == m_types.TAG_AUTO_CLOSE) {
             TextAttributes scheme = globalScheme.getAttributes(ORSyntaxHighlighter.MARKUP_TAG_);
             Annotation annotation = holder.createInfoAnnotation(element, null);
             annotation.setEnforcedTextAttributes(ERASE_MARKER);

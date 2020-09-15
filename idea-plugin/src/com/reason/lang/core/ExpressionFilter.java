@@ -1,8 +1,8 @@
 package com.reason.lang.core;
 
 import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 
 public interface ExpressionFilter {
-    boolean accept(@NotNull PsiNameIdentifierOwner element);
+    boolean accept(@NotNull PsiNamedElement element);
 }

@@ -22,9 +22,11 @@ import java.util.Optional;
 
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
-    private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
-    private static final int VERSION = 5;
+    private static final int VERSION = 6;
+
     private static final Log LOG = Log.create("index.namespace");
+
+    private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
     private static final NamespaceIndex INSTANCE = new NamespaceIndex();
 
     @NotNull

@@ -10,7 +10,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorModificationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.PsiIconUtil;
@@ -93,7 +92,7 @@ public class FreeExpressionCompletionProvider {
                     continue;
                 }
 
-                Collection<PsiNameIdentifierOwner> expressions = module.getExpressions(pub, NO_FILTER);
+                Collection<PsiNamedElement> expressions = module.getExpressions(pub, NO_FILTER);
                 for (PsiNamedElement expression : expressions) {
                     if (!(expression instanceof PsiAnnotation)) {
                         resultSet.addElement(LookupElementBuilder.

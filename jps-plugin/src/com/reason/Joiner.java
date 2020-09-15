@@ -1,5 +1,6 @@
 package com.reason;
 
+import java.util.function.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,18 +10,23 @@ public class Joiner {
     }
 
     @NotNull
-    public static String join(@NotNull String separator, @Nullable Iterable<?> items) {
+    public static <T> String join(@NotNull String separator, @Nullable Iterable<T> items) {
+        return join(separator, items, Object::toString);
+    }
+
+    @NotNull
+    public static <T> String join(@NotNull String separator, @Nullable Iterable<T> items, Function<T, String> fn) {
         if (items == null) {
             return "<null>";
         }
 
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (Object item : items) {
+        for (T item : items) {
             if (!first) {
                 sb.append(separator);
             }
-            sb.append(item);
+            sb.append(fn.apply(item));
             first = false;
         }
         return sb.toString();

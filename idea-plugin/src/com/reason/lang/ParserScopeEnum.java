@@ -16,9 +16,8 @@ public enum ParserScopeEnum {
     externalNamedSignature,
 
     type,
-    typeConstrName,
-    typeConstrNameParameters,
     typeNamed,
+    typeNamedParameters,
     typeNamedEq,
     typeNamedEqVariant,
 
@@ -174,5 +173,5 @@ public enum ParserScopeEnum {
     moduleNamedSignatureEq, array, objectScope, clazzDeclaration, clazz, clazzNamed, clazzNamedEq, clazzBody, clazzConstructor, clazzField, clazzFieldNamed, clazzMethod, clazzMethodNamed, clazzNamedParameters,
     clazzNamedConstructor, record, mixin, externalNamedSignatureEq, maybeRecordUsage, recordUsage,
     //letNamedBindingFunction,
-    typeBinding, recordFieldAnnotation, option, optionParameter, name, unit, funPattern, variantDeclaration, jsObjectField, fieldNamed, constraints, constraint, jsObjectBinding, namedItem, localObjectOpen
+    typeBinding, recordFieldAnnotation, option, optionParameter, name, unit, funPattern, variantDeclaration, jsObjectField, fieldNamed, constraints, constraint, jsObjectBinding, namedItem, moduleType, localObjectOpen
 }

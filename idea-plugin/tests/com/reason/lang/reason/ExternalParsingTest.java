@@ -1,8 +1,9 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.impl.PsiExternalImpl;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends RmlParsingTestCase {
@@ -34,7 +35,7 @@ public class ExternalParsingTest extends RmlParsingTestCase {
         PsiExternal e = firstOfType(parseCode("external string : string => reactElement = \"%identity\""), PsiExternal.class);
 
         assertEquals("string", e.getName());
-        assertInstanceOf(e.getNameIdentifier(), PsiLowerSymbol.class);
+        assertInstanceOf(((PsiExternalImpl) e).getNameIdentifier(), PsiLowerIdentifier.class);
         assertEquals("string => reactElement", e.getPsiSignature().getText());
         assertEquals("%identity", e.getExternalName());
     }

@@ -41,7 +41,7 @@ public class ObjectCompletionProvider {
                     || previousElementType == types.SHARP) {
                 if (previousElementType == types.LIDENT) {
                     LeafPsiElement node = (LeafPsiElement) previousLeaf.getNode();
-                    path.add(((PsiLowerSymbol) node.getParent()).getName());
+                    path.add(((PsiLowerSymbol) node.getParent()).getText());
                 }
                 previousLeaf = PsiTreeUtil.prevLeaf(previousLeaf);
                 previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();

@@ -6,7 +6,16 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 public class ResolveVariantElementTest extends ORBasePlatformTestCase {
 
-    public void testRml_withPath() {
+    public void test_Ns_withPath() {
+        configureCode("A.res", "type a = | Variant;");
+        configureCode("B.res", "type b = | Variant;");
+        configureCode("C.res", "A.Variant<caret>");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+    }
+
+    public void test_Rml_withPath() {
         configureCode("A.re", "type a = | Variant;");
         configureCode("B.re", "type b = | Variant;");
         configureCode("C.re", "A.Variant<caret>");
@@ -15,7 +24,7 @@ public class ResolveVariantElementTest extends ORBasePlatformTestCase {
         assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
     }
 
-    public void testOcl_withPath() {
+    public void test_Ocl_withPath() {
         configureCode("A.ml", "type a = | Variant");
         configureCode("B.ml", "type b = | Variant");
         configureCode("C.ml", "A.Variant<caret>");
@@ -56,20 +65,27 @@ public class ResolveVariantElementTest extends ORBasePlatformTestCase {
         assertEquals("Aaa.Option.t.Test", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
     }
 
-    public void testRml_constructor() {
-        configureCode("A.re", "type a = | Variant(int);");
-        configureCode("B.re", "A.Variant<caret>(1)");
+    public void test_Ns_constructor() {
+        configureCode("A.res", "type a = | Variant(int);");
+        configureCode("B.res", "A.Variant<caret>(1)");
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
     }
 
-    public void testOcl_constructor() {
+    public void test_Rml_constructor() {
+        configureCode("A.re", "type a = | Variant(int);");
+        configureCode("B.re", "let _ = A.Variant<caret>(1)");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
+    }
+
+    public void test_Ocl_constructor() {
         configureCode("A.ml", "type a = | Variant(int)");
         configureCode("B.ml", "A.Variant<caret>(1)");
 
         PsiElement e = myFixture.getElementAtCaret();
         assertEquals("A.a.Variant", ((PsiVariantDeclaration) e.getParent()).getQualifiedName());
     }
-
 }

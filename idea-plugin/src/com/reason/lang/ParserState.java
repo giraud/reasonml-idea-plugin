@@ -75,7 +75,7 @@ public class ParserState {
     }
 
     @Nullable
-    public ParserScope endUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
+    public ParserScope popEndUntilScopeToken(@NotNull ORTokenElementType scopeElementType) {
         ParserScope scope = null;
 
         if (!m_composites.isEmpty()) {
@@ -94,8 +94,26 @@ public class ParserState {
         return m_composites.isEmpty() ? null : m_composites.peek();
     }
 
-    public boolean is(ORCompositeType compositeType) {
-        return m_currentScope.isCompositeEqualTo(compositeType);
+    public boolean is(ORCompositeType composite) {
+        return m_currentScope.isCompositeEqualTo(composite);
+    }
+
+    public boolean in(ORCompositeType composite) {
+        for (ParserScope scope : m_composites) {
+            if (scope.isCompositeEqualTo(composite)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean inAny(ORCompositeType... composite) {
+        for (ParserScope scope : m_composites) {
+            if (scope.isCompositeIn(composite)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
@@ -149,6 +167,11 @@ public class ParserState {
         return this;
     }
 
+    public ParserState markDummy(ParserScopeEnum resolution, ORCompositeType compositeElementType) {
+        add(ParserScope.mark(m_builder, resolution, compositeElementType).dummy());
+        return this;
+    }
+
     public ParserState mark(ParserScopeEnum resolution, ORCompositeType compositeType) {
         add(ParserScope.mark(m_builder, resolution, compositeType));
         m_currentScope.complete();
@@ -192,11 +215,12 @@ public class ParserState {
         return this;
     }
 
-    public void popCancel() {
+    public ParserState popCancel() {
         ParserScope scope = pop();
         if (scope != null) {
             scope.drop();
         }
+        return this;
     }
 
     @Nullable

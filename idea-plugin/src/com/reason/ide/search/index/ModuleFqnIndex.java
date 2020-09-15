@@ -10,7 +10,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.lang.core.psi.PsiModule;
 
 public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
-    private static final int VERSION = 7;
+    private static final int VERSION = 8;
     private static final ModuleFqnIndex INSTANCE = new ModuleFqnIndex();
 
     @NotNull
