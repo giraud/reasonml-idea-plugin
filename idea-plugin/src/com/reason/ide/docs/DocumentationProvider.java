@@ -241,7 +241,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
             }
         }
 
-        return super.getCustomDocumentationElement(editor, file, contextElement, targetOffset);
+        return super.getCustomDocumentationElement(editor, file, contextElement);
     }
 
     @Nullable
