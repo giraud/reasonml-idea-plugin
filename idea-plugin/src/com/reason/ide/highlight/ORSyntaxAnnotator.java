@@ -7,8 +7,10 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.intellij.lang.annotation.HighlightSeverity.INFORMATION;
@@ -31,9 +33,12 @@ public abstract class ORSyntaxAnnotator implements Annotator {
                 color(holder, element.getNavigationElement(), MODULE_NAME_);
             }
         } else if (elementType == m_types.C_UPPER_SYMBOL) {
+            PsiElement parent = element.getParent();
             PsiElement nextElement = element.getNextSibling();
             IElementType nextElementType = nextElement == null ? null : nextElement.getNode().getElementType();
-            color(holder, element, (nextElementType == m_types.DOT) ? MODULE_NAME_ : VARIANT_NAME_);
+            boolean mightBeVariant = (nextElementType != m_types.DOT) && !(parent instanceof PsiOpen) && !(parent instanceof PsiInclude) && !(
+                    parent instanceof PsiModule && ((PsiModule) parent).getAlias() != null);
+            color(holder, element, mightBeVariant ? VARIANT_NAME_ : MODULE_NAME_);
         } else if (elementType == m_types.C_VARIANT_DECL) {
             PsiElement identifier = element.getNavigationElement();
             color(holder, identifier, VARIANT_NAME_);
