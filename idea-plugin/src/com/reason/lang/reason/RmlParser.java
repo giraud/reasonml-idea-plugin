@@ -780,6 +780,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 // js object detected (in usage)
                 // |>{<| "x" ... }
                 state.markScope(jsObject, m_types.C_JS_OBJECT, m_types.LBRACE);
+            } else if (nextElement == m_types.DOTDOTDOT) {
+                // record usage ::  x  => |>{<| ...
+                state.markScope(recordUsage, m_types.C_RECORD_EXPR, m_types.LBRACE).
+                        advance().
+                        mark(mixin, m_types.C_MIXIN_FIELD);
+            } else if (state.is(m_types.C_FUN_BODY)) {
+                // function body ::  x => |>{<| ... }
+                state.updateScopeToken(m_types.LBRACE);
             } else {
                 state.markScope(scope, m_types.C_SCOPED_EXPR, m_types.LBRACE);
             }
@@ -795,8 +803,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
             state.popEnd();
         }
 
-        if (state.isCurrentResolution(jsxTagPropertyValue) || state.isCurrentResolution(localOpen)) {
-            state.popEnd().popEnd();
+        if (state.is(m_types.C_TAG_PROP_VALUE)) {
+            state.popEndUntil(m_types.C_TAG_PROPERTY).popEnd();
+        } else if (state.isCurrentResolution(localOpen)) {
+            state.popEnd();
         }
     }
 
@@ -1079,13 +1089,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseArrow(@NotNull ParserState state) {
-        /*
-        if (state.isInContext(signatureParams)) {
-            state.popEndUntilScope();
-            state.advance().
-                    mark(signatureItem, m_types.C_SIG_ITEM);
-        } else
-         */
         if (state.is(m_types.C_SIG_ITEM)) {
             state.popEnd().
                     advance().

@@ -334,9 +334,9 @@
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
         <completion.contributor language="NapkinScript"
-                                implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
+                                implementationClass="com.reason.ide.insight.NsCompletionContributor"/>
         <completion.contributor language="NapkinScript"
-                                implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
+                                implementationClass="com.reason.ide.insight.NsKeywordCompletionContributor"/>
         <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>

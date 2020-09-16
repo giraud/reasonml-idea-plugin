@@ -122,7 +122,7 @@ public class DotExpressionCompletionProvider {
             }
         } else if (previousElement instanceof PsiLowerSymbol) {
             // Expression of let/val/external/type
-            String lowerName = ((PsiLowerSymbol) previousElement).getText();
+            String lowerName = previousElement.getText();
             if (lowerName != null) {
                 LOG.debug("  symbol", lowerName);
                 PsiFinder psiFinder = PsiFinder.getInstance(project);

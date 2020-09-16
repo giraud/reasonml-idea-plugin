@@ -238,6 +238,34 @@ public class ParserState {
         return scope;
     }
 
+    @Nullable
+    public ParserScope popEndUntilOneOfResolution(@NotNull ParserScopeEnum... resolutions) {
+        ParserScope scope = null;
+
+        if (!m_composites.isEmpty()) {
+            scope = m_composites.peek();
+            while (scope != null && !ArrayUtil.contains(scope.getResolution(), resolutions)) {
+                popEnd();
+                scope = getLatestScope();
+            }
+        }
+
+        return scope;
+    }
+
+    @NotNull
+    public ParserState popEndUntil(@NotNull ORCompositeType composite) {
+        if (!m_composites.isEmpty()) {
+            ParserScope scope = m_composites.peek();
+            while (scope != null && !scope.isCompositeType(composite)) {
+                popEnd();
+                scope = getLatestScope();
+            }
+        }
+
+        return this;
+    }
+
     @NotNull
     public ParserState popEndUntilResolution(@NotNull ParserScopeEnum resolution) {
         if (!m_composites.isEmpty()) {

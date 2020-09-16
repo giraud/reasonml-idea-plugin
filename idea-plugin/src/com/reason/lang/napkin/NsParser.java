@@ -650,6 +650,13 @@ public class NsParser extends CommonParser<NsTypes> {
                         advance().
                         advance().
                         mark(field, m_types.C_OBJECT_FIELD);
+            } else if (nextElement == m_types.DOTDOTDOT) {
+                // record usage ::  x  => |>{<| ...
+                state.markScope(recordUsage, m_types.C_RECORD_EXPR, m_types.LBRACE).
+                        advance().
+                        mark(mixin, m_types.C_MIXIN_FIELD);
+            } else if (state.is(m_types.C_FUN_BODY)) {
+                state.updateScopeToken(m_types.LBRACE);
             } else {
                 state.markScope(scope, m_types.C_SCOPED_EXPR, m_types.LBRACE);
             }
