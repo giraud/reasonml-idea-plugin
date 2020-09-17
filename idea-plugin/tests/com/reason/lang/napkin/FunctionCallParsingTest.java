@@ -4,9 +4,11 @@ import java.util.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiScopedExpr;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionCallParsingTest extends NsParsingTestCase {
@@ -55,7 +57,6 @@ public class FunctionCallParsingTest extends NsParsingTestCase {
         assertSize(2, e.getParametersList());
     }
 
-
     public void test_paramName() {
         List<PsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1; }) })"));
         PsiLet e = first(expressions);
@@ -63,4 +64,11 @@ public class FunctionCallParsingTest extends NsParsingTestCase {
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
     }
 
+    public void test_body() {
+        PsiLet e = first(letExpressions(parseCode("let _ = x => { M.{k: v} };")));
+
+        PsiFunctionBody body = PsiTreeUtil.findChildOfType(e, PsiFunctionBody.class);
+        assertEquals("{ M.{k: v} }", body.getText());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiScopedExpr.class));
+    }
 }

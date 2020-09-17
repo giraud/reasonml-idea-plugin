@@ -147,6 +147,19 @@ public class LetParsingTest extends OclParsingTestCase {
         assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
     }
 
+    public void test_List() {
+        PsiLet e = first(letExpressions(parseCode("let tokens = [ \"bullet\"; \"string\"; \"unicode_id_part\"; ]")));
+
+        assertEquals("[ \"bullet\"; \"string\"; \"unicode_id_part\"; ]", e.getBinding().getText());
+    }
+
+    public void test_optionalParam() {
+        PsiLet e = first(letExpressions(parseCode("let prod_to_str ?(plist=false) prod = String.concat \" \" (prod_to_str_r plist prod)")));
+
+        assertTrue(e.isFunction());
+        assertEquals("?(plist=false) prod = String.concat \" \" (prod_to_str_r plist prod)", e.getBinding().getText());
+    }
+
     public void test_GH_116() {
         FileBase file = parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
         PsiLet e = first(letExpressions(file));

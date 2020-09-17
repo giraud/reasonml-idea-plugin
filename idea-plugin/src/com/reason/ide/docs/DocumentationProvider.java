@@ -195,10 +195,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
                 if (inferredType == null) {
                     // Can't find type in the usage, try to get type from the definition
-                    // zzz
-                    //PsiElement nameIdentifier = ((PsiQualifiedElement) resolvedElement).getNameIdentifier();
-                    //inferredType = getInferredSignature(nameIdentifier == null ? resolvedElement : nameIdentifier, resolvedElement.getContainingFile(),
-                    //                                    resolvedElement.getLanguage());
+                    inferredType = getInferredSignature(resolvedIdentifier, resolvedElement.getContainingFile(), resolvedElement.getLanguage());
                 }
 
                 String sig = inferredType == null ? null : DocFormatter.escapeCodeForHtml(inferredType);

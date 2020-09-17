@@ -48,6 +48,8 @@ public enum ParserScopeEnum {
     functionCall,
     functionCallParams,
 
+    functionMatch,
+
     val,
     valNamed,
     valNamedSignature,

@@ -1,5 +1,8 @@
 package com.reason.lang.core.psi.impl;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
@@ -8,11 +11,6 @@ import com.reason.lang.core.psi.PsiPatternMatch;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
 
 public class PsiSwitchImpl extends PsiToken<ORTypes> implements PsiSwitch {
 
@@ -27,14 +25,14 @@ public class PsiSwitchImpl extends PsiToken<ORTypes> implements PsiSwitch {
 
     @NotNull
     @Override
-    public Collection<?> getPatterns() {
-        List<PsiScopedExpr> scope = ORUtil.findImmediateChildrenOfClass(this, PsiScopedExpr.class);
-        return ORUtil.findImmediateChildrenOfClass(scope.get(0), PsiPatternMatch.class);
+    public List<PsiPatternMatch> getPatterns() {
+        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        return ORUtil.findImmediateChildrenOfClass(scope == null ? this : scope, PsiPatternMatch.class);
     }
 
     @NotNull
     @Override
     public String toString() {
-        return "Switch";
+        return "Switch/function";
     }
 }
