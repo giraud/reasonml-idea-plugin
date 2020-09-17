@@ -73,12 +73,13 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
         return PsiFileHelper.getExpressions(this, name);
     }
 
+    @SafeVarargs
     @NotNull
-    public <T extends PsiQualifiedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+    public final <T extends PsiQualifiedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<? extends T>... clazz) {
         List<T> result = new ArrayList<>();
 
         if (name != null) {
-            Collection<T> children = PsiTreeUtil.findChildrenOfType(this, clazz);
+            Collection<T> children = PsiTreeUtil.findChildrenOfAnyType(this, clazz);
             for (T child : children) {
                 if (name.equals(child.getQualifiedName())) {
                     result.add(child);
