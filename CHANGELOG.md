@@ -10,7 +10,7 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## Unreleased
+## 0.92 - 2020/09/17
 
 
 ## 0.92 - 2020/09/17
