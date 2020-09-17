@@ -81,15 +81,32 @@ public class MatchParsingTest extends OclParsingTestCase {
         PsiLet e = first(letExpressions(parseCode("let f x = function | Variant -> 1")));
 
         PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
-        assertNotNull(ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiPatternMatch.class));
-        assertEquals("1", PsiTreeUtil.findChildOfType(fun.getBody(), PsiPatternMatchBody.class).getText());
+        PsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiSwitch.class);
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(shortcut, PsiPatternMatch.class));
+        assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, PsiPatternMatchBody.class).getText());
     }
 
     public void test_functionShortcutNoPipe() {
         PsiLet e = first(letExpressions(parseCode("let f x = function Variant -> 1")));
 
         PsiFunction fun = (PsiFunction) e.getBinding().getFirstChild();
-        assertNotNull(ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiPatternMatch.class));
-        assertEquals("1", PsiTreeUtil.findChildOfType(fun.getBody(), PsiPatternMatchBody.class).getText());
+        PsiSwitch shortcut = ORUtil.findImmediateFirstChildOfClass(fun.getBody(), PsiSwitch.class);
+        assertNotNull(ORUtil.findImmediateFirstChildOfClass(shortcut, PsiPatternMatch.class));
+        assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, PsiPatternMatchBody.class).getText());
+    }
+
+    public void test_functionShortcutMany() {
+        PsiLet e = first(letExpressions(
+                parseCode("let rec db_output_prodn = function "+//
+                                  " | Sterm s -> if cond then first else second\n"+//
+                                  " | Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"\n"+//
+                                  " | Snterm s -> sprintf \"(Snterm %s) \" s")));
+
+        PsiSwitch shortcut = PsiTreeUtil.findChildOfType(e, PsiSwitch.class);
+        List<PsiPatternMatch> patterns = shortcut.getPatterns();
+        assertSize(3, patterns);
+        assertEquals("Sterm s -> if cond then first else second", patterns.get(0).getText());
+        assertEquals("Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"", patterns.get(1).getText());
+        assertEquals("Snterm s -> sprintf \"(Snterm %s) \" s", patterns.get(2).getText());
     }
 }

@@ -4,6 +4,7 @@ import java.util.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
@@ -59,5 +60,12 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
         PsiLet e = first(expressions);
 
         assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());
+    }
+
+    public void test_body() {
+        PsiLet e = first(letExpressions(parseCode("let _ = x => { M.{k: v} };")));
+
+        PsiFunctionBody body = PsiTreeUtil.findChildOfType(e, PsiFunctionBody.class);
+        assertEquals("{ M.{k: v} }", body.getText());
     }
 }

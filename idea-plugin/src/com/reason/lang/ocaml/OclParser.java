@@ -346,11 +346,14 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parsePipe(@NotNull ParserState state) {
         // Remove intermediate constructions
+        if (state.isCurrentResolution(ifElseStatement)) {
+            state.popEndUntilResolution(if_).popEnd();
+        }
         if (state.isCurrentResolution(variantConstructorParameter)) {
             state.popEndUntilResolution(variantDeclaration);
         }
         if (state.isCurrentResolution(patternMatchBody)) {
-            state.popEndUntilResolution(matchWith);
+            state.popEndUntilOneOfResolution(matchWith, functionMatch);
         }
 
         if (state.isCurrentResolution(typeBinding)) {
@@ -367,7 +370,8 @@ public class OclParser extends CommonParser<OclTypes> {
                 state.popEnd().
                         updateCurrentResolution(matchWith);
             }
-            state.mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
+            state.advance().
+                    mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
         }
     }
 
@@ -496,10 +500,15 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseIn(@NotNull ParserState state) {
-        if (state.is(m_types.C_TRY_HANDLER)) {
-            state.popEndUntilResolution(try_);
+        if (!state.is(m_types.C_FUN_BODY)) {
+            if (state.is(m_types.C_TRY_HANDLER)) {
+                state.popEndUntilResolution(try_);
+            } else if (state.in(m_types.C_LET_DECLARATION)) {
+                state.popEndUntil(m_types.C_LET_DECLARATION);
+            }
+
+            state.popEnd();
         }
-        state.popEnd();
     }
 
     private void parseBegin(@NotNull ParserState state) {
@@ -550,9 +559,10 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseQuestionMark(@NotNull ParserState state) {
-        if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
-            // Start of a new optional parameter
-            //    .. ( xxx |>?<|yyy ) ..
+        if (state.is(m_types.C_FUN_PARAMS)) {
+            state.mark(functionParameter, m_types.C_FUN_PARAM);
+        } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
+            // Start of a new optional parameter ::  |>?<| x ...
             state.complete().
                     popEnd().
                     mark(functionParameter, m_types.C_FUN_PARAM);
@@ -560,7 +570,8 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseFunction(@NotNull ParserState state) {
-        state.advance();
+        state.mark(functionMatch, m_types.C_MATCH_EXPR).
+                advance();
         if (state.getTokenType() != m_types.PIPE) {
             state.mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
         }
@@ -720,12 +731,16 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parseLBracket(@NotNull ParserState state) {
+        state.markScope(bracket, m_types.C_SCOPED_EXPR, m_types.LBRACKET);
     }
 
     private void parseBracketGt(@NotNull ParserState state) {
     }
 
     private void parseRBracket(@NotNull ParserState state) {
+        state.popEndUntilScopeToken(m_types.LBRACKET);
+        state.advance().
+                popEnd();
     }
 
     private void parseLIdent(@NotNull ParserState state) {
