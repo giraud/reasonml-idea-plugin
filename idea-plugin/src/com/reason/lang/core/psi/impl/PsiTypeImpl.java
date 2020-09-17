@@ -10,15 +10,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiTypeBinding;
-import com.reason.lang.core.psi.PsiTypeConstrName;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.stub.PsiTypeStub;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
 
 import static java.util.Collections.*;
 
@@ -35,13 +33,6 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
     //endregion
 
     //region PsiNamedElement
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        PsiTypeConstrName constr = findChildByClass(PsiTypeConstrName.class);
-        return constr == null ? null : PsiTreeUtil.findChildOfType(constr, PsiLowerSymbol.class);
-    }
-
     @NotNull
     @Override
     public String getName() {
@@ -51,17 +42,20 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
             return name == null ? "" : name;
         }
 
-        PsiElement constrName = findChildByClass(PsiTypeConstrName.class);
+        PsiElement constrName = findChildByClass(PsiLowerIdentifier.class);
         if (constrName == null) {
             return "";
         }
+
+        /* zzz
+        PsiParameters parameters = findChildByClass(PsiParameters.class);
 
         StringBuilder nameBuilder = new StringBuilder();
         boolean first = true;
 
         PsiElement element = constrName.getFirstChild();
         while (element != null) {
-            if (element instanceof PsiLowerSymbol) {
+            if (element instanceof PsiLowerIdentifier) {
                 if (!first) {
                     nameBuilder.append(" ");
                 }
@@ -72,24 +66,21 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
         }
 
         return nameBuilder.toString();
+
+         */
+        return constrName.getText();
     }
 
     @NotNull
     @Override
     public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return this;
+        throw new IncorrectOperationException("use lower identifier");
     }
     //endregion
 
     @Override
     public boolean isAbstract() {
         return getBinding() == null;
-    }
-
-    @Nullable
-    @Override
-    public PsiTypeConstrName getConstrName() {
-        return findChildByClass(PsiTypeConstrName.class);
     }
 
     @Override
@@ -135,8 +126,7 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
         return new ItemPresentation() {
             @Override
             public String getPresentableText() {
-                PsiTypeConstrName constr = getConstrName();
-                return constr == null ? null : constr.getText();
+                return getName();
             }
 
             @Nullable

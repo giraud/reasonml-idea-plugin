@@ -7,18 +7,17 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
 
-@SuppressWarnings("ConstantConditions")
 public class ShowDocTest extends ORBasePlatformTestCase {
 
-    public void testMultipleSpaceTest() {
+    public void test_Ocl_multipleSpaceTest() {
         FileBase f = configureCode("Doc.ml", "let x = 1;  \t\n  (** doc for x *)");
-        PsiLet e = BaseParsingTestCase.first(f.getExpressions("x", PsiLet.class));
+        PsiLet e = BaseParsingTestCase.first(f.getExpressions("Doc.x", PsiLet.class));
 
-        String doc = new DocumentationProvider().generateDoc(e.getNameIdentifier(), e.getNameIdentifier().getFirstChild());
+        String doc = new DocumentationProvider().generateDoc(getNameIdentifier(e), getNameIdentifier(e).getFirstChild());
         assertNotNull(doc);
     }
 
-    public void testGH_155() {
+    public void test_GH_155() {
         configureCode("Mod.re", "/** add 1 */\nlet fn = x => x + 1;");
         configureCode("Doc.re", "Mod.fn(<caret>);");
 
@@ -26,12 +25,11 @@ public class ShowDocTest extends ORBasePlatformTestCase {
         // TODO test !?
     }
 
-    public void testGH_156() {
+    public void test_GH_156() {
         configureCode("A.re", "/** Doc for y */\nlet y = 1;");
         configureCode("Dummy.re", "let x = A.y;\nx<caret>");
 
         ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
         // TODO test !?
     }
-
 }

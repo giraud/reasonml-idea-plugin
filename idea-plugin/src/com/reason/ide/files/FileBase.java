@@ -1,23 +1,19 @@
 package com.reason.ide.files;
 
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
-import com.reason.lang.core.ORUtil;
 import com.reason.lang.PsiFileHelper;
-import com.reason.lang.core.psi.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiQualifiedElement;
 
 public abstract class FileBase extends PsiFileBase implements PsiQualifiedElement {
 
@@ -73,18 +69,19 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
     }
 
     @NotNull
-    public Collection<PsiNameIdentifierOwner> getExpressions(@Nullable String name) {
+    public Collection<PsiNamedElement> getExpressions(@Nullable String name) {
         return PsiFileHelper.getExpressions(this, name);
     }
 
+    @SafeVarargs
     @NotNull
-    public <T extends PsiNameIdentifierOwner> List<T> getExpressions(@Nullable String name, @NotNull Class<T> clazz) {
+    public final <T extends PsiQualifiedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<? extends T>... clazz) {
         List<T> result = new ArrayList<>();
 
         if (name != null) {
-            Collection<T> children = PsiTreeUtil.findChildrenOfType(this, clazz);
+            Collection<T> children = PsiTreeUtil.findChildrenOfAnyType(this, clazz);
             for (T child : children) {
-                if (name.equals(child.getName())) {
+                if (name.equals(child.getQualifiedName())) {
                     result.add(child);
                 }
             }

@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
 import java.util.*;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
@@ -54,7 +54,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
     }
 
     public void test_complexParams() {
-        Collection<PsiNameIdentifierOwner> expressions = expressions(parseCode("let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
+        Collection<PsiNamedElement> expressions = expressions(parseCode("let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
 
         assertSize(1, expressions);
         PsiLet let = (PsiLet) first(expressions);

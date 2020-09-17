@@ -24,12 +24,12 @@ public class NsTypes extends ORTypes {
 
         // Stubbed expressions
 
-        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXPR_EXCEPTION", NsLanguage.INSTANCE);
-        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXPR_TYPE", NsLanguage.INSTANCE);
-        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXPR_EXTERNAL", NsLanguage.INSTANCE);
-        C_EXPR_LET = new PsiLetStubElementType("C_EXPR_LET", NsLanguage.INSTANCE);
-        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_EXPR_MODULE", NsLanguage.INSTANCE);
-        C_EXPR_VAL = new PsiValStubElementType("C_EXPR_VAL", NsLanguage.INSTANCE);
+        C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", NsLanguage.INSTANCE);
+        C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", NsLanguage.INSTANCE);
+        C_EXTERNAL_DECLARATION = new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", NsLanguage.INSTANCE);
+        C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", NsLanguage.INSTANCE);
+        C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", NsLanguage.INSTANCE);
+        C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", NsLanguage.INSTANCE);
 
         // Stubbed element types
 
@@ -46,7 +46,7 @@ public class NsTypes extends ORTypes {
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", NsLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", NsLanguage.INSTANCE);
         C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", NsLanguage.INSTANCE);
-        C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", NsLanguage.INSTANCE);
+        C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", NsLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", NsLanguage.INSTANCE);
         C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", NsLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", NsLanguage.INSTANCE);
@@ -55,6 +55,8 @@ public class NsTypes extends ORTypes {
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", NsLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", NsLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", NsLanguage.INSTANCE);
+        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", NsLanguage.INSTANCE);
+        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", NsLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", NsLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", NsLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", NsLanguage.INSTANCE);
@@ -98,13 +100,11 @@ public class NsTypes extends ORTypes {
         C_TAG_START = new ORCompositeElementType("C_TAG_START", NsLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", NsLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", NsLanguage.INSTANCE);
-        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", NsLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", NsLanguage.INSTANCE);
         C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", NsLanguage.INSTANCE);
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", NsLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", NsLanguage.INSTANCE);
-        C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", NsLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", NsLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", NsLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", NsLanguage.INSTANCE);
@@ -221,6 +221,7 @@ public class NsTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", NsLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", NsLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", NsLanguage.INSTANCE);
+        TAG_GT = new ORTokenElementType("TAG_GT", NsLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", NsLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", NsLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", NsLanguage.INSTANCE);

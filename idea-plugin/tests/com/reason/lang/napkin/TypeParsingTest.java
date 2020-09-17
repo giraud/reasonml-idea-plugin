@@ -1,15 +1,15 @@
 package com.reason.lang.napkin;
 
 import java.util.*;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiJsObject;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiSignatureItem;
+import com.reason.lang.core.psi.PsiTag;
 import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 
@@ -18,7 +18,7 @@ public class TypeParsingTest extends NsParsingTestCase {
 
     public void test_abstract() {
         PsiType e = first(typeExpressions(parseCode("type t")));
-        
+
         assertEquals("t", e.getName());
     }
 
@@ -33,6 +33,8 @@ public class TypeParsingTest extends NsParsingTestCase {
         PsiType e = first(typeExpressions(parseCode("type rec tree<'a> = | Leaf('a) | Tree(tree<'a>, tree<'a>)")));
 
         assertEquals("tree", e.getName());
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiTag.class));
     }
 
     public void test_variant() {
@@ -41,7 +43,7 @@ public class TypeParsingTest extends NsParsingTestCase {
         assertNotNull(e.getBinding());
         assertEquals("t", e.getName());
         Collection<PsiVariantDeclaration> vars = PsiTreeUtil.findChildrenOfType(e.getBinding(), PsiVariantDeclaration.class);
-        assertEquals("Tick", ORUtil.findImmediateFirstChildOfType(vars.iterator().next(),(IElementType)  m_types.C_VARIANT).getText());
+        assertEquals("Tick", vars.iterator().next().getText());
     }
 
     public void test_polyVariant() {
@@ -95,5 +97,12 @@ public class TypeParsingTest extends NsParsingTestCase {
         PsiType e = first(typeExpressions(parseCode("type t = {. a: string }")));
 
         assertInstanceOf(e.getBinding().getFirstChild(), PsiJsObject.class);
+    }
+
+    public void test_applyParams() {
+        PsiType e = first(typeExpressions(parseCode("type t<'value> = Belt.Map.t<key, 'value, Comparator.identity>;")));
+
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+        assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiTag.class));
     }
 }

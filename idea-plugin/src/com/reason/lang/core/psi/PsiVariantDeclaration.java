@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.impl.PsiTokenStub;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.stub.PsiVariantDeclarationStub;
 import com.reason.lang.core.type.ORTypes;
 
 import static java.util.Collections.*;
 
 public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDeclarationStub>
-        implements PsiNameIdentifierOwner, PsiQualifiedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
+        implements PsiQualifiedElement, StubBasedPsiElement<PsiVariantDeclarationStub> {
 
     //region Constructors
     public PsiVariantDeclaration(@NotNull ORTypes types, @NotNull ASTNode node) {
@@ -30,22 +30,21 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
     }
     //endregion
 
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        return PsiTreeUtil.findChildOfType(this, PsiUpperSymbol.class);
-    }
-
     @Override
     public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
+        PsiElement nameIdentifier = getFirstChild();
         return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
-    @NotNull
     @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
         return this;
+    }
+
+    @Override
+    public @NotNull PsiElement getNavigationElement() {
+        PsiUpperIdentifier id = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
+        return id == null ? this : id;
     }
 
     @NotNull
@@ -71,8 +70,8 @@ public class PsiVariantDeclaration extends PsiTokenStub<ORTypes, PsiVariantDecla
     }
 
     @Nullable
-    public PsiUpperSymbol getVariant() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
+    public PsiNameIdentifierOwner getVariant() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiUpperIdentifier.class);
     }
 
     @NotNull

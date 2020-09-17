@@ -3,7 +3,7 @@ package com.reason.lang.napkin;
 import java.util.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
@@ -31,7 +31,7 @@ public class PolyVariantTest extends NsParsingTestCase {
                                          "  | #String(s) => toJsUnsafe(s) " + //
                                          "  | #bool(b) => toJsUnsafe(Js.Boolean.to_js_boolean(b))" + //
                                          "}");
-        Collection<PsiNameIdentifierOwner> expressions = expressions(file);
+        Collection<PsiNamedElement> expressions = expressions(file);
 
         assertEquals(1, expressions.size());
 

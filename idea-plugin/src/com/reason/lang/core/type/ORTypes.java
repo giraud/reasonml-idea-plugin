@@ -3,12 +3,13 @@ package com.reason.lang.core.type;
 public abstract class ORTypes {
     // Stubbed expressions
 
-    public ORCompositeType C_EXPR_EXCEPTION;
-    public ORCompositeType C_EXPR_TYPE;
-    public ORCompositeType C_EXPR_EXTERNAL;
-    public ORCompositeType C_EXPR_LET;
-    public ORCompositeType C_EXPR_MODULE;
-    public ORCompositeType C_EXPR_VAL;
+    public ORCompositeType C_CLASS_DECLARATION;
+    public ORCompositeType C_EXCEPTION_DECLARATION;
+    public ORCompositeType C_TYPE_DECLARATION;
+    public ORCompositeType C_EXTERNAL_DECLARATION;
+    public ORCompositeType C_LET_DECLARATION;
+    public ORCompositeType C_MODULE_DECLARATION;
+    public ORCompositeType C_VAL_DECLARATION;
 
     // Stubbed element types
 
@@ -20,11 +21,12 @@ public abstract class ORTypes {
     public ORCompositeType C_CLASS_FIELD;
     public ORCompositeType C_CLASS_METHOD;
     public ORCompositeType C_CLASS_PARAMS;
-    public ORCompositeType C_CLASS_STMT;
     public ORCompositeType C_CONSTRAINTS;
     public ORCompositeType C_CONSTRAINT;
     public ORCompositeType C_DECONSTRUCTION;
     public ORCompositeType C_DIRECTIVE;
+    public ORCompositeType C_LOWER_IDENTIFIER;
+    public ORCompositeType C_UPPER_IDENTIFIER;
     public ORCompositeType C_FAKE_MODULE;
     public ORCompositeType C_LOCAL_OPEN;
     public ORCompositeType C_OPEN;
@@ -62,7 +64,6 @@ public abstract class ORTypes {
     public ORCompositeType C_TAG;
     public ORCompositeType C_TAG_PROP_VALUE;
     public ORCompositeType C_TAG_BODY;
-    public ORCompositeType C_TAG_GT;
     public ORCompositeType C_UNIT;
     public ORCompositeType C_UNKNOWN_EXPR;
     public ORCompositeType C_VARIANT;
@@ -85,7 +86,6 @@ public abstract class ORTypes {
     public ORCompositeType C_TRY_BODY;
     public ORCompositeType C_TRY_HANDLERS;
     public ORCompositeType C_TRY_HANDLER;
-    public ORCompositeType C_TYPE_CONSTR_NAME;
     public ORCompositeType C_TYPE_BINDING;
     public ORCompositeType C_UPPER_SYMBOL;
     public ORCompositeType C_LOWER_SYMBOL;
@@ -224,6 +224,7 @@ public abstract class ORTypes {
     public ORTokenElementType TAG_NAME;
     public ORTokenElementType TAG_LT;
     public ORTokenElementType TAG_LT_SLASH;
+    public ORTokenElementType TAG_GT;
     public ORTokenElementType TILDE;
     public ORTokenElementType UIDENT;
     public ORTokenElementType UNIT;

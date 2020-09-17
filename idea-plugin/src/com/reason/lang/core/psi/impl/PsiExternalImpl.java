@@ -34,14 +34,13 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
 
     //region PsiNamedElement
     @Nullable
-    @Override
     public PsiElement getNameIdentifier() {
         PsiScopedExpr operatorOverride = findChildByClass(PsiScopedExpr.class);
         if (operatorOverride != null) {
             return operatorOverride;
         }
 
-        return findChildByClass(PsiLowerSymbol.class);
+        return findChildByClass(PsiLowerIdentifier.class);
     }
 
     @NotNull

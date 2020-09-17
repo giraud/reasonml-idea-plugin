@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiPolyVariantReferenceBase;
 import com.intellij.psi.ResolveResult;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -16,18 +16,19 @@ import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.Log;
+import com.reason.Platform;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.PsiFakeModule;
-import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.type.ORTypes;
 
 import static com.reason.lang.core.ORFileType.both;
@@ -42,8 +43,8 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     private final ORTypes m_types;
 
     public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
-        super(element, ORUtil.getTextRangeForReference(element));
-        m_referenceName = element.getName();
+        super(element, TextRange.create(0, element.getTextLength()));
+        m_referenceName = element.getText();
         m_types = types;
     }
 
@@ -56,7 +57,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
 
         // If name is used in a definition, it's a declaration not a usage: ie, it's not a reference
         // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
-        PsiNameIdentifierOwner parent = PsiTreeUtil.getParentOfType(myElement, PsiInnerModule.class, PsiVariantDeclaration.class, PsiException.class);
+        PsiUpperIdentifier parent = PsiTreeUtil.getParentOfType(myElement, PsiUpperIdentifier.class);
         if (parent != null && parent.getNameIdentifier() == myElement) {
             return ResolveResult.EMPTY_ARRAY;
         }
@@ -64,23 +65,36 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         LOG.debug("Find reference for upper symbol", m_referenceName);
 
         // Find potential paths of current element
-        Set<PsiQualifiedElement> referencedElements = resolveElementsFromPaths();
+        List<PsiQualifiedElement> referencedElements = new ArrayList<>(resolveElementsFromPaths());
         if (referencedElements.isEmpty()) {
             LOG.debug(" -> No resolved elements found from paths");
         } else {
+            referencedElements.sort((r1, r2) -> {
+                PsiFile f1 = r1.getContainingFile();
+                // Hack because bucklescript duplicate files into lib/ocaml
+                String p1 = Platform.removeProjectDir(r1.getProject(), f1.getVirtualFile().getPath());
+                if (p1.contains("lib")) {
+                    return -1;
+                }
+
+                PsiFile f2 = r2.getContainingFile();
+                String p2 = Platform.removeProjectDir(r2.getProject(), f2.getVirtualFile().getPath());
+                if (p2.contains("lib")) {
+                    return 1;
+                }
+
+                return FileHelper.isInterface(f1.getFileType()) ? 1 : (FileHelper.isInterface(f2.getFileType()) ? -1 : 0);
+            });
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("  => found", Joiner.join(", ", referencedElements, item -> item.getQualifiedName() + " [" + Platform
+                        .removeProjectDir(item.getProject(), item.getContainingFile().getVirtualFile().getPath()) + "]"));
+            }
+
             ResolveResult[] resolveResults = new ResolveResult[referencedElements.size()];
 
             int i = 0;
             for (PsiQualifiedElement referencedElement : referencedElements) {
-                if (LOG.isDebugEnabled()) {
-                    boolean isInnerModule = referencedElement instanceof PsiInnerModule;
-                    String alias = isInnerModule ? ((PsiInnerModule) referencedElement).getAlias() : null;
-                    String source = referencedElement instanceof FileBase ? ((FileBase) referencedElement).shortLocation(referencedElement.getProject()) :
-                            referencedElement.getClass().getName();
-                    LOG.debug(" -> " + referencedElement.getQualifiedName() + (alias == null ? "" : " / alias=" + alias) + " in file " + referencedElement
-                            .getContainingFile() + " [" + source + "]");
-                }
-
                 // A fake module resolve to its file
                 resolveResults[i] = new UpperResolveResult(
                         referencedElement instanceof PsiFakeModule ? (FileBase) referencedElement.getContainingFile() : referencedElement);
@@ -97,15 +111,12 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     @Override
     public PsiElement resolve() {
         ResolveResult[] resolveResults = multiResolve(false);
-        if (resolveResults.length > 1) {
-            LOG.debug("Can't resolve element because too many results", resolveResults);
-        }
-        return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+        return 0 < resolveResults.length ? resolveResults[0].getElement() : null;
     }
 
     @Override
     public PsiElement handleElementRename(@NotNull String newName) throws IncorrectOperationException {
-        PsiElement newNameIdentifier = ORCodeFactory.createModuleName(myElement.getProject(), newName);
+        PsiUpperIdentifier newNameIdentifier = ORCodeFactory.createModuleName(myElement.getProject(), newName);
 
         ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
         if (newNameNode != null) {
@@ -179,8 +190,8 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         private final PsiElement m_referencedIdentifier;
 
         public UpperResolveResult(PsiQualifiedElement referencedElement) {
-            m_referencedIdentifier = referencedElement instanceof PsiNameIdentifierOwner ? ((PsiNameIdentifierOwner) referencedElement).getNameIdentifier() :
-                    referencedElement;
+            PsiUpperIdentifier identifier = ORUtil.findImmediateFirstChildOfClass(referencedElement, PsiUpperIdentifier.class);
+            m_referencedIdentifier = identifier == null ? referencedElement : identifier;
         }
 
         @Nullable
@@ -192,11 +203,6 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         @Override
         public boolean isValidResult() {
             return true;
-        }
-
-        @Override
-        public String toString() {
-            return m_referencedIdentifier instanceof PsiNamedElement ? ((PsiNamedElement) m_referencedIdentifier).getName() : m_referencedIdentifier.getText();
         }
     }
 }

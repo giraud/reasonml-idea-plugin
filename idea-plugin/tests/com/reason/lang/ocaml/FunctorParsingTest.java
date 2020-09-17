@@ -3,7 +3,7 @@ package com.reason.lang.ocaml;
 import java.util.*;
 import java.util.stream.*;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiConstraint;
@@ -16,7 +16,7 @@ import com.reason.lang.core.psi.PsiUpperSymbol;
 @SuppressWarnings("ConstantConditions")
 public class FunctorParsingTest extends OclParsingTestCase {
     public void test_basic() {
-        PsiNameIdentifierOwner e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
+        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) : S = struct end")));
 
         PsiFunctor f = (PsiFunctor) e;
         assertEquals("struct end", f.getBinding().getText());
@@ -27,15 +27,14 @@ public class FunctorParsingTest extends OclParsingTestCase {
     }
 
     public void test_implicitResult() {
-        PsiNameIdentifierOwner e = first(expressions(parseCode("module Make (M:Def) = struct end")));
+        PsiNamedElement e = first(expressions(parseCode("module Make (M:Def) = struct end")));
 
         PsiFunctor f = (PsiFunctor) e;
         assertEquals("struct end", f.getBinding().getText());
     }
 
     public void test_withConstraints() {
-        Collection<PsiNameIdentifierOwner> expressions = expressions(
-                parseCode("module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
+        Collection<PsiNamedElement> expressions = expressions(parseCode("module Make (M: Input) : S with type +'a t = 'a M.t and type b = M.b = struct end"));
 
         assertEquals(1, expressions.size());
         PsiFunctor f = (PsiFunctor) first(expressions);
@@ -79,7 +78,7 @@ public class FunctorParsingTest extends OclParsingTestCase {
 
     public void test_functorInstanciationChaining() {
         PsiFile file = parseCode("module KeyTable = Hashtbl.Make(KeyHash)\ntype infos");
-        List<PsiNameIdentifierOwner> expressions = new ArrayList<>(expressions(file));
+        List<PsiNamedElement> expressions = new ArrayList<>(expressions(file));
 
         assertEquals(2, expressions.size());
 

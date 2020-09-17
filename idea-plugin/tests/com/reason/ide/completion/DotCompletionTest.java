@@ -47,7 +47,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
         assertSameElements(strings, "y");
     }
 
-    public void testBeforeCaret() {
+    public void test_Rml_beforeCaret() {
         configureCode("A.re", "type x;");
         configureCode("B.re", "A.<caret>;");
 

@@ -26,6 +26,7 @@ import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiStanza;
 import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
@@ -279,7 +280,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
                         if (let.isScopeIdentifier()) {
                             // it's a tuple! add each element of the tuple separately.
                             for (PsiElement child : let.getScopeChildren()) {
-                                if (child instanceof PsiLowerSymbol) {
+                                if (child instanceof PsiLowerIdentifier) {
                                     m_treeElements.add(new StructureViewElement(child, element, true));
                                 }
                             }

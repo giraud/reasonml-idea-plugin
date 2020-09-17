@@ -254,7 +254,7 @@
         <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>
 
         <lang.findUsagesProvider language="Reason" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
-        <lang.findUsagesProvider language="NapkinScript" implementationClass="com.reason.ide.search.RmlFindUsagesProvider"/>
+        <lang.findUsagesProvider language="NapkinScript" implementationClass="com.reason.ide.search.NsFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCaml" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="OCamlP4" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
         <lang.findUsagesProvider language="Mlg" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
@@ -262,6 +262,7 @@
         <lang.findUsagesProvider language="Mly" implementationClass="com.reason.ide.search.OclFindUsagesProvider"/>
 
         <gotoClassContributor implementation="com.reason.ide.go.ORModuleContributor"/>
+        <gotoDeclarationHandler implementation="com.reason.ide.go.ORGotoDeclarationHandler"/>
 
         <!--
          | Settings
@@ -333,9 +334,9 @@
         <completion.contributor language="Reason"
                                 implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
         <completion.contributor language="NapkinScript"
-                                implementationClass="com.reason.ide.insight.RmlCompletionContributor"/>
+                                implementationClass="com.reason.ide.insight.NsCompletionContributor"/>
         <completion.contributor language="NapkinScript"
-                                implementationClass="com.reason.ide.insight.RmlKeywordCompletionContributor"/>
+                                implementationClass="com.reason.ide.insight.NsKeywordCompletionContributor"/>
         <completion.contributor language="OCaml" implementationClass="com.reason.ide.insight.OclCompletionContributor"/>
         <completion.contributor language="OCaml"
                                 implementationClass="com.reason.ide.insight.OclKeywordCompletionContributor"/>

@@ -1,6 +1,16 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.core.stub.type.*;
+import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
+import com.reason.lang.core.stub.type.PsiExternalStubElementType;
+import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
+import com.reason.lang.core.stub.type.PsiLetStubElementType;
+import com.reason.lang.core.stub.type.PsiParameterStubElementType;
+import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
+import com.reason.lang.core.stub.type.PsiTypeStubElementType;
+import com.reason.lang.core.stub.type.PsiValStubElementType;
+import com.reason.lang.core.stub.type.PsiVariantStubElementType;
 import com.reason.lang.core.type.ORCompositeElementType;
 import com.reason.lang.core.type.ORTokenElementType;
 import com.reason.lang.core.type.ORTypes;
@@ -14,16 +24,16 @@ public class RmlTypes extends ORTypes {
 
         // Stubbed element types
 
-        C_EXPR_EXCEPTION = new PsiExceptionStubElementType("C_EXCEPTION_EXPR", RmlLanguage.INSTANCE);
-        C_EXPR_TYPE = new PsiTypeStubElementType("C_EXP_TYPE", RmlLanguage.INSTANCE);
-        C_EXPR_EXTERNAL = new PsiExternalStubElementType("C_EXTERNAL_STMT", RmlLanguage.INSTANCE);
+        C_EXCEPTION_DECLARATION = new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", RmlLanguage.INSTANCE);
+        C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", RmlLanguage.INSTANCE);
+        C_EXTERNAL_DECLARATION = new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", RmlLanguage.INSTANCE);
         C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
         C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", RmlLanguage.INSTANCE);
         C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", RmlLanguage.INSTANCE);
-        C_EXPR_LET = new PsiLetStubElementType("C_LET_STMT", RmlLanguage.INSTANCE);
-        C_EXPR_MODULE = new PsiInnerModuleStubElementType("C_MODULE_STMT", RmlLanguage.INSTANCE);
+        C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", RmlLanguage.INSTANCE);
+        C_MODULE_DECLARATION = new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", RmlLanguage.INSTANCE);
         C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", RmlLanguage.INSTANCE);
-        C_EXPR_VAL = new PsiValStubElementType("C_VAL_EXPR", RmlLanguage.INSTANCE);
+        C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", RmlLanguage.INSTANCE);
         C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
 
         // Composite element types
@@ -33,7 +43,7 @@ public class RmlTypes extends ORTypes {
         C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", RmlLanguage.INSTANCE);
         C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
         C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", RmlLanguage.INSTANCE);
-        C_CLASS_STMT = new ORCompositeElementType("C_CLASS_STMT", RmlLanguage.INSTANCE);
+        C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", RmlLanguage.INSTANCE);
         C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
         C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", RmlLanguage.INSTANCE);
         C_CLASS_FIELD = new ORCompositeElementType("C_CLASS_FIELD", RmlLanguage.INSTANCE);
@@ -42,6 +52,8 @@ public class RmlTypes extends ORTypes {
         C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", RmlLanguage.INSTANCE);
         C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", RmlLanguage.INSTANCE);
         C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
+        C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", RmlLanguage.INSTANCE);
+        C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
         C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
         C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", RmlLanguage.INSTANCE);
         C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", RmlLanguage.INSTANCE);
@@ -83,7 +95,6 @@ public class RmlTypes extends ORTypes {
         C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", RmlLanguage.INSTANCE);
         C_TAG_BODY = new ORCompositeElementType("C_TAG_BODY", RmlLanguage.INSTANCE);
         C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", RmlLanguage.INSTANCE);
-        C_TAG_GT = new ORCompositeElementType("C_TAG_GT", RmlLanguage.INSTANCE);
         C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", RmlLanguage.INSTANCE);
         C_TAG_START = new ORCompositeElementType("C_TAG_START", RmlLanguage.INSTANCE);
         C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", RmlLanguage.INSTANCE);
@@ -91,7 +102,6 @@ public class RmlTypes extends ORTypes {
         C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", RmlLanguage.INSTANCE);
         C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", RmlLanguage.INSTANCE);
         C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", RmlLanguage.INSTANCE);
-        C_TYPE_CONSTR_NAME = new ORCompositeElementType("C_TYPE_CONSTR_NAME", RmlLanguage.INSTANCE);
         C_UNIT = new ORCompositeElementType("C_UNIT", RmlLanguage.INSTANCE);
         C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", RmlLanguage.INSTANCE);
         C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", RmlLanguage.INSTANCE);
@@ -207,6 +217,7 @@ public class RmlTypes extends ORTypes {
         TAG_NAME = new ORTokenElementType("TAG_NAME", RmlLanguage.INSTANCE);
         TAG_LT = new ORTokenElementType("TAG_LT", RmlLanguage.INSTANCE);
         TAG_LT_SLASH = new ORTokenElementType("TAG_LT_SLASH", RmlLanguage.INSTANCE);
+        TAG_GT = new ORTokenElementType("TAG_GT", RmlLanguage.INSTANCE);
         TILDE = new ORTokenElementType("TILDE", RmlLanguage.INSTANCE);
         TO = new ORTokenElementType("TO", RmlLanguage.INSTANCE);
         THEN = new ORTokenElementType("THEN", RmlLanguage.INSTANCE);

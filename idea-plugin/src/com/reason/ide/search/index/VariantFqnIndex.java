@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public class VariantFqnIndex extends IntStubIndexExtension<PsiVariantDeclaration> {
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
     private static final VariantFqnIndex INSTANCE = new VariantFqnIndex();
 
     @NotNull

@@ -2,7 +2,6 @@ package com.reason.lang.napkin;
 
 import java.util.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
@@ -21,7 +20,7 @@ public class JsxParsingTest extends NsParsingTestCase {
 
         PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
         assertEquals("<div>", tag.getText());
-        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), (IElementType) m_types.C_TAG_GT));
+        assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
         assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
@@ -31,6 +30,14 @@ public class JsxParsingTest extends NsParsingTestCase {
 
         assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
         assertEquals("<div/>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
+        assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
+    }
+
+    public void test_multipleClosingTag() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div><div></div></div>"));
+
+        assertEquals("<div>", PsiTreeUtil.findChildOfType(e, PsiTagStart.class).getText());
+        assertEquals("<div></div>", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
         assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
     }
 
@@ -117,5 +124,21 @@ public class JsxParsingTest extends NsParsingTestCase {
         assertEquals(2, properties.size());
         assertEquals("{computePageHeight(miniDashboardHeight)}", properties.get(0).getValue().getText());
         assertEquals("\"X\"", properties.get(1).getValue().getText());
+    }
+
+    public void test_prop04() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<Icon colors=[|white, red|] />"));
+
+        List<PsiTagProperty> properties = ((PsiTagStart) e.getFirstChild()).getProperties();
+        assertEquals(1, properties.size());
+        assertEquals("[|white, red|]", properties.get(0).getValue().getText());
+    }
+
+    public void test_propRef() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<div ref={ReactDOMRe.Ref.domRef(formRef)}/>"));
+
+        Collection<PsiTagProperty> properties = PsiTreeUtil.findChildrenOfType(e, PsiTagProperty.class);
+        PsiTagProperty prop = properties.iterator().next();
+        assertEquals("ref={ReactDOMRe.Ref.domRef(formRef)}", prop.getText());
     }
 }

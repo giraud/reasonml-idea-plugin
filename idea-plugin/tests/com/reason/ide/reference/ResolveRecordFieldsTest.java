@@ -6,10 +6,17 @@ import com.reason.lang.core.psi.PsiRecordField;
 
 public class ResolveRecordFieldsTest extends ORBasePlatformTestCase {
 
-    public void testSameNameWithPath() {
-        myFixture.configureByText("A.re", "type t = { f: string }; let x: f<caret> = \"\";");
+    public void test_Ns_sameNameWithPath() {
+        configureCode("A.res", "type t = { f: string }; let x: f<caret> = \"\";");
 
         PsiElement e = myFixture.getElementAtCaret();
-        assertEquals("A.t.f", ((PsiRecordField) e.getParent()).getQualifiedName());
+        assertEquals("A.t.f", ((PsiRecordField) e).getQualifiedName());
+    }
+
+    public void test_Rml_sameNameWithPath() {
+        configureCode("A.re", "type t = { f: string }; let x: f<caret> = \"\";");
+
+        PsiElement e = myFixture.getElementAtCaret();
+        assertEquals("A.t.f", ((PsiRecordField) e).getQualifiedName());
     }
 }

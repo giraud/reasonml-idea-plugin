@@ -1,9 +1,8 @@
 package com.reason.lang.ocaml;
 
 import java.util.*;
-import com.intellij.execution.testframework.Filter;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ExpressionFilterConstants;
 import com.reason.lang.core.psi.ExpressionScope;
@@ -79,7 +78,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
         assertEquals(1, expressions(file).size());
         PsiModule e = first(moduleExpressions(file));
         assertEquals("M", e.getName());
-        Collection<PsiNameIdentifierOwner> expressions = e.getExpressions(ExpressionScope.pub, ExpressionFilterConstants.NO_FILTER);
+        Collection<PsiNamedElement> expressions = e.getExpressions(ExpressionScope.pub, ExpressionFilterConstants.NO_FILTER);
         assertSize(2, expressions);
     }
 }

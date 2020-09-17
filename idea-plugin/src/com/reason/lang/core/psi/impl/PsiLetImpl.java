@@ -47,9 +47,8 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     //region PsiNamedElement
     @Nullable
-    @Override
     public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerSymbol.class, PsiScopedExpr.class, PsiDeconstruction.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
     }
 
     @Nullable
@@ -74,7 +73,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
     @Override
     public boolean isScopeIdentifier() {
-        return ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class) != null;
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class) != null;
     }
 
     @NotNull
@@ -82,7 +81,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     public Collection<PsiElement> getScopeChildren() {
         Collection<PsiElement> result = new ArrayList<>();
 
-        PsiScopedExpr scope = ORUtil.findImmediateFirstChildOfClass(this, PsiScopedExpr.class);
+        PsiElement scope = ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class);
         if (scope != null) {
             for (PsiElement element : scope.getChildren()) {
                 if (element.getNode().getElementType() != m_types.COMMA) {
@@ -144,7 +143,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
                     continue;
                 }
 
-                String name = ((PsiLowerSymbol) element).getName();
+                String name = ((PsiLowerSymbol) element).getText();
 
                 if (name != null) {
                     Collection<PsiLet> lets = PsiFinder.getInstance(element.getProject()).findLets(name, ORFileType.interfaceOrImplementation);

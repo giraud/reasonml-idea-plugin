@@ -17,6 +17,7 @@ import com.reason.lang.core.psi.PsiClassField;
 import com.reason.lang.core.psi.PsiClassMethod;
 import com.reason.lang.core.psi.PsiClassParameters;
 import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.reason.lang.core.psi.PsiObject;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.type.ORTypes;
 
@@ -30,16 +31,15 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
 
     //region NamedElement
     @Nullable
-    @Override
-    public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
+    public PsiElement getNameIdentifier() {
+        return findChildByClass(PsiLowerIdentifier.class);
     }
 
     @Nullable
     @Override
-    public PsiElement getNameIdentifier() {
-        return findChildByClass(PsiLowerSymbol.class);
+    public String getName() {
+        PsiElement nameIdentifier = getNameIdentifier();
+        return nameIdentifier == null ? "" : nameIdentifier.getText();
     }
 
     @NotNull
@@ -65,7 +65,7 @@ public class PsiClassImpl extends PsiToken<ORTypes> implements PsiClass {
     @Nullable
     @Override
     public PsiElement getClassBody() {
-        return findChildByClass(PsiScopedExpr.class);
+        return PsiTreeUtil.findChildOfType(this,PsiObject.class);
     }
 
     @NotNull

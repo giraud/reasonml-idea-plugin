@@ -1,18 +1,18 @@
 package com.reason;
 
+import java.io.*;
+import java.nio.file.Path;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.ResolveResult;
 import com.reason.lang.core.psi.PsiQualifiedElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
 
 public class Log {
 
@@ -190,6 +190,12 @@ public class Log {
         }
     }
 
+    public void debug(String msg, PsiElement element) {
+        if (m_log.isDebugEnabled()) {
+            m_log.debug(msg + SEP + " " + element + SEP + (element instanceof PsiNamedElement ? " [" + ((PsiNamedElement) element).getName() + "]" : ""));
+        }
+    }
+
     public void error(String message, Exception e) {
         m_log.error(message, e);
     }
@@ -235,5 +241,4 @@ public class Log {
             m_log.trace(msg + SEP + " " + t);
         }
     }
-
 }

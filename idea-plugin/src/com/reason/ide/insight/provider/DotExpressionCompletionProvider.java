@@ -7,7 +7,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNameIdentifierOwner;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PsiIconUtil;
@@ -52,7 +52,7 @@ public class DotExpressionCompletionProvider {
         PsiElement previousElement = dotLeaf == null ? null : dotLeaf.getPrevSibling();
 
         if (previousElement instanceof PsiUpperSymbol) {
-            String upperName = ((PsiUpperSymbol) previousElement).getName();
+            String upperName = previousElement.getText();
             if (upperName != null) {
                 LOG.debug(" -> symbol", upperName);
                 PsiFinder psiFinder = PsiFinder.getInstance(project);
@@ -115,14 +115,14 @@ public class DotExpressionCompletionProvider {
                 // Use first resolved module
 
                 if (!resolvedModules.isEmpty()) {
-                    Collection<PsiNameIdentifierOwner> expressions = resolvedModules.iterator().next().getExpressions(pub, NO_FILTER);
+                    Collection<PsiNamedElement> expressions = resolvedModules.iterator().next().getExpressions(pub, NO_FILTER);
                     LOG.trace(" -> expressions", expressions);
                     addExpressions(resultSet, expressions, element.getLanguage());
                 }
             }
         } else if (previousElement instanceof PsiLowerSymbol) {
             // Expression of let/val/external/type
-            String lowerName = ((PsiLowerSymbol) previousElement).getName();
+            String lowerName = previousElement.getText();
             if (lowerName != null) {
                 LOG.debug("  symbol", lowerName);
                 PsiFinder psiFinder = PsiFinder.getInstance(project);
@@ -147,9 +147,8 @@ public class DotExpressionCompletionProvider {
         }
     }
 
-    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNameIdentifierOwner> expressions,
-                                       @NotNull Language language) {
-        for (PsiNameIdentifierOwner expression : expressions) {
+    private static void addExpressions(@NotNull CompletionResultSet resultSet, @NotNull Collection<PsiNamedElement> expressions, @NotNull Language language) {
+        for (PsiNamedElement expression : expressions) {
             if (!(expression instanceof PsiOpen) && !(expression instanceof PsiInclude) && !(expression instanceof PsiAnnotation)) {
                 // TODO: if include => include
                 String name = expression.getName();

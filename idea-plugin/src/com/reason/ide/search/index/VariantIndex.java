@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 public class VariantIndex extends StringStubIndexExtension<PsiVariantDeclaration> {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final VariantIndex INSTANCE = new VariantIndex();
 
     @NotNull

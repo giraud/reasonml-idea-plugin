@@ -13,6 +13,7 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 
 import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
 
@@ -141,7 +142,22 @@ public class LetParsingTest extends OclParsingTestCase {
         List<PsiElement> names = e.getDeconstructedElements();
         assertSize(2, names);
         assertEquals("a", names.get(0).getText());
+        assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
         assertEquals("b", names.get(1).getText());
+        assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+    }
+
+    public void test_List() {
+        PsiLet e = first(letExpressions(parseCode("let tokens = [ \"bullet\"; \"string\"; \"unicode_id_part\"; ]")));
+
+        assertEquals("[ \"bullet\"; \"string\"; \"unicode_id_part\"; ]", e.getBinding().getText());
+    }
+
+    public void test_optionalParam() {
+        PsiLet e = first(letExpressions(parseCode("let prod_to_str ?(plist=false) prod = String.concat \" \" (prod_to_str_r plist prod)")));
+
+        assertTrue(e.isFunction());
+        assertEquals("?(plist=false) prod = String.concat \" \" (prod_to_str_r plist prod)", e.getBinding().getText());
     }
 
     public void test_GH_116() {
