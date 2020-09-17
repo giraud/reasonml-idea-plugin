@@ -469,6 +469,15 @@ public class NsParser extends CommonParser<NsTypes> {
                         advance().
                         remapCurrentToken(m_types.TAG_NAME).
                         wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
+            } else if (nextTokenType == m_types.GT) {
+                // a React fragment start
+                state.remapCurrentToken(m_types.TAG_LT).
+                        mark(jsxTag, m_types.C_TAG).
+                        mark(jsxStartTag, m_types.C_TAG_START).
+                        advance().
+                        remapCurrentToken(m_types.TAG_GT).
+                        advance().
+                        popEnd();
             }
         }
     }
@@ -508,6 +517,14 @@ public class NsParser extends CommonParser<NsTypes> {
                     advance().
                     remapCurrentToken(m_types.TAG_NAME).
                     wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
+        } else if (nextTokenType == m_types.GT) {
+            // a React fragment end
+            state.remapCurrentToken(m_types.TAG_LT_SLASH).
+                    mark(jsxTagClose, m_types.C_TAG_CLOSE).
+                    advance().
+                    remapCurrentToken(m_types.TAG_GT).
+                    advance().
+                    popEnd();
         }
     }
 

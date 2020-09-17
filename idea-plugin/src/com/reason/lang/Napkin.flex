@@ -198,7 +198,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "!="  { return types.NOT_EQ; }
     ":="  { return types.COLON_EQ; }
     ":>"  { return types.COLON_GT; }
-    "<>"  { return types.DIFF; }
     "<="  { return types.LT_OR_EQUAL; }
     ">="  { return types.GT_OR_EQUAL; }
 

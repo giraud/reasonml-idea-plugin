@@ -10,8 +10,9 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.92 - 2020/09/17
+## Unreleased
 
+- :nail_care: Better parsing of React fragment <></>
 
 ## 0.92 - 2020/09/17
 
