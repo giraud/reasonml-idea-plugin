@@ -12,6 +12,9 @@
 
 ## Unreleased
 
+
+## 0.92 - 2020/09/17
+
 This new version is compatible with 2020.2.
 To support that version, the references have been redesigned. It might be needed to invalidate your caches and
 maybe restart project from scratch (or remove .idea folder).
