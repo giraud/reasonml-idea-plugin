@@ -10,7 +10,7 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## Unreleased
+## 0.92 - 2020/09/17
 
 This new version is compatible with 2020.2.
 To support that version, the references have been redesigned. It might be needed to invalidate your caches and

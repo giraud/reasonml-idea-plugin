@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
@@ -13,7 +15,6 @@ import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
 
-import static com.intellij.lang.annotation.HighlightSeverity.INFORMATION;
 import static com.reason.ide.highlight.ORSyntaxHighlighter.*;
 
 public abstract class ORSyntaxAnnotator implements Annotator {
@@ -58,9 +59,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
     }
 
     private void color(AnnotationHolder holder, PsiElement element, TextAttributesKey key) {
-        holder.newSilentAnnotation(INFORMATION).
-                range(element).
-                textAttributes(key).
-                create();
+        EditorColorsScheme globalScheme = EditorColorsManager.getInstance().getGlobalScheme();
+        holder.createInfoAnnotation(element, null).setEnforcedTextAttributes(globalScheme.getAttributes(key));
     }
 }
