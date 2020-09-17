@@ -13,24 +13,6 @@ idea {
     }
 }
 
-patchPluginXml {
-    changeNotes """
-        <ul>
-            <li>a new unified language settings</li>
-            <li>Support GoTo/Implementation(s)</li>
-            <li>Incompatible with 2020.2 IDEs</li>
-            <li>Regression: Structure panel should group methods under the class name</li>
-            <li>Reworked parsers (try to remove some complexity) - rescript included</li>
-            <li>.res files are automatically compiled when saved, like .re</li>
-        </ul>
-
-        <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
-
-        <p/>
-        <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-    """
-}
-
 allprojects {
     group 'com.reason'
 }
@@ -53,6 +35,26 @@ subprojects {
         testCompile 'org.mockito:mockito-core:3.3.3'
         testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
         testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
+    }
+
+    patchPluginXml {
+        sinceBuild = pluginSinceBuild
+        untilBuild = pluginUntilBuild
+        changeNotes """
+        <ul>
+            <li>a new unified language settings</li>
+            <li>Support GoTo/Implementation(s)</li>
+            <li>Incompatible with 2020.2 IDEs</li>
+            <li>Regression: Structure panel should group methods under the class name</li>
+            <li>Reworked parsers (try to remove some complexity) - rescript included</li>
+            <li>.res files are automatically compiled when saved, like .re</li>
+        </ul>
+
+        <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
+
+        <p/>
+        <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
+    """
     }
 
     sourceSets {
