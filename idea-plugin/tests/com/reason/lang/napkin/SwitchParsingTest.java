@@ -17,7 +17,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 @SuppressWarnings("ConstantConditions")
 public class SwitchParsingTest extends NsParsingTestCase {
-    public void test_patternUSymbol() {
+    public void test_patternVariant() {
         FileBase f = parseCode("switch x { | Variant1(x) => x () | Variant2 => () }");
 
         assertEquals(1, childrenCount(f));
@@ -35,12 +35,14 @@ public class SwitchParsingTest extends NsParsingTestCase {
 
         // first pattern
         PsiPatternMatch p1 = patterns.get(0);
+        assertEquals("Variant1(x) => x ()", p1.getText());
         PsiPatternMatchBody p1Body = p1.getBody();
         assertEquals("x ()", p1Body.getText());
         // ?? assertNotNull(ORUtil.findImmediateFirstChildOfClass(p1Body, PsiUnit.class));
 
         // second pattern
         PsiPatternMatch p2 = patterns.get(1);
+        assertEquals("Variant2 => ()", p2.getText());
         PsiPatternMatchBody p2Body = p2.getBody();
         assertEquals("()", p2Body.getText());
         //assertNotNull(ORUtil.findImmediateFirstChildOfClass(p2Body, PsiUnit.class));
@@ -130,4 +132,12 @@ public class SwitchParsingTest extends NsParsingTestCase {
         assertEquals("reasonStateUpdate", e.getCondition().getText());
         assertSize(2, e.getPatterns());
     }
+
+    public void test_tuple() {
+        PsiSwitch e = firstOfType(parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => () }"), PsiSwitch.class);
+
+        List<PsiPatternMatch> patterns = e.getPatterns();
+        assertSize(2, patterns);
+        assertEquals("(None, Some(x), _) => do(. z)", patterns.get(0).getText());
+        assertEquals("(_, _, _) => ()", patterns.get(1).getText());    }
 }

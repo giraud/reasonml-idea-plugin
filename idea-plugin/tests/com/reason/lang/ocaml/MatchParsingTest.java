@@ -32,7 +32,8 @@ public class MatchParsingTest extends OclParsingTestCase {
 
         PsiLet let = first(letExpressions(psiFileModule));
         PsiLetBinding binding = let.getBinding();
-        assertNotNull(PsiTreeUtil.findChildOfType(binding, PsiSwitch.class));
+        PsiSwitch match = PsiTreeUtil.findChildOfType(binding, PsiSwitch.class);
+        assertEquals("VtMeta -> let _ = x", match.getPatterns().get(0).getText());
     }
 
     public void test_matchWithException() {

@@ -360,13 +360,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // try (...) { |>|<| ...
             state.mark(tryBodyWithHandler, m_types.C_TRY_HANDLER);
         } else {
-            if (state.isCurrentResolution(patternMatchBody)) {
+            if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
                 // can be a switchBody or a 'fun'
+                state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
                 state.popEnd().popEnd();
             }
 
             // By default, a pattern match
-            state.mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
+            state.advance().
+                    mark(patternMatch, m_types.C_PATTERN_MATCH_EXPR);
         }
     }
 
@@ -855,6 +857,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
         } else if (state.isCurrentResolution(patternMatchVariant)) {
             // It's a constructor ::  | Variant |>(<| .. ) => ..
             state.markScope(patternMatchVariantConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN);
+        } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
+            // A tuple in a pattern match ::  | |>(<| .. ) => ..
+            state.updateCurrentResolution(patternMatchValue).
+                    markScope(genericExpression, m_types.C_SCOPED_EXPR, m_types.LPAREN);
         } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Local open ::  M.|>(<| ...
             state.markScope(localOpen, m_types.C_LOCAL_OPEN, m_types.LPAREN);
@@ -1112,8 +1118,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                     mark(signatureItem, m_types.C_SIG_ITEM);
         } else if (state.isCurrentResolution(functionParameter)) {
             // x |>=><| ...
-            state.popEndUntilResolution(function).
-                    advance().
+            state.popEndUntilOneOfResolution(functionCallParams, function);
+            state.advance().
                     mark(functionBody, m_types.C_FUN_BODY);
         } else if (state.isCurrentResolution(function)) {
             // let x = ( ... ) |>=><|
@@ -1125,7 +1131,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
                 state.popEnd();
             }
             //state.advance().mark(functorBinding, m_types.C_FUNCTOR_BINDING);
-        } else if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(patternMatchVariantConstructor)) {
+        } else if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(patternMatchVariantConstructor) || state
+                .isCurrentResolution(patternMatchValue)) {
             // switch ( ... ) { | ... |>=><|
             if (state.isCurrentResolution(patternMatchVariantConstructor)) {
                 state.popEnd();
