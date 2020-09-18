@@ -1,12 +1,11 @@
 package com.reason.lang.reason;
 
 import java.util.*;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiFunctionBody;
+import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSwitch;
@@ -158,6 +157,13 @@ public class FunctionParsingTest extends RmlParsingTestCase {
         assertSize(1, innerFunction.getParameters());
         assertEquals("self", first(innerFunction.getParameters()).getName());
         assertEquals("<div/>", innerFunction.getBody().getText());
+    }
+
+    public void test_underscore() {
+        PsiLet e = first(letExpressions(parseCode("let onCancel = _ => { setUpdatedAttribute(_ => initialAttribute); };")));
+
+        assertEquals("_ => { setUpdatedAttribute(_ => initialAttribute); }", e.getBinding().getText());
+        assertEquals("(_ => initialAttribute)", PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class).getText());
     }
 
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/113

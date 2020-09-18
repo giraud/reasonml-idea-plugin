@@ -17,7 +17,7 @@ import com.reason.lang.core.psi.PsiVariantDeclaration;
 
 @SuppressWarnings("ConstantConditions")
 public class SwitchParsingTest extends RmlParsingTestCase {
-    public void test_patternUSymbol() {
+    public void test_patternVariant() {
         FileBase f = parseCode("switch (x) { | Variant1(x) => x; (); | Variant2 => () }");
 
         assertEquals(1, childrenCount(f));
@@ -35,12 +35,14 @@ public class SwitchParsingTest extends RmlParsingTestCase {
 
         // first pattern
         PsiPatternMatch p1 = patterns.get(0);
+        assertEquals("Variant1(x) => x; ();", p1.getText());
         PsiPatternMatchBody p1Body = p1.getBody();
         assertEquals("x; ();", p1Body.getText());
         //assertNotNull(ORUtil.findImmediateFirstChildOfClass(p1Body, PsiUnit.class));
 
         // second pattern
         PsiPatternMatch p2 = patterns.get(1);
+        assertEquals("Variant2 => ()", p2.getText());
         PsiPatternMatchBody p2Body = p2.getBody();
         assertEquals("()", p2Body.getText());
         //assertNotNull(ORUtil.findImmediateFirstChildOfClass(p1Body, PsiUnit.class));
@@ -129,5 +131,25 @@ public class SwitchParsingTest extends RmlParsingTestCase {
 
         assertEquals("(reasonStateUpdate)", e.getCondition().getText());
         assertSize(2, e.getPatterns());
+    }
+
+    public void test_tuple() {
+        PsiSwitch e = firstOfType(parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => let x = 1; () }"), PsiSwitch.class);
+
+        List<PsiPatternMatch> patterns = e.getPatterns();
+        assertSize(2, patterns);
+        assertEquals("(None, Some(x), _) => do(. z)", patterns.get(0).getText());
+        assertEquals("(_, _, _) => let x = 1; ()", patterns.get(1).getText());
+    }
+
+    public void test_switchOfSwitch() {
+        PsiSwitch e = firstOfType(parseCode("switch (a) { | None => switch (b) { | X => 1 | Y => 2 } | Some => 3 }"), PsiSwitch.class);
+
+        List<PsiPatternMatch> patterns = e.getPatterns();
+        assertSize(2, patterns);
+        assertEquals("None => switch (b) { | X => 1 | Y => 2 }", patterns.get(0).getText());
+        assertEquals("Some => 3", patterns.get(1).getText());
+        PsiSwitch inner = PsiTreeUtil.findChildOfType(patterns.get(0), PsiSwitch.class);
+        assertSize(2, inner.getPatterns());
     }
 }

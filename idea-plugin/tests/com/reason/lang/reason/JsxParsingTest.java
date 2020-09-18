@@ -152,4 +152,10 @@ public class JsxParsingTest extends RmlParsingTestCase {
         PsiTagProperty prop = properties.iterator().next();
         assertEquals("ref={ReactDOMRe.Ref.domRef(formRef)}", prop.getText());
     }
+
+    public void test_fragment() {
+        PsiTag e = (PsiTag) firstElement(parseCode("<></>"));
+
+        assertEquals("<></>", e.getText());
+    }
 }

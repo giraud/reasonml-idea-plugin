@@ -10,15 +10,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import icons.ORIcons;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiExternalStub;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
 
 public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> implements PsiExternal {
 
@@ -142,17 +141,16 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
                     }
                 }
 
-                String signature = getORSignature().asString(getLanguage());
-                if (!signature.isEmpty()) {
-                    aliasName += " :  " + signature;
-                }
-
                 return aliasName;
             }
 
             @Nullable
             @Override
             public String getLocationString() {
+                String signature = getORSignature().asString(getLanguage());
+                if (!signature.isEmpty()) {
+                    return signature;
+                }
                 return null;
             }
 

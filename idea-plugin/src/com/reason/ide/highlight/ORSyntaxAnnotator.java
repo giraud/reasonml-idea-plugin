@@ -45,7 +45,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
             color(holder, identifier, VARIANT_NAME_);
         } else if (elementType == m_types.C_MACRO_NAME) {
             color(holder, element, ANNOTATION_);
-        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_GT || elementType == m_types.TAG_AUTO_CLOSE) {
+        } else if (elementType == m_types.TAG_NAME || elementType == m_types.TAG_LT || elementType == m_types.TAG_LT_SLASH || elementType == m_types.TAG_GT || elementType == m_types.TAG_AUTO_CLOSE) {
             color(holder, element, MARKUP_TAG_);
         } else if (elementType == m_types.OPTION) {
             color(holder, element, OPTION_);

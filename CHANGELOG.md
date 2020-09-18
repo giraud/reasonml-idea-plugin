@@ -12,13 +12,18 @@
 
 ## 0.92 - 2020/09/17
 
+- :bug: [#269](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/269) Incorrect display of class methods names in structure panel
+- :nail_care: Better parsing of React fragment <></> 
+
+## 0.92 - 2020/09/17
+
 This new version is compatible with 2020.2.
 To support that version, the references have been redesigned. It might be needed to invalidate your caches and
 maybe restart project from scratch (or remove .idea folder).
  
 - :rocket: [#264](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/264) a new unified language settings by [@pooch](https://github.com/JohnPucciarelli)
-- :rocket: [#81](https://github.com/reasonml-editor/reasonml-idea-plugin/pull/81) Support GoTo/Implementation(s)
-- :bug: [#263](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/263) Incompatible with 2020.2 IDEs
+- :rocket: [#81](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/81) Support GoTo/Implementation(s)
+- :bug: [#266](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/266) Incompatible with 2020.2 IDEs
 - :bug: [#268](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/268) Regression: Structure panel should group methods under the class name
 - :bug: [#256](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/256) Probable regression for jumping to a symbol
 - :house: Reworked parsers (try to remove some complexity) - rescript included [#260](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/260)
