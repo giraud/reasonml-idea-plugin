@@ -134,11 +134,22 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     }
 
     public void test_tuple() {
-        PsiSwitch e = firstOfType(parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => () }"), PsiSwitch.class);
+        PsiSwitch e = firstOfType(parseCode("switch (a, b, c) { | (None, Some(x), _) => do(. z) | (_, _, _) => let x = 1; () }"), PsiSwitch.class);
 
         List<PsiPatternMatch> patterns = e.getPatterns();
         assertSize(2, patterns);
         assertEquals("(None, Some(x), _) => do(. z)", patterns.get(0).getText());
-        assertEquals("(_, _, _) => ()", patterns.get(1).getText());
+        assertEquals("(_, _, _) => let x = 1; ()", patterns.get(1).getText());
+    }
+
+    public void test_switchOfSwitch() {
+        PsiSwitch e = firstOfType(parseCode("switch (a) { | None => switch (b) { | X => 1 | Y => 2 } | Some => 3 }"), PsiSwitch.class);
+
+        List<PsiPatternMatch> patterns = e.getPatterns();
+        assertSize(2, patterns);
+        assertEquals("None => switch (b) { | X => 1 | Y => 2 }", patterns.get(0).getText());
+        assertEquals("Some => 3", patterns.get(1).getText());
+        PsiSwitch inner = PsiTreeUtil.findChildOfType(patterns.get(0), PsiSwitch.class);
+        assertSize(2, inner.getPatterns());
     }
 }

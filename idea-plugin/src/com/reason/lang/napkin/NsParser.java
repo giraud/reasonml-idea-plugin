@@ -312,7 +312,7 @@ public class NsParser extends CommonParser<NsTypes> {
             state.popEnd();
         } else if (state.isCurrentResolution(functionParameter) && state.isPreviousResolution(variantConstructor)) {
             state.popEndUntilResolution(typeBinding);
-        } else if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+        } else if (!state.isCurrentResolution(switchBody)/*nested switch*/ && state.in(m_types.C_PATTERN_MATCH_BODY)) {
             state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
             state.popEnd().popEnd();
         }
@@ -352,7 +352,9 @@ public class NsParser extends CommonParser<NsTypes> {
     }
 
     private void parseLet(@NotNull ParserState state) {
-        endLikeSemi(state);
+        if (!state.is(m_types.C_PATTERN_MATCH_BODY)) {
+            endLikeSemi(state);
+        }
         state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
@@ -829,8 +831,14 @@ public class NsParser extends CommonParser<NsTypes> {
     }
 
     private void parseSemi(@NotNull ParserState state) {
-        // Don't pop the scopes
-        state.popEndUntilScope();
+        if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+            state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+        }
+
+        if (!state.isCurrentResolution(patternMatchBody)) {
+            // Don't pop the scopes
+            state.popEndUntilScope();
+        }
     }
 
     private void parseUIdent(@NotNull ParserState state) {

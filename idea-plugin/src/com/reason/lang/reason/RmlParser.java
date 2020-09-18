@@ -360,7 +360,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             // try (...) { |>|<| ...
             state.mark(tryBodyWithHandler, m_types.C_TRY_HANDLER);
         } else {
-            if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+            if (!state.isCurrentResolution(switchBody)/*nested switch*/ && state.in(m_types.C_PATTERN_MATCH_BODY)) {
                 // can be a switchBody or a 'fun'
                 state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
                 state.popEnd().popEnd();
@@ -427,7 +427,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     private void parseLet(@NotNull ParserState state) {
-        state.popEndUntilScope();
+        if (!state.is(m_types.C_PATTERN_MATCH_BODY)) {
+            state.popEndUntilScope();
+        }
         state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
@@ -1024,6 +1026,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
         // Special case for the `fun` keyword that must be seen like a switch
         if (state.isInContext(funPattern)) {
             state.popEndUntilResolution(funPattern);
+        }
+        if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+            state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
         }
 
         if (!state.isCurrentResolution(patternMatchBody)) {
