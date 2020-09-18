@@ -42,12 +42,8 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
-            <li>a new unified language settings</li>
-            <li>Support GoTo/Implementation(s)</li>
-            <li>Incompatible with 2020.2 IDEs</li>
-            <li>Regression: Structure panel should group methods under the class name</li>
-            <li>Reworked parsers (try to remove some complexity) - rescript included</li>
-            <li>.res files are automatically compiled when saved, like .re</li>
+            <li>#269 - Incorrect display of class methods names in structure panel</li>
+            <li>Better parsing of React fragment</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
