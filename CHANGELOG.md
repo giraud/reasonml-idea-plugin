@@ -12,7 +12,8 @@
 
 ## Unreleased
 
-- :nail_care: Better parsing of React fragment <></>
+- :bug: [#269](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/269) Incorrect display of class methods names in structure panel
+- :nail_care: Better parsing of React fragment <></> 
 
 ## 0.92 - 2020/09/17
 
