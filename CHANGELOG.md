@@ -10,12 +10,14 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## 0.92 - 2020/09/17
+## 0.92 - 2020/09/18
+
+0.92.1
 
 - :bug: [#269](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/269) Incorrect display of class methods names in structure panel
 - :nail_care: Better parsing of React fragment <></> 
 
-## 0.92 - 2020/09/17
+0.92
 
 This new version is compatible with 2020.2.
 To support that version, the references have been redesigned. It might be needed to invalidate your caches and
