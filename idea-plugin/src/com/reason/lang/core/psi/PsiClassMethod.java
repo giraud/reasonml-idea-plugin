@@ -1,18 +1,18 @@
 package com.reason.lang.core.psi;
 
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 
 public class PsiClassMethod extends ASTWrapperPsiElement implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
     public PsiClassMethod(@NotNull ASTNode node) {
@@ -22,7 +22,7 @@ public class PsiClassMethod extends ASTWrapperPsiElement implements NavigatableP
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        return PsiTreeUtil.findChildOfType(this, PsiLowerSymbol.class);
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiLowerIdentifier.class);
     }
 
     @Override
@@ -37,6 +37,11 @@ public class PsiClassMethod extends ASTWrapperPsiElement implements NavigatableP
         return null;
     }
 
+    @Nullable
+    public PsiSignature getSignature() {
+        return ORUtil.findImmediateFirstChildOfClass(this, PsiSignature.class);
+    }
+
     public ItemPresentation getPresentation() {
         return new ItemPresentation() {
             @Nullable
@@ -48,7 +53,8 @@ public class PsiClassMethod extends ASTWrapperPsiElement implements NavigatableP
             @Nullable
             @Override
             public String getLocationString() {
-                return null;
+                PsiSignature signature = getSignature();
+                return signature == null ? null : signature.getText();
             }
 
             @NotNull

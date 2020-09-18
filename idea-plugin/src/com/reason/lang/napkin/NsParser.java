@@ -312,8 +312,9 @@ public class NsParser extends CommonParser<NsTypes> {
             state.popEnd();
         } else if (state.isCurrentResolution(functionParameter) && state.isPreviousResolution(variantConstructor)) {
             state.popEndUntilResolution(typeBinding);
-        } else if (state.isCurrentResolution(patternMatchBody)) {
-            state.popEndUntilResolution(switchBody);
+        } else if (!state.isCurrentResolution(switchBody)/*nested switch*/ && state.in(m_types.C_PATTERN_MATCH_BODY)) {
+            state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+            state.popEnd().popEnd();
         }
 
         if (state.isCurrentResolution(typeBinding)) {
@@ -351,7 +352,9 @@ public class NsParser extends CommonParser<NsTypes> {
     }
 
     private void parseLet(@NotNull ParserState state) {
-        endLikeSemi(state);
+        if (!state.is(m_types.C_PATTERN_MATCH_BODY)) {
+            endLikeSemi(state);
+        }
         state.markStart(let, m_types.C_LET_DECLARATION);
     }
 
@@ -469,6 +472,15 @@ public class NsParser extends CommonParser<NsTypes> {
                         advance().
                         remapCurrentToken(m_types.TAG_NAME).
                         wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
+            } else if (nextTokenType == m_types.GT) {
+                // a React fragment start
+                state.remapCurrentToken(m_types.TAG_LT).
+                        mark(jsxTag, m_types.C_TAG).
+                        mark(jsxStartTag, m_types.C_TAG_START).
+                        advance().
+                        remapCurrentToken(m_types.TAG_GT).
+                        advance().
+                        popEnd();
             }
         }
     }
@@ -508,6 +520,14 @@ public class NsParser extends CommonParser<NsTypes> {
                     advance().
                     remapCurrentToken(m_types.TAG_NAME).
                     wrapWith(nextTokenType == m_types.UIDENT ? m_types.C_UPPER_SYMBOL : m_types.C_LOWER_SYMBOL);
+        } else if (nextTokenType == m_types.GT) {
+            // a React fragment end
+            state.remapCurrentToken(m_types.TAG_LT_SLASH).
+                    mark(jsxTagClose, m_types.C_TAG_CLOSE).
+                    advance().
+                    remapCurrentToken(m_types.TAG_GT).
+                    advance().
+                    popEnd();
         }
     }
 
@@ -694,8 +714,7 @@ public class NsParser extends CommonParser<NsTypes> {
             state.popEnd().
                     markScope(rawBody, m_types.C_MACRO_RAW_BODY, m_types.LPAREN);
         } else if (state.isCurrentResolution(moduleBinding) && state.previousElementType1 != m_types.UIDENT) {
-            // This is a functor
-            //  module M = |>(<| ... )
+            // This is a functor ::  module M = |>(<| ... )
             state.popCancel(). // remove previous module binding
                     updateCurrentResolution(functorNamedEq).
                     updateCurrentCompositeElementType(m_types.C_FUNCTOR).
@@ -711,15 +730,17 @@ public class NsParser extends CommonParser<NsTypes> {
                     advance().
                     mark(functionParameter, m_types.C_FUN_PARAM);
         } else if (state.isCurrentResolution(variantDeclaration)) {
-            // Variant params
-            // type t = | Variant |>(<| .. )
+            // Variant constructor ::  type t = | Variant |>(<| .. )
             state.markScope(variantConstructor, m_types.C_FUN_PARAMS, m_types.LPAREN).
                     advance().
                     mark(functionParameter, m_types.C_FUN_PARAM);
         } else if (state.isCurrentResolution(patternMatchVariant)) {
-            // It's a constructor in a pattern match
-            // switch x { | Variant |>(<| ... ) => ... }
+            // It's a constructor in a pattern match ::  switch x { | Variant |>(<| ... ) => ... }
             state.markScope(patternMatchVariantConstructor, m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN);
+        } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
+            // A tuple in a pattern match ::  | |>(<| .. ) => ..
+            state.updateCurrentResolution(patternMatchValue).
+                    markScope(patternMatchValue, m_types.C_SCOPED_EXPR, m_types.LPAREN);
         } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Local open
             // M. |>(<| ... )
@@ -810,8 +831,14 @@ public class NsParser extends CommonParser<NsTypes> {
     }
 
     private void parseSemi(@NotNull ParserState state) {
-        // Don't pop the scopes
-        state.popEndUntilStart();
+        if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+            state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+        }
+
+        if (!state.isCurrentResolution(patternMatchBody)) {
+            // Don't pop the scopes
+            state.popEndUntilScope();
+        }
     }
 
     private void parseUIdent(@NotNull ParserState state) {
@@ -927,8 +954,8 @@ public class NsParser extends CommonParser<NsTypes> {
     private void parseArrow(@NotNull ParserState state) {
         if (state.isCurrentResolution(function) || state.isCurrentResolution(functionParameter)) {
             // param(s) |>=><| body
-            state.popEndUntilResolution(function).
-                    advance().
+            state.popEndUntilOneOfResolution(function, functionCallParams);
+            state.advance().
                     mark(functionBody, m_types.C_FUN_BODY);
         } else if (state.isCurrentResolution(signature)) {
             state.advance().
@@ -947,10 +974,12 @@ public class NsParser extends CommonParser<NsTypes> {
             }
             state.advance().
                     mark(functorBinding, m_types.C_FUNCTOR_BINDING);
-        } else if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(patternMatchVariantConstructor)) {
+        } else if (state.isCurrentResolution(patternMatchVariant) || state.isCurrentResolution(patternMatchVariantConstructor) || state
+                .isCurrentResolution(patternMatchValue)) {
             // switch ( ... ) { | ... |>=><| ... }
             state.advance().
-                    mark(patternMatchBody, m_types.C_PATTERN_MATCH_BODY).setStart();
+                    mark(patternMatchBody, m_types.C_PATTERN_MATCH_BODY).
+                    setStart();
         }
     }
 
