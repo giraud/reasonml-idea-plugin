@@ -5,7 +5,7 @@
 [![Discord](https://img.shields.io/discord/713777184996589580)](https://discord.com/channels/713777184996589580)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-ReasonML language plugin for IDEA. Supports both Reason and OCaml.
+ReasonML language plugin for IDEA. Supports Reason, Rescript and OCaml.
 
 ![screenshot](screenshot.png)
 
