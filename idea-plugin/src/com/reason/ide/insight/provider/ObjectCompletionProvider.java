@@ -1,7 +1,5 @@
 package com.reason.ide.insight.provider;
 
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-
 import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
@@ -13,12 +11,14 @@ import com.intellij.util.PsiIconUtil;
 import com.reason.Log;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.type.ORTypes;
-import java.util.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 
 public class ObjectCompletionProvider {
 
@@ -41,7 +41,7 @@ public class ObjectCompletionProvider {
           || previousElementType == types.SHARP) {
         if (previousElementType == types.LIDENT) {
           LeafPsiElement node = (LeafPsiElement) previousLeaf.getNode();
-          path.add(((PsiLowerSymbol) node.getParent()).getText());
+          path.add(node.getParent().getText());
         }
         previousLeaf = PsiTreeUtil.prevLeaf(previousLeaf);
         previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();

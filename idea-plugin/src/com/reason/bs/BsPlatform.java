@@ -1,8 +1,5 @@
 package com.reason.bs;
 
-import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
-import static com.reason.bs.BsConstants.*;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
@@ -13,21 +10,19 @@ import com.reason.Log;
 import com.reason.dune.Dune;
 import com.reason.esy.Esy;
 import com.reason.ide.ORFileUtils;
-import com.reason.ide.ORProjectManager;
 import com.reason.ide.settings.ORSettings;
-import java.util.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
+
+import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
+import static com.reason.bs.BsConstants.*;
 
 public class BsPlatform {
 
   private static final Log LOG = Log.create("bs.platform");
 
   private BsPlatform() {}
-
-  public static Optional<VirtualFile> findFirstBsPlatformDirectory(@NotNull Project project) {
-    return ORProjectManager.findFirstBsContentRoot(project)
-        .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
-  }
 
   /**
    * Find `bs-platform` directory. Given a `sourceFile`, searches from that file's location for a
@@ -41,24 +36,22 @@ public class BsPlatform {
   public static Optional<VirtualFile> findBsPlatformDirectory(
       @NotNull Project project, @NotNull VirtualFile sourceFile) {
     return findBsConfigForFile(project, sourceFile)
-        .flatMap(BsPlatform::findBsPlatformPathForConfigFile);
+        .flatMap(bsContent -> findBsPlatformPathForConfigFile(project, bsContent));
   }
 
   public static Optional<VirtualFile> findBsbExecutable(
       @NotNull Project project, @NotNull VirtualFile sourceFile) {
     return findBsPlatformDirectory(project, sourceFile)
-        .flatMap((directory) -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, directory));
+        .flatMap(bsPlatform -> findBinaryInBsPlatform(BSB_EXECUTABLE_NAME, bsPlatform));
   }
 
   public static Optional<VirtualFile> findBscExecutable(
       @NotNull Project project, @NotNull VirtualFile sourceFile) {
     return findBsPlatformDirectory(project, sourceFile)
-        .flatMap(
-            (bsPlatformDirectory) ->
-                findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatformDirectory));
+        .flatMap(bsPlatform -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatform));
   }
 
-  public static Optional<VirtualFile> findDuneExecutable(Project project) {
+  public static Optional<VirtualFile> findDuneExecutable(@NotNull Project project) {
     String duneExecutable = ORSettings.getInstance(project).getDuneExecutable();
     if (duneExecutable.isEmpty()) {
       return Dune.findDuneExecutable(project);
@@ -67,7 +60,7 @@ public class BsPlatform {
     return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(duneExecutable));
   }
 
-  public static Optional<VirtualFile> findEsyExecutable(Project project) {
+  public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {
     String esyExecutable = ORSettings.getInstance(project).getEsyExecutable();
     if (esyExecutable.isEmpty()) {
       return Esy.findEsyExecutable();
@@ -117,24 +110,30 @@ public class BsPlatform {
   }
 
   private static Optional<VirtualFile> findBsPlatformPathForConfigFile(
-      @NotNull VirtualFile bsConfigFile) {
+      @NotNull Project project, @NotNull VirtualFile bsConfigFile) {
     VirtualFile parentDir = bsConfigFile.getParent();
     VirtualFile bsPlatform =
         parentDir.findFileByRelativePath("node_modules/" + BS_PLATFORM_DIRECTORY_NAME);
     if (bsPlatform == null) {
       VirtualFile bsbBinary =
-          parentDir.findFileByRelativePath(
-              "node_modules/.bin/bsb"); // In case of mono-repo, only the .bin with symlinks is
-                                        // found
-      if (bsbBinary != null && bsbBinary.is(VFileProperty.SYMLINK)) {
+          parentDir.findFileByRelativePath("node_modules/.bin/" + BSB_EXECUTABLE_NAME);
+      if (bsbBinary != null) {
+        // This must be a mono-repo, only the .bin is found
         VirtualFile canonicalFile = bsbBinary.getCanonicalFile();
         if (canonicalFile != null) {
-          VirtualFile canonicalBsPlatformDirectory = canonicalFile.getParent();
-          while (canonicalBsPlatformDirectory != null
-              && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_DIRECTORY_NAME)) {
-            canonicalBsPlatformDirectory = canonicalBsPlatformDirectory.getParent();
+          if (bsbBinary.is(VFileProperty.SYMLINK)) {
+            // Mac/Linux: .bin contains symlinks to real exe, must follow
+            VirtualFile canonicalBsPlatformDirectory = canonicalFile.getParent();
+            while (canonicalBsPlatformDirectory != null
+                && !canonicalBsPlatformDirectory.getName().equals(BS_PLATFORM_DIRECTORY_NAME)) {
+              canonicalBsPlatformDirectory = canonicalBsPlatformDirectory.getParent();
+            }
+            return Optional.ofNullable(canonicalBsPlatformDirectory);
+          } else {
+            // Windows: no symlinks, only bat files
+            return ORFileUtils.findAncestorRecursive(project, "node_modules", parentDir.getParent())
+                .map(nodeModules -> nodeModules.findFileByRelativePath("bs-platform"));
           }
-          return Optional.ofNullable(canonicalBsPlatformDirectory);
         }
       }
     }

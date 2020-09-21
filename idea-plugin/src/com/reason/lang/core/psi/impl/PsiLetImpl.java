@@ -10,26 +10,17 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiDeconstruction;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiJsObject;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiObjectField;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSignature;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import icons.ORIcons;
-import java.util.*;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.*;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
 
@@ -151,7 +142,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
           continue;
         }
 
-        String name = ((PsiLowerSymbol) element).getText();
+        String name = element.getText();
 
         if (name != null) {
           Collection<PsiLet> lets =
