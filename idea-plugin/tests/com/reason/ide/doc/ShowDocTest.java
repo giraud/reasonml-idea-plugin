@@ -9,27 +9,29 @@ import com.reason.lang.core.psi.PsiLet;
 
 public class ShowDocTest extends ORBasePlatformTestCase {
 
-    public void test_Ocl_multipleSpaceTest() {
-        FileBase f = configureCode("Doc.ml", "let x = 1;  \t\n  (** doc for x *)");
-        PsiLet e = BaseParsingTestCase.first(f.getExpressions("Doc.x", PsiLet.class));
+  public void test_Ocl_multipleSpaceTest() {
+    FileBase f = configureCode("Doc.ml", "let x = 1;  \t\n  (** doc for x *)");
+    PsiLet e = BaseParsingTestCase.first(f.getExpressions("Doc.x", PsiLet.class));
 
-        String doc = new DocumentationProvider().generateDoc(getNameIdentifier(e), getNameIdentifier(e).getFirstChild());
-        assertNotNull(doc);
-    }
+    String doc =
+        new DocumentationProvider()
+            .generateDoc(getNameIdentifier(e), getNameIdentifier(e).getFirstChild());
+    assertNotNull(doc);
+  }
 
-    public void test_GH_155() {
-        configureCode("Mod.re", "/** add 1 */\nlet fn = x => x + 1;");
-        configureCode("Doc.re", "Mod.fn(<caret>);");
+  public void test_GH_155() {
+    configureCode("Mod.re", "/** add 1 */\nlet fn = x => x + 1;");
+    configureCode("Doc.re", "Mod.fn(<caret>);");
 
-        ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
-        // TODO test !?
-    }
+    ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
+    // TODO test !?
+  }
 
-    public void test_GH_156() {
-        configureCode("A.re", "/** Doc for y */\nlet y = 1;");
-        configureCode("Dummy.re", "let x = A.y;\nx<caret>");
+  public void test_GH_156() {
+    configureCode("A.re", "/** Doc for y */\nlet y = 1;");
+    configureCode("Dummy.re", "let x = A.y;\nx<caret>");
 
-        ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
-        // TODO test !?
-    }
+    ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
+    // TODO test !?
+  }
 }

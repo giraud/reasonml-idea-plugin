@@ -7,10 +7,11 @@ import com.reason.lang.ocaml.OclParser;
 import org.jetbrains.annotations.NotNull;
 
 public interface OclYaccLazyTypes {
-    ILazyParseableElementType OCAML_LAZY_NODE = new ILazyParseableElementType("OCAML_LAZY_NODE", OclLanguage.INSTANCE) {
+  ILazyParseableElementType OCAML_LAZY_NODE =
+      new ILazyParseableElementType("OCAML_LAZY_NODE", OclLanguage.INSTANCE) {
         @Override
         public ASTNode parseContents(@NotNull ASTNode chameleon) {
-            return OclParser.parseOcamlNode(this, chameleon);
+          return OclParser.parseOcamlNode(this, chameleon);
         }
-    };
+      };
 }

@@ -1,5 +1,10 @@
 plugins {
     id 'org.jetbrains.intellij' version "0.4.21"
+    id 'com.github.sherter.google-java-format' version '0.8'
+}
+
+repositories {
+    jcenter()
 }
 
 apply plugin: 'idea'

@@ -7,17 +7,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class RmlLiveTemplateProvider implements DefaultLiveTemplatesProvider {
 
-    private static final String[] TEMPLATE_FILES = {"liveTemplates/Reason"};
+  private static final String[] TEMPLATE_FILES = {"liveTemplates/Reason"};
 
-    @NotNull
-    @Override
-    public String[] getDefaultLiveTemplateFiles() {
-        return TEMPLATE_FILES;
-    }
+  @NotNull
+  @Override
+  public String[] getDefaultLiveTemplateFiles() {
+    return TEMPLATE_FILES;
+  }
 
-    @Nullable
-    @Override
-    public String[] getHiddenLiveTemplateFiles() {
-        return ArrayUtil.EMPTY_STRING_ARRAY;
-    }
+  @Nullable
+  @Override
+  public String[] getHiddenLiveTemplateFiles() {
+    return ArrayUtil.EMPTY_STRING_ARRAY;
+  }
 }

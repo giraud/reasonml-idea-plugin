@@ -1,9 +1,5 @@
 package com.reason.ide.structure;
 
-import java.util.*;
-import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.SortableTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
@@ -22,7 +18,6 @@ import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiFunctor;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiStanza;
 import com.reason.lang.core.psi.PsiStructuredElement;
@@ -30,332 +25,342 @@ import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
+import java.util.*;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
-    @NotNull
-    private final PsiElement m_element;
-    @Nullable
-    private final PsiElement m_viewElement;
-    private final boolean m_navigateToViewElement;
+  @NotNull private final PsiElement m_element;
+  @Nullable private final PsiElement m_viewElement;
+  private final boolean m_navigateToViewElement;
 
-    StructureViewElement(@NotNull PsiElement element) {
-        this(null, element, false);
+  StructureViewElement(@NotNull PsiElement element) {
+    this(null, element, false);
+  }
+
+  private StructureViewElement(
+      @Nullable PsiElement viewElement,
+      @NotNull PsiElement element,
+      boolean navigateToViewElement) {
+    m_viewElement = viewElement;
+    m_element = element;
+    m_navigateToViewElement = navigateToViewElement;
+  }
+
+  @NotNull
+  @Override
+  public Object getValue() {
+    return m_viewElement == null ? m_element : m_viewElement;
+  }
+
+  @Override
+  public void navigate(boolean requestFocus) {
+    if (m_element instanceof NavigationItem) {
+      NavigationItem targetElement =
+          (NavigationItem) (m_navigateToViewElement ? m_viewElement : m_element);
+      assert targetElement != null;
+      targetElement.navigate(requestFocus);
+    }
+  }
+
+  @Override
+  public boolean canNavigate() {
+    return m_element instanceof NavigationItem && ((NavigationItem) m_element).canNavigate();
+  }
+
+  @Override
+  public boolean canNavigateToSource() {
+    return m_element instanceof NavigationItem
+        && ((NavigationItem) m_element).canNavigateToSource();
+  }
+
+  @NotNull
+  @Override
+  public String getAlphaSortKey() {
+    String name = null;
+    PsiElement element = m_viewElement == null ? m_element : m_viewElement;
+
+    if (element instanceof PsiNamedElement) {
+      name = ((PsiNamedElement) element).getName();
     }
 
-    private StructureViewElement(@Nullable PsiElement viewElement, @NotNull PsiElement element, boolean navigateToViewElement) {
-        m_viewElement = viewElement;
-        m_element = element;
-        m_navigateToViewElement = navigateToViewElement;
-    }
+    return name == null ? "" : name;
+  }
 
-    @NotNull
-    @Override
-    public Object getValue() {
-        return m_viewElement == null ? m_element : m_viewElement;
-    }
-
-    @Override
-    public void navigate(boolean requestFocus) {
-        if (m_element instanceof NavigationItem) {
-            NavigationItem targetElement = (NavigationItem) (m_navigateToViewElement ? m_viewElement : m_element);
-            assert targetElement != null;
-            targetElement.navigate(requestFocus);
+  @NotNull
+  @Override
+  public ItemPresentation getPresentation() {
+    if (m_viewElement != null) {
+      return new ItemPresentation() {
+        @Override
+        public String getPresentableText() {
+          return m_viewElement.getText();
         }
-    }
 
-    @Override
-    public boolean canNavigate() {
-        return m_element instanceof NavigationItem && ((NavigationItem) m_element).canNavigate();
-    }
-
-    @Override
-    public boolean canNavigateToSource() {
-        return m_element instanceof NavigationItem && ((NavigationItem) m_element).canNavigateToSource();
-    }
-
-    @NotNull
-    @Override
-    public String getAlphaSortKey() {
-        String name = null;
-        PsiElement element = m_viewElement == null ? m_element : m_viewElement;
-
-        if (element instanceof PsiNamedElement) {
-            name = ((PsiNamedElement) element).getName();
+        @Nullable
+        @Override
+        public String getLocationString() {
+          return m_element instanceof PsiNamedElement
+              ? ((PsiNamedElement) m_element).getName()
+              : "";
         }
 
-        return name == null ? "" : name;
+        @Nullable
+        @Override
+        public Icon getIcon(boolean unused) {
+          return PsiIconUtil.getProvidersIcon(m_element, 0);
+        }
+      };
+    }
+
+    if (m_element instanceof NavigationItem) {
+      ItemPresentation presentation = ((NavigationItem) m_element).getPresentation();
+      if (presentation != null) {
+        return presentation;
+      }
+    }
+
+    return new ItemPresentation() {
+      @Override
+      public @NotNull String getPresentableText() {
+        return "Unknown presentation for element " + m_element.getText();
+      }
+
+      @Nullable
+      @Override
+      public String getLocationString() {
+        return null;
+      }
+
+      @Nullable
+      @Override
+      public Icon getIcon(boolean unused) {
+        return null;
+      }
+    };
+  }
+
+  @NotNull
+  @Override
+  public TreeElement[] getChildren() {
+    if (m_element instanceof FileBase || m_element instanceof DuneFile) {
+      List<TreeElement> treeElements = new ArrayList<>();
+      m_element.acceptChildren(new ElementVisitor(treeElements));
+      return treeElements.toArray(new TreeElement[0]);
+    } else if (m_element instanceof PsiInnerModule) {
+      List<TreeElement> treeElements = buildModuleStructure((PsiInnerModule) m_element);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
+    } else if (m_element instanceof PsiFunctor) {
+      List<TreeElement> treeElements = buildFunctorStructure((PsiFunctor) m_element);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
+    } else if (m_element instanceof PsiClass) {
+      List<TreeElement> treeElements = buildClassStructure((PsiClass) m_element);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
+    } else if (m_element instanceof OclYaccHeader) {
+      List<TreeElement> treeElements = buildYaccHeaderStructure((OclYaccHeader) m_element);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
+    } else if (m_element instanceof OclYaccTrailer) {
+      List<TreeElement> treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
+    } else if (m_element instanceof PsiStanza) {
+      List<TreeElement> treeElements = buildStanzaStructure((PsiStanza) m_element);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
+    }
+
+    return EMPTY_ARRAY;
+  }
+
+  @NotNull
+  private List<TreeElement> buildModuleStructure(@NotNull PsiInnerModule moduleElement) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiSignature moduleSignature = moduleElement.getSignature();
+    PsiElement rootElement = moduleSignature;
+    if (rootElement == null) {
+      rootElement = moduleElement.getBody();
+    }
+
+    if (rootElement != null) {
+      rootElement.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    // Process body if there is a signature
+    if (moduleSignature != null) {
+      rootElement = moduleElement.getBody();
+      if (rootElement != null) {
+        treeElements.add(new StructureModuleImplView(rootElement));
+      }
+    }
+
+    return treeElements;
+  }
+
+  @NotNull
+  private List<TreeElement> buildFunctorStructure(@NotNull PsiFunctor functor) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiElement binding = functor.getBinding();
+    if (binding != null) {
+      binding.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    return treeElements;
+  }
+
+  @NotNull
+  private List<TreeElement> buildClassStructure(@NotNull PsiClass classElement) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiElement rootElement = classElement.getClassBody();
+    if (rootElement != null) {
+      rootElement.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    return treeElements;
+  }
+
+  @NotNull
+  private List<TreeElement> buildStanzaStructure(@NotNull PsiStanza stanzaElement) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiElement rootElement =
+        ORUtil.findImmediateFirstChildOfClass(stanzaElement, PsiDuneFields.class);
+    if (rootElement != null) {
+      rootElement.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    return treeElements;
+  }
+
+  @NotNull
+  private List<TreeElement> buildYaccHeaderStructure(@NotNull OclYaccHeader root) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiElement rootElement =
+        ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
+    if (rootElement != null) {
+      rootElement.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    return treeElements;
+  }
+
+  @NotNull
+  private List<TreeElement> buildYaccTrailerStructure(@NotNull OclYaccTrailer root) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiElement rootElement =
+        ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
+    if (rootElement != null) {
+      rootElement.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    return treeElements;
+  }
+
+  static class ElementVisitor extends PsiElementVisitor {
+    private final List<TreeElement> m_treeElements;
+
+    ElementVisitor(List<TreeElement> elements) {
+      m_treeElements = elements;
+    }
+
+    @Override
+    public void visitElement(@NotNull PsiElement element) {
+      if (element instanceof PsiStructuredElement && !(element instanceof PsiFakeModule)) {
+        if (((PsiStructuredElement) element).canBeDisplayed()) {
+          if (element instanceof PsiLet) {
+            PsiLet let = (PsiLet) element;
+            if (let.isScopeIdentifier()) {
+              // it's a tuple! add each element of the tuple separately.
+              for (PsiElement child : let.getScopeChildren()) {
+                if (child instanceof PsiLowerIdentifier) {
+                  m_treeElements.add(new StructureViewElement(child, element, true));
+                }
+              }
+              return;
+            }
+          }
+          m_treeElements.add(new StructureViewElement(element));
+        }
+      }
+    }
+  }
+
+  static class StructureModuleImplView implements StructureViewTreeElement, SortableTreeElement {
+
+    final PsiElement m_rootElement;
+
+    StructureModuleImplView(PsiElement rootElement) {
+      m_rootElement = rootElement;
     }
 
     @NotNull
     @Override
     public ItemPresentation getPresentation() {
-        if (m_viewElement != null) {
-            return new ItemPresentation() {
-                @Override
-                public String getPresentableText() {
-                    return m_viewElement.getText();
-                }
-
-                @Nullable
-                @Override
-                public String getLocationString() {
-                    return m_element instanceof PsiNamedElement ? ((PsiNamedElement) m_element).getName() : "";
-                }
-
-                @Nullable
-                @Override
-                public Icon getIcon(boolean unused) {
-                    return PsiIconUtil.getProvidersIcon(m_element, 0);
-                }
-            };
+      return new ItemPresentation() {
+        @Override
+        public @NotNull String getPresentableText() {
+          return "(impl)";
         }
 
-        if (m_element instanceof NavigationItem) {
-            ItemPresentation presentation = ((NavigationItem) m_element).getPresentation();
-            if (presentation != null) {
-                return presentation;
-            }
+        @Nullable
+        @Override
+        public String getLocationString() {
+          return null;
         }
 
-        return new ItemPresentation() {
-            @Override
-            public @NotNull String getPresentableText() {
-                return "Unknown presentation for element " + m_element.getText();
-            }
-
-            @Nullable
-            @Override
-            public String getLocationString() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public Icon getIcon(boolean unused) {
-                return null;
-            }
-        };
+        @Nullable
+        @Override
+        public Icon getIcon(boolean unused) {
+          return null;
+        }
+      };
     }
 
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (m_element instanceof FileBase || m_element instanceof DuneFile) {
-            List<TreeElement> treeElements = new ArrayList<>();
-            m_element.acceptChildren(new ElementVisitor(treeElements));
-            return treeElements.toArray(new TreeElement[0]);
-        } else if (m_element instanceof PsiInnerModule) {
-            List<TreeElement> treeElements = buildModuleStructure((PsiInnerModule) m_element);
-            if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[0]);
-            }
-        } else if (m_element instanceof PsiFunctor) {
-            List<TreeElement> treeElements = buildFunctorStructure((PsiFunctor) m_element);
-            if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[0]);
-            }
-        } else if (m_element instanceof PsiClass) {
-            List<TreeElement> treeElements = buildClassStructure((PsiClass) m_element);
-            if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[0]);
-            }
-        } else if (m_element instanceof OclYaccHeader) {
-            List<TreeElement> treeElements = buildYaccHeaderStructure((OclYaccHeader) m_element);
-            if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[0]);
-            }
-        } else if (m_element instanceof OclYaccTrailer) {
-            List<TreeElement> treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
-            if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[0]);
-            }
-        } else if (m_element instanceof PsiStanza) {
-            List<TreeElement> treeElements = buildStanzaStructure((PsiStanza) m_element);
-            if (!treeElements.isEmpty()) {
-                return treeElements.toArray(new TreeElement[0]);
-            }
-        }
+      List<TreeElement> treeElements = new ArrayList<>();
+      m_rootElement.acceptChildren(new ElementVisitor(treeElements));
+      return treeElements.toArray(new TreeElement[0]);
+    }
 
-        return EMPTY_ARRAY;
+    @Override
+    public Object getValue() {
+      return m_rootElement;
+    }
+
+    @Override
+    public void navigate(boolean requestFocus) {}
+
+    @Override
+    public boolean canNavigate() {
+      return false;
+    }
+
+    @Override
+    public boolean canNavigateToSource() {
+      return false;
     }
 
     @NotNull
-    private List<TreeElement> buildModuleStructure(@NotNull PsiInnerModule moduleElement) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiSignature moduleSignature = moduleElement.getSignature();
-        PsiElement rootElement = moduleSignature;
-        if (rootElement == null) {
-            rootElement = moduleElement.getBody();
-        }
-
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
-        }
-
-        // Process body if there is a signature
-        if (moduleSignature != null) {
-            rootElement = moduleElement.getBody();
-            if (rootElement != null) {
-                treeElements.add(new StructureModuleImplView(rootElement));
-            }
-        }
-
-        return treeElements;
+    @Override
+    public String getAlphaSortKey() {
+      return "zzzzImplementation";
     }
-
-    @NotNull
-    private List<TreeElement> buildFunctorStructure(@NotNull PsiFunctor functor) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement binding = functor.getBinding();
-        if (binding != null) {
-            binding.acceptChildren(new ElementVisitor(treeElements));
-        }
-
-        return treeElements;
-    }
-
-    @NotNull
-    private List<TreeElement> buildClassStructure(@NotNull PsiClass classElement) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement rootElement = classElement.getClassBody();
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
-        }
-
-        return treeElements;
-    }
-
-    @NotNull
-    private List<TreeElement> buildStanzaStructure(@NotNull PsiStanza stanzaElement) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement rootElement = ORUtil.findImmediateFirstChildOfClass(stanzaElement, PsiDuneFields.class);
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
-        }
-
-        return treeElements;
-    }
-
-    @NotNull
-    private List<TreeElement> buildYaccHeaderStructure(@NotNull OclYaccHeader root) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
-        }
-
-        return treeElements;
-    }
-
-    @NotNull
-    private List<TreeElement> buildYaccTrailerStructure(@NotNull OclYaccTrailer root) {
-        List<TreeElement> treeElements = new ArrayList<>();
-
-        PsiElement rootElement = ORUtil.findImmediateFirstChildOfType(root, OclYaccTypes.OCAML_LAZY_NODE);
-        if (rootElement != null) {
-            rootElement.acceptChildren(new ElementVisitor(treeElements));
-        }
-
-        return treeElements;
-    }
-
-    static class ElementVisitor extends PsiElementVisitor {
-        private final List<TreeElement> m_treeElements;
-
-        ElementVisitor(List<TreeElement> elements) {
-            m_treeElements = elements;
-        }
-
-        @Override
-        public void visitElement(@NotNull PsiElement element) {
-            if (element instanceof PsiStructuredElement && !(element instanceof PsiFakeModule)) {
-                if (((PsiStructuredElement) element).canBeDisplayed()) {
-                    if (element instanceof PsiLet) {
-                        PsiLet let = (PsiLet) element;
-                        if (let.isScopeIdentifier()) {
-                            // it's a tuple! add each element of the tuple separately.
-                            for (PsiElement child : let.getScopeChildren()) {
-                                if (child instanceof PsiLowerIdentifier) {
-                                    m_treeElements.add(new StructureViewElement(child, element, true));
-                                }
-                            }
-                            return;
-                        }
-                    }
-                    m_treeElements.add(new StructureViewElement(element));
-                }
-            }
-        }
-    }
-
-    static class StructureModuleImplView implements StructureViewTreeElement, SortableTreeElement {
-
-        final PsiElement m_rootElement;
-
-        StructureModuleImplView(PsiElement rootElement) {
-            m_rootElement = rootElement;
-        }
-
-        @NotNull
-        @Override
-        public ItemPresentation getPresentation() {
-            return new ItemPresentation() {
-                @Override
-                public @NotNull String getPresentableText() {
-                    return "(impl)";
-                }
-
-                @Nullable
-                @Override
-                public String getLocationString() {
-                    return null;
-                }
-
-                @Nullable
-                @Override
-                public Icon getIcon(boolean unused) {
-                    return null;
-                }
-            };
-        }
-
-        @NotNull
-        @Override
-        public TreeElement[] getChildren() {
-            List<TreeElement> treeElements = new ArrayList<>();
-            m_rootElement.acceptChildren(new ElementVisitor(treeElements));
-            return treeElements.toArray(new TreeElement[0]);
-        }
-
-        @Override
-        public Object getValue() {
-            return m_rootElement;
-        }
-
-        @Override
-        public void navigate(boolean requestFocus) {
-
-        }
-
-        @Override
-        public boolean canNavigate() {
-            return false;
-        }
-
-        @Override
-        public boolean canNavigateToSource() {
-            return false;
-        }
-
-        @NotNull
-        @Override
-        public String getAlphaSortKey() {
-            return "zzzzImplementation";
-        }
-    }
+  }
 }

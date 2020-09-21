@@ -7,15 +7,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class DuneInstallAction extends CompilerAction {
 
-    public DuneInstallAction() {
-        super("Install dune", "Install dune", AllIcons.Actions.Install);
-    }
+  public DuneInstallAction() {
+    super("Install dune", "Install dune", AllIcons.Actions.Install);
+  }
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Dune.INSTALL);
-        }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      doAction(project, CliType.Dune.INSTALL);
     }
+  }
 }

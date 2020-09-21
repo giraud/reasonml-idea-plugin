@@ -8,13 +8,17 @@ import com.reason.lang.ocaml.OclTypes;
 
 public class OclCompletionContributor extends CompletionContributor {
 
-    OclCompletionContributor() {
-        super(OclTypes.INSTANCE, OclQNameFinder.INSTANCE);
-    }
+  OclCompletionContributor() {
+    super(OclTypes.INSTANCE, OclQNameFinder.INSTANCE);
+  }
 
-    @Override
-    protected boolean addSpecificCompletions(ORTypes types, PsiElement element, PsiElement parent, PsiElement grandParent, CompletionResultSet result) {
-        return false;
-    }
-
+  @Override
+  protected boolean addSpecificCompletions(
+      ORTypes types,
+      PsiElement element,
+      PsiElement parent,
+      PsiElement grandParent,
+      CompletionResultSet result) {
+    return false;
+  }
 }

@@ -6,16 +6,16 @@ import com.reason.lang.core.psi.PsiType;
 import org.jetbrains.annotations.NotNull;
 
 public class TypeIndex extends StringStubIndexExtension<PsiType> {
-    private static final int VERSION = 9;
+  private static final int VERSION = 9;
 
-    @Override
-    public int getVersion() {
-        return super.getVersion() + VERSION;
-    }
+  @Override
+  public int getVersion() {
+    return super.getVersion() + VERSION;
+  }
 
-    @NotNull
-    @Override
-    public StubIndexKey<String, PsiType> getKey() {
-        return IndexKeys.TYPES;
-    }
+  @NotNull
+  @Override
+  public StubIndexKey<String, PsiType> getKey() {
+    return IndexKeys.TYPES;
+  }
 }

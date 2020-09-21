@@ -6,7 +6,7 @@ import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiDuneVersion extends PsiToken<DuneTypes> {
-    public PsiDuneVersion(@NotNull DuneTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
+  public PsiDuneVersion(@NotNull DuneTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
 }

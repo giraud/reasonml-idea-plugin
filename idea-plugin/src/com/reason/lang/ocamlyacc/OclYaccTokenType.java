@@ -4,13 +4,13 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class OclYaccTokenType extends IElementType {
-    public OclYaccTokenType(@NotNull String debugName) {
-        super(debugName, OclYaccLanguage.INSTANCE);
-    }
+  public OclYaccTokenType(@NotNull String debugName) {
+    super(debugName, OclYaccLanguage.INSTANCE);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "OclYaccTokenType." + super.toString();
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "OclYaccTokenType." + super.toString();
+  }
 }

@@ -7,16 +7,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class BsMakeWorldAction extends CompilerAction {
 
-    @SuppressWarnings("WeakerAccess")
-    public BsMakeWorldAction() {
-        super("Clean and make world bsb", "Clean and make world bsb", AllIcons.General.Web);
-    }
+  @SuppressWarnings("WeakerAccess")
+  public BsMakeWorldAction() {
+    super("Clean and make world bsb", "Clean and make world bsb", AllIcons.General.Web);
+  }
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Bs.CLEAN_MAKE);
-        }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      doAction(project, CliType.Bs.CLEAN_MAKE);
     }
+  }
 }

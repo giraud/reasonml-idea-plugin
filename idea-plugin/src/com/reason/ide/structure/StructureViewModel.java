@@ -10,24 +10,27 @@ import com.reason.ide.files.OclFile;
 import com.reason.ide.files.RmlFile;
 import org.jetbrains.annotations.NotNull;
 
-public class StructureViewModel extends StructureViewModelBase implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
-    StructureViewModel(@NotNull PsiFile psiFile) {
-        super(psiFile, new StructureViewElement(psiFile));
-    }
+public class StructureViewModel extends StructureViewModelBase
+    implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
+  StructureViewModel(@NotNull PsiFile psiFile) {
+    super(psiFile, new StructureViewElement(psiFile));
+  }
 
-    @NotNull
-    public Sorter[] getSorters() {
-        return new Sorter[]{Sorter.ALPHA_SORTER};
-    }
+  @NotNull
+  public Sorter[] getSorters() {
+    return new Sorter[] {Sorter.ALPHA_SORTER};
+  }
 
+  @Override
+  public boolean isAlwaysShowsPlus(StructureViewTreeElement element) {
+    return false;
+  }
 
-    @Override
-    public boolean isAlwaysShowsPlus(StructureViewTreeElement element) {
-        return false;
-    }
-
-    @Override
-    public boolean isAlwaysLeaf(StructureViewTreeElement element) {
-        return element instanceof RmlFile || element instanceof OclFile || element instanceof MlyFile || element instanceof DuneFile;
-    }
+  @Override
+  public boolean isAlwaysLeaf(StructureViewTreeElement element) {
+    return element instanceof RmlFile
+        || element instanceof OclFile
+        || element instanceof MlyFile
+        || element instanceof DuneFile;
+  }
 }

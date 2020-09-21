@@ -15,36 +15,40 @@ import com.reason.ide.files.OclInterfaceFileType;
 import org.jetbrains.annotations.NotNull;
 
 public class ORTypedHandler extends TypedHandlerDelegate {
-    @NotNull
-    @Override
-    public Result beforeCharTyped(char c, @NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file, @NotNull FileType fileType) {
-        if (!(fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType)) {
-            return Result.CONTINUE;
-        }
-
-        // #62 - don't insert a ) when at the end of a comment
-        if (c == ')') {
-            Document doc = editor.getDocument();
-            PsiDocumentManager.getInstance(project).commitDocument(doc);
-            CaretModel caretModel = editor.getCaretModel();
-
-
-            // * <caret> )
-            int offsetBefore = caretModel.getOffset();
-            if (offsetBefore < doc.getTextLength()) {
-                CharSequence charsSequence = doc.getCharsSequence();
-                char c1 = charsSequence.charAt(offsetBefore - 1);
-                char c2 = charsSequence.charAt(offsetBefore);
-                if (c1 == '*' && c2 == ')') {
-                    PsiElement leaf = file.findElementAt(offsetBefore);
-                    if (leaf instanceof PsiComment) {
-                        caretModel.moveToOffset(offsetBefore + 1);
-                        return Result.STOP;
-                    }
-                }
-            }
-        }
-
-        return super.beforeCharTyped(c, project, editor, file, fileType);
+  @NotNull
+  @Override
+  public Result beforeCharTyped(
+      char c,
+      @NotNull Project project,
+      @NotNull Editor editor,
+      @NotNull PsiFile file,
+      @NotNull FileType fileType) {
+    if (!(fileType instanceof OclFileType || fileType instanceof OclInterfaceFileType)) {
+      return Result.CONTINUE;
     }
+
+    // #62 - don't insert a ) when at the end of a comment
+    if (c == ')') {
+      Document doc = editor.getDocument();
+      PsiDocumentManager.getInstance(project).commitDocument(doc);
+      CaretModel caretModel = editor.getCaretModel();
+
+      // * <caret> )
+      int offsetBefore = caretModel.getOffset();
+      if (offsetBefore < doc.getTextLength()) {
+        CharSequence charsSequence = doc.getCharsSequence();
+        char c1 = charsSequence.charAt(offsetBefore - 1);
+        char c2 = charsSequence.charAt(offsetBefore);
+        if (c1 == '*' && c2 == ')') {
+          PsiElement leaf = file.findElementAt(offsetBefore);
+          if (leaf instanceof PsiComment) {
+            caretModel.moveToOffset(offsetBefore + 1);
+            return Result.STOP;
+          }
+        }
+      }
+    }
+
+    return super.beforeCharTyped(c, project, editor, file, fileType);
+  }
 }

@@ -5,12 +5,10 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiToken<T> extends ASTWrapperPsiElement {
+  @NotNull protected final T m_types;
 
-    @NotNull
-    protected final T m_types;
-
-    public PsiToken(@NotNull T types, @NotNull ASTNode node) {
-        super(node);
-        m_types = types;
-    }
+  public PsiToken(@NotNull T types, @NotNull ASTNode node) {
+    super(node);
+    m_types = types;
+  }
 }

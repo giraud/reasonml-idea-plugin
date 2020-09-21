@@ -4,6 +4,6 @@ import com.intellij.lang.Language;
 import org.jetbrains.annotations.NotNull;
 
 public interface PsiLanguageConverter {
-    @NotNull
-    String asText(@NotNull Language language);
+  @NotNull
+  String asText(@NotNull Language language);
 }

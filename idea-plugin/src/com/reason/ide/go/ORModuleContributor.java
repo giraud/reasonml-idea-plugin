@@ -1,7 +1,5 @@
 package com.reason.ide.go;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.navigation.ChooseByNameContributorEx;
 import com.intellij.navigation.GotoClassContributor;
 import com.intellij.navigation.NavigationItem;
@@ -16,42 +14,51 @@ import com.reason.ide.search.index.ModuleIndex;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiQualifiedElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // Implements the goto class
 public class ORModuleContributor implements GotoClassContributor, ChooseByNameContributorEx {
 
-    @Override
-    public void processNames(@NotNull Processor<? super String> processor, @NotNull GlobalSearchScope scope, @Nullable IdFilter filter) {
-        Project project = scope.getProject();
-        if (project != null) {
-            ModuleIndex.getInstance().processAllKeys(project, processor);
-        }
+  @Override
+  public void processNames(
+      @NotNull Processor<? super String> processor,
+      @NotNull GlobalSearchScope scope,
+      @Nullable IdFilter filter) {
+    Project project = scope.getProject();
+    if (project != null) {
+      ModuleIndex.getInstance().processAllKeys(project, processor);
     }
+  }
 
-    @Override
-    public void processElementsWithName(@NotNull String name, @NotNull Processor<? super NavigationItem> processor, @NotNull FindSymbolParameters parameters) {
-        Project project = parameters.getProject();
-        GlobalSearchScope scope = parameters.getSearchScope();
+  @Override
+  public void processElementsWithName(
+      @NotNull String name,
+      @NotNull Processor<? super NavigationItem> processor,
+      @NotNull FindSymbolParameters parameters) {
+    Project project = parameters.getProject();
+    GlobalSearchScope scope = parameters.getSearchScope();
 
-        for (PsiModule psiModule : PsiFinder.getInstance(project).findModulesbyName(name, ORFileType.both, null, scope)) {
-            processor.process(psiModule);
-        }
+    for (PsiModule psiModule :
+        PsiFinder.getInstance(project).findModulesbyName(name, ORFileType.both, null, scope)) {
+      processor.process(psiModule);
     }
+  }
 
-    @Nullable
-    @Override
-    public String getQualifiedName(NavigationItem item) {
-        if (item instanceof FileBase) {
-            return ((FileBase) item).getModuleName();
-        } else if (item instanceof PsiQualifiedElement) {
-            return ((PsiQualifiedElement) item).getQualifiedName();
-        }
-        return null;
+  @Nullable
+  @Override
+  public String getQualifiedName(NavigationItem item) {
+    if (item instanceof FileBase) {
+      return ((FileBase) item).getModuleName();
+    } else if (item instanceof PsiQualifiedElement) {
+      return ((PsiQualifiedElement) item).getQualifiedName();
     }
+    return null;
+  }
 
-    @Nullable
-    @Override
-    public String getQualifiedNameSeparator() {
-        return null;
-    }
+  @Nullable
+  @Override
+  public String getQualifiedNameSeparator() {
+    return null;
+  }
 }

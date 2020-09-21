@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ModulePath {
@@ -33,15 +32,15 @@ public class ModulePath {
         }
     }
 
-    public ModulePath(@NotNull PsiElement element) {
-        this(Collections.singletonList(element));
-    }
-
     public ModulePath(@NotNull List<? extends PsiElement> elements) {
         m_names = new String[elements.size()];
         for (int i = 0; i < elements.size(); i++) {
             PsiElement element = elements.get(i);
-            m_names[i] = element instanceof FileBase ? ((FileBase) element).getModuleName() : ((PsiNamedElement) element).getName();
+            if (element instanceof FileBase) {
+                m_names[i] = ((FileBase) element).getModuleName();
+            } else if (element instanceof PsiNamedElement) {
+                m_names[i] = ((PsiNamedElement) element).getName();
+            }
         }
     }
 
@@ -57,11 +56,6 @@ public class ModulePath {
 
     public boolean isEmpty() {
         return m_names.length == 0;
-    }
-
-    @NotNull
-    public String getLatest() {
-        return isEmpty() ? "" : m_names[m_names.length - 1];
     }
 
     @Override

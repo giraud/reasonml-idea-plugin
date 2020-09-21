@@ -6,18 +6,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiFunctionBody extends ASTWrapperPsiElement {
 
-    public PsiFunctionBody(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiFunctionBody(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
+  @Override
+  public boolean canNavigate() {
+    return false;
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Function body";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Function body";
+  }
 }

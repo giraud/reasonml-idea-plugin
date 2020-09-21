@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class OclFileStub extends PsiFileStubImpl<OclFile> {
 
-    public OclFileStub(OclFile file) {
-        super(file);
-    }
+  public OclFileStub(OclFile file) {
+    super(file);
+  }
 
-    @NotNull
-    @Override
-    public IStubFileElementType<OclFileStub> getType() {
-        return OclFileStubElementType.INSTANCE;
-    }
+  @NotNull
+  @Override
+  public IStubFileElementType<OclFileStub> getType() {
+    return OclFileStubElementType.INSTANCE;
+  }
 }

@@ -6,12 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiMacroName extends ASTWrapperPsiElement {
 
-    public PsiMacroName(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiMacroName(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @Override
-    public String toString() {
-        return getText();
-    }
+  @Override
+  public String toString() {
+    return getText();
+  }
 }

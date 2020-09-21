@@ -5,9 +5,9 @@ import com.reason.lang.core.signature.ORSignature;
 
 public interface PsiInferredType extends PsiElement {
 
-    void setInferredType(ORSignature inferredType);
+  void setInferredType(ORSignature inferredType);
 
-    ORSignature getInferredType();
+  ORSignature getInferredType();
 
-    boolean hasInferredType();
+  boolean hasInferredType();
 }

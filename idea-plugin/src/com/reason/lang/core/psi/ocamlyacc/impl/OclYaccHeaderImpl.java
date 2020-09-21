@@ -12,21 +12,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class OclYaccHeaderImpl extends ASTWrapperPsiElement implements OclYaccHeader {
 
-    public OclYaccHeaderImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public OclYaccHeaderImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull OclYaccVisitor visitor) {
-        visitor.visitHeader(this);
-    }
+  public void accept(@NotNull OclYaccVisitor visitor) {
+    visitor.visitHeader(this);
+  }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
-        if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
-        else super.accept(visitor);
-    }
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
+    else super.accept(visitor);
+  }
 
-    public ItemPresentation getPresentation() {
-        return OclYaccPsiImplUtil.getPresentation(this);
-    }
-
+  public ItemPresentation getPresentation() {
+    return OclYaccPsiImplUtil.getPresentation(this);
+  }
 }

@@ -1,7 +1,5 @@
 package com.reason.ide.debug;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileType;
@@ -17,63 +15,69 @@ import com.reason.ide.files.FileHelper;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.reason.RmlTypes;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ORLineBreakpointType extends XLineBreakpointType<ORLineBreakpointProperties> {
-    private static final String ID = "OCamlLineBreakpoint";
-    private static final String NAME = "Line breakpoint";
+  private static final String ID = "OCamlLineBreakpoint";
+  private static final String NAME = "Line breakpoint";
 
-    protected ORLineBreakpointType() {
-        super(ID, NAME);
+  protected ORLineBreakpointType() {
+    super(ID, NAME);
+  }
+
+  @Nullable
+  @Override
+  public ORLineBreakpointProperties createBreakpointProperties(
+      @NotNull VirtualFile file, int line) {
+    return new ORLineBreakpointProperties();
+  }
+
+  @Override
+  public boolean canPutAt(@NotNull VirtualFile file, int line, @NotNull Project project) {
+    FileType fileType = file.getFileType();
+    if (FileHelper.isOCaml(fileType) || FileHelper.isReason(fileType)) {
+      Document document = FileDocumentManager.getInstance().getDocument(file);
+      if (document != null) {
+        LineBreakpointAvailabilityProcessor canPutAtChecker =
+            new LineBreakpointAvailabilityProcessor(
+                FileHelper.isOCaml(fileType) ? OclTypes.INSTANCE : RmlTypes.INSTANCE);
+        XDebuggerUtil.getInstance().iterateLine(project, document, line, canPutAtChecker);
+        return canPutAtChecker.isLineBreakpointAvailable();
+      }
     }
 
-    @Nullable
-    @Override
-    public ORLineBreakpointProperties createBreakpointProperties(@NotNull VirtualFile file, int line) {
-        return new ORLineBreakpointProperties();
+    return false;
+  }
+
+  private static final class LineBreakpointAvailabilityProcessor implements Processor<PsiElement> {
+    private final ORTypes m_types;
+    private boolean m_isLineBreakpointAvailable;
+
+    LineBreakpointAvailabilityProcessor(ORTypes types) {
+      m_types = types;
     }
 
     @Override
-    public boolean canPutAt(@NotNull VirtualFile file, int line, @NotNull Project project) {
-        FileType fileType = file.getFileType();
-        if (FileHelper.isOCaml(fileType) || FileHelper.isReason(fileType)) {
-            Document document = FileDocumentManager.getInstance().getDocument(file);
-            if (document != null) {
-                LineBreakpointAvailabilityProcessor canPutAtChecker = new LineBreakpointAvailabilityProcessor(
-                        FileHelper.isOCaml(fileType) ? OclTypes.INSTANCE : RmlTypes.INSTANCE);
-                XDebuggerUtil.getInstance().iterateLine(project, document, line, canPutAtChecker);
-                return canPutAtChecker.isLineBreakpointAvailable();
-            }
-        }
+    public boolean process(@NotNull PsiElement element) {
+      IElementType elementType = element.getNode().getElementType();
 
+      if (elementType.equals(TokenType.WHITE_SPACE)
+          || elementType.equals(m_types.SINGLE_COMMENT)
+          || elementType.equals(m_types.MULTI_COMMENT)) {
+        return true;
+      }
+
+      if (elementType.equals(m_types.LET)) {
+        m_isLineBreakpointAvailable = true;
         return false;
+      }
+
+      return true;
     }
 
-    private static final class LineBreakpointAvailabilityProcessor implements Processor<PsiElement> {
-        private final ORTypes m_types;
-        private boolean m_isLineBreakpointAvailable;
-
-        LineBreakpointAvailabilityProcessor(ORTypes types) {
-            m_types = types;
-        }
-
-        @Override
-        public boolean process(@NotNull PsiElement element) {
-            IElementType elementType = element.getNode().getElementType();
-
-            if (elementType.equals(TokenType.WHITE_SPACE) || elementType.equals(m_types.SINGLE_COMMENT) || elementType.equals(m_types.MULTI_COMMENT)) {
-                return true;
-            }
-
-            if (elementType.equals(m_types.LET)) {
-                m_isLineBreakpointAvailable = true;
-                return false;
-            }
-
-            return true;
-        }
-
-        boolean isLineBreakpointAvailable() {
-            return m_isLineBreakpointAvailable;
-        }
+    boolean isLineBreakpointAvailable() {
+      return m_isLineBreakpointAvailable;
     }
+  }
 }
