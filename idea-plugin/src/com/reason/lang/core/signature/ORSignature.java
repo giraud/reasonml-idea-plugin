@@ -7,7 +7,8 @@ import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.napkin.NsLanguage;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,9 +57,7 @@ public class ORSignature {
                 .replaceAll("=>", "->");
         SignatureType signatureType = new SignatureType();
         signatureType.item = item;
-        signatureType.value =
-            normalizedValue; // (isOcaml && item.isNamedItem()) ? "~" + normalizedValue :
-                             // normalizedValue;
+        signatureType.value = normalizedValue;
         signatureType.mandatory = !tokens[0].contains("option") && tokens.length == 1;
         signatureType.defaultValue = 2 == tokens.length ? tokens[1] : "";
 

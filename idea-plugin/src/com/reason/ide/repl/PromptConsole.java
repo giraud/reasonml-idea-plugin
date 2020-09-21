@@ -1,5 +1,8 @@
 package com.reason.ide.repl;
 
+import static com.intellij.execution.ui.ConsoleViewContentType.USER_INPUT;
+import static com.intellij.openapi.editor.EditorKind.CONSOLE;
+
 import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.IdeActions;
@@ -18,15 +21,11 @@ import com.intellij.psi.PsiFileFactory;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.SideBorder;
 import com.reason.lang.ocaml.OclLanguage;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-import static com.intellij.execution.ui.ConsoleViewContentType.USER_INPUT;
-import static com.intellij.openapi.editor.EditorKind.CONSOLE;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 
 final class PromptConsole implements Disposable {
   private static final String PROMPT_INACTIVE = "  ";

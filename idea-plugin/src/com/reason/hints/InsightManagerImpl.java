@@ -9,10 +9,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
 import com.reason.Platform;
 import com.reason.bs.BsProcess;
-import java.io.*;
+import java.io.File;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,9 +98,11 @@ public class InsightManagerImpl implements InsightManager {
       return null;
     }
 
-    File pluginLocation = Platform.getPluginLocation();
+    Path pluginLocation = Platform.getPluginLocation();
     String pluginPath =
-        pluginLocation == null ? System.getProperty("java.io.tmpdir") : pluginLocation.getPath();
+        pluginLocation == null
+            ? System.getProperty("java.io.tmpdir")
+            : pluginLocation.toFile().getPath();
     if (LOG.isTraceEnabled()) {
       LOG.trace("Rincewind filename: " + filename + " at " + pluginPath);
     }

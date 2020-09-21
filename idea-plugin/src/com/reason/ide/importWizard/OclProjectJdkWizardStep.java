@@ -23,7 +23,8 @@ import com.reason.Log;
 import com.reason.OCamlSourcesOrderRootType;
 import com.reason.sdk.OCamlSdkType;
 import com.reason.sdk.SdkDownloader;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -154,9 +155,8 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
           if (odk != null) {
             SdkModificator odkModificator = odk.getSdkModificator();
 
-            odkModificator.setVersionString(
-                selectedSdk); // must be set after home path, otherwise setting home path clears the
-                              // version string
+            // must be set after home path, otherwise setting home path clears the version string
+            odkModificator.setVersionString(selectedSdk);
             odkModificator.setName("OCaml (sources only) " + major);
             try {
               addSdkSources(odkModificator, targetSdkLocation);

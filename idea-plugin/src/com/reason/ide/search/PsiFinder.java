@@ -16,37 +16,11 @@ import com.intellij.util.containers.ArrayListSet;
 import com.reason.Joiner;
 import com.reason.Log;
 import com.reason.bs.BsCompiler;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.files.OclFileType;
-import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.ide.files.RmlFileType;
-import com.reason.ide.files.RmlInterfaceFileType;
-import com.reason.ide.search.index.ExceptionFqnIndex;
-import com.reason.ide.search.index.IndexKeys;
-import com.reason.ide.search.index.LetFqnIndex;
-import com.reason.ide.search.index.ModuleComponentIndex;
-import com.reason.ide.search.index.ModuleFqnIndex;
-import com.reason.ide.search.index.ModuleIndex;
-import com.reason.ide.search.index.ModuleTopLevelIndex;
-import com.reason.ide.search.index.ParameterFqnIndex;
-import com.reason.ide.search.index.ValFqnIndex;
-import com.reason.ide.search.index.VariantFqnIndex;
-import com.reason.ide.search.index.VariantIndex;
+import com.reason.ide.files.*;
+import com.reason.ide.search.index.*;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiFakeModule;
-import com.reason.lang.core.psi.PsiFunctorCall;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.napkin.NsLanguage;
 import com.reason.lang.napkin.NsQNameFinder;
 import com.reason.lang.ocaml.OclLanguage;
@@ -54,7 +28,7 @@ import com.reason.lang.ocaml.OclQNameFinder;
 import com.reason.lang.reason.RmlQNameFinder;
 import gnu.trove.THashMap;
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -157,12 +131,12 @@ public final class PsiFinder {
   }
 
   @NotNull
-  public <T extends PsiModule> Set<T> findModulesbyName(
+  public Set<PsiModule> findModulesbyName(
       @NotNull String name,
       @NotNull ORFileType fileType,
       ModuleFilter<PsiModule> filter,
       @NotNull GlobalSearchScope scope) {
-    Set<T> result = new HashSet<>();
+    Set<PsiModule> result = new HashSet<>();
     ModuleIndex instance = ModuleIndex.getInstance();
 
     instance.processAllKeys(
@@ -177,15 +151,14 @@ public final class PsiFinder {
                 if (fileType == interfaceOrImplementation
                     || fileType == both
                     || fileType == interfaceOnly) {
-                  result.addAll((Collection<? extends T>) partitionedModules.getInterfaces());
+                  result.addAll(partitionedModules.getInterfaces());
                 }
 
                 if (fileType != interfaceOnly) {
                   if (fileType == both
                       || fileType == implementationOnly
                       || !partitionedModules.hasInterfaces()) {
-                    result.addAll(
-                        (Collection<? extends T>) partitionedModules.getImplementations());
+                    result.addAll(partitionedModules.getImplementations());
                   }
                 }
               }
@@ -453,18 +426,6 @@ public final class PsiFinder {
         });
 
     return result;
-  }
-
-  @NotNull
-  public Set<PsiFakeModule> findTopModulesByName(
-      @Nullable String name, boolean excludeNamespaces, @NotNull GlobalSearchScope scope) {
-    if (name == null) {
-      return Collections.emptySet();
-    }
-
-    Set<PsiFakeModule> topModules = findTopModules(excludeNamespaces, scope);
-    topModules.removeIf(module -> !module.getModuleName().equals(name));
-    return topModules;
   }
 
   @NotNull

@@ -5,13 +5,9 @@ import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiObject;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeBinding;
-import java.util.*;
+import com.reason.lang.core.psi.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends OclParsingTestCase {
@@ -56,7 +52,7 @@ public class TypeParsingTest extends OclParsingTestCase {
                             "type 'branch_type branch_info = { kind : [> `Master] as 'branch_type; pos : id; }"))),
                 PsiTypeBinding.class));
     PsiRecord record = PsiTreeUtil.findChildOfType(typeBinding, PsiRecord.class);
-    List<PsiRecordField> fields = new ArrayList(record.getFields());
+    List<PsiRecordField> fields = new ArrayList<>(record.getFields());
     assertEquals(2, fields.size());
     assertEquals("kind", fields.get(0).getName());
     assertEquals("pos", fields.get(1).getName());

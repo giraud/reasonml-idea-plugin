@@ -71,7 +71,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
     FileBase file =
         parseCode(
             "module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end"); // From coq:
-                                                                                       // PCoq
+    // PCoq
 
     assertEquals(1, expressions(file).size());
     assertEquals("G", first(moduleExpressions(file)).getName());

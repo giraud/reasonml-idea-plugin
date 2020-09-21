@@ -1,5 +1,8 @@
 package com.reason.bs;
 
+import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
+import static com.reason.bs.BsConstants.*;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
@@ -11,12 +14,8 @@ import com.reason.dune.Dune;
 import com.reason.esy.Esy;
 import com.reason.ide.ORFileUtils;
 import com.reason.ide.settings.ORSettings;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Optional;
-
-import static com.reason.Platform.WINDOWS_EXECUTABLE_SUFFIX;
-import static com.reason.bs.BsConstants.*;
+import org.jetbrains.annotations.NotNull;
 
 public class BsPlatform {
 
