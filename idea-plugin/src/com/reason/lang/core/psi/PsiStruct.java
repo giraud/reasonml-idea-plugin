@@ -12,6 +12,6 @@ public class PsiStruct extends ASTWrapperPsiElement {
   @NotNull
   @Override
   public String toString() {
-    return "Struct";
+    return "PsiStruct";
   }
 }

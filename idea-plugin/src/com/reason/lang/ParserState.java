@@ -140,6 +140,13 @@ public class ParserState {
     return false;
   }
 
+  public boolean isGrandParent(ORCompositeType composite) {
+    if (m_composites.size() >= 3) {
+      return m_composites.get(2).isCompositeType(composite);
+    }
+    return false;
+  }
+
   @NotNull
   public ParserState complete() {
     m_currentScope.complete();

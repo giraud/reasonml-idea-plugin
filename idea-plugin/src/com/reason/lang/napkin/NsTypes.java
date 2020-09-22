@@ -82,6 +82,7 @@ public class NsTypes extends ORTypes {
     C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", NsLanguage.INSTANCE);
     C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", NsLanguage.INSTANCE);
     C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", NsLanguage.INSTANCE);
+    C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", NsLanguage.INSTANCE);
     C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", NsLanguage.INSTANCE);
     C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", NsLanguage.INSTANCE);
     C_OBJECT = new ORCompositeElementType("C_OBJECT", NsLanguage.INSTANCE);

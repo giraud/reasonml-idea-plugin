@@ -9,14 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiTag;
-import com.reason.lang.core.psi.PsiTagClose;
-import com.reason.lang.core.psi.PsiTagStart;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
@@ -26,9 +19,11 @@ import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
 import com.reason.lang.reason.RmlTypes;
-import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FoldingBuilder extends FoldingBuilderEx {
   @NotNull
@@ -98,7 +93,7 @@ public class FoldingBuilder extends FoldingBuilderEx {
 
   private void foldModule(
       @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiInnerModule module) {
-    FoldingDescriptor foldSignature = fold(module.getSignature());
+    FoldingDescriptor foldSignature = fold(module.getModuleType());
     if (foldSignature != null) {
       descriptors.add(foldSignature);
     }
@@ -163,6 +158,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
       return "/*...*/";
     } else if (elementType == OclTypes.INSTANCE.MULTI_COMMENT) {
       return "(*...*)";
+    } else if (elementType == OclTypes.INSTANCE.C_MODULE_TYPE) {
+      return "sig...";
     }
 
     return "...";

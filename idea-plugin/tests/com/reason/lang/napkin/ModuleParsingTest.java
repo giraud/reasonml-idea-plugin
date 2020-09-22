@@ -43,7 +43,8 @@ public class ModuleParsingTest extends NsParsingTestCase {
 
     assertEquals(1, expressions(file).size());
     assertEquals("Router", module.getName());
-    assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getBody().getText());
+    assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getModuleType().getText());
+    assertNull(module.getBody());
   }
 
   public void test_moduleOpenVariant() {

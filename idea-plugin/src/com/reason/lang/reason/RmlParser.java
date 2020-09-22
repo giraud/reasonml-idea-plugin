@@ -1,14 +1,14 @@
 package com.reason.lang.reason;
 
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.reason.lang.ParserScopeEnum.*;
-
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+import static com.reason.lang.ParserScopeEnum.*;
 
 public class RmlParser extends CommonParser<RmlTypes> {
 
@@ -526,9 +526,12 @@ public class RmlParser extends CommonParser<RmlTypes> {
           .mark(signatureItem, m_types.C_SIG_ITEM);
     } else if (state.isCurrentResolution(letNamed)) {
       state.advance().mark(signature, m_types.C_SIG_EXPR).mark(signatureItem, m_types.C_SIG_ITEM);
-    } else if (state.isCurrentResolution(moduleNamed)) {
+    } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> :<| ...
-      state.updateCurrentResolution(moduleNamedSignature);
+      state
+          .updateCurrentResolution(moduleNamedSignature)
+          .advance()
+          .mark(moduleType, m_types.C_MODULE_TYPE);
     } else if (state.isCurrentResolution(functorNamedEq)) {
       // module M = (X:Y) |> :<| ...
       state.updateCurrentResolution(functorNamedEqColon).advance();
@@ -774,12 +777,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
           isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR,
           m_types.LBRACE);
     } else if (state.isCurrentResolution(tryBody)) {
-      // A try expression
-      //   try (..) |>{<| .. }
+      // A try expression ::  try (..) |>{<| .. }
       state.markScope(tryBodyWith, m_types.C_TRY_HANDLERS, m_types.LBRACE);
     } else if (state.isCurrentResolution(module)) {
       // module M = |>{<| ...
       state.markScope(moduleBinding, m_types.C_SCOPED_EXPR, m_types.LBRACE);
+    } else if (state.is(m_types.C_MODULE_TYPE)) {
+      // module M : |>{<| ...
+      state.updateScopeToken(m_types.LBRACE);
     } else if (isFunctorResolution(state.getLatestScope())) {
       // module M = (...) => |>{<| ...
       state.markScope(functorBinding, m_types.C_FUNCTOR_BINDING, m_types.LBRACE);

@@ -1,8 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.Collections.*;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -17,22 +14,20 @@ import com.reason.lang.ModuleHelper;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ExpressionFilter;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiFunctorCall;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
-import java.util.*;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static java.util.Collections.emptyList;
 
 public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
     implements PsiInnerModule {
@@ -105,12 +100,12 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
 
   @Nullable
   public PsiElement getBody() {
-    return findChildByClass(PsiScopedExpr.class);
+    return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiScopedExpr.class, PsiStruct.class);
   }
 
   @Nullable
-  public PsiSignature getSignature() {
-    return findChildByClass(PsiSignature.class);
+  public PsiModuleType getModuleType() {
+    return ORUtil.findImmediateFirstChildOfClass(this, PsiModuleType.class);
   }
 
   @NotNull
@@ -157,8 +152,8 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
         }
       }
     } else {
-      PsiSignature signature = getSignature();
-      if (signature == null) {
+      PsiModuleType moduleType = getModuleType();
+      if (moduleType == null) {
         PsiElement body = getBody();
         if (body == null) {
           PsiFunctorCall functorCall =
@@ -204,7 +199,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
         }
       } else {
         result = new ArrayList<>();
-        PsiElement element = signature.getFirstChild();
+        PsiElement element = moduleType.getFirstChild();
         while (element != null) {
           if (element instanceof PsiNamedElement
               && (filter == null || filter.accept((PsiNamedElement) element))) {

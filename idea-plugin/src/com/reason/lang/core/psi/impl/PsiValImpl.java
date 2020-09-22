@@ -106,20 +106,14 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
       @NotNull
       @Override
       public String getPresentableText() {
-        String valName = getName();
-
-        ORSignature signature = getORSignature();
-        if (!signature.isEmpty()) {
-          valName += ": " + signature.asString(getLanguage());
-        }
-
-        return valName;
+        return getName();
       }
 
       @Nullable
       @Override
       public String getLocationString() {
-        return null;
+        ORSignature signature = getORSignature();
+        return signature.isEmpty() ? null : signature.asString(getLanguage());
       }
 
       @NotNull
@@ -133,6 +127,6 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
   @Nullable
   @Override
   public String toString() {
-    return "Val " + getQualifiedName();
+    return "PsiVal";
   }
 }

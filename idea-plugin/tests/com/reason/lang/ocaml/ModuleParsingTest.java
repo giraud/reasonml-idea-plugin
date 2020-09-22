@@ -5,16 +5,22 @@ import com.intellij.psi.PsiNamedElement;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ExpressionFilterConstants;
 import com.reason.lang.core.psi.ExpressionScope;
+import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
-import java.util.*;
+import com.reason.lang.core.psi.impl.PsiModuleType;
 
+import java.util.Collection;
+
+@SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends OclParsingTestCase {
   public void test_empty() {
     Collection<PsiModule> modules = moduleExpressions(parseCode("module M = struct end"));
 
     assertEquals(1, modules.size());
-    assertEquals("M", first(modules).getName());
-    assertEquals("Dummy.M", first(modules).getQualifiedName());
+    PsiInnerModule e = (PsiInnerModule) first(modules);
+    assertEquals("M", e.getName());
+    assertEquals("Dummy.M", e.getQualifiedName());
+    assertEquals("struct end", e.getBody().getText());
   }
 
   public void test_alias() {
@@ -42,14 +48,19 @@ public class ModuleParsingTest extends OclParsingTestCase {
     PsiFile file = parseCode("module Level : sig end\ntype t");
 
     assertEquals(2, expressions(file).size());
-    assertEquals("Level", first(moduleExpressions(file)).getName());
+    PsiInnerModule module = firstOfType(file, PsiInnerModule.class);
+    assertEquals("Level", module.getName());
+    assertEquals("sig end", module.getModuleType().getText());
   }
 
   public void test_moduleSig2() {
     PsiFile file = parseCode("module Constraint : Set.S with type elt = univ_constraint\ntype t");
 
     assertEquals(2, expressions(file).size());
-    assertEquals("Constraint", first(moduleExpressions(file)).getName());
+    PsiInnerModule module = firstOfType(file, PsiInnerModule.class);
+    assertEquals("Constraint", module.getName());
+    PsiModuleType modType = module.getModuleType();
+    assertEquals("Set.S", modType.getText());
   }
 
   public void test_moduleSig3() {
@@ -59,6 +70,9 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
     assertEquals(2, expressions(file).size());
     assertEquals("Branch", first(moduleExpressions(file)).getName());
+    PsiInnerModule e = (PsiInnerModule) expressions(file).iterator().next();
+    PsiModuleType modType = e.getModuleType();
+    assertEquals("module type of Vcs_.Branch", modType.getText());
   }
 
   public void test_moduleChaining() {
@@ -69,12 +83,14 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
   public void test_signatureWithConstraints() {
     FileBase file =
-        parseCode(
-            "module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end"); // From coq:
-    // PCoq
+        parseCode( // From coq: PCoq
+            "module G : sig end with type 'a Entry.e = 'a Extend.entry = struct end");
 
     assertEquals(1, expressions(file).size());
-    assertEquals("G", first(moduleExpressions(file)).getName());
+    PsiInnerModule e = firstOfType(file, PsiInnerModule.class);
+    assertEquals("G", e.getName());
+    assertEquals("sig end", e.getModuleType().getText());
+    assertEquals("struct end", e.getBody().getText());
   }
 
   public void test_moduleAliasBody() {
@@ -85,6 +101,17 @@ public class ModuleParsingTest extends OclParsingTestCase {
     assertEquals("M", e.getName());
     Collection<PsiNamedElement> expressions =
         e.getExpressions(ExpressionScope.pub, ExpressionFilterConstants.NO_FILTER);
+    assertSize(2, expressions);
+  }
+
+  public void test_recSig() {
+    PsiFile file = parseCode("module rec A : sig end = struct end and B : sig end = struct end and C : sig end = struct end");
+
+    assertEquals(1, expressions(file).size());
+    PsiModule e = first(moduleExpressions(file));
+    assertEquals("M", e.getName());
+    Collection<PsiNamedElement> expressions =
+            e.getExpressions(ExpressionScope.pub, ExpressionFilterConstants.NO_FILTER);
     assertSize(2, expressions);
   }
 }

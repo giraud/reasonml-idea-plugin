@@ -4,10 +4,7 @@ import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
-import com.reason.ide.files.DuneFile;
-import com.reason.ide.files.MlyFile;
-import com.reason.ide.files.OclFile;
-import com.reason.ide.files.RmlFile;
+import com.reason.ide.files.*;
 import org.jetbrains.annotations.NotNull;
 
 public class StructureViewModel extends StructureViewModelBase
@@ -29,6 +26,7 @@ public class StructureViewModel extends StructureViewModelBase
   @Override
   public boolean isAlwaysLeaf(StructureViewTreeElement element) {
     return element instanceof RmlFile
+        || element instanceof NsFile
         || element instanceof OclFile
         || element instanceof MlyFile
         || element instanceof DuneFile;

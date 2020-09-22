@@ -35,6 +35,7 @@ public abstract class ORTypes {
   public ORCompositeType C_LET_BINDING;
   public ORCompositeType C_MACRO_EXPR;
   public ORCompositeType C_MACRO_NAME;
+  public ORCompositeType C_MODULE_TYPE;
   public ORCompositeType C_FUN_CALL_PARAMS;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_PARAMS;

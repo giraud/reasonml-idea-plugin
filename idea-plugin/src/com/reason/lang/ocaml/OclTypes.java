@@ -76,6 +76,7 @@ public class OclTypes extends ORTypes {
     C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", OclLanguage.INSTANCE);
     C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", OclLanguage.INSTANCE);
     C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
+    C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", OclLanguage.INSTANCE);
     C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
     C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
     C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);

@@ -1,14 +1,14 @@
 package com.reason.lang.napkin;
 
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.reason.lang.ParserScopeEnum.*;
-
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+import static com.reason.lang.ParserScopeEnum.*;
 
 public class NsParser extends CommonParser<NsTypes> {
 
@@ -420,6 +420,12 @@ public class NsParser extends CommonParser<NsTypes> {
     } else if (state.isCurrentResolution(letNamed)) {
       // let x |> :<| ...
       state.advance().mark(signature, m_types.C_SIG_EXPR).mark(signatureItem, m_types.C_SIG_ITEM);
+    } else if (state.is(m_types.C_MODULE_DECLARATION)) {
+      // module M |> :<| ...
+      state
+          .updateCurrentResolution(moduleNamedSignature)
+          .advance()
+          .mark(moduleType, m_types.C_MODULE_TYPE);
     } else if (state.isCurrentResolution(functorNamedEq)) {
       // module M = (X:Y) |> :<| ...
       state.updateCurrentResolution(functorNamedEqColon).advance();

@@ -4,6 +4,8 @@ import com.intellij.psi.PsiFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.impl.PsiModuleType;
+
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -47,7 +49,8 @@ public class ModuleParsingTest extends RmlParsingTestCase {
 
     assertEquals(1, expressions(file).size());
     assertEquals("Router", module.getName());
-    assertEquals("{ let watchUrl: (url => unit) => watcherID; }", module.getBody().getText());
+    assertEquals("{ let watchUrl: (url => unit) => watcherID; }", module.getModuleType().getText());
+    assertNull(module.getBody());
   }
 
   public void test_moduleOpenVariant() {
@@ -55,4 +58,6 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
     assertEquals(6, childrenCount(file));
   }
+
+
 }

@@ -12,23 +12,18 @@ import com.intellij.util.PsiIconUtil;
 import com.reason.ide.files.DuneFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiClass;
-import com.reason.lang.core.psi.PsiDuneFields;
-import com.reason.lang.core.psi.PsiFakeModule;
-import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiStanza;
-import com.reason.lang.core.psi.PsiStructuredElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiModuleType;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
-import java.util.*;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
   @NotNull private final PsiElement m_element;
@@ -187,8 +182,8 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
   private List<TreeElement> buildModuleStructure(@NotNull PsiInnerModule moduleElement) {
     List<TreeElement> treeElements = new ArrayList<>();
 
-    PsiSignature moduleSignature = moduleElement.getSignature();
-    PsiElement rootElement = moduleSignature;
+    PsiModuleType moduleType = moduleElement.getModuleType();
+    PsiElement rootElement = moduleType;
     if (rootElement == null) {
       rootElement = moduleElement.getBody();
     }
@@ -198,7 +193,7 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     }
 
     // Process body if there is a signature
-    if (moduleSignature != null) {
+    if (moduleType != null) {
       rootElement = moduleElement.getBody();
       if (rootElement != null) {
         treeElements.add(new StructureModuleImplView(rootElement));

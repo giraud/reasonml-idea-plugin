@@ -16,10 +16,11 @@ import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import icons.ORIcons;
-import java.util.*;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.util.*;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
 
@@ -359,22 +360,19 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
           return scope == null || scope.isEmpty() ? "_" : scope.getText();
         }
 
-        ORSignature signature = hasInferredType() ? getInferredType() : getORSignature();
-        String signatureText =
-            (signature == ORSignature.EMPTY ? "" : ":   " + signature.asString(getLanguage()));
-
         String letName = letValueName.getText();
         if (isFunction()) {
-          return letName + (isRecursive() ? " (rec)" : "") + signatureText;
+          return letName + (isRecursive() ? " (rec)" : "");
         }
 
-        return letName + signatureText;
+        return letName;
       }
 
       @Nullable
       @Override
       public String getLocationString() {
-        return null;
+        ORSignature signature = hasInferredType() ? getInferredType() : getORSignature();
+        return (signature == ORSignature.EMPTY ? null : signature.asString(getLanguage()));
       }
 
       @NotNull
