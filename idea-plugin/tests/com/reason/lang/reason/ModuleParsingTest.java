@@ -4,8 +4,6 @@ import com.intellij.psi.PsiFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.impl.PsiModuleType;
-
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -58,6 +56,4 @@ public class ModuleParsingTest extends RmlParsingTestCase {
         parseCode("ModelActions.UserCapabilitiesLoaded.( UserCapabilitiesBuilder.( ) ),");
     assertEquals(6, childrenCount(file));
   }
-
-
 }

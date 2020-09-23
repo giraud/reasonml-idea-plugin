@@ -23,40 +23,34 @@ public class ParserScope {
 
   private ParserScope(
       @NotNull PsiBuilder builder,
-      ParserScopeEnum resolution,
       ORCompositeType compositeElementType,
       ORTokenElementType scopeTokenElementType) {
     m_builder = builder;
     m_mark = builder.mark();
     m_offset = builder.getCurrentOffset();
-    m_resolution = resolution;
     m_compositeElementType = compositeElementType;
     m_scopeTokenElementType = scopeTokenElementType;
   }
 
   @NotNull
   public static ParserScope mark(
-      @NotNull PsiBuilder builder,
-      @NotNull ParserScopeEnum resolution,
-      @NotNull ORCompositeType compositeElementType) {
-    return new ParserScope(builder, resolution, compositeElementType, null);
+      @NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
+    return new ParserScope(builder, compositeElementType, null);
   }
 
   @NotNull
   public static ParserScope markScope(
       @NotNull PsiBuilder builder,
-      @NotNull ParserScopeEnum resolution,
       @NotNull ORCompositeType compositeElementType,
       @NotNull ORTokenElementType scopeTokenElementType) {
-    ParserScope parserScope =
-        new ParserScope(builder, resolution, compositeElementType, scopeTokenElementType);
+    ParserScope parserScope = new ParserScope(builder, compositeElementType, scopeTokenElementType);
     parserScope.m_isScope = true;
     return parserScope;
   }
 
   @NotNull
   static ParserScope markRoot(@NotNull PsiBuilder builder) {
-    return new ParserScope(builder, ParserScopeEnum.file, null, null);
+    return new ParserScope(builder, null, null).resolution(ParserScopeEnum.file);
   }
 
   public boolean isEmpty() {

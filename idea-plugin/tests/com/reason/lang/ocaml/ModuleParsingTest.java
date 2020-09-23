@@ -8,7 +8,6 @@ import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiModuleType;
-
 import java.util.Collection;
 
 @SuppressWarnings("ConstantConditions")
@@ -105,13 +104,16 @@ public class ModuleParsingTest extends OclParsingTestCase {
   }
 
   public void test_recSig() {
-    PsiFile file = parseCode("module rec A : sig end = struct end and B : sig end = struct end and C : sig end = struct end");
+    PsiFile file =
+        parseCode(
+            "module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
 
     assertEquals(1, expressions(file).size());
-    PsiModule e = first(moduleExpressions(file));
-    assertEquals("M", e.getName());
-    Collection<PsiNamedElement> expressions =
-            e.getExpressions(ExpressionScope.pub, ExpressionFilterConstants.NO_FILTER);
-    assertSize(2, expressions);
+    PsiInnerModule e = (PsiInnerModule) first(moduleExpressions(file));
+    assertEquals("A", e.getName());
+    assertEquals(
+        "sig type output = (Constr.constr * UState.t) option type task end",
+        e.getModuleType().getText());
+    assertEquals("struct end", e.getBody().getText());
   }
 }

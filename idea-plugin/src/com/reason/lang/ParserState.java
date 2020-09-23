@@ -6,9 +6,10 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.ArrayUtil;
 import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTokenElementType;
-import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedList;
 
 public class ParserState {
 
@@ -161,26 +162,19 @@ public class ParserState {
   }
 
   // is resolution needed ?
-  public ParserState markScope(
-      ParserScopeEnum resolution, ORCompositeType compositeType, ORTokenElementType scopeType) {
-    add(ParserScope.markScope(m_builder, resolution, compositeType, scopeType));
+  public ParserState markScope(ORCompositeType compositeType, ORTokenElementType scopeType) {
+    add(ParserScope.markScope(m_builder, compositeType, scopeType));
     m_currentScope.complete();
     return this;
   }
 
-  public ParserState markOptional(
-      ParserScopeEnum resolution, ORCompositeType compositeElementType) {
-    add(ParserScope.mark(m_builder, resolution, compositeElementType));
+  public ParserState markOptional(ORCompositeType compositeElementType) {
+    add(ParserScope.mark(m_builder, compositeElementType));
     return this;
   }
 
-  public ParserState markDummy(ParserScopeEnum resolution, ORCompositeType compositeElementType) {
-    add(ParserScope.mark(m_builder, resolution, compositeElementType).dummy());
-    return this;
-  }
-
-  public ParserState mark(ParserScopeEnum resolution, ORCompositeType compositeType) {
-    add(ParserScope.mark(m_builder, resolution, compositeType));
+  public ParserState mark(ORCompositeType compositeType) {
+    add(ParserScope.mark(m_builder, compositeType));
     m_currentScope.complete();
     return this;
   }
@@ -288,7 +282,7 @@ public class ParserState {
   }
 
   @NotNull
-  public ParserState updateCurrentResolution(@NotNull ParserScopeEnum resolution) {
+  public ParserState resolution(@NotNull ParserScopeEnum resolution) {
     m_currentScope.resolution(resolution);
     return this;
   }
@@ -314,14 +308,18 @@ public class ParserState {
 
   @NotNull
   public ParserState advance() {
+    previousElementType2 = previousElementType1;
+    previousElementType1 = m_builder.getTokenType();
     m_builder.advanceLexer();
     dontMove = true;
     return this;
   }
 
   @NotNull
-  public ParserState updateScopeToken(@NotNull ORTokenElementType token) {
-    m_currentScope.setScopeTokenType(token);
+  public ParserState updateScopeToken(@Nullable ORTokenElementType token) {
+    if (token != null) {
+      m_currentScope.setScopeTokenType(token);
+    }
     return this;
   }
 
@@ -330,9 +328,8 @@ public class ParserState {
     if (compositeType instanceof IElementType) {
       IElementType elementType = (IElementType) compositeType;
       PsiBuilder.Marker mark = m_builder.mark();
-      m_builder.advanceLexer();
+      advance();
       mark.done(elementType);
-      dontMove = true;
     }
     return this;
   }
@@ -380,13 +377,6 @@ public class ParserState {
 
   public ParserState dummy() {
     m_currentScope.dummy();
-    return this;
-  }
-
-  // is start useful ?
-  public ParserState markStart(ParserScopeEnum scope, ORCompositeType compositeType) {
-    mark(scope, compositeType);
-    setStart();
     return this;
   }
 

@@ -1,5 +1,8 @@
 package com.reason.lang.core.psi.impl;
 
+import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
+import static java.util.Collections.emptyList;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -18,16 +21,12 @@ import com.reason.lang.core.psi.*;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static java.util.Collections.emptyList;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
     implements PsiInnerModule {

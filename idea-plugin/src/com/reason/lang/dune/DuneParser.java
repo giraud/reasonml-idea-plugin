@@ -1,12 +1,12 @@
 package com.reason.lang.dune;
 
-import static com.reason.lang.ParserScopeEnum.*;
-
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserState;
 import org.jetbrains.annotations.NotNull;
+
+import static com.reason.lang.ParserScopeEnum.*;
 
 public class DuneParser extends CommonParser<DuneTypes> {
   DuneParser() {
@@ -58,17 +58,17 @@ public class DuneParser extends CommonParser<DuneTypes> {
 
   private void parseAtom(@NotNull ParserState state) {
     if (state.isCurrentResolution(stanza)) {
-      state.advance().mark(stanzaNamedFields, m_types.C_FIELDS);
+      state.advance().mark(m_types.C_FIELDS).resolution(stanzaNamedFields);
     }
   }
 
   private void parseLParen(@NotNull ParserState state) {
     if (state.isCurrentResolution(file)) {
-      state.markScope(stanza, m_types.C_STANZA, m_types.LPAREN);
+      state.markScope(m_types.C_STANZA, m_types.LPAREN).resolution(stanza);
     } else if (state.isCurrentResolution(stanzaNamedFields)) {
-      state.markScope(field, m_types.C_FIELD, m_types.LPAREN);
+      state.markScope(m_types.C_FIELD, m_types.LPAREN).resolution(field);
     } else {
-      state.markScope(sexpr, m_types.C_SEXPR, m_types.LPAREN);
+      state.markScope(m_types.C_SEXPR, m_types.LPAREN).resolution(sexpr);
     }
   }
 
@@ -86,7 +86,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
 
   private void parseVarStart(@NotNull ParserState state) {
     // |>%{<| ... }
-    state.markScope(duneVariable, m_types.C_VAR, m_types.VAR_START);
+    state.markScope(m_types.C_VAR, m_types.VAR_START).resolution(duneVariable);
   }
 
   private void parseVarEnd(@NotNull ParserState state) {

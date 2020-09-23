@@ -18,12 +18,11 @@ import com.reason.lang.core.psi.impl.PsiModuleType;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccTrailer;
 import com.reason.lang.ocamlyacc.OclYaccTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StructureViewElement implements StructureViewTreeElement, SortableTreeElement {
   @NotNull private final PsiElement m_element;

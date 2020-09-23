@@ -19,11 +19,10 @@ import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
 import com.reason.lang.reason.RmlTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class FoldingBuilder extends FoldingBuilderEx {
   @NotNull

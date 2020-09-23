@@ -16,11 +16,10 @@ import com.reason.lang.core.stub.PsiLetStub;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlTypes;
 import icons.ORIcons;
+import java.util.*;
+import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.*;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
 

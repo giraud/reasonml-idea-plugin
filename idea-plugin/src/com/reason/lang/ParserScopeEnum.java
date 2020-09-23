@@ -5,8 +5,6 @@ public enum ParserScopeEnum {
 
   open,
   include,
-  includeConstraints,
-  includeConstraint,
 
   localOpen,
   localOpenScope,
@@ -26,8 +24,6 @@ public enum ParserScopeEnum {
   moduleNamedEq,
   moduleNamedColon,
   moduleNamedSignature,
-  moduleNamedSignatureConstraints,
-  moduleSignature,
   moduleBinding,
 
   let,
@@ -35,7 +31,6 @@ public enum ParserScopeEnum {
   letNamedAttribute,
   letNamedEq,
   letNamedSignature,
-  letNamedBinding,
   deconstruction,
 
   function,
