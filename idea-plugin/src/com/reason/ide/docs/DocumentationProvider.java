@@ -1,34 +1,20 @@
 package com.reason.ide.docs;
 
-import static com.reason.lang.odoc.ODocMarkup.*;
-
 import com.intellij.lang.Language;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
+import com.reason.ide.go.ORGotoDeclarationHandler;
 import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFakeModule;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
@@ -36,7 +22,7 @@ import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import com.reason.lang.reason.RmlLanguage;
-import java.util.*;
+import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -158,7 +144,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
 
     PsiReference reference = originalElement.getReference();
     if (reference != null) {
-      PsiElement resolvedIdentifier = reference.resolve();
+      PsiElement resolvedIdentifier = ORGotoDeclarationHandler.resolveInterface(reference);
 
       if (resolvedIdentifier instanceof ORFakeResolvedElement) {
         // A fake element, used to query inferred types
@@ -189,20 +175,20 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         return createQuickDocTemplate(path, "type", resolvedIdentifier.getText(), typeBinding);
       }
 
-      // if (resolvedElement instanceof PsiSignatureElement) {
-      //    ORSignature signature = ((PsiSignatureElement) resolvedIdentifier).getORSignature();
-      //    if (!signature.isEmpty()) {
-      //        String sig =
-      // DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
-      //        if (resolvedIdentifier instanceof PsiQualifiedElement) {
-      //            PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedIdentifier;
-      //            String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
-      //            return createQuickDocTemplate(qualifiedElement.getPath(), elementType,
-      // qualifiedElement.getName(), sig);
-      //        }
-      //        return sig;
-      //    }
-      // }
+      if (resolvedElement instanceof PsiSignatureElement) {
+        ORSignature signature = ((PsiSignatureElement) resolvedElement).getORSignature();
+        if (!signature.isEmpty()) {
+          String sig =
+              DocFormatter.escapeCodeForHtml(signature.asString(originalElement.getLanguage()));
+          if (resolvedElement instanceof PsiQualifiedElement) {
+            PsiQualifiedElement qualifiedElement = (PsiQualifiedElement) resolvedElement;
+            String elementType = PsiTypeElementProvider.getType(resolvedIdentifier);
+            return createQuickDocTemplate(
+                qualifiedElement.getPath(), elementType, qualifiedElement.getName(), sig);
+          }
+          return sig;
+        }
+      }
 
       // No signature found, but resolved
       if (resolvedElement instanceof PsiQualifiedElement) {
@@ -292,19 +278,14 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
   private String createQuickDocTemplate(
       @NotNull String qPath,
       @Nullable String type,
-      @Nullable String name,
+      @NotNull String name,
       @Nullable String signature) {
-    return "<html><body>"
-        + "<div>"
+    String doc = ""
         + qPath
-        + "</div>"
-        + CONTENT_START
-        + (type == null ? "" : type)
-        + " <b>"
-        + name
-        + "</b>"
-        + CONTENT_END
-        + (signature == null ? "" : "<hr/><i>" + CODE_START + signature + CODE_END + "</i>")
-        + "</body></html>";
+        + "<br/>"
+        + (type == null ? "" : " " + type)
+        + (" <b>" + name + "</b>")
+        + (signature == null ? "" : "<hr/>" + signature);
+    return doc;
   }
 }

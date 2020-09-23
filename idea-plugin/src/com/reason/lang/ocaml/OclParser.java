@@ -1,5 +1,10 @@
 package com.reason.lang.ocaml;
 
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.reason.lang.ParserScopeEnum.*;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
@@ -12,11 +17,6 @@ import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
 import com.reason.lang.core.type.ORTokenElementType;
 import org.jetbrains.annotations.NotNull;
-
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScopeEnum.*;
 
 public class OclParser extends CommonParser<OclTypes> {
 

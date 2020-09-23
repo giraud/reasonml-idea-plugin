@@ -14,7 +14,8 @@ public class ValPresentationTest extends ORBasePlatformTestCase {
   }
 
   public void test_sig() {
-    PsiVal e = configureCode("A.mli", "val x : 'a -> 'a t").getExpressions("A.x", PsiVal.class).get(0);
+    PsiVal e =
+        configureCode("A.mli", "val x : 'a -> 'a t").getExpressions("A.x", PsiVal.class).get(0);
 
     assertEquals("x", e.getPresentation().getPresentableText());
     assertEquals("'a -> 'a t", e.getPresentation().getLocationString());

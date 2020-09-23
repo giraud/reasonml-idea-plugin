@@ -1,12 +1,12 @@
 package com.reason.lang.dune;
 
+import static com.reason.lang.ParserScopeEnum.*;
+
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserState;
 import org.jetbrains.annotations.NotNull;
-
-import static com.reason.lang.ParserScopeEnum.*;
 
 public class DuneParser extends CommonParser<DuneTypes> {
   DuneParser() {

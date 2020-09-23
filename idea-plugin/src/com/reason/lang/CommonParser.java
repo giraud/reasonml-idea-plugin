@@ -1,5 +1,8 @@
 package com.reason.lang;
 
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.reason.lang.ParserScopeEnum.*;
+
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.LightPsiParser;
 import com.intellij.lang.PsiBuilder;
@@ -8,9 +11,6 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
-import static com.reason.lang.ParserScopeEnum.*;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
