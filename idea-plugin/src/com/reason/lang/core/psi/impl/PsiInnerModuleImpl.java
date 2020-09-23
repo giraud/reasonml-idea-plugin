@@ -280,7 +280,9 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
       @NotNull
       @Override
       public Icon getIcon(boolean unused) {
-        return isModuleType() ? ORIcons.MODULE_TYPE : ORIcons.MODULE;
+        return isModuleType()
+            ? ORIcons.MODULE_TYPE
+            : (isInterface() ? ORIcons.INNER_MODULE_INTF : ORIcons.INNER_MODULE);
       }
     };
   }

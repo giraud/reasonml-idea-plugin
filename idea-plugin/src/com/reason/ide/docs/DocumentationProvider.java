@@ -280,12 +280,11 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
       @Nullable String type,
       @NotNull String name,
       @Nullable String signature) {
-    String doc = ""
+    return ""
         + qPath
         + "<br/>"
         + (type == null ? "" : " " + type)
         + (" <b>" + name + "</b>")
         + (signature == null ? "" : "<hr/>" + signature);
-    return doc;
   }
 }

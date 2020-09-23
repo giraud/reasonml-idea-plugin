@@ -13,7 +13,8 @@
 ## Unreleased
 
 - :bug: [#269](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/269) Incorrect display of class methods names in structure panel
-- :nail_care: Better parsing of React fragment <></> 
+- :nail_care: Better parsing of React fragment <></>
+- :nail_care: Better presentation of inner modules in 'goto class' dialog
 
 ## 0.92 - 2020/09/17
 

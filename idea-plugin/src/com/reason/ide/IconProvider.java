@@ -52,7 +52,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     } else if (element instanceof PsiException) {
       return ORIcons.EXCEPTION;
     } else if (element instanceof PsiInnerModule) {
-      return ORIcons.MODULE;
+      return ORIcons.INNER_MODULE;
     } else if (element instanceof PsiFunctor) {
       return ORIcons.FUNCTOR;
     } else if (element instanceof PsiType) {

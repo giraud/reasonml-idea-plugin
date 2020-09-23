@@ -57,7 +57,8 @@ public class ORIcons {
   public static final Icon VARIANT = getIcon("/icons/variant.svg");
   public static final Icon ANNOTATION = getIcon("/nodes/annotationtype.svg");
 
-  public static final Icon MODULE = getIcon("/nodes/javaModule.svg");
+  public static final Icon INNER_MODULE = getIcon("/icons/innerModule.svg");
+  public static final Icon INNER_MODULE_INTF = getIcon("/icons/innerModuleIntf.svg");
   public static final Icon MODULE_TYPE = getIcon("/icons/javaModuleType.svg");
   public static final Icon FUNCTOR = getIcon("/nodes/artifact.svg");
   public static final Icon LET = getIcon("/nodes/variable.svg");
