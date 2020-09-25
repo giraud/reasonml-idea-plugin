@@ -13,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 class DocFormatter {
 
+  public static final String NAME_START = "<b>";
+  public static final String NAME_END = "</b>";
+
   @NotNull
   static String format(@NotNull PsiFile file, PsiElement element, @NotNull String text) {
     if (file instanceof FileBase) {

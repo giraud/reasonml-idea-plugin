@@ -216,14 +216,14 @@
          -->
 
         <lang.documentationProvider language="Reason"
-                                    implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+                                    implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
         <lang.documentationProvider language="NapkinScript"
-                                    implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="OCamlP4" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Mlg" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Mll" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Mly" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+                                    implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="OCamlP4" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="Mlg" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="Mll" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="Mly" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
 
         <!--
          | Search / navigating

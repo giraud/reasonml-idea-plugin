@@ -1,6 +1,6 @@
 package com.reason.lang.odoc;
 
-import static com.reason.ide.docs.DocumentationProvider.isSpecialComment;
+import static com.reason.ide.docs.ORDocumentationProvider.isSpecialComment;
 
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.ocaml.OclParserDefinition;

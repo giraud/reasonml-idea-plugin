@@ -2,7 +2,7 @@ package com.reason.ide.doc;
 
 import com.intellij.codeInsight.documentation.actions.ShowQuickDocInfoAction;
 import com.reason.ide.ORBasePlatformTestCase;
-import com.reason.ide.docs.DocumentationProvider;
+import com.reason.ide.docs.ORDocumentationProvider;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseParsingTestCase;
 import com.reason.lang.core.psi.PsiLet;
@@ -14,7 +14,7 @@ public class ShowDocTest extends ORBasePlatformTestCase {
     PsiLet e = BaseParsingTestCase.first(f.getExpressions("Doc.x", PsiLet.class));
 
     String doc =
-        new DocumentationProvider()
+        new ORDocumentationProvider()
             .generateDoc(getNameIdentifier(e), getNameIdentifier(e).getFirstChild());
     assertNotNull(doc);
   }

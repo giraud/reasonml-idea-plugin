@@ -1,14 +1,13 @@
 package com.reason.ide.docs;
 
 import com.intellij.lang.Language;
-import com.intellij.lang.documentation.AbstractDocumentationProvider;
+import com.intellij.lang.documentation.DocumentationProvider;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.Platform;
 import com.reason.ide.files.FileBase;
-import com.reason.ide.go.ORGotoDeclarationHandler;
 import com.reason.ide.hints.SignatureProvider;
 import com.reason.ide.search.PsiFinder;
 import com.reason.ide.search.PsiTypeElementProvider;
@@ -26,21 +25,10 @@ import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DocumentationProvider extends AbstractDocumentationProvider {
-
-  // private static final Log LOG = Log.create("doc");
-
-  public static boolean isSpecialComment(@Nullable PsiElement element) {
-    if (element == null) {
-      return false;
-    }
-
-    String nextText = element.getText();
-    return (nextText.startsWith("(**") || nextText.startsWith("/**")) && nextText.charAt(3) != '*';
-  }
+public class ORDocumentationProvider implements DocumentationProvider {
 
   @Override
-  public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
+  public @Nullable String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
     if (element instanceof PsiFakeModule) {
       PsiElement child = element.getContainingFile().getFirstChild();
       String text = "";
@@ -99,66 +87,32 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
       }
     }
 
-    return super.generateDoc(element, originalElement);
-  }
-
-  @Nullable
-  private PsiElement findAboveComment(@Nullable PsiElement element) {
-    if (element == null) {
-      return null;
-    }
-
-    PsiElement prevSibling = element.getPrevSibling();
-    PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
-    if (prevPrevSibling instanceof PsiComment
-        && prevSibling instanceof PsiWhiteSpace
-        && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
-      return prevPrevSibling;
-    }
-
-    return null;
-  }
-
-  @Nullable
-  private PsiElement findBelowComment(@Nullable PsiElement element) {
-    if (element != null) {
-      PsiElement nextSibling = element.getNextSibling();
-      PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
-      if (nextNextSibling instanceof PsiComment
-          && nextSibling instanceof PsiWhiteSpace
-          && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
-        return nextNextSibling;
-      }
-    }
-
     return null;
   }
 
   @Nullable
   @Override
   public String getQuickNavigateInfo(
-      @NotNull PsiElement element, @NotNull PsiElement originalElement) {
-    PsiFile psiFile = originalElement.getContainingFile();
+      @NotNull PsiElement resolvedIdentifier, @NotNull PsiElement originalElement) {
+    String quickDoc = null;
 
-    String inferredType = getInferredSignature(originalElement, psiFile, element.getLanguage());
-
-    PsiReference reference = originalElement.getReference();
-    if (reference != null) {
-      PsiElement resolvedIdentifier = ORGotoDeclarationHandler.resolveInterface(reference);
-
-      if (resolvedIdentifier instanceof ORFakeResolvedElement) {
-        // A fake element, used to query inferred types
-        return "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
-      }
-
-      if (resolvedIdentifier instanceof FileBase) {
-        FileBase resolvedFile = (FileBase) resolvedIdentifier;
-        String relative_path =
-            Platform.removeProjectDir(
-                resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
-        return relative_path + "<br/>" + resolvedIdentifier.getContainingFile();
-      }
-
+    if (resolvedIdentifier instanceof ORFakeResolvedElement) {
+      // A fake element, used to query inferred types
+      quickDoc = "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
+    } else if (resolvedIdentifier instanceof FileBase) {
+      FileBase resolvedFile = (FileBase) resolvedIdentifier;
+      String relative_path =
+          Platform.removeProjectDir(
+              resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
+      quickDoc =
+          "<div style='white-space:nowrap;font-style:italic'>"
+              + relative_path
+              + "&nbsp;</div>"
+              + "Module "
+              + DocFormatter.NAME_START
+              + resolvedFile.getModuleName()
+              + DocFormatter.NAME_END;
+    } else {
       PsiElement resolvedElement =
           (resolvedIdentifier instanceof PsiLowerIdentifier
                   || resolvedIdentifier instanceof PsiUpperIdentifier)
@@ -196,6 +150,10 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
         String desc = ((PsiQualifiedElement) resolvedElement).getName();
         String path = ORUtil.getQualifiedPath((PsiQualifiedElement) resolvedElement);
 
+        PsiFile psiFile = originalElement.getContainingFile();
+        String inferredType =
+            getInferredSignature(originalElement, psiFile, originalElement.getLanguage());
+
         if (inferredType == null) {
           // Can't find type in the usage, try to get type from the definition
           inferredType =
@@ -215,7 +173,39 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
       }
     }
 
-    return super.getQuickNavigateInfo(element, originalElement);
+    return quickDoc;
+  }
+
+  @Nullable
+  private PsiElement findAboveComment(@Nullable PsiElement element) {
+    if (element == null) {
+      return null;
+    }
+
+    PsiElement prevSibling = element.getPrevSibling();
+    PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
+    if (prevPrevSibling instanceof PsiComment
+        && prevSibling instanceof PsiWhiteSpace
+        && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
+      return prevPrevSibling;
+    }
+
+    return null;
+  }
+
+  @Nullable
+  private PsiElement findBelowComment(@Nullable PsiElement element) {
+    if (element != null) {
+      PsiElement nextSibling = element.getNextSibling();
+      PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
+      if (nextNextSibling instanceof PsiComment
+          && nextSibling instanceof PsiWhiteSpace
+          && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
+        return nextNextSibling;
+      }
+    }
+
+    return null;
   }
 
   @Nullable
@@ -256,7 +246,7 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
       }
     }
 
-    return super.getCustomDocumentationElement(editor, file, contextElement, targetOffset);
+    return null;
   }
 
   @Nullable
@@ -280,11 +270,19 @@ public class DocumentationProvider extends AbstractDocumentationProvider {
       @Nullable String type,
       @NotNull String name,
       @Nullable String signature) {
-    return ""
-        + qPath
+    return qPath
         + "<br/>"
-        + (type == null ? "" : " " + type)
+        + (type == null ? "" : type)
         + (" <b>" + name + "</b>")
         + (signature == null ? "" : "<hr/>" + signature);
+  }
+
+  public static boolean isSpecialComment(@Nullable PsiElement element) {
+    if (element == null) {
+      return false;
+    }
+
+    String nextText = element.getText();
+    return (nextText.startsWith("(**") || nextText.startsWith("/**")) && nextText.charAt(3) != '*';
   }
 }

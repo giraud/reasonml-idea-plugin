@@ -111,7 +111,6 @@ public class Platform {
    * Esy, mono-repo, etc.
    */
   @NotNull
-  @Deprecated
   public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
     try {
       VirtualFile baseRoot = findContentRootFor(project, PACKAGE_JSON_NAME);
