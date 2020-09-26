@@ -2,10 +2,7 @@ package com.reason.ide.doc;
 
 import com.intellij.codeInsight.documentation.actions.ShowQuickDocInfoAction;
 import com.reason.ide.ORBasePlatformTestCase;
-import com.reason.ide.docs.ORDocumentationProvider;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.ocaml.OclLanguage;
 
 public class ShowDocTest extends ORBasePlatformTestCase {
@@ -15,7 +12,9 @@ public class ShowDocTest extends ORBasePlatformTestCase {
     FileBase a = configureCode("A.ml", "Doc.x<caret>");
 
     String doc = getDoc(a, OclLanguage.INSTANCE);
-    assertEquals("<div style='padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE'>Doc</div><div><p> doc for x </p></div>", doc);
+    assertEquals(
+        "<div style='padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE'>Doc</div><div><p> doc for x </p></div>",
+        doc);
   }
 
   public void test_GH_155() {

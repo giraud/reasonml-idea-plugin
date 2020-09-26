@@ -19,5 +19,4 @@ public class QuickDocTest extends ORBasePlatformTestCase {
     String info = getQuickDoc(a, RmlLanguage.INSTANCE);
     assertEquals("A<br/>external <b>e</b><hr/>string -&gt; int", info);
   }
-
 }

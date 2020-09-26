@@ -14,10 +14,9 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
