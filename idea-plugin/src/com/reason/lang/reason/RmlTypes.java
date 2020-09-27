@@ -37,7 +37,7 @@ public class RmlTypes extends ORTypes {
         new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", RmlLanguage.INSTANCE);
     C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", RmlLanguage.INSTANCE);
     C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", RmlLanguage.INSTANCE);
-    C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
+    C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
 
     // Composite element types
 
@@ -45,7 +45,7 @@ public class RmlTypes extends ORTypes {
     C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
     C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", RmlLanguage.INSTANCE);
     C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
-    C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", RmlLanguage.INSTANCE);
+    C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", RmlLanguage.INSTANCE);
     C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", RmlLanguage.INSTANCE);
     C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", RmlLanguage.INSTANCE);
     C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", RmlLanguage.INSTANCE);
@@ -55,6 +55,7 @@ public class RmlTypes extends ORTypes {
     C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", RmlLanguage.INSTANCE);
     C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", RmlLanguage.INSTANCE);
     C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", RmlLanguage.INSTANCE);
+    C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", RmlLanguage.INSTANCE);
     C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", RmlLanguage.INSTANCE);
     C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", RmlLanguage.INSTANCE);
     C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", RmlLanguage.INSTANCE);
@@ -66,7 +67,8 @@ public class RmlTypes extends ORTypes {
     C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", RmlLanguage.INSTANCE);
     C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", RmlLanguage.INSTANCE);
     C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", RmlLanguage.INSTANCE);
-    C_IF_STMT = new ORCompositeElementType("C_IF_STMT", RmlLanguage.INSTANCE);
+    C_IF = new ORCompositeElementType("C_IF", RmlLanguage.INSTANCE);
+    C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", RmlLanguage.INSTANCE);
     C_INCLUDE = new ORCompositeElementType("C_INCLUDE", RmlLanguage.INSTANCE);
     C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", RmlLanguage.INSTANCE);
     C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", RmlLanguage.INSTANCE);
@@ -113,7 +115,6 @@ public class RmlTypes extends ORTypes {
     C_VARIANT_CONSTRUCTOR =
         new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", RmlLanguage.INSTANCE);
     C_WHILE = new ORCompositeElementType("C_WHILE", RmlLanguage.INSTANCE);
-    C_WHILE_CONDITION = new ORCompositeElementType("C_WHILE_CONDITION", RmlLanguage.INSTANCE);
 
     // Token element types
 

@@ -40,7 +40,7 @@ public class NsTypes extends ORTypes {
     C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", NsLanguage.INSTANCE);
     C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", NsLanguage.INSTANCE);
     C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", NsLanguage.INSTANCE);
-    C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", NsLanguage.INSTANCE);
+    C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECL", NsLanguage.INSTANCE);
 
     // Composite element types
 
@@ -48,7 +48,7 @@ public class NsTypes extends ORTypes {
     C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", NsLanguage.INSTANCE);
     C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", NsLanguage.INSTANCE);
     C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", NsLanguage.INSTANCE);
-    C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", NsLanguage.INSTANCE);
+    C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", NsLanguage.INSTANCE);
     C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", NsLanguage.INSTANCE);
     C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", NsLanguage.INSTANCE);
     C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", NsLanguage.INSTANCE);
@@ -58,6 +58,7 @@ public class NsTypes extends ORTypes {
     C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", NsLanguage.INSTANCE);
     C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", NsLanguage.INSTANCE);
     C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", NsLanguage.INSTANCE);
+    C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", NsLanguage.INSTANCE);
     C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", NsLanguage.INSTANCE);
     C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", NsLanguage.INSTANCE);
     C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", NsLanguage.INSTANCE);
@@ -69,7 +70,8 @@ public class NsTypes extends ORTypes {
     C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", NsLanguage.INSTANCE);
     C_FUNCTOR_PARAMS = new ORCompositeElementType("C_FUNCTOR_PARAMS", NsLanguage.INSTANCE);
     C_FUNCTOR_RESULT = new ORCompositeElementType("C_FUNCTOR_RESULT", NsLanguage.INSTANCE);
-    C_IF_STMT = new ORCompositeElementType("C_IF_STMT", NsLanguage.INSTANCE);
+    C_IF = new ORCompositeElementType("C_IF", NsLanguage.INSTANCE);
+    C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", NsLanguage.INSTANCE);
     C_INCLUDE = new ORCompositeElementType("C_INCLUDE", NsLanguage.INSTANCE);
     C_INTERPOLATION_EXPR = new ORCompositeElementType("C_INTERPOLATION_EXPR", NsLanguage.INSTANCE);
     C_INTERPOLATION_PART = new ORCompositeElementType("C_INTERPOLATION_PART", NsLanguage.INSTANCE);
@@ -116,7 +118,6 @@ public class NsTypes extends ORTypes {
     C_VARIANT_CONSTRUCTOR =
         new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", NsLanguage.INSTANCE);
     C_WHILE = new ORCompositeElementType("C_WHILE", NsLanguage.INSTANCE);
-    C_WHILE_CONDITION = new ORCompositeElementType("C_WHILE_CONDITION", NsLanguage.INSTANCE);
 
     // Token element types
 

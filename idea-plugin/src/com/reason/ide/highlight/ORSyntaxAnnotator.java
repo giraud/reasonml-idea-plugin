@@ -43,7 +43,7 @@ public abstract class ORSyntaxAnnotator implements Annotator {
               && !(parent instanceof PsiInclude)
               && !(parent instanceof PsiModule && ((PsiModule) parent).getAlias() != null);
       color(holder, element, mightBeVariant ? VARIANT_NAME_ : MODULE_NAME_);
-    } else if (elementType == m_types.C_VARIANT_DECL) {
+    } else if (elementType == m_types.C_VARIANT_DECLARATION) {
       PsiElement identifier = element.getNavigationElement();
       color(holder, identifier, VARIANT_NAME_);
     } else if (elementType == m_types.C_MACRO_NAME) {

@@ -27,9 +27,9 @@ public class PsiElementFactory {
       return new PsiTypeImpl(types, node);
     } else if (type == types.C_ASSERT_STMT) {
       return new PsiAssert(node);
-    } else if (type == types.C_IF_STMT) {
+    } else if (type == types.C_IF) {
       return new PsiIfStatement(node);
-    } else if (type == types.C_BIN_CONDITION || type == types.C_WHILE_CONDITION) {
+    } else if (type == types.C_BINARY_CONDITION) {
       return new PsiBinaryCondition(node);
     } else if (type == types.C_TYPE_BINDING) {
       return new PsiTypeBinding(node);
@@ -71,7 +71,7 @@ public class PsiElementFactory {
       return new PsiFunctionCallParamsImpl(types, node);
     } else if (type == types.C_FUN_EXPR) {
       return new PsiFunctionImpl(types, node);
-    } else if (type == types.C_FUN_PARAMS) {
+    } else if (type == types.C_FUN_PARAMS || type == types.C_VARIANT_CONSTRUCTOR) {
       return new PsiParametersImpl(types, node);
     } else if (type == types.C_FUN_PARAM) {
       return new PsiParameterImpl(types, node);
@@ -89,7 +89,9 @@ public class PsiElementFactory {
       return new PsiMacroName(node);
     } else if (type == types.C_MACRO_RAW_BODY) {
       return new PsiRawBody(types, node);
-    } else if (type == types.C_SCOPED_EXPR) {
+    } else if (type == types.C_SCOPED_EXPR
+        || type == types.C_IF_THEN_SCOPE
+        || type == types.C_DO_LOOP) {
       return new PsiScopedExpr(types, node);
     } else if (type == types.C_LOCAL_OPEN) {
       return new PsiLocalOpen(node);
@@ -155,7 +157,7 @@ public class PsiElementFactory {
       return new PsiJsObject(node);
     } else if (type == types.C_OBJECT_FIELD) {
       return new PsiObjectField(types, node);
-    } else if (type == types.C_VARIANT_DECL) {
+    } else if (type == types.C_VARIANT_DECLARATION) {
       return new PsiVariantDeclaration(types, node);
     } else if (type == types.C_VARIANT) {
       return new PsiUpperSymbolImpl(types, node);

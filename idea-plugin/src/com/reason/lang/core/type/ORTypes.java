@@ -25,17 +25,8 @@ public abstract class ORTypes {
   public ORCompositeType C_CONSTRAINT;
   public ORCompositeType C_DECONSTRUCTION;
   public ORCompositeType C_DIRECTIVE;
-  public ORCompositeType C_LOWER_IDENTIFIER;
-  public ORCompositeType C_UPPER_IDENTIFIER;
+  public ORCompositeType C_DO_LOOP;
   public ORCompositeType C_FAKE_MODULE;
-  public ORCompositeType C_LOCAL_OPEN;
-  public ORCompositeType C_OPEN;
-  public ORCompositeType C_INCLUDE;
-  public ORCompositeType C_LET_ATTR;
-  public ORCompositeType C_LET_BINDING;
-  public ORCompositeType C_MACRO_EXPR;
-  public ORCompositeType C_MACRO_NAME;
-  public ORCompositeType C_MODULE_TYPE;
   public ORCompositeType C_FUN_CALL_PARAMS;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_PARAMS;
@@ -48,6 +39,18 @@ public abstract class ORTypes {
   public ORCompositeType C_FUNCTOR_PARAMS;
   public ORCompositeType C_FUNCTOR_PARAM;
   public ORCompositeType C_FUNCTOR_RESULT;
+  public ORCompositeType C_IF;
+  public ORCompositeType C_IF_THEN_SCOPE;
+  public ORCompositeType C_LOWER_IDENTIFIER;
+  public ORCompositeType C_UPPER_IDENTIFIER;
+  public ORCompositeType C_LOCAL_OPEN;
+  public ORCompositeType C_OPEN;
+  public ORCompositeType C_INCLUDE;
+  public ORCompositeType C_LET_ATTR;
+  public ORCompositeType C_LET_BINDING;
+  public ORCompositeType C_MACRO_EXPR;
+  public ORCompositeType C_MACRO_NAME;
+  public ORCompositeType C_MODULE_TYPE;
   public ORCompositeType C_JS_OBJECT;
   public ORCompositeType C_MACRO_RAW_BODY;
   public ORCompositeType C_MIXIN_FIELD;
@@ -68,11 +71,10 @@ public abstract class ORTypes {
   public ORCompositeType C_UNIT;
   public ORCompositeType C_UNKNOWN_EXPR;
   public ORCompositeType C_VARIANT;
-  public ORCompositeType C_VARIANT_DECL;
+  public ORCompositeType C_VARIANT_DECLARATION;
   public ORCompositeType C_VARIANT_CONSTRUCTOR;
   public ORCompositeType C_SCOPED_EXPR;
-  public ORCompositeType C_IF_STMT;
-  public ORCompositeType C_BIN_CONDITION;
+  public ORCompositeType C_BINARY_CONDITION;
   public ORCompositeType C_INTERPOLATION_EXPR;
   public ORCompositeType C_INTERPOLATION_PART;
   public ORCompositeType C_INTERPOLATION_REF;
@@ -92,7 +94,6 @@ public abstract class ORTypes {
   public ORCompositeType C_LOWER_SYMBOL;
   public ORCompositeType C_STRUCT_EXPR;
   public ORCompositeType C_WHILE;
-  public ORCompositeType C_WHILE_CONDITION;
 
   // Token element types
 

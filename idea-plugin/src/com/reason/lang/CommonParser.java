@@ -77,7 +77,9 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
   protected boolean isModuleResolution(@NotNull ParserScope scope) {
     if (m_types instanceof ORTypes) {
-      return scope.isCompositeEqualTo(((ORTypes) m_types).C_MODULE_DECLARATION);
+      ORTypes m_types = (ORTypes) this.m_types;
+      return scope.isCompositeEqualTo(m_types.C_MODULE_DECLARATION)
+          || scope.isCompositeEqualTo(m_types.C_MODULE_TYPE);
     }
     return false;
   }

@@ -96,6 +96,13 @@ public class ParserState {
     return m_currentScope.isCompositeEqualTo(composite);
   }
 
+  public boolean isPrevious(ORCompositeType composite) {
+    if (m_composites.size() >= 2) {
+      return m_composites.get(1).isCompositeType(composite);
+    }
+    return false;
+  }
+
   public boolean in(ORCompositeType composite) {
     for (ParserScope scope : m_composites) {
       if (scope.isCompositeEqualTo(composite)) {

@@ -37,13 +37,13 @@ public class OclTypes extends ORTypes {
     C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", OclLanguage.INSTANCE);
     C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
     C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
-    C_VARIANT_DECL = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
+    C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
 
     // Composite element types
 
     C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", OclLanguage.INSTANCE);
     C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", OclLanguage.INSTANCE);
-    C_BIN_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", OclLanguage.INSTANCE);
+    C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", OclLanguage.INSTANCE);
     C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
     C_CLASS_PARAMS = new ORCompositeElementType("C_CLASS_PARAMS", OclLanguage.INSTANCE);
     C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", OclLanguage.INSTANCE);
@@ -53,6 +53,7 @@ public class OclTypes extends ORTypes {
     C_CONSTRAINT = new ORCompositeElementType("C_CONSTRAINT", OclLanguage.INSTANCE);
     C_DECONSTRUCTION = new ORCompositeElementType("C_DECONSTRUCTION", OclLanguage.INSTANCE);
     C_DIRECTIVE = new ORCompositeElementType("C_DIRECTIVE", OclLanguage.INSTANCE);
+    C_DO_LOOP = new ORCompositeElementType("C_DO_LOOP", OclLanguage.INSTANCE);
     C_LOWER_IDENTIFIER = new ORCompositeElementType("C_LOWER_IDENTIFIER", OclLanguage.INSTANCE);
     C_UPPER_IDENTIFIER = new ORCompositeElementType("C_UPPER_IDENTIFIER", OclLanguage.INSTANCE);
     C_INCLUDE = new ORCompositeElementType("C_INCLUDE", OclLanguage.INSTANCE);
@@ -107,14 +108,14 @@ public class OclTypes extends ORTypes {
     C_VARIANT = new ORCompositeElementType("C_VARIANT", OclLanguage.INSTANCE);
     C_VARIANT_CONSTRUCTOR =
         new ORCompositeElementType("C_VARIANT_CONSTRUCTOR", OclLanguage.INSTANCE);
-    C_IF_STMT = new ORCompositeElementType("C_IF_STMT", OclLanguage.INSTANCE);
+    C_IF = new ORCompositeElementType("C_IF", OclLanguage.INSTANCE);
+    C_IF_THEN_SCOPE = new ORCompositeElementType("C_IF_THEN_SCOPE", OclLanguage.INSTANCE);
     C_SCOPED_EXPR = new ORCompositeElementType("C_SCOPED_EXPR", OclLanguage.INSTANCE);
     C_SWITCH_EXPR = new ORCompositeElementType("C_SWITCH_EXPR", OclLanguage.INSTANCE);
     C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", OclLanguage.INSTANCE);
     C_STRUCT_EXPR = new ORCompositeElementType("C_STRUCT_EXPR", OclLanguage.INSTANCE);
     C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", OclLanguage.INSTANCE);
     C_WHILE = new ORCompositeElementType("C_WHILE", OclLanguage.INSTANCE);
-    C_WHILE_CONDITION = new ORCompositeElementType("C_WHILE_CONDITION", OclLanguage.INSTANCE);
 
     // Token element types
 
