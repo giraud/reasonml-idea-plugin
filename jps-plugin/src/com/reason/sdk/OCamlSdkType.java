@@ -3,21 +3,17 @@ package com.reason.sdk;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.AdditionalDataConfigurable;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.SdkAdditionalData;
-import com.intellij.openapi.projectRoots.SdkModel;
-import com.intellij.openapi.projectRoots.SdkModificator;
-import com.intellij.openapi.projectRoots.SdkType;
+import com.intellij.openapi.projectRoots.*;
 import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ArrayUtil;
 import com.reason.OCamlSourcesOrderRootType;
-import gnu.trove.Equality;
 import icons.ORIcons;
-import java.io.*;
-import java.util.regex.*;
+import java.io.File;
+import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.*;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -100,10 +96,7 @@ public class OCamlSdkType extends SdkType {
         sdk.getRootProvider().getFiles(OCamlSourcesOrderRootType.getInstance());
     VirtualFile[] javaSources = sdk.getRootProvider().getFiles(OrderRootType.SOURCES);
     boolean equals =
-        ArrayUtil.equals(
-            ocamlSources,
-            javaSources,
-            (Equality<VirtualFile>) (v1, v2) -> v1.getPath().equals(v2.getPath()));
+        ArrayUtil.equals(ocamlSources, javaSources, Comparator.comparing(VirtualFile::getPath));
 
     if (!equals) {
       SdkModificator sdkModificator = sdk.getSdkModificator();

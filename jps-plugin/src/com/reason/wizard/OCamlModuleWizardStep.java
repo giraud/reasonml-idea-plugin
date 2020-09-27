@@ -1,14 +1,19 @@
 package com.reason.wizard;
 
+import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
+
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Condition;
 import com.reason.sdk.OCamlSdkType;
 import javax.swing.*;
 
@@ -33,8 +38,11 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
 
   private void createUIComponents() {
     ProjectSdksModel model = new ProjectSdksModel();
-    model.reset(ProjectManager.getInstance().getDefaultProject());
-    c_sdk = new JdkComboBox(model, sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName()));
+    Project project = ProjectManager.getInstance().getDefaultProject();
+
+    model.reset(project);
+    Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
+    c_sdk = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
   }
 
   @Override

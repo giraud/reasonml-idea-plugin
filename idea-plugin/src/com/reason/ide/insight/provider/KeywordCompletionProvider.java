@@ -7,10 +7,10 @@ import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.text.CaseInsensitiveStringHashingStrategy;
 import com.reason.Log;
 import gnu.trove.THashSet;
+import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
 
 public class KeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -21,7 +21,8 @@ public class KeywordCompletionProvider extends CompletionProvider<CompletionPara
   private final String[] m_keywords;
 
   private static final THashSet<String> KEYWORD_WITH_POPUP =
-      ContainerUtil.newTroveSet(CaseInsensitiveStringHashingStrategy.INSTANCE, "open", "include");
+      new THashSet<>(
+          Arrays.asList("open", "include"), CaseInsensitiveStringHashingStrategy.INSTANCE);
   private static final InsertHandler<LookupElement> INSERT_SPACE_POPUP =
       new AddSpaceInsertHandler(true);
   private static final InsertHandler<LookupElement> INSERT_SPACE = new AddSpaceInsertHandler(false);

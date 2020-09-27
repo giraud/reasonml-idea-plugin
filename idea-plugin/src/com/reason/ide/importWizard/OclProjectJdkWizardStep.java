@@ -1,5 +1,7 @@
 package com.reason.ide.importWizard;
 
+import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
+
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
@@ -8,13 +10,16 @@ import com.intellij.ide.wizard.CommitStepException;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkModificator;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -57,9 +62,11 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
   private void createUIComponents() {
     ProjectSdksModel model = new ProjectSdksModel();
-    model.reset(ProjectManager.getInstance().getDefaultProject());
-    c_selExistingSdk =
-        new JdkComboBox(model, sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName()));
+    Project project = ProjectManager.getInstance().getDefaultProject();
+
+    model.reset(project);
+    Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
+    c_selExistingSdk = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
   }
 
   @Override

@@ -1,13 +1,18 @@
 package com.reason.ide.facet;
 
+import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
+
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
+import com.intellij.openapi.util.Condition;
 import com.reason.ide.console.ORToolWindowManager;
 import com.reason.sdk.OCamlSdkType;
 import java.awt.event.ItemEvent;
@@ -40,8 +45,11 @@ class DuneFacetEditor extends FacetEditorTab {
   private void createUIComponents() {
     Module m_module = m_editorContext.getModule();
     ProjectSdksModel model = new ProjectSdksModel();
-    model.reset(m_module.getProject());
-    f_sdkSelect = new JdkComboBox(model, sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName()));
+    Project project = m_module.getProject();
+    Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
+
+    model.reset(project);
+    f_sdkSelect = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
   }
 
   @NotNull

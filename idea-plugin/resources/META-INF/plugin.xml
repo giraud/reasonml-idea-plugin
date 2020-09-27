@@ -354,8 +354,8 @@
          | Templates
          -->
 
-        <defaultLiveTemplatesProvider implementation="com.reason.ide.template.RmlLiveTemplateProvider"/>
         <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
+        <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
         <!--
          | Intentions

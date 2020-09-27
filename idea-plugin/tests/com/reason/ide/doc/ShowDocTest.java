@@ -1,13 +1,16 @@
 package com.reason.ide.doc;
 
-import com.intellij.codeInsight.documentation.actions.ShowQuickDocInfoAction;
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.FileBase;
+import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.ocaml.OclLanguage;
+import com.reason.lang.reason.RmlLanguage;
 
 public class ShowDocTest extends ORBasePlatformTestCase {
 
-  public void test_Ocl_multipleSpaceTest() {
+  public void test_Ocl_multiple_spaces_below() {
     configureCode("Doc.ml", "let x = 1;  \t\n  (** doc for x *)");
     FileBase a = configureCode("A.ml", "Doc.x<caret>");
 
@@ -18,18 +21,23 @@ public class ShowDocTest extends ORBasePlatformTestCase {
   }
 
   public void test_GH_155() {
-    configureCode("Mod.re", "/** add 1 */\nlet fn = x => x + 1;");
-    configureCode("Doc.re", "Mod.fn(<caret>);");
+    FileBase doc = configureCode("Doc.re", "/** add 1 */\nlet fn = x => x + 1;");
+    FileBase a = configureCode("A.re", "Mod.fn(<caret>);");
 
-    ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
-    // TODO test !?
+    PsiLowerIdentifier let =
+        ORUtil.findImmediateFirstChildOfClass(
+            doc.getExpressions("Doc.fn", PsiLet.class).get(0), PsiLowerIdentifier.class);
+    assertEquals(
+        "<div style='padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE'>Doc</div><div><p> add 1 </p></div>", // zzz trim
+        getDocForElement(a, RmlLanguage.INSTANCE, let));
   }
 
   public void test_GH_156() {
-    configureCode("A.re", "/** Doc for y */\nlet y = 1;");
-    configureCode("Dummy.re", "let x = A.y;\nx<caret>");
+    configureCode("Doc.re", "/** Doc for y */\nlet y = 1;");
+    FileBase a = configureCode("A.re", "let x = Doc.y;\nx<caret>");
 
-    ShowQuickDocInfoAction action = new ShowQuickDocInfoAction();
-    // TODO test !?
+    assertEquals(
+        "<div style='padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE'>Doc</div><div><p> Doc for y </p></div>", // zzz trim
+        getDoc(a, RmlLanguage.INSTANCE));
   }
 }

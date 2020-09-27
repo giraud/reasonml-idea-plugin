@@ -31,7 +31,7 @@ public class ORProjectRootListener {
               public void rootsChanged(@NotNull ModuleRootEvent event) {
                 DumbService.getInstance(project)
                     .queueTask(
-                        new DumbModeTask() {
+                        new DumbModeTask(project) {
                           @Override
                           public void performInDumbMode(@NotNull ProgressIndicator indicator) {
                             if (!project.isDisposed()) {

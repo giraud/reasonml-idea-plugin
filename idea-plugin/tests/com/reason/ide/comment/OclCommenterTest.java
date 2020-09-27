@@ -2,10 +2,10 @@ package com.reason.ide.comment;
 
 import com.intellij.codeInsight.generation.actions.CommentByBlockCommentAction;
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.OclFileType;
 
-public class OclCommenterTest extends LightPlatformCodeInsightFixtureTestCase {
+public class OclCommenterTest extends ORBasePlatformTestCase {
 
   public void testLineCommenter() {
     myFixture.configureByText(OclFileType.INSTANCE, "comment<caret>");

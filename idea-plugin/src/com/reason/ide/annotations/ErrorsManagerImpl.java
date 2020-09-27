@@ -1,6 +1,6 @@
 package com.reason.ide.annotations;
 
-import com.intellij.util.containers.ConcurrentMultiMap;
+import com.intellij.util.containers.MultiMap;
 import com.reason.Joiner;
 import com.reason.Log;
 import java.util.ArrayList;
@@ -8,17 +8,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import org.jetbrains.annotations.NotNull;
 
 public class ErrorsManagerImpl implements ErrorsManager {
 
   private static final Log LOG = Log.create("errors");
 
-  private final ConcurrentMap<String, Map<Integer, OutputInfo>> m_errorsByFile =
-      new ConcurrentHashMap<>();
-  private final ConcurrentMultiMap<String, OutputInfo> m_warningsByFile =
-      new ConcurrentMultiMap<>();
+  private final Map<String, Map<Integer, OutputInfo>> m_errorsByFile = new ConcurrentHashMap<>();
+  private final MultiMap<String, OutputInfo> m_warningsByFile = MultiMap.createConcurrent();
 
   @Override
   public void addAllInfo(@NotNull Collection<OutputInfo> bsbInfo) {

@@ -1,11 +1,11 @@
 package com.reason.ide.intention;
 
 import com.intellij.codeInsight.intention.IntentionAction;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.RmlFileType;
 
 @SuppressWarnings("ConstantConditions")
-public class ExpandLocalOpenIntentionTest extends LightPlatformCodeInsightFixtureTestCase {
+public class ExpandLocalOpenIntentionTest extends ORBasePlatformTestCase {
 
   public void testBasic() {
     myFixture.configureByText(RmlFileType.INSTANCE, "let x = Js.Promise.(<caret>Api.all());");

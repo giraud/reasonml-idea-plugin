@@ -2,23 +2,19 @@ package com.reason.ide.go;
 
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
-import com.intellij.codeInsight.daemon.impl.GutterIconTooltipHelper;
+import com.intellij.codeInsight.daemon.impl.GutterTooltipHelper;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.psi.PsiElement;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import icons.ORIcons;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -99,14 +95,16 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
       if (expressions.size() == 1) {
         T relatedElement = expressions.iterator().next();
         if (relatedElement != null) {
+          boolean isInterface = containingFile.isInterface();
           String tooltip =
-              GutterIconTooltipHelper.composeText(
-                  new PsiElement[] {psiRelatedFile},
-                  "",
-                  "Implements method <b>" + relatedElement.getName() + "</b> in <b>{0}</b>");
+              GutterTooltipHelper.getTooltipText(
+                  Collections.singletonList(psiRelatedFile),
+                  (isInterface ? "Implements" : "Declare") + " method in ",
+                  false,
+                  null);
           result.add(
               NavigationGutterIconBuilder.create(
-                      containingFile.isInterface() ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
+                      isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
                   .setTooltipText(tooltip)
                   .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                   .setTargets(Collections.singleton(relatedElement))

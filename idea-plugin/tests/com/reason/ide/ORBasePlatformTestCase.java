@@ -49,17 +49,21 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
         .trim();
   }
 
-  protected String getQuickDoc(FileBase e, Language lang) {
+  protected String getQuickDoc(FileBase file, Language lang) {
     DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
     PsiElement resolvedElement = myFixture.getElementAtCaret();
-    PsiElement element = e.findElementAt(myFixture.getCaretOffset() - 1);
+    PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
     return docProvider.getQuickNavigateInfo(resolvedElement, element);
   }
 
-  protected String getDoc(FileBase e, Language lang) {
+  protected String getDocForElement(FileBase file, Language lang, PsiElement resolvedElement) {
     DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
-    PsiElement resolvedElement = myFixture.getElementAtCaret();
-    PsiElement element = e.findElementAt(myFixture.getCaretOffset() - 1);
+    PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
     return docProvider.generateDoc(resolvedElement, element);
+  }
+
+  protected String getDoc(FileBase file, Language lang) {
+    PsiElement resolvedElement = myFixture.getElementAtCaret();
+    return getDocForElement(file, lang, resolvedElement);
   }
 }

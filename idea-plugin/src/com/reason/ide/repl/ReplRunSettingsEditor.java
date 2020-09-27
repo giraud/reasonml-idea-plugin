@@ -1,11 +1,14 @@
 package com.reason.ide.repl;
 
 import static com.intellij.openapi.fileChooser.FileChooserDescriptorFactory.createSingleFileDescriptor;
+import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
 
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ui.configuration.JdkComboBox;
 import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
+import com.intellij.openapi.util.Condition;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +48,9 @@ public class ReplRunSettingsEditor extends SettingsEditor<ReplRunConfiguration> 
 
   private void createUIComponents() {
     ProjectSdksModel model = new ProjectSdksModel();
+    Condition<SdkTypeId> filter = sdkTypeId -> "OCaml SDK".equals(sdkTypeId.getName());
+
     model.reset(m_project);
-    c_sdk = new JdkComboBox(model, sdkTypeId -> "OCaml SDK".equals(sdkTypeId.getName()));
+    c_sdk = new JdkComboBox(m_project, model, filter, getSdkFilter(filter), filter, null);
   }
 }
