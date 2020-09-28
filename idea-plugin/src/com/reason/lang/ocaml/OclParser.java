@@ -1,10 +1,5 @@
 package com.reason.lang.ocaml;
 
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScopeEnum.*;
-
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
@@ -17,6 +12,11 @@ import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
 import com.reason.lang.core.type.ORTokenElementType;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
+import static com.reason.lang.ParserScopeEnum.*;
 
 public class OclParser extends CommonParser<OclTypes> {
 
@@ -303,18 +303,28 @@ public class OclParser extends CommonParser<OclTypes> {
       state.popEnd().advance().mark(m_types.C_CONSTRAINT);
     } else {
       // pop scopes until a known context is found
-      endUntilStartExpression(state);
+      ParserScope latestScope = endUntilStartExpression(state);
+
+      if (latestScope != null) {
+        if (latestScope.isCompositeType(m_types.C_MODULE_DECLARATION)) {
+          state.mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
+        } else if (latestScope.isCompositeType(m_types.C_LET_DECLARATION)) {
+          state.mark(m_types.C_LET_DECLARATION).resolution(let).setStart();
+        } else if (latestScope.isCompositeType(m_types.C_TYPE_DECLARATION)) {
+          state.mark(m_types.C_TYPE_DECLARATION).resolution(type).setStart();
+        }
+      }
     }
   }
 
-  private void endUntilStartExpression(@NotNull ParserState state) {
+  private ParserScope endUntilStartExpression(@NotNull ParserState state) {
     // Remove intermediate constructions until a start expression
     state.popEndUntilStart();
     ParserScope latestScope = state.getLatestScope();
     state.popEnd();
 
     // Remove nested let
-    while (state.is(m_types.C_LET_BINDING)) {
+    while (state.is(m_types.C_LET_BINDING) || state.is(m_types.C_FUN_BODY) || state.is(m_types.C_FUN_EXPR)) {
       state.popEnd();
       latestScope = state.getLatestScope();
       state.popEnd();
@@ -322,15 +332,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     state.advance();
 
-    if (latestScope != null) {
-      if (latestScope.isCompositeType(m_types.C_MODULE_DECLARATION)) {
-        state.mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
-      } else if (latestScope.isCompositeType(m_types.C_LET_DECLARATION)) {
-        state.mark(m_types.C_LET_DECLARATION).resolution(let).setStart();
-      } else if (latestScope.isCompositeType(m_types.C_TYPE_DECLARATION)) {
-        state.mark(m_types.C_TYPE_DECLARATION).resolution(type).setStart();
-      }
-    }
+    return latestScope;
   }
 
   private void parsePipe(@NotNull ParserState state) {

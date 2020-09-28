@@ -6,7 +6,9 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.PsiType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class AndParsingTest extends OclParsingTestCase {
   public void test_letChaining() {
@@ -44,6 +46,7 @@ public class AndParsingTest extends OclParsingTestCase {
     assertEquals("self", second(types).getName());
   }
 
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/135
   public void test_GH_135() {
     List<PsiLet> lets =
         new ArrayList<>(letExpressions(parseCode("let f1 = function | _ -> ()\nand missing = ()")));
@@ -53,6 +56,7 @@ public class AndParsingTest extends OclParsingTestCase {
     assertEquals("missing", lets.get(1).getName());
   }
 
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/175
   public void test_GH_175() {
     List<PsiLet> lets =
         new ArrayList<>(
@@ -64,5 +68,18 @@ public class AndParsingTest extends OclParsingTestCase {
     assertEquals("f1", lets.get(0).getName());
     assertEquals("f2", lets.get(1).getName());
     assertEquals("f3", lets.get(2).getName());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/271
+  public void test_GH_271() {
+    List<PsiLet> lets =
+        new ArrayList<>(
+            letExpressions(
+                parseCode(
+                    "let parser_of_token_list a = \nlet loop x = () in \n() \nand parser_of_symbol b = ()")));
+
+    assertSize(2, lets);
+    assertEquals("parser_of_token_list", lets.get(0).getName());
+    assertEquals("parser_of_symbol", lets.get(1).getName());
   }
 }
