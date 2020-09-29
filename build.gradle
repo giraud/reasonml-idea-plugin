@@ -47,8 +47,8 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
-            <li>#269 - Incorrect display of class methods names in structure panel</li>
-            <li>Better parsing of React fragment</li>
+            <li>#271 - Structure panel missing function defined with "and"</li>
+            <li>Fix monorepo on windows</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

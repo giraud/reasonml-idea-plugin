@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## Unreleased
+
+- :bug: [#271](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/271) Structure panel missing function defined with "and"
+- :bug: Fix monorepo on windows
+
 ## 0.92 - 2020/09/18
 
 0.92.1
