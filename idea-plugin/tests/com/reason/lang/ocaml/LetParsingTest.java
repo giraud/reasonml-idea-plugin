@@ -6,16 +6,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends OclParsingTestCase {
@@ -182,15 +178,7 @@ public class LetParsingTest extends OclParsingTestCase {
         e.getBinding().getText());
   }
 
-  public void test_GH_116() {
-    FileBase file =
-        parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
-    PsiLet e = first(letExpressions(file));
-
-    assertFalse(e.isFunction());
-    assertEquals("Proofview.apply (Global.env ()) tac pr.proofview", e.getBinding().getText());
-  }
-
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105
   public void test_GH_105() {
     FileBase file = parseCode("let string = \"x\"");
     PsiLet e = first(letExpressions(file));
@@ -223,10 +211,38 @@ public class LetParsingTest extends OclParsingTestCase {
     assertEquals("bool", e.getName());
   }
 
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/116
+  public void test_GH_116() {
+    FileBase file =
+        parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
+    PsiLet e = first(letExpressions(file));
+
+    assertFalse(e.isFunction());
+    assertEquals("Proofview.apply (Global.env ()) tac pr.proofview", e.getBinding().getText());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/121
   public void test_GH_121() {
     Collection<PsiLet> lets =
         letExpressions(parseCode("let rec f x y = match x with | [] -> return y\n let x =  1"));
 
     assertSize(2, lets);
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/270
+  // https://caml.inria.fr/pub/docs/manual-ocaml/polymorphism.html#ss:explicit-polymorphism
+  public void test_GH_270() {
+    PsiLet e =
+        first(
+            letExpressions(
+                parseCode(
+                    "let rec parser_of_tree : type s tr r. s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t =\n"
+                        + "  fun entry nlevn alevn -> ()")));
+
+    assertEquals("parser_of_tree", e.getName());
+    assertTrue(e.isFunction());
+    assertEquals(
+        "s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t",
+        e.getPsiSignature().getText());
   }
 }

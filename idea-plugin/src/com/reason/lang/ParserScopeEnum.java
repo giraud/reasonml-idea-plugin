@@ -92,7 +92,6 @@ public enum ParserScopeEnum {
   tryBodyWith,
   tryBodyWithHandler,
 
-  signature,
   signatureScope,
   signatureItem,
 

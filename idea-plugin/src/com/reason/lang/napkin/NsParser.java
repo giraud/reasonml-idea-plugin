@@ -413,20 +413,10 @@ public class NsParser extends CommonParser<NsTypes> {
 
     if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
       // external x |> :<| ...
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(letNamed)) {
       // let x |> :<| ...
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> :<| ...
       state
@@ -446,21 +436,12 @@ public class NsParser extends CommonParser<NsTypes> {
     } else if (state.isCurrentResolution(recordField) || state.is(m_types.C_OBJECT_FIELD)) {
       state.complete().advance();
       if (state.in(m_types.C_TYPE_BINDING)) {
-        state
-            .mark(m_types.C_SIG_EXPR)
-            .resolution(signature)
-            .mark(m_types.C_SIG_ITEM)
-            .resolution(signatureItem);
+        state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
       }
     } else if (state.isCurrentResolution(field)) {
       state.resolution(fieldNamed);
     } else if (state.isCurrentResolution(functionParameter)) {
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     }
   }
 
@@ -740,7 +721,7 @@ public class NsParser extends CommonParser<NsTypes> {
           .resolution(annotationParameter);
     } else if (state.isCurrentResolution(signatureItem)
         && state.previousElementType1 != m_types.LIDENT) {
-      if (state.isPreviousResolution(signature)) {
+      if (state.isPrevious(m_types.C_SIG_EXPR)) {
         state
             .resolution(signatureScope)
             .updateCurrentCompositeElementType(m_types.C_SCOPED_EXPR)
@@ -873,7 +854,7 @@ public class NsParser extends CommonParser<NsTypes> {
   private void parseEq(@NotNull ParserState state) {
     // Intermediate constructions
     if (state.isCurrentResolution(signatureItem)) {
-      state.popEndUntilResolution(signature).popEnd();
+      state.popEndUntil(m_types.C_SIG_EXPR).popEnd();
     }
 
     if (state.isCurrentResolution(typeNamed)) {
@@ -1020,12 +1001,12 @@ public class NsParser extends CommonParser<NsTypes> {
       // param(s) |>=><| body
       state.popEndUntilOneOfResolution(function, functionCallParams);
       state.advance().mark(m_types.C_FUN_BODY).resolution(functionBody);
-    } else if (state.isCurrentResolution(signature)) {
+    } else if (state.is(m_types.C_SIG_EXPR)) {
       state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(signatureItem)) {
       state.popEnd();
       if (!state.isCurrentResolution(signatureScope)) {
-        state.popEndUntilResolution(signature);
+        state.popEndUntil(m_types.C_SIG_EXPR);
       }
       state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(functorNamedEq)

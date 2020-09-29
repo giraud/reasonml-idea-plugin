@@ -524,19 +524,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
 
     if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(letNamed)) {
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> :<| ...
       state.resolution(moduleNamedSignature).advance();
@@ -560,19 +550,10 @@ public class RmlParser extends CommonParser<RmlTypes> {
     } else if (state.isCurrentResolution(recordField) || state.isCurrentResolution(objectField)) {
       state.advance();
       if (!state.isPreviousResolution(recordUsage) && !state.isPreviousResolution(jsObject)) {
-        state
-            .mark(m_types.C_SIG_EXPR)
-            .resolution(signature)
-            .mark(m_types.C_SIG_ITEM)
-            .resolution(signatureItem);
+        state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
       }
     } else if (state.isCurrentResolution(functionParameter)) {
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.is(m_types.C_NAMED_PARAM)) {
       state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     }
@@ -808,7 +789,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
       // module M = (...) => |>{<| ...
       state.markScope(m_types.C_FUNCTOR_BINDING, m_types.LBRACE).resolution(functorBinding);
     } else if (state.isCurrentResolution(moduleNamedSignature)) {
-      state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(signature);
+      state.markScope(m_types.C_SIG_EXPR, m_types.LBRACE);
     } else if (state.is(m_types.C_LET_BINDING)) {
       // let x = |>{<| ... }
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(maybeRecordUsage);
@@ -1040,9 +1021,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
   }
 
   private void parseEq(@NotNull ParserState state) {
-    if (state.isInContext(signature)) {
+    if (state.in(m_types.C_SIG_EXPR)) {
       if (!state.in(m_types.C_NAMED_PARAM)) {
-        state.popEndUntilResolution(signature).popEnd();
+        state.popEndUntil(m_types.C_SIG_EXPR).popEnd();
       }
     }
 

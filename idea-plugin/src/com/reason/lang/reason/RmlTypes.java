@@ -77,6 +77,7 @@ public class RmlTypes extends ORTypes {
     C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", RmlLanguage.INSTANCE);
     C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", RmlLanguage.INSTANCE);
     C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", RmlLanguage.INSTANCE);
+    C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", RmlLanguage.INSTANCE);
     C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", RmlLanguage.INSTANCE);
     C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", RmlLanguage.INSTANCE);
     C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", RmlLanguage.INSTANCE);

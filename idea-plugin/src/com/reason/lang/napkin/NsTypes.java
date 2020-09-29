@@ -80,6 +80,7 @@ public class NsTypes extends ORTypes {
     C_LET_ATTR = new ORCompositeElementType("C_LET_ATTR", NsLanguage.INSTANCE);
     C_LET_BINDING = new ORCompositeElementType("C_LET_BINDING", NsLanguage.INSTANCE);
     C_LOCAL_OPEN = new ORCompositeElementType("C_LOCAL_OPEN", NsLanguage.INSTANCE);
+    C_TYPE_VARIABLE = new ORCompositeElementType("C_TYPE_VARIABLE", NsLanguage.INSTANCE);
     C_LOWER_SYMBOL = new ORCompositeElementType("C_LOWER_SYMBOL", NsLanguage.INSTANCE);
     C_MACRO_EXPR = new ORCompositeElementType("C_MACRO_EXPR", NsLanguage.INSTANCE);
     C_MACRO_NAME = new ORCompositeElementType("C_MACRO_NAME", NsLanguage.INSTANCE);

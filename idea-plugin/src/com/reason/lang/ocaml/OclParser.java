@@ -101,6 +101,8 @@ public class OclParser extends CommonParser<OclTypes> {
         parseWith(state);
       } else if (tokenType == m_types.AND) {
         parseAnd(state);
+      } else if (tokenType == m_types.DOT) {
+        parseDot(state);
       } else if (tokenType == m_types.FUNCTION) {
         // function is a shortcut for a pattern match
         parseFunction(state);
@@ -317,6 +319,17 @@ public class OclParser extends CommonParser<OclTypes> {
     }
   }
 
+  private void parseDot(@NotNull ParserState state) {
+    if (state.is(m_types.C_TYPE_VARIABLE)) {
+      state
+          .popEnd()
+          .advance()
+          .mark(m_types.C_SIG_EXPR)
+          .mark(m_types.C_SIG_ITEM)
+          .resolution(signatureItem);
+    }
+  }
+
   private ParserScope endUntilStartExpression(@NotNull ParserState state) {
     // Remove intermediate constructions until a start expression
     state.popEndUntilStart();
@@ -450,10 +463,7 @@ public class OclParser extends CommonParser<OclTypes> {
       // module type X = |>sig<| ...
       state.popCancel().markScope(m_types.C_SCOPED_EXPR, m_types.SIG).resolution(moduleBinding);
     } else if (state.isCurrentResolution(moduleNamedColon)) {
-      state
-          .resolution(moduleNamedSignature)
-          .markScope(m_types.C_SIG_EXPR, m_types.SIG)
-          .resolution(signature);
+      state.resolution(moduleNamedSignature).markScope(m_types.C_SIG_EXPR, m_types.SIG);
     } else if (state.isCurrentResolution(functorParamColon)) {
       state
           .resolution(functorParamColonSignature)
@@ -533,19 +543,19 @@ public class OclParser extends CommonParser<OclTypes> {
         state.updateScopeToken((ORTokenElementType) nextToken);
       }
     } else if (state.is(m_types.C_EXTERNAL_DECLARATION)
-        || state.isCurrentResolution(valNamed)
-        || state.isCurrentResolution(letNamed)
-        || state.is(m_types.C_CLASS_DECLARATION)) {
-      // external x |> : <| ...
-      // val x |> : <| ...
-      // let x |> : <| ...
-      // class x |> : <| ...
-      state
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+        || state.is(m_types.C_VAL_DECLARATION)
+        || state.is(m_types.C_LET_DECLARATION)) {
+      // external x |> : <| ...  OR  val x |> : <| ...  OR  let x |> : <| ...
+      state.advance();
+      if (state.getTokenType() == m_types.TYPE) {
+        // Local type
+        state.mark(m_types.C_TYPE_VARIABLE);
+      } else {
+        state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+      }
+    } else if (state.is(m_types.C_CLASS_DECLARATION) || state.is(m_types.C_CLASS_METHOD)) {
+      // class x |> : <| ...  OR  method |> : <| ...
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(objectField)) {
       // < x |> : <| ...
       state.resolution(objectFieldNamed);
@@ -554,7 +564,6 @@ public class OclParser extends CommonParser<OclTypes> {
           .resolution(functionParameterNamed)
           .advance()
           .mark(m_types.C_SIG_EXPR)
-          .resolution(signature)
           .mark(m_types.C_SIG_ITEM)
           .resolution(signatureItem);
     } else if (state.isCurrentResolution(functorNamed)) {
@@ -607,7 +616,7 @@ public class OclParser extends CommonParser<OclTypes> {
       state.popEnd();
     }
 
-    if (state.isCurrentResolution(signature)) {
+    if (state.is(m_types.C_SIG_EXPR)) {
       state.popEnd();
     } else if (state.isCurrentResolution(typeNamed)) {
       state.resolution(typeNamedEq).advance().mark(m_types.C_TYPE_BINDING);
@@ -881,6 +890,8 @@ public class OclParser extends CommonParser<OclTypes> {
   private void parseType(@NotNull ParserState state) {
     if (state.isCurrentResolution(module)) {
       // module |>type<| M = ...
+    } else if (state.is(m_types.C_TYPE_VARIABLE)) {
+      // let x : |>type<| ...
     } else if (state.is(m_types.C_CLASS_DECLARATION)) {
       // class |>type<| ...
     } else if (state.is(m_types.C_CONSTRAINT)

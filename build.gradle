@@ -48,6 +48,7 @@ subprojects {
         changeNotes """
         <ul>
             <li>#271 - Structure panel missing function defined with "and"</li>
+            <li>#270 - Function definition with type variables not recognized as a function</li>
             <li>Fix monorepo on windows</li>
         </ul>
 

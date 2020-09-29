@@ -1,7 +1,7 @@
 package com.reason.lang.core.type;
 
 public abstract class ORTypes {
-  //  Stubbed expressions
+  // Stubbed expressions
 
   public ORCompositeType C_CLASS_DECLARATION;
   public ORCompositeType C_EXCEPTION_DECLARATION;
@@ -11,7 +11,7 @@ public abstract class ORTypes {
   public ORCompositeType C_MODULE_DECLARATION;
   public ORCompositeType C_VAL_DECLARATION;
 
-  //  Stubbed element types
+  // Stubbed element types
 
   // Composite element types
 
@@ -48,6 +48,7 @@ public abstract class ORTypes {
   public ORCompositeType C_INCLUDE;
   public ORCompositeType C_LET_ATTR;
   public ORCompositeType C_LET_BINDING;
+  public ORCompositeType C_TYPE_VARIABLE;
   public ORCompositeType C_MACRO_EXPR;
   public ORCompositeType C_MACRO_NAME;
   public ORCompositeType C_MODULE_TYPE;
