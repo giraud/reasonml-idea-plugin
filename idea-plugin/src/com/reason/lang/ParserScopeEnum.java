@@ -10,7 +10,6 @@ public enum ParserScopeEnum {
   typeNamedEqVariant,
 
   module,
-  moduleNamed,
   moduleNamedEq,
   moduleNamedColon,
   moduleNamedSignature,
@@ -23,12 +22,6 @@ public enum ParserScopeEnum {
   letNamedSignature,
   deconstruction,
 
-  function,
-  functionParameters,
-  functionParameter,
-  functionParameterNamed,
-  functionParameterBinding,
-  functionBody,
   functionCallParams,
 
   functionMatch,

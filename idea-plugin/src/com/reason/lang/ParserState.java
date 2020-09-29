@@ -231,6 +231,21 @@ public class ParserState {
   }
 
   @Nullable
+  public ParserScope popEndUntilOneOf(@NotNull ORCompositeType... composites) {
+    ParserScope scope = null;
+
+    if (!m_composites.isEmpty()) {
+      scope = m_composites.peek();
+      while (scope != null && !ArrayUtil.contains(scope.getCompositeType(), composites)) {
+        popEnd();
+        scope = getLatestScope();
+      }
+    }
+
+    return scope;
+  }
+
+  @Nullable
   public ParserScope popEndUntilOneOfElementType(@NotNull ORTokenElementType... scopeElementTypes) {
     ParserScope scope = null;
 

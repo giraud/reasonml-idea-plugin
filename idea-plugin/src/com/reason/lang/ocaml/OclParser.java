@@ -280,13 +280,7 @@ public class OclParser extends CommonParser<OclTypes> {
       state.advance().mark(m_types.C_PATTERN_MATCH_BODY).resolution(patternMatchBody);
     } else if (state.isCurrentResolution(maybeFunctionParameters)) {
       // fun ... |>-><| ...
-      state
-          .resolution(functionParameters)
-          .complete()
-          .popEnd()
-          .advance()
-          .mark(m_types.C_FUN_BODY)
-          .resolution(functionBody);
+      state.complete().popEnd().advance().mark(m_types.C_FUN_BODY);
     }
   }
 
@@ -483,7 +477,7 @@ public class OclParser extends CommonParser<OclTypes> {
       // SEMI ends the field, and starts a new one
       state.popEnd().advance().mark(m_types.C_OBJECT_FIELD).resolution(objectField);
     } else {
-      boolean isImplicitScope = state.isCurrentResolution(functionBody);
+      boolean isImplicitScope = state.is(m_types.C_FUN_BODY);
 
       // A SEMI operator ends the previous expression
       if (!isImplicitScope && !state.isInScopeExpression()) {
@@ -531,7 +525,7 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseColon(@NotNull ParserState state) {
-    if (state.isCurrentResolution(moduleNamed)) {
+    if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> : <| ...
       state
           .resolution(moduleNamedColon)
@@ -559,13 +553,8 @@ public class OclParser extends CommonParser<OclTypes> {
     } else if (state.isCurrentResolution(objectField)) {
       // < x |> : <| ...
       state.resolution(objectFieldNamed);
-    } else if (state.isCurrentResolution(functionParameter)) {
-      state
-          .resolution(functionParameterNamed)
-          .advance()
-          .mark(m_types.C_SIG_EXPR)
-          .mark(m_types.C_SIG_ITEM)
-          .resolution(signatureItem);
+    } else if (state.is(m_types.C_FUN_PARAM)) {
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(functorNamed)) {
       state
           .resolution(functorNamedColon)
@@ -579,10 +568,10 @@ public class OclParser extends CommonParser<OclTypes> {
 
   private void parseQuestionMark(@NotNull ParserState state) {
     if (state.is(m_types.C_FUN_PARAMS)) {
-      state.mark(m_types.C_FUN_PARAM).resolution(functionParameter);
-    } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
+      state.mark(m_types.C_FUN_PARAM);
+    } else if (state.is(m_types.C_FUN_PARAM) && !state.isInScopeExpression()) {
       // Start of a new optional parameter ::  |>?<| x ...
-      state.complete().popEnd().mark(m_types.C_FUN_PARAM).resolution(functionParameter);
+      state.complete().popEnd().mark(m_types.C_FUN_PARAM);
     }
   }
 
@@ -597,7 +586,6 @@ public class OclParser extends CommonParser<OclTypes> {
     if (state.is(m_types.C_LET_BINDING)) {
       state
           .mark(m_types.C_FUN_EXPR)
-          .resolution(function)
           .advance()
           .markOptional(m_types.C_FUN_PARAMS)
           .resolution(maybeFunctionParameters);
@@ -609,7 +597,7 @@ public class OclParser extends CommonParser<OclTypes> {
     if (state.isCurrentResolution(type)) {
       state.resolution(typeNamed);
     }
-    if (state.isCurrentResolution(signatureItem) || state.isCurrentResolution(functionParameters)) {
+    if (state.isCurrentResolution(signatureItem) || state.is(m_types.C_FUN_PARAMS)) {
       state.popEnd();
     }
     if (state.isCurrentResolution(functorResult)) {
@@ -642,12 +630,8 @@ public class OclParser extends CommonParser<OclTypes> {
           state.popEndUntil(m_types.C_CONSTRAINTS).popEnd().resolution(moduleNamedEq);
         }
       }
-    } else if (state.isCurrentResolution(functionParameter) /*&& !state.isInScopeExpression()*/) {
-      state
-          .popEndUntilResolution(function)
-          .advance()
-          .mark(m_types.C_FUN_BODY)
-          .resolution(functionBody);
+    } else if (state.is(m_types.C_FUN_PARAM)) {
+      state.popEndUntil(m_types.C_FUN_EXPR).advance().mark(m_types.C_FUN_BODY);
     }
   }
 
@@ -676,32 +660,24 @@ public class OclParser extends CommonParser<OclTypes> {
           .resolution(functorCall)
           .complete()
           .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
-          .resolution(functionParameters)
           .advance()
-          .mark(m_types.C_FUN_PARAM)
-          .resolution(functionParameter);
+          .mark(m_types.C_FUN_PARAM);
     } else if (state.previousElementType2 == m_types.UIDENT
         && state.previousElementType1 == m_types.DOT) {
       // Detecting a local open ::  M1.M2. |>(<| ... )
       state.markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
     } else if (state.is(m_types.C_CLASS_DECLARATION)) {
       state.markScope(m_types.C_CLASS_CONSTR, m_types.LPAREN);
-    } else if (state.isCurrentResolution(functionParameters)) {
-      // Start of the first parameter
-      //     let x |>(<| ...
-      state.markScope(m_types.C_FUN_PARAM, m_types.LPAREN).resolution(functionParameter);
-    } else if (state.isCurrentResolution(functionParameter)
+    } else if (state.is(m_types.C_FUN_PARAMS)) {
+      // Start of the first parameter ::  let x |>(<| ...
+      state.markScope(m_types.C_FUN_PARAM, m_types.LPAREN);
+    } else if (state.is(m_types.C_FUN_PARAM)
         && !state.isInScopeExpression()
         && state.previousElementType1 != m_types.QUESTION_MARK) {
       // Start of a new parameter
       //    let f xxx |>(<| ..tuple ) = ..
-      state
-          .popEnd()
-          .mark(m_types.C_FUN_PARAM)
-          .resolution(functionParameter)
-          .markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN)
-          .resolution(functionParameter);
-    } else if (state.isCurrentResolution(moduleNamed)) {
+      state.popEnd().mark(m_types.C_FUN_PARAM).markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN);
+    } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // This is a functor ::  module Make |>(<| ... )
       state
           .resolution(functorNamed)
@@ -742,9 +718,9 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseLBrace(@NotNull ParserState state) {
-    if (state.isCurrentResolution(functionParameters)) {
+    if (state.is(m_types.C_FUN_PARAMS)) {
       // let fn |>{<| ... } = ...
-      state.mark(m_types.C_FUN_PARAM).resolution(functionParameter);
+      state.mark(m_types.C_FUN_PARAM);
     }
 
     state
@@ -774,12 +750,15 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseLIdent(@NotNull ParserState state) {
-    if (state.isCurrentResolution(functionParameters)) {
-      state.mark(m_types.C_FUN_PARAM).resolution(functionParameter);
-    } else if (state.isCurrentResolution(functionParameter) && !state.isInScopeExpression()) {
+    if (state.is(m_types.C_FUN_PARAMS)) {
+      state.mark(m_types.C_FUN_PARAM);
+    } else if (state.is(m_types.C_FUN_PARAM)
+        && !state.isInScopeExpression()
+        && state.previousElementType1 != m_types.OF
+        && state.previousElementType1 != m_types.STAR) {
       // Start of a new parameter
       //    .. ( xxx |>yyy<| ) ..
-      state.complete().popEnd().mark(m_types.C_FUN_PARAM).resolution(functionParameter);
+      state.complete().popEnd().mark(m_types.C_FUN_PARAM);
     }
 
     if (state.isCurrentResolution(let)) {
@@ -788,12 +767,7 @@ public class OclParser extends CommonParser<OclTypes> {
       if (nextToken != m_types.EQ && nextToken != m_types.COLON) {
         // This is a function, we need to create the let binding now, to be in sync with reason
         //  let |>x<| y z = ...  vs    let x = y z => ...
-        state
-            .mark(m_types.C_LET_BINDING)
-            .mark(m_types.C_FUN_EXPR)
-            .resolution(function)
-            .mark(m_types.C_FUN_PARAMS)
-            .resolution(functionParameters);
+        state.mark(m_types.C_LET_BINDING).mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS);
       }
     } else if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
       state.wrapWith(m_types.C_LOWER_IDENTIFIER);
@@ -817,7 +791,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     if (state.isCurrentResolution(module)) {
       // Module declaration  ::  module |>M<| ...
-      state.resolution(moduleNamed).wrapWith(m_types.C_UPPER_IDENTIFIER);
+      state.wrapWith(m_types.C_UPPER_IDENTIFIER);
     } else if (state.is(m_types.C_OPEN) || state.is(m_types.C_INCLUDE)) {
       // It is a module name/path, or might be a functor call  ::  open/include |>M<| ...
       state

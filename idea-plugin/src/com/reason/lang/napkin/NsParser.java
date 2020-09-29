@@ -283,28 +283,27 @@ public class NsParser extends CommonParser<NsTypes> {
       }
     } else if (state.isCurrentResolution(signatureScope)) {
       state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
-    } else if (state.isCurrentResolution(functionParameter)) {
+    } else if (state.is(m_types.C_FUN_PARAM)) {
       state.popEnd();
       state.advance();
       IElementType nextTokenType = state.getTokenType();
       if (nextTokenType != m_types.RPAREN) {
         // not at the end of a list: ie not => (p1, p2<,> )
-        state.mark(m_types.C_FUN_PARAM).resolution(functionParameter);
+        state.mark(m_types.C_FUN_PARAM);
       }
     }
   }
 
   private void parsePipe(@NotNull ParserState state) {
     // Remove intermediate constructions
-    if (state.isCurrentResolution(functionBody)) {
+    if (state.is(m_types.C_FUN_BODY)) {
       // a function is part of something else, close it first
       state.popEnd().popEnd();
     }
 
     if (state.is(m_types.C_VARIANT_DECLARATION)) {
       state.popEnd();
-    } else if (state.isCurrentResolution(functionParameter)
-        && state.isPrevious(m_types.C_VARIANT_CONSTRUCTOR)) {
+    } else if (state.is(m_types.C_FUN_PARAM) && state.isPrevious(m_types.C_VARIANT_CONSTRUCTOR)) {
       state.popEndUntil(m_types.C_TYPE_BINDING);
     } else if (!state.isCurrentResolution(switchBody) /*nested switch*/
         && state.in(m_types.C_PATTERN_MATCH_BODY)) {
@@ -440,7 +439,7 @@ public class NsParser extends CommonParser<NsTypes> {
       }
     } else if (state.isCurrentResolution(field)) {
       state.resolution(fieldNamed);
-    } else if (state.isCurrentResolution(functionParameter)) {
+    } else if (state.is(m_types.C_FUN_PARAM)) {
       state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     }
   }
@@ -584,13 +583,7 @@ public class NsParser extends CommonParser<NsTypes> {
         if (!state.isCurrentResolution(signatureItem) && nextElementType == m_types.ARROW) {
           // Single (paren less) function parameters
           // |>x<| => ...
-          state
-              .mark(m_types.C_FUN_EXPR)
-              .resolution(function)
-              .mark(m_types.C_FUN_PARAMS)
-              .resolution(functionParameters)
-              .mark(m_types.C_FUN_PARAM)
-              .resolution(functionParameter);
+          state.mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS).mark(m_types.C_FUN_PARAM);
         }
       }
 
@@ -755,17 +748,14 @@ public class NsParser extends CommonParser<NsTypes> {
           .resolution(functorCall)
           .complete()
           .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
-          .resolution(functionParameters)
           .advance()
-          .mark(m_types.C_FUN_PARAM)
-          .resolution(functionParameter);
+          .mark(m_types.C_FUN_PARAM);
     } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
       // Variant constructor ::  type t = | Variant |>(<| .. )
       state
           .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN) // C_PARAMETERS
           .advance()
-          .mark(m_types.C_FUN_PARAM)
-          .resolution(functionParameter);
+          .mark(m_types.C_FUN_PARAM);
     } else if (state.isCurrentResolution(patternMatchVariant)) {
       // It's a constructor in a pattern match ::  switch x { | Variant |>(<| ... ) => ... }
       state
@@ -795,7 +785,7 @@ public class NsParser extends CommonParser<NsTypes> {
           .advance();
       IElementType nextTokenType = state.getTokenType();
       if (nextTokenType != m_types.RPAREN) {
-        state.mark(m_types.C_FUN_PARAM).resolution(functionParameter);
+        state.mark(m_types.C_FUN_PARAM);
       }
     } else {
       IElementType nextTokenType = state.lookAhead(1);
@@ -803,16 +793,11 @@ public class NsParser extends CommonParser<NsTypes> {
       if (nextTokenType == m_types.DOT || nextTokenType == m_types.TILDE) {
         // A function
         // |>(<| .  OR  |>(<| ~
-        state
-            .mark(m_types.C_FUN_EXPR)
-            .resolution(function)
-            .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
-            .resolution(functionParameters)
-            .advance();
+        state.mark(m_types.C_FUN_EXPR).markScope(m_types.C_FUN_PARAMS, m_types.LPAREN).advance();
         if (nextTokenType == m_types.DOT) {
           state.advance();
         }
-        state.mark(m_types.C_FUN_PARAM).resolution(functionParameter);
+        state.mark(m_types.C_FUN_PARAM);
       } else {
         state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
       }
@@ -832,12 +817,9 @@ public class NsParser extends CommonParser<NsTypes> {
         state.pop();
         state
             .mark(m_types.C_FUN_EXPR)
-            .resolution(function)
             .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
-            .resolution(functionParameters)
             .advance()
-            .mark(m_types.C_FUN_PARAM)
-            .resolution(functionParameter);
+            .mark(m_types.C_FUN_PARAM);
         return;
       }
     }
@@ -997,10 +979,10 @@ public class NsParser extends CommonParser<NsTypes> {
   }
 
   private void parseArrow(@NotNull ParserState state) {
-    if (state.isCurrentResolution(function) || state.isCurrentResolution(functionParameter)) {
+    if (state.is(m_types.C_FUN_EXPR) || state.is(m_types.C_FUN_PARAM)) {
       // param(s) |>=><| body
-      state.popEndUntilOneOfResolution(function, functionCallParams);
-      state.advance().mark(m_types.C_FUN_BODY).resolution(functionBody);
+      state.popEndUntilOneOf(m_types.C_FUN_EXPR, m_types.C_FUN_CALL_PARAMS);
+      state.advance().mark(m_types.C_FUN_BODY);
     } else if (state.is(m_types.C_SIG_EXPR)) {
       state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(signatureItem)) {
