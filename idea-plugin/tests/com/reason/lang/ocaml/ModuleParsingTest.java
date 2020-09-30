@@ -2,12 +2,14 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ExpressionFilterConstants;
 import com.reason.lang.core.psi.ExpressionScope;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.impl.PsiModuleType;
+import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import java.util.Collection;
 
 @SuppressWarnings("ConstantConditions")
@@ -62,18 +64,6 @@ public class ModuleParsingTest extends OclParsingTestCase {
     assertEquals("Set.S", modType.getText());
   }
 
-  public void test_moduleSig3() {
-    FileBase file =
-        parseCode(
-            "module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
-
-    assertEquals(2, expressions(file).size());
-    assertEquals("Branch", first(moduleExpressions(file)).getName());
-    PsiInnerModule e = (PsiInnerModule) expressions(file).iterator().next();
-    PsiModuleType modType = e.getModuleType();
-    assertEquals("module type of Vcs_.Branch", modType.getText());
-  }
-
   public void test_moduleChaining() {
     PsiFile file = parseCode("module A = sig type t end\nmodule B = struct end");
 
@@ -115,5 +105,20 @@ public class ModuleParsingTest extends OclParsingTestCase {
         "sig type output = (Constr.constr * UState.t) option type task end",
         e.getModuleType().getText());
     assertEquals("struct end", e.getBody().getText());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/91
+  public void test_GH_91() {
+    FileBase file =
+        parseCode(
+            "module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
+
+    assertEquals(2, expressions(file).size());
+    assertEquals("Branch", first(moduleExpressions(file)).getName());
+    PsiInnerModule e = (PsiInnerModule) expressions(file).iterator().next();
+    PsiModuleType modType = e.getModuleType();
+    assertEquals("module type of Vcs_.Branch", modType.getText());
+    assertEmpty(PsiTreeUtil.findChildrenOfType(modType, PsiUpperIdentifier.class));
+    assertNull(modType.getName());
   }
 }

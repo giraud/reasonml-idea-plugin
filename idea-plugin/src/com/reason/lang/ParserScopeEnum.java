@@ -98,4 +98,5 @@ public enum ParserScopeEnum {
   jsObjectBinding,
   moduleType,
   patternMatchValue,
+  moduleTypeExtraction,
 }

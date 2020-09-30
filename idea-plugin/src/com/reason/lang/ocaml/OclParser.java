@@ -639,6 +639,10 @@ public class OclParser extends CommonParser<OclTypes> {
     if (state.is(m_types.C_VARIANT_DECLARATION)) {
       // Variant params :: type t = | Variant «of» ..
       state.advance().mark(m_types.C_VARIANT_CONSTRUCTOR).mark(m_types.C_FUN_PARAM);
+    } else if (state.is(m_types.C_MODULE_DECLARATION)
+        && state.previousElementType1 == m_types.TYPE) {
+      // extracting a module type ::  module type |>of<| X ...
+      state.resolution(moduleTypeExtraction);
     }
   }
 
