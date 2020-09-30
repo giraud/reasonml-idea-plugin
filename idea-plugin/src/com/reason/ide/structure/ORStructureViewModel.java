@@ -7,9 +7,9 @@ import com.intellij.psi.PsiFile;
 import com.reason.ide.files.*;
 import org.jetbrains.annotations.NotNull;
 
-public class StructureViewModel extends StructureViewModelBase
+public class ORStructureViewModel extends StructureViewModelBase
     implements com.intellij.ide.structureView.StructureViewModel.ElementInfoProvider {
-  StructureViewModel(@NotNull PsiFile psiFile) {
+  ORStructureViewModel(@NotNull PsiFile psiFile) {
     super(psiFile, new StructureViewElement(psiFile));
   }
 

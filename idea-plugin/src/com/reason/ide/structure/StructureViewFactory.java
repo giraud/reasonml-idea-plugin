@@ -17,7 +17,7 @@ public class StructureViewFactory implements PsiStructureViewFactory {
       @Override
       public com.intellij.ide.structureView.StructureViewModel createStructureViewModel(
           @Nullable Editor editor) {
-        return new StructureViewModel(psiFile);
+        return new ORStructureViewModel(psiFile);
       }
     };
   }
