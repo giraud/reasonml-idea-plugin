@@ -28,7 +28,9 @@ public class PsiElementFactory {
     } else if (type == types.C_ASSERT_STMT) {
       return new PsiAssert(node);
     } else if (type == types.C_IF) {
-      return new PsiIfStatement(node);
+      return new PsiIfStatement(types, node);
+    } else if (type == types.C_TERNARY) {
+      return new PsiTernary(types, node);
     } else if (type == types.C_BINARY_CONDITION) {
       return new PsiBinaryCondition(node);
     } else if (type == types.C_TYPE_BINDING) {
@@ -114,7 +116,7 @@ public class PsiElementFactory {
     } else if (type == types.C_TAG) {
       return new PsiTag(node);
     } else if (type == types.C_TAG_START) {
-      return new PsiTagStartImpl(node);
+      return new PsiTagStartImpl(types, node);
     } else if (type == types.C_TAG_PROPERTY) {
       return new PsiTagPropertyImpl(types, node);
     } else if (type == types.C_TAG_PROP_VALUE) {

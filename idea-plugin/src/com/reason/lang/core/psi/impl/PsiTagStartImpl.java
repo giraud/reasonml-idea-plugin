@@ -15,31 +15,20 @@ import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiTagProperty;
-import com.reason.lang.core.psi.PsiTagStart;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiTypeBinding;
-import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
-  public PsiTagStartImpl(@NotNull ASTNode node) {
-    super(RmlTypes.INSTANCE, node);
+  public PsiTagStartImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    super(types, node);
   }
 
   static class TagPropertyImpl implements TagProperty {

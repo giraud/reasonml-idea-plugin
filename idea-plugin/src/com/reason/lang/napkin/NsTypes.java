@@ -107,6 +107,7 @@ public class NsTypes extends ORTypes {
     C_TAG_START = new ORCompositeElementType("C_TAG_START", NsLanguage.INSTANCE);
     C_TAG_CLOSE = new ORCompositeElementType("C_TAG_CLOSE", NsLanguage.INSTANCE);
     C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", NsLanguage.INSTANCE);
+    C_TERNARY = new ORCompositeElementType("C_TERNARY", NsLanguage.INSTANCE);
     C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", NsLanguage.INSTANCE);
     C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", NsLanguage.INSTANCE);
     C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", NsLanguage.INSTANCE);

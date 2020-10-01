@@ -82,6 +82,7 @@ public abstract class ORTypes {
   public ORCompositeType C_TAG_START;
   public ORCompositeType C_TAG_CLOSE;
   public ORCompositeType C_TAG_PROPERTY;
+  public ORCompositeType C_TERNARY;
   public ORCompositeType C_RECORD_EXPR;
   public ORCompositeType C_RECORD_FIELD;
   public ORCompositeType C_SWITCH_EXPR;

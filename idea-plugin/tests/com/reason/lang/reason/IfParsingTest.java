@@ -1,48 +1,82 @@
 package com.reason.lang.reason;
 
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiIfStatement;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import java.util.*;
+import com.reason.lang.core.psi.impl.PsiIfStatement;
+import com.reason.lang.core.psi.impl.PsiTernary;
 
+@SuppressWarnings("ConstantConditions")
 public class IfParsingTest extends RmlParsingTestCase {
-  public void test_basicIfParsing() {
+  public void test_basic_if() {
     PsiFile psiFile = parseCode("if (x) { (); }");
     PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
     assertNotNull(e);
-    assertNotNull(e.getBinaryCondition());
-    assertEquals("(x)", e.getBinaryCondition().getText());
-    PsiScopedExpr ifScope = PsiTreeUtil.findChildOfType(e, PsiScopedExpr.class);
-    assertNotNull(ifScope);
-    assertEquals("{ (); }", ifScope.getText());
+    assertNotNull(e.getCondition());
+    assertEquals("(x)", e.getCondition().getText());
+    assertEquals("{ (); }", e.getThenExpression().getText());
   }
 
-  public void test_basicIfElseNoBraceParsing() {
-    PsiFile psiFile = parseCode("let test = x => if (x) 1 else 2;");
-    PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
-
-    assertNotNull(e);
-    assertNotNull(e.getBinaryCondition());
-    List<PsiScopedExpr> scopes =
-        new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiScopedExpr.class));
-    // zzz
-    // assertEquals(2, scopes.size());
-    // assertEquals("1", scopes.get(0).getText());
-    // assertEquals("2", scopes.get(1).getText());
-  }
-
-  public void test_basicIfElseParsing() {
+  public void test_if_else() {
     PsiFile psiFile = parseCode("let test = x => if (x) { 1; } else { 2; };");
     PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
     assertNotNull(e);
-    assertNotNull(e.getBinaryCondition());
-    List<PsiScopedExpr> scopes =
-        new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiScopedExpr.class));
-    assertEquals(2, scopes.size());
-    assertEquals("{ 1; }", scopes.get(0).getText());
-    assertEquals("{ 2; }", scopes.get(1).getText());
+    assertNotNull(e.getCondition());
+    assertEquals("{ 1; }", e.getThenExpression().getText());
+    assertEquals("{ 2; }", e.getElseExpression().getText());
+  }
+
+  public void test_if_else_noBrace() {
+    PsiFile psiFile = parseCode("let test = x => if (x) 1 else 2;");
+    PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
+
+    assertNotNull(e);
+    assertNotNull(e.getCondition());
+    assertEquals("1", e.getThenExpression().getText());
+    assertEquals("2", e.getElseExpression().getText());
+  }
+
+  public void test_ternary_lident() {
+    PsiFile psiFile = parseCode("let _ = a ? b : c;");
+    PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+
+    assertNotNull(e);
+    assertNotNull(e.getCondition());
+    assertEquals("a", e.getCondition().getText());
+    assertEquals("b", e.getThenExpression().getText());
+    assertEquals("c", e.getElseExpression().getText());
+  }
+
+  public void test_ternary_parens() {
+    PsiFile psiFile = parseCode("let _ = (a) ? b : c;");
+    PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+
+    assertNotNull(e);
+    assertNotNull(e.getCondition());
+    assertEquals("(a)", e.getCondition().getText());
+    assertEquals("b", e.getThenExpression().getText());
+    assertEquals("c", e.getElseExpression().getText());
+  }
+
+  public void test_ternary_cond() {
+    PsiFile psiFile = parseCode("let _ = a == a' ? b : c;");
+    PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+
+    assertNotNull(e);
+    assertNotNull(e.getCondition());
+    assertEquals("a == a'", e.getCondition().getText());
+    assertEquals("b", e.getThenExpression().getText());
+    assertEquals("c", e.getElseExpression().getText());
+  }
+
+  public void test_ternary_call() {
+    PsiFile psiFile = parseCode("let _ = fn(a) ? b : c;");
+    PsiTernary e = firstOfType(psiFile, PsiTernary.class);
+
+    assertNotNull(e);
+    assertNotNull(e.getCondition());
+    // zzz    assertEquals("fn(a)", e.getCondition().getText());
+    assertEquals("b", e.getThenExpression().getText());
+    assertEquals("c", e.getElseExpression().getText());
   }
 }

@@ -208,7 +208,6 @@ public class NsParser extends CommonParser<NsTypes> {
   }
 
   private void parseIf(@NotNull ParserState state) {
-    endLikeSemi(state);
     state.mark(m_types.C_IF).advance().mark(m_types.C_BINARY_CONDITION);
   }
 
@@ -662,6 +661,9 @@ public class NsParser extends CommonParser<NsTypes> {
         // switch x |>{<| ... }
         state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(switchBody);
       }
+    } else if (state.isCurrentResolution(switch_)) {
+      // switch (x) |>{<| ... }
+      state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(switchBody);
     } else if (state.is(m_types.C_TAG_PROP_VALUE)) {
       // A scoped property
       state.updateScopeToken(m_types.LBRACE);
@@ -787,6 +789,8 @@ public class NsParser extends CommonParser<NsTypes> {
       if (nextTokenType != m_types.RPAREN) {
         state.mark(m_types.C_FUN_PARAM);
       }
+    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+      state.updateScopeToken(m_types.LPAREN);
     } else {
       IElementType nextTokenType = state.lookAhead(1);
 

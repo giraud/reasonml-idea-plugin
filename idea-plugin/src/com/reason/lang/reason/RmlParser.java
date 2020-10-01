@@ -113,6 +113,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
           parseWith(state);
         } else if (tokenType == m_types.TILDE) {
           parseTilde(state);
+        } else if (tokenType == m_types.QUESTION_MARK) {
+          parseQuestionMark(state);
         }
         // ( ... )
         else if (tokenType == m_types.LPAREN) {
@@ -199,6 +201,27 @@ public class RmlParser extends CommonParser<RmlTypes> {
   private void parseTilde(ParserState state) {
     if (state.in(m_types.C_SIG_ITEM)) {
       state.updateCurrentCompositeElementType(m_types.C_NAMED_PARAM);
+    }
+  }
+
+  private void parseQuestionMark(ParserState state) {
+    if (state.previousElementType1 == m_types.EQ) {
+      // x=|>?<| ...
+      return;
+    }
+
+    if (!state.in(m_types.C_TERNARY)) {
+      ParserScope scope = state.pop();
+      if (scope != null) {
+        scope.rollbackTo();
+        state
+            .mark(scope.getCompositeType())
+            .updateScopeToken(scope.getScopeType())
+            .resolution(scope.getResolution());
+      }
+      state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
+    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+      state.popEnd();
     }
   }
 
@@ -913,6 +936,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
       //  let |>(<| + ) =
       //  let |>(<| a, b ) =
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
+    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+      // |>(<| ... ) ? ...
+      state.updateScopeToken(m_types.LPAREN);
     } else {
       IElementType nextTokenType = state.lookAhead(1);
 
@@ -971,6 +997,14 @@ public class RmlParser extends CommonParser<RmlTypes> {
       if (nextTokenType == m_types.EQ) {
         if (state.isPrevious(m_types.C_CLASS_DECLARATION)) {
           parenScope.updateCompositeElementType(m_types.C_CLASS_CONSTR);
+        }
+      } else if (nextTokenType == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY)) {
+        // ( ... |>)<| ? ...
+        ParserScope pop = state.pop();
+        if (pop != null) {
+          pop.rollbackTo();
+          state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
+          return;
         }
       }
 

@@ -2,8 +2,8 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiIfStatement;
 import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.impl.PsiIfStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class IfParsingTest extends OclParsingTestCase {
     PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
     assertNotNull(e);
-    assertNotNull(e.getBinaryCondition());
+    assertNotNull(e.getCondition());
     PsiScopedExpr ifScope = PsiTreeUtil.findChildOfType(e, PsiScopedExpr.class);
     assertNotNull(ifScope);
     assertEquals("()", ifScope.getText());
@@ -24,7 +24,7 @@ public class IfParsingTest extends OclParsingTestCase {
     PsiIfStatement e = firstOfType(psiFile, PsiIfStatement.class);
 
     assertNotNull(e);
-    assertNotNull(e.getBinaryCondition());
+    assertNotNull(e.getCondition());
     List<PsiScopedExpr> scopes =
         new ArrayList<>(PsiTreeUtil.findChildrenOfType(e, PsiScopedExpr.class));
     assertEquals(2, scopes.size());

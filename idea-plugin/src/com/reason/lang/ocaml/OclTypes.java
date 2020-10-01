@@ -99,6 +99,7 @@ public class OclTypes extends ORTypes {
     C_TAG_PROP_VALUE = new ORCompositeElementType("C_TAG_PROP_VALUE", OclLanguage.INSTANCE);
     C_TAG_PROPERTY = new ORCompositeElementType("C_TAG_PROPERTY", OclLanguage.INSTANCE);
     C_TAG_START = new ORCompositeElementType("C_TAG_START", OclLanguage.INSTANCE);
+    C_TERNARY = new ORCompositeElementType("C_TERNARY", OclLanguage.INSTANCE);
     C_TRY_EXPR = new ORCompositeElementType("C_TRY_EXPR", OclLanguage.INSTANCE);
     C_TRY_BODY = new ORCompositeElementType("C_TRY_BODY", OclLanguage.INSTANCE);
     C_TRY_HANDLER = new ORCompositeElementType("C_TRY_HANDLER", OclLanguage.INSTANCE);

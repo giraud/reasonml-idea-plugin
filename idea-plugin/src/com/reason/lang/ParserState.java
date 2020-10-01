@@ -303,7 +303,7 @@ public class ParserState {
   }
 
   @NotNull
-  public ParserState resolution(@NotNull ParserScopeEnum resolution) {
+  public ParserState resolution(@Nullable ParserScopeEnum resolution) {
     m_currentScope.resolution(resolution);
     return this;
   }

@@ -218,4 +218,13 @@ public class LetParsingTest extends RmlParsingTestCase {
     assertEquals("i", PsiTreeUtil.findChildOfType(es.get(0), PsiRecordField.class).getName());
     assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.get(0), PsiRecord.class).getText());
   }
+
+  public void test_xxx() {
+    PsiLet e = first(letExpressions(parseCode("let x = p => { test ? { call(Some(a)); } : b };")));
+
+    assertEquals("x", e.getName());
+    assertTrue(e.isFunction());
+    PsiFunction f = e.getFunction();
+    assertEquals("{ test ? { call(Some(a)); } : b }", f.getBody().getText());
+  }
 }

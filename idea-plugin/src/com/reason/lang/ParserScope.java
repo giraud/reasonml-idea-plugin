@@ -102,7 +102,7 @@ public class ParserScope {
   }
 
   @NotNull
-  public ParserScope resolution(ParserScopeEnum resolution) {
+  public ParserScope resolution(@Nullable ParserScopeEnum resolution) {
     m_resolution = resolution;
     return this;
   }
@@ -167,5 +167,9 @@ public class ParserScope {
 
   public ORCompositeType getCompositeType() {
     return m_compositeElementType;
+  }
+
+  public ORTokenElementType getScopeType() {
+    return m_scopeTokenElementType;
   }
 }
