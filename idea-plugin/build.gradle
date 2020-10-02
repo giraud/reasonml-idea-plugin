@@ -26,7 +26,3 @@ runIde {
 verifyPlugin {
     pluginDirectory 'resources'
 }
-
-publishPlugin {
-    token = System.getenv("REASONML_intellijPublishToken")
-}
