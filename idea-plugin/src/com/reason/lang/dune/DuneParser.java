@@ -77,7 +77,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
       state.popEnd();
     }
 
-    if (state.isInScopeExpression()) {
+    if (state.hasScopeToken()) {
       state.advance().popEnd();
     } else {
       state.error("Unbalanced parenthesis");

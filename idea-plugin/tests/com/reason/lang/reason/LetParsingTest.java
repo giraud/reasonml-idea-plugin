@@ -219,7 +219,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     assertEquals("{i: 1}", PsiTreeUtil.findChildOfType(es.get(0), PsiRecord.class).getText());
   }
 
-  public void test_xxx() {
+  public void test_braces() {
     PsiLet e = first(letExpressions(parseCode("let x = p => { test ? { call(Some(a)); } : b };")));
 
     assertEquals("x", e.getName());

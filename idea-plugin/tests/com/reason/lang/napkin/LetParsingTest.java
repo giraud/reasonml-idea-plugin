@@ -177,6 +177,15 @@ public class LetParsingTest extends NsParsingTestCase {
     assertEquals("{i: string}", PsiTreeUtil.findChildOfType(es.get(0), PsiRecord.class).getText());
   }
 
+  public void test_braces() {
+    PsiLet e = first(letExpressions(parseCode("let x = p => { test ? { call(Some(a)) } : b }")));
+
+    assertEquals("x", e.getName());
+    assertTrue(e.isFunction());
+    PsiFunction f = e.getFunction();
+    assertEquals("{ test ? { call(Some(a)) } : b }", f.getBody().getText());
+  }
+
   // public void test_customOperator() {
   // let \"/" = ...
   // PsiLet e = first(letExpressions(parseCode("let \\\"try\" = true")));

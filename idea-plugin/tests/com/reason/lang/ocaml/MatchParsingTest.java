@@ -5,15 +5,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiPatternMatch;
-import com.reason.lang.core.psi.PsiPatternMatchBody;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSwitch;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import java.util.*;
+import com.reason.lang.core.psi.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class MatchParsingTest extends OclParsingTestCase {
@@ -107,18 +102,15 @@ public class MatchParsingTest extends OclParsingTestCase {
     assertEquals("1", PsiTreeUtil.findChildOfType(shortcut, PsiPatternMatchBody.class).getText());
   }
 
-  public void test_functionShortcutMany() {
+  public void test_function_shortcut_many() {
     PsiLet e =
         first(
             letExpressions(
                 parseCode(
                     "let rec db_output_prodn = function "
-                        + //
-                        " | Sterm s -> if cond then first else second\n"
-                        + //
-                        " | Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"\n"
-                        + //
-                        " | Snterm s -> sprintf \"(Snterm %s) \" s")));
+                        + " | Sterm s -> if cond then first else second\n"
+                        + " | Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"\n"
+                        + " | Snterm s -> sprintf \"(Snterm %s) \" s")));
 
     PsiSwitch shortcut = PsiTreeUtil.findChildOfType(e, PsiSwitch.class);
     List<PsiPatternMatch> patterns = shortcut.getPatterns();
@@ -128,5 +120,17 @@ public class MatchParsingTest extends OclParsingTestCase {
         "Sedit2 (\"FILE\", file) -> let file_suffix_regex = a in printf \"i\"",
         patterns.get(1).getText());
     assertEquals("Snterm s -> sprintf \"(Snterm %s) \" s", patterns.get(2).getText());
+  }
+
+  public void test_group() {
+    PsiFile psiFile = parseCode("let _ = match x with | V1(y) -> Some y | Empty | Unknown -> None");
+
+    PsiSwitch e = first(PsiTreeUtil.findChildrenOfType(psiFile, PsiSwitch.class));
+    List<PsiPatternMatch> patterns = e.getPatterns();
+
+    assertSize(3, patterns);
+    assertEquals("V1(y) -> Some y", patterns.get(0).getText());
+    assertEquals("Empty", patterns.get(1).getText());
+    assertEquals("Unknown -> None", patterns.get(2).getText());
   }
 }

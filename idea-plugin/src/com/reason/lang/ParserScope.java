@@ -17,7 +17,6 @@ public class ParserScope {
   private ORTokenElementType m_scopeTokenElementType;
   private boolean m_isComplete = false;
   private boolean m_isDummy = false; // Always drop
-  private boolean m_isScope = false;
   private boolean m_isStart = false;
   @Nullable public PsiBuilder.Marker m_mark;
 
@@ -43,9 +42,7 @@ public class ParserScope {
       @NotNull PsiBuilder builder,
       @NotNull ORCompositeType compositeElementType,
       @NotNull ORTokenElementType scopeTokenElementType) {
-    ParserScope parserScope = new ParserScope(builder, compositeElementType, scopeTokenElementType);
-    parserScope.m_isScope = true;
-    return parserScope;
+    return new ParserScope(builder, compositeElementType, scopeTokenElementType);
   }
 
   @NotNull
@@ -124,7 +121,6 @@ public class ParserScope {
 
   void setScopeTokenType(@NotNull ORTokenElementType tokenElementType) {
     m_scopeTokenElementType = tokenElementType;
-    m_isScope = true;
   }
 
   @NotNull
@@ -147,8 +143,8 @@ public class ParserScope {
     return m_resolution;
   }
 
-  public boolean isScope() {
-    return m_isScope;
+  public boolean hasScope() {
+    return m_scopeTokenElementType != null;
   }
 
   ORTokenElementType getScopeTokenElementType() {

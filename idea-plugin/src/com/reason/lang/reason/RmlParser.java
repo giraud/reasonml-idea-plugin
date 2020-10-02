@@ -210,17 +210,18 @@ public class RmlParser extends CommonParser<RmlTypes> {
       return;
     }
 
-    if (!state.in(m_types.C_TERNARY)) {
-      ParserScope scope = state.pop();
-      if (scope != null) {
-        scope.rollbackTo();
-        state
-            .mark(scope.getCompositeType())
-            .updateScopeToken(scope.getScopeType())
-            .resolution(scope.getResolution());
-      }
-      state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
-    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+    //    if (!state.in(m_types.C_TERNARY)) {
+    //      ParserScope scope = state.pop();
+    //      if (scope != null) {
+    //        scope.rollbackTo();
+    //        state
+    //            .mark(scope.getCompositeType())
+    //            .updateScopeToken(scope.getScopeType())
+    //            .resolution(scope.getResolution());
+    //      }
+    //      state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
+    //    } else
+    if (state.is(m_types.C_BINARY_CONDITION)) {
       state.popEnd();
     }
   }
@@ -381,11 +382,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
       // try (...) { |>|<| ...
       state.mark(m_types.C_TRY_HANDLER).resolution(tryBodyWithHandler);
     } else {
-      if (!state.isCurrentResolution(switchBody) /*nested switch*/
-          && state.in(m_types.C_PATTERN_MATCH_BODY)) {
-        // can be a switchBody or a 'fun'
-        state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
-        state.popEnd().popEnd();
+      if (!state.isCurrentResolution(switchBody)) {
+        if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
+          // pattern grouping ::  | X |>|<| Y => ...
+          state.popEnd();
+        } else if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+          // can be a switchBody or a 'fun'
+          state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+          state.popEnd().popEnd();
+        }
       }
 
       // By default, a pattern match
@@ -702,7 +707,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             .setWhitespaceSkippedCallback(
                 (type, start, end) -> {
                   if (state.is(m_types.C_TAG_PROPERTY)
-                      || (state.is(m_types.C_TAG_PROP_VALUE) && state.notInScopeExpression())) {
+                      || (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
                     if (state.is(m_types.C_TAG_PROP_VALUE)) {
                       state.popEnd();
                     }
@@ -837,7 +842,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
             .resolution(recordUsage)
             .advance()
             .mark(m_types.C_MIXIN_FIELD);
-      } else if (state.is(m_types.C_FUN_BODY)) {
+      } else if (state.is(m_types.C_FUN_BODY) && !state.isScopeTokenElementType(m_types.LBRACE)) {
         // function body ::  x => |>{<| ... }
         state.updateScopeToken(m_types.LBRACE);
       } else {

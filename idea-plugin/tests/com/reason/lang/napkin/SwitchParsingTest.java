@@ -4,16 +4,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiBinaryCondition;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiPatternMatch;
-import com.reason.lang.core.psi.PsiPatternMatchBody;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSwitch;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import java.util.*;
+import com.reason.lang.core.psi.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class SwitchParsingTest extends NsParsingTestCase {
@@ -176,5 +170,19 @@ public class SwitchParsingTest extends NsParsingTestCase {
     assertEquals("Some => 3", patterns.get(1).getText());
     PsiSwitch inner = PsiTreeUtil.findChildOfType(patterns.get(0), PsiSwitch.class);
     assertSize(2, inner.getPatterns());
+  }
+
+  public void test_group() {
+    PsiSwitch e =
+        firstOfType(
+            parseCode("switch (x) { | V1(y) => Some(y) | V2(_) | Empty | Unknown => None }"),
+            PsiSwitch.class);
+
+    List<PsiPatternMatch> patterns = e.getPatterns();
+    assertSize(4, patterns);
+    assertEquals("V1(y) => Some(y)", patterns.get(0).getText());
+    assertEquals("V2(_)", patterns.get(1).getText());
+    assertEquals("Empty", patterns.get(2).getText());
+    assertEquals("Unknown => None", patterns.get(3).getText());
   }
 }

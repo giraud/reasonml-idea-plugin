@@ -320,6 +320,17 @@ public class NsParser extends CommonParser<NsTypes> {
       // Start of a try handler
       //   try (...) { |>|<| ... }
       state.advance().mark(m_types.C_TRY_HANDLER).resolution(tryBodyWithHandler);
+    } else {
+      if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
+        // pattern grouping ::  | X |>|<| Y => ...
+        state.popEnd();
+      } else if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
+        // can be a switchBody or a 'fun'
+        state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+        state.popEnd().popEnd();
+      }
+      // By default, a pattern match
+      state.advance().mark(m_types.C_PATTERN_MATCH_EXPR).resolution(patternMatch);
     }
   }
 
@@ -567,7 +578,7 @@ public class NsParser extends CommonParser<NsTypes> {
             .setWhitespaceSkippedCallback(
                 (type, start, end) -> {
                   if (state.is(m_types.C_TAG_PROPERTY)
-                      || (state.is(m_types.C_TAG_PROP_VALUE) && state.notInScopeExpression())) {
+                      || (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
                     if (state.is(m_types.C_TAG_PROP_VALUE)) {
                       state.popEnd();
                     }
@@ -687,7 +698,7 @@ public class NsParser extends CommonParser<NsTypes> {
             .resolution(recordUsage)
             .advance()
             .mark(m_types.C_MIXIN_FIELD);
-      } else if (state.is(m_types.C_FUN_BODY)) {
+      } else if (state.is(m_types.C_FUN_BODY) && !state.hasScopeToken()) {
         state.updateScopeToken(m_types.LBRACE);
       } else {
         state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(scope);

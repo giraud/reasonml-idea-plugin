@@ -178,4 +178,18 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     PsiSwitch inner = PsiTreeUtil.findChildOfType(patterns.get(0), PsiSwitch.class);
     assertSize(2, inner.getPatterns());
   }
+
+  public void test_group() {
+    PsiSwitch e =
+        firstOfType(
+            parseCode("switch (x) { | V1(y) => Some(y) | V2(_) | Empty | Unknown => None }"),
+            PsiSwitch.class);
+
+    List<PsiPatternMatch> patterns = e.getPatterns();
+    assertSize(4, patterns);
+    assertEquals("V1(y) => Some(y)", patterns.get(0).getText());
+    assertEquals("V2(_)", patterns.get(1).getText());
+    assertEquals("Empty", patterns.get(2).getText());
+    assertEquals("Unknown => None", patterns.get(3).getText());
+  }
 }

@@ -55,7 +55,7 @@ public class ParserState {
     if (!m_composites.isEmpty()) {
       latestKnownScope = m_composites.peek();
       ParserScope marker = latestKnownScope;
-      while (marker != null && !marker.isScope()) {
+      while (marker != null && !marker.hasScope()) {
         marker = pop();
         if (marker != null) {
           if (marker.isEmpty()) {
@@ -308,12 +308,8 @@ public class ParserState {
     return this;
   }
 
-  public boolean notInScopeExpression() {
-    return !m_currentScope.isScope();
-  }
-
-  public boolean isInScopeExpression() {
-    return m_currentScope.isScope();
+  public boolean hasScopeToken() {
+    return m_currentScope.hasScope();
   }
 
   @NotNull

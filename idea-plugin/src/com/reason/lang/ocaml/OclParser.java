@@ -362,10 +362,14 @@ public class OclParser extends CommonParser<OclTypes> {
       // type t = | V1 |>|<| ...
       state.popEnd().advance().mark(m_types.C_VARIANT_DECLARATION);
     } else {
-      // By default, a pattern match
       if (state.isCurrentResolution(maybeFunctionParameters)) {
         state.popEnd().resolution(matchWith);
+      } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
+        // pattern group ::  | X |>|<| Y ...
+        state.popEnd();
       }
+
+      // By default, a pattern match
       state.advance().mark(m_types.C_PATTERN_MATCH_EXPR).resolution(patternMatch);
     }
   }
@@ -480,7 +484,7 @@ public class OclParser extends CommonParser<OclTypes> {
       boolean isImplicitScope = state.is(m_types.C_FUN_BODY);
 
       // A SEMI operator ends the previous expression
-      if (!isImplicitScope && !state.isInScopeExpression()) {
+      if (!isImplicitScope && !state.hasScopeToken()) {
         state.popEnd();
         if (state.isCurrentResolution(object)) {
           state.advance().mark(m_types.C_OBJECT_FIELD).resolution(objectField);
@@ -569,7 +573,7 @@ public class OclParser extends CommonParser<OclTypes> {
   private void parseQuestionMark(@NotNull ParserState state) {
     if (state.is(m_types.C_FUN_PARAMS)) {
       state.mark(m_types.C_FUN_PARAM);
-    } else if (state.is(m_types.C_FUN_PARAM) && !state.isInScopeExpression()) {
+    } else if (state.is(m_types.C_FUN_PARAM) && !state.hasScopeToken()) {
       // Start of a new optional parameter ::  |>?<| x ...
       state.complete().popEnd().mark(m_types.C_FUN_PARAM);
     }
@@ -676,7 +680,7 @@ public class OclParser extends CommonParser<OclTypes> {
       // Start of the first parameter ::  let x |>(<| ...
       state.markScope(m_types.C_FUN_PARAM, m_types.LPAREN);
     } else if (state.is(m_types.C_FUN_PARAM)
-        && !state.isInScopeExpression()
+        && !state.hasScopeToken()
         && state.previousElementType1 != m_types.QUESTION_MARK) {
       // Start of a new parameter
       //    let f xxx |>(<| ..tuple ) = ..
@@ -757,7 +761,7 @@ public class OclParser extends CommonParser<OclTypes> {
     if (state.is(m_types.C_FUN_PARAMS)) {
       state.mark(m_types.C_FUN_PARAM);
     } else if (state.is(m_types.C_FUN_PARAM)
-        && !state.isInScopeExpression()
+        && !state.hasScopeToken()
         && state.previousElementType1 != m_types.OF
         && state.previousElementType1 != m_types.STAR) {
       // Start of a new parameter
@@ -959,7 +963,7 @@ public class OclParser extends CommonParser<OclTypes> {
         && state.previousElementType1 != m_types.SIG
         && state.previousElementType1 != m_types.COLON) {
       ParserScope parserScope = state.getLatestScope();
-      while (parserScope != null && !parserScope.isScope()) {
+      while (parserScope != null && !parserScope.hasScope()) {
         state.popEnd();
         parserScope = state.getLatestScope();
       }
