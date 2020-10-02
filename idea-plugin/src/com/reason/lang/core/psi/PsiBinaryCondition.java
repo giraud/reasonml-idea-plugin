@@ -6,18 +6,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiBinaryCondition extends ASTWrapperPsiElement {
 
-    public PsiBinaryCondition(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiBinaryCondition(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
+  @Override
+  public boolean canNavigate() {
+    return false;
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Binary condition";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Binary condition";
+  }
 }

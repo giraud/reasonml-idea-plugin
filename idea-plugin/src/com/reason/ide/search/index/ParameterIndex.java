@@ -6,16 +6,16 @@ import com.reason.lang.core.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
-    private static final int VERSION = 2;
+  private static final int VERSION = 2;
 
-    @Override
-    public int getVersion() {
-        return super.getVersion() + VERSION;
-    }
+  @Override
+  public int getVersion() {
+    return super.getVersion() + VERSION;
+  }
 
-    @NotNull
-    @Override
-    public StubIndexKey<String, PsiParameter> getKey() {
-        return IndexKeys.PARAMETERS;
-    }
+  @NotNull
+  @Override
+  public StubIndexKey<String, PsiParameter> getKey() {
+    return IndexKeys.PARAMETERS;
+  }
 }

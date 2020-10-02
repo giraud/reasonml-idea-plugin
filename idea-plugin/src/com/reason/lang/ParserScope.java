@@ -1,170 +1,171 @@
 package com.reason.lang;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTokenElementType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ParserScope {
 
-    @NotNull
-    private final PsiBuilder m_builder;
-    private final int m_offset;
+  @NotNull private final PsiBuilder m_builder;
+  private final int m_offset;
 
-    private ParserScopeEnum m_resolution;
-    private ORCompositeType m_compositeElementType;
-    private ORTokenElementType m_scopeTokenElementType;
-    private boolean m_isComplete = false;
-    private boolean m_isDummy = false; // Always drop
-    private boolean m_isScope = false;
-    private boolean m_isStart = false;
-    @Nullable
-    public PsiBuilder.Marker m_mark;
+  private ParserScopeEnum m_resolution;
+  private ORCompositeType m_compositeElementType;
+  private ORTokenElementType m_scopeTokenElementType;
+  private boolean m_isComplete = false;
+  private boolean m_isDummy = false; // Always drop
+  private boolean m_isStart = false;
+  @Nullable public PsiBuilder.Marker m_mark;
 
-    private ParserScope(@NotNull PsiBuilder builder, ParserScopeEnum resolution, ORCompositeType compositeElementType,
-                        ORTokenElementType scopeTokenElementType) {
-        m_builder = builder;
-        m_mark = builder.mark();
-        m_offset = builder.getCurrentOffset();
-        m_resolution = resolution;
-        m_compositeElementType = compositeElementType;
-        m_scopeTokenElementType = scopeTokenElementType;
+  private ParserScope(
+      @NotNull PsiBuilder builder,
+      ORCompositeType compositeElementType,
+      ORTokenElementType scopeTokenElementType) {
+    m_builder = builder;
+    m_mark = builder.mark();
+    m_offset = builder.getCurrentOffset();
+    m_compositeElementType = compositeElementType;
+    m_scopeTokenElementType = scopeTokenElementType;
+  }
+
+  @NotNull
+  public static ParserScope mark(
+      @NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
+    return new ParserScope(builder, compositeElementType, null);
+  }
+
+  @NotNull
+  public static ParserScope markScope(
+      @NotNull PsiBuilder builder,
+      @NotNull ORCompositeType compositeElementType,
+      @NotNull ORTokenElementType scopeTokenElementType) {
+    return new ParserScope(builder, compositeElementType, scopeTokenElementType);
+  }
+
+  @NotNull
+  static ParserScope markRoot(@NotNull PsiBuilder builder) {
+    return new ParserScope(builder, null, null).resolution(ParserScopeEnum.file);
+  }
+
+  public boolean isEmpty() {
+    return m_builder.getCurrentOffset() - m_offset == 0;
+  }
+
+  public void end() {
+    if (m_isDummy) {
+      drop();
+    } else if (m_isComplete) {
+      done();
+    } else {
+      drop();
     }
+  }
 
-    @NotNull
-    public static ParserScope mark(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution, @NotNull ORCompositeType compositeElementType) {
-        return new ParserScope(builder, resolution, compositeElementType, null);
+  private void done() {
+    if (m_mark != null) {
+      if (m_compositeElementType instanceof IElementType) {
+        m_mark.done((IElementType) m_compositeElementType);
+      } else {
+        m_mark.drop();
+      }
+      m_mark = null;
     }
+  }
 
-    @NotNull
-    public static ParserScope markScope(@NotNull PsiBuilder builder, @NotNull ParserScopeEnum resolution,
-                                        @NotNull ORCompositeType compositeElementType, @NotNull ORTokenElementType scopeTokenElementType) {
-        ParserScope parserScope = new ParserScope(builder, resolution, compositeElementType, scopeTokenElementType);
-        parserScope.m_isScope = true;
-        return parserScope;
+  void drop() {
+    if (m_mark != null) {
+      m_mark.drop();
+      m_mark = null;
     }
+  }
 
-    @NotNull
-    static ParserScope markRoot(@NotNull PsiBuilder builder) {
-        return new ParserScope(builder, ParserScopeEnum.file, null, null);
-    }
+  @NotNull
+  public ParserScope complete() {
+    m_isComplete = true;
+    return this;
+  }
 
-    public boolean isEmpty() {
-        return m_builder.getCurrentOffset() - m_offset == 0;
-    }
+  @NotNull
+  public ParserScope dummy() {
+    m_isDummy = true;
+    return this;
+  }
 
-    public void end() {
-        if (m_isDummy) {
-            drop();
-        } else if (m_isComplete) {
-            done();
-        } else {
-            drop();
-        }
-    }
+  public boolean isResolution(ParserScopeEnum resolution) {
+    return m_resolution == resolution;
+  }
 
-    private void done() {
-        if (m_mark != null) {
-            if (m_compositeElementType instanceof IElementType) {
-                m_mark.done((IElementType) m_compositeElementType);
-            } else {
-                m_mark.drop();
-            }
-            m_mark = null;
-        }
-    }
+  @NotNull
+  public ParserScope resolution(@Nullable ParserScopeEnum resolution) {
+    m_resolution = resolution;
+    return this;
+  }
 
-    void drop() {
-        if (m_mark != null) {
-            m_mark.drop();
-            m_mark = null;
-        }
-    }
+  boolean isCompositeEqualTo(ORCompositeType compositeType) {
+    return m_compositeElementType == compositeType;
+  }
 
-    @NotNull
-    public ParserScope complete() {
-        m_isComplete = true;
-        return this;
+  boolean isCompositeIn(ORCompositeType... compositeType) {
+    for (ORCompositeType composite : compositeType) {
+      if (m_compositeElementType == composite) return true;
     }
+    return false;
+  }
 
-    @NotNull
-    public ParserScope dummy() {
-        m_isDummy = true;
-        return this;
-    }
+  boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
+    return m_scopeTokenElementType == tokenElementType;
+  }
 
-    public boolean isResolution(ParserScopeEnum resolution) {
-        return m_resolution == resolution;
-    }
+  void setScopeTokenType(@NotNull ORTokenElementType tokenElementType) {
+    m_scopeTokenElementType = tokenElementType;
+  }
 
-    @NotNull
-    public ParserScope resolution(ParserScopeEnum resolution) {
-        m_resolution = resolution;
-        return this;
-    }
+  @NotNull
+  public ParserScope updateCompositeElementType(ORCompositeType compositeType) {
+    m_compositeElementType = compositeType;
+    return this;
+  }
 
-    boolean isCompositeEqualTo(ORCompositeType compositeType) {
-        return m_compositeElementType == compositeType;
-    }
+  public boolean isStart() {
+    return m_isStart;
+  }
 
-    boolean isCompositeIn(ORCompositeType... compositeType) {
-        for (ORCompositeType composite : compositeType) {
-            if (m_compositeElementType == composite)
-                return true;
-        }
-        return false;
-    }
+  @NotNull
+  public ParserScope setIsStart(boolean isStart) {
+    m_isStart = isStart;
+    return this;
+  }
 
-    boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
-        return m_scopeTokenElementType == tokenElementType;
-    }
+  public ParserScopeEnum getResolution() {
+    return m_resolution;
+  }
 
-    void setScopeTokenType(@NotNull ORTokenElementType tokenElementType) {
-        m_scopeTokenElementType = tokenElementType;
-        m_isScope = true;
-    }
+  public boolean hasScope() {
+    return m_scopeTokenElementType != null;
+  }
 
-    @NotNull
-    public ParserScope updateCompositeElementType(ORCompositeType compositeType) {
-        m_compositeElementType = compositeType;
-        return this;
-    }
+  ORTokenElementType getScopeTokenElementType() {
+    return m_scopeTokenElementType;
+  }
 
-    public boolean isStart() {
-        return m_isStart;
+  public void rollbackTo() {
+    if (m_mark != null) {
+      m_mark.rollbackTo();
     }
+  }
 
-    @NotNull
-    public ParserScope setIsStart(boolean isStart) {
-        m_isStart = isStart;
-        return this;
-    }
+  public boolean isCompositeType(ORCompositeType elementType) {
+    return m_compositeElementType == elementType;
+  }
 
-    public ParserScopeEnum getResolution() {
-        return m_resolution;
-    }
+  public ORCompositeType getCompositeType() {
+    return m_compositeElementType;
+  }
 
-    public boolean isScope() {
-        return m_isScope;
-    }
-
-    ORTokenElementType getScopeTokenElementType() {
-        return m_scopeTokenElementType;
-    }
-
-    public void rollbackTo() {
-        if (m_mark != null) {
-            m_mark.rollbackTo();
-        }
-    }
-
-    public boolean isCompositeType(ORCompositeType elementType) {
-        return m_compositeElementType == elementType;
-    }
-
-    public ORCompositeType getCompositeType() {
-        return m_compositeElementType;
-    }
+  public ORTokenElementType getScopeType() {
+    return m_scopeTokenElementType;
+  }
 }

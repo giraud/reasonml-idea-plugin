@@ -9,35 +9,34 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiScopedExpr extends ASTWrapperPsiElement {
 
-    @NotNull
-    private final ORTypes m_types;
+  @NotNull private final ORTypes m_types;
 
-    public PsiScopedExpr(@NotNull ORTypes types, @NotNull ASTNode node) {
-        super(node);
-        m_types = types;
+  public PsiScopedExpr(@NotNull ORTypes types, @NotNull ASTNode node) {
+    super(node);
+    m_types = types;
+  }
+
+  public boolean isEmpty() {
+    PsiElement firstChild = getFirstChild();
+    IElementType firstType = firstChild == null ? null : firstChild.getNode().getElementType();
+    if (firstType == m_types.LPAREN) {
+      assert firstChild != null;
+      PsiElement secondChild = firstChild.getNextSibling();
+      IElementType secondType = secondChild == null ? null : secondChild.getNode().getElementType();
+      return secondType == m_types.RPAREN;
     }
 
-    public boolean isEmpty() {
-        PsiElement firstChild = getFirstChild();
-        IElementType firstType = firstChild == null ? null : firstChild.getNode().getElementType();
-        if (firstType == m_types.LPAREN) {
-            assert firstChild != null;
-            PsiElement secondChild = firstChild.getNextSibling();
-            IElementType secondType = secondChild == null ? null : secondChild.getNode().getElementType();
-            return secondType == m_types.RPAREN;
-        }
+    return false;
+  }
 
-        return false;
-    }
+  @Override
+  public boolean canNavigate() {
+    return false;
+  }
 
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "Scoped expression";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Scoped expression";
+  }
 }

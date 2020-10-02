@@ -1,8 +1,5 @@
 package com.reason.ide.files;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
@@ -14,100 +11,103 @@ import com.reason.lang.ModuleHelper;
 import com.reason.lang.PsiFileHelper;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiQualifiedElement;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class FileBase extends PsiFileBase implements PsiQualifiedElement {
 
-    @NotNull
-    private final String m_moduleName;
+  @NotNull private final String m_moduleName;
 
-    FileBase(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
-        super(viewProvider, language);
-        m_moduleName = ORUtil.fileNameToModuleName(getName());
+  FileBase(@NotNull FileViewProvider viewProvider, @NotNull Language language) {
+    super(viewProvider, language);
+    m_moduleName = ORUtil.fileNameToModuleName(getName());
+  }
+
+  @NotNull
+  public String getModuleName() {
+    return m_moduleName;
+  }
+
+  @NotNull
+  @Override
+  public String getPath() {
+    return getModuleName();
+  }
+
+  @NotNull
+  @Override
+  public String getQualifiedName() {
+    return getModuleName();
+  }
+
+  public boolean isComponent() {
+    if (FileHelper.isOCaml(getFileType())) {
+      return false;
     }
 
-    @NotNull
-    public String getModuleName() {
-        return m_moduleName;
-    }
+    return ModuleHelper.isComponent(this);
+  }
 
-    @NotNull
-    @Override
-    public String getPath() {
-        return getModuleName();
-    }
-
-    @NotNull
-    @Override
-    public String getQualifiedName() {
-        return getModuleName();
-    }
-
-    public boolean isComponent() {
-        if (FileHelper.isOCaml(getFileType())) {
-            return false;
+  @Override
+  public PsiElement getNavigationElement() {
+    /* ClassCastException ??
+    if (isComponent()) {
+        PsiLet make = getLetExpression("make");
+        if (make != null) {
+            return make;
         }
-
-        return ModuleHelper.isComponent(this);
     }
+    */
+    return super.getNavigationElement();
+  }
 
-    @Override
-    public PsiElement getNavigationElement() {
-        /* ClassCastException ??
-        if (isComponent()) {
-            PsiLet make = getLetExpression("make");
-            if (make != null) {
-                return make;
-            }
+  @NotNull
+  public String shortLocation(@NotNull Project project) {
+    return FileHelper.shortLocation(project, getVirtualFile().getPath());
+  }
+
+  @NotNull
+  public Collection<PsiNamedElement> getExpressions(@Nullable String name) {
+    return PsiFileHelper.getExpressions(this, name);
+  }
+
+  @SafeVarargs
+  @NotNull
+  public final <T extends PsiQualifiedElement> List<T> getExpressions(
+      @Nullable String name, @NotNull Class<? extends T>... clazz) {
+    List<T> result = new ArrayList<>();
+
+    if (name != null) {
+      Collection<T> children = PsiTreeUtil.findChildrenOfAnyType(this, clazz);
+      for (T child : children) {
+        if (name.equals(child.getQualifiedName())) {
+          result.add(child);
         }
-        */
-        return super.getNavigationElement();
+      }
     }
 
-    @NotNull
-    public String shortLocation(@NotNull Project project) {
-        return FileHelper.shortLocation(project, getVirtualFile().getPath());
+    return result;
+  }
+
+  public boolean isInterface() {
+    return FileHelper.isInterface(getFileType());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    @NotNull
-    public Collection<PsiNamedElement> getExpressions(@Nullable String name) {
-        return PsiFileHelper.getExpressions(this, name);
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    FileBase fileBase = (FileBase) o;
+    return m_moduleName.equals(fileBase.m_moduleName) && isInterface() == fileBase.isInterface();
+  }
 
-    @SafeVarargs
-    @NotNull
-    public final <T extends PsiQualifiedElement> List<T> getExpressions(@Nullable String name, @NotNull Class<? extends T>... clazz) {
-        List<T> result = new ArrayList<>();
-
-        if (name != null) {
-            Collection<T> children = PsiTreeUtil.findChildrenOfAnyType(this, clazz);
-            for (T child : children) {
-                if (name.equals(child.getQualifiedName())) {
-                    result.add(child);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    public boolean isInterface() {
-        return FileHelper.isInterface(getFileType());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        FileBase fileBase = (FileBase) o;
-        return m_moduleName.equals(fileBase.m_moduleName) && isInterface() == fileBase.isInterface();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(m_moduleName, isInterface());
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(m_moduleName, isInterface());
+  }
 }

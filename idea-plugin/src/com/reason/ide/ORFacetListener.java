@@ -19,7 +19,8 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
   }
 
   private ORFacetListener(@NotNull Project project) {
-    ProjectWideFacetListenersRegistry facetListenerRegistry = ProjectWideFacetListenersRegistry.getInstance(project);
+    ProjectWideFacetListenersRegistry facetListenerRegistry =
+        ProjectWideFacetListenersRegistry.getInstance(project);
     facetListenerRegistry.registerListener(this);
     m_project = project;
   }
@@ -47,9 +48,9 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
   public void facetConfigurationChanged(@NotNull Facet facet) {}
 
   private static void showHideDuneToolWindow(Project project, Facet facet) {
-   if (facet instanceof DuneFacet) {
-     ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
-     ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
-   }
+    if (facet instanceof DuneFacet) {
+      ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
+      ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
+    }
   }
 }

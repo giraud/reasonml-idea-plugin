@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiSExpr extends PsiToken<DuneTypes> {
 
-    public PsiSExpr(@NotNull DuneTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
+  public PsiSExpr(@NotNull DuneTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "(";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "(";
+  }
 }

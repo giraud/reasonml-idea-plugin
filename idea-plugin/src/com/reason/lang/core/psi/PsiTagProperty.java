@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface PsiTagProperty extends PsiElement {
-    @NotNull
-    String getName();
+  @NotNull
+  String getName();
 
-    @Nullable
-    PsiElement getValue();
+  @Nullable
+  PsiElement getValue();
 }

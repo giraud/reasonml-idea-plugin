@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
-public
-interface ORElementPatternMatcher {
-    boolean accepts(@NotNull PsiElement element, @Nullable ProcessingContext context);
+public interface ORElementPatternMatcher {
+  boolean accepts(@NotNull PsiElement element, @Nullable ProcessingContext context);
 }

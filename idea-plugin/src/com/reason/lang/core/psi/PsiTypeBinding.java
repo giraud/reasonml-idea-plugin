@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiTypeBinding extends ASTWrapperPsiElement {
 
-    public PsiTypeBinding(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiTypeBinding(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Type binding";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Type binding";
+  }
 }

@@ -7,15 +7,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class DuneBuildAction extends CompilerAction {
 
-    public DuneBuildAction() {
-        super("Build dune", "Build dune", AllIcons.Actions.Compile);
-    }
+  public DuneBuildAction() {
+    super("Build dune", "Build dune", AllIcons.Actions.Compile);
+  }
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Dune.BUILD);
-        }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      doAction(project, CliType.Dune.BUILD);
     }
+  }
 }

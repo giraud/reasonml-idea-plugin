@@ -2,13 +2,11 @@
 package com.reason.lang.core.psi.ocamlyacc;
 
 import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public interface OclYaccRules extends PsiElement {
 
-    @NotNull
-    List<OclYaccRule> getRuleList();
-
+  @NotNull
+  List<OclYaccRule> getRuleList();
 }

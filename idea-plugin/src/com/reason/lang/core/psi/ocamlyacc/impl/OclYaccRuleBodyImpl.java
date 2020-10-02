@@ -8,29 +8,27 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRulePattern;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccVisitor;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class OclYaccRuleBodyImpl extends ASTWrapperPsiElement implements OclYaccRuleBody {
 
-    public OclYaccRuleBodyImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public OclYaccRuleBodyImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull OclYaccVisitor visitor) {
-        visitor.visitRuleBody(this);
-    }
+  public void accept(@NotNull OclYaccVisitor visitor) {
+    visitor.visitRuleBody(this);
+  }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
-        if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
-        else super.accept(visitor);
-    }
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
+    else super.accept(visitor);
+  }
 
-    @Override
-    @NotNull
-    public List<OclYaccRulePattern> getRulePatternList() {
-        return PsiTreeUtil.getChildrenOfTypeAsList(this, OclYaccRulePattern.class);
-    }
-
+  @Override
+  @NotNull
+  public List<OclYaccRulePattern> getRulePatternList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, OclYaccRulePattern.class);
+  }
 }

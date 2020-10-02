@@ -17,13 +17,9 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import com.intellij.projectImport.ProjectImportBuilder;
-import icons.ORIcons;
-import com.reason.sdk.OCamlSdkType;
 import com.reason.module.OCamlModuleType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
+import com.reason.sdk.OCamlSdkType;
+import icons.ORIcons;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -33,110 +29,122 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DuneProjectImportBuilder extends ProjectImportBuilder {
 
-    @Nullable
-    private Sdk m_sdk;
+  @Nullable private Sdk m_sdk;
 
-    @NotNull
-    @Override
-    public String getName() {
-        return "Dune (OCaml)";
-    }
+  @NotNull
+  @Override
+  public String getName() {
+    return "Dune (OCaml)";
+  }
 
-    @Override
-    public Icon getIcon() {
-        return ORIcons.DUNE;
-    }
+  @Override
+  public Icon getIcon() {
+    return ORIcons.DUNE;
+  }
 
-    @Override
-    public boolean isSuitableSdkType(SdkTypeId sdkType) {
-        return sdkType == OCamlSdkType.getInstance();
-    }
+  @Override
+  public boolean isSuitableSdkType(SdkTypeId sdkType) {
+    return sdkType == OCamlSdkType.getInstance();
+  }
 
-    @Nullable
-    @Override
-    public List getList() {
-        return null;
-    }
+  @Nullable
+  @Override
+  public List getList() {
+    return null;
+  }
 
-    @Override
-    public boolean isMarked(Object element) {
-        return false;
-    }
+  @Override
+  public boolean isMarked(Object element) {
+    return false;
+  }
 
-    @Override
-    public void setList(List list) {
-    }
+  @Override
+  public void setList(List list) {}
 
-    @Override
-    public void setOpenProjectSettingsAfter(boolean on) {
-    }
+  @Override
+  public void setOpenProjectSettingsAfter(boolean on) {}
 
-    @Nullable
-    @Override
-    public List<Module> commit(@NotNull Project project, @Nullable ModifiableModuleModel moduleModel, ModulesProvider modulesProvider, ModifiableArtifactModel artifactModel) {
-        List<Module> createdModules = new ArrayList<>();
+  @Nullable
+  @Override
+  public List<Module> commit(
+      @NotNull Project project,
+      @Nullable ModifiableModuleModel moduleModel,
+      ModulesProvider modulesProvider,
+      ModifiableArtifactModel artifactModel) {
+    List<Module> createdModules = new ArrayList<>();
 
-        String ideaModuleDirPath = project.getBasePath();
-        if (ideaModuleDirPath != null) {
-            String ideaModuleFile = ideaModuleDirPath + File.separator + project.getName() + ".iml";
+    String ideaModuleDirPath = project.getBasePath();
+    if (ideaModuleDirPath != null) {
+      String ideaModuleFile = ideaModuleDirPath + File.separator + project.getName() + ".iml";
 
-            // Creating the OCaml module
+      // Creating the OCaml module
 
-            ModifiableModuleModel obtainedModuleModel =
-                    moduleModel != null ? moduleModel : ModuleManager.getInstance(project).getModifiableModel();
+      ModifiableModuleModel obtainedModuleModel =
+          moduleModel != null
+              ? moduleModel
+              : ModuleManager.getInstance(project).getModifiableModel();
 
-            Module module = obtainedModuleModel.newModule(ideaModuleFile, OCamlModuleType.getInstance().getId());
-            createdModules.add(module);
+      Module module =
+          obtainedModuleModel.newModule(ideaModuleFile, OCamlModuleType.getInstance().getId());
+      createdModules.add(module);
 
-            ModifiableRootModel rootModel = ModuleRootManager.getInstance(module).getModifiableModel();
-            rootModel.inheritSdk();
+      ModifiableRootModel rootModel = ModuleRootManager.getInstance(module).getModifiableModel();
+      rootModel.inheritSdk();
 
-            // Initialize the source and the test paths.
+      // Initialize the source and the test paths.
 
-            VirtualFile rootDir = LocalFileSystem.getInstance().findFileByPath(ideaModuleDirPath);
-            if (rootDir != null) {
-                ContentEntry content = rootModel.addContentEntry(rootDir);
+      VirtualFile rootDir = LocalFileSystem.getInstance().findFileByPath(ideaModuleDirPath);
+      if (rootDir != null) {
+        ContentEntry content = rootModel.addContentEntry(rootDir);
 
-                try {
-                    Path rootPath = new File(ideaModuleDirPath).toPath();
-                    Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
-                        @NotNull
-                        @Override
-                        public FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
-                            if ("dune".equals(path.getFileName().toString())) {
-                                VirtualFile file = LocalFileSystem.getInstance().findFileByPath(path.toString());
-                                VirtualFile dir = file == null ? null : file.getParent();
-                                if (dir != null) {
-                                    content.addSourceFolder(dir, false);
-                                }
-                            }
-                            return FileVisitResult.CONTINUE;
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
+        try {
+          Path rootPath = new File(ideaModuleDirPath).toPath();
+          Files.walkFileTree(
+              rootPath,
+              new SimpleFileVisitor<Path>() {
+                @NotNull
+                @Override
+                public FileVisitResult visitFile(
+                    @NotNull Path path, BasicFileAttributes basicFileAttributes) {
+                  if ("dune".equals(path.getFileName().toString())) {
+                    VirtualFile file =
+                        LocalFileSystem.getInstance().findFileByPath(path.toString());
+                    VirtualFile dir = file == null ? null : file.getParent();
+                    if (dir != null) {
+                      content.addSourceFolder(dir, false);
+                    }
+                  }
+                  return FileVisitResult.CONTINUE;
                 }
-            }
-
-            // Commit project structure.
-            Application application = ApplicationManager.getApplication();
-            application.runWriteAction(() -> {
-                obtainedModuleModel.commit();
-                rootModel.commit();
-
-                assert m_sdk != null;
-                ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
-                OCamlSdkType.reindexSourceRoots(m_sdk);
-            });
+              });
+        } catch (IOException e) {
+          e.printStackTrace();
         }
+      }
 
-        return createdModules;
+      // Commit project structure.
+      Application application = ApplicationManager.getApplication();
+      application.runWriteAction(
+          () -> {
+            obtainedModuleModel.commit();
+            rootModel.commit();
+
+            assert m_sdk != null;
+            ProjectRootManagerEx.getInstanceEx(project).setProjectSdk(m_sdk);
+            OCamlSdkType.reindexSourceRoots(m_sdk);
+          });
     }
 
-    void setModuleSdk(@NotNull Sdk sdk) {
-        m_sdk = sdk;
-    }
+    return createdModules;
+  }
+
+  void setModuleSdk(@NotNull Sdk sdk) {
+    m_sdk = sdk;
+  }
 }

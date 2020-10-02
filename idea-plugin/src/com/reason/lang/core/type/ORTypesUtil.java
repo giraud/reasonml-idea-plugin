@@ -9,9 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ORTypesUtil {
 
-    @NotNull
-    public static ORTypes getInstance(@NotNull Language language) {
-        return language instanceof RmlLanguage || language instanceof OclLanguage ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
-    }
-
+  @NotNull
+  public static ORTypes getInstance(@NotNull Language language) {
+    return language instanceof RmlLanguage || language instanceof OclLanguage
+        ? RmlTypes.INSTANCE
+        : OclTypes.INSTANCE;
+  }
 }

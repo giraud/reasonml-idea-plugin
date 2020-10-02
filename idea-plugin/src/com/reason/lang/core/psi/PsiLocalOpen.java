@@ -6,14 +6,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiLocalOpen extends ASTWrapperPsiElement {
 
-    public PsiLocalOpen(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiLocalOpen(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Local open";
-    }
-
+  @NotNull
+  @Override
+  public String toString() {
+    return "Local open";
+  }
 }

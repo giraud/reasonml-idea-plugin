@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiPatternMatchBody extends ASTWrapperPsiElement {
 
-    public PsiPatternMatchBody(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiPatternMatchBody(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Pattern match body";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Pattern match body";
+  }
 }

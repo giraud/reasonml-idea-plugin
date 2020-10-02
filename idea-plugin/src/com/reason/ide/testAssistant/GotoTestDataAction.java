@@ -1,8 +1,7 @@
 package com.reason.ide.testAssistant;
 
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import static com.intellij.notification.NotificationType.INFORMATION;
+
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -20,73 +19,99 @@ import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.PsiModule;
-
-import static com.intellij.notification.NotificationType.INFORMATION;
+import java.util.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GotoTestDataAction extends AnAction {
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            DataContext dataContext = e.getDataContext();
-            List<String> fileNames = findRelatedFiles(project, dataContext);
-            if (fileNames.isEmpty()) {
-                Notifications.Bus.notify(new ORNotification("testdata", "Found no testdata files", "Cannot find related files", INFORMATION, null), project);
-                return;
-            }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      DataContext dataContext = e.getDataContext();
+      List<String> fileNames = findRelatedFiles(project, dataContext);
+      if (fileNames.isEmpty()) {
+        Notifications.Bus.notify(
+            new ORNotification(
+                "testdata",
+                "Found no testdata files",
+                "Cannot find related files",
+                INFORMATION,
+                null),
+            project);
+        return;
+      }
 
-            Editor editor = e.getData(CommonDataKeys.EDITOR);
-            JBPopupFactory popupFactory = JBPopupFactory.getInstance();
-            RelativePoint point = editor == null ? popupFactory.guessBestPopupLocation(dataContext) : popupFactory.guessBestPopupLocation(editor);
+      Editor editor = e.getData(CommonDataKeys.EDITOR);
+      JBPopupFactory popupFactory = JBPopupFactory.getInstance();
+      RelativePoint point =
+          editor == null
+              ? popupFactory.guessBestPopupLocation(dataContext)
+              : popupFactory.guessBestPopupLocation(editor);
 
-            TestDataNavigationHandler.navigate(point, fileNames, project);
+      TestDataNavigationHandler.navigate(point, fileNames, project);
+    }
+  }
+
+  @NotNull
+  private List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
+    PsiFile file = context.getData(CommonDataKeys.PSI_FILE);
+    if (file instanceof FileBase) {
+      VirtualFile relatedFile;
+
+      GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
+      PsiFinder psiFinder = PsiFinder.getInstance(project);
+      PsiModule relatedModule;
+
+      String[] tokens = splitModuleName(((FileBase) file).getModuleName());
+      if (tokens.length == 1) {
+        Set<PsiModule> relatedModules =
+            psiFinder.findModulesbyName(
+                tokens[0] + "_test",
+                ORFileType.implementationOnly,
+                module -> module instanceof FileBase,
+                scope);
+        relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
+        if (relatedModule == null) {
+          relatedModules =
+              psiFinder.findModulesbyName(
+                  tokens[0] + "_spec",
+                  ORFileType.implementationOnly,
+                  module -> module instanceof FileBase,
+                  scope);
+          relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
         }
+      } else {
+        Set<PsiModule> relatedModules =
+            psiFinder.findModulesbyName(
+                tokens[0],
+                ORFileType.implementationOnly,
+                module -> module instanceof FileBase,
+                scope);
+        relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
+      }
+
+      if (relatedModule != null) {
+        return Collections.singletonList(((FileBase) relatedModule).getVirtualFile().getPath());
+      }
     }
 
-    @NotNull
-    private List<String> findRelatedFiles(@NotNull Project project, @NotNull DataContext context) {
-        PsiFile file = context.getData(CommonDataKeys.PSI_FILE);
-        if (file instanceof FileBase) {
-            VirtualFile relatedFile;
+    return Collections.emptyList();
+  }
 
-            GlobalSearchScope scope = GlobalSearchScope.projectScope(project);
-            PsiFinder psiFinder = PsiFinder.getInstance(project);
-            PsiModule relatedModule;
-
-            String[] tokens = splitModuleName(((FileBase) file).getModuleName());
-            if (tokens.length == 1) {
-                Set<PsiModule> relatedModules = psiFinder
-                        .findModulesbyName(tokens[0] + "_test", ORFileType.implementationOnly, module -> module instanceof FileBase, scope);
-                relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
-                if (relatedModule == null) {
-                    relatedModules = psiFinder
-                            .findModulesbyName(tokens[0] + "_spec", ORFileType.implementationOnly, module -> module instanceof FileBase, scope);
-                    relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
-                }
-            } else {
-                Set<PsiModule> relatedModules = psiFinder
-                        .findModulesbyName(tokens[0], ORFileType.implementationOnly, module -> module instanceof FileBase, scope);
-                relatedModule = relatedModules.isEmpty() ? null : relatedModules.iterator().next();
-            }
-
-            if (relatedModule != null) {
-                return Collections.singletonList(((FileBase) relatedModule).getVirtualFile().getPath());
-            }
+  @NotNull
+  private String[] splitModuleName(@NotNull String moduleName) {
+    int underscoreIndex = moduleName.lastIndexOf("_");
+    return 0 < underscoreIndex
+        ? new String[] {
+          moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)
         }
+        : new String[] {moduleName};
+  }
 
-        return Collections.emptyList();
-    }
-
-    @NotNull
-    private String[] splitModuleName(@NotNull String moduleName) {
-        int underscoreIndex = moduleName.lastIndexOf("_");
-        return 0 < underscoreIndex ? new String[]{moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)} :
-                new String[]{moduleName};
-    }
-
-    @Nullable
-    private String guessTestData(@NotNull DataContext dataContext) {
-        return null;
-    }
+  @Nullable
+  private String guessTestData(@NotNull DataContext dataContext) {
+    return null;
+  }
 }

@@ -7,15 +7,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class BsMakeAction extends CompilerAction {
 
-    public BsMakeAction() {
-        super("Make bsb", "Make bsb", AllIcons.Actions.Compile);
-    }
+  public BsMakeAction() {
+    super("Make bsb", "Make bsb", AllIcons.Actions.Compile);
+  }
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Bs.MAKE);
-        }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      doAction(project, CliType.Bs.MAKE);
     }
+  }
 }

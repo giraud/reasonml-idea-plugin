@@ -7,15 +7,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class EsyInstallAction extends CompilerAction {
 
-    public EsyInstallAction() {
-        super("Install esy", "Install esy", AllIcons.Actions.Install);
-    }
+  public EsyInstallAction() {
+    super("Install esy", "Install esy", AllIcons.Actions.Install);
+  }
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Esy.INSTALL);
-        }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      doAction(project, CliType.Esy.INSTALL);
     }
+  }
 }

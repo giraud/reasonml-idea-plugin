@@ -1,5 +1,7 @@
 package com.reason.bs;
 
+import com.intellij.openapi.vfs.VirtualFile;
+import gnu.trove.THashSet;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -7,130 +9,136 @@ import java.util.*;
 import java.util.stream.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import com.intellij.openapi.vfs.VirtualFile;
-import gnu.trove.THashSet;
 
 public class BsConfig {
 
-    @NotNull
-    private final String m_name;
-    @NotNull
-    private final String m_namespace;
-    private final String m_jsxVersion;
-    private final String m_rootBsPlatform;
-    private final Set<String> m_externals = new THashSet<>();
-    private final Set<String> m_sources = new THashSet<>();
-    private final Set<String> m_devSources = new THashSet<>();
-    private final Set<String> m_deps = new THashSet<>();
-    private final Set<Path> m_paths = new THashSet<>();
-    private final String[] m_ppx;
-    private boolean m_useExternalAsSource = false;
-    private Path m_basePath = null;
+  @NotNull private final String m_name;
+  @NotNull private final String m_namespace;
+  private final String m_jsxVersion;
+  private final String m_rootBsPlatform;
+  private final Set<String> m_externals = new THashSet<>();
+  private final Set<String> m_sources = new THashSet<>();
+  private final Set<String> m_devSources = new THashSet<>();
+  private final Set<String> m_deps = new THashSet<>();
+  private final Set<Path> m_paths = new THashSet<>();
+  private final String[] m_ppx;
+  private boolean m_useExternalAsSource = false;
+  private Path m_basePath = null;
 
-    BsConfig(@NotNull String name, @Nullable String namespace, @Nullable String jsxVersion, Set<String> sources, Set<String> devSources, Set<String> externals,
-             @Nullable Set<String> deps, @Nullable List<String> ppx) {
-        m_name = name;
-        m_namespace = namespace == null ? "" : namespace;
-        m_jsxVersion = jsxVersion;
-        m_rootBsPlatform = FileSystems.getDefault().getPath("node_modules", "bs-platform").toString();
-        m_ppx = ppx == null ? new String[0] : ppx.toArray(new String[0]);
-        if (sources != null) {
-            m_sources.addAll(sources);
+  BsConfig(
+      @NotNull String name,
+      @Nullable String namespace,
+      @Nullable String jsxVersion,
+      Set<String> sources,
+      Set<String> devSources,
+      Set<String> externals,
+      @Nullable Set<String> deps,
+      @Nullable List<String> ppx) {
+    m_name = name;
+    m_namespace = namespace == null ? "" : namespace;
+    m_jsxVersion = jsxVersion;
+    m_rootBsPlatform = FileSystems.getDefault().getPath("node_modules", "bs-platform").toString();
+    m_ppx = ppx == null ? new String[0] : ppx.toArray(new String[0]);
+    if (sources != null) {
+      m_sources.addAll(sources);
+    }
+    if (devSources != null) {
+      m_devSources.addAll(devSources);
+    }
+    if (externals != null) {
+      m_externals.addAll(externals);
+    }
+    if (deps != null) {
+      m_deps.addAll(deps);
+      m_paths.addAll(
+          deps.stream()
+              .map(dep -> FileSystems.getDefault().getPath("node_modules", dep, "lib"))
+              .collect(Collectors.toSet()));
+    }
+  }
+
+  public void setRootFile(@Nullable VirtualFile rootFile) {
+    m_basePath = rootFile == null ? null : FileSystems.getDefault().getPath(rootFile.getPath());
+  }
+
+  @NotNull
+  public String getNamespace() {
+    return m_namespace;
+  }
+
+  public boolean hasNamespace() {
+    return !m_namespace.isEmpty();
+  }
+
+  boolean accept(@Nullable String canonicalPath) {
+    if (canonicalPath == null || m_basePath == null) {
+      return false;
+    }
+
+    Path relativePath = m_basePath.relativize(new File(canonicalPath).toPath());
+    if (relativePath.startsWith("node_modules")) {
+      if (relativePath.startsWith(m_rootBsPlatform)) {
+        return true;
+      }
+      for (Path path : m_paths) {
+        if (relativePath.startsWith(path)) {
+          return true;
         }
-        if (devSources != null) {
-            m_devSources.addAll(devSources);
+      }
+      return false;
+    }
+
+    return !relativePath.startsWith("..");
+  }
+
+  @NotNull
+  public Set<String> getSources() {
+    return m_useExternalAsSource ? m_externals : m_sources;
+  }
+
+  @NotNull
+  public Set<String> getDevSources() {
+    return m_devSources;
+  }
+
+  @NotNull
+  public String getName() {
+    return m_name;
+  }
+
+  public boolean isInSources(@NotNull VirtualFile file) {
+    if (m_basePath != null) {
+      Path relativePath = m_basePath.relativize(new File(file.getPath()).toPath());
+      for (String source : getSources()) {
+        if (relativePath.startsWith(source)) {
+          return true;
         }
-        if (externals != null) {
-            m_externals.addAll(externals);
+      }
+      for (String source : m_devSources) {
+        if (relativePath.startsWith(source)) {
+          return true;
         }
-        if (deps != null) {
-            m_deps.addAll(deps);
-            m_paths.addAll(deps.stream().map(dep -> FileSystems.getDefault().getPath("node_modules", dep, "lib")).collect(Collectors.toSet()));
-        }
+      }
     }
+    return false;
+  }
 
-    public void setRootFile(@Nullable VirtualFile rootFile) {
-        m_basePath = rootFile == null ? null : FileSystems.getDefault().getPath(rootFile.getPath());
-    }
+  @NotNull
+  public Set<String> getDependencies() {
+    return m_deps;
+  }
 
-    @NotNull
-    public String getNamespace() {
-        return m_namespace;
-    }
+  @Nullable
+  public String getJsxVersion() {
+    return m_jsxVersion;
+  }
 
-    public boolean hasNamespace() {
-        return !m_namespace.isEmpty();
-    }
+  @NotNull
+  public String[] getPpx() {
+    return m_ppx;
+  }
 
-    boolean accept(@Nullable String canonicalPath) {
-        if (canonicalPath == null || m_basePath == null) {
-            return false;
-        }
-
-        Path relativePath = m_basePath.relativize(new File(canonicalPath).toPath());
-        if (relativePath.startsWith("node_modules")) {
-            if (relativePath.startsWith(m_rootBsPlatform)) {
-                return true;
-            }
-            for (Path path : m_paths) {
-                if (relativePath.startsWith(path)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return !relativePath.startsWith("..");
-    }
-
-    @NotNull
-    public Set<String> getSources() {
-        return m_useExternalAsSource ? m_externals : m_sources;
-    }
-
-    @NotNull
-    public Set<String> getDevSources() {
-        return m_devSources;
-    }
-
-    @NotNull
-    public String getName() {
-        return m_name;
-    }
-
-    public boolean isInSources(@NotNull VirtualFile file) {
-        if (m_basePath != null) {
-            Path relativePath = m_basePath.relativize(new File(file.getPath()).toPath());
-            for (String source : getSources()) {
-                if (relativePath.startsWith(source)) {
-                    return true;
-                }
-            }
-            for (String source : m_devSources) {
-                if (relativePath.startsWith(source)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @NotNull
-    public Set<String> getDependencies() {
-        return m_deps;
-    }
-
-    @Nullable
-    public String getJsxVersion() {
-        return m_jsxVersion;
-    }
-
-    @NotNull
-    public String[] getPpx() {
-        return m_ppx;
-    }
-
-    public void setUseExternalAsSource(boolean useExternalAsSource) {
-        m_useExternalAsSource = useExternalAsSource;
-    }
+  public void setUseExternalAsSource(boolean useExternalAsSource) {
+    m_useExternalAsSource = useExternalAsSource;
+  }
 }

@@ -12,27 +12,27 @@ import com.intellij.openapi.module.Module;
 import org.jetbrains.annotations.NotNull;
 
 public class OCamlApplicationRunningState extends CommandLineState {
-    private final Module m_module;
+  private final Module m_module;
 
-    protected OCamlApplicationRunningState(ExecutionEnvironment environment, Module module) {
-        super(environment);
-        m_module = module;
-    }
+  protected OCamlApplicationRunningState(ExecutionEnvironment environment, Module module) {
+    super(environment);
+    m_module = module;
+  }
 
-    @NotNull
-    @Override
-    protected ProcessHandler startProcess() throws ExecutionException {
-        GeneralCommandLine commandLine = getCommand();
-        return new OSProcessHandler(commandLine.createProcess(), commandLine.getCommandLineString());
-    }
+  @NotNull
+  @Override
+  protected ProcessHandler startProcess() throws ExecutionException {
+    GeneralCommandLine commandLine = getCommand();
+    return new OSProcessHandler(commandLine.createProcess(), commandLine.getCommandLineString());
+  }
 
-    @NotNull
-    private GeneralCommandLine getCommand() {
-        GeneralCommandLine commandLine = new GeneralCommandLine();
-        // set exe/working dir/...
-        TextConsoleBuilder consoleBuilder = TextConsoleBuilderFactory.getInstance().createBuilder(m_module.getProject());
-        setConsoleBuilder(consoleBuilder);
-        return commandLine;
-    }
-
+  @NotNull
+  private GeneralCommandLine getCommand() {
+    GeneralCommandLine commandLine = new GeneralCommandLine();
+    // set exe/working dir/...
+    TextConsoleBuilder consoleBuilder =
+        TextConsoleBuilderFactory.getInstance().createBuilder(m_module.getProject());
+    setConsoleBuilder(consoleBuilder);
+    return commandLine;
+  }
 }

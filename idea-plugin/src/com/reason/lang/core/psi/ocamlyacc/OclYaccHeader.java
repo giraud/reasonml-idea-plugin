@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 public interface OclYaccHeader extends PsiStructuredElement {
 
-    @Nullable
-    ItemPresentation getPresentation();
-
+  @Nullable
+  ItemPresentation getPresentation();
 }

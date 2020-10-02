@@ -6,10 +6,10 @@ import com.reason.ide.files.BsConfigJsonFileType;
 
 public class BsConfigJsonTest extends ORBasePlatformTestCase {
 
-    public void testIsBsConfig() {
-        String bsConfigFileName = BsConfigJsonFileType.getDefaultFilename();
-        MockVirtualFile mockBsConfig = MockVirtualFile.file(bsConfigFileName);
-        assertTrue(BsConfigJson.isBsConfigJson(mockBsConfig));
-        assertFalse(BsConfigJson.isBsConfigJson(MockVirtualFile.file("package.json")));
-    }
+  public void testIsBsConfig() {
+    String bsConfigFileName = BsConfigJsonFileType.getDefaultFilename();
+    MockVirtualFile mockBsConfig = MockVirtualFile.file(bsConfigFileName);
+    assertTrue(BsConfigJson.isBsConfigJson(mockBsConfig));
+    assertFalse(BsConfigJson.isBsConfigJson(MockVirtualFile.file("package.json")));
+  }
 }

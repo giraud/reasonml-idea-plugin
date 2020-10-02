@@ -6,12 +6,12 @@ import com.reason.lang.dune.DuneTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiDuneFields extends PsiToken<DuneTypes> {
-    public PsiDuneFields(@NotNull DuneTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
+  public PsiDuneFields(@NotNull DuneTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
 
-    @Override
-    public String toString() {
-        return "Fields";
-    }
+  @Override
+  public String toString() {
+    return "Fields";
+  }
 }

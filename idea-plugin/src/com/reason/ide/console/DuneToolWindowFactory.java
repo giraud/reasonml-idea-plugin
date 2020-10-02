@@ -11,65 +11,64 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import icons.ORIcons;
+import javax.swing.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-
 public class DuneToolWindowFactory extends ORToolWindowFactory {
 
-    public static final String ID = "Dune:";
+  public static final String ID = "Dune:";
 
-    @Override
-    public String getId() {
-        return ID;
-    }
+  @Override
+  public String getId() {
+    return ID;
+  }
 
-    @Override
-    public Icon getIcon() {
-        return ORIcons.DUNE_TOOL;
-    }
+  @Override
+  public Icon getIcon() {
+    return ORIcons.DUNE_TOOL;
+  }
 
-    @Nls
-    @Override
-    public String getTitle() {
-        return "Process";
-    }
+  @Nls
+  @Override
+  public String getTitle() {
+    return "Process";
+  }
 
-    @Override
-    public String getStripeTitle() {
-        return "Dune";
-    }
+  @Override
+  public String getStripeTitle() {
+    return "Dune";
+  }
 
-    @Override
-    public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window) {
-        SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
+  @Override
+  public void createToolWindowContent(@NotNull final Project project, @NotNull ToolWindow window) {
+    SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
 
-        BsConsole console = new BsConsole(project);
-        panel.setContent(console.getComponent());
+    BsConsole console = new BsConsole(project);
+    panel.setContent(console.getComponent());
 
-        ActionToolbar toolbar = createToolbar(console);
-        panel.setToolbar(toolbar.getComponent());
+    ActionToolbar toolbar = createToolbar(console);
+    panel.setToolbar(toolbar.getComponent());
 
-        Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
+    Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", true);
 
-        window.getContentManager().addContent(content);
+    window.getContentManager().addContent(content);
 
-        Disposer.register(project, console);
-    }
+    Disposer.register(project, console);
+  }
 
-    @NotNull
-    private ActionToolbar createToolbar(@NotNull BsConsole console) {
-        DefaultActionGroup group = new DefaultActionGroup();
-        group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
-        group.add(new ClearLogAction(console));
-        group.add(new DuneBuildAction());
-        group.add(new DuneCleanAction());
-        group.add(new DuneInstallAction());
+  @NotNull
+  private ActionToolbar createToolbar(@NotNull BsConsole console) {
+    DefaultActionGroup group = new DefaultActionGroup();
+    group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
+    group.add(new ClearLogAction(console));
+    group.add(new DuneBuildAction());
+    group.add(new DuneCleanAction());
+    group.add(new DuneInstallAction());
 
-        ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
-        toolbar.setTargetComponent(console.getComponent());
+    ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
+    toolbar.setTargetComponent(console.getComponent());
 
-        return toolbar;
-    }
+    return toolbar;
+  }
 }

@@ -3,6 +3,4 @@ package com.reason.lang.core.psi.ocamlyacc;
 
 import com.intellij.psi.PsiElement;
 
-public interface OclYaccRulePattern extends PsiElement {
-
-}
+public interface OclYaccRulePattern extends PsiElement {}

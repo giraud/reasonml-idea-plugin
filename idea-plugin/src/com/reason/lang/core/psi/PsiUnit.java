@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiUnit extends ASTWrapperPsiElement {
 
-    public PsiUnit(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiUnit(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Unit";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Unit";
+  }
 }

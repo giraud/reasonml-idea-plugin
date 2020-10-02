@@ -8,16 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiTokenStub<T, S extends StubElement> extends StubBasedPsiElementBase<S> {
 
-    @NotNull
-    protected final T m_types;
+  @NotNull protected final T m_types;
 
-    public PsiTokenStub(@NotNull T types, @NotNull ASTNode node) {
-        super(node);
-        m_types = types;
-    }
+  public PsiTokenStub(@NotNull T types, @NotNull ASTNode node) {
+    super(node);
+    m_types = types;
+  }
 
-    public PsiTokenStub(@NotNull T types, @NotNull S stub, @NotNull IStubElementType nodeType) {
-        super(stub, nodeType);
-        m_types = types;
-    }
+  public PsiTokenStub(@NotNull T types, @NotNull S stub, @NotNull IStubElementType nodeType) {
+    super(stub, nodeType);
+    m_types = types;
+  }
 }
