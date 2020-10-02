@@ -7,15 +7,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class EsyBuildAction extends CompilerAction {
 
-    public EsyBuildAction() {
-        super("Build esy", "Build esy", AllIcons.Actions.Compile);
-    }
+  public EsyBuildAction() {
+    super("Build esy", "Build esy", AllIcons.Actions.Compile);
+  }
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (project != null) {
-            doAction(project, CliType.Esy.BUILD);
-        }
+  @Override
+  public void actionPerformed(@NotNull AnActionEvent e) {
+    Project project = e.getProject();
+    if (project != null) {
+      doAction(project, CliType.Esy.BUILD);
     }
+  }
 }

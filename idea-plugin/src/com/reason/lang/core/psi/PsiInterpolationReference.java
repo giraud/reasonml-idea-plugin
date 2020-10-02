@@ -5,13 +5,13 @@ import com.intellij.lang.ASTNode;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiInterpolationReference extends ASTWrapperPsiElement {
-    public PsiInterpolationReference(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiInterpolationReference(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "PsiInterpolationReference";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "PsiInterpolationReference";
+  }
 }

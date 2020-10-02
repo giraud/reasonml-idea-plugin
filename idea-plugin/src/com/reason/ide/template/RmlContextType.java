@@ -12,34 +12,37 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class RmlContextType extends TemplateContextType {
 
-    RmlContextType(@NotNull String id, @NotNull String presentableName, @Nullable Class<? extends TemplateContextType> baseContextType) {
-        super(id, presentableName, baseContextType);
+  RmlContextType(
+      @NotNull String id,
+      @NotNull String presentableName,
+      @Nullable Class<? extends TemplateContextType> baseContextType) {
+    super(id, presentableName, baseContextType);
+  }
+
+  @Override
+  public boolean isInContext(@NotNull PsiFile file, int offset) {
+    if (!PsiUtilCore.getLanguageAtOffset(file, offset).isKindOf(RmlLanguage.INSTANCE)) {
+      return false;
+    }
+
+    PsiElement element = file.findElementAt(offset);
+    if (element instanceof PsiWhiteSpace) {
+      return false;
+    }
+
+    return element != null && isInContext(element);
+  }
+
+  protected abstract boolean isInContext(PsiElement element);
+
+  public static class Generic extends RmlContextType {
+    protected Generic() {
+      super("REASON_CODE", "Reason", EverywhereContextType.class);
     }
 
     @Override
-    public boolean isInContext(@NotNull PsiFile file, int offset) {
-        if (!PsiUtilCore.getLanguageAtOffset(file, offset).isKindOf(RmlLanguage.INSTANCE)) {
-            return false;
-        }
-
-        PsiElement element = file.findElementAt(offset);
-        if (element instanceof PsiWhiteSpace) {
-            return false;
-        }
-
-        return element != null && isInContext(element);
+    protected boolean isInContext(PsiElement element) {
+      return true;
     }
-
-    protected abstract boolean isInContext(PsiElement element);
-
-    public static class Generic extends RmlContextType {
-        protected Generic() {
-            super("REASON_CODE", "Reason", EverywhereContextType.class);
-        }
-
-        @Override
-        protected boolean isInContext(PsiElement element) {
-            return true;
-        }
-    }
+  }
 }

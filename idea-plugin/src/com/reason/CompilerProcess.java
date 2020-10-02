@@ -7,13 +7,13 @@ import org.jetbrains.annotations.Nullable;
 
 public interface CompilerProcess {
 
-    boolean start();
+  boolean start();
 
-    void startNotify();
+  void startNotify();
 
-    @Nullable
-    ProcessHandler recreate(@NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated);
+  @Nullable
+  ProcessHandler recreate(
+      @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated);
 
-    void terminate();
-
+  void terminate();
 }

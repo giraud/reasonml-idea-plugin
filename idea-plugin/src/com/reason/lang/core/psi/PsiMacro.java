@@ -6,8 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiMacro extends ASTWrapperPsiElement {
 
-    public PsiMacro(@NotNull ASTNode node) {
-        super(node);
-    }
-
+  public PsiMacro(@NotNull ASTNode node) {
+    super(node);
+  }
 }

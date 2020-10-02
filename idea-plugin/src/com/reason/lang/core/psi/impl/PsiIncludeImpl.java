@@ -1,6 +1,5 @@
 package com.reason.lang.core.psi.impl;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
@@ -13,50 +12,51 @@ import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
+import org.jetbrains.annotations.NotNull;
 
 public class PsiIncludeImpl extends PsiToken<ORTypes> implements PsiInclude {
 
-    //region Constructors
-    public PsiIncludeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
-    //endregion
+  // region Constructors
+  public PsiIncludeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
+  // endregion
 
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        throw new IncorrectOperationException("Not implemented");
-    }
+  @Override
+  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    throw new IncorrectOperationException("Not implemented");
+  }
 
-    @NotNull
-    @Override
-    public String getPath() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        if (firstChild instanceof PsiFunctorCall) {
-            return ((PsiFunctorCall) firstChild).getFunctorName();
-        }
-        return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, PsiConstraints.class);
+  @NotNull
+  @Override
+  public String getPath() {
+    PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+    if (firstChild instanceof PsiFunctorCall) {
+      return ((PsiFunctorCall) firstChild).getFunctorName();
     }
+    return firstChild == null ? "" : ORUtil.getTextUntilClass(firstChild, PsiConstraints.class);
+  }
 
-    @NotNull
-    @Override
-    public String getQualifiedName() {
-        return getPath();
-    }
+  @NotNull
+  @Override
+  public String getQualifiedName() {
+    return getPath();
+  }
 
-    @Override
-    public boolean useFunctor() {
-        PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-        return firstChild instanceof PsiFunctorCall;
-    }
+  @Override
+  public boolean useFunctor() {
+    PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
+    return firstChild instanceof PsiFunctorCall;
+  }
 
-    @Override
-    public ItemPresentation getPresentation() {
-        return new GoToSymbolProvider.BaseNavigationItem(this, getQualifiedName(), ORIcons.INCLUDE);
-    }
+  @Override
+  public ItemPresentation getPresentation() {
+    return new GoToSymbolProvider.BaseNavigationItem(this, getQualifiedName(), ORIcons.INCLUDE);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "PsiInclude " + getQualifiedName();
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "PsiInclude " + getQualifiedName();
+  }
 }

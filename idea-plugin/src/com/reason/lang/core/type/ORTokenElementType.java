@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class ORTokenElementType extends IElementType {
-    public ORTokenElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
-        super(debugName, language);
-    }
+  public ORTokenElementType(@NotNull @NonNls String debugName, @NotNull Language language) {
+    super(debugName, language);
+  }
 }

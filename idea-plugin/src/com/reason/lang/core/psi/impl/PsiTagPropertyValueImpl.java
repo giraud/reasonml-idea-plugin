@@ -7,16 +7,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiTagPropertyValueImpl extends PsiToken<ORTypes> implements PsiTagPropertyValue {
 
-    //region Constructors
-    public PsiTagPropertyValueImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
-    //endregion
+  // region Constructors
+  public PsiTagPropertyValueImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
+  // endregion
 
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "TagPropertyValue";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "TagPropertyValue";
+  }
 }

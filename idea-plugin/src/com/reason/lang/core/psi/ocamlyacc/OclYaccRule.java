@@ -7,10 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 public interface OclYaccRule extends PsiStructuredElement {
 
-    @Nullable
-    OclYaccRuleBody getRuleBody();
+  @Nullable
+  OclYaccRuleBody getRuleBody();
 
-    @Nullable
-    ItemPresentation getPresentation();
-
+  @Nullable
+  ItemPresentation getPresentation();
 }

@@ -10,12 +10,24 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## 0.93 - 2020/10/02
+
+- :rocket: [#119](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/119) support for automatically closing quotes (double)
+
+- :nail_care: 'Goto class' use a custom presentation for inner modules 
+
+- :bug: [#271](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/271) Structure panel missing function defined with "and"
+- :bug: [#270](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/270) Function definition with type variables not recognized as a function
+- :bug: [#91](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/91) Jumping to some module-related symbol definitions from Structure Panel doesn't highlight symbol right away (incorrect module type detection)
+- :bug: Fix monorepo on windows
+
 ## 0.92 - 2020/09/18
 
 0.92.1
 
 - :bug: [#269](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/269) Incorrect display of class methods names in structure panel
-- :nail_care: Better parsing of React fragment <></> 
+- :nail_care: Better parsing of React fragment <></>
+- :nail_care: Better presentation of inner modules in 'goto class' dialog
 
 0.92
 

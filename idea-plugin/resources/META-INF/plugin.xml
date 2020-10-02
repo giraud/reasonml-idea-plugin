@@ -76,19 +76,19 @@
          -->
 
         <!-- Reason -->
-        <fileType extensions="rei" name="Reason interface file" fieldName="INSTANCE" language="Reason"
+        <fileType extensions="rei" name="REASON_INTF" fieldName="INSTANCE" language="Reason"
                   implementationClass="com.reason.ide.files.RmlInterfaceFileType"/>
-        <fileType extensions="re" name="Reason file" fieldName="INSTANCE" language="Reason"
+        <fileType extensions="re" name="REASON" fieldName="INSTANCE" language="Reason"
                   implementationClass="com.reason.ide.files.RmlFileType"/>
         <!-- Bs/Napkin -->
-        <fileType extensions="resi" name="Bucklescript interface file" fieldName="INSTANCE" language="NapkinScript"
+        <fileType extensions="resi" name="RESCRIPT_INTF" fieldName="INSTANCE" language="NapkinScript"
                   implementationClass="com.reason.ide.files.NsInterfaceFileType"/>
-        <fileType extensions="res" name="Bucklescript file" fieldName="INSTANCE" language="NapkinScript"
+        <fileType extensions="res" name="RESCRIPT" fieldName="INSTANCE" language="NapkinScript"
                   implementationClass="com.reason.ide.files.NsFileType"/>
         <!-- OCaml -->
-        <fileType extensions="mli" name="OCaml interface file" fieldName="INSTANCE" language="OCaml"
+        <fileType extensions="mli" name="OCAML_INTF" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclInterfaceFileType"/>
-        <fileType extensions="ml" name="OCaml file" fieldName="INSTANCE" language="OCaml"
+        <fileType extensions="ml" name="OCAML" fieldName="INSTANCE" language="OCaml"
                   implementationClass="com.reason.ide.files.OclFileType"/>
         <!-- OCamlP4 -->
         <fileType extensions="ml4" name="OCamlP4 file" fieldName="INSTANCE" language="OCamlP4"
@@ -100,14 +100,14 @@
         <fileType extensions="mll" name="MLL" fieldName="INSTANCE" language="Mll"
                   implementationClass="com.reason.ide.files.MllFileType"/>
         <!-- OCaml - Yacc -->
-        <fileType extensions="mly" name="Mly file" fieldName="INSTANCE" language="Mly"
+        <fileType extensions="mly" name="MlY" fieldName="INSTANCE" language="Mly"
                   implementationClass="com.reason.ide.files.MlyFileType"/>
         <!-- BuckleScript Configuration (bsconfig.json) -->
         <fileType name="BuckleScript Configuration" fieldName="INSTANCE" language="JSON"
                   fileNames="bsconfig.json"
                   implementationClass="com.reason.ide.files.BsConfigJsonFileType"/>
         <!-- Dune -->
-        <fileType name="Dune Configuration" fieldName="INSTANCE" language="Dune"
+        <fileType name="DUNE" fieldName="INSTANCE" language="Dune"
                   fileNames="dune;dune-project;jbuild"
                   implementationClass="com.reason.ide.files.DuneFileType"/>
         <!-- Binary -->
@@ -216,14 +216,14 @@
          -->
 
         <lang.documentationProvider language="Reason"
-                                    implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+                                    implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
         <lang.documentationProvider language="NapkinScript"
-                                    implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="OCamlP4" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Mlg" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Mll" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
-        <lang.documentationProvider language="Mly" implementationClass="com.reason.ide.docs.DocumentationProvider"/>
+                                    implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="OCaml" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="OCamlP4" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="Mlg" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="Mll" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
+        <lang.documentationProvider language="Mly" implementationClass="com.reason.ide.docs.ORDocumentationProvider"/>
 
         <!--
          | Search / navigating
@@ -307,7 +307,13 @@
 
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
 
-        <typedHandler implementation="com.reason.ide.ORTypedHandler" id="RmlTypedHandler"/>
+        <typedHandler implementation="com.reason.ide.handlers.ORTypedHandler" id="RmlTypedHandler"/>
+        <quoteHandler fileType="RESCRIPT" className="com.reason.ide.handlers.NsQuoteHandler"/>
+        <quoteHandler fileType="RESCRIPT_INTF" className="com.reason.ide.handlers.NsQuoteHandler"/>
+        <quoteHandler fileType="REASON" className="com.reason.ide.handlers.RmlQuoteHandler"/>
+        <quoteHandler fileType="REASON_INTF" className="com.reason.ide.handlers.RmlQuoteHandler"/>
+        <quoteHandler fileType="OCAML" className="com.reason.ide.handlers.OclQuoteHandler"/>
+        <quoteHandler fileType="OCAML_INTF" className="com.reason.ide.handlers.OclQuoteHandler"/>
 
         <lang.refactoringSupport language="OCaml"
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
@@ -354,8 +360,8 @@
          | Templates
          -->
 
-        <defaultLiveTemplatesProvider implementation="com.reason.ide.template.RmlLiveTemplateProvider"/>
         <liveTemplateContext implementation="com.reason.ide.template.RmlContextType$Generic"/>
+        <defaultLiveTemplates file="liveTemplates/Reason.xml"/>
 
         <!--
          | Intentions

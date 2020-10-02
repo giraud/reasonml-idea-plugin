@@ -9,59 +9,59 @@ import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import icons.ORIcons;
+import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+public class PsiClassField extends ASTWrapperPsiElement
+    implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
+  public PsiClassField(@NotNull ASTNode node) {
+    super(node);
+  }
 
-public class PsiClassField extends ASTWrapperPsiElement implements NavigatablePsiElement, PsiNameIdentifierOwner, PsiStructuredElement {
-    public PsiClassField(@NotNull ASTNode node) {
-        super(node);
-    }
+  @Nullable
+  @Override
+  public PsiElement getNameIdentifier() {
+    return PsiTreeUtil.findChildOfType(this, PsiLowerSymbol.class);
+  }
 
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        return PsiTreeUtil.findChildOfType(this, PsiLowerSymbol.class);
-    }
+  @Override
+  public String getName() {
+    PsiElement nameIdentifier = getNameIdentifier();
+    return nameIdentifier == null ? "" : nameIdentifier.getText();
+  }
 
-    @Override
-    public String getName() {
-        PsiElement nameIdentifier = getNameIdentifier();
-        return nameIdentifier == null ? "" : nameIdentifier.getText();
-    }
+  @Nullable
+  @Override
+  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    return null;
+  }
 
-    @Nullable
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public ItemPresentation getPresentation() {
+    return new ItemPresentation() {
+      @Nullable
+      @Override
+      public String getPresentableText() {
+        return getName();
+      }
+
+      @Nullable
+      @Override
+      public String getLocationString() {
         return null;
-    }
+      }
 
-    public ItemPresentation getPresentation() {
-        return new ItemPresentation() {
-            @Nullable
-            @Override
-            public String getPresentableText() {
-                return getName();
-            }
+      @NotNull
+      @Override
+      public Icon getIcon(boolean unused) {
+        return ORIcons.VAL;
+      }
+    };
+  }
 
-            @Nullable
-            @Override
-            public String getLocationString() {
-                return null;
-            }
-
-            @NotNull
-            @Override
-            public Icon getIcon(boolean unused) {
-                return ORIcons.VAL;
-            }
-        };
-    }
-
-    @Nullable
-    @Override
-    public String toString() {
-        return "Class.Field " + getName();
-    }
+  @Nullable
+  @Override
+  public String toString() {
+    return "Class.Field " + getName();
+  }
 }

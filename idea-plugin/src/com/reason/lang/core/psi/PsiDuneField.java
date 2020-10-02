@@ -10,32 +10,34 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiDuneField extends PsiToken<DuneTypes> implements PsiNameIdentifierOwner {
-    public PsiDuneField(@NotNull DuneTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
+  public PsiDuneField(@NotNull DuneTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
 
-    @Nullable
-    @Override
-    public PsiElement getNameIdentifier() {
-        PsiElement firstChild = getFirstChild();
-        PsiElement nextSibling = firstChild.getNextSibling();
-        return nextSibling != null && nextSibling.getNode().getElementType() == m_types.ATOM ? nextSibling : null;
-    }
+  @Nullable
+  @Override
+  public PsiElement getNameIdentifier() {
+    PsiElement firstChild = getFirstChild();
+    PsiElement nextSibling = firstChild.getNextSibling();
+    return nextSibling != null && nextSibling.getNode().getElementType() == m_types.ATOM
+        ? nextSibling
+        : null;
+  }
 
-    @Nullable
-    @Override
-    public String getName() {
-        PsiElement identifier = getNameIdentifier();
-        return identifier == null ? null : identifier.getText();
-    }
+  @Nullable
+  @Override
+  public String getName() {
+    PsiElement identifier = getNameIdentifier();
+    return identifier == null ? null : identifier.getText();
+  }
 
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return null;
-    }
+  @Override
+  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    return null;
+  }
 
-    @Override
-    public String toString() {
-        return "Field " + getName();
-    }
+  @Override
+  public String toString() {
+    return "Field " + getName();
+  }
 }

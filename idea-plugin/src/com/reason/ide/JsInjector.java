@@ -13,16 +13,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class JsInjector implements LanguageInjector {
 
-    public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host,
-                                     @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
-        if (host instanceof PsiRawBody) {
-            FileType jsFileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
-            if (jsFileType instanceof LanguageFileType) {
-                Language jsLanguage = ((LanguageFileType) jsFileType).getLanguage();
-                PsiRawBody macroHost = (PsiRawBody) host;
-                TextRange macroTextRange = macroHost.getMacroTextRange();
-                injectionPlacesRegistrar.addPlace(jsLanguage, macroTextRange, null, null);
-            }
-        }
+  public void getLanguagesToInject(
+      @NotNull PsiLanguageInjectionHost host,
+      @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
+    if (host instanceof PsiRawBody) {
+      FileType jsFileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
+      if (jsFileType instanceof LanguageFileType) {
+        Language jsLanguage = ((LanguageFileType) jsFileType).getLanguage();
+        PsiRawBody macroHost = (PsiRawBody) host;
+        TextRange macroTextRange = macroHost.getMacroTextRange();
+        injectionPlacesRegistrar.addPlace(jsLanguage, macroTextRange, null, null);
+      }
     }
+  }
 }

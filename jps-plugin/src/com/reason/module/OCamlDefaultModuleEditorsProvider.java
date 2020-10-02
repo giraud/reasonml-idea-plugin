@@ -9,17 +9,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class OCamlDefaultModuleEditorsProvider implements ModuleConfigurationEditorProvider {
 
-    @NotNull
-    @Override
-    public ModuleConfigurationEditor[] createEditors(@NotNull ModuleConfigurationState state) {
-        Module module = state.getRootModel().getModule();
-        if (ModuleType.get(module) instanceof OCamlModuleType) {
-            return new ModuleConfigurationEditor[]{
-                    new OCamlContentEntriesEditor(module.getName(), state)
-            };
-        }
-
-        return ModuleConfigurationEditor.EMPTY;
+  @NotNull
+  @Override
+  public ModuleConfigurationEditor[] createEditors(@NotNull ModuleConfigurationState state) {
+    Module module = state.getRootModel().getModule();
+    if (ModuleType.get(module) instanceof OCamlModuleType) {
+      return new ModuleConfigurationEditor[] {
+        new OCamlContentEntriesEditor(module.getName(), state)
+      };
     }
 
+    return ModuleConfigurationEditor.EMPTY;
+  }
 }

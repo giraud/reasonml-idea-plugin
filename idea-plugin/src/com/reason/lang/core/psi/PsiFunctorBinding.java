@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiFunctorBinding extends PsiToken<ORTypes> {
 
-    public PsiFunctorBinding(@NotNull ORTypes types, @NotNull ASTNode node) {
-        super(types, node);
-    }
+  public PsiFunctorBinding(@NotNull ORTypes types, @NotNull ASTNode node) {
+    super(types, node);
+  }
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "Functor binding";
-    }
+  @NotNull
+  @Override
+  public String toString() {
+    return "Functor binding";
+  }
 }

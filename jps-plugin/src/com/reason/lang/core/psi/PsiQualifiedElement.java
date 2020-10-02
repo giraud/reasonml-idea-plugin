@@ -1,12 +1,12 @@
 package com.reason.lang.core.psi;
 
-import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiNamedElement;
+import org.jetbrains.annotations.NotNull;
 
 public interface PsiQualifiedElement extends PsiNamedElement {
-    @NotNull
-    String getPath();
+  @NotNull
+  String getPath();
 
-    @NotNull
-    String getQualifiedName();
+  @NotNull
+  String getQualifiedName();
 }

@@ -6,8 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 class BsConsole extends ConsoleViewImpl {
 
-    BsConsole(@NotNull Project project) {
-        super(project, true);
-    }
-
+  BsConsole(@NotNull Project project) {
+    super(project, true);
+  }
 }

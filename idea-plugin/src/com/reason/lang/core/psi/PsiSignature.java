@@ -6,9 +6,9 @@ import com.reason.lang.core.signature.ORSignature;
 import org.jetbrains.annotations.NotNull;
 
 public interface PsiSignature extends PsiElement {
-    @NotNull
-    ORSignature asHMSignature();
+  @NotNull
+  ORSignature asHMSignature();
 
-    @NotNull
-    String asString(@NotNull Language lang);
+  @NotNull
+  String asString(@NotNull Language lang);
 }

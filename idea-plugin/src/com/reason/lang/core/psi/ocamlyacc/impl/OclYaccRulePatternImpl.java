@@ -10,17 +10,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class OclYaccRulePatternImpl extends ASTWrapperPsiElement implements OclYaccRulePattern {
 
-    public OclYaccRulePatternImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public OclYaccRulePatternImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull OclYaccVisitor visitor) {
-        visitor.visitRulePattern(this);
-    }
+  public void accept(@NotNull OclYaccVisitor visitor) {
+    visitor.visitRulePattern(this);
+  }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
-        if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
-        else super.accept(visitor);
-    }
-
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
+    else super.accept(visitor);
+  }
 }

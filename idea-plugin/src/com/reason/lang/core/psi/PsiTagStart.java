@@ -1,24 +1,23 @@
 package com.reason.lang.core.psi;
 
 import com.intellij.psi.PsiNameIdentifierOwner;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public interface PsiTagStart extends PsiNameIdentifierOwner {
-    interface TagProperty {
-        @Nullable
-        String getName();
+  interface TagProperty {
+    @Nullable
+    String getName();
 
-        String getType();
+    String getType();
 
-        boolean isMandatory();
-    }
+    boolean isMandatory();
+  }
 
-    @NotNull
-    List<PsiTagProperty> getProperties();
+  @NotNull
+  List<PsiTagProperty> getProperties();
 
-    @NotNull
-    List<TagProperty> getUnifiedPropertyList();
+  @NotNull
+  List<TagProperty> getUnifiedPropertyList();
 }

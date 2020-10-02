@@ -10,25 +10,29 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 
-@State(name = "DuneFacetConfiguration", storages = {@Storage("ocaml-dune.xml")})
-public class DuneFacetConfiguration implements FacetConfiguration, PersistentStateComponent<DuneFacetConfiguration> {
+@State(
+    name = "DuneFacetConfiguration",
+    storages = {@Storage("ocaml-dune.xml")})
+public class DuneFacetConfiguration
+    implements FacetConfiguration, PersistentStateComponent<DuneFacetConfiguration> {
 
-    public boolean inheritProjectSdk = true;
-    public String sdkName = null;
+  public boolean inheritProjectSdk = true;
+  public String sdkName = null;
 
-    @NotNull
-    @Override
-    public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
-        return new FacetEditorTab[]{new DuneFacetEditor(editorContext, this)};
-    }
+  @NotNull
+  @Override
+  public FacetEditorTab[] createEditorTabs(
+      FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
+    return new FacetEditorTab[] {new DuneFacetEditor(editorContext, this)};
+  }
 
-    @Override
-    public DuneFacetConfiguration getState() {
-        return this;
-    }
+  @Override
+  public DuneFacetConfiguration getState() {
+    return this;
+  }
 
-    @Override
-    public void loadState(@NotNull DuneFacetConfiguration state) {
-        XmlSerializerUtil.copyBean(state, this);
-    }
+  @Override
+  public void loadState(@NotNull DuneFacetConfiguration state) {
+    XmlSerializerUtil.copyBean(state, this);
+  }
 }

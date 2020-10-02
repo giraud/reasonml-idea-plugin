@@ -4,37 +4,37 @@ import com.reason.CompilerType;
 
 public interface CliType {
 
-    CompilerType getCompilerType();
+  CompilerType getCompilerType();
 
-    enum Bs implements CliType {
-        MAKE,
-        CLEAN_MAKE;
+  enum Bs implements CliType {
+    MAKE,
+    CLEAN_MAKE;
 
-        @Override
-        public CompilerType getCompilerType() {
-            return CompilerType.BS;
-        }
+    @Override
+    public CompilerType getCompilerType() {
+      return CompilerType.BS;
     }
+  }
 
-    enum Dune implements CliType {
-        BUILD,
-        CLEAN,
-        INSTALL;
+  enum Dune implements CliType {
+    BUILD,
+    CLEAN,
+    INSTALL;
 
-        @Override
-        public CompilerType getCompilerType() {
-            return CompilerType.DUNE;
-        }
+    @Override
+    public CompilerType getCompilerType() {
+      return CompilerType.DUNE;
     }
+  }
 
-    enum Esy implements CliType {
-        INSTALL,
-        BUILD,
-        SHELL;
+  enum Esy implements CliType {
+    INSTALL,
+    BUILD,
+    SHELL;
 
-        @Override
-        public CompilerType getCompilerType() {
-            return CompilerType.ESY;
-        }
+    @Override
+    public CompilerType getCompilerType() {
+      return CompilerType.ESY;
     }
+  }
 }

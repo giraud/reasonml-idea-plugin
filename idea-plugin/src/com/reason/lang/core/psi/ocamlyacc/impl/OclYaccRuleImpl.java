@@ -14,27 +14,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class OclYaccRuleImpl extends ASTWrapperPsiElement implements OclYaccRule {
 
-    public OclYaccRuleImpl(@NotNull ASTNode node) {
-        super(node);
-    }
+  public OclYaccRuleImpl(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    public void accept(@NotNull OclYaccVisitor visitor) {
-        visitor.visitRule(this);
-    }
+  public void accept(@NotNull OclYaccVisitor visitor) {
+    visitor.visitRule(this);
+  }
 
-    public void accept(@NotNull PsiElementVisitor visitor) {
-        if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
-        else super.accept(visitor);
-    }
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof OclYaccVisitor) accept((OclYaccVisitor) visitor);
+    else super.accept(visitor);
+  }
 
-    @Override
-    @Nullable
-    public OclYaccRuleBody getRuleBody() {
-        return findChildByClass(OclYaccRuleBody.class);
-    }
+  @Override
+  @Nullable
+  public OclYaccRuleBody getRuleBody() {
+    return findChildByClass(OclYaccRuleBody.class);
+  }
 
-    public ItemPresentation getPresentation() {
-        return OclYaccPsiImplUtil.getPresentation(this);
-    }
-
+  public ItemPresentation getPresentation() {
+    return OclYaccPsiImplUtil.getPresentation(this);
+  }
 }

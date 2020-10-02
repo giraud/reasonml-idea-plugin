@@ -4,8 +4,7 @@ import com.reason.lang.reason.RmlTypes;
 
 public class RmlSyntaxAnnotator extends ORSyntaxAnnotator {
 
-    public RmlSyntaxAnnotator() {
-        super(RmlTypes.INSTANCE);
-    }
-
+  public RmlSyntaxAnnotator() {
+    super(RmlTypes.INSTANCE);
+  }
 }

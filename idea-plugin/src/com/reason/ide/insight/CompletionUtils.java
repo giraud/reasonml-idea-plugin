@@ -8,21 +8,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CompletionUtils {
-    public static final int KEYWORD_PRIORITY = 10;
+  public static final int KEYWORD_PRIORITY = 10;
 
-    static PsiElement getParentWithoutIdeaRulezzz(@NotNull PsiElement element) {
-        PsiElement parent = element.getParent();
-        if (parent instanceof PsiUpperSymbol) {
-            // Idea always add "IntellijIdeaRulezzz" for completion, and it's always the current UpperSymbol
-            parent = parent.getParent();
-        }
-        return parent;
+  static PsiElement getParentWithoutIdeaRulezzz(@NotNull PsiElement element) {
+    PsiElement parent = element.getParent();
+    if (parent instanceof PsiUpperSymbol) {
+      // Idea always add "IntellijIdeaRulezzz" for completion, and it's always the current
+      // UpperSymbol
+      parent = parent.getParent();
     }
+    return parent;
+  }
 
-    @Nullable
-    static IElementType getPrevNodeType(@NotNull PsiElement element) {
-        PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
-        return prevLeaf == null ? null : prevLeaf.getNode().getElementType();
-    }
-
+  @Nullable
+  static IElementType getPrevNodeType(@NotNull PsiElement element) {
+    PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
+    return prevLeaf == null ? null : prevLeaf.getNode().getElementType();
+  }
 }

@@ -6,8 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiDirective extends ASTWrapperPsiElement {
 
-    public PsiDirective(@NotNull ASTNode node) {
-        super(node);
-    }
-
+  public PsiDirective(@NotNull ASTNode node) {
+    super(node);
+  }
 }

@@ -6,13 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiClassConstructor extends ASTWrapperPsiElement {
 
-    public PsiClassConstructor(@NotNull ASTNode node) {
-        super(node);
-    }
+  public PsiClassConstructor(@NotNull ASTNode node) {
+    super(node);
+  }
 
-    @Override
-    public boolean canNavigate() {
-        return false;
-    }
+  @Override
+  public boolean canNavigate() {
+    return false;
+  }
 }
-

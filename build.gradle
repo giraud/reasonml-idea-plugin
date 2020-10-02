@@ -1,5 +1,10 @@
 plugins {
     id 'org.jetbrains.intellij' version "0.4.21"
+    id 'com.github.sherter.google-java-format' version '0.8'
+}
+
+repositories {
+    jcenter()
 }
 
 apply plugin: 'idea'
@@ -42,8 +47,12 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
-            <li>#269 - Incorrect display of class methods names in structure panel</li>
-            <li>Better parsing of React fragment</li>
+            <li>#119 - Support for automatically closing quotes (double)</li>
+            <li>'Goto class' use a custom presentation for inner modules</li> 
+            <li>#91 - Jumping to some module-related symbol definitions from Structure Panel doesn't highlight symbol right away (incorrect module type detection)<li>f
+            <li>#271 - Structure panel missing function defined with "and"</li>
+            <li>#270 - Function definition with type variables not recognized as a function</li>
+            <li>Fix monorepo on windows</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

@@ -24,5 +24,4 @@ public interface ODocTypes {
   IElementType PRE_END = new ODocTokenType("PRE_END");
   IElementType RBRACE = new ODocTokenType("RBRACE");
   IElementType COLON = new ODocTokenType("COLON");
-
 }

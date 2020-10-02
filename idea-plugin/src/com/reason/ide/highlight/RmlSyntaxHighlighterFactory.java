@@ -7,9 +7,10 @@ import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
-    @NotNull
-    @Override
-    public com.intellij.openapi.fileTypes.SyntaxHighlighter getSyntaxHighlighter(Project project, VirtualFile virtualFile) {
-        return new ORSyntaxHighlighter(RmlTypes.INSTANCE);
-    }
+  @NotNull
+  @Override
+  public com.intellij.openapi.fileTypes.SyntaxHighlighter getSyntaxHighlighter(
+      Project project, VirtualFile virtualFile) {
+    return new ORSyntaxHighlighter(RmlTypes.INSTANCE);
+  }
 }
