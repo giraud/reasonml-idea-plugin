@@ -1,5 +1,6 @@
 package com.reason.ide.annotations;
 
+import com.intellij.util.containers.ConcurrentMultiMap;
 import com.intellij.util.containers.MultiMap;
 import com.reason.Joiner;
 import com.reason.Log;
@@ -15,7 +16,7 @@ public class ErrorsManagerImpl implements ErrorsManager {
   private static final Log LOG = Log.create("errors");
 
   private final Map<String, Map<Integer, OutputInfo>> m_errorsByFile = new ConcurrentHashMap<>();
-  private final MultiMap<String, OutputInfo> m_warningsByFile = MultiMap.createConcurrent();
+  private final MultiMap<String, OutputInfo> m_warningsByFile = new ConcurrentMultiMap<>();
 
   @Override
   public void addAllInfo(@NotNull Collection<OutputInfo> bsbInfo) {

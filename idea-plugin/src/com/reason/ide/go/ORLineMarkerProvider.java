@@ -21,8 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
   @Override
   protected void collectNavigationMarkers(
-      @NotNull PsiElement element,
-      @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result) {
+      @NotNull PsiElement element, @NotNull Collection<? super RelatedItemLineMarkerInfo> result) {
     PsiElement parent = element.getParent();
     FileBase containingFile = (FileBase) element.getContainingFile();
 
