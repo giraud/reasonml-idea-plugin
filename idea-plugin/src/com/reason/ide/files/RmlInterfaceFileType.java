@@ -17,7 +17,7 @@ public class RmlInterfaceFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "Reason interface file";
+    return "REASON_INTF";
   }
 
   @NotNull

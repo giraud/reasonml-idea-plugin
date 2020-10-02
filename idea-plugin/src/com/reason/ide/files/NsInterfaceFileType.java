@@ -17,13 +17,13 @@ public class NsInterfaceFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "Bucklescript interface file";
+    return "RESCRIPT_INTF";
   }
 
   @NotNull
   @Override
   public String getDescription() {
-    return "Reason language interface file for bucklescript (NapkinScript)";
+    return "Rescript language interface file";
   }
 
   @NotNull

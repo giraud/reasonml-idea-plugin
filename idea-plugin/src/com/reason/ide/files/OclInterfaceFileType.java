@@ -17,7 +17,7 @@ public class OclInterfaceFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "OCaml interface file";
+    return "OCAML_INTF";
   }
 
   @NotNull

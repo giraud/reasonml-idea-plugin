@@ -17,7 +17,7 @@ public class OclFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "OCaml file";
+    return "OCAML";
   }
 
   @NotNull

@@ -1,4 +1,4 @@
-package com.reason.ide;
+package com.reason.ide.handlers;
 
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate;
 import com.intellij.openapi.editor.CaretModel;

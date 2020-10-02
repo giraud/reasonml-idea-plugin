@@ -17,13 +17,13 @@ public class NsFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "Bucklescript file";
+    return "RESCRIPT";
   }
 
   @NotNull
   @Override
   public String getDescription() {
-    return "\"Reason language file for bucklescript (NapkinScript)";
+    return "\"Rescript language file";
   }
 
   @NotNull

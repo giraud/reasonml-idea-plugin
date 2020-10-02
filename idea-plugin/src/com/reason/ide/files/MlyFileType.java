@@ -18,7 +18,7 @@ public class MlyFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "Mly file";
+    return "MlY";
   }
 
   @NotNull

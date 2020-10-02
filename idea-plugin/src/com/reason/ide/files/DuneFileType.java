@@ -32,7 +32,7 @@ public class DuneFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "Dune Configuration";
+    return "DUNE";
   }
 
   @NotNull

@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :rocket: [#119](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/119) support for automatically closing quotes (double)
+
 - :bug: [#271](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/271) Structure panel missing function defined with "and"
 - :bug: [#270](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/270) Function definition with type variables not recognized as a function
 - :bug: [#91](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/91) Jumping to some module-related symbol definitions from Structure Panel doesn't highlight symbol right away (incorrect module type detection)

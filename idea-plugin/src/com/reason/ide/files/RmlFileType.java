@@ -17,7 +17,7 @@ public class RmlFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return "Reason file";
+    return "REASON";
   }
 
   @NotNull
