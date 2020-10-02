@@ -7,7 +7,7 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class DotCompletionTest extends ORBasePlatformTestCase {
 
-  public void test_Rml_Basic() {
+  public void test_RML_Basic() {
     configureCode("A.re", "let x = 1;");
     configureCode("B.re", "type t; let y = 2; module B = {}; A.<caret>");
 
@@ -17,9 +17,9 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
     assertSameElements(strings, "x");
   }
 
-  public void test_Ocl_Basic() {
+  public void test_OCL_basic() {
     configureCode("A.ml", "let x = 1");
-    configureCode("B.ml", "type t let y = 2 module B = struct end A.<caret>");
+    configureCode("B.ml", "type t let y = 2 module B = struct end let _ = A.<caret>");
 
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();
@@ -39,7 +39,7 @@ public class DotCompletionTest extends ORBasePlatformTestCase {
 
   public void test_Ocl_ModuleOverride() {
     configureCode("A.ml", "let x = 1");
-    configureCode("B.ml", "module A = struct let y = 2 end A.<caret>");
+    configureCode("B.ml", "module A = struct let y = 2 end let _ = A.<caret>");
 
     myFixture.complete(CompletionType.BASIC, 1);
     List<String> strings = myFixture.getLookupElementStrings();

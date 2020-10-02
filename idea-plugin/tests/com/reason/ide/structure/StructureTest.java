@@ -38,16 +38,27 @@ public class StructureTest extends ORBasePlatformTestCase {
   }
 
   public void test_OCL_module_type_extraction() {
+    configureCode("A.mli", "module type S = sig\n end");
+    FileBase b = configureCode("B.ml", "module X : module type of A.S");
+    StructureViewModel model = new ORStructureViewModel(b);
+
+    TreeElement e = model.getRoot().getChildren()[0];
+    assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
+    TreeElement ee = e.getChildren()[0];
+    assertPresentation("S", "A.mli", ORIcons.MODULE_TYPE, ee.getPresentation());
+  }
+
+  public void test_OCL_module_type_extraction_functor() {
     configureCode(
         "A.mli",
         "module type S = sig\n module Branch : sig type t end\n end\n module Make() : S\n module Vcs = Make()");
-    FileBase a = configureCode("B.ml", "module type of A.Vcs");
-    StructureViewModel model = new ORStructureViewModel(a);
+    FileBase b = configureCode("B.ml", "module X : module type of A.Vcs.Branch");
+    StructureViewModel model = new ORStructureViewModel(b);
 
-    TreeElement i = model.getRoot().getChildren()[0];
-    assertPresentation("Vcs", "A.mli", ORIcons.MODULE_TYPE, i.getPresentation());
-    TreeElement x = i.getChildren()[0];
-    assertPresentation("x", "bool", ORIcons.VAL, x.getPresentation());
+    TreeElement e = model.getRoot().getChildren()[0];
+    assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
+    TreeElement ee = e.getChildren()[0];
+    assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
   }
 
   private void assertPresentation(

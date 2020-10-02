@@ -7,6 +7,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -263,18 +264,74 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
     return null;
   }
 
+  private boolean isModuleTypeOf() {
+    PsiElement nextSibling = ORUtil.nextSibling(getFirstChild());
+    PsiElement nextNextSibling = ORUtil.nextSibling(nextSibling);
+    return nextSibling != null
+        && nextNextSibling != null
+        && nextSibling.getNode().getElementType() == m_types.TYPE
+        && nextNextSibling.getNode().getElementType() == m_types.OF;
+  }
+
+  private @Nullable PsiModule findReferencedModuleTypeOf() {
+    PsiElement of = ORUtil.findImmediateFirstChildOfType(this, m_types.OF);
+
+    if (of != null) {
+      // find latest module name
+      PsiElement module = ORUtil.nextSiblingWithTokenType(of, m_types.C_UPPER_SYMBOL);
+      PsiElement moduleNextSibling = module == null ? null : module.getNextSibling();
+      while (moduleNextSibling != null
+          && moduleNextSibling.getNode().getElementType() == m_types.DOT) {
+        PsiElement element = moduleNextSibling.getNextSibling();
+        if (element != null && element.getNode().getElementType() == m_types.C_UPPER_SYMBOL) {
+          module = element;
+          moduleNextSibling = module.getNextSibling();
+        } else {
+          moduleNextSibling = null;
+        }
+      }
+
+      if (module != null) {
+        PsiReference reference = module.getReference();
+        PsiElement resolvedElement = reference == null ? null : reference.resolve();
+        if (resolvedElement instanceof PsiUpperIdentifier) {
+          PsiElement resolvedModule = resolvedElement.getParent();
+          if (resolvedModule instanceof PsiModule) {
+            return (PsiModule) resolvedModule;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   public ItemPresentation getPresentation() {
+    boolean isModuleTypeOf = isModuleTypeOf();
+    PsiModule referencedModuleType = isModuleTypeOf ? findReferencedModuleTypeOf() : null;
+
     return new ItemPresentation() {
       @Nullable
       @Override
       public String getPresentableText() {
+        if (isModuleTypeOf) {
+          if (referencedModuleType == null) {
+            PsiElement of =
+                ORUtil.findImmediateFirstChildOfType(PsiInnerModuleImpl.this, m_types.OF);
+            assert of != null;
+            return getText().substring(of.getStartOffsetInParent() + 3);
+          }
+          return referencedModuleType.getName();
+        }
         return getName();
       }
 
       @NotNull
       @Override
       public String getLocationString() {
-        return "";
+        return referencedModuleType == null
+            ? ""
+            : referencedModuleType.getContainingFile().getName();
       }
 
       @NotNull
