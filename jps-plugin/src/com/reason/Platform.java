@@ -2,7 +2,7 @@ package com.reason;
 
 import com.intellij.execution.configurations.PathEnvironmentVariableUtil;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManagerCore;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -54,8 +54,8 @@ public class Platform {
 
   @Nullable
   public static Path getPluginLocation() {
-    IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId("reasonml"));
-    return plugin == null ? null : plugin.getPluginPath();
+    IdeaPluginDescriptor plugin = PluginManager.getPlugin(PluginId.getId("reasonml"));
+    return plugin == null ? null : plugin.getPath().toPath();
   }
 
   @NotNull

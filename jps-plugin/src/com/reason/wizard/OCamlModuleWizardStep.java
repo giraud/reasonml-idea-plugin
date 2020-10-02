@@ -1,7 +1,5 @@
 package com.reason.wizard;
 
-import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
-
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
@@ -42,7 +40,7 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
 
     model.reset(project);
     Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
-    c_sdk = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
+    c_sdk = new JdkComboBox(model, filter);
   }
 
   @Override
@@ -68,8 +66,8 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
           Messages.showOkCancelDialog(
               "Do you want to create a project with no SDK assigned?\\nAn SDK is required for compiling as well as for the standard SDK modules resolution and type inference.",
               IdeBundle.message("title.no.jdk.specified"),
-              Messages.getOkButton(),
-              Messages.getCancelButton(),
+              Messages.OK_BUTTON,
+              Messages.CANCEL_BUTTON,
               Messages.getWarningIcon());
       return result == Messages.OK;
     }

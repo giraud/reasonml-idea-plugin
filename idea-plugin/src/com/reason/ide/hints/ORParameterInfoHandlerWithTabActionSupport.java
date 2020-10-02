@@ -49,7 +49,7 @@ public class ORParameterInfoHandlerWithTabActionSupport
 
   @NotNull
   @Override
-  public Set<Class<?>> getArgumentListAllowedParentClasses() {
+  public Set<Class> getArgumentListAllowedParentClasses() {
     return Collections.singleton(PsiFunctionCallParams.class);
   }
 

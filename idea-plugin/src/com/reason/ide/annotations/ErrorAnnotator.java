@@ -2,7 +2,6 @@ package com.reason.ide.annotations;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
-import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
@@ -11,7 +10,9 @@ import com.intellij.problems.Problem;
 import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiFile;
 import com.reason.Log;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,10 +90,7 @@ public class ErrorAnnotator
 
     for (BsbErrorAnnotation annotation : annotationResult) {
       if (annotation.isError) {
-        holder
-            .newAnnotation(HighlightSeverity.ERROR, annotation.message)
-            .range(annotation.range)
-            .create();
+        holder.createErrorAnnotation(annotation.range, annotation.message);
         problems.add(
             problemSolver.convertToProblem(
                 file.getVirtualFile(),
@@ -100,10 +98,7 @@ public class ErrorAnnotator
                 annotation.startPos.column,
                 new String[] {annotation.message}));
       } else {
-        holder
-            .newAnnotation(HighlightSeverity.WARNING, annotation.message)
-            .range(annotation.range)
-            .create();
+        holder.createWarningAnnotation(annotation.range, annotation.message);
       }
     }
 

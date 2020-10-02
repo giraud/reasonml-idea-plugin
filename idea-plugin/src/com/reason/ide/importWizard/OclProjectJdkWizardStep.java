@@ -1,7 +1,5 @@
 package com.reason.ide.importWizard;
 
-import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
-
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
@@ -66,7 +64,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
     model.reset(project);
     Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
-    c_selExistingSdk = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
+    c_selExistingSdk = new JdkComboBox(model, filter);
   }
 
   @Override

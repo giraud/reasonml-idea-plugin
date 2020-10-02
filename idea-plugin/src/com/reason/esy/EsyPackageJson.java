@@ -14,7 +14,6 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.EsyPackageJsonFileType;
-import java.io.*;
 import org.jetbrains.annotations.NotNull;
 
 public class EsyPackageJson {
@@ -24,12 +23,8 @@ public class EsyPackageJson {
   /* detects any "package.json" with a top-level "esy" property */
   public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
     if (virtualFile.getFileType() instanceof JsonFileType) {
-      try {
-        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-        return createFilePattern().accepts(fileContent);
-      } catch (IOException e) {
-        return false;
-      }
+      FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+      return createFilePattern().accepts(fileContent);
     }
     return false;
   }

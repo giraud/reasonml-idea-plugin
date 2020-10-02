@@ -209,7 +209,6 @@ public class ORDocumentationProvider implements DocumentationProvider {
   }
 
   @Nullable
-  @Override
   public PsiElement getCustomDocumentationElement(
       @NotNull Editor editor,
       @NotNull PsiFile file,

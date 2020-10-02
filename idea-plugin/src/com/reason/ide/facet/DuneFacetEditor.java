@@ -1,7 +1,5 @@
 package com.reason.ide.facet;
 
-import static com.intellij.openapi.roots.ui.configuration.JdkComboBox.getSdkFilter;
-
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.openapi.application.ApplicationManager;
@@ -49,7 +47,7 @@ class DuneFacetEditor extends FacetEditorTab {
     Condition<SdkTypeId> filter = sdkTypeId -> OCamlSdkType.ID.equals(sdkTypeId.getName());
 
     model.reset(project);
-    f_sdkSelect = new JdkComboBox(project, model, filter, getSdkFilter(filter), filter, null);
+    f_sdkSelect = new JdkComboBox(model, filter);
   }
 
   @NotNull

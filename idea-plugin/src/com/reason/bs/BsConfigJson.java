@@ -8,7 +8,6 @@ import com.intellij.patterns.ElementPattern;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.BsConfigJsonFileType;
-import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 public class BsConfigJson {
@@ -17,12 +16,8 @@ public class BsConfigJson {
 
   public static boolean isBsConfigJson(@NotNull VirtualFile virtualFile) {
     if (virtualFile.getFileType() instanceof JsonFileType) {
-      try {
-        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-        return createFilePattern().accepts(fileContent);
-      } catch (IOException e) {
-        return false;
-      }
+      FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+      return createFilePattern().accepts(fileContent);
     }
     return false;
   }

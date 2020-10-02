@@ -27,7 +27,7 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
 
   @Override
   public void processNames(
-      @NotNull Processor<? super String> processor,
+      @NotNull Processor<String> processor,
       @NotNull GlobalSearchScope scope,
       @Nullable IdFilter filter) {
     Project project = scope.getProject();
@@ -39,7 +39,7 @@ public class ORModuleContributor implements GotoClassContributor, ChooseByNameCo
   @Override
   public void processElementsWithName(
       @NotNull String name,
-      @NotNull Processor<? super NavigationItem> processor,
+      @NotNull Processor<NavigationItem> processor,
       @NotNull FindSymbolParameters parameters) {
     Project project = parameters.getProject();
     GlobalSearchScope scope = parameters.getSearchScope();

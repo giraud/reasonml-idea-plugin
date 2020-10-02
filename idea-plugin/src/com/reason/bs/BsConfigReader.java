@@ -2,16 +2,14 @@ package com.reason.bs;
 
 import static com.reason.StringUtil.toFirstUpper;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.FileUtil;
 import gnu.trove.THashSet;
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +39,8 @@ public class BsConfigReader {
             .replaceAll(",[\\s\\n]*]", "]")
             .replaceAll(",[\\s\\n]*}", "}");
 
-    JsonElement topElement = JsonParser.parseString(normalizedContent);
+    JsonParser parser = new JsonParser();
+    JsonElement topElement = parser.parse(normalizedContent);
 
     if (topElement.isJsonObject()) {
       JsonObject top = topElement.getAsJsonObject();
