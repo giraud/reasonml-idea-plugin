@@ -54,7 +54,7 @@ public class DuneToolWindowFactory extends ORToolWindowFactory {
 
     window.getContentManager().addContent(content);
 
-    Disposer.register(project, console);
+    Disposer.register(window.getDisposable(), console);
   }
 
   @NotNull

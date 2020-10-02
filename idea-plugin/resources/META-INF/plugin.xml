@@ -322,7 +322,7 @@
 
         <iconProvider implementation="com.reason.ide.IconProvider"/>
 
-        <colorSettingsPage implementation="com.reason.ide.settings.ReasonColorSettingsPage"/>
+        <colorSettingsPage implementation="com.reason.ide.settings.ORColorSettingsPage"/>
         <colorSettingsPage implementation="com.reason.ide.settings.DuneColorSettingsPage"/>
 
         <annotator language="Reason" implementationClass="com.reason.ide.highlight.RmlSyntaxAnnotator"/>

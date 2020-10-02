@@ -16,11 +16,12 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
 
   @Nls private static final String BS_PLATFORM_LOCATION_LABEL = "Choose bs-platform Directory: ";
 
-  @Nls private static final String DUNE_EXECTUABLE_LABEL = "Choose dune Executable: ";
+  @Nls private static final String DUNE_EXECUTABLE_LABEL = "Choose dune Executable: ";
 
-  @Nls private static final String ESY_EXECTUABLE_LABEL = "Choose esy Executable: ";
+  @Nls private static final String ESY_EXECUTABLE_LABEL = "Choose esy Executable: ";
 
-  private final ORSettings m_settings;
+  private final Project m_project;
+  private ORSettings m_settings;
 
   private JPanel f_rootPanel;
   private JTabbedPane f_tabs;
@@ -40,8 +41,8 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   // Esy
   private TextFieldWithBrowseButton f_esyExecutable;
 
-  public ORSettingsConfigurable(ORSettings settings) {
-    m_settings = settings;
+  public ORSettingsConfigurable(@NotNull Project project) {
+    m_project = project;
   }
 
   @NotNull
@@ -66,6 +67,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   @Nullable
   @Override
   public JComponent createComponent() {
+    m_settings = ORSettings.getInstance(m_project);
     createGeneralTab();
     createBsTab();
     createDuneTab();
@@ -148,7 +150,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   private void createDuneTab() {
     Project project = m_settings.getProject();
     f_duneExecutable.addBrowseFolderListener(
-        DUNE_EXECTUABLE_LABEL,
+        DUNE_EXECUTABLE_LABEL,
         null,
         project,
         FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
@@ -157,7 +159,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   private void createEsyTab() {
     Project project = m_settings.getProject();
     f_esyExecutable.addBrowseFolderListener(
-        ESY_EXECTUABLE_LABEL,
+        ESY_EXECUTABLE_LABEL,
         null,
         project,
         FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
