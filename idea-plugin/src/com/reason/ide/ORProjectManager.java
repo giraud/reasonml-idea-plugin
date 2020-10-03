@@ -9,7 +9,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.esy.EsyPackageJson;
-import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.DuneFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
 import java.util.*;
@@ -46,12 +45,13 @@ public class ORProjectManager {
     return !findEsyConfigurationFiles(project).isEmpty();
   }
 
-  public static Optional<VirtualFile> findFirstBsConfigurationFile(@NotNull Project project) {
+  public static @NotNull Optional<VirtualFile> findFirstBsConfigurationFile(
+      @NotNull Project project) {
     return findFirst(findBsConfigurationFiles(project));
   }
 
   public static LinkedHashSet<VirtualFile> findBsConfigurationFiles(@NotNull Project project) {
-    return findFilesInProject(BsConfigJsonFileType.getDefaultFilename(), project)
+    return findFilesInProject("bsconfig.json", project)
         .stream()
         .sorted(FILE_DEPTH_COMPARATOR)
         .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -94,7 +94,7 @@ public class ORProjectManager {
         .collect(Collectors.toSet());
   }
 
-  public static Set<VirtualFile> findFilesInProject(
+  public static @NotNull Set<VirtualFile> findFilesInProject(
       @NotNull String filename, @NotNull Project project) {
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
     if (ApplicationManager.getApplication().isReadAccessAllowed()) {
@@ -105,19 +105,19 @@ public class ORProjectManager {
     return Collections.emptySet();
   }
 
-  public static Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
+  public static @NotNull Optional<VirtualFile> findFirstBsContentRoot(@NotNull Project project) {
     return findFirst(findBsContentRoots(project));
   }
 
-  public static Optional<VirtualFile> findFirstDuneContentRoot(@NotNull Project project) {
+  public static @NotNull Optional<VirtualFile> findFirstDuneContentRoot(@NotNull Project project) {
     return findFirst(findDuneContentRoots(project));
   }
 
-  public static Optional<VirtualFile> findFirstEsyContentRoot(@NotNull Project project) {
+  public static @NotNull Optional<VirtualFile> findFirstEsyContentRoot(@NotNull Project project) {
     return findFirst(findEsyContentRoots(project));
   }
 
-  private static <T> Optional<T> findFirst(@NotNull Set<T> virtualFiles) {
+  private static <T> @NotNull Optional<T> findFirst(@NotNull Set<T> virtualFiles) {
     Iterator<T> iterator = virtualFiles.iterator();
     return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
   }

@@ -6,6 +6,8 @@ import com.intellij.lexer.FlexLexer;
 import com.reason.lang.napkin.NsTypes;
 
 import static com.intellij.psi.TokenType.*;
+
+@SuppressWarnings("ALL")
 %%
 
 %{

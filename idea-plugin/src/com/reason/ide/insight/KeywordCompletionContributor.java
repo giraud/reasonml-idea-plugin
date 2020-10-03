@@ -25,7 +25,7 @@ abstract class KeywordCompletionContributor
   protected static final InsertHandler<LookupElement> INSERT_SPACE =
       new AddSpaceInsertHandler(false);
 
-  KeywordCompletionContributor(ORTypes types) {
+  KeywordCompletionContributor(@NotNull ORTypes types) {
     extend(
         CompletionType.BASIC,
         psiElement(),

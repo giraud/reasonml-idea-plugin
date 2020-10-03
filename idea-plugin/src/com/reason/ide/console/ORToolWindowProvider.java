@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ORToolWindowProvider {
 
-  private final ToolWindowManager m_toolWindowManager;
+  private final @NotNull ToolWindowManager m_toolWindowManager;
 
-  public static ORToolWindowProvider getInstance(@NotNull Project project) {
+  public static @NotNull ORToolWindowProvider getInstance(@NotNull Project project) {
     return new ORToolWindowProvider(project);
   }
 

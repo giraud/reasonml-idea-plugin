@@ -198,13 +198,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
     }
   }
 
-  private void parseTilde(ParserState state) {
+  private void parseTilde(@NotNull ParserState state) {
     if (state.in(m_types.C_SIG_ITEM)) {
       state.updateCurrentCompositeElementType(m_types.C_NAMED_PARAM);
     }
   }
 
-  private void parseQuestionMark(ParserState state) {
+  private void parseQuestionMark(@NotNull ParserState state) {
     if (state.previousElementType1 == m_types.EQ) {
       // x=|>?<| ...
       return;

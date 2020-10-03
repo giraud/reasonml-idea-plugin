@@ -5,7 +5,7 @@ import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
 
-@SuppressWarnings("DuplicateBranchesInSwitch")
+@SuppressWarnings("ALL")
 %%
 
 %unicode

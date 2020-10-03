@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ORFileDocumentListener implements Disposable {
 
-  private final MessageBusConnection m_messageBusConnection;
+  private final @NotNull MessageBusConnection m_messageBusConnection;
 
   public static void ensureSubscribed(@NotNull Project project) {
     ServiceManager.getService(project, ORFileDocumentListener.class);

@@ -17,6 +17,7 @@ import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
 import com.reason.lang.core.type.ORTokenElementType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OclParser extends CommonParser<OclTypes> {
 
@@ -324,7 +325,7 @@ public class OclParser extends CommonParser<OclTypes> {
     }
   }
 
-  private ParserScope endUntilStartExpression(@NotNull ParserState state) {
+  private @Nullable ParserScope endUntilStartExpression(@NotNull ParserState state) {
     // Remove intermediate constructions until a start expression
     state.popEndUntilStart();
     ParserScope latestScope = state.getLatestScope();

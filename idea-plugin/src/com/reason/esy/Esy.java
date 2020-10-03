@@ -8,6 +8,7 @@ import com.reason.Platform;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
 
 public class Esy {
 
@@ -29,7 +30,7 @@ public class Esy {
     return Optional.ofNullable(fileSystem.findFileByPath(executablePath.toString()));
   }
 
-  private static Optional<Path> findEsyExecutableInPath() {
+  private static @NotNull Optional<Path> findEsyExecutableInPath() {
     String systemPath = System.getenv("PATH");
     return Platform.findExecutableInPath(ESY_EXECUTABLE_NAME, systemPath);
   }

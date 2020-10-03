@@ -38,11 +38,11 @@ public class PsiStanza extends PsiToken<DuneTypes>
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
     return null;
   }
 
-  public Collection<PsiDuneField> getFields() {
+  public @NotNull Collection<PsiDuneField> getFields() {
     PsiDuneFields fields = ORUtil.findImmediateFirstChildOfClass(this, PsiDuneFields.class);
     return ORUtil.findImmediateChildrenOfClass(fields, PsiDuneField.class);
   }
@@ -73,7 +73,7 @@ public class PsiStanza extends PsiToken<DuneTypes>
   }
 
   @Override
-  public String toString() {
+  public @Nullable String toString() {
     return "Stanza " + getName();
   }
 }

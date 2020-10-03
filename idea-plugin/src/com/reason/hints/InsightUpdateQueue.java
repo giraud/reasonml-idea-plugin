@@ -37,21 +37,22 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.atomic.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InsightUpdateQueue extends MergingUpdateQueue {
 
   private static final Log LOG = Log.create("hints.queue");
 
-  private final File m_tempDirectory;
+  private final @NotNull File m_tempDirectory;
   private final VirtualFile m_contentRoot;
-  private final VirtualFile m_sourceFile;
+  private final @NotNull VirtualFile m_sourceFile;
 
-  private String m_jsxVersion;
+  private @Nullable String m_jsxVersion;
   private final AtomicLong m_lastModificationStamp = new AtomicLong(0);
   private Ninja m_ninja;
   private String m_namespace;
 
-  private VirtualFile m_libRoot;
+  private @Nullable VirtualFile m_libRoot;
 
   public InsightUpdateQueue(@NotNull Project project, @NotNull VirtualFile sourceFile) {
     super("hints", 200, true, null);
@@ -106,7 +107,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
 
   @Override
   public void dispose() {
-    if (m_tempDirectory != null && m_tempDirectory.exists()) {
+    if (m_tempDirectory.exists()) {
       FileUtil.asyncDelete(m_tempDirectory);
     }
   }
@@ -117,8 +118,8 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
   }
 
   class TypesUpdate extends Update {
-    private final Project m_project;
-    private final Document m_document;
+    private final @NotNull Project m_project;
+    private final @NotNull Document m_document;
     private final long m_docTimestamp;
 
     public TypesUpdate(@NotNull Project project, @NotNull Document document) {
@@ -288,7 +289,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                             });
                   }
                 }
-              } catch (IOException | ExecutionException e) {
+              } catch (@NotNull IOException | ExecutionException e) {
                 throw new RuntimeException(e); // TODO handle exception
               } finally {
                 if (tempFile != null) {
@@ -333,7 +334,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
       }
     }
 
-    public List<OutputInfo> getInfo() {
+    public @NotNull List<OutputInfo> getInfo() {
       return m_lineProcessor.getInfo();
     }
   }

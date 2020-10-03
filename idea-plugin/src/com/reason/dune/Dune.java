@@ -1,5 +1,7 @@
 package com.reason.dune;
 
+import static com.reason.dune.DuneConstants.DUNE_EXECUTABLE_NAME;
+
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -25,7 +27,7 @@ public class Dune {
       return Optional.empty();
     }
     String extension = Platform.isWindows() ? ".exe" : "";
-    Path binaryPath = Paths.get(ocamlSdkPath, "bin", "dune" + extension);
+    Path binaryPath = Paths.get(ocamlSdkPath, "bin", DUNE_EXECUTABLE_NAME + extension);
     LocalFileSystem fileSystem = LocalFileSystem.getInstance();
     VirtualFile duneBinary = fileSystem.findFileByPath(binaryPath.toString());
     if (duneBinary == null) {

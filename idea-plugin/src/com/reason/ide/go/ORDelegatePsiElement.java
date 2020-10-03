@@ -20,7 +20,7 @@ public abstract class ORDelegatePsiElement extends PsiElementBase {
   }
 
   @Override
-  public PsiElement getOriginalElement() {
+  public @NotNull PsiElement getOriginalElement() {
     return m_source;
   }
 
@@ -127,7 +127,7 @@ public abstract class ORDelegatePsiElement extends PsiElementBase {
   }
 
   @Override
-  public Icon getIcon(final int flags) {
+  public @Nullable Icon getIcon(final int flags) {
     return m_source.getIcon(flags);
   }
 

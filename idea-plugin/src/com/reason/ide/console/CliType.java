@@ -1,9 +1,11 @@
 package com.reason.ide.console;
 
 import com.reason.CompilerType;
+import org.jetbrains.annotations.NotNull;
 
 public interface CliType {
 
+  @NotNull
   CompilerType getCompilerType();
 
   enum Bs implements CliType {
@@ -11,7 +13,7 @@ public interface CliType {
     CLEAN_MAKE;
 
     @Override
-    public CompilerType getCompilerType() {
+    public @NotNull CompilerType getCompilerType() {
       return CompilerType.BS;
     }
   }
@@ -22,7 +24,7 @@ public interface CliType {
     INSTALL;
 
     @Override
-    public CompilerType getCompilerType() {
+    public @NotNull CompilerType getCompilerType() {
       return CompilerType.DUNE;
     }
   }
@@ -33,7 +35,7 @@ public interface CliType {
     SHELL;
 
     @Override
-    public CompilerType getCompilerType() {
+    public @NotNull CompilerType getCompilerType() {
       return CompilerType.ESY;
     }
   }

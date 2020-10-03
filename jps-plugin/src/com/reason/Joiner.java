@@ -15,7 +15,7 @@ public class Joiner {
 
   @NotNull
   public static <T> String join(
-      @NotNull String separator, @Nullable Iterable<T> items, Function<T, String> fn) {
+      @NotNull String separator, @Nullable Iterable<T> items, @NotNull Function<T, String> fn) {
     if (items == null) {
       return "<null>";
     }
@@ -33,7 +33,7 @@ public class Joiner {
   }
 
   @NotNull
-  public static String join(@NotNull String separator, @Nullable Object[] items) {
+  public static String join(@NotNull String separator, @Nullable Object @Nullable [] items) {
     if (items == null) {
       return "<null>";
     }

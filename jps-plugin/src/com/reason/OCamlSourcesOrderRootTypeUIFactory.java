@@ -36,12 +36,12 @@ public class OCamlSourcesOrderRootTypeUIFactory implements OrderRootTypeUIFactor
   }
 
   @Override
-  public Icon getIcon() {
+  public @NotNull Icon getIcon() {
     return AllIcons.Nodes.Package;
   }
 
   @Override
-  public String getNodeText() {
+  public @NotNull String getNodeText() {
     return ProjectBundle.message("library.sources.node");
   }
 

@@ -27,7 +27,7 @@ public class Streams {
     }
   }
 
-  public static String inputToString(InputStream is) {
+  public static String inputToString(@NotNull InputStream is) {
     try (BufferedReader br = new BufferedReader(new InputStreamReader(is, UTF_8))) {
       return br.lines().collect(Collectors.joining(LINE_SEPARATOR));
     } catch (UnsupportedEncodingException e) {

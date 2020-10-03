@@ -53,9 +53,7 @@ public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionSt
     }
 
     String fqn = stub.getQualifiedName();
-    if (fqn != null) {
-      sink.occurrence(IndexKeys.EXCEPTIONS_FQN, fqn.hashCode());
-    }
+    sink.occurrence(IndexKeys.EXCEPTIONS_FQN, fqn.hashCode());
   }
 
   @NotNull

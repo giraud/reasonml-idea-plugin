@@ -12,7 +12,7 @@ public class ParserScope {
   @NotNull private final PsiBuilder m_builder;
   private final int m_offset;
 
-  private ParserScopeEnum m_resolution;
+  private @Nullable ParserScopeEnum m_resolution;
   private ORCompositeType m_compositeElementType;
   private ORTokenElementType m_scopeTokenElementType;
   private boolean m_isComplete = false;
@@ -82,16 +82,12 @@ public class ParserScope {
     }
   }
 
-  @NotNull
-  public ParserScope complete() {
+  public void complete() {
     m_isComplete = true;
-    return this;
   }
 
-  @NotNull
-  public ParserScope dummy() {
+  public void dummy() {
     m_isDummy = true;
-    return this;
   }
 
   public boolean isResolution(ParserScopeEnum resolution) {
@@ -108,7 +104,7 @@ public class ParserScope {
     return m_compositeElementType == compositeType;
   }
 
-  boolean isCompositeIn(ORCompositeType... compositeType) {
+  boolean isCompositeIn(ORCompositeType @NotNull ... compositeType) {
     for (ORCompositeType composite : compositeType) {
       if (m_compositeElementType == composite) return true;
     }
@@ -123,23 +119,19 @@ public class ParserScope {
     m_scopeTokenElementType = tokenElementType;
   }
 
-  @NotNull
-  public ParserScope updateCompositeElementType(ORCompositeType compositeType) {
+  public void updateCompositeElementType(ORCompositeType compositeType) {
     m_compositeElementType = compositeType;
-    return this;
   }
 
   public boolean isStart() {
     return m_isStart;
   }
 
-  @NotNull
-  public ParserScope setIsStart(boolean isStart) {
+  public void setIsStart(boolean isStart) {
     m_isStart = isStart;
-    return this;
   }
 
-  public ParserScopeEnum getResolution() {
+  public @Nullable ParserScopeEnum getResolution() {
     return m_resolution;
   }
 

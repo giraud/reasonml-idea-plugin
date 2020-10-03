@@ -73,7 +73,7 @@ public class EsyCompiler implements Compiler {
   }
 
   @Override
-  public CompilerType getType() {
+  public @NotNull CompilerType getType() {
     return CompilerType.ESY;
   }
 

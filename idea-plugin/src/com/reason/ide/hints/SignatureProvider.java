@@ -12,7 +12,7 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
 
   public static class InferredTypesWithLines {
     private final InferredTypes m_types;
-    private final EditorPosition m_editorPosition;
+    private final @NotNull EditorPosition m_editorPosition;
     //        private InferredTypes types;
 
     InferredTypesWithLines(InferredTypes types, @NotNull String[] lines) {

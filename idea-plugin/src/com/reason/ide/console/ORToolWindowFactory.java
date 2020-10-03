@@ -32,7 +32,7 @@ abstract class ORToolWindowFactory implements ToolWindowFactory, DumbAware {
       @NotNull final Project project, @NotNull ToolWindow window);
 
   @Override
-  public void init(ToolWindow window) {
+  public void init(@NotNull ToolWindow window) {
     window.setIcon(getIcon());
     window.setTitle(getTitle());
     window.setStripeTitle(getStripeTitle());

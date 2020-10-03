@@ -148,7 +148,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
     return myElement;
   }
 
-  private Set<PsiQualifiedElement> resolveElementsFromPaths() {
+  private @NotNull Set<PsiQualifiedElement> resolveElementsFromPaths() {
     Project project = myElement.getProject();
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
     PsiFinder psiFinder = PsiFinder.getInstance(project);

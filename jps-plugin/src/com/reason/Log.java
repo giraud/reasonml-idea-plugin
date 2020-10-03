@@ -91,19 +91,19 @@ public class Log {
     }
   }
 
-  public void debug(String comment, @Nullable PsiFile[] t) {
+  public void debug(String comment, @Nullable PsiFile @Nullable [] t) {
     if (m_log.isDebugEnabled()) {
       m_log.debug(comment + SEP + (t == null ? "" : t.length + " "));
     }
   }
 
-  public void debug(String comment, Path t) {
+  public void debug(String comment, @Nullable Path t) {
     if (m_log.isDebugEnabled()) {
       m_log.debug(comment + SEP + (t == null ? "" : t + " "));
     }
   }
 
-  public void debug(String comment, @Nullable ResolveResult[] t) {
+  public void debug(String comment, @Nullable ResolveResult @Nullable [] t) {
     if (m_log.isDebugEnabled()) {
       m_log.debug(comment + SEP + (t == null ? "" : t.length + " [" + Joiner.join(", ", t) + "]"));
     }
@@ -239,7 +239,7 @@ public class Log {
     m_log.warn(e);
   }
 
-  public void info(String msg, Map<Module, VirtualFile> rootContents) {
+  public void info(String msg, @NotNull Map<Module, VirtualFile> rootContents) {
     StringBuilder sb = new StringBuilder();
     for (Map.Entry<Module, VirtualFile> entry : rootContents.entrySet()) {
       sb.append("(module ")

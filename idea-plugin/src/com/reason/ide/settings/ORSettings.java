@@ -17,11 +17,11 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
   public static final String FORMAT_WIDTH_COLUMNS_DEFAULT = "80";
   public static final boolean IS_BS_ENABLED_DEFAULT = true;
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
 
   // General
   private boolean m_isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
-  private String m_formatColumnWidth;
+  private @Nullable String m_formatColumnWidth;
   private String m_ocamlformatExecutable = "";
 
   // BuckleScript
@@ -67,7 +67,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     m_esyExecutable = state.esyExecutable;
   }
 
-  public Project getProject() {
+  public @NotNull Project getProject() {
     return m_project;
   }
 
@@ -94,7 +94,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         formatColumnWidth != null && formatColumnWidth.isEmpty() ? null : formatColumnWidth;
   }
 
-  public String getOcamlformatExecutable() {
+  public @NotNull String getOcamlformatExecutable() {
     return m_ocamlformatExecutable == null ? "" : m_ocamlformatExecutable;
   }
 
@@ -110,7 +110,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     m_isBsEnabled = isBsEnabled;
   }
 
-  public String getBsPlatformLocation() {
+  public @NotNull String getBsPlatformLocation() {
     return m_bsPlatformLocation == null ? "" : m_bsPlatformLocation;
   }
 
@@ -127,7 +127,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     m_duneExecutable = duneExecutable;
   }
 
-  public String getEsyExecutable() {
+  public @NotNull String getEsyExecutable() {
     return m_esyExecutable == null ? "" : m_esyExecutable;
   }
 
@@ -139,7 +139,7 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
   public static class ReasonSettingsState {
     // General
     public boolean isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
-    public String formatColumnWidth;
+    public @Nullable String formatColumnWidth;
     public String ocamlformatExecutable = "";
     // BuckleScript
     public boolean isBsEnabled = IS_BS_ENABLED_DEFAULT;

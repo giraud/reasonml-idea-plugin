@@ -35,7 +35,7 @@ public class DuneCompiler implements Compiler {
   }
 
   @Override
-  public CompilerType getType() {
+  public @NotNull CompilerType getType() {
     return CompilerType.DUNE;
   }
 
@@ -52,7 +52,7 @@ public class DuneCompiler implements Compiler {
   }
 
   @Override
-  public Optional<VirtualFile> findFirstContentRoot(@NotNull Project project) {
+  public @NotNull Optional<VirtualFile> findFirstContentRoot(@NotNull Project project) {
     return ORProjectManager.findFirstDuneContentRoot(project);
   }
 

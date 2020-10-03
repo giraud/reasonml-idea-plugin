@@ -36,7 +36,7 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
     DumbService.getInstance(project).smartInvokeLater(() -> runActivityLater(project));
   }
 
-  private void runActivityLater(Project project) {
+  private void runActivityLater(@NotNull Project project) {
     LOG.info("run Js library manager");
 
     Optional<VirtualFile> bsConfigFileOptional =
@@ -75,7 +75,7 @@ public class ORJsLibraryManager implements StartupActivity, DumbAware {
     }
   }
 
-  private List<VirtualFile> readBsConfigDependencies(
+  private @NotNull List<VirtualFile> readBsConfigDependencies(
       @NotNull Project project, @NotNull String nodeModulesDir, @NotNull VirtualFile bsConfigFile) {
     List<VirtualFile> result = new ArrayList<>();
 

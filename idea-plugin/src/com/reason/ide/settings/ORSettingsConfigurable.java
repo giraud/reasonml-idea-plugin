@@ -20,7 +20,7 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
 
   @Nls private static final String ESY_EXECUTABLE_LABEL = "Choose esy Executable: ";
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
   private ORSettings m_settings;
 
   private JPanel f_rootPanel;
@@ -165,15 +165,16 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
   }
 
-  private static String sanitizeInput(JTextField textField) {
+  private static @NotNull String sanitizeInput(@NotNull JTextField textField) {
     return sanitizeInput(textField.getText());
   }
 
-  private static String sanitizeInput(TextFieldWithBrowseButton textFieldWithBrowseButton) {
+  private static @NotNull String sanitizeInput(
+      @NotNull TextFieldWithBrowseButton textFieldWithBrowseButton) {
     return sanitizeInput(textFieldWithBrowseButton.getText());
   }
 
-  private static String sanitizeInput(String input) {
+  private static @NotNull String sanitizeInput(@NotNull String input) {
     return input.trim();
   }
 }

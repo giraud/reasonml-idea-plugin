@@ -10,8 +10,12 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.PsiFileHelper;
 import com.reason.lang.core.ORUtil;
+import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiQualifiedElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,14 +55,13 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
 
   @Override
   public PsiElement getNavigationElement() {
-    /* ClassCastException ??
     if (isComponent()) {
-        PsiLet make = getLetExpression("make");
-        if (make != null) {
-            return make;
-        }
+      List<PsiLet> makes = getQualifiedExpressions(getModuleName() + ".make", PsiLet.class);
+      if (!makes.isEmpty()) {
+        return makes.get(0);
+      }
     }
-    */
+
     return super.getNavigationElement();
   }
 
@@ -74,7 +77,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
 
   @SafeVarargs
   @NotNull
-  public final <T extends PsiQualifiedElement> List<T> getExpressions(
+  public final <T extends PsiQualifiedElement> List<T> getQualifiedExpressions(
       @Nullable String name, @NotNull Class<? extends T>... clazz) {
     List<T> result = new ArrayList<>();
 
@@ -95,7 +98,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(@Nullable Object o) {
     if (this == o) {
       return true;
     }

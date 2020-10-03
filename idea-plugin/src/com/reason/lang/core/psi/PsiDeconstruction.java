@@ -15,7 +15,7 @@ public class PsiDeconstruction extends PsiToken<ORTypes> {
     super(types, node);
   }
 
-  public List<PsiElement> getDeconstructedElements() {
+  public @NotNull List<PsiElement> getDeconstructedElements() {
     List<PsiElement> result = new ArrayList<>();
     for (PsiElement child : getChildren()) {
       IElementType elementType = child.getNode().getElementType();

@@ -134,7 +134,7 @@ public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
   @NotNull
   @Override
   public Collection<PsiNamedElement> getExpressions(
-      @NotNull ExpressionScope eScope, ExpressionFilter filter) {
+      @NotNull ExpressionScope eScope, @Nullable ExpressionFilter filter) {
     Collection<PsiNamedElement> result = emptyList();
 
     PsiFinder psiFinder = PsiFinder.getInstance(getProject());

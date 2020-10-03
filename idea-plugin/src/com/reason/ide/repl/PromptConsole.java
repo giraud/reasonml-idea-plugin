@@ -34,7 +34,7 @@ final class PromptConsole implements Disposable {
   private final ConsoleViewImpl m_consoleView;
   @NotNull private final EditorImpl m_outputEditor;
   @NotNull private final EditorImpl m_promptEditor;
-  private final PromptHistory m_history = new PromptHistory(100);
+  private final PromptHistory m_history = new PromptHistory();
   private boolean m_promptEnabled = true;
 
   PromptConsole(@NotNull Project project, ConsoleViewImpl consoleView) {

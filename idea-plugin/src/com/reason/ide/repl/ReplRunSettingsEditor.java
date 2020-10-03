@@ -11,12 +11,13 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectSdksModel;
 import com.intellij.openapi.util.Condition;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ReplRunSettingsEditor extends SettingsEditor<ReplRunConfiguration> {
   private final Project m_project;
 
   private JPanel c_rootPanel;
-  private JdkComboBox c_sdk;
+  private @Nullable JdkComboBox c_sdk;
   private com.intellij.openapi.ui.TextFieldWithBrowseButton c_cygwinPath;
   private JCheckBox c_cygwin;
 
@@ -26,14 +27,18 @@ public class ReplRunSettingsEditor extends SettingsEditor<ReplRunConfiguration> 
 
   @Override
   protected void resetEditorFrom(@NotNull ReplRunConfiguration runConfiguration) {
-    c_sdk.setSelectedJdk(runConfiguration.getSdk());
+    if (c_sdk != null) {
+      c_sdk.setSelectedJdk(runConfiguration.getSdk());
+    }
     c_cygwin.setSelected(runConfiguration.getCygwinSelected());
     c_cygwinPath.setText(runConfiguration.getCygwinPath());
   }
 
   @Override
   protected void applyEditorTo(@NotNull ReplRunConfiguration runConfiguration) {
-    runConfiguration.setSdk(c_sdk.getSelectedJdk());
+    if (c_sdk != null) {
+      runConfiguration.setSdk(c_sdk.getSelectedJdk());
+    }
     runConfiguration.setCygwinSelected(c_cygwin.isSelected());
     runConfiguration.setCygwinPath(c_cygwinPath.getText());
   }

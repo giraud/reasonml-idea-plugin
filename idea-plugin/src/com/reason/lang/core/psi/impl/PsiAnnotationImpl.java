@@ -35,7 +35,7 @@ public class PsiAnnotationImpl extends PsiToken<ORTypes> implements PsiAnnotatio
   }
 
   @Override
-  public String toString() {
+  public @Nullable String toString() {
     return "Annotation " + getName();
   }
 }

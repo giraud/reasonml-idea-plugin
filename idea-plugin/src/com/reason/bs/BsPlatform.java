@@ -174,7 +174,7 @@ public class BsPlatform {
   }
 
   @VisibleForTesting
-  static String getOsBinaryWrapperExtension() {
+  static @NotNull String getOsBinaryWrapperExtension() {
     return SystemInfo.isWindows ? ".cmd" : "";
   }
 

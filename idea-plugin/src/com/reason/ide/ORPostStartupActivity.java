@@ -22,7 +22,7 @@ public class ORPostStartupActivity implements StartupActivity, DumbAware {
   }
 
   /* show tool windows after indexing finishes */
-  private static void showToolWindowsLater(Project project) {
+  private static void showToolWindowsLater(@NotNull Project project) {
     ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
     DumbService.getInstance(project).smartInvokeLater(toolWindowManager::showHideToolWindows);
   }

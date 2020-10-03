@@ -33,9 +33,9 @@ public class EsyProcess implements CompilerProcess {
     public static final String SHELL = "shell";
   }
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
 
-  private final AtomicBoolean isStarted;
+  private final @NotNull AtomicBoolean isStarted;
 
   @Nullable private KillableColoredProcessHandler processHandler;
 
@@ -125,7 +125,9 @@ public class EsyProcess implements CompilerProcess {
   }
 
   private static GeneralCommandLine newCommandLine(
-      VirtualFile esyExecutable, VirtualFile workingDir, CliType.Esy cliType) {
+      @NotNull VirtualFile esyExecutable,
+      @NotNull VirtualFile workingDir,
+      CliType.@NotNull Esy cliType) {
     GeneralCommandLine commandLine;
     commandLine = new GeneralCommandLine(esyExecutable.getPath());
     commandLine.setWorkDirectory(workingDir.getPath());
@@ -134,7 +136,7 @@ public class EsyProcess implements CompilerProcess {
     return commandLine;
   }
 
-  private static String getCommand(CliType.Esy cliType) {
+  private static @NotNull String getCommand(CliType.@NotNull Esy cliType) {
     switch (cliType) {
       case INSTALL:
         return Command.INSTALL;

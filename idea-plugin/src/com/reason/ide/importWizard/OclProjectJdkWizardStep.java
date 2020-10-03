@@ -37,6 +37,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OclProjectJdkWizardStep extends ModuleWizardStep {
 
@@ -51,7 +52,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
   private JRadioButton c_rdSelectExisting;
   private JRadioButton c_rdDownloadSdk;
   private JComboBox<String> c_selDownload;
-  private JdkComboBox c_selExistingSdk;
+  private @Nullable JdkComboBox c_selExistingSdk;
   private TextFieldWithBrowseButton c_sdkHome;
 
   private final WizardContext m_context;
@@ -75,7 +76,7 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
       c_selDownload.addItem(sdk);
     }
 
-    if (c_selExistingSdk.getItemCount() == 0) {
+    if (c_selExistingSdk != null && c_selExistingSdk.getItemCount() == 0) {
       c_rdSelectExisting.setEnabled(false);
       c_selExistingSdk.setEnabled(false);
       c_rdDownloadSdk.setSelected(true);
@@ -131,7 +132,8 @@ public class OclProjectJdkWizardStep extends ModuleWizardStep {
     Sdk odk = null;
 
     if (c_rdSelectExisting.isSelected()) {
-      JdkComboBox.JdkComboBoxItem selectedItem = c_selExistingSdk.getSelectedItem();
+      JdkComboBox.JdkComboBoxItem selectedItem =
+          c_selExistingSdk == null ? null : c_selExistingSdk.getSelectedItem();
       odk = selectedItem == null ? null : selectedItem.getJdk();
     } else if (c_rdDownloadSdk.isSelected()) {
       String selectedSdk = (String) c_selDownload.getSelectedItem();

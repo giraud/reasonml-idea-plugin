@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 // see AndroidProjectRootListener
 public class ORProjectRootListener implements @NotNull Disposable {
-  private final MessageBusConnection m_messageBusConnection;
+  private final @NotNull MessageBusConnection m_messageBusConnection;
 
   public static void ensureSubscribed(@NotNull Project project) {
     ServiceManager.getService(project, ORProjectRootListener.class);

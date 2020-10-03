@@ -5,6 +5,8 @@ import com.reason.lang.core.type.ORTypes;
 import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
+
+@SuppressWarnings("ALL")
 %%
 
 %{

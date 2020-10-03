@@ -24,7 +24,7 @@ public class ORCompilerManager {
 
   private static final Log LOG = Log.create("manager.compiler");
 
-  private final Project project;
+  private final @NotNull Project project;
 
   public ORCompilerManager(@NotNull Project project) {
     this.project = project;
@@ -105,7 +105,8 @@ public class ORCompilerManager {
     return traverseAncestorsForCompiler(currentDir.getParent(), visited);
   }
 
-  private static Class<? extends Compiler> getCompilerClass(CompilerType compilerType) {
+  private static @NotNull Class<? extends Compiler> getCompilerClass(
+      @NotNull CompilerType compilerType) {
     switch (compilerType) {
       case BS:
         return BsCompiler.class;

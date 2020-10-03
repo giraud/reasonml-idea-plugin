@@ -93,7 +93,7 @@ public final class DuneProcess implements CompilerProcess {
   }
 
   @Nullable
-  private GeneralCommandLine getGeneralCommandLine(CliType.Dune cliType) {
+  private GeneralCommandLine getGeneralCommandLine(@NotNull CliType.Dune cliType) {
     Sdk odk = OCamlSdkType.getSDK(m_project);
     if (odk == null) {
       DuneNotification.showOcamlSdkNotFound();

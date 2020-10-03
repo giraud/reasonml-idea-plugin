@@ -21,7 +21,7 @@ public class DuneFileType extends LanguageFileType {
     return ImmutableSet.of(DUNE_FILENAME, DUNE_PROJECT_FILENAME, LEGACY_JBUILDER_FILENAME);
   }
 
-  public static boolean isDuneFile(VirtualFile file) {
+  public static boolean isDuneFile(@NotNull VirtualFile file) {
     return getDefaultFilenames().stream().anyMatch(filename -> filename.equals(file.getName()));
   }
 

@@ -10,7 +10,7 @@ public class PsiModuleType extends PsiToken<ORTypes> {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return "PsiModuleType";
   }
 }

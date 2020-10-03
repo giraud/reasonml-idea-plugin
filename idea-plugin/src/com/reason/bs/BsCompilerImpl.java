@@ -116,7 +116,7 @@ public class BsCompilerImpl implements BsCompiler {
   }
 
   @Override
-  public CompilerType getType() {
+  public @NotNull CompilerType getType() {
     return CompilerType.BS;
   }
 

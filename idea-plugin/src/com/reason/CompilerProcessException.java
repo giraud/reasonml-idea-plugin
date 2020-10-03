@@ -15,7 +15,7 @@ public class CompilerProcessException extends RuntimeException {
     super(message(compilerType, message), cause);
   }
 
-  private static String message(CompilerType compilerType, String message) {
+  private static @NotNull String message(@NotNull CompilerType compilerType, String message) {
     return compilerType.displayName() + " process exception. " + message;
   }
 }
