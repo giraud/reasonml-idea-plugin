@@ -319,6 +319,8 @@
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
         <lang.refactoringSupport language="Reason"
                                  implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
+        <lang.refactoringSupport language="NapkinScript"
+                                 implementationClass="com.reason.ide.ORRefactoringSupportProvider"/>
 
         <iconProvider implementation="com.reason.ide.IconProvider"/>
 

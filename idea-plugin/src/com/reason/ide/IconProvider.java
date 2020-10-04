@@ -10,10 +10,9 @@ import com.reason.ide.files.*;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.lang.core.psi.*;
 import icons.ORIcons;
+import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 
 public class IconProvider extends com.intellij.ide.IconProvider {
   @Nullable
