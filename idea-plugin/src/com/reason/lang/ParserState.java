@@ -121,6 +121,15 @@ public class ParserState {
     return false;
   }
 
+  public boolean isOneOf(ORCompositeType... composites) {
+    for (ORCompositeType composite : composites) {
+      if (m_currentScope.isCompositeType(composite)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
     return is(compositeType);
   }
@@ -181,6 +190,15 @@ public class ParserState {
   public @NotNull ParserState mark(@NotNull ORCompositeType compositeType) {
     add(ParserScope.mark(m_builder, compositeType));
     m_currentScope.complete();
+    return this;
+  }
+
+  public @NotNull ParserState precede(@NotNull ORCompositeType compositeType) {
+    ParserScope latest = pop();
+    if (latest != null) {
+      add(ParserScope.precede(latest, compositeType).complete());
+      add(latest);
+    }
     return this;
   }
 

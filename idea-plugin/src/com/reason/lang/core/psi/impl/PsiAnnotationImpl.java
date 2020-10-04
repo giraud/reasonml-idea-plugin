@@ -18,7 +18,7 @@ public class PsiAnnotationImpl extends PsiToken<ORTypes> implements PsiAnnotatio
   @Nullable
   @Override
   public PsiElement getNameIdentifier() {
-    return findNotNullChildByClass(PsiMacroName.class);
+    return findChildByClass(PsiMacroName.class);
   }
 
   @Nullable

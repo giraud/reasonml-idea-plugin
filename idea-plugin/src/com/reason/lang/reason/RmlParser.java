@@ -763,7 +763,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         // Local open ::  M.|>[ <| ... ]
         state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
       } else {
-        state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET).resolution(bracket);
+        state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
       }
     }
   }

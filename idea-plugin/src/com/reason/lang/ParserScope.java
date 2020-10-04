@@ -18,14 +18,15 @@ public class ParserScope {
   private boolean m_isComplete = false;
   private boolean m_isDummy = false; // Always drop
   private boolean m_isStart = false;
-  @Nullable public PsiBuilder.Marker m_mark;
+  public PsiBuilder.Marker m_mark;
 
   private ParserScope(
       @NotNull PsiBuilder builder,
+      @NotNull PsiBuilder.Marker mark,
       ORCompositeType compositeElementType,
       ORTokenElementType scopeTokenElementType) {
     m_builder = builder;
-    m_mark = builder.mark();
+    m_mark = mark;
     m_offset = builder.getCurrentOffset();
     m_compositeElementType = compositeElementType;
     m_scopeTokenElementType = scopeTokenElementType;
@@ -34,7 +35,7 @@ public class ParserScope {
   @NotNull
   public static ParserScope mark(
       @NotNull PsiBuilder builder, @NotNull ORCompositeType compositeElementType) {
-    return new ParserScope(builder, compositeElementType, null);
+    return new ParserScope(builder, builder.mark(), compositeElementType, null);
   }
 
   @NotNull
@@ -42,12 +43,17 @@ public class ParserScope {
       @NotNull PsiBuilder builder,
       @NotNull ORCompositeType compositeElementType,
       @NotNull ORTokenElementType scopeTokenElementType) {
-    return new ParserScope(builder, compositeElementType, scopeTokenElementType);
+    return new ParserScope(builder, builder.mark(), compositeElementType, scopeTokenElementType);
+  }
+
+  public static ParserScope precede(ParserScope scope, ORCompositeType compositeType) {
+    PsiBuilder.Marker precede = scope.m_mark.precede();
+    return new ParserScope(scope.m_builder, precede, compositeType, null);
   }
 
   @NotNull
   static ParserScope markRoot(@NotNull PsiBuilder builder) {
-    return new ParserScope(builder, null, null).resolution(ParserScopeEnum.file);
+    return new ParserScope(builder, builder.mark(), null, null).resolution(ParserScopeEnum.file);
   }
 
   public boolean isEmpty() {
@@ -82,8 +88,9 @@ public class ParserScope {
     }
   }
 
-  public void complete() {
+  public ParserScope complete() {
     m_isComplete = true;
+    return this;
   }
 
   public void dummy() {

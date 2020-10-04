@@ -178,6 +178,14 @@ public class LetParsingTest extends OclParsingTestCase {
         e.getBinding().getText());
   }
 
+  public void test_comparison() {
+    PsiLet e =
+        firstOfType(parseCode("let lt x y = (x lxor 0x4) < (y lxor 0x4)\ntype t"), PsiLet.class);
+    PsiFunctionBody b = e.getFunction().getBody();
+
+    assertEquals("(x lxor 0x4) < (y lxor 0x4)", b.getText());
+  }
+
   // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105
   public void test_GH_105() {
     FileBase file = parseCode("let string = \"x\"");

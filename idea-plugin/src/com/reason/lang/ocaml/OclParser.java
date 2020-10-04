@@ -115,6 +115,8 @@ public class OclParser extends CommonParser<OclTypes> {
         parseRaise(state);
       } else if (tokenType == m_types.COMMA) {
         parseComma(state);
+        //      } else if (tokenType == m_types.ARROBASE) {
+        //        parseArrobase(state);
       }
       // while ... do ... done
       else if (tokenType == m_types.WHILE) {
@@ -712,10 +714,15 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseRParen(@NotNull ParserState state) {
+    // are we in a binary op ?
+    IElementType nextElementType = state.lookAhead(1);
+    if (nextElementType == m_types.LT || nextElementType == m_types.LT_OR_EQUAL) {
+      state.precede(m_types.C_BINARY_CONDITION);
+    }
+
     ParserScope scope = state.popEndUntilScopeToken(m_types.LPAREN);
     state.advance();
     if (scope != null) {
-      //    scope.complete();
       state.popEnd();
     }
 
@@ -750,7 +757,24 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseLBracket(@NotNull ParserState state) {
-    state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET).resolution(bracket);
+    IElementType nextElementType = state.rawLookup(1);
+    if (nextElementType == m_types.ARROBASE) {
+      // |>[ <|@ ...
+      IElementType nextNextElementType = state.rawLookup(2);
+      if (nextNextElementType == m_types.ARROBASE) {
+        IElementType nextNextNextElementType = state.rawLookup(3);
+        if (nextNextNextElementType == m_types.ARROBASE) {
+          // floating attribute
+          endLikeSemi(state);
+        } else if (state.isOneOf(m_types.C_FUN_BODY, m_types.C_FUN_EXPR)) {
+          // block attribute inside a function
+          state.popEndUntil(m_types.C_FUN_EXPR).popEnd();
+        }
+      }
+      state.markScope(m_types.C_ANNOTATION, m_types.LBRACKET);
+    } else {
+      state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
+    }
   }
 
   private void parseRBracket(@NotNull ParserState state) {
@@ -788,6 +812,17 @@ public class OclParser extends CommonParser<OclTypes> {
       state.wrapWith(m_types.C_LOWER_IDENTIFIER);
     } else if (state.is(m_types.C_DECONSTRUCTION)) {
       state.wrapWith(m_types.C_LOWER_IDENTIFIER);
+    } else if (state.is(m_types.C_ANNOTATION)) {
+      // [@ |>x.y<| ... ]
+      state.mark(m_types.C_MACRO_NAME);
+      state.advance();
+      while (state.getTokenType() == m_types.DOT) {
+        state.advance();
+        if (state.getTokenType() == m_types.LIDENT) {
+          state.advance();
+        }
+      }
+      state.popEnd();
     } else {
       state.wrapWith(m_types.C_LOWER_SYMBOL);
     }
