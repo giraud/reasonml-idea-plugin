@@ -1,6 +1,7 @@
 package com.reason.lang.core.psi.impl;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -12,6 +13,8 @@ import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiRecordFieldStub;
 import com.reason.lang.core.type.ORTypes;
+import icons.ORIcons;
+import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,6 +87,27 @@ public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub
   public ORSignature getORSignature() {
     PsiSignature signature = getPsiSignature();
     return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
+  }
+
+  @Override
+  public ItemPresentation getPresentation() {
+    return new ItemPresentation() {
+      @Override
+      public @NotNull String getPresentableText() {
+        return getName();
+      }
+
+      @Override
+      public @Nullable String getLocationString() {
+        PsiSignature signature = getPsiSignature();
+        return signature == null ? null : signature.getText();
+      }
+
+      @Override
+      public @NotNull Icon getIcon(boolean unused) {
+        return ORIcons.VAL;
+      }
+    };
   }
 
   @Nullable

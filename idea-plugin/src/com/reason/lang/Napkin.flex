@@ -182,7 +182,6 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "/*" { yybegin(IN_ML_COMMENT); commentDepth = 1; tokenStart(); }
     "//" { yybegin(IN_SL_COMMENT); tokenStart(); }
 
-    "&&"  { return types.ANDAND; }
     "##"  { return types.SHARPSHARP; }
     "::"  { return types.SHORTCUT; }
     "=>"  { return types.ARROW; }
@@ -201,7 +200,9 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     ":="  { return types.COLON_EQ; }
     ":>"  { return types.COLON_GT; }
     "<="  { return types.LT_OR_EQUAL; }
-    ">="  { return types.GT_OR_EQUAL; }
+    //">="  { return types.GT_OR_EQUAL; } // Incompatible with type argument -> external x : (~props: Js.t<{..}>=?)
+    "&&"  { return types.L_AND; }
+    "||"  { return types.L_OR; }
 
     ","   { return types.COMMA; }
     ":"   { return types.COLON; }

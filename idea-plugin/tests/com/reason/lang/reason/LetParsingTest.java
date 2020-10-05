@@ -44,13 +44,13 @@ public class LetParsingTest extends RmlParsingTestCase {
     assertEquals("1", function.getBody().getText());
   }
 
-  public void test_letBinding() {
+  public void test_binding() {
     PsiLet let = first(letExpressions(parseCode("let x = {\"u\": \"r\", \"l\": \"lr\"};")));
     assertFalse(let.isFunction());
     assertNotNull(first(PsiTreeUtil.findChildrenOfType(let, PsiLetBinding.class)));
   }
 
-  public void test_letBindingWithJsx() {
+  public void test_binding_with_jsx() {
     PsiFile file = parseCode("let make = p => { render: x => { <div/>; } }");
     PsiElement[] children = file.getChildren();
     PsiElement element = PsiTreeUtil.nextLeaf(children[1]);

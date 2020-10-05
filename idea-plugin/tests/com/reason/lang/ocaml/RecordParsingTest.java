@@ -1,24 +1,24 @@
-package com.reason.lang.reason;
+package com.reason.lang.ocaml;
 
-import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
-import java.util.*;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
-public class RecordParsingTest extends RmlParsingTestCase {
+public class RecordParsingTest extends OclParsingTestCase {
   public void test_declaration() {
-    PsiType e = first(typeExpressions(parseCode("type r = { a: int, b: option(string) };")));
+    PsiType e = first(typeExpressions(parseCode("type r = { a: int; b: string list }")));
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
 
     List<PsiRecordField> fields = record.getFields();
     assertEquals("a", fields.get(0).getName());
     assertEquals("int", fields.get(0).getPsiSignature().asString(myLanguage));
     assertEquals("b", fields.get(1).getName());
-    assertEquals("option(string)", fields.get(1).getPsiSignature().asString(myLanguage));
+    assertEquals("string list", fields.get(1).getPsiSignature().asString(myLanguage));
   }
 
+  /*
   public void test_usage() {
     PsiLet e = first(letExpressions(parseCode("let r = { a: 1, b: 2, c: 3, };")));
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
@@ -54,4 +54,5 @@ public class RecordParsingTest extends RmlParsingTestCase {
     assertEquals("key", fields.get(0).getName());
     assertEquals("ariaLabel", fields.get(1).getName());
   }
+  */
 }

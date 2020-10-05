@@ -138,40 +138,32 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
   @NotNull
   @Override
   public TreeElement[] getChildren() {
+    List<TreeElement> treeElements = null;
+
     if (m_element instanceof FileBase || m_element instanceof DuneFile) {
-      List<TreeElement> treeElements = new ArrayList<>();
+      treeElements = new ArrayList<>();
       m_element.acceptChildren(new ElementVisitor(treeElements));
-      return treeElements.toArray(new TreeElement[0]);
+      if (!treeElements.isEmpty()) {
+        return treeElements.toArray(new TreeElement[0]);
+      }
     } else if (m_element instanceof PsiInnerModule) {
-      List<TreeElement> treeElements = buildModuleStructure((PsiInnerModule) m_element);
-      if (!treeElements.isEmpty()) {
-        return treeElements.toArray(new TreeElement[0]);
-      }
+      treeElements = buildModuleStructure((PsiInnerModule) m_element);
     } else if (m_element instanceof PsiFunctor) {
-      List<TreeElement> treeElements = buildFunctorStructure((PsiFunctor) m_element);
-      if (!treeElements.isEmpty()) {
-        return treeElements.toArray(new TreeElement[0]);
-      }
+      treeElements = buildFunctorStructure((PsiFunctor) m_element);
+    } else if (m_element instanceof PsiType) {
+      treeElements = buildTypeStructure((PsiType) m_element);
     } else if (m_element instanceof PsiClass) {
-      List<TreeElement> treeElements = buildClassStructure((PsiClass) m_element);
-      if (!treeElements.isEmpty()) {
-        return treeElements.toArray(new TreeElement[0]);
-      }
+      treeElements = buildClassStructure((PsiClass) m_element);
     } else if (m_element instanceof OclYaccHeader) {
-      List<TreeElement> treeElements = buildYaccHeaderStructure((OclYaccHeader) m_element);
-      if (!treeElements.isEmpty()) {
-        return treeElements.toArray(new TreeElement[0]);
-      }
+      treeElements = buildYaccHeaderStructure((OclYaccHeader) m_element);
     } else if (m_element instanceof OclYaccTrailer) {
-      List<TreeElement> treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
-      if (!treeElements.isEmpty()) {
-        return treeElements.toArray(new TreeElement[0]);
-      }
+      treeElements = buildYaccTrailerStructure((OclYaccTrailer) m_element);
     } else if (m_element instanceof PsiStanza) {
-      List<TreeElement> treeElements = buildStanzaStructure((PsiStanza) m_element);
-      if (!treeElements.isEmpty()) {
-        return treeElements.toArray(new TreeElement[0]);
-      }
+      treeElements = buildStanzaStructure((PsiStanza) m_element);
+    }
+
+    if (treeElements != null && !treeElements.isEmpty()) {
+      return treeElements.toArray(new TreeElement[0]);
     }
 
     return EMPTY_ARRAY;
@@ -209,6 +201,21 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
     PsiElement binding = functor.getBinding();
     if (binding != null) {
       binding.acceptChildren(new ElementVisitor(treeElements));
+    }
+
+    return treeElements;
+  }
+
+  @NotNull
+  private List<TreeElement> buildTypeStructure(@NotNull PsiType type) {
+    List<TreeElement> treeElements = new ArrayList<>();
+
+    PsiElement binding = type.getBinding();
+    if (binding != null) {
+      PsiRecord record = ORUtil.findImmediateFirstChildOfClass(binding, PsiRecord.class);
+      if (record != null) {
+        binding.acceptChildren(new ElementVisitor(treeElements));
+      }
     }
 
     return treeElements;
@@ -289,6 +296,10 @@ public class StructureViewElement implements StructureViewTreeElement, SortableT
             }
           }
           m_treeElements.add(new StructureViewElement(element));
+        }
+      } else if (element instanceof PsiRecord) {
+        for (PsiRecordField field : ((PsiRecord) element).getFields()) {
+          m_treeElements.add(new StructureViewElement(field));
         }
       }
     }

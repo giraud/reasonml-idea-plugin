@@ -22,20 +22,18 @@ import com.intellij.psi.PsiManager;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
 import com.reason.Log;
-import com.reason.bs.BsCompiler;
-import com.reason.bs.BsConfig;
-import com.reason.bs.BsConfigReader;
-import com.reason.bs.BsLineProcessor;
-import com.reason.bs.BsPlatform;
-import com.reason.bs.Ninja;
+import com.reason.bs.*;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
 import com.reason.lang.reason.RmlLanguage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -278,13 +276,15 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                     ApplicationManager.getApplication()
                         .invokeLater(
                             () -> {
-                              PsiFile psiFile =
-                                  PsiManager.getInstance(m_project).findFile(sourceFile);
-                              if (psiFile != null) {
-                                if (LOG.isTraceEnabled()) {
-                                  LOG.trace("Restart daemon code analyzer for " + psiFile);
+                              if (!m_project.isDisposed()) {
+                                PsiFile psiFile =
+                                    PsiManager.getInstance(m_project).findFile(sourceFile);
+                                if (psiFile != null) {
+                                  if (LOG.isTraceEnabled()) {
+                                    LOG.trace("Restart daemon code analyzer for " + psiFile);
+                                  }
+                                  DaemonCodeAnalyzer.getInstance(m_project).restart(psiFile);
                                 }
-                                DaemonCodeAnalyzer.getInstance(m_project).restart(psiFile);
                               }
                             });
                   }

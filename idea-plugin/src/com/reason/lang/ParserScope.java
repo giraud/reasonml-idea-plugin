@@ -15,7 +15,7 @@ public class ParserScope {
   private @Nullable ParserScopeEnum m_resolution;
   private ORCompositeType m_compositeElementType;
   private ORTokenElementType m_scopeTokenElementType;
-  private boolean m_isComplete = false;
+  private boolean m_isComplete = true;
   private boolean m_isDummy = false; // Always drop
   private boolean m_isStart = false;
   public PsiBuilder.Marker m_mark;
@@ -46,9 +46,15 @@ public class ParserScope {
     return new ParserScope(builder, builder.mark(), compositeElementType, scopeTokenElementType);
   }
 
-  public static ParserScope precede(ParserScope scope, ORCompositeType compositeType) {
+  public static ParserScope precedeScope(ParserScope scope, ORCompositeType compositeType) {
     PsiBuilder.Marker precede = scope.m_mark.precede();
     return new ParserScope(scope.m_builder, precede, compositeType, null);
+  }
+
+  public static ParserScope precedeMark(
+      PsiBuilder builder, PsiBuilder.Marker mark, ORCompositeType compositeType) {
+    PsiBuilder.Marker precede = mark.precede();
+    return new ParserScope(builder, precede, compositeType, null);
   }
 
   @NotNull
@@ -56,8 +62,12 @@ public class ParserScope {
     return new ParserScope(builder, builder.mark(), null, null).resolution(ParserScopeEnum.file);
   }
 
+  public int getLength() {
+    return m_builder.getCurrentOffset() - m_offset;
+  }
+
   public boolean isEmpty() {
-    return m_builder.getCurrentOffset() - m_offset == 0;
+    return getLength() == 0;
   }
 
   public void end() {
@@ -90,6 +100,11 @@ public class ParserScope {
 
   public ParserScope complete() {
     m_isComplete = true;
+    return this;
+  }
+
+  public ParserScope optional() {
+    m_isComplete = false;
     return this;
   }
 

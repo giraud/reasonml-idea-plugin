@@ -10,6 +10,11 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+## Unreleased
+
+- :nail_polish: [#274](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/274) Omit '()' in structure panel
+- :nail_polish: [#273](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/273) Some constructor names not highlighted in function/match patterns
+
 ## 0.93 - 2020/10/02
 
 - :rocket: [#119](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/119) support for automatically closing quotes (double)

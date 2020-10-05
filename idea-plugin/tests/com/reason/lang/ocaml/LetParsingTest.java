@@ -145,7 +145,7 @@ public class LetParsingTest extends OclParsingTestCase {
   }
 
   public void test_deconstruction() {
-    PsiLet e = first(letExpressions(parseCode("let (a, b) = x;")));
+    PsiLet e = first(letExpressions(parseCode("let (a, b) = x")));
 
     assertTrue(e.isDeconsruction());
     List<PsiElement> names = e.getDeconstructedElements();
@@ -155,6 +155,22 @@ public class LetParsingTest extends OclParsingTestCase {
     assertEquals("b", names.get(1).getText());
     assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
   }
+
+  /*
+    public void test_deconstruction_parenless() {
+      PsiLet e = first(letExpressions(parseCode("let a, b = x in ignore a")));
+
+      assertTrue(e.isDeconsruction());
+      assertFalse(e.isFunction());
+      assertEquals("x", e.getBinding().getText());
+      List<PsiElement> names = e.getDeconstructedElements();
+      assertSize(2, names);
+      assertEquals("a", names.get(0).getText());
+      assertInstanceOf(names.get(0), PsiLowerIdentifier.class);
+      assertEquals("b", names.get(1).getText());
+      assertInstanceOf(names.get(1), PsiLowerIdentifier.class);
+    }
+  */
 
   public void test_List() {
     PsiLet e =
@@ -184,6 +200,22 @@ public class LetParsingTest extends OclParsingTestCase {
     PsiFunctionBody b = e.getFunction().getBody();
 
     assertEquals("(x lxor 0x4) < (y lxor 0x4)", b.getText());
+  }
+
+  public void test_semi() {
+    PsiLet e =
+        firstOfType(
+            parseCode("let instantiate = for i = 0 to len - 1 do done; get_data p"), PsiLet.class);
+    PsiLetBinding b = e.getBinding();
+
+    assertEquals("for i = 0 to len - 1 do done; get_data p", b.getText());
+  }
+
+  public void test_name_unit() {
+    PsiLet e = firstOfType(parseCode("let () = 1 + 2"), PsiLet.class);
+
+    assertNotNull(PsiTreeUtil.findChildOfType(e, PsiUnit.class));
+    assertNull(e.getName());
   }
 
   // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105
@@ -225,6 +257,7 @@ public class LetParsingTest extends OclParsingTestCase {
         parseCode("let ((), proofview, _, _) = Proofview.apply (Global.env ()) tac pr.proofview");
     PsiLet e = first(letExpressions(file));
 
+    assertSize(2, e.getDeconstructedElements());
     assertFalse(e.isFunction());
     assertEquals("Proofview.apply (Global.env ()) tac pr.proofview", e.getBinding().getText());
   }

@@ -186,8 +186,10 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "#endif"  { return types.DIRECTIVE_ENDIF; }
     "#end"    { return types.DIRECTIVE_END; }
 
-    "&&"  { return types.ANDAND; }
     "##"  { return types.SHARPSHARP; }
+    "@@"  { return types.ARROBASE_2; }
+    "@@@" { return types.ARROBASE_3; }
+
     "::"  { return types.SHORTCUT; }
     "=>"  { return types.ARROW; }
     "->"  { return types.RIGHT_ARROW; }
@@ -218,6 +220,8 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
     "<="  { return types.LT_OR_EQUAL; }
     ">="  { return types.GT_OR_EQUAL; }
     ";;"  { return types.SEMISEMI; }
+    "||"  { return types.L_OR; }
+    "&&"  { return types.L_AND; }
 
     ","   { return types.COMMA; }
     ":"   { return types.COLON; }
