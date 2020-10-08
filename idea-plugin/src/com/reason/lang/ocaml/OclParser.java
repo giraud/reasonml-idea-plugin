@@ -278,6 +278,11 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseRightArrow(@NotNull ParserState state) {
+    // intermediate results
+    if (state.is(m_types.C_FUN_PARAM)) {
+      state.popEnd();
+    }
+
     if (state.isCurrentResolution(signatureItem)) {
       state.popEnd().advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
     } else if (state.isCurrentResolution(patternMatch)) {
@@ -336,9 +341,9 @@ public class OclParser extends CommonParser<OclTypes> {
 
     // Remove nested let
     while (state.is(m_types.C_LET_BINDING)
-        || state.is(m_types.C_FUN_BODY)
-        || state.is(m_types.C_FUN_EXPR)) {
-      state.popEnd();
+        || state.is(m_types.C_PATTERN_MATCH_BODY)
+        || state.is(m_types.C_FUN_BODY)) {
+      state.popEndUntilStart();
       latestScope = state.getLatestScope();
       state.popEnd();
     }
@@ -626,13 +631,15 @@ public class OclParser extends CommonParser<OclTypes> {
     if (state.isCurrentResolution(functorResult)) {
       state.popEnd();
     }
-
     if (state.is(m_types.C_SIG_EXPR)) {
       state.popEnd();
-    } else if (state.isCurrentResolution(typeNamed)) {
+    }
+
+    if (state.isCurrentResolution(typeNamed)) {
       state.resolution(typeNamedEq).advance().mark(m_types.C_TYPE_BINDING);
-    } else if (state.isCurrentResolution(letNamed)
-        || state.isCurrentResolution(letNamedSignature)) {
+    }
+    // let x |> = <| ...
+    else if (state.isCurrentResolution(letNamed) || state.isCurrentResolution(letNamedSignature)) {
       state.popEndUntilStart();
       state.resolution(letNamedEq).advance().mark(m_types.C_LET_BINDING);
     } else if (state.is(m_types.C_MODULE_DECLARATION)) {

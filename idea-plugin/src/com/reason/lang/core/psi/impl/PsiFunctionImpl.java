@@ -7,7 +7,7 @@ import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.type.ORTypes;
-import java.util.Collection;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ public class PsiFunctionImpl extends PsiToken<ORTypes> implements PsiFunction {
 
   @Override
   @NotNull
-  public Collection<PsiParameter> getParameters() {
+  public List<PsiParameter> getParameters() {
     return ORUtil.findImmediateChildrenOfClass(
         ORUtil.findImmediateFirstChildOfClass(this, PsiParameters.class), PsiParameter.class);
   }

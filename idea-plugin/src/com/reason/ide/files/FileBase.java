@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.ModuleHelper;
 import com.reason.lang.PsiFileHelper;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,13 +54,14 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
 
   @Override
   public PsiElement getNavigationElement() {
+    /* ClassCastException ??
     if (isComponent()) {
-      List<PsiLet> makes = getQualifiedExpressions(getModuleName() + ".make", PsiLet.class);
-      if (!makes.isEmpty()) {
-        return makes.get(0);
-      }
+        PsiLet make = getLetExpression("make");
+        if (make != null) {
+            return make;
+        }
     }
-
+    */
     return super.getNavigationElement();
   }
 
