@@ -12,8 +12,8 @@
 
 ## Unreleased
 
-- :nail_polish: [#274](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/274) Omit '()' in structure panel
-- :nail_polish: [#273](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/273) Some constructor names not highlighted in function/match patterns
+- :nail_care: [#274](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/274) Omit '()' in structure panel
+- :nail_care: [#273](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/273) Some constructor names not highlighted in function/match patterns
 
 ## 0.93 - 2020/10/02
 
