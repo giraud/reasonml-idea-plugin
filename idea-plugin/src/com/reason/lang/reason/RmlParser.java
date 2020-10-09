@@ -1,6 +1,8 @@
 package com.reason.lang.reason;
 
 import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
 import static com.reason.lang.ParserScopeEnum.*;
 
 import com.intellij.lang.PsiBuilder;
@@ -23,6 +25,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
 
     // long parseStart = System.currentTimeMillis();
 
+    int c = current_position_(builder);
     while (true) {
       // long parseTime = System.currentTimeMillis();
       // if (5 < parseTime - parseStart) {
@@ -113,6 +116,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
           parseWith(state);
         } else if (tokenType == m_types.TILDE) {
           parseTilde(state);
+        } else if (tokenType == m_types.EQEQ) {
+          parseEqEq(state);
         } else if (tokenType == m_types.QUESTION_MARK) {
           parseQuestionMark(state);
         }
@@ -195,34 +200,44 @@ public class RmlParser extends CommonParser<RmlTypes> {
       } else {
         builder.advanceLexer();
       }
+
+      if (!empty_element_parsed_guard_(builder, "reasonFile", c)) {
+        break;
+      }
+
+      c = builder.rawTokenIndex();
     }
   }
 
-  private void parseTilde(ParserState state) {
+  private void parseTilde(@NotNull ParserState state) {
     if (state.in(m_types.C_SIG_ITEM)) {
       state.updateCurrentCompositeElementType(m_types.C_NAMED_PARAM);
     }
   }
 
-  private void parseQuestionMark(ParserState state) {
+  private void parseEqEq(@NotNull ParserState state) {
+    if (!state.in(m_types.C_BINARY_CONDITION)) {
+      // ?? state.precedeMark(m_types.C_BINARY_CONDITION);
+    }
+  }
+
+  private void parseQuestionMark(@NotNull ParserState state) {
     if (state.previousElementType1 == m_types.EQ) {
       // x=|>?<| ...
       return;
     }
 
-    //    if (!state.in(m_types.C_TERNARY)) {
-    //      ParserScope scope = state.pop();
-    //      if (scope != null) {
-    //        scope.rollbackTo();
-    //        state
-    //            .mark(scope.getCompositeType())
-    //            .updateScopeToken(scope.getScopeType())
-    //            .resolution(scope.getResolution());
-    //      }
-    //      state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
-    //    } else
-    if (state.is(m_types.C_BINARY_CONDITION)) {
+    if (state.is(m_types.C_TAG_START)) {
+      // <jsx |>?<|prop ...
+      state
+          .mark(m_types.C_TAG_PROPERTY)
+          .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace(state))
+          .advance()
+          .remapCurrentToken(m_types.PROPERTY_NAME);
+    } else if (state.is(m_types.C_BINARY_CONDITION)) {
       state.popEnd();
+    } else if (!state.in(m_types.C_TERNARY)) {
+      // state.precedeMark(m_types.C_BINARY_CONDITION).precedeScope(m_types.C_TERNARY).popEnd();
     }
   }
 
@@ -652,6 +667,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
   }
 
   private void parseGt(@NotNull ParserState state) {
+    // ?prop=value |> > <| ...
+    if (state.is(m_types.C_TAG_PROP_VALUE)) {
+      state.popEnd().popEnd();
+    }
+    // ?prop |> > <| ...
+    else if (state.is(m_types.C_TAG_PROPERTY)) {
+      state.popEnd();
+    }
+
     if (state.is(m_types.C_TAG_START)) {
       state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().mark(m_types.C_TAG_BODY);
     } else if (state.is(m_types.C_TAG_CLOSE)) {
@@ -661,6 +685,15 @@ public class RmlParser extends CommonParser<RmlTypes> {
   }
 
   private void parseGtAutoClose(@NotNull ParserState state) {
+    // ?prop=value |> /> <| ...
+    if (state.is(m_types.C_TAG_PROP_VALUE)) {
+      state.popEnd().popEnd();
+    }
+    // ?prop |> /> <| ...
+    else if (state.is(m_types.C_TAG_PROPERTY)) {
+      state.popEnd();
+    }
+
     if (state.is(m_types.C_TAG_PROP_VALUE)) {
       state.popEnd().popEnd();
     }
@@ -704,17 +737,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         state
             .remapCurrentToken(m_types.PROPERTY_NAME)
             .mark(m_types.C_TAG_PROPERTY)
-            .setWhitespaceSkippedCallback(
-                (type, start, end) -> {
-                  if (state.is(m_types.C_TAG_PROPERTY)
-                      || (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
-                    if (state.is(m_types.C_TAG_PROP_VALUE)) {
-                      state.popEnd();
-                    }
-                    state.popEnd();
-                    state.setWhitespaceSkippedCallback(null);
-                  }
-                });
+            .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace(state));
       } else if (state.isCurrentResolution(recordBinding)) {
         state.mark(m_types.C_RECORD_FIELD).resolution(recordField);
       } else if (state.isCurrentResolution(jsObjectBinding)) {
@@ -723,10 +746,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
         state.mark(m_types.C_RECORD_FIELD).resolution(recordField);
       } else {
         IElementType nextElementType = state.lookAhead(1);
+
         if (nextElementType == m_types.ARROW && !state.is(m_types.C_SIG_ITEM)) {
-          // Single (paren less) function parameters
-          // |>x<| => ...
+          // Single (paren less) function parameters ::  |>x<| => ...
           state.mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS).mark(m_types.C_FUN_PARAM);
+        } else if (nextElementType == m_types.QUESTION_MARK && !state.in(m_types.C_TAG_START)) {
+          // a ternary ::  |>x<| ? ...
+          state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
         }
       }
 
@@ -763,7 +789,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         // Local open ::  M.|>[ <| ... ]
         state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
       } else {
-        state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET).resolution(bracket);
+        state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
       }
     }
   }
@@ -1005,12 +1031,11 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
       } else if (nextTokenType == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY)) {
         // ( ... |>)<| ? ...
-        ParserScope pop = state.pop();
-        if (pop != null) {
-          pop.rollbackTo();
-          state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
-          return;
-        }
+        state
+            .precedeScope(m_types.C_TERNARY)
+            .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION)
+            .popEnd();
+        return;
       }
 
       // Remove the scope from the stack, we want to test its parent

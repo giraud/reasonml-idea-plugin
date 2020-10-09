@@ -2,17 +2,12 @@ package com.reason.lang.napkin;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class SignatureParsingTest extends NsParsingTestCase {
@@ -37,14 +32,14 @@ public class SignatureParsingTest extends NsParsingTestCase {
         signature.asString(myLanguage));
   }
 
-  public void test_parsingNapkin() {
+  public void test_named_param() {
     PsiLet let = first(letExpressions(parseCode("let padding: (~v:length, ~h:length) => rule")));
 
-    ORSignature signature = let.getORSignature();
-    assertEquals(3, signature.getTypes().length);
-    assertEquals("(~v:length, ~h:length) => rule", signature.asString(myLanguage));
-    assertTrue(signature.isMandatory(0));
-    assertTrue(signature.isMandatory(1));
+    PsiSignature signature = let.getPsiSignature();
+    List<PsiSignatureItem> items =
+        new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
+    assertEquals(5, items.size());
+    assertEquals("(~v:length, ~h:length) => rule", signature.getText());
   }
 
   public void test_optionalFun() {

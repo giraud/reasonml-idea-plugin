@@ -4,6 +4,8 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.lexer.FlexLexer;
 
 import static com.intellij.psi.TokenType.*;
+
+@SuppressWarnings("ALL")
 %%
 
 %unicode

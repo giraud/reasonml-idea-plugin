@@ -51,7 +51,7 @@ class BsProcessHandler extends KillableProcessHandler
     }
   }
 
-  void addRawProcessListener(RawProcessListener listener) {
+  void addRawProcessListener(@NotNull RawProcessListener listener) {
     if (m_listener != null) {
       removeProcessListener(m_listener);
     }

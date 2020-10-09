@@ -17,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class CmtXmlComponent extends BorderLayoutPanel implements ChangeListener {
 
-  private final Project m_project;
-  private final String m_xmlDump;
+  private final @NotNull Project m_project;
+  private final @NotNull String m_xmlDump;
   private boolean childrenAdded = false;
 
   public CmtXmlComponent(
@@ -29,7 +29,7 @@ public class CmtXmlComponent extends BorderLayoutPanel implements ChangeListener
   }
 
   @Override
-  public void stateChanged(ChangeEvent changeEvent) {
+  public void stateChanged(@NotNull ChangeEvent changeEvent) {
     Object source = changeEvent.getSource();
     if (source instanceof JBTabbedPane) {
       if (((JBTabbedPane) source).getSelectedComponent() == this) {

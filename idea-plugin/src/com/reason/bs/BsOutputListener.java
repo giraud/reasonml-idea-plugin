@@ -1,7 +1,6 @@
 package com.reason.bs;
 
 import com.intellij.execution.process.ProcessEvent;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.reason.Log;
 import org.jetbrains.annotations.NotNull;
@@ -10,12 +9,10 @@ public class BsOutputListener implements RawProcessListener {
 
   private static final Log LOG = Log.create("build");
 
-  @NotNull private final Project m_project;
   @NotNull private final BsProcess m_compiler;
   @NotNull private final BsLineProcessor m_lineProcessor;
 
-  BsOutputListener(@NotNull Project project, @NotNull BsProcess bsc) {
-    m_project = project;
+  BsOutputListener(@NotNull BsProcess bsc) {
     m_compiler = bsc;
     m_lineProcessor = new BsLineProcessor(LOG);
   }

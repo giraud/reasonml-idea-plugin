@@ -27,7 +27,7 @@ public class PromptConsoleView extends ConsoleViewImpl {
           @NotNull
           @Override
           public ConsoleState attachTo(
-              @NotNull ConsoleViewImpl console, ProcessHandler processHandler) {
+              @NotNull ConsoleViewImpl console, @NotNull ProcessHandler processHandler) {
             return new ConsoleViewRunningState(console, processHandler, this, attachToStdOut, true);
           }
         },

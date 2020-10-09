@@ -7,13 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 /** Handle the prompt commands history. */
 final class PromptHistory {
-  private final int m_maxSize;
+  private final int m_maxSize = 100;
   private final List<String> m_history = new LinkedList<>();
   private int m_historyIndex = 0;
-
-  PromptHistory(int maxSize) {
-    m_maxSize = maxSize;
-  }
 
   void addInHistory(@NotNull String command) {
     if (!command.trim().isEmpty()) {

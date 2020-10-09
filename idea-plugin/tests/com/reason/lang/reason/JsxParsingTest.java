@@ -11,6 +11,7 @@ import com.reason.lang.core.psi.PsiTagClose;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagPropertyValue;
 import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.impl.PsiTernary;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -88,13 +89,44 @@ public class JsxParsingTest extends RmlParsingTestCase {
   }
 
   public void test_tagPropsWithDot() {
-    PsiTag e = (PsiTag) firstElement(parseCode("<a className=Styles.link href=h download=d>"));
+    PsiTag e = (PsiTag) firstElement(parseCode("<a className=Styles.link href=h download=d></a>"));
 
     List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
     assertSize(3, props);
-    assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(0), PsiTagPropertyValue.class));
-    assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(1), PsiTagPropertyValue.class));
-    assertNotNull(PsiTreeUtil.findChildrenOfType(props.get(2), PsiTagPropertyValue.class));
+    assertEquals("className", props.get(0).getName());
+    assertEquals("Styles.link", props.get(0).getValue().getText());
+    assertEquals("href", props.get(1).getName());
+    assertEquals("h", props.get(1).getValue().getText());
+    assertEquals("download", props.get(2).getName());
+    assertEquals("d", props.get(2).getValue().getText());
+  }
+
+  public void test_optional_prop() {
+    PsiTag e = (PsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other></div>"));
+
+    List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+    assertSize(4, props);
+    assertEquals("?layout", props.get(0).getText());
+    assertEquals("layout", props.get(0).getName());
+    assertEquals("?style", props.get(1).getText());
+    assertEquals("onClick=?cb", props.get(2).getText());
+    assertEquals("?other", props.get(3).getText());
+    assertNull(PsiTreeUtil.findChildOfType(e, PsiTernary.class));
+  }
+
+  public void test_optional_prop_autoclose() {
+    PsiTag e = (PsiTag) firstElement(parseCode("<div ?layout ?style onClick=?cb ?other/>"));
+
+    List<PsiTagProperty> props = new ArrayList<>(e.getProperties());
+    assertSize(4, props);
+    assertEquals("?layout", props.get(0).getText());
+    assertEquals("layout", props.get(0).getName());
+    assertEquals("?style", props.get(1).getText());
+    assertEquals("style", props.get(1).getName());
+    assertEquals("onClick=?cb", props.get(2).getText());
+    assertEquals("?other", props.get(3).getText());
+    assertEquals("other", props.get(3).getName());
+    assertNull(PsiTreeUtil.findChildOfType(e, PsiTernary.class));
   }
 
   public void test_tagPropsWithLocalOpen() {

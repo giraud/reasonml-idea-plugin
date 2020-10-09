@@ -2,7 +2,6 @@ package com.reason.bs;
 
 import com.intellij.framework.detection.FileContentPattern;
 import com.intellij.json.JsonFileType;
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.util.indexing.FileContent;
@@ -22,11 +21,7 @@ public class BsConfigJson {
     return false;
   }
 
-  public static FileType getFileType() {
-    return BsConfigJsonFileType.INSTANCE;
-  }
-
   private static ElementPattern<FileContent> createFilePattern() {
-    return FileContentPattern.fileContent().withName(BsConfigJsonFileType.getDefaultFilename());
+    return FileContentPattern.fileContent().withName("bsconfig.json");
   }
 }

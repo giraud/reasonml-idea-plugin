@@ -28,6 +28,7 @@ public interface Compiler {
       @NotNull CliType cliType,
       @Nullable ProcessTerminated onProcessTerminated);
 
+  @NotNull
   CompilerType getType();
 
   boolean isConfigured(@NotNull Project project);

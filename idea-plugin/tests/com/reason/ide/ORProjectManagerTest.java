@@ -19,7 +19,6 @@ import com.reason.bs.BsConstants;
 import com.reason.dune.DuneConstants;
 import com.reason.esy.EsyConstants;
 import com.reason.esy.EsyPackageJson;
-import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.files.EsyPackageJsonFileType;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,7 +72,7 @@ public class ORProjectManagerTest {
 
   @Test
   public void testIsBsProject() {
-    MockVirtualFile mockBsConfig = new MockVirtualFile(BsConfigJsonFileType.getDefaultFilename());
+    MockVirtualFile mockBsConfig = new MockVirtualFile("bsconfig.json");
     registerMockFile(mockBsConfig);
     assertTrue(ORProjectManager.isBsProject(mockProject));
   }

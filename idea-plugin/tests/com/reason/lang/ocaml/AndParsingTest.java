@@ -29,12 +29,22 @@ public class AndParsingTest extends OclParsingTestCase {
     assertEquals("Y", mods.get(1).getName());
   }
 
-  public void test_patternChaining() {
+  public void test_pattern_chaining() {
     PsiFile file = parseCode("match optsign with | Some sign -> let mtb1 = 1 and mtb2 = 2");
     Collection<PsiNamedElement> exps = expressions(file);
 
     assertInstanceOf(firstElement(file), PsiSwitch.class);
     assertEquals(0, exps.size());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/272
+  public void test_GH_pattern_unit_chaining() {
+    PsiFile file = parseCode("let x = match xx with | Y -> let fn y = 1 in () and z = 1 ");
+    List<PsiLet> exps = letExpressions(file);
+
+    assertEquals(2, exps.size());
+    assertEquals("x", exps.get(0).getName());
+    assertEquals("z", exps.get(1).getName());
   }
 
   public void test_typeChaining() {

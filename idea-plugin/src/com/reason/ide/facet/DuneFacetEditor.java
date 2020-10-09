@@ -17,15 +17,16 @@ import java.awt.event.ItemEvent;
 import javax.swing.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class DuneFacetEditor extends FacetEditorTab {
 
-  private final DuneFacetConfiguration m_configuration;
-  private final FacetEditorContext m_editorContext;
+  private final @NotNull DuneFacetConfiguration m_configuration;
+  private final @NotNull FacetEditorContext m_editorContext;
 
   private JPanel f_root;
   private JCheckBox f_inheritProjectSDKCheck;
-  private JdkComboBox f_sdkSelect;
+  private @Nullable JdkComboBox f_sdkSelect;
 
   DuneFacetEditor(
       @NotNull FacetEditorContext editorContext, @NotNull DuneFacetConfiguration configuration) {
@@ -56,23 +57,25 @@ class DuneFacetEditor extends FacetEditorTab {
     DuneFacetConfiguration state = m_configuration.getState();
     assert state != null;
 
-    f_inheritProjectSDKCheck.addItemListener(
-        itemEvent -> f_sdkSelect.setEnabled(itemEvent.getStateChange() == ItemEvent.DESELECTED));
-    f_inheritProjectSDKCheck.setSelected(state.inheritProjectSdk);
+    if (f_sdkSelect != null) {
+      f_inheritProjectSDKCheck.addItemListener(
+          itemEvent -> f_sdkSelect.setEnabled(itemEvent.getStateChange() == ItemEvent.DESELECTED));
+      f_inheritProjectSDKCheck.setSelected(state.inheritProjectSdk);
 
-    if (state.inheritProjectSdk) {
-      Module module = m_editorContext.getModule();
-      Sdk odk = OCamlSdkType.getSDK(module.getProject());
-      if (odk != null) {
-        f_sdkSelect.setSelectedJdk(odk);
-      }
-    } else {
-      int itemCount = f_sdkSelect.getItemCount();
-      for (int i = 0; i < itemCount; i++) {
-        String odkName = f_sdkSelect.getItemAt(i).getSdkName();
-        if (odkName != null && odkName.equals(m_configuration.sdkName)) {
-          f_sdkSelect.setSelectedIndex(i);
-          break;
+      if (state.inheritProjectSdk) {
+        Module module = m_editorContext.getModule();
+        Sdk odk = OCamlSdkType.getSDK(module.getProject());
+        if (odk != null) {
+          f_sdkSelect.setSelectedJdk(odk);
+        }
+      } else {
+        int itemCount = f_sdkSelect.getItemCount();
+        for (int i = 0; i < itemCount; i++) {
+          String odkName = f_sdkSelect.getItemAt(i).getSdkName();
+          if (odkName != null && odkName.equals(m_configuration.sdkName)) {
+            f_sdkSelect.setSelectedIndex(i);
+            break;
+          }
         }
       }
     }
@@ -82,7 +85,7 @@ class DuneFacetEditor extends FacetEditorTab {
 
   @Override
   public boolean isModified() {
-    Sdk odk = f_sdkSelect.getSelectedJdk();
+    Sdk odk = f_sdkSelect == null ? null : f_sdkSelect.getSelectedJdk();
     String odkName = odk == null ? "" : odk.getName();
     String confOdkName = m_configuration.sdkName == null ? "" : m_configuration.sdkName;
     return m_configuration.inheritProjectSdk != f_inheritProjectSDKCheck.isSelected()
@@ -93,7 +96,7 @@ class DuneFacetEditor extends FacetEditorTab {
   public void apply() throws ConfigurationException {
     super.apply();
     m_configuration.inheritProjectSdk = f_inheritProjectSDKCheck.isSelected();
-    Sdk odk = f_sdkSelect.getSelectedJdk();
+    Sdk odk = f_sdkSelect == null ? null : f_sdkSelect.getSelectedJdk();
     m_configuration.sdkName = odk == null ? null : odk.getName();
 
     // @TODO see https://github.com/reasonml-editor/reasonml-idea-plugin/issues/243

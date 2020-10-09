@@ -72,7 +72,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
     }
   }
 
-  private void parseRParen(ParserState state) {
+  private void parseRParen(@NotNull ParserState state) {
     if (state.is(m_types.C_FIELDS)) {
       state.popEnd();
     }

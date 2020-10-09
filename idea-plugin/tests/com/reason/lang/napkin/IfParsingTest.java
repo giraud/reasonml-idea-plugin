@@ -4,6 +4,7 @@ import com.intellij.psi.PsiFile;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiIfStatement;
+import com.reason.lang.core.psi.impl.PsiTernary;
 
 @SuppressWarnings("ConstantConditions")
 public class IfParsingTest extends NsParsingTestCase {
@@ -38,10 +39,9 @@ public class IfParsingTest extends NsParsingTestCase {
     assertEquals("2", t.getElseExpression().getText());
   }
 
-  /* precede ?
   public void test_ternary_lident() {
     PsiLet e = firstOfType(parseCode("let _ = a ? b : c"), PsiLet.class);
-    PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(),PsiTernary.class);
+    PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
 
     assertEquals("a", t.getCondition().getText());
     assertEquals("b", t.getThenExpression().getText());
@@ -50,31 +50,30 @@ public class IfParsingTest extends NsParsingTestCase {
 
   public void test_ternary_parens() {
     PsiLet e = firstOfType(parseCode("let _ = (a) ? b : c"), PsiLet.class);
-    PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(),PsiTernary.class);
+    PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
 
     assertEquals("(a)", t.getCondition().getText());
     assertEquals("b", t.getThenExpression().getText());
-    assertEquals("c",t.getElseExpression().getText());
+    assertEquals("c", t.getElseExpression().getText());
   }
+  /*
+    public void test_ternary_cond() {
+      PsiFile psiFile = parseCode("let _ = a == a' || (x < y) ? b : c");
+      PsiTernary e = firstOfType(psiFile, PsiTernary.class);
 
-  public void test_ternary_cond() {
-    PsiFile psiFile = parseCode("let _ = a == a' ? b : c");
-    PsiTernary e = firstOfType(psiFile, PsiTernary.class);
-
-    assertNotNull(e);
-    assertNotNull(e.getCondition());
-    assertEquals("a == a'", e.getCondition().getText());
-    assertEquals("b", e.getThenExpression().getText());
-    assertEquals("c", e.getElseExpression().getText());
-  }
-
+      assertNotNull(e);
+      assertNotNull(e.getCondition());
+      assertEquals("a == a' || (x < y)", e.getCondition().getText());
+      assertEquals("b", e.getThenExpression().getText());
+      assertEquals("c", e.getElseExpression().getText());
+    }
+  */
   public void test_ternary_call() {
     PsiLet e = firstOfType(parseCode("let _ = fn(a) ? b : c"), PsiLet.class);
-    PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(),PsiTernary.class);
+    PsiTernary t = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiTernary.class);
 
-    //assertEquals("fn(a)", t.getCondition().getText());
+    // assertEquals("fn(a)", t.getCondition().getText());
     assertEquals("b", t.getThenExpression().getText());
     assertEquals("c", t.getElseExpression().getText());
   }
-  */
 }

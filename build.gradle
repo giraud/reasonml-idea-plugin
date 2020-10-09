@@ -1,5 +1,7 @@
 plugins {
-    id 'org.jetbrains.intellij' version "0.4.21"
+    // https://github.com/JetBrains/gradle-intellij-plugin
+    id 'org.jetbrains.intellij' version "0.5.0"
+    // https://github.com/sherter/google-java-format-gradle-plugin
     id 'com.github.sherter.google-java-format' version '0.8'
 }
 
@@ -47,6 +49,9 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
+            <li>#272 - Another case: structure panel missing function definition with "and"</li>
+            <li>#274 - Omit '()' in structure panel</li>
+            <li>#273 - Some constructor names not highlighted in function/match patterns</li>
             <li>#119 - Support for automatically closing quotes (double)</li>
             <li>'Goto class' use a custom presentation for inner modules</li> 
             <li>#91 - Jumping to some module-related symbol definitions from Structure Panel doesn't highlight symbol right away (incorrect module type detection)<li>

@@ -12,7 +12,7 @@ public class FileHelper {
 
   public static boolean isCompilable(@Nullable FileType fileType) {
     return isReason(fileType)
-        || isNapkinScript(fileType)
+        || isRescript(fileType)
         || isOCaml(fileType)
         || isOCamlLexer(fileType)
         || isOCamlParser(fileType);
@@ -22,7 +22,7 @@ public class FileHelper {
     return fileType instanceof RmlFileType || fileType instanceof RmlInterfaceFileType;
   }
 
-  public static boolean isNapkinScript(@Nullable FileType fileType) {
+  public static boolean isRescript(@Nullable FileType fileType) {
     return fileType instanceof NsFileType || fileType instanceof NsInterfaceFileType;
   }
 

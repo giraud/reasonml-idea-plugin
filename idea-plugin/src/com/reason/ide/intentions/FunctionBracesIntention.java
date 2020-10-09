@@ -35,7 +35,7 @@ public class FunctionBracesIntention extends AbstractBaseIntention<PsiFunction> 
   }
 
   @Override
-  public boolean isAvailable(@NotNull Project project, @NotNull PsiFunction parentElement) {
+  public boolean isAvailable(@NotNull PsiFunction parentElement) {
     PsiFunctionBody body = PsiTreeUtil.findChildOfType(parentElement, PsiFunctionBody.class);
     if (body != null) {
       PsiElement firstChild = body.getFirstChild();

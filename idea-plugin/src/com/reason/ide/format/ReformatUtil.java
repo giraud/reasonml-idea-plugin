@@ -1,5 +1,6 @@
 package com.reason.ide.format;
 
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiFile;
 import com.reason.ide.files.FileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -13,10 +14,13 @@ public class ReformatUtil {
     String format = null;
 
     if (file != null) {
-      if (FileHelper.isOCaml(file.getFileType())) {
+      FileType fileType = file.getFileType();
+      if (FileHelper.isOCaml(fileType)) {
         format = "ml";
-      } else if (FileHelper.isReason(file.getFileType())) {
+      } else if (FileHelper.isReason(fileType)) {
         format = "re";
+      } else if (FileHelper.isRescript(fileType)) {
+        format = "res";
       }
     }
 

@@ -26,7 +26,7 @@ public class ShowDocTest extends ORBasePlatformTestCase {
 
     PsiLowerIdentifier let =
         ORUtil.findImmediateFirstChildOfClass(
-            doc.getExpressions("Doc.fn", PsiLet.class).get(0), PsiLowerIdentifier.class);
+            doc.getQualifiedExpressions("Doc.fn", PsiLet.class).get(0), PsiLowerIdentifier.class);
     assertEquals(
         "<div style='padding-bottom: 5px; border-bottom: 1px solid #AAAAAAEE'>Doc</div><div><p> add 1 </p></div>", // zzz trim
         getDocForElement(a, RmlLanguage.INSTANCE, let));

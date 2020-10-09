@@ -20,7 +20,7 @@ public class ReplRunConfigurationType implements ConfigurationType {
   }
 
   @Override
-  public Icon getIcon() {
+  public @NotNull Icon getIcon() {
     return AllIcons.General.Information;
   }
 
@@ -32,7 +32,7 @@ public class ReplRunConfigurationType implements ConfigurationType {
 
   @NotNull
   @Override
-  public ConfigurationFactory[] getConfigurationFactories() {
+  public ConfigurationFactory @NotNull [] getConfigurationFactories() {
     return new ConfigurationFactory[] {new ReplConfigurationFactory(this)};
   }
 }

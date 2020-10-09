@@ -33,7 +33,7 @@ public class ExpandLocalOpenIntention extends AbstractBaseIntention<PsiLocalOpen
   }
 
   @Override
-  boolean isAvailable(@NotNull Project project, @NotNull PsiLocalOpen parentElement) {
+  boolean isAvailable(@NotNull PsiLocalOpen parentElement) {
     return true;
   }
 

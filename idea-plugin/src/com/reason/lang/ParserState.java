@@ -12,14 +12,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class ParserState {
 
-  public final PsiBuilder m_builder;
-  private final ParserScope m_rootComposite;
-  private final LinkedList<ParserScope> m_composites = new LinkedList<>();
-
-  private ParserScope m_currentScope;
   @Nullable public IElementType previousElementType2;
   @Nullable public IElementType previousElementType1;
 
+  private final LinkedList<ParserScope> m_composites = new LinkedList<>();
+
+  public final PsiBuilder m_builder;
+  private final ParserScope m_rootComposite;
+  private ParserScope m_currentScope;
+  // private ParserScope m_latestScope; //in queue or already popped
+  public PsiBuilder.Marker m_latestMark;
   public boolean dontMove = false;
 
   public ParserState(PsiBuilder builder, ParserScope rootCompositeMarker) {
@@ -121,6 +123,15 @@ public class ParserState {
     return false;
   }
 
+  public boolean isOneOf(ORCompositeType... composites) {
+    for (ORCompositeType composite : composites) {
+      if (m_currentScope.isCompositeType(composite)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean isCurrentCompositeElementType(ORCompositeType compositeType) {
     return is(compositeType);
   }
@@ -161,27 +172,49 @@ public class ParserState {
   }
 
   @NotNull
-  public ParserState add(@NotNull ParserScope scope) {
+  public ParserState optional() {
+    m_currentScope.optional();
+    return this;
+  }
+
+  public void add(@NotNull ParserScope scope) {
     m_composites.push(scope);
     m_currentScope = scope;
+  }
+
+  public @NotNull ParserState mark(@NotNull ORCompositeType composite) {
+    ParserScope scope = ParserScope.mark(m_builder, composite);
+    add(scope);
+    m_latestMark = scope.m_mark;
     return this;
   }
 
-  // is resolution needed ?
-  public ParserState markScope(ORCompositeType compositeType, ORTokenElementType scopeType) {
-    add(ParserScope.markScope(m_builder, compositeType, scopeType));
-    m_currentScope.complete();
+  public @NotNull ParserState markScope(
+      @NotNull ORCompositeType composite, @NotNull ORTokenElementType scope) {
+    ParserState state = mark(composite);
+    state.updateScopeToken(scope);
     return this;
   }
 
-  public ParserState markOptional(ORCompositeType compositeElementType) {
-    add(ParserScope.mark(m_builder, compositeElementType));
+  public @NotNull ParserState markOptional(@NotNull ORCompositeType composite) {
+    ParserState state = mark(composite);
+    state.optional();
     return this;
   }
 
-  public ParserState mark(ORCompositeType compositeType) {
-    add(ParserScope.mark(m_builder, compositeType));
-    m_currentScope.complete();
+  public @NotNull ParserState precedeScope(@NotNull ORCompositeType composite) {
+    ParserScope latest = pop();
+    if (latest != null) {
+      add(ParserScope.precedeScope(latest, composite));
+      add(latest);
+    }
+    return this;
+  }
+
+  public @NotNull ParserState precedeMark(@NotNull ORCompositeType composite) {
+    if (m_latestMark != null) {
+      add(ParserScope.precedeMark(m_builder, m_latestMark, composite));
+    }
     return this;
   }
 
@@ -189,7 +222,7 @@ public class ParserState {
     return m_composites.isEmpty();
   }
 
-  public ParserScope tryPop(LinkedList<ParserScope> scopes) {
+  public @Nullable ParserScope tryPop(@NotNull LinkedList<ParserScope> scopes) {
     return empty() ? null : scopes.pop();
   }
 
@@ -222,7 +255,7 @@ public class ParserState {
     return this;
   }
 
-  public ParserState popCancel() {
+  public @NotNull ParserState popCancel() {
     ParserScope scope = pop();
     if (scope != null) {
       scope.drop();
@@ -230,19 +263,14 @@ public class ParserState {
     return this;
   }
 
-  @Nullable
-  public ParserScope popEndUntilOneOf(@NotNull ORCompositeType... composites) {
-    ParserScope scope = null;
-
+  public void popEndUntilOneOf(@NotNull ORCompositeType... composites) {
     if (!m_composites.isEmpty()) {
-      scope = m_composites.peek();
+      ParserScope scope = m_composites.peek();
       while (scope != null && !ArrayUtil.contains(scope.getCompositeType(), composites)) {
         popEnd();
         scope = getLatestScope();
       }
     }
-
-    return scope;
   }
 
   @Nullable
@@ -261,19 +289,14 @@ public class ParserState {
     return scope;
   }
 
-  @Nullable
-  public ParserScope popEndUntilOneOfResolution(@NotNull ParserScopeEnum... resolutions) {
-    ParserScope scope = null;
-
+  public void popEndUntilOneOfResolution(@NotNull ParserScopeEnum... resolutions) {
     if (!m_composites.isEmpty()) {
-      scope = m_composites.peek();
+      ParserScope scope = m_composites.peek();
       while (scope != null && !ArrayUtil.contains(scope.getResolution(), resolutions)) {
         popEnd();
         scope = getLatestScope();
       }
     }
-
-    return scope;
   }
 
   @NotNull
@@ -319,7 +342,7 @@ public class ParserState {
     return this;
   }
 
-  public ParserScopeEnum currentResolution() {
+  public @Nullable ParserScopeEnum currentResolution() {
     return m_currentScope.getResolution();
   }
 
@@ -344,17 +367,15 @@ public class ParserState {
   public ParserState wrapWith(@NotNull ORCompositeType compositeType) {
     if (compositeType instanceof IElementType) {
       IElementType elementType = (IElementType) compositeType;
-      PsiBuilder.Marker mark = m_builder.mark();
+      m_latestMark = m_builder.mark();
       advance();
-      mark.done(elementType);
+      m_latestMark.done(elementType);
     }
     return this;
   }
 
-  @NotNull
-  public ParserState setStart() {
+  public void setStart() {
     m_currentScope.setIsStart(true);
-    return this;
   }
 
   @NotNull
@@ -363,36 +384,37 @@ public class ParserState {
     return this;
   }
 
-  public void error(String message) {
+  public void error(@NotNull String message) {
     m_builder.error(message);
   }
 
-  public ParserState remapCurrentToken(ORTokenElementType elementType) {
+  public @NotNull ParserState remapCurrentToken(ORTokenElementType elementType) {
     m_builder.remapCurrentToken(elementType);
     return this;
   }
 
-  public void setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
+  public ParserState setWhitespaceSkippedCallback(@Nullable WhitespaceSkippedCallback callback) {
     m_builder.setWhitespaceSkippedCallback(callback);
+    return this;
   }
 
-  public String getTokenText() {
+  public @Nullable String getTokenText() {
     return m_builder.getTokenText();
   }
 
-  public IElementType rawLookup(int steps) {
+  public @Nullable IElementType rawLookup(int steps) {
     return m_builder.rawLookup(steps);
   }
 
-  public IElementType lookAhead(int steps) {
+  public @Nullable IElementType lookAhead(int steps) {
     return m_builder.lookAhead(steps);
   }
 
-  public IElementType getTokenType() {
+  public @Nullable IElementType getTokenType() {
     return m_builder.getTokenType();
   }
 
-  public ParserState dummy() {
+  public @NotNull ParserState dummy() {
     m_currentScope.dummy();
     return this;
   }
@@ -404,5 +426,12 @@ public class ParserState {
       }
     }
     return false;
+  }
+
+  public ParserState updatePreviousComposite(ORCompositeType composite) {
+    if (m_composites.size() > 1) {
+      m_composites.get(1).updateCompositeElementType(composite);
+    }
+    return this;
   }
 }

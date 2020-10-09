@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiRecordFieldStub extends NamedStubBase<PsiRecordField> {
   private final String m_path;
-  private final String m_qname;
+  private final @NotNull String m_qname;
 
   public PsiRecordFieldStub(
       StubElement parent, @NotNull IStubElementType elementType, String name, String path) {
@@ -29,7 +29,7 @@ public class PsiRecordFieldStub extends NamedStubBase<PsiRecordField> {
     return m_path;
   }
 
-  public String getQualifiedName() {
+  public @NotNull String getQualifiedName() {
     return m_qname;
   }
 }

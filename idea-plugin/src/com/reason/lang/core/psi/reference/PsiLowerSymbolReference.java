@@ -48,9 +48,8 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
     m_referenceName = element.getText();
   }
 
-  @NotNull
   @Override
-  public ResolveResult[] multiResolve(boolean incompleteCode) {
+  public ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
     if (m_referenceName == null) {
       return ResolveResult.EMPTY_ARRAY;
     }
@@ -59,7 +58,7 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
     // http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/psi_references.html
     PsiLowerIdentifier parent = PsiTreeUtil.getParentOfType(myElement, PsiLowerIdentifier.class);
     if (parent != null && parent.getNameIdentifier() == myElement) {
-      return null;
+      return ResolveResult.EMPTY_ARRAY;
     }
 
     PsiFinder psiFinder = PsiFinder.getInstance(myElement.getProject());
@@ -418,7 +417,7 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
   }
 
   public static class LowerResolveResult implements ResolveResult {
-    private final PsiElement m_referencedIdentifier;
+    private final @NotNull PsiElement m_referencedIdentifier;
 
     public LowerResolveResult(@NotNull PsiElement referencedElement, String sourceName) {
       if (referencedElement instanceof PsiLet && ((PsiLet) referencedElement).isDeconsruction()) {

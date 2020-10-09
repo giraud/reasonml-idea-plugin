@@ -3,10 +3,7 @@ package com.reason.lang;
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.LightPsiParser;
-import com.intellij.lang.PsiBuilder;
-import com.intellij.lang.PsiParser;
+import com.intellij.lang.*;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +20,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
   @Override
   @NotNull
   public ASTNode parse(@NotNull IElementType elementType, @NotNull PsiBuilder builder) {
-    builder.setDebugMode(true);
+    builder.setDebugMode(false);
 
     // System.out.println("start parsing ");
     // long start = System.currentTimeMillis();
@@ -91,5 +88,23 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
   protected boolean isLetResolution(@NotNull ParserScope scope) {
     return scope.isResolution(letNamed) || scope.isResolution(letNamedEq);
+  }
+
+  @Nullable
+  protected WhitespaceSkippedCallback endJsxPropertyIfWhitespace(@NotNull ParserState state) {
+    if (m_types instanceof ORTypes) {
+      ORTypes types = (ORTypes) m_types;
+      return (type, start, end) -> {
+        if (state.is(types.C_TAG_PROPERTY)
+            || (state.is(types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
+          if (state.is(types.C_TAG_PROP_VALUE)) {
+            state.popEnd();
+          }
+          state.popEnd();
+          state.setWhitespaceSkippedCallback(null);
+        }
+      };
+    }
+    return null;
   }
 }

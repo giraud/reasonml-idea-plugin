@@ -7,7 +7,8 @@ import com.reason.lang.core.psi.PsiVal;
 public class ValPresentationTest extends ORBasePlatformTestCase {
 
   public void test_OCL_noSig() {
-    PsiVal e = configureCode("A.ml", "val x = 1").getExpressions("A.x", PsiVal.class).get(0);
+    PsiVal e =
+        configureCode("A.ml", "val x = 1").getQualifiedExpressions("A.x", PsiVal.class).get(0);
 
     assertEquals("x", e.getPresentation().getPresentableText());
     assertNull(e.getPresentation().getLocationString());
@@ -15,7 +16,9 @@ public class ValPresentationTest extends ORBasePlatformTestCase {
 
   public void test_OCL_sig() {
     PsiVal e =
-        configureCode("A.mli", "val x : 'a -> 'a t").getExpressions("A.x", PsiVal.class).get(0);
+        configureCode("A.mli", "val x : 'a -> 'a t")
+            .getQualifiedExpressions("A.x", PsiVal.class)
+            .get(0);
 
     assertEquals("x", e.getPresentation().getPresentableText());
     assertEquals("'a -> 'a t", e.getPresentation().getLocationString());

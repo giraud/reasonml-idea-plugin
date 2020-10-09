@@ -59,10 +59,10 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
       m_mandatory = !parameter.hasDefaultValue() && hmSignature.isMandatory(0);
     }
 
-    TagPropertyImpl(@Nullable String name, String type, boolean mandatory) {
+    TagPropertyImpl(@Nullable String name, String type) {
       m_name = name;
       m_type = type;
-      m_mandatory = mandatory;
+      m_mandatory = false;
     }
 
     @Nullable
@@ -90,7 +90,7 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
 
   @NotNull
   public static TagProperty createProp(String name, String type) {
-    return new TagPropertyImpl(name, type, false);
+    return new TagPropertyImpl(name, type);
   }
 
   @Nullable

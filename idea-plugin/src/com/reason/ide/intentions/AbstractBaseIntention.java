@@ -20,7 +20,7 @@ abstract class AbstractBaseIntention<T extends PsiElement> implements IntentionA
   public boolean isAvailable(@NotNull Project project, @NotNull Editor editor, PsiFile file) {
     if (file instanceof RmlFile) {
       T parentAtCaret = getParentAtCaret(editor, file);
-      return parentAtCaret != null && isAvailable(project, parentAtCaret);
+      return parentAtCaret != null && isAvailable(parentAtCaret);
     }
     return false;
   }
@@ -28,7 +28,7 @@ abstract class AbstractBaseIntention<T extends PsiElement> implements IntentionA
   @NotNull
   abstract Class<T> getClazz();
 
-  abstract boolean isAvailable(@NotNull Project project, @NotNull T parentElement);
+  abstract boolean isAvailable(@NotNull T parentElement);
 
   @Override
   public void invoke(@NotNull Project project, @NotNull Editor editor, @NotNull PsiFile file)

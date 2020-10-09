@@ -3,6 +3,7 @@ package com.reason.ide.format;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
@@ -22,7 +23,8 @@ public class ReformatOnSave {
     // Verify this document is part of the project
     if (file != null && settings.isFormatOnSaveEnabled()) {
       VirtualFile virtualFile = file.getVirtualFile();
-      if (FileHelper.isReason(file.getFileType())) {
+      FileType fileType = file.getFileType();
+      if (FileHelper.isReason(fileType) || FileHelper.isRescript(fileType)) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Before document saving (" + project.getName() + ", autoSave=" + true + ")");
         }
@@ -30,7 +32,7 @@ public class ReformatOnSave {
         String format = ReformatUtil.getFormat(file);
         if (format != null) {
           ServiceManager.getService(project, BsCompiler.class)
-              .refmt(virtualFile, FileHelper.isInterface(file.getFileType()), format, document);
+              .refmt(virtualFile, FileHelper.isInterface(fileType), format, document);
         }
       }
     }

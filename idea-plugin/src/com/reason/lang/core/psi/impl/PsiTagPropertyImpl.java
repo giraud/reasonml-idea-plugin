@@ -18,7 +18,7 @@ public class PsiTagPropertyImpl extends PsiToken<ORTypes> implements PsiTagPrope
 
   @Nullable
   private PsiElement getNameElement() {
-    return getFirstChild();
+    return ORUtil.findImmediateFirstChildOfType(this, m_types.PROPERTY_NAME);
   }
 
   @NotNull

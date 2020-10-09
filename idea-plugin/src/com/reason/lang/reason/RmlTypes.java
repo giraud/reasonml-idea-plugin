@@ -134,8 +134,11 @@ public class RmlTypes extends ORTypes {
     FUNCTOR = new ORTokenElementType("FUNCTOR", RmlLanguage.INSTANCE);
     IF = new ORTokenElementType("IF", RmlLanguage.INSTANCE);
     AND = new ORTokenElementType("AND", RmlLanguage.INSTANCE);
-    ANDAND = new ORTokenElementType("ANDAND", RmlLanguage.INSTANCE);
+    L_AND = new ORTokenElementType("L_AND", RmlLanguage.INSTANCE);
+    L_OR = new ORTokenElementType("L_OR", RmlLanguage.INSTANCE);
     ARROBASE = new ORTokenElementType("ARROBASE", RmlLanguage.INSTANCE);
+    ARROBASE_2 = new ORTokenElementType("ARROBASE_2", RmlLanguage.INSTANCE);
+    ARROBASE_3 = new ORTokenElementType("ARROBASE_3", RmlLanguage.INSTANCE);
     ARROW = new ORTokenElementType("ARROW", RmlLanguage.INSTANCE);
     ASSERT = new ORTokenElementType("ASSERT", RmlLanguage.INSTANCE);
     AS = new ORTokenElementType("AS", RmlLanguage.INSTANCE);

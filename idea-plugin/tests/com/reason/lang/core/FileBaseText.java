@@ -9,7 +9,7 @@ public class FileBaseText extends ORBasePlatformTestCase {
 
   public void test_Rml_getQNameExpression() {
     FileBase f = configureCode("A.re", "module B = { let x = 1; }; let x = 2;");
-    List<PsiLet> e = f.getExpressions("A.B.x", PsiLet.class);
+    List<PsiLet> e = f.getQualifiedExpressions("A.B.x", PsiLet.class);
 
     assertSize(1, e);
     assertInstanceOf(e.iterator().next(), PsiLet.class);

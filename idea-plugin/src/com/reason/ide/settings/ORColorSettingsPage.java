@@ -13,7 +13,8 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ReasonColorSettingsPage implements ColorSettingsPage {
+public class ORColorSettingsPage implements ColorSettingsPage {
+  @SuppressWarnings("DialogTitleCapitalization")
   private static final AttributesDescriptor[] DESCRIPTORS =
       new AttributesDescriptor[] {
         new AttributesDescriptor("Annotation", ORSyntaxHighlighter.ANNOTATION_),
@@ -91,7 +92,7 @@ public class ReasonColorSettingsPage implements ColorSettingsPage {
 
   @NotNull
   @Override
-  public AttributesDescriptor[] getAttributeDescriptors() {
+  public AttributesDescriptor @NotNull [] getAttributeDescriptors() {
     return DESCRIPTORS;
   }
 

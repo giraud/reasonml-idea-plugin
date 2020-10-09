@@ -21,7 +21,7 @@ public class RmlPairedBraceMatcher implements PairedBraceMatcher {
 
   @NotNull
   @Override
-  public BracePair[] getPairs() {
+  public BracePair @NotNull [] getPairs() {
     return PAIRS;
   }
 

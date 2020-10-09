@@ -5,6 +5,7 @@ import static com.intellij.notification.NotificationType.ERROR;
 import com.intellij.notification.Notifications;
 import com.reason.ORNotification;
 import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
 public class EsyNotification {
 
@@ -24,7 +25,7 @@ public class EsyNotification {
   }
 
   @Nls
-  public static void showExecutionException(Exception e) {
+  public static void showExecutionException(@NotNull Exception e) {
     Notifications.Bus.notify(
         new ORNotification(
             "Esy Exception", "Failed to execute esy command.\n" + e.getMessage(), ERROR));

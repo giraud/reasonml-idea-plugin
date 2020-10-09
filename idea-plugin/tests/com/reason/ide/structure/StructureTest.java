@@ -27,6 +27,18 @@ public class StructureTest extends ORBasePlatformTestCase {
     assertPresentation("x", "int", ORIcons.VAL, x.getPresentation());
   }
 
+  public void test_OCL_type_record() {
+    FileBase a = configureCode("A.ml", "type x = { a: int; b: string list }");
+    StructureViewModel model = new ORStructureViewModel(a);
+
+    TreeElement e = model.getRoot().getChildren()[0];
+    assertPresentation("x", null, ORIcons.TYPE, e.getPresentation());
+    TreeElement c1 = e.getChildren()[0];
+    assertPresentation("a", "int", ORIcons.VAL, c1.getPresentation());
+    TreeElement c2 = e.getChildren()[1];
+    assertPresentation("b", "string list", ORIcons.VAL, c2.getPresentation());
+  }
+
   public void test_OCL_module_type() {
     FileBase a = configureCode("A.ml", "module type I = sig val x : bool end");
     StructureViewModel model = new ORStructureViewModel(a);
@@ -59,6 +71,15 @@ public class StructureTest extends ORBasePlatformTestCase {
     assertPresentation("X", "", ORIcons.INNER_MODULE, e.getPresentation());
     TreeElement ee = e.getChildren()[0];
     assertPresentation("A.Vcs.Branch", "", ORIcons.MODULE_TYPE, ee.getPresentation());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/274
+  // omit () in structure panel
+  public void test_GH_274() {
+    FileBase a = configureCode("A.ml", "let () = 1 + 2");
+    StructureViewModel model = new ORStructureViewModel(a);
+
+    assertEmpty(model.getRoot().getChildren());
   }
 
   private void assertPresentation(

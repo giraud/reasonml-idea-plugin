@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ORFacetListener implements ProjectWideFacetListener<Facet> {
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
 
   public static void ensureSubscribed(@NotNull Project project) {
     ServiceManager.getService(project, ORFacetListener.class);
@@ -47,7 +47,7 @@ public class ORFacetListener implements ProjectWideFacetListener<Facet> {
   @Override
   public void facetConfigurationChanged(@NotNull Facet facet) {}
 
-  private static void showHideDuneToolWindow(Project project, Facet facet) {
+  private static void showHideDuneToolWindow(@NotNull Project project, Facet facet) {
     if (facet instanceof DuneFacet) {
       ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
       ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);

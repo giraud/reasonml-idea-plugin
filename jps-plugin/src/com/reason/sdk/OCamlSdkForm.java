@@ -19,12 +19,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OCamlSdkForm {
   private final Log LOG = Log.create("sdk");
 
-  private OCamlSdkAdditionalData m_data;
-  private String m_sdkVersion;
+  private @Nullable OCamlSdkAdditionalData m_data;
+  private @Nullable String m_sdkVersion;
 
   private JPanel c_rootPanel;
   private JCheckBox c_forceVersion;
@@ -69,7 +70,7 @@ public class OCamlSdkForm {
                     Task.WithResult<String, RuntimeException> download =
                         new Task.WithResult<String, RuntimeException>(null, "Download SDK", false) {
                           @Override
-                          protected String compute(@NotNull ProgressIndicator indicator)
+                          protected @NotNull String compute(@NotNull ProgressIndicator indicator)
                               throws RuntimeException {
                             new SdkDownloader(
                                     odkData.getMajor(),
@@ -114,7 +115,7 @@ public class OCamlSdkForm {
       if (c_forceVersion.isSelected()) {
         m_data.setVersionFromHome(c_forceValue.getText().trim());
       } else {
-        m_data.setVersionFromHome(m_sdkVersion);
+        m_data.setVersionFromHome(m_sdkVersion == null ? "?" : m_sdkVersion);
       }
       c_version.setText("Current version is: " + m_data);
     }

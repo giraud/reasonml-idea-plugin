@@ -43,7 +43,6 @@ public class FreeExpressionCompletionProvider {
 
   public static void addCompletions(
       @NotNull QNameFinder qnameFinder,
-      @NotNull String containingFilePath,
       @NotNull PsiElement element,
       @NotNull CompletionResultSet resultSet) {
     LOG.debug("FREE expression completion");

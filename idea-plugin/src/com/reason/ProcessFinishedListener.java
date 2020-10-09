@@ -30,7 +30,7 @@ public class ProcessFinishedListener extends ProcessAdapter {
     }
   }
 
-  private static String formatBuildTime(long milliSeconds) {
+  private static @NotNull String formatBuildTime(long milliSeconds) {
     if (milliSeconds < 1000) {
       return milliSeconds + "ms";
     }

@@ -135,8 +135,11 @@ public class OclTypes extends ORTypes {
     EXCEPTION_NAME = new ORTokenElementType("EXCEPTION_NAME", OclLanguage.INSTANCE);
     PROPERTY_NAME = new ORTokenElementType("PROPERTY_NAME", OclLanguage.INSTANCE);
     AND = new ORTokenElementType("AND", OclLanguage.INSTANCE);
-    ANDAND = new ORTokenElementType("ANDAND", OclLanguage.INSTANCE);
+    L_AND = new ORTokenElementType("L_AND", OclLanguage.INSTANCE);
+    L_OR = new ORTokenElementType("L_OR", OclLanguage.INSTANCE);
     ARROBASE = new ORTokenElementType("ARROBASE", OclLanguage.INSTANCE);
+    ARROBASE_2 = new ORTokenElementType("ARROBASE_2", OclLanguage.INSTANCE);
+    ARROBASE_3 = new ORTokenElementType("ARROBASE_3", OclLanguage.INSTANCE);
     ARROW = new ORTokenElementType("ARROW", OclLanguage.INSTANCE);
     ASSERT = new ORTokenElementType("ASSERT", OclLanguage.INSTANCE);
     AS = new ORTokenElementType("AS", OclLanguage.INSTANCE);

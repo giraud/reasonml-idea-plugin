@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ORToolWindowManager {
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
 
-  private final ORToolWindowProvider m_toolWindowProvider;
+  private final @NotNull ORToolWindowProvider m_toolWindowProvider;
 
-  public static ORToolWindowManager getInstance(@NotNull Project project) {
+  public static @NotNull ORToolWindowManager getInstance(@NotNull Project project) {
     return new ORToolWindowManager(project);
   }
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class PsiExceptionStub extends NamedStubBase<PsiException> {
 
   private final String m_path;
-  private final String m_qname;
+  private final @NotNull String m_qname;
 
   public PsiExceptionStub(
       StubElement parent, @NotNull IStubElementType elementType, String name, String path) {
@@ -30,7 +30,7 @@ public class PsiExceptionStub extends NamedStubBase<PsiException> {
     return m_path;
   }
 
-  public String getQualifiedName() {
+  public @NotNull String getQualifiedName() {
     return m_qname;
   }
 }

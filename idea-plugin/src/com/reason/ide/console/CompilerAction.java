@@ -32,7 +32,7 @@ abstract class CompilerAction extends DumbAwareAction {
     compileDirectory(project, cliType);
   }
 
-  private static void compileDirectory(@NotNull Project project, CliType cliType) {
+  private static void compileDirectory(@NotNull Project project, @NotNull CliType cliType) {
     ORCompilerManager compilerManager = ServiceManager.getService(project, ORCompilerManager.class);
     Optional<Compiler> compilerOptional = compilerManager.getCompiler(cliType);
     if (!compilerOptional.isPresent()) {
@@ -72,7 +72,7 @@ abstract class CompilerAction extends DumbAwareAction {
     return Optional.ofNullable(psiDocumentManager.getPsiFile(document));
   }
 
-  private static Optional<Editor> getActiveEditor(Project project) {
+  private static Optional<Editor> getActiveEditor(@NotNull Project project) {
     FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
     return Optional.ofNullable(fileEditorManager.getSelectedTextEditor());
   }

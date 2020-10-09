@@ -8,6 +8,7 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class ModuleDelegatePresentation extends ORDelegatePsiElement
     implements NavigationItem, PsiQualifiedElement {
@@ -25,7 +26,7 @@ class ModuleDelegatePresentation extends ORDelegatePsiElement
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
     return null;
   }
 

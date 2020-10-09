@@ -24,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
 
-  private final Project m_project;
-  private final VirtualFile m_file;
+  private final @NotNull Project m_project;
+  private final @NotNull VirtualFile m_file;
 
   private JBTabbedPane m_rootTabbedPane;
 
@@ -111,7 +111,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
 
     private final List<String[]> m_entries = new ArrayList<>();
 
-    public MetaTableModel(List<String> entries) {
+    public MetaTableModel(@NotNull List<String> entries) {
       for (String entry : entries) {
         m_entries.add(entry.split("\\|", 2));
       }
@@ -128,12 +128,12 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
     }
 
     @Override
-    public String getColumnName(int col) {
+    public @NotNull String getColumnName(int col) {
       return col == 0 ? "Key" : "Value";
     }
 
     @Override
-    public Class<?> getColumnClass(int col) {
+    public @NotNull Class<?> getColumnClass(int col) {
       return String.class;
     }
 
@@ -167,7 +167,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
     }
 
     @Override
-    public String getColumnName(int col) {
+    public @NotNull String getColumnName(int col) {
       switch (col) {
         case 0:
           return "Kind";
@@ -185,7 +185,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
     }
 
     @Override
-    public Class<?> getColumnClass(int col) {
+    public @NotNull Class<?> getColumnClass(int col) {
       return String.class;
     }
 

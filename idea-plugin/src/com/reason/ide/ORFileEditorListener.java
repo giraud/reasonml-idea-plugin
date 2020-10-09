@@ -37,7 +37,7 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
   private static final Key<InsightUpdateQueue> INSIGHT_QUEUE = new Key<>("reasonml.insight.queue");
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
   private final ORCompilerManager m_compilerManager;
   private final List<VirtualFile> m_openedFiles = new ArrayList<>();
   private final WeakList<InsightUpdateQueue> m_queues = new WeakList<>();
@@ -121,11 +121,11 @@ public class ORFileEditorListener implements FileEditorManagerListener {
 
   class ORPropertyChangeListener implements PropertyChangeListener, Disposable {
 
-    private final VirtualFile m_file;
+    private final @NotNull VirtualFile m_file;
 
-    private final Document m_document;
+    private final @NotNull Document m_document;
 
-    private final InsightUpdateQueue m_updateQueue;
+    private final @NotNull InsightUpdateQueue m_updateQueue;
 
     @Nullable private final Compiler m_compiler;
 

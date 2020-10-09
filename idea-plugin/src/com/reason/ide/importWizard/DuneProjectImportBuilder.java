@@ -33,7 +33,7 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DuneProjectImportBuilder extends ProjectImportBuilder {
+public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
 
   @Nullable private Sdk m_sdk;
 
@@ -44,7 +44,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
   }
 
   @Override
-  public Icon getIcon() {
+  public @NotNull Icon getIcon() {
     return ORIcons.DUNE;
   }
 
@@ -55,17 +55,17 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder {
 
   @Nullable
   @Override
-  public List getList() {
+  public List<Module> getList() {
     return null;
   }
 
   @Override
-  public boolean isMarked(Object element) {
+  public boolean isMarked(Module element) {
     return false;
   }
 
   @Override
-  public void setList(List list) {}
+  public void setList(List<Module> list) {}
 
   @Override
   public void setOpenProjectSettingsAfter(boolean on) {}

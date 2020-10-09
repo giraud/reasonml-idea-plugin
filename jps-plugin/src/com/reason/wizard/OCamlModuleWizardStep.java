@@ -14,11 +14,12 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Condition;
 import com.reason.sdk.OCamlSdkType;
 import javax.swing.*;
+import org.jetbrains.annotations.Nullable;
 
 class OCamlModuleWizardStep extends ModuleWizardStep {
 
   private JPanel c_rootPanel;
-  private JdkComboBox c_sdk;
+  private @Nullable JdkComboBox c_sdk;
 
   private final WizardContext m_context;
 
@@ -30,7 +31,7 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
     return c_rootPanel;
   }
 
-  public JComponent getPreferredFocusedComponent() {
+  public @Nullable JComponent getPreferredFocusedComponent() {
     return c_sdk;
   }
 
@@ -56,11 +57,13 @@ class OCamlModuleWizardStep extends ModuleWizardStep {
   }
 
   public void updateDataModel() {
-    m_context.setProjectJdk(c_sdk.getSelectedJdk());
+    if (c_sdk != null) {
+      m_context.setProjectJdk(c_sdk.getSelectedJdk());
+    }
   }
 
   public boolean validate() {
-    Sdk odk = c_sdk.getSelectedJdk();
+    Sdk odk = c_sdk == null ? null : c_sdk.getSelectedJdk();
     if (odk == null && !ApplicationManager.getApplication().isUnitTestMode()) {
       int result =
           Messages.showOkCancelDialog(

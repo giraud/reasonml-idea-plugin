@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Ninja {
-  private final List<String> m_includes;
-  private final List<String> m_ppxIncludes;
-  private final List<String> m_pkgFlags;
-  private final List<String> m_bscFlags;
+  private final @NotNull List<String> m_includes;
+  private final @NotNull List<String> m_ppxIncludes;
+  private final @NotNull List<String> m_pkgFlags;
+  private final @NotNull List<String> m_bscFlags;
 
   public Ninja(@Nullable String contents) {
     m_includes = readIncludes(contents);
@@ -18,7 +18,7 @@ public class Ninja {
     m_bscFlags = readBscFlags(contents);
   }
 
-  private List<String> readIncludes(@Nullable String contents) {
+  private @NotNull List<String> readIncludes(@Nullable String contents) {
     List<String> result = new ArrayList<>();
     if (contents == null) {
       return result;
@@ -59,7 +59,7 @@ public class Ninja {
     return result;
   }
 
-  public List<String> readPpxIncludes(@Nullable String contents) {
+  public @NotNull List<String> readPpxIncludes(@Nullable String contents) {
     List<String> result = new ArrayList<>();
     if (contents == null) {
       return result;
@@ -85,7 +85,7 @@ public class Ninja {
     return result;
   }
 
-  private List<String> readPkgFlags(@Nullable String contents) {
+  private @NotNull List<String> readPkgFlags(@Nullable String contents) {
     List<String> result = new ArrayList<>();
     if (contents == null) {
       return result;
@@ -106,7 +106,7 @@ public class Ninja {
     return result;
   }
 
-  private List<String> readBscFlags(@Nullable String contents) {
+  private @NotNull List<String> readBscFlags(@Nullable String contents) {
     List<String> result = new ArrayList<>();
     if (contents == null) {
       return result;
@@ -131,19 +131,19 @@ public class Ninja {
     m_includes.add(source);
   }
 
-  public List<String> getPkgFlags() {
+  public @NotNull List<String> getPkgFlags() {
     return m_pkgFlags;
   }
 
-  public List<String> getBscFlags() {
+  public @NotNull List<String> getBscFlags() {
     return m_bscFlags;
   }
 
-  public List<String> getPpxIncludes() {
+  public @NotNull List<String> getPpxIncludes() {
     return m_ppxIncludes;
   }
 
-  public List<String> getIncludes() {
+  public @NotNull List<String> getIncludes() {
     return m_includes;
   }
 }

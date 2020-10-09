@@ -30,7 +30,7 @@ class ORVirtualFileListener implements AsyncFileListener {
 
     private final List<? extends VFileEvent> m_events;
 
-    public static ChangeApplier apply(List<? extends VFileEvent> events) {
+    public static @NotNull ChangeApplier apply(List<? extends VFileEvent> events) {
       return new ORChangeApplier(events);
     }
 
@@ -58,7 +58,8 @@ class ORVirtualFileListener implements AsyncFileListener {
       }
     }
 
-    private static <E extends VFileEvent> void showHideToolWindowsForConfigurationFiles(E event) {
+    private static <E extends VFileEvent> void showHideToolWindowsForConfigurationFiles(
+        @NotNull E event) {
       VirtualFile modifiedFile = event.getFile();
       if (modifiedFile == null) {
         return;
@@ -72,7 +73,7 @@ class ORVirtualFileListener implements AsyncFileListener {
       }
     }
 
-    private static void handleFileContentChangeEvent(VFileContentChangeEvent event) {
+    private static void handleFileContentChangeEvent(@NotNull VFileContentChangeEvent event) {
       VirtualFile file = event.getFile();
       if (BsConfigJson.isBsConfigJson(file)) {
         handleBsConfigContentChange(file);
@@ -80,7 +81,7 @@ class ORVirtualFileListener implements AsyncFileListener {
       showHideToolWindowsForConfigurationFiles(event);
     }
 
-    private static void handleBsConfigContentChange(VirtualFile bsConfigFile) {
+    private static void handleBsConfigContentChange(@NotNull VirtualFile bsConfigFile) {
       for (Project project : ProjectManager.getInstance().getOpenProjects()) {
         Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
         if (module != null) {

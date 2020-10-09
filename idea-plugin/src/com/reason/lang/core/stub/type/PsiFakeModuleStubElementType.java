@@ -2,11 +2,7 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.stubs.IndexSink;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.psi.stubs.*;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.util.io.StringRef;
 import com.reason.bs.BsConfigReader;
@@ -17,7 +13,7 @@ import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.stub.PsiModuleStub;
 import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
-import java.io.*;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub, PsiFakeModule>
@@ -54,7 +50,7 @@ public class PsiFakeModuleStubElementType extends IStubElementType<PsiModuleStub
         parentStub,
         this,
         file.getModuleName(),
-        namespace /*, isVirtualNamespace*/,
+        namespace == null ? "" : namespace,
         null,
         file.isComponent(),
         file.isInterface());

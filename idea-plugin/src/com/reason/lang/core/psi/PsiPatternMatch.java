@@ -17,14 +17,14 @@ public class PsiPatternMatch extends ASTWrapperPsiElement {
     return false;
   }
 
+  @Nullable
+  public PsiPatternMatchBody getBody() {
+    return ORUtil.findImmediateFirstChildOfClass(this, PsiPatternMatchBody.class);
+  }
+
   @NotNull
   @Override
   public String toString() {
     return "Pattern match";
-  }
-
-  @Nullable
-  public PsiPatternMatchBody getBody() {
-    return ORUtil.findImmediateFirstChildOfClass(this, PsiPatternMatchBody.class);
   }
 }
