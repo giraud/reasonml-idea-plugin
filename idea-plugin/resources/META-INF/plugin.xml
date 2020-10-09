@@ -184,13 +184,13 @@
         <lang.psiStructureViewFactory language="Dune"
                                       implementationClass="com.reason.ide.structure.StructureViewFactory"/>
 
-        <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="NapkinScript" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="OCamlP4" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="Mlg" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="Mll" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
-        <lang.foldingBuilder language="Mly" implementationClass="com.reason.ide.folding.FoldingBuilder"/>
+        <lang.foldingBuilder language="Reason" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="NapkinScript" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="OCaml" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="OCamlP4" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="Mlg" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="Mll" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
+        <lang.foldingBuilder language="Mly" implementationClass="com.reason.ide.folding.ORFoldingBuilder"/>
         <lang.foldingBuilder language="Dune" implementationClass="com.reason.ide.folding.DuneFoldingBuilder"/>
 
         <lang.commenter language="Reason" implementationClass="com.reason.ide.comment.RmlCommenter"/>

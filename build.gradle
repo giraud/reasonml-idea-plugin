@@ -50,6 +50,7 @@ subprojects {
         changeNotes """
         <ul>
             <li>#275 - Incorrect parsing of switch with signature</li>
+            <li>Fold switch/match</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

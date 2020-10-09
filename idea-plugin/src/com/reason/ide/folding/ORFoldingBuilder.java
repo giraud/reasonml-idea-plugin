@@ -23,7 +23,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FoldingBuilder extends FoldingBuilderEx {
+public class ORFoldingBuilder extends FoldingBuilderEx {
   @NotNull
   @Override
   public FoldingDescriptor[] buildFoldRegions(
@@ -46,6 +46,8 @@ public class FoldingBuilder extends FoldingBuilderEx {
             foldFunctor(descriptors, (PsiFunctor) element);
           } else if (element instanceof PsiTag) {
             foldTag(descriptors, (PsiTag) element);
+          } else if (element instanceof PsiSwitch) {
+            foldSwitch(descriptors, (PsiSwitch) element);
           } else if (element instanceof OclYaccHeader) {
             foldHeader(descriptors, (OclYaccHeader) element);
           } else if (element instanceof OclYaccRule) {
@@ -105,23 +107,36 @@ public class FoldingBuilder extends FoldingBuilderEx {
   }
 
   private void foldFunctor(
-      @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunctor functor) {
-    FoldingDescriptor foldBinding = fold(functor.getBinding());
+      @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiFunctor element) {
+    FoldingDescriptor foldBinding = fold(element.getBinding());
     if (foldBinding != null) {
       descriptors.add(foldBinding);
     }
   }
 
-  private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag tag) {
-    PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(tag, PsiTagStart.class);
+  private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag element) {
+    PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(element, PsiTagStart.class);
     PsiTagClose close =
-        start == null ? null : ORUtil.findImmediateFirstChildOfClass(tag, PsiTagClose.class);
+        start == null ? null : ORUtil.findImmediateFirstChildOfClass(element, PsiTagClose.class);
     // Auto-closed tags are not foldable
     if (close != null) {
       PsiElement lastChild = start.getLastChild();
       TextRange textRange =
-          TextRange.create(lastChild.getTextOffset(), tag.getTextRange().getEndOffset() - 1);
-      descriptors.add(new FoldingDescriptor(tag, textRange));
+          TextRange.create(lastChild.getTextOffset(), element.getTextRange().getEndOffset() - 1);
+      descriptors.add(new FoldingDescriptor(element, textRange));
+    }
+  }
+
+  private void foldSwitch(
+      @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiSwitch element) {
+    PsiBinaryCondition condition = element.getCondition();
+    if (condition != null) {
+      int startOffset = condition.getTextOffset() + condition.getTextLength() + 1;
+      int endOffset = element.getTextRange().getEndOffset();
+      if (startOffset < endOffset) {
+        TextRange textRange = TextRange.create(startOffset, endOffset);
+        descriptors.add(new FoldingDescriptor(element, textRange));
+      }
     }
   }
 
