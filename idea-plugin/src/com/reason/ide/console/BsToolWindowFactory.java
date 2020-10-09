@@ -20,23 +20,23 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
   public static final String ID = "BuckleScript:";
 
   @Override
-  public @NotNull String getId() {
+  public String getId() {
     return ID;
   }
 
   @Override
-  public @NotNull Icon getIcon() {
+  public Icon getIcon() {
     return ORIcons.BUCKLESCRIPT_TOOL;
   }
 
   @Nls
   @Override
-  public @NotNull String getTitle() {
+  public String getTitle() {
     return "Process";
   }
 
   @Override
-  public @NotNull String getStripeTitle() {
+  public String getStripeTitle() {
     return "BuckleScript";
   }
 
@@ -54,7 +54,7 @@ public class BsToolWindowFactory extends ORToolWindowFactory {
 
     window.getContentManager().addContent(content);
 
-    Disposer.register(window.getDisposable(), console);
+    Disposer.register(project, console);
   }
 
   @NotNull

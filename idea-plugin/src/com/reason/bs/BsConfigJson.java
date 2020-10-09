@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
-import com.reason.ide.files.BsConfigJsonFileType;
 import org.jetbrains.annotations.NotNull;
 
 public class BsConfigJson {

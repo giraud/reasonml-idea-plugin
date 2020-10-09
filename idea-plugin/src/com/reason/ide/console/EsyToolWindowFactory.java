@@ -20,23 +20,23 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
   public static final String ID = "Esy:";
 
   @Override
-  public @NotNull String getId() {
+  public String getId() {
     return ID;
   }
 
   @Override
-  public @NotNull Icon getIcon() {
+  public Icon getIcon() {
     return ORIcons.ESY_TOOL;
   }
 
   @Nls
   @Override
-  public @NotNull String getTitle() {
+  public String getTitle() {
     return "Process";
   }
 
   @Override
-  public @NotNull String getStripeTitle() {
+  public String getStripeTitle() {
     return "Esy";
   }
 
@@ -54,7 +54,7 @@ public class EsyToolWindowFactory extends ORToolWindowFactory {
 
     window.getContentManager().addContent(content);
 
-    Disposer.register(window.getDisposable(), console);
+    Disposer.register(project, console);
   }
 
   @NotNull
