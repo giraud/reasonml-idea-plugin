@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#275](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275) Incorrect parsing of switch with signature
+
 ## 0.93.1 - 2020/10/09
 
 0.93.1

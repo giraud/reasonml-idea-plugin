@@ -49,15 +49,7 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
-            <li>#272 - Another case: structure panel missing function definition with "and"</li>
-            <li>#274 - Omit '()' in structure panel</li>
-            <li>#273 - Some constructor names not highlighted in function/match patterns</li>
-            <li>#119 - Support for automatically closing quotes (double)</li>
-            <li>'Goto class' use a custom presentation for inner modules</li> 
-            <li>#91 - Jumping to some module-related symbol definitions from Structure Panel doesn't highlight symbol right away (incorrect module type detection)<li>f
-            <li>#271 - Structure panel missing function defined with "and"</li>
-            <li>#270 - Function definition with type variables not recognized as a function</li>
-            <li>Fix monorepo on windows</li>
+            <li>#275 - Incorrect parsing of switch with signature</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

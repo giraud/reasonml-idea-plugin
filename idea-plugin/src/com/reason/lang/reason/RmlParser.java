@@ -967,7 +967,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
       //  let |>(<| + ) =
       //  let |>(<| a, b ) =
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
-    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+    } else if (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken()) {
       // |>(<| ... ) ? ...
       state.updateScopeToken(m_types.LPAREN);
     } else {
@@ -1095,8 +1095,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
     if (state.isInContext(funPattern)) {
       state.popEndUntilResolution(funPattern);
     }
-    if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
-      state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+
+    if (state.is(m_types.C_LET_BINDING) && !state.hasScopeToken()) {
+      state.popEndUntil(m_types.C_LET_DECLARATION).popEnd();
     }
 
     if (!state.isCurrentResolution(patternMatchBody)) {
