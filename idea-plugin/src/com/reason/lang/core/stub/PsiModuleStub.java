@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiModuleStub extends NamedStubBase<PsiModule> {
-  private final String m_path;
-  private final String m_qname;
+  private final @NotNull String m_path;
+  private final @NotNull String m_qname;
   private final String m_alias;
   private final boolean m_isComponent;
   private final boolean m_isInterface;
@@ -19,13 +19,13 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
       StubElement parent,
       @NotNull IStubElementType elementType,
       @Nullable String name,
-      @Nullable String path,
+      @NotNull String path,
       String alias,
       boolean isComponent,
       boolean isInterface) {
     super(parent, elementType, name);
     m_path = path;
-    m_qname = path == null || path.length() == 0 ? "" + name : path + "." + name;
+    m_qname = path.length() == 0 ? "" + name : path + "." + name;
     m_alias = alias;
     m_isComponent = isComponent;
     m_isInterface = isInterface;
@@ -35,19 +35,19 @@ public class PsiModuleStub extends NamedStubBase<PsiModule> {
       StubElement parent,
       @NotNull IStubElementType elementType,
       @Nullable StringRef name,
-      @Nullable String path,
+      @NotNull String path,
       String alias,
       boolean isComponent,
       boolean isInterface) {
     super(parent, elementType, name);
     m_path = path;
-    m_qname = path == null || path.length() == 0 ? "" + name : path + "." + name;
+    m_qname = path.length() == 0 ? "" + name : path + "." + name;
     m_alias = alias;
     m_isComponent = isComponent;
     m_isInterface = isInterface;
   }
 
-  public String getPath() {
+  public @NotNull String getPath() {
     return m_path;
   }
 

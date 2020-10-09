@@ -2,10 +2,8 @@ package com.reason.ide;
 
 import com.intellij.json.psi.JsonFile;
 import com.intellij.lang.javascript.psi.JSFile;
-import com.intellij.openapi.util.Iconable;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.BitUtil;
 import com.reason.bs.BsConstants;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.*;
@@ -24,24 +22,22 @@ public class IconProvider extends com.intellij.ide.IconProvider {
         psiElement instanceof PsiFakeModule ? psiElement.getContainingFile() : psiElement;
     if (element instanceof PsiFile) {
       if (element instanceof OclFile) {
-        return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY)
-            ? ORIcons.OCL_FILE_MODULE
-            : ORIcons.OCL_FILE;
+        return ORIcons.OCL_FILE;
       }
       if (element instanceof OclInterfaceFile) {
-        return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY)
-            ? ORIcons.OCL_FILE_MODULE_INTERFACE
-            : ORIcons.OCL_INTERFACE_FILE;
+        return ORIcons.OCL_INTERFACE_FILE;
       }
       if (element instanceof RmlFile) {
-        return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY)
-            ? ORIcons.RML_FILE_MODULE
-            : ORIcons.RML_FILE;
+        return ORIcons.RML_FILE;
       }
       if (element instanceof RmlInterfaceFile) {
-        return BitUtil.isSet(flags, Iconable.ICON_FLAG_VISIBILITY)
-            ? ORIcons.RML_FILE_MODULE_INTERFACE
-            : ORIcons.RML_INTERFACE_FILE;
+        return ORIcons.RML_INTERFACE_FILE;
+      }
+      if (element instanceof NsFile) {
+        return ORIcons.NS_FILE;
+      }
+      if (element instanceof NsInterfaceFile) {
+        return ORIcons.NS_INTERFACE_FILE;
       }
       if (isBsJsFile((PsiFile) element)) {
         return ORIcons.BS_FILE;
@@ -70,13 +66,12 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     return null;
   }
 
-  @Nullable
-  public static Icon getFileModuleIcon(@NotNull FileBase element) {
+  public static @NotNull Icon getFileModuleIcon(@NotNull FileBase element) {
     return getFileModuleIcon(
         FileHelper.isOCaml(element.getFileType()), FileHelper.isInterface(element.getFileType()));
   }
 
-  public static Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
+  public static @NotNull Icon getFileModuleIcon(boolean isOCaml, boolean isInterface) {
     if (isOCaml) {
       return isInterface ? ORIcons.OCL_FILE_MODULE_INTERFACE : ORIcons.OCL_FILE_MODULE;
     } else {
@@ -84,7 +79,7 @@ public class IconProvider extends com.intellij.ide.IconProvider {
     }
   }
 
-  public static Icon getFileModuleIcon(@NotNull IndexedFileModule indexedFile) {
+  public static @NotNull Icon getFileModuleIcon(@NotNull IndexedFileModule indexedFile) {
     return getFileModuleIcon(indexedFile.isOCaml(), indexedFile.isInterface());
   }
 

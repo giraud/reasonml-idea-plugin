@@ -34,11 +34,7 @@ public class EsyPackageJson {
     return false;
   }
 
-  public static FileType getFileType() {
-    return EsyPackageJsonFileType.INSTANCE;
-  }
-
-  private static ElementPattern<FileContent> createFilePattern() {
+  private static @NotNull ElementPattern<FileContent> createFilePattern() {
     return FileContentPattern.fileContent()
         .withName(EsyPackageJsonFileType.getDefaultFilename())
         .with(

@@ -32,12 +32,12 @@ public class PsiDuneField extends PsiToken<DuneTypes> implements PsiNameIdentifi
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
     return null;
   }
 
   @Override
-  public String toString() {
+  public @Nullable String toString() {
     return "Field " + getName();
   }
 }

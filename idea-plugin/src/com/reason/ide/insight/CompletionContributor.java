@@ -79,7 +79,7 @@ abstract class CompletionContributor
 
             // Just after a DOT
             if (prevNodeType == types.DOT) {
-              // But not in a guaranted uncurried function
+              // But not in a guaranteed uncurried function
               assert prevLeaf != null;
               PsiElement prevPrevLeaf = prevLeaf.getPrevSibling();
               if (prevPrevLeaf != null && prevPrevLeaf.getNode().getElementType() != types.LPAREN) {
@@ -101,11 +101,7 @@ abstract class CompletionContributor
             }
 
             LOG.debug("Nothing found, free expression");
-            FreeExpressionCompletionProvider.addCompletions(
-                qnameFinder,
-                parameters.getOriginalFile().getVirtualFile().getPath(),
-                element,
-                result);
+            FreeExpressionCompletionProvider.addCompletions(qnameFinder, element, result);
           }
         });
   }

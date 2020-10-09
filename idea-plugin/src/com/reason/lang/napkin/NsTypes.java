@@ -124,8 +124,11 @@ public class NsTypes extends ORTypes {
     // Token element types
 
     AND = new ORTokenElementType("AND", NsLanguage.INSTANCE);
-    ANDAND = new ORTokenElementType("ANDAND", NsLanguage.INSTANCE);
+    L_AND = new ORTokenElementType("L_AND", NsLanguage.INSTANCE);
+    L_OR = new ORTokenElementType("L_OR", NsLanguage.INSTANCE);
     ARROBASE = new ORTokenElementType("ARROBASE", NsLanguage.INSTANCE);
+    ARROBASE_2 = new ORTokenElementType("ARROBASE_2", NsLanguage.INSTANCE);
+    ARROBASE_3 = new ORTokenElementType("ARROBASE_3", NsLanguage.INSTANCE);
     ARROW = new ORTokenElementType("ARROW", NsLanguage.INSTANCE);
     ASSERT = new ORTokenElementType("ASSERT", NsLanguage.INSTANCE);
     AS = new ORTokenElementType("AS", NsLanguage.INSTANCE);

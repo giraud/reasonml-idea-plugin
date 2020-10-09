@@ -121,11 +121,11 @@ public final class PsiFinder {
       return !m_interfaces.isEmpty();
     }
 
-    public List<PsiModule> getInterfaces() {
+    public @NotNull List<PsiModule> getInterfaces() {
       return m_interfaces;
     }
 
-    public List<PsiModule> getImplementations() {
+    public @NotNull List<PsiModule> getImplementations() {
       return m_implementations;
     }
   }
@@ -666,7 +666,7 @@ public final class PsiFinder {
     return null;
   }
 
-  public Collection<IndexedFileModule> findModulesForNamespace(
+  public @NotNull Collection<IndexedFileModule> findModulesForNamespace(
       @NotNull String namespace, @NotNull GlobalSearchScope scope) {
     return FileModuleIndexService.getService().getFilesForNamespace(namespace, scope);
   }

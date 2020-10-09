@@ -268,7 +268,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
   private String createQuickDocTemplate(
       @NotNull String qPath,
       @Nullable String type,
-      @NotNull String name,
+      @Nullable String name,
       @Nullable String signature) {
     return qPath
         + "<br/>"

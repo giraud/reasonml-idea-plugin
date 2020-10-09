@@ -30,9 +30,9 @@ public class SdkDownloader {
               || s.endsWith(".mll")
               || s.endsWith(".mly");
 
-  private final String m_sdk;
-  private final String m_major;
-  private final File m_sdkHome;
+  private final @NotNull String m_sdk;
+  private final @NotNull String m_major;
+  private final @NotNull File m_sdkHome;
 
   public SdkDownloader(
       @NotNull String major,
@@ -46,7 +46,7 @@ public class SdkDownloader {
     m_major = major + "." + minor;
   }
 
-  public static Task modalTask(
+  public static @NotNull Task modalTask(
       @NotNull String major,
       @NotNull String minor,
       @NotNull String patch,

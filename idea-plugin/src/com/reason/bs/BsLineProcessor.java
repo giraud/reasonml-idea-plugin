@@ -41,11 +41,7 @@ public class BsLineProcessor {
 
   private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
-  public boolean hasInfo() {
-    return !m_bsbInfo.isEmpty();
-  }
-
-  public List<OutputInfo> getInfo() {
+  public @NotNull List<OutputInfo> getInfo() {
     return m_bsbInfo;
   }
 

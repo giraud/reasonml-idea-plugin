@@ -41,8 +41,6 @@ public enum ParserScopeEnum {
   recordBinding,
   recordField,
 
-  bracket,
-
   jsObject,
   object,
   objectField,

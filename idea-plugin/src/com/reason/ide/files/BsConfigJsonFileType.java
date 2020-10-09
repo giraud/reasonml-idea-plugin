@@ -10,13 +10,10 @@ import org.jetbrains.annotations.Nullable;
 public class BsConfigJsonFileType extends JsonFileType {
 
   public static final BsConfigJsonFileType INSTANCE = new BsConfigJsonFileType();
+  private static final String FILENAME = "bsconfig.json";
 
-  public static String getDefaultFilename() {
-    return "bsconfig.json";
-  }
-
-  public static boolean isBsConfigFile(VirtualFile file) {
-    return getDefaultFilename().equals(file.getName());
+  public static boolean isBsConfigFile(@NotNull VirtualFile file) {
+    return FILENAME.equals(file.getName());
   }
 
   @NotNull

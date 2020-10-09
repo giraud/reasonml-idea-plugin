@@ -90,7 +90,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
     FileBase psiRelatedFile =
         PsiFinder.getInstance(containingFile.getProject()).findRelatedFile(containingFile);
     if (psiRelatedFile != null) {
-      List<T> expressions = psiRelatedFile.getExpressions(qname, clazz);
+      List<T> expressions = psiRelatedFile.getQualifiedExpressions(qname, clazz);
       if (expressions.size() == 1) {
         T relatedElement = expressions.iterator().next();
         if (relatedElement != null) {

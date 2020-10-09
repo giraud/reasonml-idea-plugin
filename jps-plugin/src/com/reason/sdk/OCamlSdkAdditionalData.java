@@ -10,7 +10,7 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
   private String m_patch;
   private Boolean m_forced = false;
 
-  public void setVersionFromHome(String versionString) {
+  public void setVersionFromHome(@NotNull String versionString) {
     String[] split = versionString.split("\\.");
     if (split.length > 1) {
       m_major = split[0];
@@ -55,11 +55,8 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
         // case "05":
         //    return "0";
       case "06":
-        return "1";
       case "07":
-        return "1";
       case "08":
-        return "1";
       case "09":
         return "1";
         // case "10":
@@ -82,7 +79,7 @@ public class OCamlSdkAdditionalData implements SdkAdditionalData {
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return getMajor() + '.' + getMinor() + '.' + getPatch();
   }
 }

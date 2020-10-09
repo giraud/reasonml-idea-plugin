@@ -80,7 +80,8 @@ public class Platform {
    * @deprecated replace usages with ORProjectManager::findContentRoots which returns ALL potential
    *     roots.
    */
-  public static VirtualFile findContentRootFor(@NotNull Project project, @NotNull String filename) {
+  public static @Nullable VirtualFile findContentRootFor(
+      @NotNull Project project, @NotNull String filename) {
     Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
 
     if (rootContents.isEmpty()) {
@@ -138,7 +139,7 @@ public class Platform {
     return null;
   }
 
-  public static Optional<Path> findExecutableInPath(String filename, String shellPath) {
+  public static @NotNull Optional<Path> findExecutableInPath(String filename, String shellPath) {
     if (SystemInfo.isWindows) {
       filename += WINDOWS_EXECUTABLE_SUFFIX;
     }

@@ -54,9 +54,7 @@ public class PsiVariantStubElementType
     }
 
     String fqn = stub.getQualifiedName();
-    if (fqn != null) {
-      sink.occurrence(IndexKeys.VARIANTS_FQN, fqn.hashCode());
-    }
+    sink.occurrence(IndexKeys.VARIANTS_FQN, fqn.hashCode());
   }
 
   @NotNull

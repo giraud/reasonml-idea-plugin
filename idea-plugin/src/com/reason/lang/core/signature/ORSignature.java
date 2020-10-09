@@ -21,9 +21,9 @@ public class ORSignature {
   private static final String REASON_SEPARATOR = " => ";
   private static final String OCAML_SEPARATOR = " -> ";
 
-  @NotNull private final SignatureType[] m_types;
+  @NotNull private final SignatureType @NotNull [] m_types;
 
-  @Nullable private PsiSignatureItem[] m_items;
+  @Nullable private PsiSignatureItem @Nullable [] m_items;
 
   public static class SignatureType {
     PsiSignatureItem item;
@@ -89,6 +89,7 @@ public class ORSignature {
     signatureType.defaultValue = "";
     m_types[i] = signatureType;
 
+    /*
     StringBuilder sb = new StringBuilder();
     sb.append("(");
     for (int j = 0; j < m_types.length - 1; j++) {
@@ -139,12 +140,12 @@ public class ORSignature {
   }
 
   @NotNull
-  public SignatureType[] getTypes() {
+  public SignatureType @NotNull [] getTypes() {
     return m_types;
   }
 
   @NotNull
-  public PsiSignatureItem[] getItems() {
+  public PsiSignatureItem @NotNull [] getItems() {
     return m_items == null ? EMPTY_ITEMS : m_items;
   }
 

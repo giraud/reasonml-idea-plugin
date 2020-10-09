@@ -2,15 +2,8 @@ package com.reason.lang.core;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtilRt;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiInvalidElementAccessException;
-import com.intellij.psi.PsiNameIdentifierOwner;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.TokenType;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiAnnotation;
@@ -31,11 +24,6 @@ public class ORUtil {
   private ORUtil() {}
 
   @NotNull
-  public static String fileNameToModuleName(@NotNull PsiFile file) {
-    return fileNameToModuleName(file.getName());
-  }
-
-  @NotNull
   public static String moduleNameToFileName(@NotNull String name) {
     if (name.isEmpty()) {
       return name;
@@ -51,13 +39,6 @@ public class ORUtil {
     }
     return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault())
         + nameWithoutExtension.substring(1);
-  }
-
-  @NotNull
-  public static TextRange getTextRangeForReference(@NotNull PsiNameIdentifierOwner name) {
-    PsiElement nameIdentifier = name.getNameIdentifier();
-    return rangeInParent(
-        name.getTextRange(), nameIdentifier == null ? TextRange.EMPTY_RANGE : name.getTextRange());
   }
 
   @Nullable
@@ -110,46 +91,36 @@ public class ORUtil {
   @NotNull
   public static String getTextUntilTokenType(
       @NotNull PsiElement root, @Nullable IElementType elementType) {
-    String text = root.getText();
+    StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
     while (sibling != null) {
       if (sibling.getNode().getElementType() == elementType) {
         sibling = null;
       } else {
-        text += sibling.getText();
+        text.append(sibling.getText());
         sibling = sibling.getNextSibling();
       }
     }
 
-    return text.trim();
+    return text.toString().trim();
   }
 
   @NotNull
   public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class<?> clazz) {
-    String text = root.getText();
+    StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
     while (sibling != null) {
       if (clazz != null && sibling.getClass().isAssignableFrom(clazz)) {
         sibling = null;
       } else {
-        text += sibling.getText();
+        text.append(sibling.getText());
         sibling = sibling.getNextSibling();
       }
     }
 
-    return text.trim();
-  }
-
-  @NotNull
-  private static TextRange rangeInParent(@NotNull TextRange parent, @NotNull TextRange child) {
-    int start = child.getStartOffset() - parent.getStartOffset();
-    if (start < 0) {
-      return TextRange.EMPTY_RANGE;
-    }
-
-    return TextRange.create(start, start + child.getLength());
+    return text.toString().trim();
   }
 
   @NotNull
@@ -175,23 +146,8 @@ public class ORUtil {
     return nextSibling;
   }
 
-  @Nullable
-  public static <T> T nextSiblingOfClass(@Nullable PsiElement element, @NotNull Class<T> clazz) {
-    if (element == null) {
-      return null;
-    }
-
-    PsiElement nextSibling = element.getNextSibling();
-    while (nextSibling != null && !(nextSibling.getClass().isAssignableFrom(clazz))) {
-      nextSibling = nextSibling.getNextSibling();
-    }
-    return nextSibling != null && nextSibling.getClass().isAssignableFrom(clazz)
-        ? (T) nextSibling
-        : null;
-  }
-
   @NotNull
-  public static <T> List<T> findImmediateChildrenOfClass(
+  public static <T extends PsiElement> List<T> findImmediateChildrenOfClass(
       @Nullable PsiElement element, @NotNull Class<T> clazz) {
     if (element == null) {
       return Collections.emptyList();
@@ -206,7 +162,7 @@ public class ORUtil {
 
     while (child != null) {
       if (clazz.isInstance(child)) {
-        result.add((T) child);
+        result.add(clazz.cast(child));
       }
       child = child.getNextSibling();
     }
@@ -260,7 +216,7 @@ public class ORUtil {
 
     while (child != null) {
       if (clazz.isInstance(child)) {
-        return (T) child;
+        return clazz.cast(child);
       }
       child = child.getNextSibling();
     }
@@ -270,7 +226,7 @@ public class ORUtil {
 
   @Nullable
   public static PsiElement findImmediateFirstChildOfAnyClass(
-      @NotNull PsiElement element, @NotNull Class<?>... clazz) {
+      @NotNull PsiElement element, @NotNull Class<?> @NotNull ... clazz) {
     PsiElement child = element.getFirstChild();
 
     while (child != null) {

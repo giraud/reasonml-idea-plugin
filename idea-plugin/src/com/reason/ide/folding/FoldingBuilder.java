@@ -15,7 +15,6 @@ import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
 import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.core.type.ORTypesUtil;
 import com.reason.lang.ocaml.OclTypes;
 import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
 import com.reason.lang.reason.RmlTypes;
@@ -77,15 +76,9 @@ public class FoldingBuilder extends FoldingBuilderEx {
     PsiElement constrName =
         ORUtil.findImmediateFirstChildOfClass(typeExpression, PsiLowerIdentifier.class);
     if (constrName != null) {
-      ORTypes types = ORTypesUtil.getInstance(typeExpression.getLanguage());
-      PsiElement eqElement = ORUtil.nextSiblingWithTokenType(constrName, types.EQ);
-      if (eqElement != null) {
-        TextRange eqRange = eqElement.getTextRange();
-        TextRange typeRange = typeExpression.getTextRange();
-        TextRange textRange = TextRange.create(eqRange.getStartOffset(), typeRange.getEndOffset());
-        if (textRange.getLength() > 5) {
-          descriptors.add(new FoldingDescriptor(typeExpression, textRange));
-        }
+      PsiElement binding = typeExpression.getBinding();
+      if (binding != null && binding.getTextLength() > 5) {
+        descriptors.add(new FoldingDescriptor(typeExpression, binding.getTextRange()));
       }
     }
   }

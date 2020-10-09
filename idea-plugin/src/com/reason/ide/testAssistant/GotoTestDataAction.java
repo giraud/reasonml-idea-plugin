@@ -21,7 +21,6 @@ import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.PsiModule;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class GotoTestDataAction extends AnAction {
 
@@ -101,17 +100,12 @@ public class GotoTestDataAction extends AnAction {
   }
 
   @NotNull
-  private String[] splitModuleName(@NotNull String moduleName) {
+  private String @NotNull [] splitModuleName(@NotNull String moduleName) {
     int underscoreIndex = moduleName.lastIndexOf("_");
     return 0 < underscoreIndex
         ? new String[] {
           moduleName.substring(0, underscoreIndex), moduleName.substring(underscoreIndex + 1)
         }
         : new String[] {moduleName};
-  }
-
-  @Nullable
-  private String guessTestData(@NotNull DataContext dataContext) {
-    return null;
   }
 }

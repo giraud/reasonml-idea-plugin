@@ -1,7 +1,9 @@
 package com.reason.bs;
 
-import static com.intellij.notification.NotificationType.*;
-import static com.reason.bs.BsPlatform.*;
+import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.WARNING;
+import static com.reason.bs.BsPlatform.findBsbExecutable;
+import static com.reason.bs.BsPlatform.findBscExecutable;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -14,10 +16,13 @@ import com.reason.CompilerProcess;
 import com.reason.ORNotification;
 import com.reason.ide.ORProjectManager;
 import com.reason.ide.console.CliType;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
-import java.util.regex.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +31,7 @@ public final class BsProcess implements CompilerProcess {
   private static final Pattern BS_VERSION_REGEXP =
       Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
-  private final Project m_project;
+  private final @NotNull Project m_project;
 
   @Nullable private BsProcessHandler m_bsb;
 
@@ -38,7 +43,7 @@ public final class BsProcess implements CompilerProcess {
     // no file is active yet, default working directory to the top-level bsconfig.json file
     VirtualFile firstBsContentRoot =
         ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
-    create(firstBsContentRoot, CliType.Bs.MAKE, null);
+    create(firstBsContentRoot);
   }
 
   // Wait for the tool window to be ready before starting the process
@@ -53,13 +58,10 @@ public final class BsProcess implements CompilerProcess {
     }
   }
 
-  private void create(
-      @Nullable VirtualFile sourceFile,
-      @NotNull CliType.Bs cliType,
-      @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+  private void create(@Nullable VirtualFile sourceFile) {
     try {
       if (sourceFile != null) {
-        createProcessHandler(sourceFile, cliType, onProcessTerminated);
+        createProcessHandler(sourceFile, CliType.Bs.MAKE, null);
       }
     } catch (ExecutionException e) {
       // Don't log when first time execution
@@ -105,7 +107,7 @@ public final class BsProcess implements CompilerProcess {
     if (cli != null) {
       m_bsb = new BsProcessHandler(cli, onProcessTerminated);
       // if (m_outputListener == null) {
-      addListener(new BsOutputListener(m_project, this));
+      addListener(new BsOutputListener(this));
       // } else {
       //    m_bsb.addRawProcessListener(m_outputListener);
       // }

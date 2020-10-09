@@ -1,17 +1,10 @@
 package com.reason.lang.napkin;
 
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiJsObject;
-import com.reason.lang.core.psi.PsiRecord;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.core.psi.PsiTag;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import java.util.*;
+import com.reason.lang.core.psi.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends NsParsingTestCase {
@@ -106,11 +99,12 @@ public class TypeParsingTest extends NsParsingTestCase {
     List<PsiSignatureItem> signatureItems =
         new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
 
-    assertSize(4, signatureItems);
+    assertSize(5, signatureItems);
     assertEquals("reactClass", signatureItems.get(0).getText());
     assertEquals("~props: Js.t<{..}>=?", signatureItems.get(1).getText());
-    assertEquals("array<reactElement>", signatureItems.get(2).getText());
-    assertEquals("reactElement", signatureItems.get(3).getText());
+    assertEquals("Js.t<{..}>", signatureItems.get(2).getText());
+    assertEquals("array<reactElement>", signatureItems.get(3).getText());
+    assertEquals("reactElement", signatureItems.get(4).getText());
   }
 
   public void test_jsObject() {

@@ -127,6 +127,6 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
   @Nullable
   @Override
   public String toString() {
-    return "PsiVal";
+    return "Val " + getQualifiedName();
   }
 }

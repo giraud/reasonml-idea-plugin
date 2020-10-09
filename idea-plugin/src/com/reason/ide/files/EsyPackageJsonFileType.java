@@ -6,13 +6,14 @@ import com.intellij.json.JsonFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import icons.ORIcons;
 import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EsyPackageJsonFileType extends JsonFileType {
 
   public static final FileType INSTANCE = new EsyPackageJsonFileType();
 
-  public static String getDefaultFilename() {
+  public static @NotNull String getDefaultFilename() {
     return ESY_CONFIG_FILENAME;
   }
 

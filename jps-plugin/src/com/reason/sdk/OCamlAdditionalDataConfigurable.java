@@ -5,15 +5,16 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkAdditionalData;
 import com.intellij.openapi.projectRoots.impl.ProjectJdkImpl;
 import javax.swing.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class OCamlAdditionalDataConfigurable implements AdditionalDataConfigurable {
 
-  private Sdk m_sdk = null;
+  private @Nullable Sdk m_sdk = null;
   private final OCamlSdkForm m_form = new OCamlSdkForm();
 
   @Override
-  public void setSdk(Sdk sdk) {
+  public void setSdk(@NotNull Sdk sdk) {
     m_sdk = sdk;
     SdkAdditionalData data = sdk.getSdkAdditionalData();
     if (data == null) {
@@ -29,8 +30,11 @@ public class OCamlAdditionalDataConfigurable implements AdditionalDataConfigurab
   @Nullable
   @Override
   public JComponent createComponent() {
-    m_form.createUIComponents(m_sdk);
-    return m_form.getComponent();
+    if (m_sdk != null) {
+      m_form.createUIComponents(m_sdk);
+      return m_form.getComponent();
+    }
+    return null;
   }
 
   @Override

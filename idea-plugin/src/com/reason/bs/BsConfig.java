@@ -14,24 +14,24 @@ public class BsConfig {
 
   @NotNull private final String m_name;
   @NotNull private final String m_namespace;
-  private final String m_jsxVersion;
+  private final @Nullable String m_jsxVersion;
   private final String m_rootBsPlatform;
   private final Set<String> m_externals = new THashSet<>();
   private final Set<String> m_sources = new THashSet<>();
   private final Set<String> m_devSources = new THashSet<>();
   private final Set<String> m_deps = new THashSet<>();
   private final Set<Path> m_paths = new THashSet<>();
-  private final String[] m_ppx;
+  private final @NotNull String[] m_ppx;
   private boolean m_useExternalAsSource = false;
-  private Path m_basePath = null;
+  private @Nullable Path m_basePath = null;
 
   BsConfig(
       @NotNull String name,
       @Nullable String namespace,
       @Nullable String jsxVersion,
-      Set<String> sources,
-      Set<String> devSources,
-      Set<String> externals,
+      @Nullable Set<String> sources,
+      @Nullable Set<String> devSources,
+      @Nullable Set<String> externals,
       @Nullable Set<String> deps,
       @Nullable List<String> ppx) {
     m_name = name;
@@ -133,8 +133,7 @@ public class BsConfig {
     return m_jsxVersion;
   }
 
-  @NotNull
-  public String[] getPpx() {
+  public @NotNull String[] getPpx() {
     return m_ppx;
   }
 

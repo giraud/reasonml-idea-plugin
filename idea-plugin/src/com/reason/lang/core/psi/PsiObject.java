@@ -30,7 +30,7 @@ public class PsiObject extends ASTWrapperPsiElement implements PsiLanguageConver
       convertedText = "{. " + text.substring(1, getTextLength() - 1) + " }";
     }
 
-    return convertedText == null ? text : convertedText;
+    return convertedText;
   }
 
   @NotNull

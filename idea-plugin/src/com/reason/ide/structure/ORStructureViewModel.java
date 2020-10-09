@@ -14,7 +14,7 @@ public class ORStructureViewModel extends StructureViewModelBase
   }
 
   @NotNull
-  public Sorter[] getSorters() {
+  public Sorter @NotNull [] getSorters() {
     return new Sorter[] {Sorter.ALPHA_SORTER};
   }
 

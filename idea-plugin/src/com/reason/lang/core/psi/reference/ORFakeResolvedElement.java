@@ -8,14 +8,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class ORFakeResolvedElement extends FakePsiElement {
 
-  private final PsiElement m_sourceElement;
+  private final @NotNull PsiElement m_sourceElement;
 
   public ORFakeResolvedElement(@NotNull PsiElement element) {
     m_sourceElement = element;
   }
 
   @Override
-  public PsiElement getOriginalElement() {
+  public @NotNull PsiElement getOriginalElement() {
     return m_sourceElement;
   }
 

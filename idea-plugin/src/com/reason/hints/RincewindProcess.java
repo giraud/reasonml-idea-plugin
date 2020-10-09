@@ -141,7 +141,7 @@ public class RincewindProcess {
       @NotNull String rincewindBinary,
       @NotNull VirtualFile cmtFile,
       String arg,
-      DumpVisitor visitor) {
+      @NotNull DumpVisitor visitor) {
     Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, cmtFile);
     if (contentRoot.isPresent()) {
       Path cmtPath = FileSystems.getDefault().getPath(cmtFile.getPath());

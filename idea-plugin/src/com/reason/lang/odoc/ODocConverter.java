@@ -1,12 +1,13 @@
 package com.reason.lang.odoc;
 
-import static com.reason.lang.odoc.ODocMarkup.*;
+import static com.reason.lang.odoc.ODocMarkup.CODE_END;
+import static com.reason.lang.odoc.ODocMarkup.CODE_START;
 
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.Stack;
 import com.reason.Log;
-import java.io.*;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 public class ODocConverter {
@@ -33,11 +34,7 @@ public class ODocConverter {
     try {
       IElementType previousVisibleTokenType = null;
       IElementType tokenType = m_lexer.advance();
-      while (true) {
-        if (tokenType == null) {
-          break;
-        }
-
+      while (tokenType != null) {
         // System.out.println(tokenType.toString() + " : " + m_lexer.yytext());
 
         if (!m_paragraphStarted
@@ -54,15 +51,15 @@ public class ODocConverter {
             || tokenType == ODocTypes.RML_END) {
           // skip
         } else if (tokenType == ODocTypes.CODE) {
-          m_builder.append(CODE_START).append(extract(m_lexer.yytext(), 1, 1)).append(CODE_END);
+          m_builder.append(CODE_START).append(extract(m_lexer.yytext(), 1)).append(CODE_END);
         } else if (tokenType == ODocTypes.BOLD) {
-          m_builder.append("<b>").append(extract(m_lexer.yytext(), 2, 1)).append("</b>");
+          m_builder.append("<b>").append(extract(m_lexer.yytext(), 2)).append("</b>");
         } else if (tokenType == ODocTypes.ITALIC) {
-          m_builder.append("<i>").append(extract(m_lexer.yytext(), 2, 1)).append("</i>");
+          m_builder.append("<i>").append(extract(m_lexer.yytext(), 2)).append("</i>");
         } else if (tokenType == ODocTypes.EMPHASIS) {
-          m_builder.append("<em>").append(extract(m_lexer.yytext(), 2, 1)).append("</em>");
+          m_builder.append("<em>").append(extract(m_lexer.yytext(), 2)).append("</em>");
         } else if (tokenType == ODocTypes.CROSS_REF) {
-          String link = extract(m_lexer.yytext(), 2, 1);
+          String link = extract(m_lexer.yytext(), 2);
           m_builder.append("<a href=\")").append(link).append("\">").append(link).append("</a>");
         } else if (tokenType == ODocTypes.O_LIST) {
           m_builder.append("<ol>");
@@ -80,7 +77,7 @@ public class ODocConverter {
           inPre = false;
           m_builder.append("</pre>");
         } else if (tokenType == ODocTypes.SECTION) {
-          String section = "h" + extract(m_lexer.yytext(), 1);
+          String section = "h" + extract(m_lexer.yytext());
           m_builder.append("<").append(section).append(">");
           scopes.add("</" + section + ">");
         } else if (tokenType == ODocTypes.LINK) {
@@ -123,12 +120,12 @@ public class ODocConverter {
   }
 
   @NotNull
-  private String extract(@NotNull CharSequence text, int start) {
-    return ((String) text).substring(start, text.length()).trim();
+  private String extract(@NotNull CharSequence text) {
+    return ((String) text).substring(1, text.length()).trim();
   }
 
   @NotNull
-  private String extract(@NotNull CharSequence text, int start, int end) {
-    return ((String) text).substring(start, text.length() - end).trim();
+  private String extract(@NotNull CharSequence text, int start) {
+    return ((String) text).substring(start, text.length() - 1).trim();
   }
 }

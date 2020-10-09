@@ -15,7 +15,7 @@ public class CodeLensView {
 
   public static class CodeLensInfo {
     @NotNull
-    Map<VirtualFile, Map<Integer, InferredTypes.LogicalPositionSignature>> m_signatures =
+    final Map<VirtualFile, Map<Integer, InferredTypes.LogicalPositionSignature>> m_signatures =
         new THashMap<>();
 
     @Nullable

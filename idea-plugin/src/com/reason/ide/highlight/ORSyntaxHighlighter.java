@@ -80,7 +80,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
   private static final Set<IElementType> RML_OPERATION_SIGN_TYPES =
       of(
-          RmlTypes.INSTANCE.ANDAND,
+          RmlTypes.INSTANCE.L_AND,
+          RmlTypes.INSTANCE.L_OR,
           RmlTypes.INSTANCE.SHORTCUT,
           RmlTypes.INSTANCE.ARROW,
           RmlTypes.INSTANCE.PIPE_FIRST,
@@ -187,7 +188,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
   private static final Set<IElementType> NS_OPERATION_SIGN_TYPES =
       of(
-          NsTypes.INSTANCE.ANDAND,
+          NsTypes.INSTANCE.L_AND,
+          NsTypes.INSTANCE.L_OR,
           NsTypes.INSTANCE.SHORTCUT,
           NsTypes.INSTANCE.ARROW,
           NsTypes.INSTANCE.PIPE_FIRST,
@@ -307,7 +309,8 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
   private static final Set<IElementType> OCL_OPERATION_SIGN_TYPES =
       of(
-          OclTypes.INSTANCE.ANDAND,
+          OclTypes.INSTANCE.L_AND,
+          OclTypes.INSTANCE.L_OR,
           OclTypes.INSTANCE.SHORTCUT,
           OclTypes.INSTANCE.ARROW,
           OclTypes.INSTANCE.PIPE_FIRST,
@@ -437,7 +440,7 @@ public class ORSyntaxHighlighter extends SyntaxHighlighterBase {
 
   @NotNull
   @Override
-  public TextAttributesKey[] getTokenHighlights(@NotNull IElementType tokenType) {
+  public TextAttributesKey @NotNull [] getTokenHighlights(@NotNull IElementType tokenType) {
     if (tokenType.equals(m_types.MULTI_COMMENT) || tokenType.equals(m_types.SINGLE_COMMENT)) {
       return COMMENT_KEYS;
     } else if (tokenType.equals(m_types.LBRACE) || tokenType.equals(m_types.RBRACE)) {

@@ -23,7 +23,7 @@ public class PsiIncludeImpl extends PsiToken<ORTypes> implements PsiInclude {
   // endregion
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
     throw new IncorrectOperationException("Not implemented");
   }
 

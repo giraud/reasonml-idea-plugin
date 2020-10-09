@@ -46,6 +46,8 @@ public abstract class ORSyntaxAnnotator implements Annotator {
     } else if (elementType == m_types.C_VARIANT_DECLARATION) {
       PsiElement identifier = element.getNavigationElement();
       color(holder, identifier, VARIANT_NAME_);
+    } else if (elementType == m_types.VARIANT_NAME) {
+      color(holder, element, VARIANT_NAME_);
     } else if (elementType == m_types.C_MACRO_NAME) {
       color(holder, element, ANNOTATION_);
     } else if (elementType == m_types.TAG_NAME
@@ -65,7 +67,10 @@ public abstract class ORSyntaxAnnotator implements Annotator {
     }
   }
 
-  private void color(AnnotationHolder holder, PsiElement element, TextAttributesKey key) {
+  private void color(
+      @NotNull AnnotationHolder holder,
+      @NotNull PsiElement element,
+      @NotNull TextAttributesKey key) {
     holder.newSilentAnnotation(INFORMATION).range(element).textAttributes(key).create();
   }
 }

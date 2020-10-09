@@ -103,7 +103,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub>
   }
 
   @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+  public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
     throw new RuntimeException("Not implemented, use FileBase");
   }
 
@@ -182,7 +182,7 @@ public class PsiFakeModule extends PsiTokenStub<ORTypes, PsiModuleStub>
   }
 
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return "PsiFakeModule";
   }
 }

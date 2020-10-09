@@ -103,6 +103,12 @@ public class NsParser extends CommonParser<NsTypes> {
           parseDotDotDot(state);
         } else if (tokenType == m_types.WITH) {
           parseWith(state);
+        } else if (tokenType == m_types.EQEQ) {
+          parseEqEq(state);
+        } else if (tokenType == m_types.QUESTION_MARK) {
+          parseQuestionMark(state);
+        } else if (tokenType == m_types.TILDE) {
+          parseTilde(state);
         }
         // ( ... )
         else if (tokenType == m_types.LPAREN) {
@@ -228,6 +234,39 @@ public class NsParser extends CommonParser<NsTypes> {
     }
   }
 
+  private void parseEqEq(@NotNull ParserState state) {
+    if (!state.in(m_types.C_BINARY_CONDITION)) {
+      //      state.precedeMark(m_types.C_BINARY_CONDITION);
+    }
+  }
+
+  private void parseQuestionMark(@NotNull ParserState state) {
+    if (state.previousElementType1 == m_types.EQ) {
+      // x=|>?<| ...
+      return;
+    }
+
+    if (state.is(m_types.C_TAG_START)) {
+      // <jsx |>?<|prop ...
+      state
+          .mark(m_types.C_TAG_PROPERTY)
+          .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace(state))
+          .advance()
+          .remapCurrentToken(m_types.PROPERTY_NAME);
+    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+      state.popEnd();
+    }
+  }
+
+  private void parseTilde(@NotNull ParserState state) {
+    if (state.is(m_types.C_SIG_ITEM) && state.isPrevious(m_types.C_SCOPED_EXPR)) {
+      // must be the signature of a function definition
+      state.updatePreviousComposite(m_types.C_FUN_EXPR);
+    }
+
+    state.advance().mark(m_types.C_NAMED_PARAM);
+  }
+
   private void parseAssert(@NotNull ParserState state) {
     // |>assert<| ...
     state.mark(m_types.C_ASSERT_STMT);
@@ -256,15 +295,33 @@ public class NsParser extends CommonParser<NsTypes> {
 
   private void parseComma(@NotNull ParserState state) {
     // Intermediate structures
-    if (state.is(m_types.C_FUN_BODY)) {
-      // a function is part of something else, close it first
-      state.popEnd().popEnd();
-    }
-    if (state.is(m_types.C_SIG_ITEM)) {
-      state.popEnd();
-      if (!state.isCurrentResolution(signatureScope)) {
+    boolean isIntermediateState =
+        state.is(m_types.C_FUN_BODY)
+            || (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken())
+            || state.is(m_types.C_TERNARY)
+            || state.is(m_types.C_NAMED_PARAM)
+            || state.is(m_types.C_SIG_ITEM);
+    while (isIntermediateState) {
+      if (state.is(m_types.C_FUN_BODY)) {
+        // a function is part of something else, close it first
+        state.popEnd().popEnd();
+      } else if (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken()) {
         state.popEnd();
+      } else if (state.is(m_types.C_TERNARY) || state.is(m_types.C_NAMED_PARAM)) {
+        state.popEnd();
+      } else if (state.is(m_types.C_SIG_ITEM)) {
+        state.popEnd();
+        if (!state.isCurrentResolution(signatureScope)) {
+          state.popEnd();
+        }
       }
+
+      isIntermediateState =
+          state.is(m_types.C_FUN_BODY)
+              || (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken())
+              || state.is(m_types.C_TERNARY)
+              || state.is(m_types.C_NAMED_PARAM)
+              || state.is(m_types.C_SIG_ITEM);
     }
 
     if (state.isCurrentResolution(recordField) || state.is(m_types.C_MIXIN_FIELD)) {
@@ -363,7 +420,7 @@ public class NsParser extends CommonParser<NsTypes> {
   }
 
   private void parseModule(@NotNull ParserState state) {
-    if (!state.isCurrentResolution(annotationName)) {
+    if (!state.is(m_types.C_MACRO_NAME)) {
       endLikeSemi(state);
       state.mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
     }
@@ -451,16 +508,19 @@ public class NsParser extends CommonParser<NsTypes> {
       state.resolution(fieldNamed);
     } else if (state.is(m_types.C_FUN_PARAM)) {
       state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+    } else if (state.is(m_types.C_NAMED_PARAM)) {
+      state
+          .popEnd()
+          .advance()
+          .mark(m_types.C_SIG_EXPR)
+          .mark(m_types.C_SIG_ITEM)
+          .resolution(signatureItem);
     }
   }
 
   private void parseArrobase(@NotNull ParserState state) {
     endLikeSemi(state);
-    state
-        .mark(m_types.C_ANNOTATION)
-        .resolution(annotation)
-        .mark(m_types.C_MACRO_NAME)
-        .resolution(annotationName);
+    state.mark(m_types.C_ANNOTATION).mark(m_types.C_MACRO_NAME);
   }
 
   private void parseLt(@NotNull ParserState state) {
@@ -500,20 +560,39 @@ public class NsParser extends CommonParser<NsTypes> {
   }
 
   private void parseGt(@NotNull ParserState state) {
+    // ?prop=value |> > <| ...
     if (state.is(m_types.C_TAG_PROP_VALUE)) {
       state.popEnd().popEnd();
+    }
+    // ?prop |> > <| ...
+    else if (state.is(m_types.C_TAG_PROPERTY)) {
+      state.popEnd();
     }
 
     if (state.is(m_types.C_TAG_START)) {
       state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().mark(m_types.C_TAG_BODY);
     } else if (state.is(m_types.C_TAG_CLOSE)) {
       state.remapCurrentToken(m_types.TAG_GT).advance().popEnd().popEnd();
-    } else if (state.is(m_types.C_SCOPED_EXPR) && state.isPrevious(m_types.C_OPTION)) {
-      // option < ... |> > <| ...
-      state.advance().popEnd().popEnd();
     } else if (state.isCurrentResolution(typeNamedParameters)) {
       state.advance().popEnd();
     }
+    // option < ... |> > <| ...
+    else if (state.is(m_types.C_SCOPED_EXPR) && state.isPrevious(m_types.C_OPTION)) {
+      state.advance().popEnd().popEnd();
+    }
+  }
+
+  private void parseGtAutoClose(@NotNull ParserState state) {
+    // ?prop=value |> /> <| ...
+    if (state.is(m_types.C_TAG_PROP_VALUE)) {
+      state.popEnd().popEnd();
+    }
+    // ?prop |> /> <| ...
+    else if (state.is(m_types.C_TAG_PROPERTY)) {
+      state.popEnd();
+    }
+
+    state.advance().popEnd().popEnd();
   }
 
   private void parseLtSlash(@NotNull ParserState state) {
@@ -543,16 +622,8 @@ public class NsParser extends CommonParser<NsTypes> {
     }
   }
 
-  private void parseGtAutoClose(@NotNull ParserState state) {
-    if (state.is(m_types.C_TAG_PROP_VALUE)) {
-      state.popEnd().popEnd();
-    }
-
-    state.advance().popEnd().popEnd();
-  }
-
   private void parseLIdent(@NotNull ParserState state) {
-    if (state.isCurrentResolution(annotationName)) {
+    if (state.is(m_types.C_MACRO_NAME)) {
       // Must stop annotation if no dot/@ before
       if (state.previousElementType1 != m_types.DOT
           && state.previousElementType1 != m_types.ARROBASE) {
@@ -560,18 +631,22 @@ public class NsParser extends CommonParser<NsTypes> {
       }
     }
 
+    // external |>x<| ...
     if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-      // external |>x<| ...
       state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-    } else if (state.isCurrentResolution(let)) {
-      // let |>x<| ...
+    }
+    // let |>x<| ...
+    else if (state.isCurrentResolution(let)) {
       state.resolution(letNamed).wrapWith(m_types.C_LOWER_IDENTIFIER);
-    } else if (state.isCurrentResolution(type)) {
-      // type |>x<| ...
+    }
+    // type |>x<| ...
+    else if (state.isCurrentResolution(type)) {
       state.resolution(typeNamed).wrapWith(m_types.C_LOWER_IDENTIFIER);
-    } else {
+    }
+    // not an identifier
+    else {
+      // This is a property
       if (state.is(m_types.C_TAG_START)) {
-        // This is a property
         state
             .remapCurrentToken(m_types.PROPERTY_NAME)
             .mark(m_types.C_TAG_PROPERTY)
@@ -590,10 +665,14 @@ public class NsParser extends CommonParser<NsTypes> {
         state.mark(m_types.C_RECORD_FIELD).resolution(recordField);
       } else {
         IElementType nextElementType = state.lookAhead(1);
+
+        // Single (paren less) function parameters ::  |>x<| => ...
         if (!state.isCurrentResolution(signatureItem) && nextElementType == m_types.ARROW) {
-          // Single (paren less) function parameters
-          // |>x<| => ...
           state.mark(m_types.C_FUN_EXPR).mark(m_types.C_FUN_PARAMS).mark(m_types.C_FUN_PARAM);
+        }
+        // a ternary ::  |>x<| ? ...
+        else if (nextElementType == m_types.QUESTION_MARK && !state.in(m_types.C_TAG_START)) {
+          state.mark(m_types.C_TERNARY).mark(m_types.C_BINARY_CONDITION);
         }
       }
 
@@ -611,7 +690,7 @@ public class NsParser extends CommonParser<NsTypes> {
       // M.|>[<| ... ]
       state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
     } else {
-      state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET).resolution(bracket);
+      state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACKET);
     }
   }
 
@@ -713,13 +792,15 @@ public class NsParser extends CommonParser<NsTypes> {
       state.popEnd();
     }
 
-    if (state.is(m_types.C_TAG_PROPERTY) || state.is(m_types.C_LOCAL_OPEN)) {
+    if (state.is(m_types.C_LOCAL_OPEN)) {
+      state.popEnd();
+    } else if (state.is(m_types.C_TAG_PROPERTY)) {
       state.popEnd();
     }
   }
 
   private void parseLParen(@NotNull ParserState state) {
-    if (state.isCurrentResolution(annotationName)) {
+    if (state.is(m_types.C_MACRO_NAME) && state.isPrevious(m_types.C_ANNOTATION)) {
       // @ann |>(<| ... )
       state
           .popEnd()
@@ -739,6 +820,7 @@ public class NsParser extends CommonParser<NsTypes> {
         state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(signatureScope);
       }
     } else if (state.is(m_types.C_MACRO_NAME)) {
+      // %raw |>(<| ...
       state.popEnd().markScope(m_types.C_MACRO_RAW_BODY, m_types.LPAREN);
     } else if (state.isCurrentResolution(moduleBinding)
         && state.previousElementType1 != m_types.UIDENT) {
@@ -770,7 +852,7 @@ public class NsParser extends CommonParser<NsTypes> {
           .advance()
           .mark(m_types.C_FUN_PARAM);
     } else if (state.isCurrentResolution(patternMatchVariant)) {
-      // It's a constructor in a pattern match ::  switch x { | Variant |>(<| ... ) => ... }
+      // It's a constructor in a pattern match ::  switch x { | Variant |>(<| ... ) => ... }
       state
           .markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN)
           .resolution(patternMatchVariantConstructor);
@@ -802,6 +884,9 @@ public class NsParser extends CommonParser<NsTypes> {
       }
     } else if (state.is(m_types.C_BINARY_CONDITION)) {
       state.updateScopeToken(m_types.LPAREN);
+    } else if (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken()) {
+      // <div prop=|>(<| ...
+      state.updateScopeToken(m_types.LPAREN);
     } else {
       IElementType nextTokenType = state.lookAhead(1);
 
@@ -821,7 +906,11 @@ public class NsParser extends CommonParser<NsTypes> {
 
   private void parseRParen(@NotNull ParserState state) {
     ParserScope startScope = state.popEndUntilOneOfElementType(m_types.LPAREN);
-    if (startScope != null && startScope.isResolution(genericExpression)) {
+    if (startScope == null) {
+      return;
+    }
+
+    if (startScope.isResolution(genericExpression)) {
       IElementType aheadType = state.lookAhead(1);
       if (aheadType == m_types.ARROW) {
         // if current resolution is UNKNOWN and next item is an arrow, it means we are processing a
@@ -839,11 +928,25 @@ public class NsParser extends CommonParser<NsTypes> {
       }
     }
 
-    state.advance().popEnd();
+    state.advance();
+    IElementType nextTokenType = state.getTokenType();
+
+    if (nextTokenType == m_types.QUESTION_MARK && !state.isPrevious(m_types.C_TERNARY)) {
+      // ( ... |>)<| ? ...
+      state
+          .precedeScope(m_types.C_TERNARY)
+          .updateCurrentCompositeElementType(m_types.C_BINARY_CONDITION);
+    }
+
+    state.popEnd();
 
     if (state.is(m_types.C_VARIANT_DECLARATION)) {
       state.popEndUntil(m_types.C_TYPE_BINDING);
-    } else if (state.isCurrentResolution(annotation)) {
+    } else if (state.is(m_types.C_ANNOTATION)) {
+      state.popEnd();
+    } else if (state.is(m_types.C_TAG_PROP_VALUE) && !state.hasScopeToken()) {
+      state.popEnd().popEnd();
+    } else if (state.is(m_types.C_TAG_PROPERTY)) {
       state.popEnd();
     }
   }

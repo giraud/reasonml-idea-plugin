@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PsiExternalStub extends NamedStubBase<PsiExternal> {
   private final String m_path;
-  private final String m_qname;
+  private final @NotNull String m_qname;
   private final boolean m_isFunction;
 
   public PsiExternalStub(
@@ -40,7 +40,7 @@ public class PsiExternalStub extends NamedStubBase<PsiExternal> {
     return m_path;
   }
 
-  public String getQualifiedName() {
+  public @NotNull String getQualifiedName() {
     return m_qname;
   }
 

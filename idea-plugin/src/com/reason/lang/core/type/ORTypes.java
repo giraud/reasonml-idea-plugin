@@ -106,7 +106,6 @@ public abstract class ORTypes {
   public ORTokenElementType INT_VALUE;
 
   public ORTokenElementType AND;
-  public ORTokenElementType ANDAND;
   public ORTokenElementType ASSERT;
   public ORTokenElementType BACKSLASH;
   public ORTokenElementType BEGIN;
@@ -137,6 +136,8 @@ public abstract class ORTypes {
   public ORTokenElementType INITIALIZER;
   public ORTokenElementType LAZY;
   public ORTokenElementType LET;
+  public ORTokenElementType L_AND;
+  public ORTokenElementType L_OR;
   public ORTokenElementType MODULE;
   public ORTokenElementType MUTABLE;
   public ORTokenElementType NEW;
@@ -161,11 +162,12 @@ public abstract class ORTypes {
   public ORTokenElementType WHILE;
   public ORTokenElementType WITH;
   public ORTokenElementType RAW;
-
   public ORTokenElementType EXCEPTION_NAME;
   public ORTokenElementType PROPERTY_NAME;
   public ORTokenElementType SHARPSHARP;
   public ORTokenElementType ARROBASE;
+  public ORTokenElementType ARROBASE_2;
+  public ORTokenElementType ARROBASE_3;
   public ORTokenElementType ARROW;
   public ORTokenElementType AS;
   public ORTokenElementType BACKTICK;

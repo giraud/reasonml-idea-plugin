@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 /** Offset <-> Position converter */
 public class EditorPosition {
-  private final int[] m_lineLengths;
+  private final int @NotNull [] m_lineLengths;
 
   /** Extract each line length, needed to compute an offset without a ref to the editor. */
-  public EditorPosition(@NotNull String[] lines) {
+  public EditorPosition(@NotNull String @NotNull [] lines) {
     m_lineLengths = new int[lines.length];
     for (int i = 0; i < lines.length; i++) {
       String line = lines[i];

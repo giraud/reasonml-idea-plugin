@@ -4,6 +4,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiParameters;
 import java.util.*;
 
@@ -55,6 +56,19 @@ public class FunctionParsingTest extends OclParsingTestCase {
     assertEquals(
         "(_, info as ei)", PsiTreeUtil.findChildOfType(function, PsiParameters.class).getText());
     assertEquals("x", function.getBody().getText());
+  }
+
+  public void test_fun_signature() {
+    PsiLet e = first(letExpressions(parseCode("let _: int -> int = fun x y -> x + y")));
+
+    assertTrue(e.isFunction());
+    assertEquals("fun x y -> x + y", e.getBinding().getText());
+    PsiFunction f = e.getFunction();
+    List<PsiParameter> p = f.getParameters();
+    assertSize(2, p);
+    assertEquals("x", p.get(0).getText());
+    assertEquals("y", p.get(1).getText());
+    assertEquals("x + y", f.getBody().getText());
   }
 
   public void test_complexParams() {

@@ -9,6 +9,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @State(
     name = "DuneFacetConfiguration",
@@ -17,12 +18,12 @@ public class DuneFacetConfiguration
     implements FacetConfiguration, PersistentStateComponent<DuneFacetConfiguration> {
 
   public boolean inheritProjectSdk = true;
-  public String sdkName = null;
+  public @Nullable String sdkName = null;
 
   @NotNull
   @Override
-  public FacetEditorTab[] createEditorTabs(
-      FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
+  public FacetEditorTab @NotNull [] createEditorTabs(
+      @NotNull FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
     return new FacetEditorTab[] {new DuneFacetEditor(editorContext, this)};
   }
 

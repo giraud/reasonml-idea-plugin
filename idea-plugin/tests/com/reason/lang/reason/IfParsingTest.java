@@ -36,7 +36,6 @@ public class IfParsingTest extends RmlParsingTestCase {
     assertEquals("2", e.getElseExpression().getText());
   }
 
-  /* zzz
   public void test_ternary_lident() {
     PsiFile psiFile = parseCode("let _ = a ? b : c;");
     PsiTernary e = firstOfType(psiFile, PsiTernary.class);
@@ -47,7 +46,6 @@ public class IfParsingTest extends RmlParsingTestCase {
     assertEquals("b", e.getThenExpression().getText());
     assertEquals("c", e.getElseExpression().getText());
   }
-  */
 
   public void test_ternary_parens() {
     PsiFile psiFile = parseCode("let _ = (a) ? b : c;");
@@ -59,19 +57,18 @@ public class IfParsingTest extends RmlParsingTestCase {
     assertEquals("b", e.getThenExpression().getText());
     assertEquals("c", e.getElseExpression().getText());
   }
+  /*
+    public void test_ternary_cond() {
+      PsiFile psiFile = parseCode("let _ = a == a' || (x < y) ? b : c;");
+      PsiTernary e = firstOfType(psiFile, PsiTernary.class);
 
-  /* zzz
-  public void test_ternary_cond() {
-    PsiFile psiFile = parseCode("let _ = a == a' ? b : c;");
-    PsiTernary e = firstOfType(psiFile, PsiTernary.class);
-
-    assertNotNull(e);
-    assertNotNull(e.getCondition());
-    assertEquals("a == a'", e.getCondition().getText());
-    assertEquals("b", e.getThenExpression().getText());
-    assertEquals("c", e.getElseExpression().getText());
-  }
-
+      assertNotNull(e);
+      assertNotNull(e.getCondition());
+      assertEquals("a == a' || (x < y)", e.getCondition().getText());
+      assertEquals("b", e.getThenExpression().getText());
+      assertEquals("c", e.getElseExpression().getText());
+    }
+  */
   public void test_ternary_call() {
     PsiFile psiFile = parseCode("let _ = fn(a) ? b : c;");
     PsiTernary e = firstOfType(psiFile, PsiTernary.class);
@@ -82,5 +79,4 @@ public class IfParsingTest extends RmlParsingTestCase {
     assertEquals("b", e.getThenExpression().getText());
     assertEquals("c", e.getElseExpression().getText());
   }
-  */
 }
