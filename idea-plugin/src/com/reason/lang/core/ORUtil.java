@@ -91,36 +91,36 @@ public class ORUtil {
   @NotNull
   public static String getTextUntilTokenType(
       @NotNull PsiElement root, @Nullable IElementType elementType) {
-    String text = root.getText();
+    StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
     while (sibling != null) {
       if (sibling.getNode().getElementType() == elementType) {
         sibling = null;
       } else {
-        text += sibling.getText();
+        text.append(sibling.getText());
         sibling = sibling.getNextSibling();
       }
     }
 
-    return text.trim();
+    return text.toString().trim();
   }
 
   @NotNull
   public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class<?> clazz) {
-    String text = root.getText();
+    StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
     while (sibling != null) {
       if (clazz != null && sibling.getClass().isAssignableFrom(clazz)) {
         sibling = null;
       } else {
-        text += sibling.getText();
+        text.append(sibling.getText());
         sibling = sibling.getNextSibling();
       }
     }
 
-    return text.trim();
+    return text.toString().trim();
   }
 
   @NotNull
@@ -147,7 +147,7 @@ public class ORUtil {
   }
 
   @NotNull
-  public static <T> List<T> findImmediateChildrenOfClass(
+  public static <T extends PsiElement> List<T> findImmediateChildrenOfClass(
       @Nullable PsiElement element, @NotNull Class<T> clazz) {
     if (element == null) {
       return Collections.emptyList();
@@ -162,7 +162,7 @@ public class ORUtil {
 
     while (child != null) {
       if (clazz.isInstance(child)) {
-        result.add((T) child);
+        result.add(clazz.cast(child));
       }
       child = child.getNextSibling();
     }
@@ -216,7 +216,7 @@ public class ORUtil {
 
     while (child != null) {
       if (clazz.isInstance(child)) {
-        return (T) child;
+        return clazz.cast(child);
       }
       child = child.getNextSibling();
     }

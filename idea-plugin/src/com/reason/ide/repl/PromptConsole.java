@@ -11,8 +11,8 @@ import com.intellij.openapi.command.undo.UndoUtil;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.EditorSettings;
-import com.intellij.openapi.editor.actions.EditorActionUtil;
 import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.editor.impl.ContextMenuPopupHandler;
 import com.intellij.openapi.editor.impl.EditorFactoryImpl;
 import com.intellij.openapi.editor.impl.EditorImpl;
 import com.intellij.openapi.project.Project;
@@ -50,6 +50,7 @@ final class PromptConsole implements Disposable {
     PsiFile file =
         fileFactory.createFileFromText("PromptConsoleDocument.ml", OclLanguage.INSTANCE, "");
     Document promptDocument = file.getViewProvider().getDocument();
+    assert promptDocument != null;
     m_promptEditor = (EditorImpl) editorFactory.createEditor(promptDocument, project, CONSOLE);
 
     setupOutputEditor();
@@ -125,8 +126,8 @@ final class PromptConsole implements Disposable {
     m_promptEditor.getComponent().setPreferredSize(new Dimension(0, 100));
 
     // add copy/paste actions
-    m_promptEditor.addEditorMouseListener(
-        EditorActionUtil.createEditorPopupHandler(IdeActions.GROUP_CUT_COPY_PASTE));
+    m_promptEditor.installPopupHandler(
+        new ContextMenuPopupHandler.Simple(IdeActions.GROUP_CUT_COPY_PASTE));
 
     // hook some key event on prompt editor
     m_promptEditor
