@@ -12,11 +12,15 @@
 
 ## Unreleased
 
+## 0.93.1 - 2020/10/09
+
+0.93.1
+
 - :bug: [#272](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/272) Another case: structure panel missing function definition with "and"
 - :nail_care: [#274](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/274) Omit '()' in structure panel
 - :nail_care: [#273](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/273) Some constructor names not highlighted in function/match patterns
 
-## 0.93 - 2020/10/02
+0.93
 
 - :rocket: [#119](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/119) support for automatically closing quotes (double)
 - :nail_care: 'Goto class' use a custom presentation for inner modules 
