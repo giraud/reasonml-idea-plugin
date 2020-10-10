@@ -52,8 +52,7 @@ public class ModuleCompletionProvider {
         if (!topFile.equals(element.getContainingFile())) {
           resultSet.addElement(
               LookupElementBuilder.create(topModule.getModuleName())
-                  .withTypeText(
-                      FileHelper.shortLocation(project, topFile.getVirtualFile().getPath()))
+                  .withTypeText(FileHelper.shortLocation(topFile))
                   .withIcon(IconProvider.getFileModuleIcon(topFile)));
         }
       }

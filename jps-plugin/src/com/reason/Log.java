@@ -2,6 +2,7 @@ package com.reason;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -39,6 +40,12 @@ public class Log {
   public void debug(String comment) {
     if (m_log.isDebugEnabled()) {
       m_log.debug(comment);
+    }
+  }
+
+  public void debug(String msg, Project t) {
+    if (m_log.isDebugEnabled()) {
+      m_log.debug(msg + SEP + t);
     }
   }
 
@@ -202,6 +209,12 @@ public class Log {
   public void debug(String comment, String[] values) {
     if (m_log.isDebugEnabled()) {
       m_log.debug(comment + SEP + "[" + Joiner.join(", ", values) + "]");
+    }
+  }
+
+  public void debug(String msg, VirtualFile[] files) {
+    if (m_log.isDebugEnabled()) {
+      m_log.debug(msg + SEP + "[" + Joiner.join(", ", files) + "]");
     }
   }
 

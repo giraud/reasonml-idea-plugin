@@ -1,12 +1,10 @@
 package com.reason.ide.annotations;
 
+import com.intellij.openapi.util.Pair;
 import com.intellij.util.containers.MultiMap;
 import com.reason.Joiner;
 import com.reason.Log;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +14,13 @@ public class ErrorsManagerImpl implements ErrorsManager {
 
   private final Map<String, Map<Integer, OutputInfo>> m_errorsByFile = new ConcurrentHashMap<>();
   private final MultiMap<String, OutputInfo> m_warningsByFile = MultiMap.createConcurrent();
+
+  @Override
+  public @NotNull Pair<Set<String>, Set<String>> getKeys() {
+    Set<String> errors = m_errorsByFile.keySet();
+    Set<String> warnings = m_warningsByFile.keySet();
+    return new Pair<>(errors, warnings);
+  }
 
   @Override
   public void addAllInfo(@NotNull Collection<OutputInfo> bsbInfo) {

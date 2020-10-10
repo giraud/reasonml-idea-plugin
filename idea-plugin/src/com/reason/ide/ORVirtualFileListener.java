@@ -64,10 +64,9 @@ class ORVirtualFileListener implements AsyncFileListener {
       if (modifiedFile == null) {
         return;
       }
-      if (BsConfigJson.isBsConfigJson(modifiedFile)
-          || EsyPackageJson.isEsyPackageJson(modifiedFile)) {
+      if (BsConfigJson.isBsConfigJson(modifiedFile) || EsyPackageJson.isEsyPackageJson(modifiedFile)) {
         for (Project project : ProjectManager.getInstance().getOpenProjects()) {
-          ORToolWindowManager toolWindowManager = ORToolWindowManager.getInstance(project);
+          ORToolWindowManager toolWindowManager = ServiceManager.getService(project, ORToolWindowManager.class);
           ApplicationManager.getApplication().invokeLater(toolWindowManager::showHideToolWindows);
         }
       }
@@ -85,9 +84,8 @@ class ORVirtualFileListener implements AsyncFileListener {
       for (Project project : ProjectManager.getInstance().getOpenProjects()) {
         Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
         if (module != null) {
-          ServiceManager.getService(project, InsightManager.class)
-              .downloadRincewindIfNeeded(bsConfigFile);
-          OREditorTracker.getInstance(project).updateQueues();
+          ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);
+          ServiceManager.getService(project, OREditorTracker.class).updateQueues();
         }
       }
     }

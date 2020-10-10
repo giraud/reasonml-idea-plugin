@@ -67,7 +67,7 @@ public abstract class FileBase extends PsiFileBase implements PsiQualifiedElemen
 
   @NotNull
   public String shortLocation(@NotNull Project project) {
-    return FileHelper.shortLocation(project, getVirtualFile().getPath());
+    return FileHelper.shortLocation(this);
   }
 
   @NotNull

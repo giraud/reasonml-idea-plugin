@@ -6,19 +6,20 @@ import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.CompilerProcess;
-import com.reason.Platform;
+import com.reason.Log;
 import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,28 +28,22 @@ public class DuneOutputListener implements ProcessListener {
   private static final Pattern FILE_LOCATION =
       Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n");
 
-  enum BuildStatus {
-    fine,
-    warning,
-    error
-  }
+  private static final Log LOG = Log.create("dune.output");
 
-  @NotNull private final Project m_project;
+  private final @NotNull Project m_project;
   private final CompilerProcess m_compilerLifecycle;
-  @NotNull private final Logger m_log;
-  private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
+  private final List<OutputInfo> m_outputInfo = new ArrayList<>();
 
   @Nullable private OutputInfo m_latestInfo = null;
 
   public DuneOutputListener(@NotNull Project project, CompilerProcess compilerLifecycle) {
     m_project = project;
     m_compilerLifecycle = compilerLifecycle;
-    m_log = Logger.getInstance("ReasonML.build");
   }
 
   @Override
   public void startNotified(@NotNull ProcessEvent event) {
-    m_bsbInfo.clear();
+    m_outputInfo.clear();
     ServiceManager.getService(m_project, ErrorsManager.class).clearErrors();
   }
 
@@ -59,22 +54,27 @@ public class DuneOutputListener implements ProcessListener {
   public void processTerminated(@NotNull ProcessEvent event) {
     m_compilerLifecycle.terminate();
 
-    if (!m_bsbInfo.isEmpty()) {
-      ServiceManager.getService(m_project, ErrorsManager.class).addAllInfo(m_bsbInfo);
+    if (!m_outputInfo.isEmpty() && !m_project.isDisposed()) {
+      LOG.debug("Update errors manager with output results");
+      ServiceManager.getService(m_project, ErrorsManager.class).addAllInfo(m_outputInfo);
     }
 
     reset();
-    m_bsbInfo.clear();
+    m_outputInfo.clear();
 
     ApplicationManager.getApplication()
         .invokeLater(
             () -> {
-              // When a build is done, we need to refresh editors to be notified of the latest
+              // When build is done, we need to refresh editors to be notified of the latest
               // modifications
-              DaemonCodeAnalyzer.getInstance(m_project).restart();
-              EditorFactory.getInstance().refreshAllEditors();
-              InferredTypesService.queryForSelectedTextEditor(m_project);
-            });
+              if (!m_project.isDisposed()) {
+                LOG.debug("Refresh editors / inferred types");
+                InferredTypesService.queryForSelectedTextEditor(m_project);
+                DaemonCodeAnalyzer.getInstance(m_project).restart();
+                EditorFactory.getInstance().refreshAllEditors();
+              }
+            },
+            ModalityState.NON_MODAL);
   }
 
   @Override
@@ -116,8 +116,8 @@ public class DuneOutputListener implements ProcessListener {
         String colStart = matcher.group(3);
         String colEnd = matcher.group(4);
         OutputInfo info = addInfo(path, line, colStart, colEnd);
-        if (info == null || info.colStart < 0 || info.colEnd < 0) {
-          m_log.error("Can't decode columns for [" + text.replace("\n", "") + "]");
+        if (info.colStart < 0 || info.colEnd < 0) {
+          LOG.error("Can't decode columns for [" + text.replace("\n", "") + "]");
           return null;
         }
         return info;
@@ -127,7 +127,7 @@ public class DuneOutputListener implements ProcessListener {
     return null;
   }
 
-  @Nullable
+  @NotNull
   private OutputInfo addInfo(
       @NotNull String path,
       @NotNull String line,
@@ -135,12 +135,7 @@ public class DuneOutputListener implements ProcessListener {
       @NotNull String colEnd) {
     OutputInfo info = new OutputInfo();
 
-    VirtualFile fileInError = Platform.findFileByRelativePath(m_project, path);
-    if (fileInError == null) {
-      return null;
-    }
-
-    info.path = fileInError.getCanonicalPath();
+    info.path = path;
     info.lineStart = parseInt(line);
     info.colStart = parseInt(colStart) + 1;
     info.lineEnd = info.lineStart;
@@ -149,7 +144,7 @@ public class DuneOutputListener implements ProcessListener {
       info.colEnd += 1;
     }
 
-    m_bsbInfo.add(info);
+    m_outputInfo.add(info);
     return info;
   }
 

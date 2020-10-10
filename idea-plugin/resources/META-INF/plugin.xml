@@ -281,6 +281,7 @@
         <!--
          | Compiler
          -->
+
         <projectService serviceImplementation="com.reason.ORCompilerManager"/>
 
         <!-- BuckleScript Compiler -->
@@ -312,6 +313,7 @@
          -->
 
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
+        <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
 
         <typedHandler implementation="com.reason.ide.handlers.ORTypedHandler" id="RmlTypedHandler"/>
         <quoteHandler fileType="RESCRIPT" className="com.reason.ide.handlers.NsQuoteHandler"/>

@@ -102,9 +102,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
       quickDoc = "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
     } else if (resolvedIdentifier instanceof FileBase) {
       FileBase resolvedFile = (FileBase) resolvedIdentifier;
-      String relative_path =
-          Platform.removeProjectDir(
-              resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
+      String relative_path = Platform.getRelativePathToModule(resolvedFile);
       quickDoc =
           "<div style='white-space:nowrap;font-style:italic'>"
               + relative_path

@@ -16,10 +16,6 @@ public class ORToolWindowManager {
 
   private final @NotNull ORToolWindowProvider m_toolWindowProvider;
 
-  public static @NotNull ORToolWindowManager getInstance(@NotNull Project project) {
-    return new ORToolWindowManager(project);
-  }
-
   private ORToolWindowManager(@NotNull Project project) {
     m_project = project;
     m_toolWindowProvider = ORToolWindowProvider.getInstance(project);

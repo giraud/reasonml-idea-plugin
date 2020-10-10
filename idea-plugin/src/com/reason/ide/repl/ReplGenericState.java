@@ -11,73 +11,66 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ProgramRunner;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.OCamlExecutable;
+import com.reason.dune.OpamEnv;
+import com.reason.ide.ORProjectManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 public class ReplGenericState implements RunProfileState {
-  private final ExecutionEnvironment m_environment;
+    private final ExecutionEnvironment m_environment;
 
-  ReplGenericState(ExecutionEnvironment environment) {
-    m_environment = environment;
-  }
-
-  @Nullable
-  @Override
-  public ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner)
-      throws ExecutionException {
-    ProcessHandler processHandler = startProcess();
-    if (processHandler == null) {
-      return null;
+    ReplGenericState(ExecutionEnvironment environment) {
+        m_environment = environment;
     }
 
-    PromptConsoleView consoleView = new PromptConsoleView(m_environment.getProject(), true, true);
-    consoleView.attachToProcess(processHandler);
+    @Override
+    public @Nullable ExecutionResult execute(Executor executor, @NotNull ProgramRunner runner) throws ExecutionException {
+        ProcessHandler processHandler = startProcess();
+        if (processHandler != null) {
+            PromptConsoleView consoleView = new PromptConsoleView(m_environment.getProject(), true, true);
+            consoleView.attachToProcess(processHandler);
 
-    return new DefaultExecutionResult(consoleView, processHandler);
-  }
-
-  @Nullable
-  private ProcessHandler startProcess() throws ExecutionException {
-    ReplRunConfiguration runProfile = (ReplRunConfiguration) m_environment.getRunProfile();
-    Sdk runSdk = runProfile.getSdk();
-    if (runSdk == null) {
-      return null;
-    }
-
-    VirtualFile homeDirectory = runSdk.getHomeDirectory();
-    if (homeDirectory == null) {
-      return null;
-    }
-
-    GeneralCommandLine cmd = null;
-
-    if (SystemInfo.isWindows) {
-      VirtualFile ocamlBinFile = homeDirectory.findFileByRelativePath("bin/ocaml.exe");
-      if (ocamlBinFile != null) {
-        String ocamlBinPath = ocamlBinFile.getPath();
-        if (runProfile.getCygwinSelected()) {
-          cmd = new GeneralCommandLine(runProfile.getCygwinPath(), "--login", "-c", ocamlBinPath);
-        } else {
-          cmd = new GeneralCommandLine(ocamlBinPath);
+            return new DefaultExecutionResult(consoleView, processHandler);
         }
-      }
-    } else {
-      VirtualFile ocamlBinFile = homeDirectory.findFileByRelativePath("bin/ocaml");
-      if (ocamlBinFile != null) {
-        String ocamlBinPath = ocamlBinFile.getPath();
-        cmd = new GeneralCommandLine(ocamlBinPath);
-      }
+
+        return null;
     }
 
-    if (cmd != null) {
-      OSProcessHandler handler = new OSProcessHandler(cmd);
-      ProcessTerminatedListener.attach(handler, m_environment.getProject());
-      return handler;
-    }
+    private @Nullable ProcessHandler startProcess() throws ExecutionException {
+        ReplRunConfiguration profile = (ReplRunConfiguration) m_environment.getRunProfile();
+        Project project = m_environment.getProject();
 
-    return null;
-  }
+        Sdk odk = profile.getSdk();
+        VirtualFile homeDirectory = odk == null ? null : odk.getHomeDirectory();
+        if (homeDirectory == null) {
+            return null;
+        }
+
+        VirtualFile baseRoot = ORProjectManager.findFirstDuneContentRoot(project).orElse(homeDirectory);
+        Map<String, String> env = ServiceManager.getService(project, OpamEnv.class).getEnv(odk);
+
+        GeneralCommandLine cli = new GeneralCommandLine("ocaml");
+        cli.setWorkDirectory(baseRoot.getPath());
+        cli.setRedirectErrorStream(true);
+        if (env != null) {
+            for (Map.Entry<String, String> entry : env.entrySet()) {
+                cli.withEnvironment(entry.getKey(), entry.getValue());
+            }
+        }
+
+        OCamlExecutable executable = OCamlExecutable.getExecutable(odk);
+        executable.patchCommandLine(cli, odk.getHomePath() + "/bin", false, project);
+
+        OSProcessHandler handler = new OSProcessHandler(cli);
+        ProcessTerminatedListener.attach(handler, project);
+
+        return handler;
+    }
 }

@@ -1,44 +1,35 @@
 package com.reason.lang.core.psi.reference;
 
-import static com.reason.lang.core.ORFileType.both;
+import com.intellij.lang.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.intellij.util.containers.*;
+import com.reason.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiPolyVariantReferenceBase;
-import com.intellij.psi.ResolveResult;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.containers.ArrayListSet;
-import com.reason.Joiner;
-import com.reason.Log;
-import com.reason.Platform;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.QNameFinder;
-import com.reason.lang.core.ORCodeFactory;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import com.reason.lang.core.psi.impl.PsiFakeModule;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
-import com.reason.lang.core.type.ORTypes;
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import static com.reason.lang.core.ORFileType.*;
 
 public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUpperSymbol> {
 
   private static final Log LOG = Log.create("ref.upper");
 
-  @Nullable private final String m_referenceName;
-  @NotNull private final ORTypes m_types;
+  @Nullable
+  private final String m_referenceName;
+  @NotNull
+  private final ORTypes m_types;
 
   public PsiUpperSymbolReference(@NotNull PsiUpperSymbol element, @NotNull ORTypes types) {
     super(element, TextRange.create(0, element.getTextLength()));
@@ -71,34 +62,22 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
           (r1, r2) -> {
             PsiFile f1 = r1.getContainingFile();
             // Hack because bucklescript duplicate files into lib/ocaml
-            String p1 = Platform.removeProjectDir(r1.getProject(), f1.getVirtualFile().getPath());
+            String p1 = Platform.getRelativePathToModule(f1);
             if (p1.contains("lib")) {
               return -1;
             }
 
             PsiFile f2 = r2.getContainingFile();
-            String p2 = Platform.removeProjectDir(r2.getProject(), f2.getVirtualFile().getPath());
+            String p2 = Platform.getRelativePathToModule(f2);
             if (p2.contains("lib")) {
               return 1;
             }
 
-            return FileHelper.isInterface(f1.getFileType())
-                ? 1
-                : (FileHelper.isInterface(f2.getFileType()) ? -1 : 0);
+            return FileHelper.isInterface(f1.getFileType()) ? 1 : (FileHelper.isInterface(f2.getFileType()) ? -1 : 0);
           });
 
       if (LOG.isDebugEnabled()) {
-        LOG.debug(
-            "  => found",
-            Joiner.join(
-                ", ",
-                referencedElements,
-                item ->
-                    item.getQualifiedName()
-                        + " ["
-                        + Platform.removeProjectDir(
-                            item.getProject(), item.getContainingFile().getVirtualFile().getPath())
-                        + "]"));
+        LOG.debug("  => found", Joiner.join(", ", referencedElements, item -> item.getQualifiedName() + " [" + Platform.getRelativePathToModule(item.getContainingFile()) + "]"));
       }
 
       ResolveResult[] resolveResults = new ResolveResult[referencedElements.size()];
@@ -108,9 +87,7 @@ public class PsiUpperSymbolReference extends PsiPolyVariantReferenceBase<PsiUppe
         // A fake module resolve to its file
         resolveResults[i] =
             new UpperResolveResult(
-                referencedElement instanceof PsiFakeModule
-                    ? (FileBase) referencedElement.getContainingFile()
-                    : referencedElement);
+                referencedElement instanceof PsiFakeModule ? (FileBase) referencedElement.getContainingFile() : referencedElement);
         i++;
       }
 

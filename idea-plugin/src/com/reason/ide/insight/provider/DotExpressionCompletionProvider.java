@@ -1,47 +1,40 @@
 package com.reason.ide.insight.provider;
 
-import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static com.reason.lang.core.psi.ExpressionScope.pub;
-
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.lang.Language;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.PsiIconUtil;
-import com.intellij.util.containers.ArrayListSet;
-import com.reason.Joiner;
-import com.reason.Log;
-import com.reason.ide.IconProvider;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.IndexedFileModule;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.QNameFinder;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.*;
+import com.intellij.lang.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.intellij.util.containers.*;
+import com.reason.*;
+import com.reason.ide.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import com.reason.lang.core.psi.impl.PsiFunctorCall;
-import com.reason.lang.core.signature.PsiSignatureUtil;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.signature.*;
+import org.jetbrains.annotations.*;
+
+import java.io.*;
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
+
+import static com.reason.lang.core.ExpressionFilterConstants.*;
+import static com.reason.lang.core.ORFileType.*;
+import static com.reason.lang.core.psi.ExpressionScope.*;
 
 public class DotExpressionCompletionProvider {
 
   private static final Log LOG = Log.create("insight.dot");
 
-  private DotExpressionCompletionProvider() {}
+  private DotExpressionCompletionProvider() {
+  }
 
   public static void addCompletions(
       @NotNull QNameFinder qnameFinder,
@@ -109,15 +102,19 @@ public class DotExpressionCompletionProvider {
 
         // Might be a virtual namespace
 
-        Collection<IndexedFileModule> modulesForNamespace =
-            psiFinder.findModulesForNamespace(upperName, scope);
+        Collection<IndexedFileModule> modulesForNamespace = psiFinder.findModulesForNamespace(upperName, scope);
         if (!modulesForNamespace.isEmpty()) {
           LOG.debug("  found namespace files", modulesForNamespace);
 
+          VirtualFileManager vFileManager = VirtualFileManager.getInstance();
+          PsiManager psiManager = PsiManager.getInstance(project);
+
           for (IndexedFileModule file : modulesForNamespace) {
+            VirtualFile fileByNioPath = vFileManager.findFileByNioPath(new File(file.getPath()).toPath());
+            PsiFile psiFile = fileByNioPath == null ? null : psiManager.findFile(fileByNioPath);
             resultSet.addElement(
                 LookupElementBuilder.create(file.getModuleName())
-                    .withTypeText(FileHelper.shortLocation(project, file.getPath()))
+                    .withTypeText(psiFile == null ? file.getPath() : FileHelper.shortLocation(psiFile))
                     .withIcon(IconProvider.getFileModuleIcon(file.isOCaml(), file.isInterface())));
           }
 
@@ -171,8 +168,8 @@ public class DotExpressionCompletionProvider {
       @NotNull Language language) {
     for (PsiNamedElement expression : expressions) {
       if (!(expression instanceof PsiOpen)
-          && !(expression instanceof PsiInclude)
-          && !(expression instanceof PsiAnnotation)) {
+              && !(expression instanceof PsiInclude)
+              && !(expression instanceof PsiAnnotation)) {
         // TODO: if include => include
         String name = expression.getName();
         if (name != null) {

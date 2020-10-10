@@ -1,50 +1,37 @@
 package com.reason.ide.insight.provider;
 
-import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static com.reason.lang.core.psi.ExpressionScope.pub;
-
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.PsiIconUtil;
-import com.reason.Log;
-import com.reason.ide.IconProvider;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.search.FileModuleIndexService;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.QNameFinder;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.util.*;
+import com.reason.*;
+import com.reason.ide.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import com.reason.lang.core.psi.impl.PsiFakeModule;
-import com.reason.lang.core.signature.PsiSignatureUtil;
-import icons.ORIcons;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.signature.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
+
+import static com.reason.lang.core.ExpressionFilterConstants.*;
+import static com.reason.lang.core.ORFileType.*;
+import static com.reason.lang.core.psi.ExpressionScope.*;
 
 public class FreeExpressionCompletionProvider {
 
   private static final Log LOG = Log.create("insight.free");
 
-  public static void addCompletions(
-      @NotNull QNameFinder qnameFinder,
-      @NotNull PsiElement element,
-      @NotNull CompletionResultSet resultSet) {
+  public static void addCompletions(@NotNull QNameFinder qnameFinder, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
     LOG.debug("FREE expression completion");
 
     Project project = element.getProject();
@@ -71,15 +58,16 @@ public class FreeExpressionCompletionProvider {
       LOG.debug("  files without namespaces", topModules);
     }
 
+    PsiManager psiManager = PsiManager.getInstance(project);
+
     for (PsiFakeModule topModule : topModules) {
       if (!topModule.getContainingFile().equals(containingFile)) {
+        VirtualFile virtualFile = topModule.getContainingFile().getVirtualFile();
+        PsiFile psiFile = psiManager.findFile(virtualFile);
         resultSet.addElement(
             LookupElementBuilder.create(topModule.getModuleName())
-                .withTypeText(
-                    FileHelper.shortLocation(
-                        project, topModule.getContainingFile().getVirtualFile().getPath()))
-                .withIcon(
-                    IconProvider.getFileModuleIcon((FileBase) topModule.getContainingFile())));
+                .withTypeText(psiFile == null ? virtualFile.getName() : FileHelper.shortLocation(psiFile))
+                .withIcon(IconProvider.getFileModuleIcon((FileBase) topModule.getContainingFile())));
       }
     }
 
@@ -119,11 +107,11 @@ public class FreeExpressionCompletionProvider {
 
     while (item != null) {
       if (item instanceof PsiInnerModule
-          || item instanceof PsiLet
-          || item instanceof PsiType
-          || item instanceof PsiExternal
-          || item instanceof PsiException
-          || item instanceof PsiVal) {
+              || item instanceof PsiLet
+              || item instanceof PsiType
+              || item instanceof PsiExternal
+              || item instanceof PsiException
+              || item instanceof PsiVal) {
         if (item instanceof PsiLet && ((PsiLet) item).isDeconsruction()) {
           for (PsiElement deconstructedElement : ((PsiLet) item).getDeconstructedElements()) {
             resultSet.addElement(
