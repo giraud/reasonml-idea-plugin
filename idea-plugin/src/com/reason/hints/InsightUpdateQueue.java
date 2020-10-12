@@ -144,7 +144,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
         m_libRoot = m_contentRoot == null ? null : m_contentRoot.findFileByRelativePath("lib/bs");
       }
 
-      if (sourceFile != null && m_libRoot != null) {
+      if (sourceFile != null && m_libRoot != null && !m_project.isDisposed()) {
         Application application = ApplicationManager.getApplication();
         ErrorsManager errorsManager = ServiceManager.getService(m_project, ErrorsManager.class);
         application.executeOnPooledThread(
