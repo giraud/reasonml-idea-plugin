@@ -6,19 +6,12 @@ import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiLocalOpen;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
-import java.util.*;
-import java.util.regex.*;
-import java.util.stream.*;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
 public class RmlQNameFinder extends BaseQNameFinder {
@@ -86,6 +79,9 @@ public class RmlQNameFinder extends BaseQNameFinder {
           String moduleName = ((FileBase) sourceElement.getContainingFile()).getModuleName();
           qualifiedNames.add(moduleName + pathExtension);
           resolvedQualifiedNames.add(moduleName + resolvedPathExtension);
+        } else if (alias == null) {
+          qualifiedNames.add(moduleQName + pathExtension);
+          resolvedQualifiedNames.add(moduleQName + resolvedPathExtension);
         }
       } else if (item instanceof PsiLocalOpen) {
         String openName = extractPathName(item, RmlTypes.INSTANCE);

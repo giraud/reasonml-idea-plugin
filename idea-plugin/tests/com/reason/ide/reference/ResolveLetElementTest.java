@@ -7,6 +7,20 @@ import com.reason.lang.core.psi.PsiQualifiedElement;
 
 public class ResolveLetElementTest extends ORBasePlatformTestCase {
 
+  public void test_RML_in_module_binding() {
+    configureCode("A.re", "module X = { let foo = 1; let z = foo<caret>; };");
+
+    PsiElement e = myFixture.getElementAtCaret();
+    assertEquals("A.X.foo", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
+  }
+
+  public void test_NS_in_module_binding() {
+    configureCode("A.res", "module X = { let foo = 1; let z = foo<caret>; };");
+
+    PsiElement e = myFixture.getElementAtCaret();
+    assertEquals("A.X.foo", ((PsiQualifiedElement) e.getParent()).getQualifiedName());
+  }
+
   public void testRml_LocalOpenWithParens() {
     configureCode("A.re", "module A1 = { let a = 3; };");
     configureCode("B.re", "let b = A.(A1.a<caret>);");

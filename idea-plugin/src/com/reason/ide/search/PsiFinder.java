@@ -137,14 +137,14 @@ public final class PsiFinder {
       ModuleFilter<PsiModule> filter,
       @NotNull GlobalSearchScope scope) {
     Set<PsiModule> result = new HashSet<>();
-    ModuleIndex instance = ModuleIndex.getInstance();
+    ModuleIndex moduleIndex = ModuleIndex.getInstance();
 
-    instance.processAllKeys(
+    moduleIndex.processAllKeys(
         m_project,
         CommonProcessors.processAll(
             moduleName -> {
               if (name.equals(moduleName)) {
-                Collection<PsiModule> modules = instance.get(moduleName, m_project, scope);
+                Collection<PsiModule> modules = moduleIndex.get(moduleName, m_project, scope);
                 PartitionedModules partitionedModules =
                     new PartitionedModules(m_project, modules, filter);
 
