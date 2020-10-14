@@ -14,6 +14,7 @@
 
 - :bug: [#275](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275) Incorrect parsing of switch with signature
 - :nail_care: Fold switch/match
+- :house: Use [rincewind@0.9](https://github.com/giraud/rincewind)
 
 ## 0.93.1 - 2020/10/09
 
