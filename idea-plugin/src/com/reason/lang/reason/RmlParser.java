@@ -883,7 +883,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
     state.advance();
 
     if (scope != null) {
-      scope.complete();
       state.popEnd();
     }
 
@@ -1081,7 +1080,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     } else if (state.is(m_types.C_TAG_PROPERTY)) {
       // <X p|> =<| ...
       state.advance().mark(m_types.C_TAG_PROP_VALUE);
-    } else if (state.isCurrentResolution(module)) {
+    } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> =<| ...
       state.advance().mark(m_types.C_UNKNOWN_EXPR /*C_DUMMY*/).resolution(moduleBinding).dummy();
     } else if (state.is(m_types.C_FUN_PARAM)) {

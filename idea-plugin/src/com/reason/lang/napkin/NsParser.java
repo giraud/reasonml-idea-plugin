@@ -735,6 +735,9 @@ public class NsParser extends CommonParser<NsTypes> {
       if (isJsObject) {
         state.advance().advance().mark(m_types.C_OBJECT_FIELD).resolution(field);
       }
+    } else if (state.is(m_types.C_MODULE_TYPE)) {
+      // module M : |>{<| ...
+      state.updateScopeToken(m_types.LBRACE);
     } else if (state.isCurrentResolution(tryBodyWith)) {
       // A try expression ::  try ... |>{<| ... }
       state.markScope(m_types.C_TRY_HANDLERS, m_types.LBRACE).resolution(tryBodyWith);
@@ -786,7 +789,8 @@ public class NsParser extends CommonParser<NsTypes> {
   }
 
   private void parseRBrace(@NotNull ParserState state) {
-    ParserScope scope = state.popEndUntilOneOfElementType(m_types.LBRACE);
+    ParserScope scope =
+        state.popEndUntilOneOfElementType(m_types.LBRACE, m_types.RECORD, m_types.SWITCH);
     state.advance();
     if (scope != null) {
       state.popEnd();
@@ -964,7 +968,7 @@ public class NsParser extends CommonParser<NsTypes> {
         || state.isCurrentResolution(letNamed) /* || state.isCurrentResolution(letNamedAttribute)*/
         || state.isCurrentResolution(letNamedSignature)) {
       state.resolution(letNamedEq).advance().mark(m_types.C_LET_BINDING);
-    } else if (state.isCurrentResolution(module)) {
+    } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> = <| ...
       state.advance().mark(m_types.C_UNKNOWN_EXPR /*C_DUMMY*/).dummy().resolution(moduleBinding);
     } else if (state.is(m_types.C_TAG_PROPERTY)) {
