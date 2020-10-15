@@ -7,6 +7,7 @@ import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiLocalOpen;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
 import java.util.Set;
 import java.util.regex.Matcher;

@@ -139,7 +139,7 @@ public class ORUtil {
     }
 
     PsiElement nextSibling = element.getNextSibling();
-    while (nextSibling != null && nextSibling.getNode().getElementType() == TokenType.WHITE_SPACE) {
+    while ((nextSibling instanceof PsiWhiteSpace)) {
       nextSibling = nextSibling.getNextSibling();
     }
 

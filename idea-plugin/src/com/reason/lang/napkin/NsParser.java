@@ -833,7 +833,7 @@ public class NsParser extends CommonParser<NsTypes> {
           .popCancel()
           . // remove previous module binding
           resolution(functorNamedEq)
-          .updateCurrentCompositeElementType(m_types.C_FUNCTOR)
+          .updateCurrentCompositeElementType(m_types.C_FUNCTOR_DECLARATION)
           .markScope(m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)
           .resolution(functorParams)
           .advance()

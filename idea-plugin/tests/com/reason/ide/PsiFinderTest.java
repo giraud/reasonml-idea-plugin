@@ -9,10 +9,10 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.psi.PsiException;
-import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

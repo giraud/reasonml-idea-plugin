@@ -9,13 +9,14 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.NsFile;
 import com.reason.ide.files.NsInterfaceFile;
 import com.reason.ide.files.NsInterfaceFileType;
-import com.reason.lang.core.PsiElementFactory;
 import com.reason.lang.core.stub.type.NsFileStubElementType;
+import com.reason.lang.core.stub.type.ORStubElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class NsParserDefinition implements ParserDefinition {
@@ -70,6 +71,13 @@ public class NsParserDefinition implements ParserDefinition {
 
   @NotNull
   public PsiElement createElement(@NotNull ASTNode node) {
-    return PsiElementFactory.createElement(NsTypes.INSTANCE, node);
+    IElementType type = node.getElementType();
+    if (type instanceof ORStubElementType) {
+      //noinspection rawtypes
+      return ((ORStubElementType) node.getElementType()).createPsi(node);
+    }
+
+    throw new IllegalArgumentException(
+        "Not a Rescript node: " + node + " (" + type + ", " + type.getLanguage() + ")");
   }
 }

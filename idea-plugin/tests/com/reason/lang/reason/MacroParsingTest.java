@@ -4,10 +4,10 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiMacro;
-import com.reason.lang.core.psi.PsiMacroName;
-import com.reason.lang.core.psi.PsiRaw;
-import com.reason.lang.core.psi.PsiRawBody;
+import com.reason.lang.core.psi.impl.PsiMacro;
+import com.reason.lang.core.psi.impl.PsiMacroName;
+import com.reason.lang.core.psi.impl.PsiRaw;
+import com.reason.lang.core.psi.impl.PsiRawBody;
 
 @SuppressWarnings("ConstantConditions")
 public class MacroParsingTest extends RmlParsingTestCase {

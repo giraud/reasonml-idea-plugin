@@ -1,5 +1,6 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
@@ -7,17 +8,20 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.impl.PsiValImpl;
 import com.reason.lang.core.stub.PsiValStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal>
-    implements ORCompositeType {
+public class PsiValStubElementType extends ORStubElementType<PsiValStub, PsiVal> {
 
-  public PsiValStubElementType(@NotNull String name, @Nullable Language language) {
-    super(name, language);
+  public PsiValStubElementType(@Nullable Language language) {
+    super("C_VAL_DECLARATION", language);
+  }
+
+  @NotNull
+  public PsiValImpl createPsi(@NotNull ASTNode node) {
+    return new PsiValImpl(ORTypesUtil.getInstance(getLanguage()), node);
   }
 
   @NotNull
@@ -58,6 +62,6 @@ public class PsiValStubElementType extends IStubElementType<PsiValStub, PsiVal>
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

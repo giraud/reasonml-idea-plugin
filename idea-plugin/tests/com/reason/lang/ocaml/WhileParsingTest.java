@@ -2,7 +2,7 @@ package com.reason.lang.ocaml;
 
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiWhile;
+import com.reason.lang.core.psi.impl.PsiWhile;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

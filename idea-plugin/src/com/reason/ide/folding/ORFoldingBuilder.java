@@ -10,7 +10,9 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiBinaryCondition;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiTag;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
 import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
@@ -115,6 +117,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
   }
 
   private void foldTag(@NotNull List<FoldingDescriptor> descriptors, @NotNull PsiTag element) {
+    /*
     PsiTagStart start = ORUtil.findImmediateFirstChildOfClass(element, PsiTagStart.class);
     PsiTagClose close =
         start == null ? null : ORUtil.findImmediateFirstChildOfClass(element, PsiTagClose.class);
@@ -125,6 +128,7 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
           TextRange.create(lastChild.getTextOffset(), element.getTextRange().getEndOffset() - 1);
       descriptors.add(new FoldingDescriptor(element, textRange));
     }
+    */
   }
 
   private void foldSwitch(

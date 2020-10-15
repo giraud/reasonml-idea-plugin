@@ -6,6 +6,9 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiObject;
+import com.reason.lang.core.psi.impl.PsiRecord;
+import com.reason.lang.core.psi.impl.PsiTypeBinding;
 import java.util.ArrayList;
 import java.util.List;
 

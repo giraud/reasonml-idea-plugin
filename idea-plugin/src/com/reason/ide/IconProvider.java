@@ -9,6 +9,7 @@ import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.*;
 import com.reason.ide.search.IndexedFileModule;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 import icons.ORIcons;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;

@@ -10,9 +10,10 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
+import com.reason.lang.core.stub.RmlStubBasedElementTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlParser extends CommonParser<RmlTypes> {
+public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedElementTypes {
 
   RmlParser() {
     super(RmlTypes.INSTANCE);
@@ -389,10 +390,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
   }
 
   private void parsePipe(@NotNull ParserState state) {
-    if (state.is(m_types.C_TYPE_BINDING) || state.is(m_types.C_VARIANT_DECLARATION)) {
+    if (state.is(m_types.C_TYPE_BINDING) || state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
       // type t = |>|<| ...
       // type t = | X |>|<| Y ...
-      state.popEndUntil(m_types.C_TYPE_BINDING).advance().mark(m_types.C_VARIANT_DECLARATION);
+      state
+          .popEndUntil(m_types.C_TYPE_BINDING)
+          .advance()
+          .mark(m_types.INSTANCE.C_VARIANT_DECLARATION);
     } else if (state.isCurrentResolution(tryBodyWith)) {
       // try (...) { |>|<| ...
       state.mark(m_types.C_TRY_HANDLER).resolution(tryBodyWithHandler);
@@ -904,7 +908,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
       state
           .popEnd()
           .resolution(functorNamedEq)
-          .updateCurrentCompositeElementType(m_types.C_FUNCTOR)
+          .updateCurrentCompositeElementType(m_types.C_FUNCTOR_DECLARATION)
           .markScope(m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)
           .resolution(functorParams)
           .advance()
@@ -920,7 +924,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
           .advance()
           .mark(m_types.C_FUNCTOR_PARAM)
           .resolution(functorParam);
-    } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
+    } else if (state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
       // Variant params ::  type t = | Variant |>(<| .. )
       state
           .markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN)
@@ -1112,7 +1116,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     if (state.isCurrentResolution(module)) {
       // module |>M<| ...
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
-    } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
+    } else if (state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
       // Declaring a variant ::  type t = | |>X<| ..
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
     } else if (state.is(m_types.C_EXCEPTION_DECLARATION)) {
@@ -1158,7 +1162,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.is(m_types.C_TYPE_BINDING) && nextElementType != m_types.DOT) {
           // We are declaring a variant without a pipe before
           // type t = |>X<| | ...
-          state.mark(m_types.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
+          state.mark(m_types.INSTANCE.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
           return;
         } else if (!state.isCurrentResolution(moduleNamedEq)
             && !state.isCurrentResolution(maybeFunctorCall)

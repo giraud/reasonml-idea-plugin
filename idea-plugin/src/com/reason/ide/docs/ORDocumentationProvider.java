@@ -14,6 +14,7 @@ import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;

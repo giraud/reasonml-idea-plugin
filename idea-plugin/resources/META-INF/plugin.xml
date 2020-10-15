@@ -131,14 +131,20 @@
          -->
 
         <!-- Reason -->
+        <stubElementTypeHolder externalIdPrefix="Reason." class="com.reason.lang.core.stub.RmlStubBasedElementTypes"/>
+        <lang.ast.factory language="Reason" implementationClass="com.reason.lang.reason.RmlASTFactory"/>
         <lang.parserDefinition language="Reason" implementationClass="com.reason.lang.reason.RmlParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Reason"
                                        implementationClass="com.reason.ide.highlight.RmlSyntaxHighlighterFactory"/>
-        <!-- Reason -->
+        <!-- Rescript -->
+        <stubElementTypeHolder externalIdPrefix="NapkinScript." class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
+        <lang.ast.factory language="NapkinScript" implementationClass="com.reason.lang.napkin.RescriptASTFactory"/>
         <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.napkin.NsParserDefinition"/>
         <lang.syntaxHighlighterFactory language="NapkinScript"
                                        implementationClass="com.reason.ide.highlight.NsSyntaxHighlighterFactory"/>
         <!-- OCaml -->
+        <stubElementTypeHolder externalIdPrefix="OCaml." class="com.reason.lang.core.stub.OclStubBasedElementTypes"/>
+        <lang.ast.factory language="OCaml" implementationClass="com.reason.lang.ocaml.OclASTFactory"/>
         <lang.parserDefinition language="OCaml" implementationClass="com.reason.lang.ocaml.OclParserDefinition"/>
         <lang.syntaxHighlighterFactory language="OCaml"
                                        implementationClass="com.reason.ide.highlight.OclSyntaxHighlighterFactory"/>

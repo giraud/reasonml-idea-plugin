@@ -2,7 +2,7 @@ package com.reason.ide.search.index;
 
 import com.intellij.psi.stubs.StringStubIndexExtension;
 import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiFakeModule;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 import org.jetbrains.annotations.NotNull;
 
 public class ModuleTopLevelIndex extends StringStubIndexExtension<PsiFakeModule> {

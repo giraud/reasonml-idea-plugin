@@ -10,9 +10,9 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiOpen;
+import com.reason.lang.core.psi.impl.PsiInterpolationReference;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 

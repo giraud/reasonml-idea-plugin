@@ -3,6 +3,7 @@ package com.reason.lang.napkin;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiRecord;
 import com.reason.lang.core.signature.ORSignature;
 import java.util.ArrayList;
 import java.util.Collection;

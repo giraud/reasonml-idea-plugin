@@ -3,11 +3,11 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.impl.PsiFunctionBody;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

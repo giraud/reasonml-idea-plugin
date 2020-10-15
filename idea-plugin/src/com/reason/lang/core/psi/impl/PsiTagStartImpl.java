@@ -5,15 +5,16 @@ import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
 import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
 import static com.reason.lang.core.psi.ExpressionScope.pub;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.ide.files.FileBase;
 import com.reason.ide.search.PsiFinder;
+import com.reason.lang.core.CompositeTypePsiElement;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.signature.ORSignature;
@@ -26,9 +27,10 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
-  public PsiTagStartImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
+public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements PsiTagStart {
+
+  protected PsiTagStartImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    super(types, elementType);
   }
 
   static class TagPropertyImpl implements TagProperty {
@@ -128,10 +130,10 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     GlobalSearchScope scope = allScope(project);
 
     // find tag 'make' expression
-    PsiElement tagName = findChildByClass(PsiUpperSymbol.class);
+    PsiElement tagName = ORUtil.findImmediateFirstChildOfClass(this, PsiUpperSymbol.class);
     if (tagName == null) {
       // no tag name, it's not a custom tag
-      tagName = findChildByClass(PsiLowerSymbol.class);
+      tagName = ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
       if (tagName != null) {
         Set<PsiModule> modules =
             psiFinder.findModulesbyName(

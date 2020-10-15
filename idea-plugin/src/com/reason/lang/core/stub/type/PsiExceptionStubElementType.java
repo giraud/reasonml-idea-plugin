@@ -1,32 +1,38 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiException;
 import com.reason.lang.core.psi.impl.PsiExceptionImpl;
 import com.reason.lang.core.stub.PsiExceptionStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionStub, PsiException>
-    implements ORCompositeType {
+public class PsiExceptionStubElementType extends ORStubElementType<PsiExceptionStub, PsiException> {
 
-  public PsiExceptionStubElementType(@NotNull String name, Language language) {
-    super(name, language);
+  public PsiExceptionStubElementType(Language language) {
+    super("C_EXCEPTION_DECLARATION", language);
   }
 
   @NotNull
-  public PsiException createPsi(@NotNull final PsiExceptionStub stub) {
+  public PsiException createPsi(@NotNull PsiExceptionStub stub) {
     return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
   }
 
   @NotNull
-  public PsiExceptionStub createStub(
-      @NotNull final PsiException psi, final StubElement parentStub) {
+  public PsiException createPsi(@NotNull ASTNode node) {
+    return new PsiExceptionImpl(ORTypesUtil.getInstance(getLanguage()), node);
+  }
+
+  @NotNull
+  public PsiExceptionStub createStub(@NotNull final PsiException psi, StubElement parentStub) {
     return new PsiExceptionStub(parentStub, this, psi.getName(), psi.getPath());
   }
 
@@ -58,6 +64,6 @@ public class PsiExceptionStubElementType extends IStubElementType<PsiExceptionSt
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

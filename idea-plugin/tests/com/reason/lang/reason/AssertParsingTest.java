@@ -1,6 +1,6 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.core.psi.PsiAssert;
+import com.reason.lang.core.psi.impl.PsiAssert;
 
 public class AssertParsingTest extends RmlParsingTestCase {
   public void test_basic() {

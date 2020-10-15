@@ -714,7 +714,7 @@ public class OclParser extends CommonParser<OclTypes> {
       // This is a functor ::  module Make |>(<| ... )
       state
           .resolution(functorNamed)
-          .updateCurrentCompositeElementType(m_types.C_FUNCTOR)
+          .updateCurrentCompositeElementType(m_types.C_FUNCTOR_DECLARATION)
           .markScope(m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)
           .resolution(functorParams)
           .advance()

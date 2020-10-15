@@ -5,12 +5,12 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiTag;
-import com.reason.lang.core.psi.PsiTagBody;
-import com.reason.lang.core.psi.PsiTagClose;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.psi.PsiTagPropertyValue;
 import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.impl.PsiTag;
+import com.reason.lang.core.psi.impl.PsiTagBody;
+import com.reason.lang.core.psi.impl.PsiTagClose;
 import com.reason.lang.core.psi.impl.PsiTernary;
 import java.util.*;
 

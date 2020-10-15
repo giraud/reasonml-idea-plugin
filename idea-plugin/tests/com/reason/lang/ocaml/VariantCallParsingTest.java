@@ -6,10 +6,10 @@ import com.reason.Joiner;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiPatternMatchBody;
 import com.reason.lang.core.psi.PsiSwitch;
 import com.reason.lang.core.psi.PsiUpperSymbol;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.impl.PsiPatternMatchBody;
 import java.util.*;
 import java.util.stream.*;
 

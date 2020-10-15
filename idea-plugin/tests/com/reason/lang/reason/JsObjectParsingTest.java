@@ -4,13 +4,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiJsObject;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiLocalOpen;
-import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.PsiJsObject;
+import com.reason.lang.core.psi.impl.PsiLocalOpen;
+import com.reason.lang.core.psi.impl.PsiObjectField;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

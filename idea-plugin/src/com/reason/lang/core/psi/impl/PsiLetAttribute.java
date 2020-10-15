@@ -1,15 +1,15 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.impl.source.tree.CompositePsiElement;
+import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiLetAttribute extends ASTWrapperPsiElement {
+public class PsiLetAttribute extends CompositePsiElement {
 
-  public PsiLetAttribute(@NotNull ASTNode node) {
-    super(node);
+  protected PsiLetAttribute(IElementType type) {
+    super(type);
   }
 
   @Nullable

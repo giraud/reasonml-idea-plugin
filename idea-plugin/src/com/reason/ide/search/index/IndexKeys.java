@@ -4,6 +4,7 @@ import com.intellij.psi.stubs.StubIndexKey;
 import com.intellij.util.indexing.ID;
 import com.reason.ide.search.FileModuleData;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 
 public class IndexKeys {
 

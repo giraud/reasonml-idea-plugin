@@ -63,7 +63,7 @@ public class ORIcons {
   public static final Icon FUNCTOR = getIcon("/nodes/artifact.svg");
   public static final Icon LET = getIcon("/nodes/variable.svg");
   public static final Icon VAL = getIcon("/nodes/variable.svg");
-  public static final Icon ATTRIBUTE = getIcon("/css/property.png");
+  public static final Icon ATTRIBUTE = getIcon("/nodes/property.png");
   public static final Icon FUNCTION = getIcon("/nodes/function.svg");
   public static final Icon METHOD = getIcon("/nodes/method.svg");
   public static final Icon CLASS = getIcon("/nodes/class.svg");

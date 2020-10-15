@@ -1,7 +1,6 @@
 package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.Language;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -10,10 +9,10 @@ import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.stub.PsiModuleStub;
-import java.io.*;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class PsiModuleStubElementType extends IStubElementType<PsiModuleStub, PsiModule> {
+public abstract class PsiModuleStubElementType extends ORStubElementType<PsiModuleStub, PsiModule> {
 
   public PsiModuleStubElementType(@NotNull String name, Language language) {
     super(name, language);
@@ -78,6 +77,6 @@ public abstract class PsiModuleStubElementType extends IStubElementType<PsiModul
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

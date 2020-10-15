@@ -1,17 +1,8 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
-import com.reason.lang.core.stub.type.PsiExternalStubElementType;
-import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiParameterStubElementType;
-import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
-import com.reason.lang.core.stub.type.PsiTypeStubElementType;
-import com.reason.lang.core.stub.type.PsiValStubElementType;
-import com.reason.lang.core.stub.type.PsiVariantStubElementType;
+import com.reason.lang.core.stub.RmlStubBasedElementTypes;
 import com.reason.lang.core.type.ORCompositeElementType;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTokenElementType;
 import com.reason.lang.core.type.ORTypes;
 
@@ -20,30 +11,25 @@ public class RmlTypes extends ORTypes {
   public static final RmlTypes INSTANCE = new RmlTypes();
 
   private RmlTypes() {
-    C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", RmlLanguage.INSTANCE);
+    // Stub element types
 
-    // Stubbed element types
-
-    C_EXCEPTION_DECLARATION =
-        new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", RmlLanguage.INSTANCE);
-    C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", RmlLanguage.INSTANCE);
-    C_EXTERNAL_DECLARATION =
-        new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", RmlLanguage.INSTANCE);
-    C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", RmlLanguage.INSTANCE);
-    C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", RmlLanguage.INSTANCE);
-    C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", RmlLanguage.INSTANCE);
-    C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", RmlLanguage.INSTANCE);
-    C_MODULE_DECLARATION =
-        new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", RmlLanguage.INSTANCE);
-    C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", RmlLanguage.INSTANCE);
-    C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", RmlLanguage.INSTANCE);
-    C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECL", RmlLanguage.INSTANCE);
+    C_FAKE_MODULE = (ORCompositeType) RmlStubBasedElementTypes.C_FAKE_MODULE;
+    C_EXCEPTION_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXCEPTION_DECLARATION;
+    C_TYPE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_TYPE_DECLARATION;
+    C_EXTERNAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_EXTERNAL_DECLARATION;
+    C_LET_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_LET_DECLARATION;
+    C_MODULE_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_MODULE_DECLARATION;
+    C_VAL_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VAL_DECLARATION;
+    C_FUN_PARAM = (ORCompositeType) RmlStubBasedElementTypes.C_FUN_PARAM;
+    C_FUNCTOR_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_DECLARATION;
+    C_FUNCTOR_PARAM = (ORCompositeType) RmlStubBasedElementTypes.C_FUNCTOR_PARAM;
+    C_RECORD_FIELD = (ORCompositeType) RmlStubBasedElementTypes.C_RECORD_FIELD;
+    C_VARIANT_DECLARATION = (ORCompositeType) RmlStubBasedElementTypes.C_VARIANT_DECLARATION;
 
     // Composite element types
 
-    C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", RmlLanguage.INSTANCE);
+    C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", RmlLanguage.INSTANCE);
     C_MIXIN_FIELD = new ORCompositeElementType("C_MIXIN_FIELD", RmlLanguage.INSTANCE);
-    C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", RmlLanguage.INSTANCE);
     C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", RmlLanguage.INSTANCE);
     C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", RmlLanguage.INSTANCE);
     C_CLASS_DECLARATION = new ORCompositeElementType("C_CLASS_DECLARATION", RmlLanguage.INSTANCE);

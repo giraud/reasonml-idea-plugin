@@ -21,6 +21,8 @@ import com.reason.ide.search.index.*;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
+import com.reason.lang.core.psi.impl.PsiFunctorCall;
 import com.reason.lang.napkin.NsLanguage;
 import com.reason.lang.napkin.NsQNameFinder;
 import com.reason.lang.ocaml.OclLanguage;

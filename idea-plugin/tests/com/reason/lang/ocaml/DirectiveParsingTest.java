@@ -2,8 +2,8 @@ package com.reason.lang.ocaml;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.psi.PsiDirective;
 import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.impl.PsiDirective;
 import com.reason.lang.core.signature.ORSignature;
 
 public class DirectiveParsingTest extends OclParsingTestCase {
