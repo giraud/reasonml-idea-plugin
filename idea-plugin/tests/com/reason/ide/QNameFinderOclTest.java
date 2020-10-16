@@ -1,11 +1,11 @@
-package com.reason.ide.reference;
+package com.reason.ide;
 
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.ocaml.OclQNameFinder;
 import java.util.*;
 
-public class OclQNameFinderTest extends ORBasePlatformTestCase {
+public class QNameFinderOclTest extends ORBasePlatformTestCase {
 
   public void test_letBinding() {
     FileBase f = configureCode("A.ml", "let make = increase<caret>()");

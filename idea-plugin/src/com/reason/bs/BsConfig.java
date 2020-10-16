@@ -1,19 +1,18 @@
 package com.reason.bs;
 
-import com.intellij.openapi.vfs.VirtualFile;
-import gnu.trove.THashSet;
+import com.intellij.openapi.vfs.*;
+import gnu.trove.*;
+import org.jetbrains.annotations.*;
+
 import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class BsConfig {
 
-  @NotNull private final String m_name;
-  @NotNull private final String m_namespace;
+  private final @NotNull String m_name;
+  private final @NotNull String m_namespace;
   private final @Nullable String m_jsxVersion;
   private final String m_rootBsPlatform;
   private final Set<String> m_externals = new THashSet<>();

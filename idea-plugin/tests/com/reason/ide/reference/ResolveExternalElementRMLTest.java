@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 
-public class ResolveExternalElementTest extends ORBasePlatformTestCase {
+public class ResolveExternalElementRMLTest extends ORBasePlatformTestCase {
 
   public void testLocalOpenWithParens() {
     configureCode("A.re", "module A1 = { external a : int = \"\"; };");

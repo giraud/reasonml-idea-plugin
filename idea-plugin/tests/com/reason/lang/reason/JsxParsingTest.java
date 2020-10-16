@@ -3,11 +3,7 @@ package com.reason.lang.reason;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiTagProperty;
-import com.reason.lang.core.psi.PsiTagPropertyValue;
-import com.reason.lang.core.psi.PsiTagStart;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiTag;
 import com.reason.lang.core.psi.impl.PsiTagBody;
 import com.reason.lang.core.psi.impl.PsiTagClose;
@@ -24,6 +20,13 @@ public class JsxParsingTest extends RmlParsingTestCase {
     assertNotNull(ORUtil.nextSiblingWithTokenType(tag.getFirstChild(), m_types.TAG_GT));
     assertEquals("children", PsiTreeUtil.findChildOfType(e, PsiTagBody.class).getText());
     assertEquals("</div>", PsiTreeUtil.findChildOfType(e, PsiTagClose.class).getText());
+  }
+
+  public void test_tag_name() {
+    PsiTag e = (PsiTag) firstElement(parseCode("<Comp render={() => <Another/>}/>"));
+
+    PsiTagStart tag = PsiTreeUtil.findChildOfType(e, PsiTagStart.class);
+    assertEquals("Comp", tag.getNameIdentifier().getText());
   }
 
   public void test_innerClosingTag() {
@@ -65,6 +68,8 @@ public class JsxParsingTest extends RmlParsingTestCase {
     PsiLet let = first(letExpressions(parseCode("let _ = <Container.Test></Container.Test>")));
 
     PsiTagStart tagStart = first(PsiTreeUtil.findChildrenOfType(let, PsiTagStart.class));
+    assertInstanceOf(tagStart.getNameIdentifier(), PsiUpperSymbol.class);
+    assertEquals("Test", tagStart.getNameIdentifier().getText());
     PsiElement nextSibling = tagStart.getFirstChild().getNextSibling();
     assertEquals(m_types.TAG_NAME, nextSibling.getFirstChild().getNode().getElementType());
     nextSibling = nextSibling.getNextSibling().getNextSibling();

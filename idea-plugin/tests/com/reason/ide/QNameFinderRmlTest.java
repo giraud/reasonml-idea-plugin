@@ -1,12 +1,15 @@
-package com.reason.ide.reference;
+package com.reason.ide;
 
-import com.reason.ide.ORBasePlatformTestCase;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.QNameFinder;
-import com.reason.lang.reason.RmlQNameFinder;
-import java.util.Set;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
+import com.reason.lang.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.reason.*;
 
-public class RmlQNameFinderTest extends ORBasePlatformTestCase {
+import java.util.*;
+
+@SuppressWarnings("ConstantConditions")
+public class QNameFinderRmlTest extends ORBasePlatformTestCase {
 
   private final QNameFinder qNameFinder = RmlQNameFinder.INSTANCE;
 
@@ -40,4 +43,26 @@ public class RmlQNameFinderTest extends ORBasePlatformTestCase {
     Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
     assertSameElements(paths, "A.X.z", "A.X", "A");
   }
+
+  public void test_component() {
+    FileBase f = configureCode("A.re", "open X; <Comp <caret> />;");
+
+    Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
+    assertEquals(makePaths("X.Comp", "A.Comp", "Comp"), paths);
+  }
+
+  public void test_component_path() {
+    FileBase f = configureCode("A.re", "open X; <B.C.Comp <caret> />;");
+
+    Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
+    assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp"), paths);
+  }
+
+  public void test_component_path_from_tagname() {
+    FileBase f = configureCode("A.re", "open X; <B.C.Comp />;");
+
+    Set<String> paths = qNameFinder.extractPotentialPaths(PsiTreeUtil.findChildOfType(f, PsiTagStart.class).getNameIdentifier());
+    assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp"), paths);
+  }
+
 }

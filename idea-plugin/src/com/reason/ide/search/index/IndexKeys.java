@@ -34,10 +34,6 @@ public class IndexKeys {
       StubIndexKey.createIndexKey("reason.type");
   public static final StubIndexKey<String, PsiRecordField> RECORD_FIELDS =
       StubIndexKey.createIndexKey("reason.record_field");
-  public static final StubIndexKey<String, PsiParameter> PARAMETERS =
-      StubIndexKey.createIndexKey("reason.parameter");
-  public static final StubIndexKey<Integer, PsiParameter> PARAMETERS_FQN =
-      StubIndexKey.createIndexKey("reason.parameter.fqn");
   public static final StubIndexKey<String, PsiException> EXCEPTIONS =
       StubIndexKey.createIndexKey("reason.exception");
   public static final StubIndexKey<Integer, PsiException> EXCEPTIONS_FQN =

@@ -227,12 +227,7 @@ public final class PsiFinder {
   @NotNull
   public Set<PsiParameter> findParameters(@NotNull String name, @NotNull ORFileType fileType) {
     return findLowerSymbols(
-        "parameters",
-        name,
-        fileType,
-        IndexKeys.PARAMETERS,
-        PsiParameter.class,
-        allScope(m_project));
+        "parameters", name, fileType, ParameterIndex.KEY, PsiParameter.class, allScope(m_project));
   }
 
   @NotNull
@@ -545,6 +540,23 @@ public final class PsiFinder {
     }
 
     return result;
+  }
+
+  @Nullable
+  public PsiParameter findParameterFromQn(
+      @Nullable String qname, @NotNull GlobalSearchScope scope) {
+    if (qname == null) {
+      return null;
+    }
+
+    // Try qn directly
+    Collection<PsiParameter> parameters =
+        ParameterFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+    if (!parameters.isEmpty()) {
+      return parameters.iterator().next();
+    }
+
+    return null;
   }
 
   @Nullable

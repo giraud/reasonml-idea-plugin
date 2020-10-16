@@ -1,25 +1,26 @@
 package com.reason.lang.reason;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ArrayListSet;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseQNameFinder;
-import com.reason.lang.QNameFinder;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.containers.*;
+import com.reason.ide.files.*;
+import com.reason.lang.*;
+import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiLocalOpen;
-import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.reference.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
+import java.util.regex.*;
+import java.util.stream.*;
 
 public class RmlQNameFinder extends BaseQNameFinder {
 
   public static final QNameFinder INSTANCE = new RmlQNameFinder();
 
-  private RmlQNameFinder() {}
+  private RmlQNameFinder() {
+  }
 
   // Find the expression paths
   @NotNull

@@ -20,10 +20,6 @@ import com.reason.lang.core.stub.type.ORStubElementType;
 import org.jetbrains.annotations.NotNull;
 
 public class NsParserDefinition implements ParserDefinition {
-  private static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-  private static final TokenSet COMMENTS =
-      TokenSet.create(NsTypes.INSTANCE.MULTI_COMMENT, NsTypes.INSTANCE.SINGLE_COMMENT);
-  private static final TokenSet STRINGS = TokenSet.create(NsTypes.INSTANCE.STRING_VALUE);
 
   @NotNull
   @Override
@@ -33,17 +29,17 @@ public class NsParserDefinition implements ParserDefinition {
 
   @NotNull
   public TokenSet getWhitespaceTokens() {
-    return WHITE_SPACES;
+    return TokenSet.create(TokenType.WHITE_SPACE);
   }
 
   @NotNull
   public TokenSet getCommentTokens() {
-    return COMMENTS;
+    return TokenSet.create(NsTypes.INSTANCE.MULTI_COMMENT, NsTypes.INSTANCE.SINGLE_COMMENT);
   }
 
   @NotNull
   public TokenSet getStringLiteralElements() {
-    return STRINGS;
+    return TokenSet.create(NsTypes.INSTANCE.STRING_VALUE);
   }
 
   @NotNull

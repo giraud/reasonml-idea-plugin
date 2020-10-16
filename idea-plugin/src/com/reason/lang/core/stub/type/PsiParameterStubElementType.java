@@ -2,9 +2,13 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import com.reason.ide.search.index.IndexKeys;
+import com.reason.ide.search.index.ParameterFqnIndex;
+import com.reason.ide.search.index.ParameterIndex;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiParameterImpl;
 import com.reason.lang.core.stub.PsiParameterStub;
@@ -52,12 +56,12 @@ public class PsiParameterStubElementType extends ORStubElementType<PsiParameterS
   public void indexStub(@NotNull final PsiParameterStub stub, @NotNull final IndexSink sink) {
     String name = stub.getName();
     if (name != null) {
-      sink.occurrence(IndexKeys.PARAMETERS, name);
+      sink.occurrence(ParameterIndex.KEY, name);
     }
 
     String fqn = stub.getQualifiedName();
     if (fqn != null) {
-      sink.occurrence(IndexKeys.PARAMETERS_FQN, fqn.hashCode());
+      sink.occurrence(ParameterFqnIndex.KEY, fqn.hashCode());
     }
   }
 

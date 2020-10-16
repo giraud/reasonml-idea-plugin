@@ -7,7 +7,9 @@ import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiFunctionBody;
-import java.util.*;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionCallParsingTest extends RmlParsingTestCase {
@@ -29,8 +31,12 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
 
     PsiFunctionCallParams callParams =
         PsiTreeUtil.findChildOfType(e.getBinding(), PsiFunctionCallParams.class);
-    Collection<PsiParameter> parameters = callParams.getParametersList();
+    List<PsiParameter> parameters = callParams.getParametersList();
     assertEquals(2, parameters.size());
+    assertEquals("self.state.timerId^", parameters.get(0).getText());
+    assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(0), PsiLowerIdentifier.class));
+    assertEquals("Js.Global.clearInterval", parameters.get(1).getText());
+    assertNull(PsiTreeUtil.getChildrenOfType(parameters.get(1), PsiLowerIdentifier.class));
   }
 
   public void test_call3() {

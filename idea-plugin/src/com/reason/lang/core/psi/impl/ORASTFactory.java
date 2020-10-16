@@ -1,15 +1,11 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTFactory;
-import com.intellij.psi.impl.source.tree.CompositeElement;
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import com.intellij.psi.impl.source.tree.LeafElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.*;
+import com.intellij.psi.impl.source.tree.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
 
 public class ORASTFactory<T extends ORTypes> extends ASTFactory {
   private final T m_types;
@@ -20,204 +16,204 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
 
   @Override
   public @Nullable CompositeElement createComposite(@NotNull IElementType type) {
-    T types = m_types;
-    if (type == this.m_types.C_LET_BINDING) {
+    if (type == m_types.C_LET_BINDING) {
       return new PsiLetBinding(type);
     }
-    if (type == this.m_types.C_SIG_EXPR) {
-      return new PsiSignatureImpl(this.m_types, type);
+    if (type == m_types.C_SIG_EXPR) {
+      return new PsiSignatureImpl(m_types, type);
     }
-    if (type == this.m_types.C_TAG) {
-      return new PsiTag(this.m_types, type);
+    if (type == m_types.C_TAG) {
+      return new PsiTag(m_types, type);
     }
-    if (type == this.m_types.C_TAG_BODY) {
+    if (type == m_types.C_TAG_BODY) {
       return new PsiTagBody(type);
     }
-    if (type == this.m_types.C_TAG_CLOSE) {
+    if (type == m_types.C_TAG_CLOSE) {
       return new PsiTagClose(type);
     }
-    if (type == types.C_TAG_PROPERTY) {
-      return new PsiTagPropertyImpl(types, type);
+    if (type == m_types.C_TAG_PROPERTY) {
+      return new PsiTagPropertyImpl(m_types, type);
     }
-    if (type == types.C_TAG_PROP_VALUE) {
-      return new PsiTagPropertyValueImpl(types, type);
+    if (type == m_types.C_TAG_PROP_VALUE) {
+      return new PsiTagPropertyValueImpl(m_types, type);
     }
-    if (type == this.m_types.C_TAG_START) {
-      return new PsiTagStartImpl(this.m_types, type);
+    if (type == m_types.C_TAG_START) {
+      return new PsiTagStartImpl(m_types, type);
     }
-    if (type == types.C_FUN_CALL_PARAMS) {
-      return new PsiFunctionCallParamsImpl(types, type);
+    if (type == m_types.C_FUN_CALL_PARAMS) {
+      return new PsiFunctionCallParamsImpl(m_types, type);
     }
-    if (type == types.C_FUN_BODY) {
+    if (type == m_types.C_FUN_BODY) {
       return new PsiFunctionBody(type);
     }
-    if (type == types.C_SIG_ITEM) {
-      return new PsiSignatureItemImpl(types, type);
+    if (type == m_types.C_SIG_ITEM) {
+      return new PsiSignatureItemImpl(m_types, type);
     }
-    if (type == types.C_SCOPED_EXPR || type == types.C_IF_THEN_SCOPE || type == types.C_DO_LOOP) {
-      return new PsiScopedExpr(types, type);
+    if (type == m_types.C_SCOPED_EXPR || type == m_types.C_IF_THEN_SCOPE || type == m_types.C_DO_LOOP) {
+      return new PsiScopedExpr(m_types, type);
     }
-    if (type == types.C_LOCAL_OPEN) {
+    if (type == m_types.C_LOCAL_OPEN) {
       return new PsiLocalOpen(type);
     }
-    if (type == types.C_PATTERN_MATCH_BODY) {
+    if (type == m_types.C_PATTERN_MATCH_BODY) {
       return new PsiPatternMatchBody(type);
     }
-    if (type == types.C_PATTERN_MATCH_EXPR) {
+    if (type == m_types.C_PATTERN_MATCH_EXPR) {
       return new PsiPatternMatch(type);
     }
-    if (type == types.C_JS_OBJECT) {
+    if (type == m_types.C_JS_OBJECT) {
       return new PsiJsObject(type);
     }
-    if (type == types.C_OBJECT_FIELD) {
-      return new PsiObjectField(types, type);
+    if (type == m_types.C_OBJECT_FIELD) {
+      return new PsiObjectField(m_types, type);
     }
-    if (type == types.C_FUN_EXPR) {
-      return new PsiFunctionImpl(types, type);
+    if (type == m_types.C_FUN_EXPR) {
+      return new PsiFunctionImpl(m_types, type);
     }
-    if (type == types.C_FUN_PARAMS
-        || type == types.C_FUNCTOR_PARAMS
-        || type == types.C_VARIANT_CONSTRUCTOR) {
-      return new PsiParametersImpl(types, type);
+    if (type == m_types.C_FUN_PARAMS
+            || type == m_types.C_FUNCTOR_PARAMS
+            || type == m_types.C_VARIANT_CONSTRUCTOR) {
+      return new PsiParametersImpl(m_types, type);
     }
-    if (type == types.C_DECONSTRUCTION) {
-      return new PsiDeconstruction(types, type);
+    if (type == m_types.C_DECONSTRUCTION) {
+      return new PsiDeconstruction(m_types, type);
     }
-    if (type == types.C_TYPE_BINDING) {
+    if (type == m_types.C_TYPE_BINDING) {
       return new PsiTypeBinding(type);
     }
-    if (type == types.C_RECORD_EXPR) {
+    if (type == m_types.C_RECORD_EXPR) {
       return new PsiRecord(type);
     }
-    if (type == types.C_MODULE_TYPE) {
-      return new PsiModuleType(types, type);
+    if (type == m_types.C_MODULE_TYPE) {
+      return new PsiModuleType(m_types, type);
     }
-    if (type == types.C_ANNOTATION) {
-      return new PsiAnnotationImpl(types, type);
+    if (type == m_types.C_ANNOTATION) {
+      return new PsiAnnotationImpl(m_types, type);
     }
-    if (type == types.C_MACRO_RAW_BODY) {
-      return new PsiRawBody(types, type);
+    if (type == m_types.C_MACRO_RAW_BODY) {
+      return new PsiRawBody(m_types, type);
     }
-    if (type == types.C_FUNCTOR_CALL) {
-      return new PsiFunctorCall(types, type);
+    if (type == m_types.C_FUNCTOR_CALL) {
+      return new PsiFunctorCall(m_types, type);
     }
-    if (type == types.C_CONSTRAINTS) {
-      return new PsiConstraints(types, type);
+    if (type == m_types.C_CONSTRAINTS) {
+      return new PsiConstraints(m_types, type);
     }
-    if (type == types.C_CONSTRAINT) {
-      return new PsiConstraint(types, type);
+    if (type == m_types.C_CONSTRAINT) {
+      return new PsiConstraint(m_types, type);
     }
-    if (type == types.C_ASSERT_STMT) {
+    if (type == m_types.C_ASSERT_STMT) {
       return new PsiAssert(type);
     }
-    if (type == types.C_CLASS_DECLARATION) {
-      return new PsiClassImpl(types, type);
+    if (type == m_types.C_CLASS_DECLARATION) {
+      return new PsiClassImpl(m_types, type);
     }
-    if (type == types.C_IF) {
-      return new PsiIfStatement(types, type);
+    if (type == m_types.C_IF) {
+      return new PsiIfStatement(m_types, type);
     }
-    if (type == types.C_OPEN) {
-      return new PsiOpenImpl(types, type);
+    if (type == m_types.C_OPEN) {
+      return new PsiOpenImpl(m_types, type);
     }
-    if (type == types.C_INCLUDE) {
-      return new PsiIncludeImpl(types, type);
+    if (type == m_types.C_INCLUDE) {
+      return new PsiIncludeImpl(m_types, type);
     }
-    if (type == types.C_OBJECT) {
+    if (type == m_types.C_OBJECT) {
       return new PsiObject(type);
     }
-    if (type == types.C_OPTION) {
-      return new PsiOption(types, type);
+    if (type == m_types.C_OPTION) {
+      return new PsiOption(m_types, type);
     }
-    if (type == types.C_CLASS_PARAMS) {
+    if (type == m_types.C_CLASS_PARAMS) {
       return new PsiClassParameters(type);
     }
-    if (type == types.C_CLASS_CONSTR) {
+    if (type == m_types.C_CLASS_CONSTR) {
       return new PsiClassConstructor(type);
     }
-    if (type == types.C_CLASS_FIELD) {
+    if (type == m_types.C_CLASS_FIELD) {
       return new PsiClassField(type);
     }
-    if (type == types.C_CLASS_METHOD) {
+    if (type == m_types.C_CLASS_METHOD) {
       return new PsiClassMethod(type);
     }
-    if (type == types.C_SWITCH_EXPR || type == types.C_MATCH_EXPR) {
-      return new PsiSwitchImpl(types, type);
+    if (type == m_types.C_SWITCH_EXPR || type == m_types.C_MATCH_EXPR) {
+      return new PsiSwitchImpl(m_types, type);
     }
-    if (type == types.C_FUNCTOR_BINDING) {
-      return new PsiFunctorBinding(types, type);
+    if (type == m_types.C_FUNCTOR_BINDING) {
+      return new PsiFunctorBinding(m_types, type);
     }
-    if (type == types.C_FUNCTOR_RESULT) {
-      return new PsiFunctorResult(types, type);
+    if (type == m_types.C_FUNCTOR_RESULT) {
+      return new PsiFunctorResult(m_types, type);
     }
-    if (type == types.C_BINARY_CONDITION) {
+    if (type == m_types.C_BINARY_CONDITION) {
       return new PsiBinaryCondition(type);
     }
-    if (type == types.C_TERNARY) {
-      return new PsiTernary(types, type);
+    if (type == m_types.C_TERNARY) {
+      return new PsiTernary(m_types, type);
     }
-    if (type == types.C_MIXIN_FIELD) {
+    if (type == m_types.C_MIXIN_FIELD) {
       return new PsiMixinField(type);
     }
-    if (type == types.C_LET_ATTR) {
+    if (type == m_types.C_LET_ATTR) {
       return new PsiLetAttribute(type);
     }
-    if (type == types.C_MACRO_EXPR) {
+    if (type == m_types.C_MACRO_EXPR) {
       return new PsiMacro(type);
     }
-    if (type == types.C_INTERPOLATION_EXPR) {
+    if (type == m_types.C_INTERPOLATION_EXPR) {
       return new PsiInterpolation(type);
     }
-    if (type == types.C_INTERPOLATION_REF) {
+    if (type == m_types.C_INTERPOLATION_REF) {
       return new PsiInterpolationReference(type);
     }
-    if (type == types.C_TRY_EXPR) {
-      return new PsiTry(types, type);
+    if (type == m_types.C_TRY_EXPR) {
+      return new PsiTry(m_types, type);
     }
-    if (type == types.C_ML_INTERPOLATOR) {
+    if (type == m_types.C_ML_INTERPOLATOR) {
       return new PsiMultiLineInterpolator(type);
     }
-    if (type == types.C_RAW) {
+    if (type == m_types.C_RAW) {
       return new PsiRaw(type);
     }
-    if (type == types.C_DIRECTIVE) {
+    if (type == m_types.C_DIRECTIVE) {
       return new PsiDirective(type);
     }
-    if (type == types.C_STRUCT_EXPR) {
+    if (type == m_types.C_STRUCT_EXPR) {
       return new PsiStruct(type);
     }
-    if (type == types.C_UNIT) {
+    if (type == m_types.C_UNIT) {
       return new PsiUnit(type);
     }
-    if (type == types.C_WHILE) {
-      return new PsiWhile(types, type);
+    if (type == m_types.C_WHILE) {
+      return new PsiWhile(m_types, type);
     }
     // Generic
-    if (type == types.C_TRY_HANDLERS
-        || type == types.C_TRY_HANDLER
-        || type == types.C_TRY_BODY
-        || type == types.C_NAMED_PARAM
-        || type == types.C_FUN_PARAM_BINDING
-        || type == types.C_INTERPOLATION_PART
-        || type == types.C_TYPE_VARIABLE) {
-      return new CompositePsiElement(type) {};
+    if (type == m_types.C_TRY_HANDLERS
+            || type == m_types.C_TRY_HANDLER
+            || type == m_types.C_TRY_BODY
+            || type == m_types.C_NAMED_PARAM
+            || type == m_types.C_FUN_PARAM_BINDING
+            || type == m_types.C_INTERPOLATION_PART
+            || type == m_types.C_TYPE_VARIABLE) {
+      return new CompositePsiElement(type) {
+      };
     }
     // Leaf !?
-    if (type == this.m_types.C_LOWER_IDENTIFIER) {
-      return new PsiLowerIdentifier(this.m_types, type);
+    if (type == m_types.C_LOWER_IDENTIFIER) {
+      return new PsiLowerIdentifier(m_types, type);
     }
-    if (type == this.m_types.C_LOWER_SYMBOL) {
-      return new PsiLowerSymbolImpl(this.m_types, type);
+    if (type == m_types.C_LOWER_SYMBOL) {
+      return new PsiLowerSymbolImpl(m_types, type);
     }
-    if (type == types.C_UPPER_IDENTIFIER) {
-      return new PsiUpperIdentifier(types, type);
+    if (type == m_types.C_UPPER_IDENTIFIER) {
+      return new PsiUpperIdentifier(m_types, type);
     }
-    if (type == types.C_UPPER_SYMBOL) {
-      return new PsiUpperSymbolImpl(types, type);
+    if (type == m_types.C_UPPER_SYMBOL) {
+      return new PsiUpperSymbolImpl(m_types, type);
     }
-    if (type == types.C_VARIANT) {
-      return new PsiUpperSymbolImpl(types, type);
+    if (type == m_types.C_VARIANT) {
+      return new PsiUpperSymbolImpl(m_types, type);
     }
-    if (type == types.C_MACRO_NAME) {
+    if (type == m_types.C_MACRO_NAME) {
       return new PsiMacroName(type);
     }
 
@@ -227,15 +223,10 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
   @Override
   public @Nullable LeafElement createLeaf(@NotNull IElementType type, @NotNull CharSequence text) {
     if (type == m_types.PROPERTY_NAME) {
-      return new PsiPropertyName(type, text);
+      return new PsiLeafPropertyName(type, text);
     }
     if (type == m_types.TAG_NAME) {
-      return new LeafPsiElement(type, text) {
-        @Override
-        public String toString() {
-          return "PsiTagName:" + getText();
-        }
-      };
+      return new PsiLeafTagName(type, text);
     }
 
     return null;

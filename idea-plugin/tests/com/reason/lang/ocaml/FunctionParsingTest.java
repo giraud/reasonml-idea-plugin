@@ -6,25 +6,30 @@ import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiParameters;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends OclParsingTestCase {
-  public void test_singleParam() {
+  public void test_single_param() {
     PsiLet e = first(letExpressions(parseCode("let fn x = x")));
 
     assertTrue(e.isFunction());
     PsiFunction function = e.getFunction();
     assertSize(1, function.getParameters());
+    assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
     assertNotNull(function.getBody());
   }
 
-  public void test_multipleParams() {
+  public void test_multiple_params() {
     PsiLet e = first(letExpressions(parseCode("let add x y = x + y")));
 
     assertTrue(e.isFunction());
     PsiFunction function = e.getFunction();
     assertSize(2, function.getParameters());
+    assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
+    assertInstanceOf(
+        second(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
     assertNotNull(function.getBody());
   }
 
