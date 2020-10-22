@@ -47,9 +47,11 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
+            <li>#276 - Separate IconProvider in two different implementation: move js references in js-deps.xml descriptor file</li>
             <li>#275 - Incorrect parsing of switch with signature</li>
+            <li>#245 - Resolve property of JSX tag</li>
             <li>Fold switch/match</li>
-            <li>Use rincewind@0.9</li>
+            <li>Use rincewind@0.9.1</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

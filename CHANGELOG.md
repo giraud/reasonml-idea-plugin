@@ -12,9 +12,11 @@
 
 ## Unreleased
 
+- :bug: [#276](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/276) Class JSFIle not found
 - :bug: [#275](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275) Incorrect parsing of switch with signature
+- :bug: [#245](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/245) Resolve property of JSX tag
 - :nail_care: Fold switch/match
-- :house: Use [rincewind@0.9](https://github.com/giraud/rincewind)
+- :house: Use [rincewind@0.9.1](https://github.com/giraud/rincewind)
 
 ## 0.93.1 - 2020/10/09
 
