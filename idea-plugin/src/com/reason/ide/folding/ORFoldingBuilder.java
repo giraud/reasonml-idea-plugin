@@ -1,29 +1,24 @@
 package com.reason.ide.folding;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.folding.FoldingBuilderEx;
-import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORUtil;
+import com.intellij.lang.*;
+import com.intellij.lang.folding.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiBinaryCondition;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiTag;
-import com.reason.lang.core.psi.ocamlyacc.OclYaccHeader;
-import com.reason.lang.core.psi.ocamlyacc.OclYaccRule;
-import com.reason.lang.core.psi.ocamlyacc.OclYaccRuleBody;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.ocamlyacc.OclYaccLazyTypes;
-import com.reason.lang.reason.RmlTypes;
-import java.util.ArrayList;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.ocamlyacc.*;
+import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
+import com.reason.lang.ocamlyacc.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class ORFoldingBuilder extends FoldingBuilderEx {
   @NotNull
@@ -48,6 +43,8 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
             foldFunctor(descriptors, (PsiFunctor) element);
           } else if (element instanceof PsiTag) {
             foldTag(descriptors, (PsiTag) element);
+          } else if (element instanceof PsiPatternMatch) {
+            foldPatternMatch(descriptors, (PsiPatternMatch) element);
           } else if (element instanceof PsiSwitch) {
             foldSwitch(descriptors, (PsiSwitch) element);
           } else if (element instanceof OclYaccHeader) {
@@ -141,6 +138,14 @@ public class ORFoldingBuilder extends FoldingBuilderEx {
         TextRange textRange = TextRange.create(startOffset, endOffset);
         descriptors.add(new FoldingDescriptor(element, textRange));
       }
+    }
+  }
+
+  private void foldPatternMatch(
+      @NotNull List<FoldingDescriptor> descriptors, @NotNull PsiPatternMatch element) {
+    FoldingDescriptor fold = fold(element.getBody());
+    if (fold != null) {
+      descriptors.add(fold);
     }
   }
 
