@@ -15,7 +15,7 @@ import useHideableNavbar from '@theme/hooks/useHideableNavbar';
 import useLockBodyScroll from '@theme/hooks/useLockBodyScroll';
 import useWindowSize, {windowSizes} from '@theme/hooks/useWindowSize';
 import useLogo from '@theme/hooks/useLogo';
-import styles from './styles.module.css';
+import styles from './styles.module.scss';
 import NavbarItem from '@theme/NavbarItem'; // retrocompatible with v1
 
 const DefaultNavItemPosition = 'right'; // If split links by left/right
@@ -111,14 +111,6 @@ function Navbar() {
             </div>
           )}
           <Link className="navbar__brand" to={logoLink} {...logoLinkProps}>
-            {logoImageUrl != null && (
-              <img
-                key={isClient}
-                className="navbar__logo"
-                src={logoImageUrl}
-                alt={logoAlt}
-              />
-            )}
             {title != null && (
               <strong
                 className={clsx('navbar__title', {

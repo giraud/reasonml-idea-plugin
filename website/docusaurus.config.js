@@ -1,6 +1,6 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
+  title: 'Reason IDEA Plugin',
+  tagline: 'Language Plugin for OCaml, Reason and ReScript',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -9,19 +9,25 @@ module.exports = {
   projectName: 'docusaurus', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Reason IDEA Plugin',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Reason IDEA Plugin Logo',
         src: 'img/logo.svg',
       },
       items: [
         {
           to: 'docs/',
           activeBasePath: 'docs',
-          label: 'Docs',
+          label: 'Usage Guides',
           position: 'left',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
+        {
+          to: 'docs/contribute',
+          activeBasePath: 'docs',
+          label: 'How to Contribute',
+          position: 'left',
+        },
+        {to: 'blog', label: 'Latest Updates', position: 'left'},
         {
           href: 'https://github.com/facebook/docusaurus',
           label: 'GitHub',
@@ -76,9 +82,10 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Reason IDEA Plugin`,
     },
   },
+  plugins: ["docusaurus-plugin-sass", "@docusaurus/plugin-ideal-image"],
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -96,7 +103,7 @@ module.exports = {
             'https://github.com/facebook/docusaurus/edit/master/website/blog/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom.scss'),
         },
       },
     ],

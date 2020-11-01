@@ -11,14 +11,13 @@ function Hero() {
     const { siteConfig = {} } = context;
 
     return (
-        <header id="hero" className={clsx("hero", styles.banner)}>
+        <header id="hero" className={clsx("hero", styles.hero)}>
             <div className="container">
                 <img
                     src={useBaseUrl(`img/logo.svg`)}
                     alt="Logo"
                     className={styles.logo}
                 />
-
                 <h1 className="hero__title">{siteConfig.title}</h1>
                 <p className={clsx("hero__subtitle", styles.subtitle)}>
                     {siteConfig.tagline}

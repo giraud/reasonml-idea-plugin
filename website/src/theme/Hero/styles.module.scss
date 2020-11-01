@@ -1,0 +1,52 @@
+:global {
+  .button--lg {
+    --ifm-button-size-multiplier: 1.5;
+  }
+
+  .button--primary {
+    background: hsla(5, 65%, 54%, 1);
+    background: linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+    background: -moz-linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+    background: -webkit-linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+    border: 0;
+    &:hover {
+      background: hsla(5, 65%, 54%, 1);
+      background: linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+      background: -moz-linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+      background: -webkit-linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+    }
+  }
+}
+
+.hero {
+  background-color: var(--ifm-background-color);
+  padding: 4rem 0 2rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  @media screen and (max-width: 966px) {
+    padding: 2rem;
+  }
+}
+
+html[data-theme="dark"] {
+  .hero {
+    background-color: var(--ifm-background-color);
+  }
+}
+
+.logo {
+  max-width: 12rem;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subtitle {
+  margin: 0 auto 2rem;
+  width: 100%;
+}

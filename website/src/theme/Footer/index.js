@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import styles from './styles.module.css';
+import styles from './styles.module.scss';
 
 function FooterLink({to, href, label, prependBaseUrlToHref, ...props}) {
   const toUrl = useBaseUrl(to);
@@ -51,10 +51,7 @@ function Footer() {
   }
 
   return (
-    <footer
-      className={clsx('footer', {
-        'footer--dark': footer.style === 'dark',
-      })}>
+    <footer className={clsx('footer', styles.footer)}>
       <div className="container">
         {links && links.length > 0 && (
           <div className="row footer__links">
@@ -107,7 +104,7 @@ function Footer() {
               </div>
             )}
 
-            <div // Developer provided the HTML, so assume it's safe.
+            <div className={clsx(styles.copyright)} // Developer provided the HTML, so assume it's safe.
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
                 __html: copyright,
