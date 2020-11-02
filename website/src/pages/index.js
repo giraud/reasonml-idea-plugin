@@ -9,8 +9,8 @@ import Hero from '@theme/Hero';
 
 const features = [
   {
-    title: 'Easy to Use',
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
+    title: 'Language Support',
+    imageUrl: 'img/undraw_language_support.svg',
     description: (
       <>
         Docusaurus was designed from the ground up to be easily installed and
@@ -19,7 +19,7 @@ const features = [
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Build Tools',
     imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>

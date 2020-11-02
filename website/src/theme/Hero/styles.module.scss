@@ -3,23 +3,32 @@
     --ifm-button-size-multiplier: 1.5;
   }
 
-  .button--primary {
-    background: hsla(5, 65%, 54%, 1);
-    background: linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
-    background: -moz-linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
-    background: -webkit-linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
-    border: 0;
-    &:hover {
-      background: hsla(5, 65%, 54%, 1);
-      background: linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
-      background: -moz-linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
-      background: -webkit-linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //.button--primary {
+  //  background: hsla(5, 65%, 54%, 1);
+  //  background: linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //  background: -moz-linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //  background: -webkit-linear-gradient(90deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //  border: 0;
+  //  &:hover {
+  //    background: hsla(5, 65%, 54%, 1);
+  //    background: linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //    background: -moz-linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //    background: -webkit-linear-gradient(270deg, hsla(5, 65%, 54%, 1) 0%, hsla(5, 82%, 60%, 1) 100%);
+  //  }
+  //}
+
+  html[data-theme="dark"] {
+    .hero {
+      background-color: var(--ifm-background-color);
+    }
+
+    .button--primary {
+      color: white;
     }
   }
 }
 
 .hero {
-  background-color: var(--ifm-background-color);
   padding: 2rem 0 1rem 0;
   text-align: center;
   position: relative;
@@ -27,12 +36,6 @@
 
   @media screen and (max-width: 966px) {
     padding: 2rem;
-  }
-}
-
-html[data-theme="dark"] {
-  .hero {
-    background-color: var(--ifm-background-color);
   }
 }
 
@@ -44,6 +47,14 @@ html[data-theme="dark"] {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  & > a {
+    margin-right: calc(var(--ifm-spacing-horizontal) * 2);
+  }
+
+  a:last-of-type {
+    margin-right: 0;
+  }
 }
 
 .subtitle {
