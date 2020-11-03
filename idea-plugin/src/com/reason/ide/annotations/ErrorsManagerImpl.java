@@ -1,12 +1,14 @@
 package com.reason.ide.annotations;
 
 import com.intellij.openapi.util.Pair;
+import com.intellij.util.containers.ConcurrentMultiMap;
 import com.intellij.util.containers.MultiMap;
 import com.reason.Joiner;
 import com.reason.Log;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import org.jetbrains.annotations.NotNull;
 
 public class ErrorsManagerImpl implements ErrorsManager {
 

@@ -23,6 +23,7 @@ import com.reason.lang.core.signature.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.*;
 
 import static com.reason.lang.core.ExpressionFilterConstants.*;
@@ -110,7 +111,12 @@ public class DotExpressionCompletionProvider {
           PsiManager psiManager = PsiManager.getInstance(project);
 
           for (IndexedFileModule file : modulesForNamespace) {
-            VirtualFile fileByNioPath = vFileManager.findFileByNioPath(new File(file.getPath()).toPath());
+            VirtualFile fileByNioPath = null;
+            try {
+              fileByNioPath = vFileManager.findFileByUrl(new File(file.getPath()).toURI().toURL().toString());
+            } catch (MalformedURLException e) {
+              e.printStackTrace();
+            }
             PsiFile psiFile = fileByNioPath == null ? null : psiManager.findFile(fileByNioPath);
             resultSet.addElement(
                 LookupElementBuilder.create(file.getModuleName())
