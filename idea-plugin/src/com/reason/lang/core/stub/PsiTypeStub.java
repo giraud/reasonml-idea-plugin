@@ -11,18 +11,16 @@ public class PsiTypeStub extends NamedStubBase<PsiType> {
   private final String m_path;
   private final @NotNull String m_qname;
 
-  public PsiTypeStub(
-      StubElement parent, @NotNull IStubElementType elementType, String name, String path) {
+  public PsiTypeStub(StubElement parent, @NotNull IStubElementType elementType, String name, String path) {
     super(parent, elementType, name);
     m_path = path;
-    m_qname = path + "." + name;
+    m_qname = path + "." + getName();
   }
 
-  public PsiTypeStub(
-      StubElement parent, @NotNull IStubElementType elementType, StringRef name, String path) {
+  public PsiTypeStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String path) {
     super(parent, elementType, name);
     m_path = path;
-    m_qname = path + "." + name;
+    m_qname = path + "." + getName();
   }
 
   public String getPath() {

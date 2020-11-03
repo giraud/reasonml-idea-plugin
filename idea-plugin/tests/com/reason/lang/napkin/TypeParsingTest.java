@@ -1,13 +1,10 @@
 package com.reason.lang.napkin;
 
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiJsObject;
-import com.reason.lang.core.psi.impl.PsiRecord;
-import com.reason.lang.core.psi.impl.PsiTag;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.reason.lang.core.psi.impl.*;
+
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends NsParsingTestCase {
@@ -27,10 +24,7 @@ public class TypeParsingTest extends NsParsingTestCase {
   }
 
   public void test_recursive() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode("type rec tree<'a> = | Leaf('a) | Tree(tree<'a>, tree<'a>)")));
+    PsiType e = first(typeExpressions(parseCode("type rec tree<'a> = | Leaf('a) | Tree(tree<'a>, tree<'a>)")));
 
     assertEquals("tree", e.getName());
     assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
@@ -42,8 +36,7 @@ public class TypeParsingTest extends NsParsingTestCase {
 
     assertNotNull(e.getBinding());
     assertEquals("t", e.getName());
-    Collection<PsiVariantDeclaration> vars =
-        PsiTreeUtil.findChildrenOfType(e.getBinding(), PsiVariantDeclaration.class);
+    Collection<PsiVariantDeclaration> vars = PsiTreeUtil.findChildrenOfType(e.getBinding(), PsiVariantDeclaration.class);
     assertEquals("Tick", vars.iterator().next().getText());
   }
 
@@ -54,10 +47,7 @@ public class TypeParsingTest extends NsParsingTestCase {
   }
 
   public void test_typeBindingWithRecord() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode("type t = {count: int,\n @bs.optional key: string => unit\n}")));
+    PsiType e = first(typeExpressions(parseCode("type t = {count: int,\n @bs.optional key: string => unit\n}")));
 
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
     Collection<PsiRecordField> fields = record.getFields();
@@ -65,11 +55,7 @@ public class TypeParsingTest extends NsParsingTestCase {
   }
 
   public void test_typeSpecialProps() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode(
-                    "type props = { string: string,\n ref: Js.nullable<Dom.element> => unit,\n method: string }")));
+    PsiType e = first(typeExpressions(parseCode("type props = { string: string,\n ref: Js.nullable<Dom.element> => unit,\n method: string }")));
 
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
     Collection<PsiRecordField> fields = record.getFields();
@@ -77,11 +63,7 @@ public class TypeParsingTest extends NsParsingTestCase {
   }
 
   public void test_typeBindingWithRecordAs() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode(
-                    "type branch_info<'branch_type> = { kind: [> | #Master] as 'branch_type, pos: id, }")));
+    PsiType e = first(typeExpressions(parseCode("type branch_info<'branch_type> = { kind: [> | #Master] as 'branch_type, pos: id, }")));
 
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
     List<PsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -92,15 +74,10 @@ public class TypeParsingTest extends NsParsingTestCase {
   }
 
   public void test_scope() {
-    PsiExternal e =
-        first(
-            externalExpressions(
-                parseCode(
-                    "external createElement : (reactClass, ~props: Js.t<{..}>=?, array<reactElement>) => reactElement =  \"createElement\"")));
+    PsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: Js.t<{..}>=?, array<reactElement>) => reactElement =  \"createElement\"")));
 
     PsiSignature signature = e.getPsiSignature();
-    List<PsiSignatureItem> signatureItems =
-        new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
+    List<PsiSignatureItem> signatureItems = new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
 
     assertSize(5, signatureItems);
     assertEquals("reactClass", signatureItems.get(0).getText());
@@ -113,14 +90,14 @@ public class TypeParsingTest extends NsParsingTestCase {
   public void test_jsObject() {
     PsiType e = first(typeExpressions(parseCode("type t = {. a: string }")));
 
-    assertInstanceOf(e.getBinding().getFirstChild(), PsiJsObject.class);
+    assertTrue(e.isJsObject());
+    PsiObjectField f = PsiTreeUtil.findChildOfType(e.getBinding(), PsiObjectField.class);
+    assertEquals("a", f.getName());
+    assertEquals("string", f.getSignature().getText());
   }
 
   public void test_applyParams() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode("type t<'value> = Belt.Map.t<key, 'value, Comparator.identity>;")));
+    PsiType e = first(typeExpressions(parseCode("type t<'value> = Belt.Map.t<key, 'value, Comparator.identity>;")));
 
     assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
     assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiTag.class));

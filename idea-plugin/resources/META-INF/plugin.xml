@@ -244,6 +244,7 @@
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.TypeFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantFqnIndex"/>

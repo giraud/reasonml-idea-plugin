@@ -29,14 +29,7 @@ public class PsiLetStub extends NamedStubBase<PsiLet> {
     m_deconstructionNames = deconstructionNames;
   }
 
-  public PsiLetStub(
-      StubElement parent,
-      @NotNull IStubElementType elementType,
-      StringRef name,
-      String qname,
-      String alias,
-      boolean isFunction,
-      List<String> deconstructionNames) {
+  public PsiLetStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String qname, String alias, boolean isFunction, List<String> deconstructionNames) {
     super(parent, elementType, name);
     m_qname = qname;
     m_alias = alias;

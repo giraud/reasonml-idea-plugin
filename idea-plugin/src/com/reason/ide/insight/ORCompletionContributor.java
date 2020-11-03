@@ -20,26 +20,22 @@ import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-abstract class CompletionContributor
+abstract class ORCompletionContributor
     extends com.intellij.codeInsight.completion.CompletionContributor {
   static final Log LOG = Log.create("insight");
 
-  CompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
+  ORCompletionContributor(@NotNull ORTypes types, @NotNull QNameFinder qnameFinder) {
     extend(
         CompletionType.BASIC,
         com.intellij.patterns.PlatformPatterns.psiElement(),
         new CompletionProvider<CompletionParameters>() {
           @Override
-          protected void addCompletions(
-              @NotNull CompletionParameters parameters,
-              @NotNull ProcessingContext context,
-              @NotNull CompletionResultSet result) {
+          protected void addCompletions(@NotNull CompletionParameters parameters, @NotNull ProcessingContext context, @NotNull CompletionResultSet result) {
             PsiElement position = parameters.getPosition();
             PsiElement originalPosition = parameters.getOriginalPosition();
             PsiElement element = originalPosition == null ? position : originalPosition;
             PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(element);
-            IElementType prevNodeType =
-                prevLeaf == null ? null : prevLeaf.getNode().getElementType();
+            IElementType prevNodeType = prevLeaf == null ? null : prevLeaf.getNode().getElementType();
             PsiElement parent = element.getParent();
             PsiElement grandParent = parent == null ? null : parent.getParent();
 

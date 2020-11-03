@@ -1,38 +1,35 @@
 package com.reason.ide.search;
 
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.reason.lang.core.ORFileType.*;
-
-import com.intellij.lang.Language;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
-import com.intellij.psi.stubs.StubIndexKey;
-import com.intellij.util.CommonProcessors;
-import com.intellij.util.containers.ArrayListSet;
-import com.reason.Joiner;
-import com.reason.Log;
-import com.reason.bs.BsCompiler;
+import com.intellij.lang.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.util.*;
+import com.intellij.util.containers.*;
+import com.reason.*;
+import com.reason.bs.*;
 import com.reason.ide.files.*;
 import com.reason.ide.search.index.*;
-import com.reason.lang.QNameFinder;
-import com.reason.lang.core.ORFileType;
+import com.reason.lang.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiFakeModule;
-import com.reason.lang.core.psi.impl.PsiFunctorCall;
-import com.reason.lang.napkin.NsLanguage;
-import com.reason.lang.napkin.NsQNameFinder;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.ocaml.OclQNameFinder;
-import com.reason.lang.reason.RmlQNameFinder;
-import gnu.trove.THashMap;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.napkin.*;
+import com.reason.lang.ocaml.*;
+import com.reason.lang.reason.*;
+import gnu.trove.*;
+import org.jetbrains.annotations.*;
+
+import java.util.HashSet;
 import java.util.*;
-import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.stream.*;
+
+import static com.intellij.psi.search.GlobalSearchScope.*;
+import static com.reason.lang.core.ORFileType.*;
 
 public final class PsiFinder {
 
@@ -43,7 +40,8 @@ public final class PsiFinder {
     boolean accepts(T module);
   }
 
-  @NotNull private final Project m_project;
+  @NotNull
+  private final Project m_project;
 
   public static PsiFinder getInstance(@NotNull Project project) {
     return ServiceManager.getService(project, PsiFinder.class);
@@ -56,8 +54,8 @@ public final class PsiFinder {
   @NotNull
   public static QNameFinder getQNameFinder(@NotNull Language language) {
     return language == OclLanguage.INSTANCE
-        ? OclQNameFinder.INSTANCE
-        : language == NsLanguage.INSTANCE ? NsQNameFinder.INSTANCE : RmlQNameFinder.INSTANCE;
+               ? OclQNameFinder.INSTANCE
+               : language == NsLanguage.INSTANCE ? NsQNameFinder.INSTANCE : RmlQNameFinder.INSTANCE;
   }
 
   @Nullable
@@ -151,15 +149,15 @@ public final class PsiFinder {
                     new PartitionedModules(m_project, modules, filter);
 
                 if (fileType == interfaceOrImplementation
-                    || fileType == both
-                    || fileType == interfaceOnly) {
+                        || fileType == both
+                        || fileType == interfaceOnly) {
                   result.addAll(partitionedModules.getInterfaces());
                 }
 
                 if (fileType != interfaceOnly) {
                   if (fileType == both
-                      || fileType == implementationOnly
-                      || !partitionedModules.hasInterfaces()) {
+                          || fileType == implementationOnly
+                          || !partitionedModules.hasInterfaces()) {
                     result.addAll(partitionedModules.getImplementations());
                   }
                 }
@@ -174,7 +172,7 @@ public final class PsiFinder {
               + result.size()
               + "): "
               + Joiner.join(
-                  ", ", result.stream().map(PsiModule::getName).collect(Collectors.toList())));
+              ", ", result.stream().map(PsiModule::getName).collect(Collectors.toList())));
     }
 
     return result;
@@ -191,9 +189,9 @@ public final class PsiFinder {
 
     PsiModule module = modules.iterator().next();
     return ServiceManager.getService(m_project, BsCompiler.class)
-            .isDependency(module.getContainingFile().getVirtualFile())
-        ? module
-        : null;
+               .isDependency(module.getContainingFile().getVirtualFile())
+               ? module
+               : null;
   }
 
   @NotNull
@@ -361,9 +359,9 @@ public final class PsiFinder {
     if (!variants.isEmpty() && path != null) {
       // Keep variants that have correct path
       return variants
-          .stream()
-          .filter(variant -> variant.getQualifiedName().startsWith(path))
-          .collect(Collectors.toList());
+                 .stream()
+                 .filter(variant -> variant.getQualifiedName().startsWith(path))
+                 .collect(Collectors.toList());
     }
 
     return variants;
@@ -660,8 +658,7 @@ public final class PsiFinder {
     return null;
   }
 
-  @Nullable
-  public PsiParameter findParamFromQn(@Nullable String qName) {
+  public @Nullable PsiParameter findParamFromQn(@Nullable String qName) {
     if (qName == null) {
       return null;
     }
@@ -680,8 +677,18 @@ public final class PsiFinder {
     return null;
   }
 
-  public @NotNull Collection<IndexedFileModule> findModulesForNamespace(
-      @NotNull String namespace, @NotNull GlobalSearchScope scope) {
+  public @Nullable PsiType findTypeFromQn(@Nullable String qName, @NotNull GlobalSearchScope scope) {
+    if (qName != null) {
+      // Try qn directly
+      Collection<PsiType> types = TypeFqnIndex.getInstance().get(qName.hashCode(), m_project, scope);
+      if (!types.isEmpty()) {
+        return types.iterator().next();
+      }
+    }
+    return null;
+  }
+
+  public @NotNull Collection<IndexedFileModule> findModulesForNamespace(@NotNull String namespace, @NotNull GlobalSearchScope scope) {
     return FileModuleIndexService.getService().getFilesForNamespace(namespace, scope);
   }
 }

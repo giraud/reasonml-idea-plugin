@@ -1,12 +1,12 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiParameters;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class PsiParametersImpl extends CompositeTypePsiElement<ORTypes> implements PsiParameters {
 
@@ -15,8 +15,8 @@ public class PsiParametersImpl extends CompositeTypePsiElement<ORTypes> implemen
   }
 
   @Override
-  public int getSize() {
-    return ORUtil.findImmediateChildrenOfClass(this, PsiParameter.class).size();
+  public @NotNull List<PsiParameter> getParametersList() {
+    return ORUtil.findImmediateChildrenOfClass(this, PsiParameter.class);
   }
 
   @NotNull

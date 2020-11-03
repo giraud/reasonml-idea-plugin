@@ -12,7 +12,7 @@ import com.reason.lang.reason.RmlQNameFinder;
 import com.reason.lang.reason.RmlTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlCompletionContributor extends CompletionContributor {
+public class RmlCompletionContributor extends ORCompletionContributor {
 
   RmlCompletionContributor() {
     super(RmlTypes.INSTANCE, RmlQNameFinder.INSTANCE);

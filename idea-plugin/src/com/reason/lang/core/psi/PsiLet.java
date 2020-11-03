@@ -1,23 +1,12 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.NavigatablePsiElement;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import com.reason.lang.core.psi.impl.PsiObjectField;
-import com.reason.lang.core.stub.PsiLetStub;
+import com.intellij.psi.*;
+import com.reason.lang.core.stub.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public interface PsiLet
-    extends PsiVar,
-        PsiSignatureElement,
-        PsiInferredType,
-        PsiQualifiedElement,
-        NavigatablePsiElement,
-        PsiStructuredElement,
-        StubBasedPsiElement<PsiLetStub> {
-
+public interface PsiLet extends PsiVar, PsiSignatureElement, PsiInferredType, PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiLetStub> {
   @Nullable
   PsiLetBinding getBinding();
 
@@ -30,9 +19,6 @@ public interface PsiLet
 
   @NotNull
   Collection<PsiRecordField> getRecordFields();
-
-  @NotNull
-  Collection<PsiObjectField> getJsObjectFieldsForPath(@NotNull List<String> path);
 
   @Nullable
   PsiSignature getPsiSignature();

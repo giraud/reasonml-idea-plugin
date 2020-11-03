@@ -1,16 +1,10 @@
 package com.reason.ide.settings;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import org.jetbrains.annotations.*;
 
-@State(
-    name = "ReasonSettings",
-    storages = {@Storage("reason.xml")})
+@State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
 public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSettingsState> {
 
   public static final boolean IS_FORMAT_ON_SAVE_DEFAULT = true;

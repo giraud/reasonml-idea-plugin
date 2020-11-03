@@ -1,14 +1,15 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiLanguageConverter;
-import com.reason.lang.ocaml.OclLanguage;
-import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.ocaml.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class PsiJsObject extends CompositePsiElement implements PsiLanguageConverter {
 
@@ -16,14 +17,21 @@ public class PsiJsObject extends CompositePsiElement implements PsiLanguageConve
     super(type);
   }
 
-  @NotNull
-  public Collection<PsiObjectField> getFields() {
-    return PsiTreeUtil.findChildrenOfType(this, PsiObjectField.class);
+  public @NotNull Collection<PsiObjectField> getFields() {
+    return ORUtil.findImmediateChildrenOfClass(this, PsiObjectField.class);
   }
 
-  @NotNull
+  public @Nullable PsiObjectField getField(@NotNull String name) {
+    for (PsiObjectField field : getFields()) {
+      if (name.equals(field.getName())) {
+        return field;
+      }
+    }
+    return null;
+  }
+
   @Override
-  public String asText(@NotNull Language language) {
+  public @NotNull String asText(@NotNull Language language) {
     if (getLanguage() == language) {
       return getText();
     }

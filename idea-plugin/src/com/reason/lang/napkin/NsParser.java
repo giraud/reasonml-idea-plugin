@@ -398,6 +398,8 @@ public class NsParser extends CommonParser<NsTypes> {
             .mark(m_types.C_OBJECT_FIELD)
             .resolution(field);
       }
+    } else if (state.isCurrentResolution(jsObject) || state.isCurrentResolution(jsObjectBinding)) {
+      state.mark(m_types.C_OBJECT_FIELD).resolution(objectField);
     }
   }
 
@@ -761,14 +763,15 @@ public class NsParser extends CommonParser<NsTypes> {
       // it might be a js object
       IElementType nextElement = state.lookAhead(1);
       if (nextElement == m_types.STRING_VALUE || nextElement == m_types.DOT) {
-        // js object detected
-        // |>{<| ./"x" ___ }
-        state
-            .markScope(m_types.C_JS_OBJECT, m_types.LBRACE)
+        boolean hasDot = nextElement == m_types.DOT;
+        // js object detected ::  |>{<| ./"x" ___ }
+        state.markScope(m_types.C_JS_OBJECT, m_types.LBRACE)
             .resolution(jsObject)
-            .advance()
-            .advance()
-            .mark(m_types.C_OBJECT_FIELD)
+            .advance();
+        if (hasDot) {
+          state.advance();
+        }
+        state.mark(m_types.C_OBJECT_FIELD)
             .resolution(field);
       } else if (nextElement == m_types.DOTDOTDOT) {
         // record usage ::  x  => |>{<| ...
@@ -783,6 +786,7 @@ public class NsParser extends CommonParser<NsTypes> {
         state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(scope);
       }
     }
+
   }
 
   private void parseRBrace(@NotNull ParserState state) {
