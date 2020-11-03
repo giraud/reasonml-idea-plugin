@@ -13,7 +13,7 @@ import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiParameterStub;
 import com.reason.lang.core.type.ORTypes;
-import java.util.*;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

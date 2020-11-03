@@ -20,7 +20,7 @@ public class ModuleParsingTest extends NsParsingTestCase {
     assertEquals("Y", module.getAlias());
   }
 
-  public void test_moduleType() {
+  public void test_module_type() {
     PsiInnerModule module =
         (PsiInnerModule) first(moduleExpressions(parseCode("module type RedFlagsSig = {}")));
 
@@ -45,6 +45,15 @@ public class ModuleParsingTest extends NsParsingTestCase {
     assertEquals("Router", module.getName());
     assertEquals("{ let watchUrl: (url => unit) => watcherID }", module.getModuleType().getText());
     assertNull(module.getBody());
+  }
+
+  public void test_inline_interface_body() {
+    PsiInnerModule e =
+        firstOfType(parseCode("module M: { type t; } = { type t = int; };"), PsiInnerModule.class);
+
+    assertEquals("M", e.getName());
+    assertEquals("{ type t; }", e.getModuleType().getText());
+    assertEquals("{ type t = int; }", e.getBody().getText());
   }
 
   public void test_moduleOpenVariant() {

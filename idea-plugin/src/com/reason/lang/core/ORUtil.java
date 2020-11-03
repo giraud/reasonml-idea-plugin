@@ -124,6 +124,23 @@ public class ORUtil {
   }
 
   @NotNull
+  public static String getTextUntilWhitespace(@NotNull PsiElement root) {
+    StringBuilder text = new StringBuilder(root.getText());
+
+    PsiElement sibling = root.getNextSibling();
+    while (sibling != null) {
+      if (sibling instanceof PsiWhiteSpace) {
+        sibling = null;
+      } else {
+        text.append(sibling.getText());
+        sibling = sibling.getNextSibling();
+      }
+    }
+
+    return text.toString().trim();
+  }
+
+  @NotNull
   public static ASTNode nextSiblingNode(@NotNull ASTNode node) {
     ASTNode nextSibling = node.getTreeNext();
     while (nextSibling.getElementType() == TokenType.WHITE_SPACE) {
@@ -139,7 +156,7 @@ public class ORUtil {
     }
 
     PsiElement nextSibling = element.getNextSibling();
-    while (nextSibling != null && nextSibling.getNode().getElementType() == TokenType.WHITE_SPACE) {
+    while ((nextSibling instanceof PsiWhiteSpace)) {
       nextSibling = nextSibling.getNextSibling();
     }
 

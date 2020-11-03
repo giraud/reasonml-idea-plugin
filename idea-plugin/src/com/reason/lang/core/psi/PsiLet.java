@@ -3,6 +3,7 @@ package com.reason.lang.core.psi;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
+import com.reason.lang.core.psi.impl.PsiObjectField;
 import com.reason.lang.core.stub.PsiLetStub;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;

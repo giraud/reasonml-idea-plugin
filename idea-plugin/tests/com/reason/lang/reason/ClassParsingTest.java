@@ -1,8 +1,8 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.PsiClass;
-import com.reason.lang.core.psi.PsiClassField;
-import com.reason.lang.core.psi.PsiClassMethod;
+import com.reason.lang.core.psi.impl.PsiClassField;
+import com.reason.lang.core.psi.impl.PsiClassMethod;
 import java.util.*;
 
 public class ClassParsingTest extends RmlParsingTestCase {

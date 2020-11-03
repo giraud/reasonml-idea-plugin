@@ -8,6 +8,8 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.ObjDoubleConsumer;
+
 public class OCamlAdditionalDataConfigurable implements AdditionalDataConfigurable {
 
   private @Nullable Sdk m_sdk = null;

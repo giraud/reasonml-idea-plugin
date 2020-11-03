@@ -1,22 +1,26 @@
 package com.reason.lang.core.type;
 
 public abstract class ORTypes {
-  // Stubbed expressions
+  // Stubbed elements
 
-  public ORCompositeType C_CLASS_DECLARATION;
+  public ORCompositeType C_FAKE_MODULE;
   public ORCompositeType C_EXCEPTION_DECLARATION;
   public ORCompositeType C_TYPE_DECLARATION;
   public ORCompositeType C_EXTERNAL_DECLARATION;
   public ORCompositeType C_LET_DECLARATION;
   public ORCompositeType C_MODULE_DECLARATION;
   public ORCompositeType C_VAL_DECLARATION;
-
-  // Stubbed element types
+  public ORCompositeType C_FUN_PARAM;
+  public ORCompositeType C_FUNCTOR_DECLARATION;
+  public ORCompositeType C_FUNCTOR_PARAM;
+  public ORCompositeType C_RECORD_FIELD;
+  public ORCompositeType C_VARIANT_DECLARATION;
 
   // Composite element types
 
   public ORCompositeType C_ANNOTATION;
   public ORCompositeType C_ASSERT_STMT;
+  public ORCompositeType C_CLASS_DECLARATION;
   public ORCompositeType C_CLASS_CONSTR;
   public ORCompositeType C_CLASS_FIELD;
   public ORCompositeType C_CLASS_METHOD;
@@ -26,18 +30,14 @@ public abstract class ORTypes {
   public ORCompositeType C_DECONSTRUCTION;
   public ORCompositeType C_DIRECTIVE;
   public ORCompositeType C_DO_LOOP;
-  public ORCompositeType C_FAKE_MODULE;
   public ORCompositeType C_FUN_CALL_PARAMS;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_PARAMS;
-  public ORCompositeType C_FUN_PARAM;
   public ORCompositeType C_FUN_PARAM_BINDING;
   public ORCompositeType C_FUN_BODY;
-  public ORCompositeType C_FUNCTOR;
   public ORCompositeType C_FUNCTOR_BINDING;
   public ORCompositeType C_FUNCTOR_CALL;
   public ORCompositeType C_FUNCTOR_PARAMS;
-  public ORCompositeType C_FUNCTOR_PARAM;
   public ORCompositeType C_FUNCTOR_RESULT;
   public ORCompositeType C_IF;
   public ORCompositeType C_IF_THEN_SCOPE;
@@ -48,15 +48,16 @@ public abstract class ORTypes {
   public ORCompositeType C_INCLUDE;
   public ORCompositeType C_LET_ATTR;
   public ORCompositeType C_LET_BINDING;
+  public ORCompositeType C_LOWER_SYMBOL;
   public ORCompositeType C_TYPE_VARIABLE;
   public ORCompositeType C_MACRO_EXPR;
   public ORCompositeType C_MACRO_NAME;
   public ORCompositeType C_MODULE_TYPE;
   public ORCompositeType C_JS_OBJECT;
   public ORCompositeType C_MACRO_RAW_BODY;
+  public ORCompositeType C_MATCH_EXPR;
   public ORCompositeType C_MIXIN_FIELD;
   public ORCompositeType C_ML_INTERPOLATOR;
-  public ORCompositeType C_MODULE_PATH;
   public ORCompositeType C_NAMED_PARAM;
   public ORCompositeType C_OBJECT;
   public ORCompositeType C_OBJECT_FIELD;
@@ -70,10 +71,6 @@ public abstract class ORTypes {
   public ORCompositeType C_TAG_PROP_VALUE;
   public ORCompositeType C_TAG_BODY;
   public ORCompositeType C_UNIT;
-  public ORCompositeType C_UNKNOWN_EXPR;
-  public ORCompositeType C_VARIANT;
-  public ORCompositeType C_VARIANT_DECLARATION;
-  public ORCompositeType C_VARIANT_CONSTRUCTOR;
   public ORCompositeType C_SCOPED_EXPR;
   public ORCompositeType C_BINARY_CONDITION;
   public ORCompositeType C_INTERPOLATION_EXPR;
@@ -84,17 +81,17 @@ public abstract class ORTypes {
   public ORCompositeType C_TAG_PROPERTY;
   public ORCompositeType C_TERNARY;
   public ORCompositeType C_RECORD_EXPR;
-  public ORCompositeType C_RECORD_FIELD;
   public ORCompositeType C_SWITCH_EXPR;
-  public ORCompositeType C_MATCH_EXPR;
+  public ORCompositeType C_STRUCT_EXPR;
   public ORCompositeType C_TRY_EXPR;
   public ORCompositeType C_TRY_BODY;
   public ORCompositeType C_TRY_HANDLERS;
   public ORCompositeType C_TRY_HANDLER;
   public ORCompositeType C_TYPE_BINDING;
+  public ORCompositeType C_UNKNOWN_EXPR;
   public ORCompositeType C_UPPER_SYMBOL;
-  public ORCompositeType C_LOWER_SYMBOL;
-  public ORCompositeType C_STRUCT_EXPR;
+  public ORCompositeType C_VARIANT;
+  public ORCompositeType C_VARIANT_CONSTRUCTOR;
   public ORCompositeType C_WHILE;
 
   // Token element types

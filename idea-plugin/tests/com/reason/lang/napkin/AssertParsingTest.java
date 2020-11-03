@@ -1,6 +1,6 @@
 package com.reason.lang.napkin;
 
-import com.reason.lang.core.psi.PsiAssert;
+import com.reason.lang.core.psi.impl.PsiAssert;
 
 public class AssertParsingTest extends NsParsingTestCase {
 

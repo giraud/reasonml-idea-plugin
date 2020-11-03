@@ -3,21 +3,23 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSwitch;
+import com.reason.lang.core.psi.impl.PsiFunctionBody;
+import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionParsingTest extends RmlParsingTestCase {
-  public void test_anonFunction() {
+  public void test_anonymous_function() {
     PsiLet e = first(letExpressions(parseCode("let _ = Belt.map(items, (. item) => value)")));
 
     PsiFunction function = PsiTreeUtil.findChildOfType(e, PsiFunction.class);
     assertSize(1, function.getParameters());
     assertEquals("item", first(function.getParameters()).getText());
+    assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
     assertEquals("value", function.getBody().getText());
   }
 

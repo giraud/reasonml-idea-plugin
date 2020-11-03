@@ -8,13 +8,12 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.core.stub.PsiExternalStub;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
-import java.util.*;
+import java.util.Objects;
 import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,11 +114,11 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
   @NotNull
   @Override
   public String getExternalName() {
-    ASTNode eqNode = getNode().findChildByType(m_types.EQ);
-    if (eqNode != null) {
-      ASTNode nextNode = ORUtil.nextSiblingNode(eqNode);
-      if (nextNode.getElementType() == m_types.STRING_VALUE) {
-        String text = nextNode.getText();
+    PsiElement eq = ORUtil.findImmediateFirstChildOfType(this, m_types.EQ);
+    if (eq != null) {
+      PsiElement next = ORUtil.nextSibling(eq);
+      if (next != null && next.getNode().getElementType() == m_types.STRING_VALUE) {
+        String text = next.getText();
         return 2 < text.length() ? text.substring(1, text.length() - 1) : "";
       }
     }

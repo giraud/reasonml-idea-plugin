@@ -1,18 +1,19 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.CompositeTypePsiElement;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiTagProperty;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiTagPropertyImpl extends PsiToken<ORTypes> implements PsiTagProperty {
+public class PsiTagPropertyImpl extends CompositeTypePsiElement<ORTypes> implements PsiTagProperty {
 
   // region Constructors
-  public PsiTagPropertyImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
+  protected PsiTagPropertyImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    super(types, elementType);
   }
   // endregion
 

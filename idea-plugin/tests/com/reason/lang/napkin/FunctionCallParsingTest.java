@@ -3,11 +3,11 @@ package com.reason.lang.napkin;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctionBody;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiScopedExpr;
+import com.reason.lang.core.psi.impl.PsiFunctionBody;
+import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

@@ -1,17 +1,8 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.stub.type.PsiExceptionStubElementType;
-import com.reason.lang.core.stub.type.PsiExternalStubElementType;
-import com.reason.lang.core.stub.type.PsiFakeModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiFunctorModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiInnerModuleStubElementType;
-import com.reason.lang.core.stub.type.PsiLetStubElementType;
-import com.reason.lang.core.stub.type.PsiParameterStubElementType;
-import com.reason.lang.core.stub.type.PsiRecordFieldStubElementType;
-import com.reason.lang.core.stub.type.PsiTypeStubElementType;
-import com.reason.lang.core.stub.type.PsiValStubElementType;
-import com.reason.lang.core.stub.type.PsiVariantStubElementType;
+import com.reason.lang.core.stub.OclStubBasedElementTypes;
 import com.reason.lang.core.type.ORCompositeElementType;
+import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTokenElementType;
 import com.reason.lang.core.type.ORTypes;
 
@@ -20,28 +11,24 @@ public class OclTypes extends ORTypes {
   public static final OclTypes INSTANCE = new OclTypes();
 
   private OclTypes() {
-    C_FAKE_MODULE = new PsiFakeModuleStubElementType("C_FAKE_MODULE", OclLanguage.INSTANCE);
+    // Stub element types
 
-    // Stubbed element types
-
-    C_EXCEPTION_DECLARATION =
-        new PsiExceptionStubElementType("C_EXCEPTION_DECLARATION", OclLanguage.INSTANCE);
-    C_TYPE_DECLARATION = new PsiTypeStubElementType("C_TYPE_DECLARATION", OclLanguage.INSTANCE);
-    C_EXTERNAL_DECLARATION =
-        new PsiExternalStubElementType("C_EXTERNAL_DECLARATION", OclLanguage.INSTANCE);
-    C_LET_DECLARATION = new PsiLetStubElementType("C_LET_DECLARATION", OclLanguage.INSTANCE);
-    C_MODULE_DECLARATION =
-        new PsiInnerModuleStubElementType("C_MODULE_DECLARATION", OclLanguage.INSTANCE);
-    C_VAL_DECLARATION = new PsiValStubElementType("C_VAL_DECLARATION", OclLanguage.INSTANCE);
-    C_FUN_PARAM = new PsiParameterStubElementType("C_FUN_PARAM", OclLanguage.INSTANCE);
-    C_FUNCTOR = new PsiFunctorModuleStubElementType("C_FUNCTOR", OclLanguage.INSTANCE);
-    C_FUNCTOR_PARAM = new PsiParameterStubElementType("C_FUNCTOR_PARAM", OclLanguage.INSTANCE);
-    C_RECORD_FIELD = new PsiRecordFieldStubElementType("C_RECORD_FIELD", OclLanguage.INSTANCE);
-    C_VARIANT_DECLARATION = new PsiVariantStubElementType("C_VARIANT_DECL", OclLanguage.INSTANCE);
+    C_FAKE_MODULE = (ORCompositeType) OclStubBasedElementTypes.C_FAKE_MODULE;
+    C_EXCEPTION_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_EXCEPTION_DECLARATION;
+    C_TYPE_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_TYPE_DECLARATION;
+    C_EXTERNAL_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_EXTERNAL_DECLARATION;
+    C_LET_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_LET_DECLARATION;
+    C_MODULE_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_MODULE_DECLARATION;
+    C_VAL_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VAL_DECLARATION;
+    C_FUN_PARAM = (ORCompositeType) OclStubBasedElementTypes.C_FUN_PARAM;
+    C_FUNCTOR_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_DECLARATION;
+    C_FUNCTOR_PARAM = (ORCompositeType) OclStubBasedElementTypes.C_FUNCTOR_PARAM;
+    C_RECORD_FIELD = (ORCompositeType) OclStubBasedElementTypes.C_RECORD_FIELD;
+    C_VARIANT_DECLARATION = (ORCompositeType) OclStubBasedElementTypes.C_VARIANT_DECLARATION;
 
     // Composite element types
 
-    C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION_EXPR", OclLanguage.INSTANCE);
+    C_ANNOTATION = new ORCompositeElementType("C_ANNOTATION", OclLanguage.INSTANCE);
     C_ASSERT_STMT = new ORCompositeElementType("C_ASSERT_STMT", OclLanguage.INSTANCE);
     C_BINARY_CONDITION = new ORCompositeElementType("C_BIN_CONDITION", OclLanguage.INSTANCE);
     C_CLASS_CONSTR = new ORCompositeElementType("C_CLASS_CONSTR", OclLanguage.INSTANCE);
@@ -80,7 +67,6 @@ public class OclTypes extends ORTypes {
     C_MACRO_RAW_BODY = new ORCompositeElementType("C_MACRO_RAW_BODY", OclLanguage.INSTANCE);
     C_MODULE_TYPE = new ORCompositeElementType("C_MODULE_TYPE", OclLanguage.INSTANCE);
     C_ML_INTERPOLATOR = new ORCompositeElementType("C_ML_INTERPOLATOR", OclLanguage.INSTANCE);
-    C_MODULE_PATH = new ORCompositeElementType("C_MODULE_PATH", OclLanguage.INSTANCE);
     C_MATCH_EXPR = new ORCompositeElementType("C_MATCH_EXPR", OclLanguage.INSTANCE);
     C_NAMED_PARAM = new ORCompositeElementType("C_NAMED_PARAM", OclLanguage.INSTANCE);
     C_OBJECT = new ORCompositeElementType("C_OBJECT", OclLanguage.INSTANCE);

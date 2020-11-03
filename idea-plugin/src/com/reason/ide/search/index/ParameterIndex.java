@@ -6,7 +6,9 @@ import com.reason.lang.core.psi.PsiParameter;
 import org.jetbrains.annotations.NotNull;
 
 public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
-  private static final int VERSION = 2;
+  private static final int VERSION = 3;
+  public static final StubIndexKey<String, PsiParameter> KEY =
+      StubIndexKey.createIndexKey("reason.parameter");
 
   @Override
   public int getVersion() {
@@ -16,6 +18,6 @@ public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
   @NotNull
   @Override
   public StubIndexKey<String, PsiParameter> getKey() {
-    return IndexKeys.PARAMETERS;
+    return KEY;
   }
 }

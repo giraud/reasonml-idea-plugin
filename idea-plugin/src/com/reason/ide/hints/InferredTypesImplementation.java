@@ -13,7 +13,8 @@ import com.reason.lang.core.signature.ORSignature;
 import com.reason.lang.ocaml.OclLanguage;
 import gnu.trove.THashMap;
 import gnu.trove.THashSet;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,8 @@ public class InferredTypesImplementation implements InferredTypes {
   private static final String MODULE_GHOST = "Mg";
   private static final String VALUE = "Va";
   private static final String IDENT = "Id";
+  private static final String PARAM = "Pa";
+  private static final String RECORD_FIELD = "Rf";
 
   private final Map<String, Stack<OpenModule>> m_opens = new THashMap<>();
   private final Map<Integer, LogicalORSignature> m_vals = new THashMap<>();
@@ -146,6 +149,24 @@ public class InferredTypesImplementation implements InferredTypes {
             }
           }
           break;
+        }
+      case PARAM:
+        {
+          // Pattern :: name|type
+          String[] tokens = line.split("\\|", 2);
+
+          PsiFile psiFile =
+              PsiFileFactory.getInstance(project)
+                  .createFileFromText("Dummy", OclLanguage.INSTANCE, "let x:" + tokens[1]);
+          PsiSignature parsedSignature = PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
+          if (parsedSignature != null) {
+            ORSignature orSignature = parsedSignature.asHMSignature();
+            m_signatures.put(start, orSignature);
+          }
+        }
+      case RECORD_FIELD:
+        {
+          // TODO
         }
     }
   }

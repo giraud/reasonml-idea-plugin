@@ -1,31 +1,26 @@
 package com.reason.lang.reason;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.containers.ArrayListSet;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.BaseQNameFinder;
-import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiLocalOpen;
-import com.reason.lang.core.psi.PsiOpen;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.containers.*;
+import com.reason.ide.files.*;
+import com.reason.lang.*;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.reference.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
-import org.jetbrains.annotations.NotNull;
 
 public class RmlQNameFinder extends BaseQNameFinder {
 
   public static final QNameFinder INSTANCE = new RmlQNameFinder();
 
-  private RmlQNameFinder() {}
+  private RmlQNameFinder() {
+  }
 
   // Find the expression paths
   @NotNull
@@ -86,6 +81,9 @@ public class RmlQNameFinder extends BaseQNameFinder {
           String moduleName = ((FileBase) sourceElement.getContainingFile()).getModuleName();
           qualifiedNames.add(moduleName + pathExtension);
           resolvedQualifiedNames.add(moduleName + resolvedPathExtension);
+        } else if (alias == null) {
+          qualifiedNames.add(moduleQName + pathExtension);
+          resolvedQualifiedNames.add(moduleQName + resolvedPathExtension);
         }
       } else if (item instanceof PsiLocalOpen) {
         String openName = extractPathName(item, RmlTypes.INSTANCE);
@@ -145,6 +143,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
     }
 
     qualifiedNames.addAll(resolvedQualifiedNames);
+    qualifiedNames.add("Pervasives");
     return qualifiedNames;
   }
 }

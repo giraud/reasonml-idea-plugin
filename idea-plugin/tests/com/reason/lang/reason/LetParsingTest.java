@@ -12,12 +12,12 @@ import com.reason.lang.PsiFileHelper;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiObjectField;
-import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiObjectField;
+import com.reason.lang.core.psi.impl.PsiRecord;
+import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

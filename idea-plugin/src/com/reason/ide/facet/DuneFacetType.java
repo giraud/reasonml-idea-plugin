@@ -5,39 +5,33 @@ import com.intellij.facet.FacetType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import icons.ORIcons;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
+
 public class DuneFacetType extends FacetType<DuneFacet, DuneFacetConfiguration> {
+    public DuneFacetType() {
+        super(DuneFacet.ID, DuneFacet.ID_NAME, "Dune");
+    }
 
-  public DuneFacetType() {
-    super(DuneFacet.ID, DuneFacet.ID_NAME, "Dune");
-  }
+    @Override
+    public @NotNull DuneFacetConfiguration createDefaultConfiguration() {
+        return new DuneFacetConfiguration();
+    }
 
-  @NotNull
-  @Override
-  public DuneFacetConfiguration createDefaultConfiguration() {
-    return new DuneFacetConfiguration();
-  }
+    @Override
+    public @Nullable DuneFacet createFacet(@NotNull Module module, @NotNull String name, @NotNull DuneFacetConfiguration configuration, @Nullable Facet underlyingFacet) {
+        return new DuneFacet(this, module, name, configuration, underlyingFacet);
+    }
 
-  @Nullable
-  @Override
-  public DuneFacet createFacet(
-      @NotNull Module module,
-      @NotNull String name,
-      @NotNull DuneFacetConfiguration configuration,
-      @Nullable Facet underlyingFacet) {
-    return new DuneFacet(this, module, name, configuration, underlyingFacet);
-  }
+    @Override
+    public boolean isSuitableModuleType(ModuleType moduleType) {
+        return true;
+    }
 
-  @Override
-  public boolean isSuitableModuleType(ModuleType moduleType) {
-    return true;
-  }
-
-  @Override
-  public Icon getIcon() {
-    return ORIcons.DUNE;
-  }
+    @Override
+    public Icon getIcon() {
+        return ORIcons.DUNE;
+    }
 }

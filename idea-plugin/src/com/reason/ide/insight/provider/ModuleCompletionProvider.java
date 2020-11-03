@@ -18,9 +18,9 @@ import com.reason.ide.files.FileHelper;
 import com.reason.ide.search.FileModuleIndexService;
 import com.reason.ide.search.PsiFinder;
 import com.reason.lang.core.ModulePath;
-import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiModule;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
 import java.util.*;
@@ -52,8 +52,7 @@ public class ModuleCompletionProvider {
         if (!topFile.equals(element.getContainingFile())) {
           resultSet.addElement(
               LookupElementBuilder.create(topModule.getModuleName())
-                  .withTypeText(
-                      FileHelper.shortLocation(project, topFile.getVirtualFile().getPath()))
+                  .withTypeText(FileHelper.shortLocation(topFile))
                   .withIcon(IconProvider.getFileModuleIcon(topFile)));
         }
       }

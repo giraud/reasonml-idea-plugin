@@ -1,9 +1,9 @@
 package com.reason.lang.core;
 
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiDeconstruction;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiUnit;
+import com.reason.lang.core.psi.impl.PsiDeconstruction;
+import com.reason.lang.core.psi.impl.PsiUnit;
 import com.reason.lang.ocaml.OclParserDefinition;
 
 @SuppressWarnings("ConstantConditions")

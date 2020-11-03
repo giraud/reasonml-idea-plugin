@@ -6,11 +6,11 @@ import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.PsiRecord;
 import com.reason.lang.core.signature.ORSignature;
 import java.util.*;
 

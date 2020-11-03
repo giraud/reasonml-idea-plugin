@@ -1,9 +1,9 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiScopedExpr;
 
 @SuppressWarnings("ConstantConditions")
 public class ExternalParsingTest extends OclParsingTestCase {

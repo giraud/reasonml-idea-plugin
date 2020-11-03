@@ -1,6 +1,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <postStartupActivity implementation="com.reason.ide.js.ORJsLibraryManager"/>
+        <iconProvider implementation="com.reason.ide.JsIconProvider"/>
     </extensions>
     <extensions defaultExtensionNs="JavaScript">
         <nodeModulesIndexableFileNamesProvider implementation="com.reason.ide.js.ORIndexableFileNamesProvider"/>

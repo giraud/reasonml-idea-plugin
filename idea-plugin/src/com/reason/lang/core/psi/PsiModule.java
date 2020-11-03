@@ -3,6 +3,7 @@ package com.reason.lang.core.psi;
 import com.intellij.psi.NavigatablePsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.reason.lang.core.ExpressionFilter;
+import com.reason.lang.core.psi.impl.PsiFunctorCall;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

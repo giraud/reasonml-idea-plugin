@@ -1,7 +1,7 @@
 package com.reason.lang.core.psi.reference;
 
 import static com.reason.lang.core.ORFileType.both;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
@@ -20,20 +20,11 @@ import com.reason.ide.search.PsiFinder;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORCodeFactory;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.type.ORTypes;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -282,8 +273,7 @@ public class PsiLowerSymbolReference extends PsiPolyVariantReferenceBase<PsiLowe
               item ->
                   ((PsiQualifiedElement) item).getQualifiedName()
                       + " ["
-                      + Platform.removeProjectDir(
-                          item.getProject(), item.getContainingFile().getVirtualFile().getPath())
+                      + Platform.getRelativePathToModule(item.getContainingFile())
                       + "]"));
     }
 

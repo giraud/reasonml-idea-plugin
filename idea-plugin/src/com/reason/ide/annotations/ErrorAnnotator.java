@@ -7,11 +7,16 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.impl.TextRangeInterval;
+import com.intellij.openapi.util.Pair;
 import com.intellij.problems.Problem;
 import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.PsiFile;
 import com.reason.Log;
-import java.util.*;
+import com.reason.Platform;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,11 +33,18 @@ public class ErrorAnnotator
       @NotNull PsiFile file, @NotNull Editor editor, boolean hasErrors) {
     List<BsbErrorAnnotation> result = new ArrayList<>();
 
-    String filename = file.getVirtualFile().getName();
-    ErrorsManager service = ServiceManager.getService(file.getProject(), ErrorsManager.class);
-    Collection<OutputInfo> collectedInfo = service.getInfo(filename);
+    String filename = Platform.getRelativePathToModule(file);
+
+    ErrorsManager errorsManager = ServiceManager.getService(file.getProject(), ErrorsManager.class);
+    Collection<OutputInfo> collectedInfo = errorsManager.getInfo(filename);
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Collected info for file " + filename + ": " + collectedInfo.size());
+      int size = collectedInfo.size();
+      LOG.debug("Collected info for file " + filename + ": " + size);
+      if (size == 0) {
+        Pair<Set<String>, Set<String>> keys = errorsManager.getKeys();
+        LOG.debug("  Errors:", keys.first);
+        LOG.debug("  Warnings:", keys.second);
+      }
     }
 
     for (OutputInfo info : collectedInfo) {

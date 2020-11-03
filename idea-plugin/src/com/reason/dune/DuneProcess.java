@@ -1,48 +1,45 @@
 package com.reason.dune;
 
-import static com.intellij.notification.NotificationType.ERROR;
-
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.KillableColoredProcessHandler;
-import com.intellij.execution.process.ProcessAdapter;
-import com.intellij.execution.process.ProcessEvent;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.process.ProcessListener;
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.execution.*;
+import com.intellij.execution.configurations.*;
+import com.intellij.execution.process.*;
+import com.intellij.facet.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.module.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.util.containers.*;
 import com.reason.Compiler;
-import com.reason.CompilerProcess;
-import com.reason.ORNotification;
-import com.reason.bs.BsPlatform;
-import com.reason.ide.ORProjectManager;
-import com.reason.ide.console.CliType;
-import com.reason.sdk.OCamlSdkType;
-import java.io.*;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
+import com.reason.Platform;
+import com.reason.*;
+import com.reason.ide.console.*;
+import com.reason.ide.facet.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
 import java.util.concurrent.atomic.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import static com.intellij.notification.NotificationListener.*;
 
 public final class DuneProcess implements CompilerProcess {
+  private static final Log LOG = Log.create("dune.compiler");
 
-  @NotNull private final Project m_project;
-  @NotNull private final ProcessListener m_outputListener;
-  @Nullable private KillableColoredProcessHandler m_processHandler;
+  public static final String CONFIGURE_DUNE_SDK = "<html>"
+                                                      + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
+                                                      + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/docs/configuring-ocaml-project.md\">github</a>."
+                                                      + "</html>";
+
+  private final @NotNull Project m_project;
+  private final @NotNull ProcessListener m_outputListener;
   private final AtomicBoolean m_started = new AtomicBoolean(false);
+
+  private @Nullable KillableColoredProcessHandler m_processHandler;
 
   DuneProcess(@NotNull Project project) {
     m_project = project;
     m_outputListener = new DuneOutputListener(m_project, this);
-  }
-
-  public static DuneProcess getInstance(@NotNull Project project) {
-    return ServiceManager.getService(project, DuneProcess.class);
   }
 
   // Wait for the tool window to be ready before starting the process
@@ -58,12 +55,10 @@ public final class DuneProcess implements CompilerProcess {
   }
 
   @Override
-  @Nullable
-  public ProcessHandler recreate(
-      @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+  public @Nullable ProcessHandler create(@Nullable VirtualFile source, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
     try {
       killIt();
-      GeneralCommandLine cli = getGeneralCommandLine((CliType.Dune) cliType);
+      GeneralCommandLine cli = getGeneralCommandLine(source, (CliType.Dune) cliType);
       if (cli != null) {
         m_processHandler = new KillableColoredProcessHandler(cli);
         m_processHandler.addProcessListener(m_outputListener);
@@ -79,8 +74,7 @@ public final class DuneProcess implements CompilerProcess {
       }
       return m_processHandler;
     } catch (ExecutionException e) {
-      Notifications.Bus.notify(
-          new ORNotification("Dune", "Can't run sdk\n" + e.getMessage(), ERROR));
+      ORNotification.notifyError("Dune", "Execution exception", e.getMessage(), null);
       return null;
     }
   }
@@ -92,66 +86,60 @@ public final class DuneProcess implements CompilerProcess {
     }
   }
 
-  @Nullable
-  private GeneralCommandLine getGeneralCommandLine(@NotNull CliType.Dune cliType) {
-    Sdk odk = OCamlSdkType.getSDK(m_project);
-    if (odk == null) {
-      DuneNotification.showOcamlSdkNotFound();
-      return null;
-    }
-    assert odk.getHomePath() != null;
+  private @Nullable GeneralCommandLine getGeneralCommandLine(@Nullable VirtualFile source, @NotNull CliType.Dune cliType) {
+    DuneFacet duneFacet = getDuneFacet(source);
+    Sdk odk = duneFacet == null ? null : duneFacet.getODK();
+    VirtualFile homeDirectory = odk == null ? null : odk.getHomeDirectory();
+    if (homeDirectory == null) {
+      ORNotification.notifyError("Dune", "Can't find sdk", CONFIGURE_DUNE_SDK, URL_OPENING_LISTENER);
+    } else {
+      String binPath = odk.getHomePath() + "/bin";
 
-    Optional<VirtualFile> baseRoot = ORProjectManager.findFirstDuneContentRoot(m_project);
-    if (!baseRoot.isPresent()) {
-      return null;
+      Module module = duneFacet.getModule();
+      VirtualFile[] contentRoots = ModuleRootManager.getInstance(module).getContentRoots();
+      if (contentRoots.length > 0) {
+        GeneralCommandLine cli = new GeneralCommandLine(ContainerUtil.prepend(getCliParameters(cliType), "dune"));
+        cli.setWorkDirectory(contentRoots[0].getPath());
+        cli.setRedirectErrorStream(true);
+
+        Map<String, String> env = ServiceManager.getService(m_project, OpamEnv.class).getEnv(odk);
+        if (env != null) {
+          for (Map.Entry<String, String> entry : env.entrySet()) {
+            cli.withEnvironment(entry.getKey(), entry.getValue());
+          }
+        }
+
+        OCamlExecutable executable = OCamlExecutable.getExecutable(odk);
+        return executable.patchCommandLine(cli, binPath, false, m_project);
+      } else {
+        LOG.debug("Content roots", contentRoots);
+        LOG.debug("Binary directory", binPath);
+      }
     }
 
-    String duneBinary =
-        BsPlatform.findDuneExecutable(m_project).map(VirtualFile::getPath).orElse("");
-    GeneralCommandLine cli;
+    return null;
+  }
+
+  // TODO: Platform
+  public @Nullable DuneFacet getDuneFacet(@Nullable VirtualFile source) {
+    Module module = Platform.getModule(m_project, source);
+    return module == null ? null : FacetManager.getInstance(module).getFacetByType(DuneFacet.ID);
+  }
+
+  private List<String> getCliParameters(CliType.Dune cliType) {
+    List<String> result = new ArrayList<>();
+
     switch (cliType) {
       case CLEAN:
-        cli = new GeneralCommandLine(duneBinary, "clean");
+        result.add("clean");
         break;
       case BUILD:
       default:
-        cli = new GeneralCommandLine(duneBinary, "build");
+        result.add("build");
     }
+    result.add("--root=.");
 
-    FileSystem fileSystem = FileSystems.getDefault();
-    String ocamlPath =
-        fileSystem.getPath(odk.getHomePath(), "share")
-            + File.pathSeparator
-            + //
-            fileSystem.getPath(odk.getHomePath(), "sbin")
-            + File.pathSeparator
-            + //
-            fileSystem.getPath(odk.getHomePath(), "lib")
-            + File.pathSeparator
-            + //
-            fileSystem.getPath(odk.getHomePath(), "bin")
-            + File.pathSeparator;
-
-    String libPath =
-        fileSystem.getPath(odk.getHomePath(), "lib", "stublibs")
-            + File.pathSeparator
-            + //
-            fileSystem.getPath(odk.getHomePath(), "lib", "ocaml")
-            + File.pathSeparator
-            + //
-            fileSystem.getPath(odk.getHomePath(), "lib", "ocaml", "stublibs")
-            + File.pathSeparator;
-
-    Map<String, String> environment = cli.getParentEnvironment();
-
-    cli.withEnvironment("PATH", ocamlPath + File.pathSeparator + environment.get("PATH"));
-    cli.withEnvironment(
-        "OCAMLLIB", fileSystem.getPath(odk.getHomePath(), "lib", "ocaml").toString());
-    cli.withEnvironment("CAML_LD_LIBRARY_PATH", libPath);
-    cli.setWorkDirectory(baseRoot.get().getPath());
-    cli.setRedirectErrorStream(true);
-
-    return cli;
+    return result;
   }
 
   @Override

@@ -1,38 +1,12 @@
 package com.reason.dune;
 
-import static com.reason.dune.DuneConstants.DUNE_EXECUTABLE_NAME;
-
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Platform;
-import com.reason.sdk.OCamlSdkType;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
-
 public class Dune {
 
-  private Dune() {}
+    public static final String DUNE_EXECUTABLE_NAME = "dune";
+    public static final String DUNE_PROJECT_FILENAME = "dune-project";
+    public static final String DUNE_FILENAME = "dune";
+    public static final String LEGACY_JBUILDER_FILENAME = "jbuild";
 
-  public static Optional<VirtualFile> findDuneExecutable(@NotNull Project project) {
-    Sdk ocamlSdk = OCamlSdkType.getSDK(project);
-    if (ocamlSdk == null) {
-      return Optional.empty();
+    private Dune() {
     }
-    String ocamlSdkPath = ocamlSdk.getHomePath();
-    if (ocamlSdkPath == null) {
-      return Optional.empty();
-    }
-    String extension = Platform.isWindows() ? ".exe" : "";
-    Path binaryPath = Paths.get(ocamlSdkPath, "bin", DUNE_EXECUTABLE_NAME + extension);
-    LocalFileSystem fileSystem = LocalFileSystem.getInstance();
-    VirtualFile duneBinary = fileSystem.findFileByPath(binaryPath.toString());
-    if (duneBinary == null) {
-      return Optional.empty();
-    }
-    return Optional.of(duneBinary);
-  }
 }

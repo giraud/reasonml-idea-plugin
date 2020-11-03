@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.util.IncorrectOperationException;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.signature.ORSignature;

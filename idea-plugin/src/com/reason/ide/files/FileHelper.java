@@ -1,9 +1,8 @@
 package com.reason.ide.files;
 
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiFile;
 import com.reason.Platform;
-import java.io.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,9 +44,12 @@ public class FileHelper {
   }
 
   @NotNull
-  public static String shortLocation(@NotNull Project project, @NotNull String path) {
-    String newPath =
-        Platform.removeProjectDir(project, path).replace("node_modules" + File.separator, "");
+  public static String shortLocation(@NotNull PsiFile file) {
+    String newPath = Platform.getRelativePathToModule(file);
+    int nodeIndex = newPath.indexOf("node_modules");
+    if (0 <= nodeIndex) {
+      newPath = newPath.substring(nodeIndex);
+    }
     int pos = newPath.lastIndexOf("/");
     return 0 < pos ? newPath.substring(0, pos) : newPath;
   }

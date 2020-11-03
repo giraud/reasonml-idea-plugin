@@ -1,38 +1,26 @@
 package com.reason.ide.facet;
 
-import com.intellij.facet.Facet;
-import com.intellij.facet.FacetType;
-import com.intellij.facet.FacetTypeId;
-import com.intellij.facet.FacetTypeRegistry;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.reason.sdk.OCamlSdkType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.facet.*;
+import com.intellij.openapi.module.*;
+import com.intellij.openapi.projectRoots.*;
+import com.reason.sdk.*;
+import org.jetbrains.annotations.*;
 
 public class DuneFacet extends Facet<DuneFacetConfiguration> {
 
   static final String ID_NAME = "ocaml-dune";
   public static final FacetTypeId<DuneFacet> ID = new FacetTypeId<>(ID_NAME);
 
-  DuneFacet(
-      @NotNull FacetType facetType,
-      @NotNull Module module,
-      @NotNull String name,
-      @NotNull DuneFacetConfiguration configuration,
-      Facet underlyingFacet) {
+  DuneFacet(@NotNull FacetType facetType, @NotNull Module module, @NotNull String name, @NotNull DuneFacetConfiguration configuration, Facet underlyingFacet) {
     super(facetType, module, name, configuration, underlyingFacet);
   }
 
-  @NotNull
-  static FacetType<DuneFacet, DuneFacetConfiguration> getFacetType() {
+  static @NotNull FacetType<DuneFacet, DuneFacetConfiguration> getFacetType() {
     return FacetTypeRegistry.getInstance().findFacetType(ID);
   }
 
-  @NotNull
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return getModule().getName();
   }
 

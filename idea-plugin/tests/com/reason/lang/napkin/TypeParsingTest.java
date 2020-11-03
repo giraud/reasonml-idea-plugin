@@ -2,6 +2,9 @@ package com.reason.lang.napkin;
 
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiJsObject;
+import com.reason.lang.core.psi.impl.PsiRecord;
+import com.reason.lang.core.psi.impl.PsiTag;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

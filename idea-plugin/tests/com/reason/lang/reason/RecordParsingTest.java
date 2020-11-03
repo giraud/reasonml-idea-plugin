@@ -1,9 +1,9 @@
 package com.reason.lang.reason;
 
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.PsiRecord;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

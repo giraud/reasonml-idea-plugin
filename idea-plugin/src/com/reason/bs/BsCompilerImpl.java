@@ -97,7 +97,7 @@ public class BsCompilerImpl implements BsCompiler {
       getOrRefreshBsConfig(bsConfigFile.get());
       BsProcess process = ServiceManager.getService(m_project, BsProcess.class);
       if (process.start()) {
-        ProcessHandler bscHandler = process.recreate(sourceFile, cliType, onProcessTerminated);
+        ProcessHandler bscHandler = process.create(sourceFile, cliType, onProcessTerminated);
         if (bscHandler != null) {
           ConsoleView console = getConsoleView();
           if (console != null) {

@@ -1,19 +1,22 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
-import com.reason.ide.search.index.IndexKeys;
+import com.reason.ide.search.index.ParameterFqnIndex;
+import com.reason.ide.search.index.ParameterIndex;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.impl.PsiParameterImpl;
 import com.reason.lang.core.stub.PsiParameterStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiParameterStubElementType extends IStubElementType<PsiParameterStub, PsiParameter>
-    implements ORCompositeType {
+public class PsiParameterStubElementType extends ORStubElementType<PsiParameterStub, PsiParameter> {
 
   public PsiParameterStubElementType(@NotNull String name, @NotNull Language language) {
     super(name, language);
@@ -22,6 +25,11 @@ public class PsiParameterStubElementType extends IStubElementType<PsiParameterSt
   @NotNull
   public PsiParameterImpl createPsi(@NotNull final PsiParameterStub stub) {
     return new PsiParameterImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+  }
+
+  @NotNull
+  public PsiParameterImpl createPsi(@NotNull ASTNode node) {
+    return new PsiParameterImpl(ORTypesUtil.getInstance(getLanguage()), node);
   }
 
   @NotNull
@@ -48,17 +56,17 @@ public class PsiParameterStubElementType extends IStubElementType<PsiParameterSt
   public void indexStub(@NotNull final PsiParameterStub stub, @NotNull final IndexSink sink) {
     String name = stub.getName();
     if (name != null) {
-      sink.occurrence(IndexKeys.PARAMETERS, name);
+      sink.occurrence(ParameterIndex.KEY, name);
     }
 
     String fqn = stub.getQualifiedName();
     if (fqn != null) {
-      sink.occurrence(IndexKeys.PARAMETERS_FQN, fqn.hashCode());
+      sink.occurrence(ParameterFqnIndex.KEY, fqn.hashCode());
     }
   }
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

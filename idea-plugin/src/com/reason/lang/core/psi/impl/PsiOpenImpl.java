@@ -1,24 +1,24 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.xml.model.gotosymbol.GoToSymbolProvider;
+import com.reason.lang.core.CompositeTypePsiElement;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.type.ORTypes;
 import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiOpenImpl extends PsiToken<ORTypes> implements PsiOpen {
+public class PsiOpenImpl extends CompositeTypePsiElement<ORTypes> implements PsiOpen {
 
   // region Constructors
-  public PsiOpenImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
+  protected PsiOpenImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    super(types, elementType);
   }
   // endregion
 

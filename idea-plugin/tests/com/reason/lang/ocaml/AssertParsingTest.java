@@ -1,7 +1,7 @@
 package com.reason.lang.ocaml;
 
 import com.reason.lang.BaseParsingTestCase;
-import com.reason.lang.core.psi.PsiAssert;
+import com.reason.lang.core.psi.impl.PsiAssert;
 
 public class AssertParsingTest extends BaseParsingTestCase {
   public AssertParsingTest() {

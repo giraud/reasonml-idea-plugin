@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiTry;
+import com.reason.lang.core.psi.impl.PsiTry;
 
 @SuppressWarnings("ConstantConditions")
 public class TryWithTest extends OclParsingTestCase {

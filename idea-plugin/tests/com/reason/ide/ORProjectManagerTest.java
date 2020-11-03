@@ -1,5 +1,6 @@
 package com.reason.ide;
 
+import static com.reason.dune.Dune.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -16,7 +17,6 @@ import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.util.indexing.ID;
 import com.reason.bs.BsConstants;
-import com.reason.dune.DuneConstants;
 import com.reason.esy.EsyConstants;
 import com.reason.esy.EsyPackageJson;
 import com.reason.ide.files.EsyPackageJsonFileType;
@@ -96,9 +96,9 @@ public class ORProjectManagerTest {
 
   @Test
   public void testIsDuneProject_allDuneFileTypes() {
-    MockVirtualFile mockDuneFile = new MockVirtualFile(DuneConstants.DUNE_FILENAME);
-    MockVirtualFile mockDuneProjectFile = new MockVirtualFile(DuneConstants.DUNE_PROJECT_FILENAME);
-    MockVirtualFile mockJBuilderFile = new MockVirtualFile(DuneConstants.LEGACY_JBUILDER_FILENAME);
+    MockVirtualFile mockDuneFile = new MockVirtualFile(DUNE_FILENAME);
+    MockVirtualFile mockDuneProjectFile = new MockVirtualFile(DUNE_PROJECT_FILENAME);
+    MockVirtualFile mockJBuilderFile = new MockVirtualFile(LEGACY_JBUILDER_FILENAME);
     registerMockFile(mockDuneFile);
     assertTrue(ORProjectManager.isDuneProject(mockProject));
     registerMockFile(mockDuneProjectFile);
@@ -134,9 +134,9 @@ public class ORProjectManagerTest {
 
   @Test
   public void testFindDuneConfigurationFiles_sortedByFileType() {
-    MockVirtualFile mockDuneFile = new MockVirtualFile(DuneConstants.DUNE_FILENAME);
-    MockVirtualFile mockDuneProjectFile = new MockVirtualFile(DuneConstants.DUNE_PROJECT_FILENAME);
-    MockVirtualFile mockJBuilderFile = new MockVirtualFile(DuneConstants.LEGACY_JBUILDER_FILENAME);
+    MockVirtualFile mockDuneFile = new MockVirtualFile(DUNE_FILENAME);
+    MockVirtualFile mockDuneProjectFile = new MockVirtualFile(DUNE_PROJECT_FILENAME);
+    MockVirtualFile mockJBuilderFile = new MockVirtualFile(LEGACY_JBUILDER_FILENAME);
 
     MockVirtualFile[] mocksUnsorted = {mockJBuilderFile, mockDuneFile, mockDuneProjectFile};
     MockVirtualFile[] mocksSorted = {mockDuneProjectFile, mockDuneFile, mockJBuilderFile};
@@ -153,7 +153,7 @@ public class ORProjectManagerTest {
 
   @Test
   public void testFindDuneConfigurationFiles_sortedByFileDepth() {
-    String mockFileName = DuneConstants.DUNE_FILENAME;
+    String mockFileName = DUNE_FILENAME;
     MockVirtualFile mockDuneFileParent = new MockVirtualFile(mockFileName);
     MockVirtualFile mockDuneFile = new MockVirtualFile(mockFileName);
     MockVirtualFile mockDuneFileChild = new MockVirtualFile(mockFileName);

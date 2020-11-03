@@ -21,6 +21,8 @@ import com.reason.ide.search.index.*;
 import com.reason.lang.QNameFinder;
 import com.reason.lang.core.ORFileType;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
+import com.reason.lang.core.psi.impl.PsiFunctorCall;
 import com.reason.lang.napkin.NsLanguage;
 import com.reason.lang.napkin.NsQNameFinder;
 import com.reason.lang.ocaml.OclLanguage;
@@ -137,14 +139,14 @@ public final class PsiFinder {
       ModuleFilter<PsiModule> filter,
       @NotNull GlobalSearchScope scope) {
     Set<PsiModule> result = new HashSet<>();
-    ModuleIndex instance = ModuleIndex.getInstance();
+    ModuleIndex moduleIndex = ModuleIndex.getInstance();
 
-    instance.processAllKeys(
+    moduleIndex.processAllKeys(
         m_project,
         CommonProcessors.processAll(
             moduleName -> {
               if (name.equals(moduleName)) {
-                Collection<PsiModule> modules = instance.get(moduleName, m_project, scope);
+                Collection<PsiModule> modules = moduleIndex.get(moduleName, m_project, scope);
                 PartitionedModules partitionedModules =
                     new PartitionedModules(m_project, modules, filter);
 
@@ -225,12 +227,7 @@ public final class PsiFinder {
   @NotNull
   public Set<PsiParameter> findParameters(@NotNull String name, @NotNull ORFileType fileType) {
     return findLowerSymbols(
-        "parameters",
-        name,
-        fileType,
-        IndexKeys.PARAMETERS,
-        PsiParameter.class,
-        allScope(m_project));
+        "parameters", name, fileType, ParameterIndex.KEY, PsiParameter.class, allScope(m_project));
   }
 
   @NotNull
@@ -543,6 +540,23 @@ public final class PsiFinder {
     }
 
     return result;
+  }
+
+  @Nullable
+  public PsiParameter findParameterFromQn(
+      @Nullable String qname, @NotNull GlobalSearchScope scope) {
+    if (qname == null) {
+      return null;
+    }
+
+    // Try qn directly
+    Collection<PsiParameter> parameters =
+        ParameterFqnIndex.getInstance().get(qname.hashCode(), m_project, scope);
+    if (!parameters.isEmpty()) {
+      return parameters.iterator().next();
+    }
+
+    return null;
   }
 
   @Nullable
