@@ -142,6 +142,7 @@ public class NsQNameFinder extends BaseQNameFinder {
     }
 
     qualifiedNames.addAll(resolvedQualifiedNames);
+    qualifiedNames.add("Pervasives");
     return qualifiedNames;
   }
 }

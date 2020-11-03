@@ -144,6 +144,7 @@ public class OclQNameFinder extends BaseQNameFinder {
     }
 
     qualifiedNames.addAll(resolvedQualifiedNames);
+    qualifiedNames.add("Pervasives");
     return qualifiedNames;
   }
 }
