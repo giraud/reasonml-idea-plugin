@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+## 0.94 - 2020/11/03
+
 Dune integration has been updated, [documentation](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) is also up to date. 
 
 - :bug: [#276](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/276) Class JSFile not found
