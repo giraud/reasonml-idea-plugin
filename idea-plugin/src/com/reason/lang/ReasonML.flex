@@ -2,7 +2,7 @@ package com.reason.lang;
 
 import com.intellij.psi.tree.IElementType;
 import com.reason.lang.core.type.ORTypes;
-import com.intellij.lexer.FlexLexer;
+import com.intellij.lexer.FlexLexer;import com.reason.lang.ocaml.*;
 
 import static com.intellij.psi.TokenType.*;
 
@@ -177,7 +177,7 @@ ESCAPE_CHAR= {ESCAPE_BACKSLASH} | {ESCAPE_SINGLE_QUOTE} | {ESCAPE_LF} | {ESCAPE_
 
     "\"" { yybegin(IN_STRING); tokenStart(); }
     "/*" { yybegin(IN_REASON_ML_COMMENT); commentDepth = 1; tokenStart(); }
-    "//" { yybegin(IN_REASON_SL_COMMENT); tokenStart(); }
+    "//" { if (!(types instanceof OclTypes)) { yybegin(IN_REASON_SL_COMMENT); tokenStart(); } }
     "(*" { yybegin(IN_OCAML_ML_COMMENT); commentDepth = 1; tokenStart(); }
 
     "#if"     { return types.DIRECTIVE_IF; }

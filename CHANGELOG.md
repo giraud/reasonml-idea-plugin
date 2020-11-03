@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: ![o] [#278](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278) let (//) incorrectly parsed as comment
+
 ## 0.94 - 2020/11/03
 
 Dune integration has been updated, [documentation](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) is also up to date. 
