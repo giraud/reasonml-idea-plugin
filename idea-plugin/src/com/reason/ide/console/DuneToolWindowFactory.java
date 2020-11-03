@@ -61,10 +61,10 @@ public class DuneToolWindowFactory extends ORToolWindowFactory {
   private ActionToolbar createToolbar(@NotNull BsConsole console) {
     DefaultActionGroup group = new DefaultActionGroup();
     group.add(new ScrollToTheEndToolbarAction(console.getEditor()));
-    group.add(new ClearLogAction(console));
     group.add(new DuneBuildAction());
     group.add(new DuneCleanAction());
-    group.add(new DuneInstallAction());
+    //group.add(new DuneInstallAction());
+    group.add(new ClearLogAction(console));
 
     ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("left", group, false);
     toolbar.setTargetComponent(console.getComponent());

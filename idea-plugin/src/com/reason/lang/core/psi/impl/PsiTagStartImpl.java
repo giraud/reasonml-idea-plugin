@@ -1,39 +1,41 @@
 package com.reason.lang.core.psi.impl;
 
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
-import static com.reason.lang.core.ORFileType.interfaceOrImplementation;
-import static com.reason.lang.core.psi.ExpressionScope.pub;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.ORUtil;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.PsiAnnotation;
+import com.reason.lang.core.psi.PsiParameter;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.reason.RmlLanguage;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.signature.*;
+import com.reason.lang.core.type.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
 
-public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
-  public PsiTagStartImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
+import java.util.*;
+
+import static com.intellij.psi.search.GlobalSearchScope.*;
+import static com.reason.lang.core.ExpressionFilterConstants.*;
+import static com.reason.lang.core.ORFileType.*;
+import static com.reason.lang.core.psi.ExpressionScope.*;
+
+public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements PsiTagStart {
+
+  protected PsiTagStartImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    super(types, elementType);
   }
 
   static class TagPropertyImpl implements TagProperty {
 
-    @Nullable private final String m_name;
+    @Nullable
+    private final String m_name;
     private final String m_type;
     private boolean m_mandatory;
 
@@ -96,7 +98,19 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
   @Nullable
   @Override
   public PsiElement getNameIdentifier() {
-    return getFirstChild().getNextSibling();
+    PsiElement lastTag = null;
+
+    Collection<PsiLeafTagName> tags = PsiTreeUtil.findChildrenOfType(this, PsiLeafTagName.class);
+    if (!tags.isEmpty()) {
+      for (PsiLeafTagName tag : tags) {
+        PsiElement currentStart = tag.getParent().getParent();
+        if (currentStart == this) {
+          lastTag = tag.getParent();
+        }
+      }
+    }
+
+    return lastTag;
   }
 
   @Nullable
@@ -128,10 +142,10 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
     GlobalSearchScope scope = allScope(project);
 
     // find tag 'make' expression
-    PsiElement tagName = findChildByClass(PsiUpperSymbol.class);
+    PsiElement tagName = getNameIdentifier();
     if (tagName == null) {
       // no tag name, it's not a custom tag
-      tagName = findChildByClass(PsiLowerSymbol.class);
+      tagName = ORUtil.findImmediateFirstChildOfClass(this, PsiLowerSymbol.class);
       if (tagName != null) {
         Set<PsiModule> modules =
             psiFinder.findModulesbyName(
@@ -157,28 +171,25 @@ public class PsiTagStartImpl extends PsiToken<ORTypes> implements PsiTagStart {
       }
     } else {
       // The tag is a custom component
-      Set<PsiModule> modulesFromQn =
-          psiFinder.findModulesFromQn(tagName.getText(), true, interfaceOrImplementation, scope);
-      PsiModule module = modulesFromQn.isEmpty() ? null : modulesFromQn.iterator().next();
-      if (module == null) {
-        // If nothing found, look for an inner module in current file
-        String fileModuleName = ((FileBase) tagName.getContainingFile()).getModuleName();
-        module = psiFinder.findComponent(fileModuleName + "." + tagName.getText(), scope);
-      }
-
-      if (module != null) {
-        Collection<PsiNamedElement> expressions = module.getExpressions(pub, FILTER_LET);
-        for (PsiNamedElement expression : expressions) {
-          if ("make".equals(expression.getName())) {
-            PsiFunction function = ((PsiLet) expression).getFunction();
-            if (function != null) {
-              function
-                  .getParameters()
-                  .stream()
-                  .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
-                  .forEach(p -> result.add(new TagPropertyImpl(p)));
+      QNameFinder qNameFinder = PsiFinder.getQNameFinder(getLanguage());
+      Set<String> paths = qNameFinder.extractPotentialPaths(tagName);
+      for (String path : paths) {
+        PsiModule module = psiFinder.findComponent(path, scope);
+        if (module != null) {
+          Collection<PsiNamedElement> expressions = module.getExpressions(pub, FILTER_LET);
+          for (PsiNamedElement expression : expressions) {
+            if ("make".equals(expression.getName())) {
+              PsiFunction function = ((PsiLet) expression).getFunction();
+              if (function != null) {
+                function
+                    .getParameters()
+                    .stream()
+                    .filter(p -> !"children".equals(p.getName()) && !"_children".equals(p.getName()))
+                    .forEach(p -> result.add(new TagPropertyImpl(p)));
+              }
             }
           }
+          break;
         }
       }
     }

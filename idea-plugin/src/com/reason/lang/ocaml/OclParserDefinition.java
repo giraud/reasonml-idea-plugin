@@ -9,12 +9,13 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.reason.ide.files.OclFile;
 import com.reason.ide.files.OclInterfaceFile;
 import com.reason.ide.files.OclInterfaceFileType;
-import com.reason.lang.core.PsiElementFactory;
+import com.reason.lang.core.stub.type.ORStubElementType;
 import com.reason.lang.core.stub.type.OclFileStubElementType;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,6 +70,13 @@ public class OclParserDefinition implements ParserDefinition {
 
   @NotNull
   public PsiElement createElement(@NotNull ASTNode node) {
-    return PsiElementFactory.createElement(OclTypes.INSTANCE, node);
+    IElementType type = node.getElementType();
+    if (type instanceof ORStubElementType) {
+      //noinspection rawtypes
+      return ((ORStubElementType) node.getElementType()).createPsi(node);
+    }
+
+    throw new IllegalArgumentException(
+        "Not an OCaml node: " + node + " (" + type + ", " + type.getLanguage() + ")");
   }
 }

@@ -3,8 +3,8 @@ package com.reason.lang.core;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.ORBasePlatformTestCase;
 import com.reason.ide.files.FileBase;
-import com.reason.lang.core.psi.PsiFakeModule;
 import com.reason.lang.core.psi.PsiLet;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 
 public class ORUtilTest extends ORBasePlatformTestCase {
 

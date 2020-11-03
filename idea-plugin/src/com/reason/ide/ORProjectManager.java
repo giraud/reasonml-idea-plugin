@@ -1,6 +1,6 @@
 package com.reason.ide;
 
-import static com.reason.dune.DuneConstants.*;
+import static com.reason.dune.Dune.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.intellij.openapi.application.ApplicationManager;
@@ -85,8 +85,7 @@ public class ORProjectManager {
     return mapToParents(project, ORProjectManager::findEsyConfigurationFiles);
   }
 
-  public static Set<VirtualFile> findFilesInProject(
-      @NotNull Set<String> filenames, @NotNull Project project) {
+  public static Set<VirtualFile> findFilesInProject(@NotNull Set<String> filenames, @NotNull Project project) {
     return filenames
         .stream()
         .map(filename -> findFilesInProject(filename, project))
@@ -94,12 +93,10 @@ public class ORProjectManager {
         .collect(Collectors.toSet());
   }
 
-  public static @NotNull Set<VirtualFile> findFilesInProject(
-      @NotNull String filename, @NotNull Project project) {
+  public static @NotNull Set<VirtualFile> findFilesInProject(@NotNull String filename, @NotNull Project project) {
     GlobalSearchScope scope = GlobalSearchScope.allScope(project);
     if (ApplicationManager.getApplication().isReadAccessAllowed()) {
-      Collection<VirtualFile> virtualFilesByName =
-          FilenameIndex.getVirtualFilesByName(project, filename, scope);
+      Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(project, filename, scope);
       return new HashSet<>(virtualFilesByName);
     }
     return Collections.emptySet();

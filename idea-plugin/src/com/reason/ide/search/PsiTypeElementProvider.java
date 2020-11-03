@@ -1,12 +1,7 @@
 package com.reason.ide.search;
 
 import com.intellij.psi.PsiElement;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +31,9 @@ public class PsiTypeElementProvider {
       }
       if (parent instanceof PsiType) {
         return "type";
+      }
+      if (parent instanceof PsiParameter) {
+        return "parameter";
       }
     }
 

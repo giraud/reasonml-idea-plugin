@@ -3,11 +3,11 @@ package com.reason.lang.ocaml;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiObjectField;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.psi.PsiVal;
+import com.reason.lang.core.psi.impl.PsiObjectField;
 import com.reason.lang.core.signature.ORSignature;
 import java.util.*;
 

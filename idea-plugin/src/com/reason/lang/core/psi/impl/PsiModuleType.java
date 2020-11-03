@@ -1,12 +1,14 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.CompositeTypePsiElement;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiModuleType extends PsiToken<ORTypes> {
-  public PsiModuleType(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
+public class PsiModuleType extends CompositeTypePsiElement<ORTypes> {
+
+  protected PsiModuleType(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    super(types, elementType);
   }
 
   @Override

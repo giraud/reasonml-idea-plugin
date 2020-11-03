@@ -1,5 +1,6 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.io.StringRef;
@@ -7,22 +8,25 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.impl.PsiExternalImpl;
 import com.reason.lang.core.stub.PsiExternalStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub, PsiExternal>
-    implements ORCompositeType {
+public class PsiExternalStubElementType extends ORStubElementType<PsiExternalStub, PsiExternal> {
 
-  public PsiExternalStubElementType(@NotNull String name, @Nullable Language language) {
-    super(name, language);
+  public PsiExternalStubElementType(@Nullable Language language) {
+    super("C_EXTERNAL_DECLARATION", language);
   }
 
   @NotNull
   public PsiExternalImpl createPsi(@NotNull PsiExternalStub stub) {
     return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+  }
+
+  @NotNull
+  public PsiExternalImpl createPsi(@NotNull ASTNode node) {
+    return new PsiExternalImpl(ORTypesUtil.getInstance(getLanguage()), node);
   }
 
   @NotNull
@@ -56,6 +60,6 @@ public class PsiExternalStubElementType extends IStubElementType<PsiExternalStub
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

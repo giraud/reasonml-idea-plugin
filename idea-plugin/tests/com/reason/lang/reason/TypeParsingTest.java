@@ -3,13 +3,13 @@ package com.reason.lang.reason;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.psi.PsiExternal;
 import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiJsObject;
-import com.reason.lang.core.psi.PsiObjectField;
-import com.reason.lang.core.psi.PsiRecord;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.PsiSignature;
 import com.reason.lang.core.psi.PsiSignatureItem;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.PsiJsObject;
+import com.reason.lang.core.psi.impl.PsiObjectField;
+import com.reason.lang.core.psi.impl.PsiRecord;
 import java.util.*;
 import org.jetbrains.annotations.NotNull;
 

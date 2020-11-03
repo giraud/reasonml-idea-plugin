@@ -1,25 +1,20 @@
 package com.reason;
 
-import com.intellij.execution.configurations.PathEnvironmentVariableUtil;
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManagerCore;
-import com.intellij.openapi.extensions.PluginId;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.util.SystemInfo;
-import com.intellij.openapi.vfs.VirtualFile;
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.execution.configurations.*;
+import com.intellij.ide.plugins.*;
+import com.intellij.openapi.extensions.*;
+import com.intellij.openapi.module.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.roots.*;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import org.jetbrains.annotations.*;
+
+import java.io.*;
+import java.nio.charset.*;
+import java.nio.file.*;
+import java.util.*;
 
 public class Platform {
 
@@ -29,7 +24,8 @@ public class Platform {
 
   private static final Log LOG = Log.create("platform");
 
-  private Platform() {}
+  private Platform() {
+  }
 
   @NotNull
   public static String getOsPrefix() {
@@ -58,9 +54,7 @@ public class Platform {
     return plugin == null ? null : plugin.getPluginPath();
   }
 
-  @NotNull
-  private static Map<Module, VirtualFile> findContentRootsFor(
-      @NotNull Project project, @NotNull String filename) {
+  private static @NotNull Map<Module, VirtualFile> findContentRootsFor(@NotNull Project project, @NotNull String filename) {
     Map<Module, VirtualFile> rootContents = new HashMap<>();
 
     ModuleManager moduleManager = ModuleManager.getInstance(project);
@@ -78,10 +72,9 @@ public class Platform {
 
   /**
    * @deprecated replace usages with ORProjectManager::findContentRoots which returns ALL potential
-   *     roots.
+   * roots.
    */
-  public static @Nullable VirtualFile findContentRootFor(
-      @NotNull Project project, @NotNull String filename) {
+  public static @Nullable VirtualFile findContentRootFor(@NotNull Project project, @NotNull String filename) {
     Map<Module, VirtualFile> rootContents = findContentRootsFor(project, filename);
 
     if (rootContents.isEmpty()) {
@@ -106,39 +99,6 @@ public class Platform {
     }
   }
 
-  /**
-   * Move this out of jps-plugin and replace implementation with ORProjectManager. This incorrectly
-   * assumes that the project is a BuckleScript project which might not be the case. Could be Dune,
-   * Esy, mono-repo, etc.
-   */
-  @NotNull
-  public static String removeProjectDir(@NotNull Project project, @NotNull String path) {
-    try {
-      VirtualFile baseRoot = findContentRootFor(project, PACKAGE_JSON_NAME);
-      if (baseRoot == null) {
-        return path;
-      }
-      Path basePath = FileSystems.getDefault().getPath(baseRoot.getPath());
-      Path relativePath = basePath.relativize(new File(path).toPath());
-      return relativePath.toString();
-    } catch (IllegalArgumentException e) {
-      return path;
-    }
-  }
-
-  @Nullable
-  public static VirtualFile findFileByRelativePath(@NotNull Project project, @NotNull String path) {
-    for (Module module : ModuleManager.getInstance(project).getModules()) {
-      VirtualFile moduleFile = module.getModuleFile();
-      VirtualFile baseDir = moduleFile == null ? null : moduleFile.getParent();
-      VirtualFile file = baseDir == null ? null : baseDir.findFileByRelativePath(path);
-      if (file != null) {
-        return file;
-      }
-    }
-    return null;
-  }
-
   public static @NotNull Optional<Path> findExecutableInPath(String filename, String shellPath) {
     if (SystemInfo.isWindows) {
       filename += WINDOWS_EXECUTABLE_SUFFIX;
@@ -146,4 +106,30 @@ public class Platform {
     File exeFile = PathEnvironmentVariableUtil.findInPath(filename, shellPath, null);
     return exeFile == null ? Optional.empty() : Optional.of(exeFile.toPath());
   }
+
+  public static @NotNull String getRelativePathToModule(@NotNull PsiFile file) {
+    VirtualFile virtualFile = file.getVirtualFile();
+    String relativePath = virtualFile == null ? file.getName() : virtualFile.getPath();
+
+    Module module = ModuleUtil.findModuleForFile(file);
+    if (module != null) {
+      String fileName = file.getName();
+      ModuleRootManagerEx moduleRootManager = ModuleRootManagerEx.getInstanceEx(module);
+      for (VirtualFile sourceRoot : moduleRootManager.getSourceRoots()) {
+        VirtualFile child = sourceRoot.findChild(fileName);
+        if (child != null) {
+          relativePath = child.getPath().replace(sourceRoot.getPath(), sourceRoot.getName());
+          break;
+        }
+      }
+    }
+
+    return relativePath;
+  }
+
+  public static @Nullable Module getModule(@NotNull Project project, @Nullable VirtualFile file) {
+    PsiFile psiFile = file == null ? null : PsiManager.getInstance(project).findFile(file);
+    return psiFile == null ? null : ModuleUtil.findModuleForFile(psiFile);
+  }
+
 }

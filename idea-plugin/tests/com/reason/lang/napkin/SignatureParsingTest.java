@@ -3,6 +3,7 @@ package com.reason.lang.napkin;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiRecord;
 import com.reason.lang.core.signature.ORSignature;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -136,4 +137,18 @@ public class SignatureParsingTest extends NsParsingTestCase {
   //    assertEquals("(string, payload, ~meta: 'meta=?, unit) => opaqueFsa",
   // signature.asString(myLanguage));
   // }
+
+  public void test_GH_275b() {
+    PsiSwitch e =
+        firstOfType(
+            parseCode(
+                "switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None } } }"),
+            PsiSwitch.class);
+
+    assertEquals(
+        "switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None } } }",
+        e.getText());
+    assertEquals(
+        "let _ = { switch (x) { | None => None } }", e.getPatterns().get(0).getBody().getText());
+  }
 }

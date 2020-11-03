@@ -1,27 +1,34 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiVariantDeclaration;
 import com.reason.lang.core.stub.PsiVariantDeclarationStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiVariantStubElementType
-    extends IStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration>
-    implements ORCompositeType {
+    extends ORStubElementType<PsiVariantDeclarationStub, PsiVariantDeclaration> {
 
-  public PsiVariantStubElementType(@NotNull String name, Language language) {
-    super(name, language);
+  public PsiVariantStubElementType(Language language) {
+    super("C_VARIANT_DECLARATION", language);
   }
 
   @NotNull
   public PsiVariantDeclaration createPsi(@NotNull final PsiVariantDeclarationStub stub) {
     return new PsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), stub, this);
+  }
+
+  @NotNull
+  public PsiVariantDeclaration createPsi(@NotNull ASTNode node) {
+    return new PsiVariantDeclaration(ORTypesUtil.getInstance(getLanguage()), node);
   }
 
   @NotNull
@@ -59,6 +66,6 @@ public class PsiVariantStubElementType
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

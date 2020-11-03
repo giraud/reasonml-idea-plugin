@@ -1,18 +1,17 @@
 package com.reason.ide;
 
-import com.intellij.json.psi.JsonFile;
-import com.intellij.lang.javascript.psi.JSFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.reason.bs.BsConstants;
-import com.reason.esy.EsyPackageJson;
+import com.intellij.json.psi.*;
+import com.intellij.psi.*;
+import com.reason.esy.*;
 import com.reason.ide.files.*;
-import com.reason.ide.search.IndexedFileModule;
+import com.reason.ide.search.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import icons.ORIcons;
+import com.reason.lang.core.psi.impl.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class IconProvider extends com.intellij.ide.IconProvider {
   @Nullable
@@ -38,9 +37,6 @@ public class IconProvider extends com.intellij.ide.IconProvider {
       }
       if (element instanceof NsInterfaceFile) {
         return ORIcons.NS_INTERFACE_FILE;
-      }
-      if (isBsJsFile((PsiFile) element)) {
-        return ORIcons.BS_FILE;
       }
       if (isEsyPackageJson((PsiFile) element)) {
         return ORIcons.ESY_FILE;
@@ -85,14 +81,5 @@ public class IconProvider extends com.intellij.ide.IconProvider {
 
   private boolean isEsyPackageJson(PsiFile element) {
     return element instanceof JsonFile && EsyPackageJson.isEsyPackageJson(element.getVirtualFile());
-  }
-
-  /* needed as plugin.xml's filetype extension does NOT support extensions with multiple "." */
-  private static boolean isBsJsFile(PsiFile psiFile) {
-    if (psiFile instanceof JSFile) {
-      JSFile jsFile = (JSFile) psiFile;
-      return jsFile.getName().endsWith("." + BsConstants.BS_JS_FILE_EXTENSION);
-    }
-    return false;
   }
 }

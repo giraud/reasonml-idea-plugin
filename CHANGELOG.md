@@ -12,6 +12,16 @@
 
 ## Unreleased
 
+Dune integration has been updated, [documentation](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) is also up to date. 
+
+- :bug: [#276](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/276) Class JSFile not found
+- :bug: [#275](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275) Incorrect parsing of switch with signature
+- :bug: [#245](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/245) Resolve property of JSX tag
+- :bug: [#124](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/124) Repl freezes with Ocaml 4.07
+- :nail_care: Fold switch/match
+- :house: Use [rincewind@0.9.1](https://github.com/giraud/rincewind)
+- :house: refactor Dune integration: works with native (linux), wsl (windows) and cygwin (windows)
+
 ## 0.93.1 - 2020/10/09
 
 0.93.1

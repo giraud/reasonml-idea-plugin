@@ -1,22 +1,19 @@
 package com.reason.ide.go;
 
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
-import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
-import com.intellij.codeInsight.daemon.impl.GutterTooltipHelper;
-import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
-import com.intellij.psi.PsiElement;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.search.PsiFinder;
+import com.intellij.codeInsight.daemon.*;
+import com.intellij.codeInsight.daemon.impl.*;
+import com.intellij.codeInsight.navigation.*;
+import com.intellij.openapi.editor.markup.*;
+import com.intellij.psi.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
-import icons.ORIcons;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.impl.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
   @Override
@@ -32,6 +29,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             ((PsiLet) parent).getQualifiedName(),
             result,
             containingFile,
+            "method",
             PsiLet.class,
             PsiVal.class);
       } else if (parent instanceof PsiExternal) {
@@ -40,6 +38,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             ((PsiExternal) parent).getQualifiedName(),
             result,
             containingFile,
+            "method",
             PsiExternal.class);
       } else if (parent instanceof PsiVal) {
         extractRelatedExpressions(
@@ -47,6 +46,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             ((PsiVal) parent).getQualifiedName(),
             result,
             containingFile,
+            "method",
             PsiVal.class,
             PsiLet.class);
       } else if (parent instanceof PsiType) {
@@ -55,6 +55,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             ((PsiType) parent).getQualifiedName(),
             result,
             containingFile,
+            "type",
             PsiType.class);
       }
     } else if (element instanceof PsiUpperIdentifier) {
@@ -64,6 +65,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             ((PsiInnerModule) parent).getQualifiedName(),
             result,
             containingFile,
+            "module",
             PsiInnerModule.class);
       } else if (parent instanceof PsiException) {
         extractRelatedExpressions(
@@ -71,6 +73,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
             ((PsiException) parent).getQualifiedName(),
             result,
             containingFile,
+            "exception",
             PsiException.class);
       }
     }
@@ -82,6 +85,7 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
       @Nullable String qname,
       @NotNull Collection<? super RelatedItemLineMarkerInfo<?>> result,
       @NotNull FileBase containingFile,
+      @NotNull String method,
       @NotNull Class<? extends T>... clazz) {
     if (element == null) {
       return;
@@ -98,12 +102,12 @@ public class ORLineMarkerProvider extends RelatedItemLineMarkerProvider {
           String tooltip =
               GutterTooltipHelper.getTooltipText(
                   Collections.singletonList(psiRelatedFile),
-                  (isInterface ? "Implements" : "Declare") + " method in ",
+                  (isInterface ? "Implements " : "Declare ") + method + " in ",
                   false,
                   null);
           result.add(
               NavigationGutterIconBuilder.create(
-                      isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
+                  isInterface ? ORIcons.IMPLEMENTED : ORIcons.IMPLEMENTING)
                   .setTooltipText(tooltip)
                   .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                   .setTargets(Collections.singleton(relatedElement))

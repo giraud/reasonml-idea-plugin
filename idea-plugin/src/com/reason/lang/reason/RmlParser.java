@@ -10,9 +10,10 @@ import com.intellij.psi.tree.IElementType;
 import com.reason.lang.CommonParser;
 import com.reason.lang.ParserScope;
 import com.reason.lang.ParserState;
+import com.reason.lang.core.stub.RmlStubBasedElementTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class RmlParser extends CommonParser<RmlTypes> {
+public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedElementTypes {
 
   RmlParser() {
     super(RmlTypes.INSTANCE);
@@ -389,10 +390,13 @@ public class RmlParser extends CommonParser<RmlTypes> {
   }
 
   private void parsePipe(@NotNull ParserState state) {
-    if (state.is(m_types.C_TYPE_BINDING) || state.is(m_types.C_VARIANT_DECLARATION)) {
+    if (state.is(m_types.C_TYPE_BINDING) || state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
       // type t = |>|<| ...
       // type t = | X |>|<| Y ...
-      state.popEndUntil(m_types.C_TYPE_BINDING).advance().mark(m_types.C_VARIANT_DECLARATION);
+      state
+          .popEndUntil(m_types.C_TYPE_BINDING)
+          .advance()
+          .mark(m_types.INSTANCE.C_VARIANT_DECLARATION);
     } else if (state.isCurrentResolution(tryBodyWith)) {
       // try (...) { |>|<| ...
       state.mark(m_types.C_TRY_HANDLER).resolution(tryBodyWithHandler);
@@ -756,7 +760,8 @@ public class RmlParser extends CommonParser<RmlTypes> {
         }
       }
 
-      if (state.is(m_types.C_DECONSTRUCTION)) {
+      if (state.is(m_types.C_DECONSTRUCTION)
+          || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))) {
         state.wrapWith(m_types.C_LOWER_IDENTIFIER);
       } else if (!state.is(m_types.C_TAG_PROPERTY)) {
         state.wrapWith(m_types.C_LOWER_SYMBOL);
@@ -883,7 +888,6 @@ public class RmlParser extends CommonParser<RmlTypes> {
     state.advance();
 
     if (scope != null) {
-      scope.complete();
       state.popEnd();
     }
 
@@ -905,7 +909,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
       state
           .popEnd()
           .resolution(functorNamedEq)
-          .updateCurrentCompositeElementType(m_types.C_FUNCTOR)
+          .updateCurrentCompositeElementType(m_types.C_FUNCTOR_DECLARATION)
           .markScope(m_types.C_FUNCTOR_PARAMS, m_types.LPAREN)
           .resolution(functorParams)
           .advance()
@@ -921,7 +925,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
           .advance()
           .mark(m_types.C_FUNCTOR_PARAM)
           .resolution(functorParam);
-    } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
+    } else if (state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
       // Variant params ::  type t = | Variant |>(<| .. )
       state
           .markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN)
@@ -967,7 +971,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
       //  let |>(<| + ) =
       //  let |>(<| a, b ) =
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
-    } else if (state.is(m_types.C_BINARY_CONDITION)) {
+    } else if (state.is(m_types.C_BINARY_CONDITION) && !state.hasScopeToken()) {
       // |>(<| ... ) ? ...
       state.updateScopeToken(m_types.LPAREN);
     } else {
@@ -1081,7 +1085,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     } else if (state.is(m_types.C_TAG_PROPERTY)) {
       // <X p|> =<| ...
       state.advance().mark(m_types.C_TAG_PROP_VALUE);
-    } else if (state.isCurrentResolution(module)) {
+    } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> =<| ...
       state.advance().mark(m_types.C_UNKNOWN_EXPR /*C_DUMMY*/).resolution(moduleBinding).dummy();
     } else if (state.is(m_types.C_FUN_PARAM)) {
@@ -1095,8 +1099,9 @@ public class RmlParser extends CommonParser<RmlTypes> {
     if (state.isInContext(funPattern)) {
       state.popEndUntilResolution(funPattern);
     }
-    if (state.in(m_types.C_PATTERN_MATCH_BODY)) {
-      state.popEndUntil(m_types.C_PATTERN_MATCH_BODY);
+
+    if (state.is(m_types.C_LET_BINDING) && !state.hasScopeToken()) {
+      state.popEndUntil(m_types.C_LET_DECLARATION).popEnd();
     }
 
     if (!state.isCurrentResolution(patternMatchBody)) {
@@ -1112,7 +1117,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
     if (state.isCurrentResolution(module)) {
       // module |>M<| ...
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
-    } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
+    } else if (state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
       // Declaring a variant ::  type t = | |>X<| ..
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
     } else if (state.is(m_types.C_EXCEPTION_DECLARATION)) {
@@ -1158,7 +1163,7 @@ public class RmlParser extends CommonParser<RmlTypes> {
         if (state.is(m_types.C_TYPE_BINDING) && nextElementType != m_types.DOT) {
           // We are declaring a variant without a pipe before
           // type t = |>X<| | ...
-          state.mark(m_types.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
+          state.mark(m_types.INSTANCE.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
           return;
         } else if (!state.isCurrentResolution(moduleNamedEq)
             && !state.isCurrentResolution(maybeFunctorCall)

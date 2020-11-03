@@ -1,15 +1,18 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.*;
+import com.intellij.psi.stubs.IndexSink;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.stubs.StubInputStream;
+import com.intellij.psi.stubs.StubOutputStream;
 import com.intellij.util.io.StringRef;
 import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.impl.PsiLetImpl;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.stub.PsiLetStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,16 +20,20 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet>
-    implements ORCompositeType {
+public class PsiLetStubElementType extends ORStubElementType<PsiLetStub, PsiLet> {
 
-  public PsiLetStubElementType(@NotNull String name, @Nullable Language language) {
-    super(name, language);
+  public PsiLetStubElementType(@Nullable Language language) {
+    super("C_LET_DECLARATION", language);
   }
 
   @NotNull
   public PsiLetImpl createPsi(@NotNull PsiLetStub stub) {
     return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+  }
+
+  @Override
+  public @NotNull PsiElement createPsi(ASTNode node) {
+    return new PsiLetImpl(ORTypesUtil.getInstance(getLanguage()), node);
   }
 
   @NotNull
@@ -116,6 +123,6 @@ public class PsiLetStubElementType extends IStubElementType<PsiLetStub, PsiLet>
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

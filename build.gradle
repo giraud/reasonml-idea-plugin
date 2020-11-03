@@ -1,8 +1,6 @@
 plugins {
     // https://github.com/JetBrains/gradle-intellij-plugin
-    id 'org.jetbrains.intellij' version "0.5.0"
-    // https://github.com/sherter/google-java-format-gradle-plugin
-    id 'com.github.sherter.google-java-format' version '0.8'
+    id 'org.jetbrains.intellij' version "0.6.1"
 }
 
 repositories {
@@ -49,15 +47,13 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
-            <li>#272 - Another case: structure panel missing function definition with "and"</li>
-            <li>#274 - Omit '()' in structure panel</li>
-            <li>#273 - Some constructor names not highlighted in function/match patterns</li>
-            <li>#119 - Support for automatically closing quotes (double)</li>
-            <li>'Goto class' use a custom presentation for inner modules</li> 
-            <li>#91 - Jumping to some module-related symbol definitions from Structure Panel doesn't highlight symbol right away (incorrect module type detection)<li>f
-            <li>#271 - Structure panel missing function defined with "and"</li>
-            <li>#270 - Function definition with type variables not recognized as a function</li>
-            <li>Fix monorepo on windows</li>
+            <li>#276 - Separate IconProvider in two different implementation: move js references in js-deps.xml descriptor file</li>
+            <li>#275 - Incorrect parsing of switch with signature</li>
+            <li>#245 - Resolve property of JSX tag</li>
+            <li>#124 - Repl freezes with OCaml</li>
+            <li>Fold switch/match</li>
+            <li>Use rincewind@0.9.1</li>
+            <li>Refactor the dune integration/documentation</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

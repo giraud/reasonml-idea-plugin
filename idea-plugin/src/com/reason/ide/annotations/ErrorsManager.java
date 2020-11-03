@@ -1,6 +1,8 @@
 package com.reason.ide.annotations;
 
+import com.intellij.openapi.util.Pair;
 import java.util.Collection;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 public interface ErrorsManager {
@@ -15,4 +17,7 @@ public interface ErrorsManager {
   void clearErrors();
 
   void clearErrors(@NotNull String moduleName);
+
+  @NotNull
+  Pair<Set<String>, Set<String>> getKeys();
 }

@@ -4,6 +4,8 @@ import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.icons.AllIcons;
 import javax.swing.*;
+
+import icons.ORIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class ReplRunConfigurationType implements ConfigurationType {
@@ -21,13 +23,13 @@ public class ReplRunConfigurationType implements ConfigurationType {
 
   @Override
   public @NotNull Icon getIcon() {
-    return AllIcons.General.Information;
+    return ORIcons.OCAML;
   }
 
   @NotNull
   @Override
   public String getId() {
-    return "DEMO_RUN_CONFIGURATION";
+    return "OCAML_RUN_CONFIGURATION";
   }
 
   @NotNull

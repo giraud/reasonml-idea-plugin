@@ -1,8 +1,8 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.psi.PsiScopedExpr;
 import com.reason.lang.core.psi.PsiVal;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import com.reason.lang.core.psi.impl.PsiValImpl;
 
 public class ValParsingTest extends OclParsingTestCase {

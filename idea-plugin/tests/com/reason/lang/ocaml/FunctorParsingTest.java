@@ -4,12 +4,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiConstraint;
 import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiFunctorCall;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiUpperSymbol;
+import com.reason.lang.core.psi.impl.PsiConstraint;
+import com.reason.lang.core.psi.impl.PsiFunctorCall;
 import java.util.*;
 import java.util.stream.*;
 

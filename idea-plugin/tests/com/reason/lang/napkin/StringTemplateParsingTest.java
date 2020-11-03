@@ -2,10 +2,10 @@ package com.reason.lang.napkin;
 
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiInterpolation;
-import com.reason.lang.core.psi.PsiInterpolationReference;
 import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
+import com.reason.lang.core.psi.impl.PsiInterpolation;
+import com.reason.lang.core.psi.impl.PsiInterpolationReference;
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")

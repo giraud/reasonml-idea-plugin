@@ -8,7 +8,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.InjectedLanguagePlaces;
 import com.intellij.psi.LanguageInjector;
 import com.intellij.psi.PsiLanguageInjectionHost;
-import com.reason.lang.core.psi.PsiRawBody;
+import com.reason.lang.core.psi.impl.PsiRawBody;
 import org.jetbrains.annotations.NotNull;
 
 public class JsInjector implements LanguageInjector {

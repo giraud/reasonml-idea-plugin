@@ -4,16 +4,14 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiBinaryCondition;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiPatternMatch;
-import com.reason.lang.core.psi.PsiPatternMatchBody;
-import com.reason.lang.core.psi.PsiScopedExpr;
-import com.reason.lang.core.psi.PsiSwitch;
-import com.reason.lang.core.psi.PsiUpperSymbol;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import java.util.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.PsiBinaryCondition;
+import com.reason.lang.core.psi.impl.PsiPatternMatch;
+import com.reason.lang.core.psi.impl.PsiPatternMatchBody;
+import com.reason.lang.core.psi.impl.PsiScopedExpr;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class SwitchParsingTest extends RmlParsingTestCase {
@@ -191,5 +189,32 @@ public class SwitchParsingTest extends RmlParsingTestCase {
     assertEquals("V2(_)", patterns.get(1).getText());
     assertEquals("Empty", patterns.get(2).getText());
     assertEquals("Unknown => None", patterns.get(3).getText());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/275
+  public void test_GH_275() {
+    PsiFunction e =
+        firstOfType(
+            parseCode("items->Belt.Array.map(i => switch ((i: t)) { | Value => 1 });"),
+            PsiFunction.class);
+
+    assertEquals("i => switch ((i: t)) { | Value => 1 }", e.getText());
+    PsiSwitch s = (PsiSwitch) e.getBody().getFirstChild();
+    assertEquals("((i: t))", s.getCondition().getText());
+    assertEquals("Value => 1", s.getPatterns().get(0).getText());
+  }
+
+  public void test_GH_275b() {
+    PsiSwitch e =
+        firstOfType(
+            parseCode(
+                "switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None }; }; };"),
+            PsiSwitch.class);
+
+    assertEquals(
+        "switch (a, b) { | (Some(a'), Some(b')) => let _ = { switch (x) { | None => None }; }; }",
+        e.getText());
+    assertEquals(
+        "let _ = { switch (x) { | None => None }; };", e.getPatterns().get(0).getBody().getText());
   }
 }

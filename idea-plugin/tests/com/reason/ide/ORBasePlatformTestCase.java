@@ -16,6 +16,8 @@ import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
+
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
@@ -25,7 +27,7 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
   protected FileBase configureCode(@NotNull String fileName, @NotNull String code) {
     PsiFile file = myFixture.configureByText(fileName, code);
     System.out.println("» " + fileName + " " + this.getClass());
-    System.out.println(DebugUtil.psiToString(file, true, true));
+    System.out.println(DebugUtil.psiToString(file, false, true));
 
     return (FileBase) file;
   }
@@ -65,5 +67,11 @@ public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
   protected String getDoc(FileBase file, Language lang) {
     PsiElement resolvedElement = myFixture.getElementAtCaret();
     return getDocForElement(file, lang, resolvedElement);
+  }
+
+  protected Set<String> makePaths(String... values) {
+    Set<String> paths = new HashSet<>();
+    Collections.addAll(paths, values);
+    return paths;
   }
 }

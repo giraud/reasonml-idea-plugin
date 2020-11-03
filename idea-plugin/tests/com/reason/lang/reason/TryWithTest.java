@@ -1,6 +1,6 @@
 package com.reason.lang.reason;
 
-import com.reason.lang.core.psi.PsiTry;
+import com.reason.lang.core.psi.impl.PsiTry;
 
 @SuppressWarnings("ConstantConditions")
 public class TryWithTest extends RmlParsingTestCase {

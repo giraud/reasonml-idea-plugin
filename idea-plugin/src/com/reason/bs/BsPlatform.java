@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VFileProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.reason.Log;
-import com.reason.dune.Dune;
 import com.reason.esy.Esy;
 import com.reason.ide.ORFileUtils;
 import com.reason.ide.settings.ORSettings;
@@ -48,15 +47,6 @@ public class BsPlatform {
       @NotNull Project project, @NotNull VirtualFile sourceFile) {
     return findBsPlatformDirectory(project, sourceFile)
         .flatMap(bsPlatform -> findBinaryInBsPlatform(BSC_EXECUTABLE_NAME, bsPlatform));
-  }
-
-  public static Optional<VirtualFile> findDuneExecutable(@NotNull Project project) {
-    String duneExecutable = ORSettings.getInstance(project).getDuneExecutable();
-    if (duneExecutable.isEmpty()) {
-      return Dune.findDuneExecutable(project);
-    }
-
-    return Optional.ofNullable(LocalFileSystem.getInstance().findFileByPath(duneExecutable));
   }
 
   public static Optional<VirtualFile> findEsyExecutable(@NotNull Project project) {

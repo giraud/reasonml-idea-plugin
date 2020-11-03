@@ -1,7 +1,7 @@
 package com.reason.lang.core.stub.type;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -11,21 +11,25 @@ import com.reason.ide.search.index.IndexKeys;
 import com.reason.lang.core.psi.PsiRecordField;
 import com.reason.lang.core.psi.impl.PsiRecordFieldImpl;
 import com.reason.lang.core.stub.PsiRecordFieldStub;
-import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import java.io.*;
 import org.jetbrains.annotations.NotNull;
 
 public class PsiRecordFieldStubElementType
-    extends IStubElementType<PsiRecordFieldStub, PsiRecordField> implements ORCompositeType {
+    extends ORStubElementType<PsiRecordFieldStub, PsiRecordField> {
 
-  public PsiRecordFieldStubElementType(@NotNull String name, @NotNull Language language) {
-    super(name, language);
+  public PsiRecordFieldStubElementType(@NotNull Language language) {
+    super("C_RECORD_FIELD", language);
   }
 
   @NotNull
   public PsiRecordFieldImpl createPsi(@NotNull final PsiRecordFieldStub stub) {
     return new PsiRecordFieldImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+  }
+
+  @NotNull
+  public PsiRecordFieldImpl createPsi(@NotNull final ASTNode node) {
+    return new PsiRecordFieldImpl(ORTypesUtil.getInstance(getLanguage()), node);
   }
 
   @NotNull
@@ -58,6 +62,6 @@ public class PsiRecordFieldStubElementType
 
   @NotNull
   public String getExternalId() {
-    return getLanguage() + "." + super.toString();
+    return getLanguage().getID() + "." + super.toString();
   }
 }

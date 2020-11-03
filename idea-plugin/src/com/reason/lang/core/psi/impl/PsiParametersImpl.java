@@ -1,15 +1,17 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
+import com.intellij.psi.tree.IElementType;
+import com.reason.lang.core.CompositeTypePsiElement;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiParameter;
 import com.reason.lang.core.psi.PsiParameters;
 import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiParametersImpl extends PsiToken<ORTypes> implements PsiParameters {
-  public PsiParametersImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
+public class PsiParametersImpl extends CompositeTypePsiElement<ORTypes> implements PsiParameters {
+
+  protected PsiParametersImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+    super(types, elementType);
   }
 
   @Override

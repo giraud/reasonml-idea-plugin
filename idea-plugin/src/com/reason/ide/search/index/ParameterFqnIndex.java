@@ -10,7 +10,9 @@ import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 
 public class ParameterFqnIndex extends IntStubIndexExtension<PsiParameter> {
-  private static final int VERSION = 2;
+  private static final int VERSION = 3;
+  public static final StubIndexKey<Integer, PsiParameter> KEY =
+      StubIndexKey.createIndexKey("reason.parameter.fqn");
   private static final ParameterFqnIndex INSTANCE = new ParameterFqnIndex();
 
   @NotNull
@@ -26,7 +28,7 @@ public class ParameterFqnIndex extends IntStubIndexExtension<PsiParameter> {
   @NotNull
   @Override
   public StubIndexKey<Integer, PsiParameter> getKey() {
-    return IndexKeys.PARAMETERS_FQN;
+    return KEY;
   }
 
   @NotNull
@@ -35,11 +37,6 @@ public class ParameterFqnIndex extends IntStubIndexExtension<PsiParameter> {
       @NotNull final Integer integer,
       @NotNull final Project project,
       @NotNull final GlobalSearchScope scope) {
-    return StubIndex.getElements(
-        getKey(),
-        integer,
-        project, /*new JavaSourceFilterScope(scope) TODO*/
-        scope,
-        PsiParameter.class);
+    return StubIndex.getElements(getKey(), integer, project, scope, PsiParameter.class);
   }
 }

@@ -14,6 +14,7 @@ import com.reason.ide.search.PsiTypeElementProvider;
 import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.PsiType;
+import com.reason.lang.core.psi.impl.PsiFakeModule;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
@@ -101,9 +102,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
       quickDoc = "Show usages of fake element '" + resolvedIdentifier.getText() + "'";
     } else if (resolvedIdentifier instanceof FileBase) {
       FileBase resolvedFile = (FileBase) resolvedIdentifier;
-      String relative_path =
-          Platform.removeProjectDir(
-              resolvedFile.getProject(), resolvedFile.getVirtualFile().getParent().getPath());
+      String relative_path = Platform.getRelativePathToModule(resolvedFile);
       quickDoc =
           "<div style='white-space:nowrap;font-style:italic'>"
               + relative_path

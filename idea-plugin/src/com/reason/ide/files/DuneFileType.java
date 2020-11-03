@@ -1,6 +1,6 @@
 package com.reason.ide.files;
 
-import static com.reason.dune.DuneConstants.*;
+import static com.reason.dune.Dune.*;
 
 import com.google.common.collect.ImmutableSet;
 import com.intellij.openapi.fileTypes.FileType;
