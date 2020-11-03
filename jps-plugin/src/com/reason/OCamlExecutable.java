@@ -107,7 +107,7 @@ public abstract class OCamlExecutable {
       return "$PATH";
     }
 
-    // public in 202.2
+    // public in 2020.2
     File getUNCRoot() {
       return new File(UNC_PREFIX + m_distribution.getMsId());
     }
