@@ -16,14 +16,9 @@ First, open the project structure (`File` | `Project structure`), and go to SDK:
 
 Locate your ocaml installation:
 
-![Linux](img/sdk_02.png)
-  > Linux
-
-![Wsl](img/sdk_02_wsl.png)
-  > Windows WSL
-
-![Cygwin](img/sdk_02_cygwin.png)
-  > Windows Cygwin
+- Linux host, using native opam installation <br/> ![Linux](img/sdk_02.png)
+- Windows host, using WSL <br/> ![Wsl](img/sdk_02_wsl.png)
+- Windows host, using Cygwin <br/> ![Cygwin](img/sdk_02_cygwin.png)
 
 **NOTE**: SDK version extraction uses a very simple regular expression, and it
 expects that ocaml installation contains the version number. If it's not the
