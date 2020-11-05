@@ -47,6 +47,7 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
+            <li>#279 - Matched brace isn't highlighted in .res source file</li>
             <li>#278 - let (//) incorrectly parsed as comment</li>
         </ul>
 

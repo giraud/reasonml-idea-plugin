@@ -12,6 +12,7 @@
 
 ## Unreleased
 
+- :bug: ![n] [#279](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/279) Matched brace isn't highlighted in .res source file
 - :bug: ![o] [#278](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278) let (//) incorrectly parsed as comment
 
 ## 0.94 - 2020/11/03
@@ -610,3 +611,4 @@ This release contains a big rewrite of how modules are referenced, it may break 
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
 [r]: docs/img/reason-file.png
 [o]: docs/img/ocaml-file.png
+[n]: docs/img/rescript-file.png
