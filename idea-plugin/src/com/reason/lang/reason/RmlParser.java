@@ -1,17 +1,14 @@
 package com.reason.lang.reason;
 
-import static com.intellij.codeInsight.completion.CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.current_position_;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.empty_element_parsed_guard_;
-import static com.reason.lang.ParserScopeEnum.*;
+import com.intellij.lang.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.*;
+import com.reason.lang.core.stub.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.CommonParser;
-import com.reason.lang.ParserScope;
-import com.reason.lang.ParserState;
-import com.reason.lang.core.stub.RmlStubBasedElementTypes;
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
+import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.reason.lang.ParserScopeEnum.*;
 
 public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedElementTypes {
 
@@ -217,9 +214,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parseEqEq(@NotNull ParserState state) {
-    if (!state.in(m_types.C_BINARY_CONDITION)) {
-      // ?? state.precedeMark(m_types.C_BINARY_CONDITION);
-    }
+    //if (!state.in(m_types.C_BINARY_CONDITION)) {
+    // ?? state.precedeMark(m_types.C_BINARY_CONDITION);
+    //}
   }
 
   private void parseQuestionMark(@NotNull ParserState state) {
@@ -257,8 +254,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       // Defining a pattern match
       // switch (c) { | |>Some<| .. }
       state
-          . // remapCurrentToken(m_types.VARIANT_NAME).
-          wrapWith(m_types.C_VARIANT)
+          // remapCurrentToken(m_types.VARIANT_NAME).
+          .wrapWith(m_types.C_VARIANT)
           .resolution(patternMatchVariant);
     }
   }
@@ -268,16 +265,16 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       // Defining a pattern match
       // switch (c) { | |>Some<| .. }
       state
-          . // remapCurrentToken(m_types.VARIANT_NAME).
-          wrapWith(m_types.C_VARIANT)
+          // .remapCurrentToken(m_types.VARIANT_NAME)
+          .wrapWith(m_types.C_VARIANT)
           .resolution(patternMatchVariant);
     }
   }
 
   private void parseRaw(@NotNull ParserState state) {
     // % |>raw<| ...
-    if (state.isCurrentResolution(macroName)) {
-      state.advance().popEnd().resolution(macroRawNamed);
+    if (state.is(m_types.C_MACRO_NAME)) {
+      state.advance().popEnd().resolution(macroRaw);
     }
   }
 
@@ -293,7 +290,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
 
   private void parseDot(@NotNull ParserState state) {
     if (state.previousElementType1 == m_types.LBRACE
-        && (state.isCurrentResolution(jsObject) || state.isCurrentResolution(jsObjectBinding))) {
+            && (state.isCurrentResolution(jsObject) || state.isCurrentResolution(jsObjectBinding))) {
       // Js object definition
       // ... { |>.<| ... }
       state.advance().mark(m_types.C_OBJECT_FIELD).resolution(objectField);
@@ -348,24 +345,21 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   private void parseComma(@NotNull ParserState state) {
     ParserScope latestScope = state.popEndUntilScope();
 
-    if (latestScope.isResolution(signatureItem)
-        || latestScope.isCompositeType(m_types.C_NAMED_PARAM)) {
-      state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+    if (latestScope.isCompositeType(m_types.C_SIG_ITEM) || latestScope.isCompositeType(m_types.C_NAMED_PARAM)) {
+      state.advance().mark(m_types.C_SIG_ITEM);
     } else if (latestScope.isCompositeType(m_types.C_MIXIN_FIELD)) {
       state.advance();
       IElementType tokenType = state.getTokenType();
       if (tokenType != m_types.RBRACE && tokenType != m_types.LBRACKET) {
-        state.mark(m_types.C_RECORD_FIELD).resolution(recordField);
+        state.mark(m_types.C_RECORD_FIELD);
       }
-    } else if (latestScope.isResolution(recordField)
-        || latestScope.isResolution(objectField)) { // zzz: use field
+    } else if (latestScope.isCompositeType(m_types.C_RECORD_FIELD) || latestScope.isResolution(objectField)) { // zzz: use field
       state.advance();
       IElementType tokenType = state.getTokenType();
       if (tokenType != m_types.RBRACE && tokenType != m_types.LBRACKET) {
         boolean isJsObjectField = latestScope.isCompositeType(m_types.C_OBJECT_FIELD);
         state
-            .mark(isJsObjectField ? m_types.C_OBJECT_FIELD : m_types.C_RECORD_FIELD)
-            .resolution(recordField);
+            .mark(isJsObjectField ? m_types.C_OBJECT_FIELD : m_types.C_RECORD_FIELD);
       }
     } else if (state.isPreviousResolution(let) && state.isCurrentResolution(genericExpression)) {
       // It must be a deconstruction ::  let ( a |>,<| b ) = ...
@@ -390,16 +384,16 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parsePipe(@NotNull ParserState state) {
-    if (state.is(m_types.C_TYPE_BINDING) || state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
+    if (state.is(m_types.C_TYPE_BINDING) || state.is(m_types.C_VARIANT_DECLARATION)) {
       // type t = |>|<| ...
       // type t = | X |>|<| Y ...
       state
           .popEndUntil(m_types.C_TYPE_BINDING)
           .advance()
-          .mark(m_types.INSTANCE.C_VARIANT_DECLARATION);
-    } else if (state.isCurrentResolution(tryBodyWith)) {
+          .mark(m_types.C_VARIANT_DECLARATION);
+    } else if (state.is(m_types.C_TRY_HANDLERS)) {
       // try (...) { |>|<| ...
-      state.mark(m_types.C_TRY_HANDLER).resolution(tryBodyWithHandler);
+      state.mark(m_types.C_TRY_HANDLER);
     } else {
       if (!state.isCurrentResolution(switchBody)) {
         if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
@@ -418,13 +412,13 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parseStringValue(@NotNull ParserState state) {
-    if (state.isCurrentResolution(macroRawNamed)) {
+    if (state.isCurrentResolution(macroRaw)) {
       // [%raw |>"x"<| ...
       state.wrapWith(m_types.C_MACRO_RAW_BODY);
     } else if (state.is(m_types.C_RAW)) {
       // %raw |>"x"<| ...
       state.mark(m_types.C_MACRO_RAW_BODY).advance().popEnd();
-    } else if (state.isCurrentResolution(annotationName)) {
+    } else if (state.is(m_types.C_MACRO_NAME)) {
       state.popEndUntilScope();
     } else if (state.isCurrentResolution(maybeRecordUsage)) {
       IElementType nextToken = state.lookAhead(1);
@@ -441,8 +435,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parseMlStringOpen(@NotNull ParserState state) {
-    if (state.isCurrentResolution(macroRawNamed)) {
-      state.mark(m_types.C_MACRO_RAW_BODY).resolution(macroRawBody);
+    if (state.isCurrentResolution(macroRaw)) {
+      state.mark(m_types.C_MACRO_RAW_BODY);
     }
 
     state.markScope(m_types.C_ML_INTERPOLATOR, m_types.ML_STRING_OPEN);
@@ -479,7 +473,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parseVal(@NotNull ParserState state) {
-    if (!state.isCurrentResolution(annotationName)) {
+    if (!state.is(m_types.C_MACRO_NAME)) {
       state.popEndUntilScope();
       if (state.is(m_types.C_OBJECT)) {
         state.mark(m_types.C_CLASS_FIELD);
@@ -495,7 +489,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parseModule(@NotNull ParserState state) {
-    if (!state.isCurrentResolution(annotationName)) {
+    if (!state.is(m_types.C_MACRO_NAME)) {
       state.popEndUntilScope();
       state.mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
     }
@@ -537,11 +531,11 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parsePercent(@NotNull ParserState state) {
-    if (state.isCurrentResolution(macro)) {
-      state.mark(m_types.C_MACRO_NAME).resolution(macroName).setStart();
+    if (state.is(m_types.C_MACRO_EXPR)) {
+      state.mark(m_types.C_MACRO_NAME).setStart();
     } else if (state.isCurrentResolution(letNamed)) {
       // let name|>%<|private = ...
-      state.mark(m_types.C_LET_ATTR).resolution(letNamedAttribute);
+      state.mark(m_types.C_LET_ATTR);
     } else {
       IElementType nextTokenType = state.rawLookup(1);
       if (nextTokenType == m_types.RAW) {
@@ -563,16 +557,15 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
             .markScope(m_types.C_RECORD_EXPR, m_types.LBRACE)
             .resolution(record)
             .advance()
-            .mark(m_types.C_RECORD_FIELD)
-            .resolution(recordField);
+            .mark(m_types.C_RECORD_FIELD);
       }
       return;
     }
 
     if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
     } else if (state.isCurrentResolution(letNamed)) {
-      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
     } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> :<| ...
       state.resolution(moduleNamedSignature).advance();
@@ -593,31 +586,31 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       state.mark(m_types.C_FUNCTOR_RESULT).resolution(functorResult);
     } else if (state.isCurrentResolution(functorParam)) {
       state.resolution(functorParamColon);
-    } else if (state.isCurrentResolution(recordField) || state.isCurrentResolution(objectField)) {
+    } else if (state.is(m_types.C_RECORD_FIELD) || state.is(m_types.C_OBJECT_FIELD)) {
       state.advance();
       if (!state.isPreviousResolution(recordUsage) && !state.isPreviousResolution(jsObject)) {
-        state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+        state.mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
       }
     } else if (state.is(m_types.C_FUN_PARAM)) {
-      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
     } else if (state.is(m_types.C_NAMED_PARAM)) {
-      state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+      state.advance().mark(m_types.C_SIG_ITEM);
     }
   }
 
   private void parseArrobase(@NotNull ParserState state) {
-    if (state.isCurrentResolution(annotation)) {
-      state.mark(m_types.C_MACRO_NAME).resolution(annotationName);
+    if (state.is(m_types.C_ANNOTATION)) {
+      state.mark(m_types.C_MACRO_NAME);
     }
   }
 
   private void parseLt(@NotNull ParserState state) {
     // Can be a symbol or a JSX tag
     IElementType nextTokenType = state.rawLookup(1);
-    // Note that option is a ReasonML keyword but also a JSX keyword !
+    // Note that option is a ReasonML keyword but also a JSX keyword !
     if (nextTokenType == m_types.LIDENT
-        || nextTokenType == m_types.UIDENT
-        || nextTokenType == m_types.OPTION) {
+            || nextTokenType == m_types.UIDENT
+            || nextTokenType == m_types.OPTION) {
       // Surely a tag
       state
           .remapCurrentToken(m_types.TAG_LT)
@@ -644,8 +637,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
     IElementType nextTokenType = state.rawLookup(1);
     // Note that option is a ReasonML keyword but also a JSX keyword !
     if (nextTokenType == m_types.LIDENT
-        || nextTokenType == m_types.UIDENT
-        || nextTokenType == m_types.OPTION) {
+            || nextTokenType == m_types.UIDENT
+            || nextTokenType == m_types.OPTION) {
       // A closing tag
       if (state.is(m_types.C_TAG_BODY)) {
         state.popEnd();
@@ -714,8 +707,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         state
             .resolution(recordUsage)
             .updateCurrentCompositeElementType(m_types.C_RECORD_EXPR)
-            .mark(m_types.C_RECORD_FIELD)
-            .resolution(recordField);
+            .mark(m_types.C_RECORD_FIELD);
       }
     }
 
@@ -743,11 +735,11 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
             .mark(m_types.C_TAG_PROPERTY)
             .setWhitespaceSkippedCallback(endJsxPropertyIfWhitespace(state));
       } else if (state.isCurrentResolution(recordBinding)) {
-        state.mark(m_types.C_RECORD_FIELD).resolution(recordField);
+        state.mark(m_types.C_RECORD_FIELD);
       } else if (state.isCurrentResolution(jsObjectBinding)) {
-        state.mark(m_types.C_OBJECT_FIELD).resolution(recordField);
+        state.mark(m_types.C_OBJECT_FIELD);
       } else if (state.isCurrentResolution(record)) {
-        state.mark(m_types.C_RECORD_FIELD).resolution(recordField);
+        state.mark(m_types.C_RECORD_FIELD);
       } else {
         IElementType nextElementType = state.lookAhead(1);
 
@@ -761,7 +753,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       }
 
       if (state.is(m_types.C_DECONSTRUCTION)
-          || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))) {
+              || (state.is(m_types.C_FUN_PARAM) && !state.isPrevious(m_types.C_FUN_CALL_PARAMS))) {
         state.wrapWith(m_types.C_LOWER_IDENTIFIER);
       } else if (!state.is(m_types.C_TAG_PROPERTY)) {
         state.wrapWith(m_types.C_LOWER_SYMBOL);
@@ -785,12 +777,12 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   private void parseLBracket(@NotNull ParserState state) {
     IElementType nextTokenType = state.rawLookup(1);
     if (nextTokenType == m_types.ARROBASE) {
-      state.markScope(m_types.C_ANNOTATION, m_types.LBRACKET).resolution(annotation);
+      state.markScope(m_types.C_ANNOTATION, m_types.LBRACKET);
     } else if (nextTokenType == m_types.PERCENT) {
-      state.markScope(m_types.C_MACRO_EXPR, m_types.LBRACKET).resolution(macro);
+      state.markScope(m_types.C_MACRO_EXPR, m_types.LBRACKET);
     } else {
       if (state.previousElementType2 == m_types.UIDENT
-          && state.previousElementType1 == m_types.DOT) {
+              && state.previousElementType1 == m_types.DOT) {
         // Local open ::  M.|>[ <| ... ]
         state.markScope(m_types.C_LOCAL_OPEN, m_types.LBRACKET);
       } else {
@@ -827,9 +819,9 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       state
           .markScope(isJsObject ? m_types.C_JS_OBJECT : m_types.C_RECORD_EXPR, m_types.LBRACE)
           .resolution(isJsObject ? jsObjectBinding : recordBinding);
-    } else if (state.isCurrentResolution(tryBody)) {
+    } else if (state.is(m_types.C_TRY_EXPR)) {
       // A try expression ::  try (..) |>{<| .. }
-      state.markScope(m_types.C_TRY_HANDLERS, m_types.LBRACE).resolution(tryBodyWith);
+      state.markScope(m_types.C_TRY_HANDLERS, m_types.LBRACE);
     } else if (state.isCurrentResolution(module)) {
       // module M = |>{<| ...
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(moduleBinding);
@@ -847,7 +839,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
     } else if (state.is(m_types.C_CLASS_DECLARATION)) {
       // class x = |>{<| ... }
       state.markScope(m_types.C_OBJECT, m_types.LBRACE);
-    } else if (state.isCurrentResolution(switch_)) {
+    } else if (state.is(m_types.C_SWITCH_EXPR)) {
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LBRACE).resolution(switchBody);
     } else if (state.is(m_types.C_FUN_PARAMS)) {
       // ( x , |>{<| ... } ) =>
@@ -858,13 +850,11 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
     } else {
       // it might be a js object
       IElementType nextElement = state.lookAhead(1);
-      if (state.isCurrentResolution(signatureItem) && nextElement == m_types.DOT) {
-        // js object detected (in definition)
-        // let x: |>{<| . ... }
+      if (state.is(m_types.C_SIG_ITEM) && nextElement == m_types.DOT) {
+        // js object detected (in definition) ::  let x: |>{<| . ... }
         state.markScope(m_types.C_JS_OBJECT, m_types.LBRACE).resolution(jsObject);
       } else if (nextElement == m_types.STRING_VALUE || nextElement == m_types.DOT) {
-        // js object detected (in usage)
-        // |>{<| "x" ... }
+        // js object detected (in usage) ::  |>{<| "x" ... }
         state.markScope(m_types.C_JS_OBJECT, m_types.LBRACE).resolution(jsObject);
       } else if (nextElement == m_types.DOTDOTDOT) {
         // record usage ::  x  => |>{<| ...
@@ -904,7 +894,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       //   (x, y) => z  alias x => y => z
       state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(signatureScope);
     } else if (state.isCurrentResolution(moduleBinding)
-        && state.previousElementType1 != m_types.UIDENT) {
+                   && state.previousElementType1 != m_types.UIDENT) {
       // This is a functor ::  module M = |>(<| .. )
       state
           .popEnd()
@@ -925,7 +915,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
           .advance()
           .mark(m_types.C_FUNCTOR_PARAM)
           .resolution(functorParam);
-    } else if (state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
+    } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
       // Variant params ::  type t = | Variant |>(<| .. )
       state
           .markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN)
@@ -933,9 +923,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
           .mark(m_types.C_FUN_PARAM);
     } else if (state.isCurrentResolution(patternMatchVariant)) {
       // It's a constructor ::  | Variant |>(<| .. ) => ..
-      state
-          .markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN)
-          .resolution(patternMatchVariantConstructor);
+      state.markScope(m_types.C_VARIANT_CONSTRUCTOR, m_types.LPAREN);
     } else if (state.is(m_types.C_PATTERN_MATCH_EXPR)) {
       // A tuple in a pattern match ::  | |>(<| .. ) => ..
       state
@@ -943,20 +931,20 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
           .markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN)
           .resolution(genericExpression);
     } else if (state.previousElementType2 == m_types.UIDENT
-        && state.previousElementType1 == m_types.DOT) {
+                   && state.previousElementType1 == m_types.DOT) {
       // Local open ::  M.|>(<| ...
       state.markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
     } else if (state.is(m_types.C_CLASS_DECLARATION)) {
       state.markScope(m_types.C_CLASS_CONSTR, m_types.LPAREN);
-    } else if (state.isCurrentResolution(try_)) {
+    } else if (state.is(m_types.C_TRY_BODY)) {
       // Valid try expression ::  try |>(<| ...
-      state.resolution(tryBody).markScope(m_types.C_TRY_BODY, m_types.LPAREN).resolution(tryBody);
+      state.updateScopeToken(m_types.LPAREN);
     } else if (state.is(m_types.C_IF) || state.is(m_types.C_SWITCH_EXPR)) {
       // if |>(<| ...  OR  switch |>(<| ...
       state.markScope(m_types.C_BINARY_CONDITION, m_types.LPAREN);
     } else if (state.previousElementType1 == m_types.LIDENT
-        && !(state.is(m_types.C_TYPE_DECLARATION)
-            || state.inAny(m_types.C_TYPE_BINDING, m_types.C_SIG_ITEM))) {
+                   && !(state.is(m_types.C_TYPE_DECLARATION)
+                            || state.inAny(m_types.C_TYPE_BINDING, m_types.C_SIG_ITEM))) {
       // calling a function
       state
           .markScope(m_types.C_FUN_CALL_PARAMS, m_types.LPAREN)
@@ -1058,7 +1046,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       } else if (state.is(m_types.C_TAG_PROP_VALUE)) {
         state.popEnd().popEnd();
       } else if (nextTokenType == m_types.ARROW && parenScope.isCompositeType(m_types.C_SIG_ITEM)) {
-        state.advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+        state.advance().mark(m_types.C_SIG_ITEM);
       }
     }
   }
@@ -1072,11 +1060,8 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
 
     if (state.isCurrentResolution(typeNamed)) {
       state.resolution(typeNamedEq).advance().mark(m_types.C_TYPE_BINDING);
-    } else if (state.isCurrentResolution(letNamed)
-        || state.isCurrentResolution(letNamedAttribute)
-        || state.isCurrentResolution(letNamedSignature)) {
-      if (state.isCurrentResolution(letNamedSignature)
-          || state.isCurrentResolution(letNamedAttribute)) {
+    } else if (state.isCurrentResolution(letNamed) || state.is(m_types.C_LET_ATTR) || state.isCurrentResolution(letNamedSignature)) {
+      if (state.isCurrentResolution(letNamedSignature) || state.is(m_types.C_LET_ATTR)) {
         // attribute : let x%private |> = <| ...
         state.popEnd();
       }
@@ -1117,7 +1102,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
     if (state.isCurrentResolution(module)) {
       // module |>M<| ...
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
-    } else if (state.is(m_types.INSTANCE.C_VARIANT_DECLARATION)) {
+    } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
       // Declaring a variant ::  type t = | |>X<| ..
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
     } else if (state.is(m_types.C_EXCEPTION_DECLARATION)) {
@@ -1136,7 +1121,7 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         //  module M = |>X<| ( ... )
         state.markOptional(m_types.C_FUNCTOR_CALL).resolution(maybeFunctorCall);
       } else if ((state.is(m_types.C_TAG_START) || state.is(m_types.C_TAG_CLOSE))
-          && state.previousElementType1 == m_types.DOT) {
+                     && state.previousElementType1 == m_types.DOT) {
         // a namespaced custom component ::  <X.|>Y<| ...
         state.remapCurrentToken(m_types.TAG_NAME);
       } else if (state.isCurrentResolution(patternMatch)) {
@@ -1163,11 +1148,11 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
         if (state.is(m_types.C_TYPE_BINDING) && nextElementType != m_types.DOT) {
           // We are declaring a variant without a pipe before
           // type t = |>X<| | ...
-          state.mark(m_types.INSTANCE.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
+          state.mark(m_types.C_VARIANT_DECLARATION).wrapWith(m_types.C_UPPER_IDENTIFIER);
           return;
         } else if (!state.isCurrentResolution(moduleNamedEq)
-            && !state.isCurrentResolution(maybeFunctorCall)
-            && nextElementType != m_types.DOT) {
+                       && !state.isCurrentResolution(maybeFunctorCall)
+                       && nextElementType != m_types.DOT) {
           // Must be a variant call
           state.wrapWith(m_types.C_VARIANT);
           return;
@@ -1179,16 +1164,18 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
   }
 
   private void parseSwitch(@NotNull ParserState state) {
-    state.mark(m_types.C_SWITCH_EXPR).resolution(switch_);
+    state.mark(m_types.C_SWITCH_EXPR);
   }
 
   private void parseTry(@NotNull ParserState state) {
-    state.mark(m_types.C_TRY_EXPR).resolution(try_).setStart();
+    state.mark(m_types.C_TRY_EXPR)
+        .advance()
+        .mark(m_types.C_TRY_BODY);
   }
 
   private void parseArrow(@NotNull ParserState state) {
     if (state.is(m_types.C_SIG_ITEM)) {
-      state.popEnd().advance().mark(m_types.C_SIG_ITEM).resolution(signatureItem);
+      state.popEnd().advance().mark(m_types.C_SIG_ITEM);
     } else if (state.is(m_types.C_FUN_PARAM)) {
       // x |>=><| ...
       state.popEndUntilOneOf(m_types.C_FUN_CALL_PARAMS, m_types.C_FUN_EXPR);
@@ -1197,17 +1184,15 @@ public class RmlParser extends CommonParser<RmlTypes> implements RmlStubBasedEle
       // let x = ( ... ) |>=><|
       state.advance().mark(m_types.C_FUN_BODY);
     } else if (state.isCurrentResolution(functorNamedEq)
-        || state.isCurrentResolution(functorResult)) {
+                   || state.isCurrentResolution(functorResult)) {
       // module Make = (M) : R |>=><| ...
       if (state.isCurrentResolution(functorResult)) {
         state.popEnd();
       }
       // state.advance().mark(functorBinding, m_types.C_FUNCTOR_BINDING);
-    } else if (state.isCurrentResolution(patternMatchVariant)
-        || state.isCurrentResolution(patternMatchVariantConstructor)
-        || state.isCurrentResolution(patternMatchValue)) {
+    } else if (state.isCurrentResolution(patternMatchVariant) || state.is(m_types.C_VARIANT_CONSTRUCTOR) || state.isCurrentResolution(patternMatchValue)) {
       // switch ( ... ) { | ... |>=><|
-      if (state.isCurrentResolution(patternMatchVariantConstructor)) {
+      if (state.is(m_types.C_VARIANT_CONSTRUCTOR)) {
         state.popEnd();
       }
       state.advance().mark(m_types.C_PATTERN_MATCH_BODY).resolution(patternMatchBody);

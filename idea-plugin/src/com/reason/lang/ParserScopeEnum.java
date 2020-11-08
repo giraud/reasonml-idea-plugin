@@ -13,56 +13,48 @@ public enum ParserScopeEnum {
   moduleNamedEq,
   moduleNamedColon,
   moduleNamedSignature,
+  moduleNamedWithType,
   moduleBinding,
+  moduleType,
+  moduleTypeExtraction,
 
   let,
   letNamed,
-  letNamedAttribute,
   letNamedEq,
   letNamedSignature,
   deconstruction,
 
+  maybeFunctionParameters,
   functionCallParams,
-
   functionMatch,
 
-  val,
-  valNamed,
-
-  annotation,
-  annotationName,
-  annotationParameter,
-  macro,
-  macroName,
-  macroRawNamed,
-  macroRawBody,
+  macroRaw,
 
   maybeRecord,
+  record,
   recordBinding,
-  recordField,
+  maybeRecordUsage,
+  recordUsage,
 
   jsObject,
+  jsObjectBinding,
   object,
   objectField,
   objectFieldNamed,
+  field,
+  fieldNamed,
 
   match,
   matchWith,
-  switch_,
   switchBody,
-
-  try_,
 
   patternMatch,
   patternMatchVariant,
-  patternMatchVariantConstructor,
   patternMatchBody,
+  patternMatchValue,
+  funPattern,
 
   genericExpression,
-
-  field,
-
-  maybeFunctionParameters,
 
   functorNamed,
   functorNamedEq,
@@ -79,22 +71,6 @@ public enum ParserScopeEnum {
   maybeFunctorCall,
   functorCall,
 
-  tryBody,
-  tryBodyWith,
-  tryBodyWithHandler,
-
   signatureScope,
-  signatureItem,
-
-  moduleNamedWithType,
   scope,
-  record,
-  maybeRecordUsage,
-  recordUsage,
-  funPattern,
-  fieldNamed,
-  jsObjectBinding,
-  moduleType,
-  patternMatchValue,
-  moduleTypeExtraction,
 }
