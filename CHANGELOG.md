@@ -14,6 +14,8 @@
 
 - :bug: ![n] [#279](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/279) Matched brace isn't highlighted in .res source file
 - :bug: ![o] [#278](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278) let (//) incorrectly parsed as comment
+- :bug: [#277](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/277) Wrong module resolution for js object
+ comment
 
 ## 0.94 - 2020/11/03
 
