@@ -228,7 +228,10 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
     if (type == m_types.TAG_NAME) {
       return new PsiLeafTagName(type, text);
     }
+    if (type == m_types.STRING_VALUE) {
+      return new PsiLiteralExpression(type, text);
+    }
 
-    return null;
+    return super.createLeaf(type, text);
   }
 }

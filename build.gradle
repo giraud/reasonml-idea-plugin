@@ -50,6 +50,7 @@ subprojects {
             <li>#279 - Matched brace isn't highlighted in .res source file</li>
             <li>#278 - let (//) incorrectly parsed as comment</li>
             <li>#277 - Wrong module resolution for js object</li>
+            <li>#110 - Language injection in strings</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

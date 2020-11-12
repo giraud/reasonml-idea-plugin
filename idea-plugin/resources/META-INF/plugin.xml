@@ -366,6 +366,8 @@
         <compileServer.plugin classpath="jps-plugin.jar"/>
 
         <languageInjector implementation="com.reason.ide.JsInjector"/>
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiLiteralExpression"
+                                 implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--
          | Templates

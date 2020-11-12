@@ -1,10 +1,7 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.stub.OclStubBasedElementTypes;
-import com.reason.lang.core.type.ORCompositeElementType;
-import com.reason.lang.core.type.ORCompositeType;
-import com.reason.lang.core.type.ORTokenElementType;
-import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
 
 public class OclTypes extends ORTypes {
 

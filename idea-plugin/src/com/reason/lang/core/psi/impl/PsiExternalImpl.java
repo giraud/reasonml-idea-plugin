@@ -111,13 +111,12 @@ public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> impl
     return signature != null && signature.asHMSignature().isFunctionSignature();
   }
 
-  @NotNull
   @Override
-  public String getExternalName() {
+  public @NotNull String getExternalName() {
     PsiElement eq = ORUtil.findImmediateFirstChildOfType(this, m_types.EQ);
     if (eq != null) {
-      PsiElement next = ORUtil.nextSibling(eq);
-      if (next != null && next.getNode().getElementType() == m_types.STRING_VALUE) {
+      PsiElement next = ORUtil.nextSiblingWithTokenType(eq, m_types.STRING_VALUE);
+      if (next != null) {
         String text = next.getText();
         return 2 < text.length() ? text.substring(1, text.length() - 1) : "";
       }
