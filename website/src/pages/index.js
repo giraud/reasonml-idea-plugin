@@ -10,47 +10,42 @@ import Hero from '@theme/Hero';
 const features = [
   {
     title: 'Language Support',
-    imageUrl: 'img/undraw_language_support.svg',
+    imageUrl: 'img/syntax-all.png',
+    placement: 'left',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        The Reason IDEA Plugin adds full language support for <code>OCaml</code>, <code>Reason</code>, and <code>ReScript</code>.
+        Language support features include <b>code formatting</b>, <b>type annotations</b>, <b>structured code views</b>, and more.
+        Minimal support for <b>Dune</b> and <b>JSX</b> is included as well.
       </>
     ),
   },
   {
     title: 'Build Tools',
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    imageUrl: 'img/build-tools.png',
+    placement: 'right',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
-  },
-  {
-    title: 'Powered by React',
-    imageUrl: 'img/undraw_docusaurus_react.svg',
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        The plugin integrates with common build tools such as <b>Dune</b>, <b>Esy</b>, and <b>BuckleScript</b>.
+        These are useful for installing dependencies and building your project without leaving your IDE.
       </>
     ),
   },
 ];
 
-function Feature({imageUrl, title, description}) {
+function Feature({imageUrl, title, placement, description}) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
-    <div className={clsx('col col--4', styles.feature)}>
+    <div className={clsx(styles.feature, {[styles.reverse]: placement === 'right'})}>
       {imgUrl && (
-        <div className="text--center">
+        <div>
           <img className={styles.featureImage} src={imgUrl} alt={title} />
         </div>
       )}
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <div>
+        <h3>{title}</h3>
+        <p>{description}</p>
+      </div>
     </div>
   );
 }
@@ -60,7 +55,6 @@ function Home() {
   const {siteConfig = {}} = context;
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
       <Hero />
       {/*<header className={clsx('hero hero--primary', styles.heroBanner)}>*/}

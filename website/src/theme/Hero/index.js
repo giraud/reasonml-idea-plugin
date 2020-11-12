@@ -19,9 +19,20 @@ function Hero() {
                     className={styles.logo}
                 />
                 <h1 className="hero__title">{siteConfig.title}</h1>
-                <p className={clsx("hero__subtitle", styles.subtitle)}>
-                    {siteConfig.tagline}
-                </p>
+                <p className={clsx("hero__subtitle", styles.subtitle)} dangerouslySetInnerHTML={{__html: siteConfig.tagline}} />
+
+                <div className={styles.badges}>
+                  <a href=""><img alt="Build Status" src="https://github.com/reasonml-editor/reasonml-idea-plugin/workflows/Build%20Status/badge.svg" /></a>
+                  <a href="https://plugins.jetbrains.com/plugin/9440-reasonml">
+                    <img alt="JetBrains IntelliJ plugins" src="https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg" />
+                  </a>
+                  <a href="https://discord.com/channels/713777184996589580">
+                    <img alt="Discord" src="https://img.shields.io/discord/713777184996589580" />
+                  </a>
+                  <a href="https://opensource.org/licenses/MIT">
+                    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+                  </a>
+                </div>
 
                 <div className={styles.buttons}>
                   <Link

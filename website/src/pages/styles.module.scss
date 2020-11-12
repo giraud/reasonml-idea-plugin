@@ -28,14 +28,31 @@ a.navbar__brand {
   justify-content: center;
 }
 
-.features {
+.feature {
   display: flex;
-  align-items: center;
   padding: 2rem 0;
   width: 100%;
+  margin-top: calc(var(--ifm-spacing-vertical) * 2);
+
+  & > div {
+    flex-grow: 1;
+  }
+
+  & > * + * {
+    margin-left: calc(var(--ifm-spacing-horizontal) * 4);
+  }
+}
+
+.reverse {
+  flex-direction: row-reverse;
+
+  & > * + * {
+    margin-left: 0;
+    margin-right: calc(var(--ifm-spacing-horizontal) * 4);
+  }
 }
 
 .featureImage {
   height: 200px;
-  width: 200px;
+  min-width: 450px;
 }

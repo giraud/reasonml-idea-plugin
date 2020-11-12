@@ -1,6 +1,6 @@
 :global {
   .button--lg {
-    --ifm-button-size-multiplier: 1.5;
+    --ifm-button-size-multiplier: 1.3;
   }
 
   //.button--primary {
@@ -40,7 +40,17 @@
 }
 
 .logo {
-  max-width: 12rem;
+  padding-top: 3rem;
+  max-width: 8rem;
+}
+
+.badges {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  & > * {
+    padding: 0 calc(var(--ifm-spacing-horizontal) / 2);
+  }
 }
 
 .buttons {
@@ -58,6 +68,5 @@
 }
 
 .subtitle {
-  margin: 0 auto 2rem;
   width: 100%;
 }

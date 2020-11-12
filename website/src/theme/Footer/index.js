@@ -87,7 +87,7 @@ function Footer() {
           </div>
         )}
         {(logo || copyright) && (
-          <div className="text--center">
+          <div>
             {logo && logo.src && (
               <div className="margin-bottom--sm">
                 {logo.href ? (

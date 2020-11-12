@@ -1,13 +1,18 @@
 module.exports = {
   title: 'Reason IDEA Plugin',
-  tagline: 'Language Plugin for OCaml, Reason and ReScript',
+  tagline: 'Language Plugin for <code>OCaml</code>, <code>Reason</code> and' +
+    ' <code>ReScript</code>',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  favicon: 'img/favicon.svg',
+  organizationName: 'reasonm-editor', // Usually your GitHub org/user name.
+  projectName: 'reasonml-idea-plugin', // Usually your repo name.
   themeConfig: {
+    colorMode: {
+      defaultMode: 'dark',
+      respectPrefersColorScheme: true,
+    },
     navbar: {
       title: 'Reason IDEA Plugin',
       logo: {
@@ -18,16 +23,20 @@ module.exports = {
         {
           to: 'docs/',
           activeBasePath: 'docs',
-          label: 'Usage Guides',
+          label: 'Documentation',
           position: 'left',
         },
         {
           to: 'docs/contribute',
           activeBasePath: 'docs',
-          label: 'How to Contribute',
+          label: 'Contribute',
           position: 'left',
         },
-        {to: 'blog', label: 'Latest Updates', position: 'left'},
+        {
+          to: 'blog',
+          label: 'Latest Updates',
+          position: 'left'
+        },
         {
           href: 'https://github.com/reasonml-editor/reasonml-idea-plugin',
           label: 'GitHub',
