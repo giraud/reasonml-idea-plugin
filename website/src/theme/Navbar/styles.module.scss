@@ -9,6 +9,17 @@
   }
 }
 
+:global {
+  .navbar {
+    display: flex;
+    justify-content: center;
+  }
+
+  .navbar__inner {
+    max-width: var(--ifm-container-width);
+  }
+}
+
 @media screen and (max-width: 997px) {
   .displayOnlyInLargeViewport {
     display: none !important;
