@@ -2,12 +2,12 @@ module.exports = {
   title: 'Reason IDEA Plugin',
   tagline: 'Language Plugin for <code>OCaml</code>, <code>Reason</code> and' +
     ' <code>ReScript</code>',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  url: 'https://reasonml-idea-plugin.github.io',
+  baseUrl: '/reasonml-idea-plugin/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.svg',
-  organizationName: 'reasonm-editor', // Usually your GitHub org/user name.
-  projectName: 'reasonml-idea-plugin', // Usually your repo name.
+  organizationName: 'reasonml-editor',
+  projectName: 'reasonml-idea-plugin',
   themeConfig: {
     colorMode: {
       defaultMode: 'dark',
