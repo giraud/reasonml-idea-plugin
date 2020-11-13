@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[16],{70:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/reasonml-idea-plugin/blog/welcome"},{"title":"Hello","permalink":"/reasonml-idea-plugin/blog/hello-world"},{"title":"Hola","permalink":"/reasonml-idea-plugin/blog/hola"}]}')}}]);
