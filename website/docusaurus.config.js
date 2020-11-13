@@ -22,13 +22,13 @@ module.exports = {
       items: [
         {
           to: 'docs/',
-          activeBasePath: 'docs',
           label: 'Documentation',
+          activeBaseRegex: 'docs/?$',
           position: 'left',
         },
         {
           to: 'docs/contribute',
-          activeBasePath: 'docs',
+          activeBasePath: 'docs/contribute',
           label: 'Contribute',
           position: 'left',
         },
