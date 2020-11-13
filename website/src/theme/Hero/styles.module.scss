@@ -29,7 +29,7 @@
 }
 
 .hero {
-  padding: 2rem 0 1rem 0;
+  padding: calc(var(--ifm-spacing-vertical) * 3) 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -40,7 +40,7 @@
 }
 
 .logo {
-  padding-top: 3rem;
+  padding-bottom: var(--ifm-spacing-vertical);
   max-width: 8rem;
 }
 
