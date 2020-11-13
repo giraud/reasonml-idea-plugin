@@ -51,11 +51,11 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
+              label: 'Get Started',
               to: 'docs/',
             },
             {
-              label: 'Second Doc',
+              label: 'Contribute',
               to: 'docs/',
             },
           ],
@@ -64,16 +64,20 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Our Discord',
+              href: 'https://discordapp.com/invite/5dzVqJAW',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'OCaml',
+              href: 'https://ocaml.org/',
             },
             {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              label: 'ReasonML',
+              href: 'https://reasonml.github.io/',
+            },
+            {
+              label: 'ReScript',
+              href: 'https://rescript-lang.org/',
             },
           ],
         },
