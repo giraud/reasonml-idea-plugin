@@ -51,6 +51,11 @@ a.navbar__brand {
       margin-right: calc(var(--ifm-spacing-horizontal) * 4);
     }
   }
+
+  .featureImage {
+    height: 200px;
+    max-width: 400px;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -66,13 +71,12 @@ a.navbar__brand {
     }
   }
 
-
   .reverse {
     flex-direction: column;
   }
+
+  .featureImage {
+    height: auto;
+  }
 }
 
-.featureImage {
-  height: 200px;
-  min-width: 450px;
-}
