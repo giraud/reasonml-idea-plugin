@@ -16,7 +16,7 @@
 - :bug: [#279](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/279) ![n] Matched brace isn't highlighted in .res source file
 - :bug: [#278](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278) ![o] let (//) incorrectly parsed as comment
 - :bug: [#277](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/277) Wrong module resolution for js object
- comment
+- :nail_care: New plugin icon by [@pooch](https://github.com/JohnPucciarelli)
 
 ## 0.94 - 2020/11/03
 
