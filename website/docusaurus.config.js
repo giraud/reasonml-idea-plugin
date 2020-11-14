@@ -27,9 +27,9 @@ module.exports = {
           position: 'left',
         },
         {
-          to: 'docs/contribute',
-          activeBasePath: 'docs/contribute',
-          label: 'Contribute',
+          to: 'docs/contributing',
+          activeBasePath: 'docs/contributing',
+          label: 'How to Contribute',
           position: 'left',
         },
         {
@@ -55,8 +55,8 @@ module.exports = {
               to: 'docs/',
             },
             {
-              label: 'Contribute',
-              to: 'docs/',
+              label: 'How to Contribute',
+              to: 'docs/contributing',
             },
           ],
         },
