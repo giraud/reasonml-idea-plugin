@@ -5,8 +5,6 @@ sidebar_label: FAQ
 slug: /get-started/faq
 ---
 
-## FAQ
-
 - Why don't you consider using Language Server Protocol ?
 
   Mainly because I want a strong integration in the IDE and I need a first class support of Windows.
