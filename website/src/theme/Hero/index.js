@@ -36,19 +36,13 @@ function Hero() {
 
                 <div className={styles.buttons}>
                   <Link
-                      className={clsx(
-                          "button button--primary button--lg",
-                          styles.getStarted
-                      )}
+                      className="button button--primary button--lg"
                       to="https://plugins.jetbrains.com/plugin/9440-reasonml"
                   >
                       Download
                   </Link>
                   <Link
-                    className={clsx(
-                      "button button--secondary button--lg",
-                      styles.getStarted
-                    )}
+                    className="button button--secondary button--lg"
                     to={useBaseUrl("docs/")}
                   >
                     Get Started
