@@ -2,5 +2,5 @@
 
 Contributions are welcome and encouraged.
 
-For instructions on how to develop the plugin,
-see the [Plugin Development](docs/plugin-development.md) document.
+Please see the [How to Contribute](https://reasonml-editor.github.io/reasonml-idea-plugin/docs/contributing/how-to-contribute) page to get started.
+
