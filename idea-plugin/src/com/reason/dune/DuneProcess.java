@@ -1,34 +1,36 @@
 package com.reason.dune;
 
-import com.intellij.execution.*;
-import com.intellij.execution.configurations.*;
+import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
+
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.*;
-import com.intellij.facet.*;
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.projectRoots.*;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
-import com.intellij.util.containers.*;
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.containers.ContainerUtil;
 import com.reason.Compiler;
-import com.reason.Platform;
 import com.reason.*;
-import com.reason.ide.console.*;
-import com.reason.ide.facet.*;
-import org.jetbrains.annotations.*;
+import com.reason.ide.console.CliType;
+import com.reason.ide.facet.DuneFacet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
-
-import static com.intellij.notification.NotificationListener.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DuneProcess implements CompilerProcess {
   private static final Log LOG = Log.create("dune.compiler");
 
   public static final String CONFIGURE_DUNE_SDK = "<html>"
                                                       + "When using a dune config file, you need to create an OCaml SDK and associate it to the project.\n"
-                                                      + "see <a href=\"https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/docs/configuring-ocaml-project.md\">github</a>."
+                                                      + "see <a href=\"https://reasonml-editor.github.io/reasonml-idea-plugin/docs/build-tools/dune\">github</a>."
                                                       + "</html>";
 
   private final @NotNull Project m_project;
