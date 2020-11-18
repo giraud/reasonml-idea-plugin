@@ -20,8 +20,9 @@ This can be done by running the `whereis` command (unix only):
 
 ```shell script
 $ whereis esy
-/usr/local/bin/esy # take note of this location
+/home/john/.n/bin/esy # take note of this location
 ```
+> Note: your location will probably be `/usr/local/bin/esy` if you installed npm with `sudo`
 
 If you haven't installed Esy yet, please see the [installation instructions](https://esy.sh/docs/en/getting-started.html#install-esy).
 
