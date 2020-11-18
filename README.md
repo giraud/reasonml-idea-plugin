@@ -13,19 +13,19 @@ ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 
 ![screenshot](screenshot.png)
 
-## Quick Start 🏁
+## 🏁 Quick Start 
 
 Download and install the [plugin from the JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml).
 
 Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
-## Documentation 📔
+## 📔 Documentation 
 
 Please see our [website](https://reasonml-editor.github.io/reasonml-idea-plugin/docs)
 for the latest documentation and more information on how to get started.
 
-## Language Features 💬
+## 💬 Language Features 
 
 | **Feature**           | **OCaml (.ml)** | **Reason (.re, .rei)** | **ReScript (.res, .resi)** |
 |-----------------------|:---------:|:----------:|:------------:|
@@ -40,7 +40,7 @@ for the latest documentation and more information on how to get started.
 | Code Intentions       |     ✅     |     ✅     |      ✅       |
 | Pair Braces Matching  |     ✅     |     ✅     |      ✅       |
 
-## Build Tool Support 🛠
+## 🛠 Build Tool Support 
 
 | **Feature**          | **BuckleScript** | **Dune** | **Esy** |
 |----------------------|:----------------:|:--------:|:-------:|
@@ -48,15 +48,15 @@ for the latest documentation and more information on how to get started.
 | Build Project        |         ✅        |    ✅    |    ✅    |
 | Error Reporting      |         ✅        |    ✅    |    ✅    |
 
-## Questions & Feedback 📝 
+## 📝 Questions & Feedback  
 
-Please see the [FAQ](https://reasonml-editor.github.io/reasonml-idea-plugin/docs/faq)
+Please see the [FAQ](https://reasonml-editor.github.io/reasonml-idea-plugin/docs/get-started/faq)
 page or [report](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/new)
 an issue.
 
 Post any questions or feedback in [Discord](https://discord.com/channels/713777184996589580).
 
-## How to Help 💁
+## 💁 How to Help 
 
 - Be patient.
 - Give this project some love, star it or star the plugin page in the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin).
@@ -69,12 +69,12 @@ Support my work with liberapay.
 <a href="https://www.paypal.me/rvgiraud"><img alt="Donate using paypal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a>
 Support my work with paypal-me.
 
-## Thanks 🍻
+## 🍻 Thanks 
 
 To all the people who have donated, you are awesome !! Really, this is pure anonymous donation and it blows my mind... I'm very grateful and it's kinda stupid but it keeps me motivated. So big thanks.
 
 Many thanks also to the [JetBrains Team](https://www.jetbrains.com/?from=reasonml-idea-plugin) who provide me an OSS licence for their product.
 
-## License 📄
+## 📄 License 
 
 This project is [MIT licensed](https://github.com/reasonml-editor/reasonml-idea-plugin/blob/pooch/documentation/LICENSE).
