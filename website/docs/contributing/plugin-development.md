@@ -60,5 +60,5 @@ These statements are disabled by default. To enable debug logs, do the following
     ![Log Configuration](../../static/img/enable-logging.png)
  4. Debug logs should now be enabled for that logging category. To view the logs, run **Help > Show Log in Files**
  
- > Note: you can run `tail -f idea.log` from a terminal to following along with the log output.
+ > Note: you can run `tail -f idea.log` from a terminal to follow along with the log output.
  
