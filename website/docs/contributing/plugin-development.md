@@ -56,7 +56,9 @@ These statements are disabled by default. To enable debug logs, do the following
  1. Launch an instance of IntelliJ + the plugin via the gradle task as described above.
  2. In the newly launched instance (not your development instance) click on **Help > Diagnostic Tools > Debug Log Settings...**
  3. Enter the following, replacing `my-logging-category` with the value provided by the `Log.create(...)` instantiator:
+ 
     ![Log Configuration](../../static/img/enable-logging.png)
  4. Debug logs should now be enabled for that logging category. To view the logs, run **Help > Show Log in Files**
+ 
  > Note: you can run `tail -f idea.log` from a terminal to following along with the log output.
  
