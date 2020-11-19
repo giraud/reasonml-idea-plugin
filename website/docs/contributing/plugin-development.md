@@ -5,8 +5,6 @@ sidebar_label: Plugin Development
 slug: /contributing/plugin-development
 ---
 
-# Plugin Development
-
 ## 📚 Resources for Learning
 
 Below are some resources to help familiarize yourself with IDEA plugin development.
