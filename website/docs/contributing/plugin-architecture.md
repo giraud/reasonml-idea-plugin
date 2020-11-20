@@ -41,22 +41,6 @@ The plugin is entirely written in Java (only version 8 is supported for now).
 Kotlin was not selected for two reasons: Java might be easier for people who
 want to contribute occasionally, and Kotlin workflow is much slower than Java.
 
-# Tools
-
-When developing a functionality, two tools are very important: the PSI viewer and
-the indices viewer.
- 
-When you start an IntelliJ instance with gradle for debuging, 
-they are automatically downloaded for you and immediately available.
-
-![PSIViewer tool](../../static/img/arch/psiviewer_01.png)
-
-> The PsiViewer tool to inspect PsiElements of the generated tree from parser
-
-![Îndices viewer](../../static/img/arch/indicesviewer_01.png)
-
-> The indices viewer tool let you verify the correctness of the indexing
-
 # Project organisation
 
 The project is built using the [gradle IntelliJ plugin](https://github.com/JetBrains/gradle-intellij-plugin).

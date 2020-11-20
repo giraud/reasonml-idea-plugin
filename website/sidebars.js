@@ -20,8 +20,10 @@ module.exports = {
     ],
     'Contributing': [
       'contributing/how-to-contribute',
+      'contributing/setup',
       'contributing/plugin-development',
       'contributing/plugin-architecture',
+      'contributing/resources',
     ],
   },
 };
