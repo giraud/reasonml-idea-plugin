@@ -1,13 +1,12 @@
 package com.reason.lang;
 
+import com.intellij.lang.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
+
 import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
 import static com.reason.lang.ParserScopeEnum.*;
-
-import com.intellij.lang.*;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.type.ORTypes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
 
@@ -76,18 +75,17 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
     if (m_types instanceof ORTypes) {
       ORTypes m_types = (ORTypes) this.m_types;
       return scope.isCompositeEqualTo(m_types.C_MODULE_DECLARATION)
-          || scope.isCompositeEqualTo(m_types.C_MODULE_TYPE);
+                 || scope.isCompositeEqualTo(m_types.C_MODULE_TYPE);
     }
     return false;
   }
 
   protected boolean isFunctorResolution(@Nullable ParserScope scope) {
-    return scope != null
-        && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
+    return scope != null && (scope.isResolution(functorNamedEq) || scope.isResolution(functorNamedEqColon));
   }
 
   protected boolean isLetResolution(@NotNull ParserScope scope) {
-    return scope.isResolution(letNamed) || scope.isResolution(letNamedEq);
+    return scope.isResolution(letNamed);
   }
 
   @Nullable
@@ -96,7 +94,7 @@ public abstract class CommonParser<T> implements PsiParser, LightPsiParser {
       ORTypes types = (ORTypes) m_types;
       return (type, start, end) -> {
         if (state.is(types.C_TAG_PROPERTY)
-            || (state.is(types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
+                || (state.is(types.C_TAG_PROP_VALUE) && !state.hasScopeToken())) {
           if (state.is(types.C_TAG_PROP_VALUE)) {
             state.popEnd();
           }

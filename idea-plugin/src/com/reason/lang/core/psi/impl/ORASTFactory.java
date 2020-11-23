@@ -55,6 +55,9 @@ public class ORASTFactory<T extends ORTypes> extends ASTFactory {
     if (type == m_types.C_LOCAL_OPEN) {
       return new PsiLocalOpen(type);
     }
+    if (type == m_types.C_PARAMETERS) {
+      return new PsiParametersImpl(m_types,  type);
+    }
     if (type == m_types.C_PATTERN_MATCH_BODY) {
       return new PsiPatternMatchBody(type);
     }
