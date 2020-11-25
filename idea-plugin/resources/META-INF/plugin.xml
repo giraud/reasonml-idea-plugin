@@ -119,7 +119,6 @@
          -->
 
         <fileEditorProvider implementation="com.reason.ide.editors.CmtFileEditorProvider"/>
-        <projectService serviceImplementation="com.reason.ide.format.ORDocumentFormatter"/>
 
         <!-- https://github.com/reasonml-editor/reasonml-idea-plugin/issues/247 -->
         <!-- internalFileTemplate name="OCaml Interface" -->
@@ -315,7 +314,9 @@
          -->
 
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
-        <projectService serviceImplementation="com.reason.ocaml.OCamlFormatProcess"/>
+        <projectService serviceImplementation="com.reason.dune.OcamlFormatProcess"/>
+        <projectService serviceImplementation="com.reason.ide.format.ORDocumentFormatter"/>
+
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
 
         <typedHandler implementation="com.reason.ide.handlers.ORTypedHandler" id="RmlTypedHandler"/>
