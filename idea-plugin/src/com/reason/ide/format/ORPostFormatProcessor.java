@@ -1,6 +1,6 @@
 package com.reason.ide.format;
 
-import com.intellij.openapi.components.*;
+import com.intellij.lang.*;
 import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.*;
@@ -13,9 +13,13 @@ import com.reason.dune.*;
 import com.reason.ide.files.*;
 import com.reason.ide.settings.*;
 import com.reason.lang.core.*;
-import com.reason.lang.ocaml.*;
-import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
+
+/*
+ java invocation:
+      CodeStyleManager codeStyleManager = ServiceManager.getService(project, CodeStyleManager.class);
+      PsiElement reformat = codeStyleManager.reformat(file);
+ */
 
 /**
  * This class is called when user action 'reformat' (ctrl+alt+L) is fired, after standard format processor
@@ -24,25 +28,24 @@ import org.jetbrains.annotations.*;
 public class ORPostFormatProcessor implements PostFormatProcessor {
   @Override
   public @NotNull PsiElement processElement(@NotNull PsiElement source, @NotNull CodeStyleSettings settings) {
-    if (source instanceof PsiFile) {
-      // Only the whole file can be formatted for now...
-      CodeStyleManager codeStyleManager = ServiceManager.getService(source.getProject(), CodeStyleManager.class);
-      return codeStyleManager.reformat(source);
-    }
-    return source;
+    FormatterProcessor formatter = source instanceof FileBase ? getFormatterProcessor((PsiFile) source) : null;
+    String formattedText = formatter == null ? null : formatter.apply(source.getText());
+    return formattedText == null ? source : ORCodeFactory.createFileFromText(source.getProject(), source.getLanguage(), formattedText);
   }
 
   @Override
   public @NotNull TextRange processText(@NotNull PsiFile source, @NotNull TextRange rangeToReformat, @NotNull CodeStyleSettings settings) {
     FormatterProcessor formatter = getFormatterProcessor(source);
     if (formatter != null) {
-      PostFormatProcessorHelper postProcessorHelper = new PostFormatProcessorHelper(settings.getCommonSettings(source.getLanguage()));
+      Language language = source.getLanguage();
+      PostFormatProcessorHelper postProcessorHelper = new PostFormatProcessorHelper(settings.getCommonSettings(language));
 
       postProcessorHelper.setResultTextRange(rangeToReformat);
       int oldTextLength = source.getTextLength();
 
-      PsiElement formattedElement = formatter.apply(source.getText());
-      if (formattedElement != null) {
+      String formattedText = formatter.apply(source.getText());
+      if (formattedText != null) {
+        PsiElement formattedElement = ORCodeFactory.createFileFromText(source.getProject(), language, formattedText);
         // update ?
         CodeEditUtil.removeChildren(source.getNode(), source.getNode().getFirstChildNode(), source.getNode().getLastChildNode());
         CodeEditUtil.addChildren(source.getNode(), formattedElement.getNode().getFirstChildNode(), formattedElement.getNode().getLastChildNode(), null);
@@ -55,7 +58,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
   }
 
   @Nullable
-  private FormatterProcessor getFormatterProcessor(PsiFile file) {
+  public static FormatterProcessor getFormatterProcessor(PsiFile file) {
     FileType fileType = file.getFileType();
     if (FileHelper.isReason(fileType)) {
       return new RefmtProcessor(file);
@@ -81,12 +84,11 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     }
 
     @Override
-    public @Nullable PsiElement apply(@NotNull String textToFormat) {
+    public @Nullable String apply(@NotNull String textToFormat) {
       if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
         String format = m_isInterface ? "rei" : "re"; // TODO ReformatUtil
         RefmtProcess process = RefmtProcess.getInstance(m_project);
-        String newText = process.run(m_file, m_isInterface, format, textToFormat);
-        return ORCodeFactory.createFileFromText(m_project, RmlLanguage.INSTANCE, newText);
+        return process.run(m_file, m_isInterface, format, textToFormat);
       }
       return null;
     }
@@ -104,11 +106,10 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     }
 
     @Override
-    public @Nullable PsiElement apply(@NotNull String textToFormat) {
+    public @Nullable String apply(@NotNull String textToFormat) {
       if (m_file.exists()) {
         OcamlFormatProcess process = OcamlFormatProcess.getInstance(m_project);
-        String newText = process.format(m_file, textToFormat);
-        return ORCodeFactory.createFileFromText(m_project, OclLanguage.INSTANCE, newText);
+        return process.format(m_file, textToFormat);
       }
       return null;
     }

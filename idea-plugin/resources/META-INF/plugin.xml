@@ -311,7 +311,6 @@
 
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
         <projectService serviceImplementation="com.reason.dune.OcamlFormatProcess"/>
-        <projectService serviceImplementation="com.reason.ide.format.ORDocumentFormatter"/>
         <postFormatProcessor implementation="com.reason.ide.format.ORPostFormatProcessor"/>
 
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
