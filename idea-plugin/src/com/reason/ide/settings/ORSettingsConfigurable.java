@@ -1,24 +1,19 @@
 package com.reason.ide.settings;
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.fileChooser.*;
+import com.intellij.openapi.options.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.ui.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ORSettingsConfigurable implements SearchableConfigurable, Configurable.NoScroll {
 
-  @Nls private static final String OCAMLFORMAT_EXECUTABLE_LABEL = "Choose ocamlformat Executable: ";
-
-  @Nls private static final String BS_PLATFORM_LOCATION_LABEL = "Choose bs-platform Directory: ";
-
-  @Nls private static final String DUNE_EXECUTABLE_LABEL = "Choose dune Executable: ";
-
-  @Nls private static final String ESY_EXECUTABLE_LABEL = "Choose esy Executable: ";
+  @Nls
+  private static final String BS_PLATFORM_LOCATION_LABEL = "Choose bs-platform Directory: ";
+  @Nls
+  private static final String ESY_EXECUTABLE_LABEL = "Choose esy Executable: ";
 
   private final @NotNull Project m_project;
   private ORSettings m_settings;
@@ -29,14 +24,10 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   // General
   private JTextField f_generalFormatWidthColumns;
   private JCheckBox f_generalIsFormatOnSave;
-  private TextFieldWithBrowseButton f_generalOcamlformatExecutable;
 
   // BuckleScript
   private JCheckBox f_bsIsEnabled;
   private TextFieldWithBrowseButton f_bsPlatformLocation;
-
-  // Dune
-  private TextFieldWithBrowseButton f_duneExecutable;
 
   // Esy
   private TextFieldWithBrowseButton f_esyExecutable;
@@ -80,12 +71,9 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     // General
     m_settings.setFormatOnSaveEnabled(f_generalIsFormatOnSave.isSelected());
     m_settings.setFormatColumnWidth(sanitizeInput(f_generalFormatWidthColumns));
-    m_settings.setOcamlformatExecutable(sanitizeInput(f_generalOcamlformatExecutable));
     // BuckleScript
     m_settings.setBsEnabled(f_bsIsEnabled.isSelected());
     m_settings.setBsPlatformLocation(sanitizeInput(f_bsPlatformLocation));
-    // Dune
-    m_settings.setDuneExecutable(sanitizeInput(f_duneExecutable));
     // Esy
     m_settings.setEsyExecutable(sanitizeInput(f_esyExecutable));
   }
@@ -96,22 +84,16 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
         f_generalIsFormatOnSave.isSelected() != m_settings.isFormatOnSaveEnabled();
     boolean isFormatWidthColumnsModified =
         !f_generalFormatWidthColumns.getText().equals(m_settings.getFormatColumnWidth());
-    boolean isOcamlFormatExecutableModified =
-        !f_generalOcamlformatExecutable.getText().equals(m_settings.getOcamlformatExecutable());
     boolean isBsEnabledModified = f_bsIsEnabled.isSelected() != m_settings.isBsEnabled();
     boolean isBsPlatformLocationModified =
         !f_bsPlatformLocation.getText().equals(m_settings.getBsPlatformLocation());
-    boolean isDuneExecutableModified =
-        !f_duneExecutable.getText().equals(m_settings.getDuneExecutable());
     boolean isEsyExecutableModified =
         !f_esyExecutable.getText().equals(m_settings.getEsyExecutable());
     return isFormatOnSaveModified
-        || isFormatWidthColumnsModified
-        || isOcamlFormatExecutableModified
-        || isBsEnabledModified
-        || isBsPlatformLocationModified
-        || isDuneExecutableModified
-        || isEsyExecutableModified;
+               || isFormatWidthColumnsModified
+               || isBsEnabledModified
+               || isBsPlatformLocationModified
+               || isEsyExecutableModified;
   }
 
   @Override
@@ -119,23 +101,14 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
     // General
     f_generalIsFormatOnSave.setSelected(m_settings.isFormatOnSaveEnabled());
     f_generalFormatWidthColumns.setText(m_settings.getFormatColumnWidth());
-    f_generalOcamlformatExecutable.setText(m_settings.getOcamlformatExecutable());
     // BuckleScript
     f_bsIsEnabled.setSelected(m_settings.isBsEnabled());
     f_bsPlatformLocation.setText(m_settings.getBsPlatformLocation());
-    // Dune
-    f_duneExecutable.setText(m_settings.getDuneExecutable());
     // Esy
     f_esyExecutable.setText(m_settings.getEsyExecutable());
   }
 
   private void createGeneralTab() {
-    Project project = m_settings.getProject();
-    f_generalOcamlformatExecutable.addBrowseFolderListener(
-        OCAMLFORMAT_EXECUTABLE_LABEL,
-        null,
-        project,
-        FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
   }
 
   private void createBsTab() {
@@ -148,12 +121,6 @@ public class ORSettingsConfigurable implements SearchableConfigurable, Configura
   }
 
   private void createDuneTab() {
-    Project project = m_settings.getProject();
-    f_duneExecutable.addBrowseFolderListener(
-        DUNE_EXECUTABLE_LABEL,
-        null,
-        project,
-        FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor());
   }
 
   private void createEsyTab() {

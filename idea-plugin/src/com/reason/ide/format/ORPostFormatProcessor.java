@@ -61,24 +61,24 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
   public static FormatterProcessor getFormatterProcessor(PsiFile file) {
     FileType fileType = file.getFileType();
     if (FileHelper.isReason(fileType)) {
-      return new RefmtProcessor(file);
+      return new RmlFormatProcessor(file);
     }
     if (FileHelper.isRescript(fileType)) {
-      return new RefmtProcessor(file); // TODO: RescriptProcessor
+      return new RsProcessor(file);
     }
     if (FileHelper.isOCaml(fileType)) {
-      return new OcamlFormatProcessor(file);
+      return new OclFormatProcessor(file);
     }
     return null;
   }
 
-  static class RefmtProcessor implements FormatterProcessor {
+  static class RmlFormatProcessor implements FormatterProcessor {
     private final Project m_project;
     private final VirtualFile m_file;
     private final boolean m_isInterface;
     private final String m_format;
 
-    RefmtProcessor(@NotNull PsiFile file) {
+    RmlFormatProcessor(@NotNull PsiFile file) {
       m_project = file.getProject();
       m_file = file.getVirtualFile();
       m_isInterface = FileHelper.isInterface(file.getFileType());
@@ -95,11 +95,35 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     }
   }
 
-  private static class OcamlFormatProcessor implements FormatterProcessor {
+  static class RsProcessor implements FormatterProcessor {
+    private final Project m_project;
+    private final VirtualFile m_file;
+    private final boolean m_isInterface;
+    private final String m_format;
+
+    RsProcessor(@NotNull PsiFile file) {
+      m_project = file.getProject();
+      m_file = file.getVirtualFile();
+      m_isInterface = FileHelper.isInterface(file.getFileType());
+      m_format = ReformatUtil.getFormat(file);
+    }
+
+    @Override
+    public @Nullable String apply(@NotNull String textToFormat) {
+      if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
+        // TODO: right now, only `bsc -format «filename» is doable
+        RefmtProcess process = RefmtProcess.getInstance(m_project);
+        return process.convert(m_file, m_isInterface, m_format, m_format, textToFormat);
+      }
+      return null;
+    }
+  }
+
+  private static class OclFormatProcessor implements FormatterProcessor {
     private final Project m_project;
     private final VirtualFile m_file;
 
-    public OcamlFormatProcessor(@NotNull PsiFile file) {
+    public OclFormatProcessor(@NotNull PsiFile file) {
       m_project = file.getProject();
       m_file = file.getVirtualFile();
     }
