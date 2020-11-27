@@ -22,10 +22,16 @@ abstract class OpamCommandLine {
 
   private final Project m_project;
   private final String m_binary;
+  private final boolean m_redirectErrorStream;
 
-  OpamCommandLine(@NotNull Project project, @NotNull String binary) {
+  OpamCommandLine(@NotNull Project project, @NotNull String binary, boolean redirectErrorStream) {
     m_project = project;
     m_binary = binary;
+    m_redirectErrorStream = redirectErrorStream;
+  }
+
+  OpamCommandLine(@NotNull Project project, @NotNull String binary) {
+    this(project, binary, true);
   }
 
   protected abstract @NotNull List<String> getParameters();
@@ -44,7 +50,7 @@ abstract class OpamCommandLine {
       if (contentRoots.length > 0) {
         GeneralCommandLine cli = new GeneralCommandLine(ContainerUtil.prepend(getParameters(), m_binary));
         cli.setWorkDirectory(contentRoots[0].getPath());
-        cli.setRedirectErrorStream(true);
+        cli.setRedirectErrorStream(m_redirectErrorStream);
 
         Map<String, String> env = ServiceManager.getService(m_project, OpamEnv.class).getEnv(odk);
         if (env != null) {

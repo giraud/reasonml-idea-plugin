@@ -1,6 +1,7 @@
 package com.reason.ide.format;
 
 import com.intellij.openapi.application.*;
+import com.intellij.openapi.application.ex.*;
 import com.intellij.openapi.command.*;
 import com.intellij.openapi.command.undo.*;
 import com.intellij.openapi.editor.*;
@@ -34,20 +35,22 @@ public class ReformatOnSave {
           if (newText == null || textToReformat.equals(newText)) {
             LOG.debug(" -> Text unchanged, abort format");
           } else {
-            WriteAction.run(() -> {
-              CommandProcessor.getInstance()
-                  .executeCommand(project, () -> {
-                        document.setText(newText);
-                        FileDocumentManager.getInstance().saveDocument(document);
-                        PsiFile newFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-                        if (newFile != null) {
-                          newFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
-                        }
-                      },
-                      "or.reformat",
-                      "CodeFormatGroup",
-                      document);
-            });
+            ApplicationManagerEx.getApplicationEx()
+                .invokeLater(() ->
+                                 WriteAction.run(() -> {
+                                   CommandProcessor.getInstance()
+                                       .executeCommand(project, () -> {
+                                             document.setText(newText);
+                                             FileDocumentManager.getInstance().saveDocument(document);
+                                             PsiFile newFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+                                             if (newFile != null) {
+                                               newFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
+                                             }
+                                           },
+                                           "or.reformat",
+                                           "CodeFormatGroup",
+                                           document);
+                                 }));
           }
         }
       }

@@ -62,6 +62,9 @@ public class OcamlFormatProcess {
           if (!newText.isEmpty()) { // additional protection
             return newText;
           }
+        } else {
+          errReader.lines().forEach(line -> msgBuffer.append(line).append('\n'));
+          LOG.warn(StringUtil.trimLastCR(msgBuffer.toString()));
         }
       } catch (IOException | RuntimeException | ExecutionException e) {
         LOG.warn(e);
@@ -77,7 +80,7 @@ public class OcamlFormatProcess {
 
   static class OCamlFormatCommandLine extends OpamCommandLine {
     OCamlFormatCommandLine(@NotNull Project project, @NotNull String binary) {
-      super(project, binary);
+      super(project, binary, false);
     }
 
     @Override
