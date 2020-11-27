@@ -35,10 +35,6 @@
         <action id="esy.actions.shell" class="com.reason.ide.console.EsyShellAction" text="Esy shell"/>
 
         <!--suppress PluginXmlCapitalization -->
-        <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
-            <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt r"/>
-        </action>
         <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"
                 text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
             <add-to-group group-id="EditMenu" anchor="last"/>
@@ -316,6 +312,7 @@
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
         <projectService serviceImplementation="com.reason.dune.OcamlFormatProcess"/>
         <projectService serviceImplementation="com.reason.ide.format.ORDocumentFormatter"/>
+        <postFormatProcessor implementation="com.reason.ide.format.ORPostFormatProcessor"/>
 
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
 
