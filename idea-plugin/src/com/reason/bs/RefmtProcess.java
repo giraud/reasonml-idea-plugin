@@ -26,10 +26,6 @@ public class RefmtProcess {
     m_project = project;
   }
 
-  public @NotNull String run(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String format, @NotNull String code) {
-    return convert(sourceFile, isInterface, format, format, code);
-  }
-
   @NotNull
   public String convert(@NotNull VirtualFile sourceFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull String code) {
     Optional<VirtualFile> refmtPath = BsPlatform.findRefmtExecutable(m_project, sourceFile);

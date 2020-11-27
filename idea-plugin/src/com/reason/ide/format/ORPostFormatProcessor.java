@@ -76,19 +76,20 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     private final Project m_project;
     private final VirtualFile m_file;
     private final boolean m_isInterface;
+    private final String m_format;
 
     RefmtProcessor(@NotNull PsiFile file) {
       m_project = file.getProject();
       m_file = file.getVirtualFile();
       m_isInterface = FileHelper.isInterface(file.getFileType());
+      m_format = ReformatUtil.getFormat(file);
     }
 
     @Override
     public @Nullable String apply(@NotNull String textToFormat) {
       if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
-        String format = m_isInterface ? "rei" : "re"; // TODO ReformatUtil
         RefmtProcess process = RefmtProcess.getInstance(m_project);
-        return process.run(m_file, m_isInterface, format, textToFormat);
+        return process.convert(m_file, m_isInterface, m_format, m_format, textToFormat);
       }
       return null;
     }
@@ -97,12 +98,10 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
   private static class OcamlFormatProcessor implements FormatterProcessor {
     private final Project m_project;
     private final VirtualFile m_file;
-    private final boolean m_isInterface; // TODO
 
     public OcamlFormatProcessor(@NotNull PsiFile file) {
       m_project = file.getProject();
       m_file = file.getVirtualFile();
-      m_isInterface = FileHelper.isInterface(file.getFileType());
     }
 
     @Override

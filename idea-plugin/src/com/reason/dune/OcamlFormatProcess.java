@@ -13,8 +13,6 @@ import java.util.*;
 
 import static com.reason.Platform.*;
 
-// TODO: what if ocamlformat is not installed into opam switch
-// TODO: err stream ?
 public class OcamlFormatProcess {
 
   private static final Log LOG = Log.create("ocamlformat.process");
@@ -30,7 +28,7 @@ public class OcamlFormatProcess {
   }
 
   public @NotNull String format(@NotNull VirtualFile file, @NotNull String textToFormat) {
-    GeneralCommandLine commandLine = new OCamlFormatCommandLine(m_project, "ocamlformat").create(file);
+    GeneralCommandLine commandLine = new OCamlFormatCommandLine(m_project, "ocamlformat").addParameters(file).create(file);
     if (commandLine != null && !textToFormat.isEmpty()) {
       Process fmt = null;
       try {
@@ -79,18 +77,22 @@ public class OcamlFormatProcess {
   }
 
   static class OCamlFormatCommandLine extends OpamCommandLine {
+    private final List<String> m_parameters = new ArrayList<>();
+
     OCamlFormatCommandLine(@NotNull Project project, @NotNull String binary) {
       super(project, binary, false);
     }
 
+    OCamlFormatCommandLine addParameters(@NotNull VirtualFile file) {
+      m_parameters.add("-"); // use stdin
+      m_parameters.add("--name");
+      m_parameters.add(file.getName());
+      return this;
+    }
+
     @Override
     protected @NotNull List<String> getParameters() {
-      List<String> parameters = new ArrayList<>();
-      parameters.add("-"); // use stdin
-      parameters.add("--enable-outside-detected-project"); // works even if no .ocamlformat found
-      // TODO: use --root?
-      parameters.add("--impl"); // TODO: it depends
-      return parameters;
+      return m_parameters;
     }
   }
 }
