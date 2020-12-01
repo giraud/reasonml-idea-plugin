@@ -18,8 +18,7 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OCamlBinaryRootEditHandler
-    extends ModuleSourceRootEditHandler<OCamlBinaryRootProperties> {
+public class OCamlBinaryRootEditHandler extends ModuleSourceRootEditHandler<OCamlBinaryRootProperties> {
   public OCamlBinaryRootEditHandler() {
     super(OCamlBinaryRootType.BINARY);
   }

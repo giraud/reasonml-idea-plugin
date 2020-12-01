@@ -23,6 +23,7 @@ public class OcamlFormatProcess {
     m_project = project;
   }
 
+  @Nullable
   public static OcamlFormatProcess getInstance(@NotNull Project project) {
     return ServiceManager.getService(project, OcamlFormatProcess.class);
   }
