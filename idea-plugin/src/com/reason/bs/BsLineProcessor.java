@@ -5,10 +5,13 @@ import static java.lang.Integer.parseInt;
 
 import com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
-import java.util.*;
-import java.util.regex.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Line processor is a state machine. */
 public class BsLineProcessor {
@@ -153,12 +156,15 @@ public class BsLineProcessor {
   }
 
   // ...path/src/Source.re 111:21-112:22
+  // ...path/src/Source.re:111:21-112:22
   // ...path/src/Source.re 111:21-22
+  // ...path/src/Source.re:111:21-22
   // ...path/src/Source.re 111:21   <- must add 1 to colEnd
+  // ...path/src/Source.re:111:21   <- must add 1 to colEnd
   @Nullable
   private OutputInfo extractFilePositions(@Nullable String text) {
     if (text != null) {
-      String[] tokens = text.trim().split(" ");
+      String[] tokens = text.trim().split("[\\s:]", 2);
       if (tokens.length == 2) {
         String path = tokens[0];
         String[] positions = tokens[1].split("-");

@@ -64,7 +64,6 @@
 
         <projectService serviceImplementation="com.reason.ide.ORProjectRootListener"/>
         <projectService serviceImplementation="com.reason.ide.ORFileDocumentListener"/>
-        <editorFactoryListener implementation="com.reason.ide.OREditorTracker$AppLevelEditorFactoryListener"/>
         <vfs.asyncListener implementation="com.reason.ide.ORVirtualFileListener"/>
 
         <!--
@@ -284,6 +283,7 @@
         <!-- BuckleScript Compiler -->
 
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>
+        <projectService serviceImplementation="com.reason.bs.BscProcess"/>
         <projectService serviceInterface="com.reason.bs.BsCompiler"
                         serviceImplementation="com.reason.bs.BsCompilerImpl"/>
 
