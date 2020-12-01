@@ -110,11 +110,10 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
 
     @Override
     public @Nullable String apply(@NotNull String textToFormat) {
-      if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
-        // TODO: right now, only `bsc -format «filename» is doable
-        RefmtProcess process = RefmtProcess.getInstance(m_project);
-        return process.convert(m_file, m_isInterface, m_format, m_format, textToFormat);
-      }
+      // Too many constraints on the rescript tooling for now.
+      // see https://github.com/rescript-lang/rescript-compiler/issues/4838
+      // and https://github.com/rescript-lang/rescript-compiler/issues/4846
+      // Dev on rescript is paused.
       return null;
     }
   }
