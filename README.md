@@ -27,10 +27,14 @@ for the latest documentation and more information on how to get started.
 
 ## 💬 Language Features 
 
+:warning: Rescript users, please use other editor.
+There are limitations in Rescript tooling that makes integration more difficult than planned, 
+development is in pause.
+ 
 | **Feature**           | **OCaml (.ml)** | **Reason (.re, .rei)** | **ReScript (.res, .resi)** |
 |-----------------------|:---------:|:----------:|:------------:|
 | Syntax Support        |     ✅     |     ✅     |      ✅       |
-| Reformat Code         |     ✅     |     ✅     |      ✅       |
+| Reformat Code         |     ✅     |     ✅     |              |
 | Structured View       |     ✅     |     ✅     |      ✅       |
 | Code Folding          |     ✅     |     ✅     |      ✅       |
 | JSX Support           |     ✅     |     ✅     |      ✅       |
