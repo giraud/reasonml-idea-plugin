@@ -1,10 +1,9 @@
 package com.reason.bs;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.vfs.*;
 import com.reason.Compiler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 public interface BsCompiler extends Compiler {
 
@@ -14,18 +13,7 @@ public interface BsCompiler extends Compiler {
   String getNamespace(@NotNull VirtualFile sourceFile);
 
   @Nullable
-  String convert(
-      @NotNull VirtualFile virtualFile,
-      boolean isInterface,
-      @NotNull String fromFormat,
-      @NotNull String toFormat,
-      @NotNull Document document);
-
-  void refmt(
-      @NotNull VirtualFile sourceFile,
-      boolean isInterface,
-      @NotNull String format,
-      @NotNull Document document);
+  String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document);
 
   @NotNull
   Ninja readNinjaBuild(@Nullable VirtualFile contentRoot);
