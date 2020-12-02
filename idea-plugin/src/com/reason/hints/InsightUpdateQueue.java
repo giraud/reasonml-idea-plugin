@@ -27,6 +27,9 @@ import com.reason.ide.annotations.ErrorsManager;
 import com.reason.ide.annotations.OutputInfo;
 import com.reason.ide.hints.InferredTypesService;
 import com.reason.lang.reason.RmlLanguage;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class InsightUpdateQueue extends MergingUpdateQueue {
 
@@ -289,7 +290,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                             });
                   }
                 }
-              } catch (@NotNull IOException | ExecutionException e) {
+              } catch (IOException | ExecutionException e) {
                 throw new RuntimeException(e); // TODO handle exception
               } finally {
                 if (tempFile != null) {

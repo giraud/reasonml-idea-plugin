@@ -1,5 +1,9 @@
 package com.reason.bs;
 
+import static com.intellij.notification.NotificationType.WARNING;
+import static com.reason.bs.BsPlatform.findBsbExecutable;
+import static com.reason.bs.BsPlatform.findBscExecutable;
+
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ProcessHandler;
@@ -21,10 +25,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.intellij.notification.NotificationType.WARNING;
-import static com.reason.bs.BsPlatform.findBsbExecutable;
-import static com.reason.bs.BsPlatform.findBscExecutable;
 
 public final class BsProcess implements CompilerProcess {
 
@@ -173,7 +173,7 @@ public final class BsProcess implements CompilerProcess {
                                 BufferedReader reader =
                                         new BufferedReader(new InputStreamReader(p.getInputStream()));
                                 return ocamlVersionExtractor(reader.readLine());
-                            } catch (@NotNull InterruptedException | IOException e) {
+                            } catch (InterruptedException | IOException e) {
                                 return null;
                             } finally {
                                 if (p != null) {
