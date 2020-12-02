@@ -9,7 +9,7 @@ repositories {
 
 apply plugin: 'idea'
 
-def jdkVersion = 1.8
+def jdkVersion = '11.0.9'
 
 idea {
     project {
