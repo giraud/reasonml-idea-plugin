@@ -1,5 +1,6 @@
 package com.reason;
 
+import com.intellij.lang.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -279,6 +280,18 @@ public class Log {
   public void trace(String msg, String t) {
     if (m_log.isTraceEnabled()) {
       m_log.trace(msg + SEP + " " + t);
+    }
+  }
+
+  public void trace(String msg, boolean t) {
+    if (m_log.isTraceEnabled()) {
+      m_log.trace(msg + SEP + " " + t);
+    }
+  }
+
+  public void trace(String msg, Language t) {
+    if (m_log.isTraceEnabled()) {
+      m_log.debug(msg + SEP + t);
     }
   }
 }

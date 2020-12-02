@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.*;
 import com.intellij.psi.impl.source.codeStyle.*;
+import com.reason.*;
 import com.reason.bs.*;
 import com.reason.dune.*;
 import com.reason.ide.files.*;
@@ -26,19 +27,30 @@ import org.jetbrains.annotations.*;
  */
 // It should be com.intellij.psi.codeStyle.ExternalFormatProcessor, but I can't make it work...
 public class ORPostFormatProcessor implements PostFormatProcessor {
+  private static final Log LOG = Log.create("format.postprocessor");
+
   @Override
-  public @NotNull PsiElement processElement(@NotNull PsiElement source, @NotNull CodeStyleSettings settings) {
+  public @NotNull
+  PsiElement processElement(@NotNull PsiElement source, @NotNull CodeStyleSettings settings) {
     FormatterProcessor formatter = source instanceof FileBase ? getFormatterProcessor((PsiFile) source) : null;
-    String formattedText = formatter == null ? null : formatter.apply(source.getText());
-    return formattedText == null ? source : ORCodeFactory.createFileFromText(source.getProject(), source.getLanguage(), formattedText);
+    if (formatter != null) {
+      Language language = source.getLanguage();
+      LOG.trace("Process element for language", language);
+
+      String formattedText = formatter.apply(source.getText());
+      return formattedText == null ? source : ORCodeFactory.createFileFromText(source.getProject(), language, formattedText);
+    }
+    return source;
   }
 
   @Override
-  public @NotNull TextRange processText(@NotNull PsiFile source, @NotNull TextRange rangeToReformat, @NotNull CodeStyleSettings settings) {
+  public @NotNull
+  TextRange processText(@NotNull PsiFile source, @NotNull TextRange rangeToReformat, @NotNull CodeStyleSettings settings) {
     FormatterProcessor formatter = getFormatterProcessor(source);
     if (formatter != null) {
       Language language = source.getLanguage();
       PostFormatProcessorHelper postProcessorHelper = new PostFormatProcessorHelper(settings.getCommonSettings(language));
+      LOG.trace("Process text for language", language);
 
       postProcessorHelper.setResultTextRange(rangeToReformat);
       int oldTextLength = source.getTextLength();
@@ -64,7 +76,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
       return new RmlFormatProcessor(file);
     }
     if (FileHelper.isRescript(fileType)) {
-      return new RsProcessor(file);
+      return new RsProcessor();
     }
     if (FileHelper.isOCaml(fileType)) {
       return new OclFormatProcessor(file);
@@ -76,44 +88,36 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     private final Project m_project;
     private final VirtualFile m_file;
     private final boolean m_isInterface;
-    private final String m_format;
 
     RmlFormatProcessor(@NotNull PsiFile file) {
       m_project = file.getProject();
       m_file = file.getVirtualFile();
       m_isInterface = FileHelper.isInterface(file.getFileType());
-      m_format = ReformatUtil.getFormat(file);
     }
 
     @Override
-    public @Nullable String apply(@NotNull String textToFormat) {
+    public @Nullable
+    String apply(@NotNull String textToFormat) {
       if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
+        LOG.trace("Apply ReasonML formatter, is interface", m_isInterface);
         RefmtProcess process = RefmtProcess.getInstance(m_project);
-        return process.convert(m_file, m_isInterface, m_format, m_format, textToFormat);
+        return process.convert(m_file, m_isInterface, "re", "re", textToFormat);
       }
       return null;
     }
   }
 
   static class RsProcessor implements FormatterProcessor {
-    private final Project m_project;
-    private final VirtualFile m_file;
-    private final boolean m_isInterface;
-    private final String m_format;
-
-    RsProcessor(@NotNull PsiFile file) {
-      m_project = file.getProject();
-      m_file = file.getVirtualFile();
-      m_isInterface = FileHelper.isInterface(file.getFileType());
-      m_format = ReformatUtil.getFormat(file);
+    RsProcessor() {
     }
 
     @Override
-    public @Nullable String apply(@NotNull String textToFormat) {
-      // Too many constraints on the rescript tooling for now.
+    public @Nullable
+    String apply(@NotNull String textToFormat) {
+      // Too many constraints on the Rescript tooling for now.
       // see https://github.com/rescript-lang/rescript-compiler/issues/4838
       // and https://github.com/rescript-lang/rescript-compiler/issues/4846
-      // Dev on rescript is paused.
+      // Dev on Rescript is paused.
       return null;
     }
   }
@@ -128,10 +132,12 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
     }
 
     @Override
-    public @Nullable String apply(@NotNull String textToFormat) {
+    public @Nullable
+    String apply(@NotNull String textToFormat) {
       if (m_file.exists()) {
+        LOG.trace("Apply OCaml formatter");
         OcamlFormatProcess process = OcamlFormatProcess.getInstance(m_project);
-        return process.format(m_file, textToFormat);
+        return process == null ? null : process.format(m_file, textToFormat);
       }
       return null;
     }

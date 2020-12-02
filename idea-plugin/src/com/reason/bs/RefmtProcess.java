@@ -14,7 +14,7 @@ import static com.reason.Platform.*;
 
 public class RefmtProcess {
 
-  private static final Log LOG = Log.create("refmt");
+  private static final Log LOG = Log.create("format.refmt");
 
   private final Project m_project;
 
@@ -36,7 +36,7 @@ public class RefmtProcess {
 
     String columnsWidth = ORSettings.getInstance(m_project).getFormatColumnWidth();
     ProcessBuilder processBuilder =
-        new ProcessBuilder(refmtPath.get().getPath(), "-i", Boolean.toString(isInterface), "--parse" + "=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
+        new ProcessBuilder(refmtPath.get().getPath(), "-i", Boolean.toString(isInterface), "--parse=" + fromFormat, "-p", toFormat, "-w", columnsWidth);
     if (LOG.isDebugEnabled()) {
       LOG.debug("Reformating " + sourceFile.getPath() + " (" + fromFormat + " -> " + toFormat + ") using " + columnsWidth + " cols for project [" + m_project + "]");
     }
