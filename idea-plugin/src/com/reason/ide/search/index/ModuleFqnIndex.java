@@ -1,13 +1,12 @@
 package com.reason.ide.search.index;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.IntStubIndexExtension;
-import com.intellij.psi.stubs.StubIndex;
-import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiModule;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.search.*;
+import com.intellij.psi.stubs.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
 
 public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
   private static final int VERSION = 8;
@@ -31,10 +30,7 @@ public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
 
   @NotNull
   @Override
-  public Collection<PsiModule> get(
-      @NotNull final Integer integer,
-      @NotNull final Project project,
-      @NotNull final GlobalSearchScope scope) {
+  public Collection<PsiModule> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
     return StubIndex.getElements(getKey(), integer, project, scope, PsiModule.class);
   }
 }

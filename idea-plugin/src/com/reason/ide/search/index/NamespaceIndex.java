@@ -17,20 +17,17 @@ import com.reason.lang.core.psi.PsiStanza;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
+
+import org.jetbrains.annotations.*;
 
 public class NamespaceIndex extends ScalarIndexExtension<String> {
 
-  private static final int VERSION = 6;
-
+  private static final ID<String, Void> NAME = ID.create("reason.bsconfig.fileIndex");
+  private static final int VERSION = 1;
   private static final Log LOG = Log.create("index.namespace");
 
-  private static final ID<String, Void> NAME = ID.create("reason.index.bsconfig");
-  private static final NamespaceIndex INSTANCE = new NamespaceIndex();
-
-  @NotNull
-  public static NamespaceIndex getInstance() {
-    return INSTANCE;
+  public static @Nullable NamespaceIndex getInstance() {
+    return EXTENSION_POINT_NAME.findExtension(NamespaceIndex.class);
   }
 
   @NotNull

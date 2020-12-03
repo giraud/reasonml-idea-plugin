@@ -8,8 +8,6 @@ import com.reason.lang.core.psi.impl.PsiFakeModule;
 
 public class IndexKeys {
 
-  public static final ID<String, FileModuleData> FILE_MODULE = ID.create("reason.index.fileModule");
-
   public static final StubIndexKey<String, PsiModule> MODULES = StubIndexKey.createIndexKey("reason.module");
   public static final StubIndexKey<String, PsiFakeModule> MODULES_TOP_LEVEL = StubIndexKey.createIndexKey("reason.module.toplevel");
   public static final StubIndexKey<String, PsiModule> MODULES_COMP = StubIndexKey.createIndexKey("reason.module.comp");
