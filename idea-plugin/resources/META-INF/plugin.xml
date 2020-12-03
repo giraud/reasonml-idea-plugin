@@ -250,9 +250,8 @@
         <stubIndex implementation="com.reason.ide.search.index.ParameterIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ParameterFqnIndex"/>
 
-        <!-- 2020.3 ! ClassCastException -->
-        <!-- <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/> -->
-        <!-- <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/> -->
+        <fileBasedIndex implementation="com.reason.ide.search.index.FileModuleIndex"/>
+        <fileBasedIndex implementation="com.reason.ide.search.index.NamespaceIndex"/>
         <applicationService serviceImplementation="com.reason.ide.search.FileModuleIndexService"/>
 
         <projectService serviceImplementation="com.reason.ide.search.PsiFinder"/>

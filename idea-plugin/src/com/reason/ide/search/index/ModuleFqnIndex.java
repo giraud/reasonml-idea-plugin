@@ -10,11 +10,9 @@ import java.util.*;
 
 public class ModuleFqnIndex extends IntStubIndexExtension<PsiModule> {
   private static final int VERSION = 8;
-  private static final ModuleFqnIndex INSTANCE = new ModuleFqnIndex();
 
-  @NotNull
-  public static ModuleFqnIndex getInstance() {
-    return INSTANCE;
+  public static @Nullable ModuleFqnIndex getInstance() {
+    return EP_NAME.findExtension(ModuleFqnIndex.class);
   }
 
   @Override

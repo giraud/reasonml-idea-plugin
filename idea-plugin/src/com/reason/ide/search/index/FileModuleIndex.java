@@ -1,8 +1,6 @@
 package com.reason.ide.search.index;
 
-import com.intellij.openapi.fileTypes.*;
 import com.intellij.openapi.vfs.*;
-import com.intellij.psi.*;
 import com.intellij.util.indexing.*;
 import com.intellij.util.io.*;
 import com.reason.*;
@@ -20,8 +18,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
   private static final int VERSION = 1;
   private static final Log LOG = Log.create("index.file");
 
-  private static final DataExternalizer<FileModuleData> EXTERNALIZER =
-      new FileModuleDataExternalizer();
+  private static final DataExternalizer<FileModuleData> EXTERNALIZER = new FileModuleDataExternalizer();
 
   public static @Nullable FileModuleIndex getInstance() {
     return EXTENSION_POINT_NAME.findExtension(FileModuleIndex.class);
@@ -54,16 +51,9 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
       String namespace = in.readUTF();
       String moduleName = in.readUTF();
       String fullname = in.readUTF();
-      return new FileModuleData(
-          path, fullname, namespace, moduleName, isOCaml, isInterface, isComponent);
+      return new FileModuleData(path, fullname, namespace, moduleName, isOCaml, isInterface, isComponent);
     }
   }
-
-  private final FileBasedIndex.InputFilter m_inputFilter =
-      file -> {
-        FileType fileType = file.getFileType();
-        return FileHelper.isReason(fileType) || FileHelper.isOCaml(fileType);
-      };
 
   @NotNull
   @Override
@@ -75,55 +65,42 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
   @Override
   public DataIndexer<String, FileModuleData, FileContent> getIndexer() {
     return inputData -> {
-      if (FileHelper.isReason(inputData.getFileType()) || FileHelper.isOCaml(inputData.getFileType())) {
-        PsiFile inputPsiFile = inputData.getPsiFile();
-        if (inputPsiFile instanceof FileBase) {
-          FileBase psiFile = (FileBase) inputPsiFile;
-          Map<String, FileModuleData> map = new HashMap<>();
+      Map<String, FileModuleData> map = new HashMap<>();
+      String namespace = "";
 
-          String namespace = "";
-          Optional<VirtualFile> bsconfigFile =
-              BsPlatform.findBsConfigForFile(inputData.getProject(), inputData.getFile());
-          if (bsconfigFile.isPresent()) {
-            VirtualFile parent = bsconfigFile.get().getParent();
-            boolean useExternalAsSource = "bs-platform".equals(parent.getName());
-            BsConfig bsConfig = BsConfigReader.read(bsconfigFile.get(), useExternalAsSource);
-            if (!bsConfig.isInSources(inputData.getFile())) {
-              if (LOG.isDebugEnabled()) {
-                LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
-              }
-              return Collections.emptyMap();
-            }
+      FileBase psiFile = (FileBase) inputData.getPsiFile();
+      System.out.println("FileModuleIndex.getIndexer " + inputData.getFileType() + " " + psiFile);
 
-            namespace = bsConfig.getNamespace();
-          }
-          String moduleName = psiFile.getModuleName();
-
-          FileModuleData value =
-              new FileModuleData(
-                  inputData.getFile(),
-                  namespace,
-                  moduleName,
-                  FileHelper.isOCaml(inputData.getFileType()),
-                  psiFile.isInterface(),
-                  psiFile.isComponent());
+      Optional<VirtualFile> bsconfigFile =
+          BsPlatform.findBsConfigForFile(inputData.getProject(), inputData.getFile());
+      if (bsconfigFile.isPresent()) {
+        VirtualFile parent = bsconfigFile.get().getParent();
+        boolean useExternalAsSource = "bs-platform".equals(parent.getName());
+        BsConfig bsConfig = BsConfigReader.read(bsconfigFile.get(), useExternalAsSource);
+        if (!bsConfig.isInSources(inputData.getFile())) {
           if (LOG.isDebugEnabled()) {
-            LOG.debug(
-                "indexing "
-                    + Platform.getRelativePathToModule(inputData.getPsiFile())
-                    + ": "
-                    + value);
+            LOG.debug("»» SKIP " + inputData.getFile() + " / bsconf: " + bsconfigFile);
           }
-
-          map.put(moduleName, value);
-          if (!namespace.isEmpty()) {
-            map.put(namespace + "." + moduleName, value);
-          }
-
-          return map;
+          return Collections.emptyMap();
         }
+
+        namespace = bsConfig.getNamespace();
       }
-      return Collections.emptyMap();
+      String moduleName = psiFile.getModuleName();
+
+      FileModuleData value =
+          new FileModuleData(inputData.getFile(), namespace, moduleName, FileHelper.isOCaml(inputData.getFileType()), psiFile.isInterface(), psiFile.isComponent());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("indexing " + Platform.getRelativePathToModule(inputData.getPsiFile()) + ": " + value);
+      }
+
+      map.put(moduleName, value);
+      System.out.println("  -> " + moduleName + " " + value);
+      if (!namespace.isEmpty()) {
+        map.put(namespace + "." + moduleName, value);
+      }
+
+      return map;
     };
   }
 
@@ -141,16 +118,11 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
   @NotNull
   @Override
   public FileBasedIndex.InputFilter getInputFilter() {
-    return m_inputFilter;
+    return new DefaultFileTypeSpecificInputFilter(RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE, OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE);
   }
 
   @Override
   public boolean dependsOnFileContent() {
-    return true;
-  }
-
-  @Override
-  public boolean keyIsUniqueForIndexedFile() {
     return true;
   }
 }
