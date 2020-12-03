@@ -1,44 +1,34 @@
 package com.reason.bs;
 
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
-import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.command.undo.UndoConstants;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.content.Content;
-import com.reason.CompilerType;
-import com.reason.FileUtil;
-import com.reason.ORNotification;
-import com.reason.ProcessFinishedListener;
-import com.reason.hints.InsightManager;
-import com.reason.ide.ORProjectManager;
-import com.reason.ide.console.CliType;
-import com.reason.ide.console.ORToolWindowProvider;
-import com.reason.ide.settings.ORSettings;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import com.intellij.execution.process.*;
+import com.intellij.execution.ui.*;
+import com.intellij.notification.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.ui.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.wm.*;
+import com.intellij.ui.content.*;
+import com.reason.*;
+import com.reason.hints.*;
+import com.reason.ide.*;
+import com.reason.ide.console.*;
+import com.reason.ide.settings.*;
+import org.jetbrains.annotations.*;
+import org.jetbrains.coverage.gnu.trove.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.coverage.gnu.trove.THashMap;
+import java.util.*;
 
 public class BsCompilerImpl implements BsCompiler {
 
-  @NotNull private final Project m_project;
+  @NotNull
+  private final Project m_project;
   private final Map<String, BsConfig> m_configs = new THashMap<>();
 
-  @Nullable private Boolean m_disabled = null; // Never call directly, use isDisabled()
+  @Nullable
+  private Boolean m_disabled = null; // Never call directly, use isDisabled()
 
   private BsCompilerImpl(@NotNull Project project) {
     m_project = project;
@@ -149,67 +139,6 @@ public class BsCompilerImpl implements BsCompiler {
     String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
     // additional protection
     return oldText.isEmpty() || newText.isEmpty() ? null : newText;
-  }
-
-  // Try externalFormatProcessor
-  // see
-  // https://github.com/Mizzlr/intellij-community/blob/7e1217822045325b2e9269505d07c65daa9e5e9d/plugins/sh/src/com/intellij/sh/formatter/ShExternalFormatter.java
-  @Override
-  public void refmt(
-      @NotNull VirtualFile sourceFile,
-      boolean isInterface,
-      @NotNull String format,
-      @NotNull Document document) {
-    refmtCount(sourceFile, isInterface, format, document, 1);
-  }
-
-  public void refmtCount(
-      @NotNull VirtualFile sourceFile,
-      boolean isInterface,
-      @NotNull String format,
-      @NotNull Document document,
-      final int retries) {
-    if (!sourceFile.exists()) {
-      return;
-    }
-
-    if (ORSettings.getInstance(m_project).isBsEnabled()) {
-      long before = document.getModificationStamp();
-
-      RefmtProcess refmt = RefmtProcess.getInstance(m_project);
-      String oldText = document.getText();
-      if (!oldText.isEmpty()) {
-        String newText = refmt.run(sourceFile, isInterface, format, oldText);
-        if (!newText.isEmpty() && !oldText.equals(newText)) { // additional protection
-          ApplicationManager.getApplication()
-              .invokeLater(
-                  () -> {
-                    long after = document.getModificationStamp();
-                    if (after > before) {
-                      // Document has changed, redo refmt one time
-                      if (retries < 2) {
-                        refmtCount(sourceFile, isInterface, format, document, retries + 1);
-                      }
-                    } else {
-                      CommandProcessor.getInstance()
-                          .executeCommand(
-                              m_project,
-                              () -> {
-                                WriteAction.run(
-                                    () -> {
-                                      document.setText(newText);
-                                      FileDocumentManager.getInstance().saveDocument(document);
-                                    });
-                                sourceFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
-                              },
-                              "reason.refmt",
-                              "CodeFormatGroup",
-                              document);
-                    }
-                  });
-        }
-      }
-    }
   }
 
   @Override

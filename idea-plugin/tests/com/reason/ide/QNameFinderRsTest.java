@@ -17,7 +17,7 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
     FileBase f = configureCode("A.res", "let make = { increase<caret>(); }");
 
     Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
-    assertEquals(makePaths("A.make", "A", "Pervasives"), paths);
+    assertEquals(makePaths("A.make", "A", "", "Pervasives"), paths);
   }
 
   /*
@@ -43,28 +43,28 @@ public class QNameFinderRsTest extends ORBasePlatformTestCase {
     FileBase f = configureCode("A.res", "module X = { let foo = 1; let z = foo<caret>; };");
 
     Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
-    assertEquals(makePaths("A.X.z", "A.X", "A", "Pervasives"), paths);
+    assertEquals(makePaths("A.X.z", "A.X", "A", "", "Pervasives"), paths);
   }
 
   public void test_component() {
     FileBase f = configureCode("A.res", "open X; <Comp <caret> />;");
 
     Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
-    assertEquals(makePaths("X.Comp", "A.Comp", "Comp", "Pervasives"), paths);
+    assertEquals(makePaths("X.Comp", "A.Comp", "Comp", "", "Pervasives"), paths);
   }
 
   public void test_component_path() {
     FileBase f = configureCode("A.res", "open X; <B.C.Comp <caret> />;");
 
     Set<String> paths = qNameFinder.extractPotentialPaths(getFromCaret(f));
-    assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "Pervasives"), paths);
+    assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "", "Pervasives"), paths);
   }
 
   public void test_component_path_from_tagname() {
     FileBase f = configureCode("A.res", "open X; <B.C.Comp />;");
 
     Set<String> paths = qNameFinder.extractPotentialPaths(PsiTreeUtil.findChildOfType(f, PsiTagStart.class).getNameIdentifier());
-    assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "Pervasives"), paths);
+    assertEquals(makePaths("X.B.C.Comp", "A.B.C.Comp", "B.C.Comp", "", "Pervasives"), paths);
   }
 
 }

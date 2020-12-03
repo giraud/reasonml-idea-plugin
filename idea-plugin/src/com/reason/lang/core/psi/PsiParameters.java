@@ -1,7 +1,11 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public interface PsiParameters extends PsiElement {
-  int getSize();
+  @NotNull
+  List<PsiParameter> getParametersList();
 }

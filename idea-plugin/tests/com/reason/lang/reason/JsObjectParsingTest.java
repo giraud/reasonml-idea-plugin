@@ -46,10 +46,11 @@ public class JsObjectParsingTest extends RmlParsingTestCase {
 
     PsiLetBinding binding = e.getBinding();
     PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
-    assertNotNull(object);
 
-    Collection<PsiObjectField> fields = object.getFields();
+    List<PsiObjectField> fields = new ArrayList<>(object.getFields());
     assertEquals(2, fields.size());
+    assertEquals("a", fields.get(0).getName());
+    assertEquals("b", fields.get(1).getName());
   }
 
   public void test_declaringOpen() {

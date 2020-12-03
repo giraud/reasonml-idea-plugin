@@ -1,21 +1,19 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.core.stub.PsiParameterStub;
-import com.reason.lang.core.type.ORTypes;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub>
     implements PsiParameter {
@@ -33,14 +31,17 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub>
 
   @Nullable
   public PsiElement getNameIdentifier() {
-    PsiElement identifier = null;
     PsiElement parent = getParent();
-    if (!(parent instanceof PsiFunctionCallParams)) {
-      identifier = getFirstChild();
-      if (identifier != null && identifier.getNode().getElementType() == m_types.TILDE) {
-        return identifier.getNextSibling();
-      }
+    PsiElement grandParent = parent == null ? null : parent.getParent();
+    if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall) {
+      return null;
     }
+
+    PsiElement identifier = getFirstChild();
+    if (identifier != null && identifier.getNode().getElementType() == m_types.TILDE) {
+      return identifier.getNextSibling();
+    }
+
     return identifier;
   }
 
@@ -52,12 +53,16 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub>
     }
 
     PsiElement parent = getParent();
-    if (parent instanceof PsiFunctionCallParams) {
-      List<PsiParameter> parameters = ((PsiFunctionCallParams) parent).getParametersList();
+    PsiElement grandParent = parent == null ? null : parent.getParent();
+
+    if (parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall) {
+      List<PsiParameter> parameters = parent instanceof PsiFunctionCallParams ?
+                                          ((PsiFunctionCallParams) parent).getParametersList() :
+                                          ((PsiParameters) parent).getParametersList();
       int i = 0;
       for (PsiParameter parameter : parameters) {
         if (parameter == this) {
-          PsiElement prevSibling = parent.getPrevSibling();
+          PsiElement prevSibling = /*grandParent instanceof PsiFunctorCall ? null : */ parent.getPrevSibling();
           return (prevSibling == null ? "" : prevSibling.getText()) + "[" + i + "]";
         }
         i++;
@@ -91,11 +96,10 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub>
     return ORUtil.nextSiblingWithTokenType(getFirstChild(), m_types.EQ) != null;
   }
 
-  @NotNull
+
   @Override
-  public String getPath() {
-    PsiQualifiedElement qualifiedParent =
-        PsiTreeUtil.getParentOfType(this, PsiQualifiedElement.class);
+  public @NotNull String getPath() {
+    PsiQualifiedElement qualifiedParent = PsiTreeUtil.getParentOfType(this, PsiQualifiedElement.class);
     String parentQName = qualifiedParent == null ? null : qualifiedParent.getQualifiedName();
     return parentQName == null ? "" : parentQName;
   }
@@ -107,14 +111,18 @@ public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub>
     if (stub != null) {
       return stub.getQualifiedName();
     }
+
     PsiElement parent = getParent();
-    return getPath()
-        + (parent instanceof PsiFunctionCallParams ? "." + getName() : "[" + getName() + "]");
+    PsiElement grandParent = parent == null ? null : parent.getParent();
+    boolean isCall = parent instanceof PsiFunctionCallParams || grandParent instanceof PsiFunctorCall;
+
+    String name = getName();
+    String path = getPath();
+    return path + (isCall ? "." + name : "[" + name + "]");
   }
 
-  @Nullable
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return "Parameter " + getQualifiedName();
   }
 }

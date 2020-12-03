@@ -24,11 +24,13 @@ public class RmlQNameFinder extends BaseQNameFinder {
 
   // Find the expression paths
   @NotNull
-  public Set<String> extractPotentialPaths(@NotNull PsiElement element) {
+  public Set<String> extractPotentialPaths(@Nullable PsiElement element) {
     Set<String> qualifiedNames = new ArrayListSet<>();
+    if (element == null) {
+      return qualifiedNames;
+    }
 
-    PsiElement sourceElement =
-        element instanceof ORFakeResolvedElement ? element.getOriginalElement() : element;
+    PsiElement sourceElement = element instanceof ORFakeResolvedElement ? element.getOriginalElement() : element;
     String filePath = ((FileBase) sourceElement.getContainingFile()).getModuleName() + ".";
     String path = extractPathName(sourceElement, RmlTypes.INSTANCE);
     String pathExtension = path.isEmpty() ? "" : "." + path;
@@ -143,6 +145,7 @@ public class RmlQNameFinder extends BaseQNameFinder {
     }
 
     qualifiedNames.addAll(resolvedQualifiedNames);
+    qualifiedNames.add("");
     qualifiedNames.add("Pervasives");
     return qualifiedNames;
   }

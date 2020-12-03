@@ -16,8 +16,10 @@ public class FunctionParsingTest extends OclParsingTestCase {
 
     assertTrue(e.isFunction());
     PsiFunction function = e.getFunction();
-    assertSize(1, function.getParameters());
-    assertInstanceOf(first(function.getParameters()).getNameIdentifier(), PsiLowerIdentifier.class);
+    List<PsiParameter> parameters = function.getParameters();
+    assertSize(1, parameters);
+    assertInstanceOf(first(parameters).getNameIdentifier(), PsiLowerIdentifier.class);
+    assertEquals("Dummy.fn[x]", first(parameters).getQualifiedName());
     assertNotNull(function.getBody());
   }
 

@@ -1,11 +1,12 @@
 package com.reason;
 
-import java.util.Locale;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class StringUtil {
-  private StringUtil() {}
+  private StringUtil() {
+  }
 
   @NotNull
   public static String toFirstUpper(@Nullable String value) {
@@ -14,5 +15,16 @@ public class StringUtil {
     }
 
     return value.substring(0, 1).toUpperCase(Locale.getDefault()) + value.substring(1);
+  }
+
+  public static @Nullable String trimLastCR(@Nullable String value) {
+    if (value == null || value.isEmpty()) {
+      return value;
+    }
+    int length = value.length();
+    if (value.charAt(length - 1) == '\n') {
+      return value.substring(0, length - 1);
+    }
+    return value;
   }
 }

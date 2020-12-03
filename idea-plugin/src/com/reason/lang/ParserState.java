@@ -434,4 +434,12 @@ public class ParserState {
     }
     return this;
   }
+
+  public boolean isRoot() {
+    return m_currentScope == m_rootComposite;
+  }
+
+  public boolean isOptional() {
+    return m_currentScope.isOptional();
+  }
 }

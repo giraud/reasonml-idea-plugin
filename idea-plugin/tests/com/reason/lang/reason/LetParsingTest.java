@@ -1,24 +1,16 @@
 package com.reason.lang.reason;
 
-import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
-import static com.reason.lang.core.psi.ExpressionScope.pub;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
+import com.reason.lang.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.PsiFileHelper;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiObjectField;
-import com.reason.lang.core.psi.impl.PsiRecord;
-import com.reason.lang.core.psi.impl.PsiScopedExpr;
 import java.util.*;
+
+import static com.reason.lang.core.ExpressionFilterConstants.*;
+import static com.reason.lang.core.psi.ExpressionScope.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends RmlParsingTestCase {
@@ -129,30 +121,6 @@ public class LetParsingTest extends RmlParsingTestCase {
     assertEquals("lx", let.getName());
   }
 
-  public void test_GH_105() {
-    FileBase file = parseCode("let string = \"x\"");
-    PsiLet e = first(letExpressions(file));
-
-    assertFalse(e.isFunction());
-    assertEquals("string", e.getName());
-  }
-
-  public void test_GH_105a() {
-    FileBase file = parseCode("let int = 1");
-    PsiLet e = first(letExpressions(file));
-
-    assertFalse(e.isFunction());
-    assertEquals("int", e.getName());
-  }
-
-  public void test_GH_105b() {
-    FileBase file = parseCode("let bool = 1");
-    PsiLet e = first(letExpressions(file));
-
-    assertFalse(e.isFunction());
-    assertEquals("bool", e.getName());
-  }
-
   public void test_signatureB() {
     FileBase file = parseCode("let watchUrl: (url => unit) => watcherID;");
     PsiLet e = first(letExpressions(file));
@@ -226,5 +194,37 @@ public class LetParsingTest extends RmlParsingTestCase {
     assertTrue(e.isFunction());
     PsiFunction f = e.getFunction();
     assertEquals("{ test ? { call(Some(a)); } : b }", f.getBody().getText());
+  }
+
+  public void test_GH_105() {
+    FileBase file = parseCode("let string = \"x\"");
+    PsiLet e = first(letExpressions(file));
+
+    assertFalse(e.isFunction());
+    assertEquals("string", e.getName());
+  }
+
+  public void test_GH_105a() {
+    FileBase file = parseCode("let int = 1");
+    PsiLet e = first(letExpressions(file));
+
+    assertFalse(e.isFunction());
+    assertEquals("int", e.getName());
+  }
+
+  public void test_GH_105b() {
+    FileBase file = parseCode("let bool = 1");
+    PsiLet e = first(letExpressions(file));
+
+    assertFalse(e.isFunction());
+    assertEquals("bool", e.getName());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278
+  public void test_GH_278() {
+    PsiLet e = first(letExpressions(parseCode("let (/\\/) = Ext_path.combine")));
+
+    assertEquals("(/\\/)", e.getName());
+    assertNull(PsiTreeUtil.findChildOfType(e, PsiComment.class));
   }
 }

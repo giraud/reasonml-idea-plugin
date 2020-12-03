@@ -3,7 +3,7 @@ package com.reason.ide.facet;
 import com.intellij.facet.ui.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;

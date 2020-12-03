@@ -1,16 +1,13 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.core.ExpressionFilterConstants;
-import com.reason.lang.core.psi.ExpressionScope;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.impl.PsiModuleType;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
-import java.util.Collection;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class ModuleParsingTest extends OclParsingTestCase {
@@ -94,9 +91,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
   }
 
   public void test_recSig() {
-    PsiFile file =
-        parseCode(
-            "module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
+    PsiFile file = parseCode("module rec A : sig type output = (Constr.constr * UState.t) option type task end = struct end");
 
     assertEquals(1, expressions(file).size());
     PsiInnerModule e = (PsiInnerModule) first(moduleExpressions(file));
@@ -109,9 +104,7 @@ public class ModuleParsingTest extends OclParsingTestCase {
 
   // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/91
   public void test_GH_91() {
-    FileBase file =
-        parseCode(
-            "module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
+    FileBase file = parseCode("module Branch : (module type of Vcs_.Branch with type t = Vcs_.Branch.t)\ntype id");
 
     assertEquals(2, expressions(file).size());
     assertEquals("Branch", first(moduleExpressions(file)).getName());

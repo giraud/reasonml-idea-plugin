@@ -1,23 +1,23 @@
 package com.reason.lang.core.psi.impl;
 
-import static java.util.Collections.*;
-
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.ORUtil;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVariantDeclaration;
-import com.reason.lang.core.stub.PsiTypeStub;
-import com.reason.lang.core.type.ORTypes;
-import icons.ORIcons;
-import java.util.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.*;
+
+import static java.util.Collections.*;
 
 public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements PsiType {
 
@@ -84,14 +84,18 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
   }
 
   @Override
-  @Nullable
-  public PsiTypeBinding getBinding() {
+  public boolean isJsObject() {
+    PsiTypeBinding binding = getBinding();
+    return binding != null && binding.getFirstChild() instanceof PsiJsObject;
+  }
+
+  @Override
+  public @Nullable PsiTypeBinding getBinding() {
     return findChildByClass(PsiTypeBinding.class);
   }
 
-  @NotNull
   @Override
-  public Collection<PsiVariantDeclaration> getVariants() {
+  public @NotNull Collection<PsiVariantDeclaration> getVariants() {
     PsiTypeBinding binding = getBinding();
     if (binding != null) {
       return PsiTreeUtil.findChildrenOfType(binding, PsiVariantDeclaration.class);

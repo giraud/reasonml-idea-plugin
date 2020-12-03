@@ -1,15 +1,12 @@
 package com.reason.lang.reason;
 
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.impl.PsiFunctionBody;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import java.util.Collection;
-import java.util.List;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class FunctionCallParsingTest extends RmlParsingTestCase {
@@ -69,10 +66,7 @@ public class FunctionCallParsingTest extends RmlParsingTestCase {
   }
 
   public void test_paramName() {
-    List<PsiLet> expressions =
-        letAllExpressions(
-            parseCode(
-                "describe(\"context\", () => { test(\"should do something\", () => { let inner = 1; }) })"));
+    List<PsiLet> expressions = letAllExpressions(parseCode("describe(\"context\", () => { test(\"should do something\", () => { let inner = 1; }) })"));
     PsiLet e = first(expressions);
 
     assertEquals("Dummy.describe[1].test[1].inner", e.getQualifiedName());

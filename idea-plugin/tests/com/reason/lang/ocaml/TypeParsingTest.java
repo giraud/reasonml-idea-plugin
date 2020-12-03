@@ -1,16 +1,15 @@
 package com.reason.lang.ocaml;
 
-import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
-
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.files.FileBase;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.psi.PsiType;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiObject;
-import com.reason.lang.core.psi.impl.PsiRecord;
-import com.reason.lang.core.psi.impl.PsiTypeBinding;
-import java.util.ArrayList;
-import java.util.List;
+import com.reason.lang.core.psi.impl.*;
+
+import java.util.*;
+
+import static com.intellij.psi.util.PsiTreeUtil.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends OclParsingTestCase {
@@ -70,8 +69,7 @@ public class TypeParsingTest extends OclParsingTestCase {
   }
 
   public void test_parameterizedType() {
-    PsiType e =
-        first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = | RegularArity of 'a")));
+    PsiType e = first(typeExpressions(parseCode("type ('a, 'b) declaration_arity = | RegularArity of 'a")));
 
     assertEquals("declaration_arity", e.getName());
     assertEquals("| RegularArity of 'a", e.getBinding().getText());
@@ -80,12 +78,16 @@ public class TypeParsingTest extends OclParsingTestCase {
     // assertTrue(cname.hasParameters());
   }
 
-  public void test_applyParams() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode("type 'value t = (key,'value,Comparator.identity) Belt.Map.t")));
+  public void test_apply_params() {
+    PsiType e = first(typeExpressions(parseCode("type 'value t = (key,'value,Comparator.identity) Belt.Map.t")));
 
     assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
+  }
+
+  public void test_qname_functor() {
+    PsiType e = first(typeExpressions(parseCode("module Coll = Hash.Make(struct type nonrec t = t\n let equal = " +
+                                                    "Bsb_pkg_types.equal\n let hash (x : t) = Hashtbl.hash x\n end)")));
+
+    assertEquals("Dummy.Coll.Make[0].t", e.getQualifiedName());
   }
 }

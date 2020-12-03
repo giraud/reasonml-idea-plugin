@@ -1,25 +1,23 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.ORFileType;
-import com.reason.lang.core.ORUtil;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.ide.search.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.core.stub.PsiLetStub;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.reason.RmlTypes;
-import icons.ORIcons;
-import java.util.*;
+import com.reason.lang.core.signature.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
+import com.reason.lang.reason.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.*;
 
 public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements PsiLet {
 
@@ -36,70 +34,16 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
   }
   // endregion
 
-  // region PsiNamedElement
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return ORUtil.findImmediateFirstChildOfAnyClass(
-        this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
-  }
-
-  @Nullable
-  @Override
-  public String getName() {
-    PsiElement nameIdentifier = getNameIdentifier();
-    return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE
-        ? null
-        : nameIdentifier.getText();
-  }
-
   @NotNull
-  @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-    return this;
-  }
-  // endregion
-
-  @Override
-  @Nullable
-  public PsiLetBinding getBinding() {
-    return findChildByClass(PsiLetBinding.class);
-  }
-
-  @Override
-  public boolean isScopeIdentifier() {
-    return ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class) != null;
-  }
-
-  @NotNull
-  @Override
-  public Collection<PsiElement> getScopeChildren() {
-    Collection<PsiElement> result = new ArrayList<>();
-
-    PsiElement scope = ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class);
-    if (scope != null) {
-      for (PsiElement element : scope.getChildren()) {
-        if (element.getNode().getElementType() != m_types.COMMA) {
-          result.add(element);
-        }
-      }
-    }
-
-    return result;
-  }
-
-  @NotNull
-  private static List<PsiObjectField> getJsObjectFields(
-      @NotNull PsiElement parent,
-      @NotNull Map<PsiElement, Boolean> visited,
-      @NotNull List<String> path,
-      int offset) {
+  private static List<PsiObjectField> getJsObjectFields(@NotNull PsiElement parent, @NotNull Map<PsiElement, Boolean> visited, @NotNull List<String> path, int offset) {
     List<PsiObjectField> fields = new ArrayList<>();
+
+
     PsiElement prevParent = null;
     boolean isAdding = false;
 
     // depth first elements
-    Collection<PsiElement> elements =
-        PsiTreeUtil.findChildrenOfAnyType(parent, PsiObjectField.class, PsiLowerSymbol.class);
+    Collection<PsiElement> elements = PsiTreeUtil.findChildrenOfAnyType(parent, PsiObjectField.class, PsiLowerSymbol.class);
     for (PsiElement element : elements) {
       if (visited.containsKey(element)) {
         continue;
@@ -144,9 +88,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
         String name = element.getText();
 
         if (name != null) {
-          Collection<PsiLet> lets =
-              PsiFinder.getInstance(element.getProject())
-                  .findLets(name, ORFileType.interfaceOrImplementation);
+          Collection<PsiLet> lets = PsiFinder.getInstance(element.getProject()).findLets(name, ORFileType.interfaceOrImplementation);
           if (!lets.isEmpty()) {
             PsiLet let = lets.iterator().next();
             if (let == null) {
@@ -175,6 +117,57 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
       }
     }
     return fields;
+  }
+
+  // region PsiNamedElement
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return ORUtil.findImmediateFirstChildOfAnyClass(
+        this, PsiLowerIdentifier.class, PsiScopedExpr.class, PsiDeconstruction.class);
+  }
+
+  @Nullable
+  @Override
+  public String getName() {
+    PsiElement nameIdentifier = getNameIdentifier();
+    return nameIdentifier == null || nameIdentifier.getNode().getElementType() == m_types.UNDERSCORE
+               ? null
+               : nameIdentifier.getText();
+  }
+  // endregion
+
+  @NotNull
+  @Override
+  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+    return this;
+  }
+
+  @Override
+  @Nullable
+  public PsiLetBinding getBinding() {
+    return findChildByClass(PsiLetBinding.class);
+  }
+
+  @Override
+  public boolean isScopeIdentifier() {
+    return ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class) != null;
+  }
+
+  @NotNull
+  @Override
+  public Collection<PsiElement> getScopeChildren() {
+    Collection<PsiElement> result = new ArrayList<>();
+
+    PsiElement scope = ORUtil.findImmediateFirstChildOfClass(this, PsiDeconstruction.class);
+    if (scope != null) {
+      for (PsiElement element : scope.getChildren()) {
+        if (element.getNode().getElementType() != m_types.COMMA) {
+          result.add(element);
+        }
+      }
+    }
+
+    return result;
   }
 
   @Nullable
@@ -249,20 +242,14 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
 
   @Override
   public boolean isJsObject() {
-    return PsiTreeUtil.findChildOfType(this, PsiJsObject.class) != null;
+    PsiLetBinding binding = getBinding();
+    return binding != null && binding.getFirstChild() instanceof PsiJsObject;
   }
 
   @NotNull
   @Override
   public Collection<PsiRecordField> getRecordFields() {
     return PsiTreeUtil.findChildrenOfType(this, PsiRecordField.class);
-  }
-
-  @NotNull
-  @Override
-  public Collection<PsiObjectField> getJsObjectFieldsForPath(@NotNull List<String> path) {
-    WeakHashMap<PsiElement, Boolean> visited = new WeakHashMap<>();
-    return getJsObjectFields(this, visited, new ArrayList<>(path), 0);
   }
 
   private boolean isRecursive() {

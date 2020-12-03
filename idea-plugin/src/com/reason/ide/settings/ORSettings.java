@@ -1,16 +1,10 @@
 package com.reason.ide.settings;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import org.jetbrains.annotations.*;
 
-@State(
-    name = "ReasonSettings",
-    storages = {@Storage("reason.xml")})
+@State(name = "ReasonSettings", storages = {@Storage("reason.xml")})
 public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSettingsState> {
 
   public static final boolean IS_FORMAT_ON_SAVE_DEFAULT = true;
@@ -22,14 +16,10 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
   // General
   private boolean m_isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
   private @Nullable String m_formatColumnWidth;
-  private String m_ocamlformatExecutable = "";
 
   // BuckleScript
   private boolean m_isBsEnabled = IS_BS_ENABLED_DEFAULT;
   private String m_bsPlatformLocation = "";
-
-  // Dune
-  private String m_duneExecutable = "";
 
   // Esy
   private String m_esyExecutable = "";
@@ -48,10 +38,8 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     ReasonSettingsState state = new ReasonSettingsState();
     state.isFormatOnSaveEnabled = m_isFormatOnSaveEnabled;
     state.formatColumnWidth = m_formatColumnWidth;
-    state.ocamlformatExecutable = m_ocamlformatExecutable;
     state.isBsEnabled = m_isBsEnabled;
     state.bsPlatformLocation = m_bsPlatformLocation;
-    state.duneExecutable = m_duneExecutable;
     state.esyExecutable = m_esyExecutable;
     return state;
   }
@@ -60,10 +48,8 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
   public void loadState(@NotNull ReasonSettingsState state) {
     m_isFormatOnSaveEnabled = state.isFormatOnSaveEnabled;
     m_formatColumnWidth = state.formatColumnWidth;
-    m_ocamlformatExecutable = state.ocamlformatExecutable;
     m_isBsEnabled = state.isBsEnabled;
     m_bsPlatformLocation = state.bsPlatformLocation;
-    m_duneExecutable = state.duneExecutable;
     m_esyExecutable = state.esyExecutable;
   }
 
@@ -94,14 +80,6 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
         formatColumnWidth != null && formatColumnWidth.isEmpty() ? null : formatColumnWidth;
   }
 
-  public @NotNull String getOcamlformatExecutable() {
-    return m_ocamlformatExecutable == null ? "" : m_ocamlformatExecutable;
-  }
-
-  public void setOcamlformatExecutable(String ocamlformatExecutable) {
-    m_ocamlformatExecutable = ocamlformatExecutable;
-  }
-
   public boolean isBsEnabled() {
     return m_isBsEnabled;
   }
@@ -118,15 +96,6 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     m_bsPlatformLocation = bsPlatformLocation;
   }
 
-  @NotNull
-  public String getDuneExecutable() {
-    return m_duneExecutable == null ? "" : m_duneExecutable;
-  }
-
-  public void setDuneExecutable(String duneExecutable) {
-    m_duneExecutable = duneExecutable;
-  }
-
   public @NotNull String getEsyExecutable() {
     return m_esyExecutable == null ? "" : m_esyExecutable;
   }
@@ -140,12 +109,9 @@ public class ORSettings implements PersistentStateComponent<ORSettings.ReasonSet
     // General
     public boolean isFormatOnSaveEnabled = IS_FORMAT_ON_SAVE_DEFAULT;
     public @Nullable String formatColumnWidth;
-    public String ocamlformatExecutable = "";
     // BuckleScript
     public boolean isBsEnabled = IS_BS_ENABLED_DEFAULT;
     public String bsPlatformLocation = "";
-    // Dune
-    public String duneExecutable = "";
     // Esy
     public String esyExecutable = "";
   }

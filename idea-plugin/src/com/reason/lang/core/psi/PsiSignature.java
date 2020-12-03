@@ -3,7 +3,7 @@ package com.reason.lang.core.psi;
 import com.intellij.lang.Language;
 import com.intellij.psi.PsiElement;
 import com.reason.lang.core.signature.ORSignature;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 public interface PsiSignature extends PsiElement {
   @NotNull
@@ -11,4 +11,7 @@ public interface PsiSignature extends PsiElement {
 
   @NotNull
   String asString(@NotNull Language lang);
+
+  @Nullable
+  String getName();
 }

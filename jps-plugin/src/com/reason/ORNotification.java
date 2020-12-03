@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 import static com.intellij.notification.NotificationType.ERROR;
+import static com.intellij.notification.NotificationType.INFORMATION;
 
 public class ORNotification extends Notification {
 
@@ -18,6 +19,11 @@ public class ORNotification extends Notification {
 
     public static void notifyError(@Nullable String title, @Nullable String subtitle, @Nullable String content, @Nullable NotificationListener listener) {
         Notifications.Bus.notify(new ORNotification(title, subtitle, content, ERROR, listener));
+    }
+
+    public static void notifyInfo(@Nullable String title, @Nullable String subtitle, @Nullable String content,
+            @Nullable NotificationListener listener) {
+        Notifications.Bus.notify(new ORNotification(title, subtitle, content, INFORMATION, listener));
     }
 
     public ORNotification(@Nullable String title, @Nullable String subtitle, @Nullable String content, @NotNull NotificationType type, @Nullable NotificationListener listener) {

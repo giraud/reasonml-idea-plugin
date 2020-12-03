@@ -1,100 +1,44 @@
 package com.reason.lang;
 
 public enum ParserScopeEnum {
-  file,
-
-  type,
-  typeNamed,
-  typeNamedParameters,
-  typeNamedEq,
-  typeNamedEqVariant,
-
   module,
-  moduleNamedEq,
   moduleNamedColon,
   moduleNamedSignature,
   moduleBinding,
+  moduleTypeExtraction,
 
-  let,
   letNamed,
-  letNamedAttribute,
-  letNamedEq,
-  letNamedSignature,
-  deconstruction,
 
-  functionCallParams,
-
+  maybeFunctionParameters,
   functionMatch,
 
-  val,
-  valNamed,
-
-  annotation,
-  annotationName,
-  annotationParameter,
-  macro,
-  macroName,
-  macroRawNamed,
-  macroRawBody,
+  macroRaw,
 
   maybeRecord,
   recordBinding,
-  recordField,
+  maybeRecordUsage,
+  recordUsage,
 
   jsObject,
-  object,
-  objectField,
+  jsObjectBinding,
   objectFieldNamed,
+  field,
+  fieldNamed,
 
-  match,
   matchWith,
-  switch_,
   switchBody,
 
-  try_,
-
-  patternMatch,
   patternMatchVariant,
-  patternMatchVariantConstructor,
-  patternMatchBody,
+  patternMatchValue,
+  funPattern,
 
   genericExpression,
 
-  field,
-
-  maybeFunctionParameters,
-
-  functorNamed,
   functorNamedEq,
-  functorParams,
-  functorParam,
-  functorParamColon,
-  functorParamColonSignature,
   functorNamedColon,
   functorNamedEqColon,
-  functorResult,
-  functorConstraints,
-  functorConstraint,
-  functorBinding,
   maybeFunctorCall,
-  functorCall,
-
-  tryBody,
-  tryBodyWith,
-  tryBodyWithHandler,
 
   signatureScope,
-  signatureItem,
-
-  moduleNamedWithType,
   scope,
-  record,
-  maybeRecordUsage,
-  recordUsage,
-  funPattern,
-  fieldNamed,
-  jsObjectBinding,
-  moduleType,
-  patternMatchValue,
-  moduleTypeExtraction,
 }

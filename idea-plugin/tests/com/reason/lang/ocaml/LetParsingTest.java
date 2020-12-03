@@ -1,20 +1,14 @@
 package com.reason.lang.ocaml;
 
-import static com.reason.lang.core.ExpressionFilterConstants.NO_FILTER;
-
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.files.FileBase;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.*;
-import com.reason.lang.core.psi.impl.PsiFunctionBody;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiRecord;
-import com.reason.lang.core.psi.impl.PsiUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import com.reason.lang.core.psi.impl.*;
+
+import java.util.*;
+
+import static com.reason.lang.core.ExpressionFilterConstants.*;
 
 @SuppressWarnings("ConstantConditions")
 public class LetParsingTest extends OclParsingTestCase {
@@ -288,5 +282,13 @@ public class LetParsingTest extends OclParsingTestCase {
     assertEquals(
         "s ty_entry -> int -> int -> (s, tr, r) ty_tree -> r parser_t",
         e.getPsiSignature().getText());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278
+  public void test_GH_278() {
+    PsiLet e = first(letExpressions(parseCode("let (//) = Ext_path.combine")));
+
+    assertEquals("(//)", e.getName());
+    assertNull(PsiTreeUtil.findChildOfType(e, PsiComment.class));
   }
 }
