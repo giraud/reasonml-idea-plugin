@@ -12,6 +12,11 @@
 
 ## Unreleased
 
+A brand new site created by John Pucciarelli (https://reasonml-editor.github.io/reasonml-idea-plugin/)
+
+2020.3 support
+
+- :rocket: [#284](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/284) ![o] Support for OCamlFormat
 - :rocket: [#110](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/110) ![o]![r]![n] Language injection in strings
 - :bug: [#279](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/279) ![n] Matched brace isn't highlighted in .res source file
 - :bug: [#278](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278) ![o] let (//) incorrectly parsed as comment

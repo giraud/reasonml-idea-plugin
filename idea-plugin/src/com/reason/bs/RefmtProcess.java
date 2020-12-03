@@ -73,7 +73,7 @@ public class RefmtProcess {
           return newText;
         }
       }
-    } catch (@NotNull IOException | RuntimeException e) {
+    } catch (IOException | RuntimeException e) {
       LOG.warn(e);
     } finally {
       if (refmt != null) {
