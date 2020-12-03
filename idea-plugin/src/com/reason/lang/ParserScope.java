@@ -59,7 +59,7 @@ public class ParserScope {
 
   @NotNull
   static ParserScope markRoot(@NotNull PsiBuilder builder) {
-    return new ParserScope(builder, builder.mark(), null, null).resolution(ParserScopeEnum.file);
+    return new ParserScope(builder, builder.mark(), null, null);
   }
 
   public int getLength() {
@@ -106,6 +106,10 @@ public class ParserScope {
   public ParserScope optional() {
     m_isComplete = false;
     return this;
+  }
+
+  public boolean isOptional() {
+    return !m_isComplete;
   }
 
   public void dummy() {

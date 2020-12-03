@@ -1,126 +1,84 @@
-# reasonml-idea-plugin
+<img height="96" src="website/static/img/reason-idea-plugin.svg"/> 
+
+# Reason IDEA Plugin
+
+[**reasonml-editor.github.io/reasonml-idea-plugin**](https://reasonml-editor.github.io/reasonml-idea-plugin/)
+
+ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 
 ![Build Status](https://github.com/reasonml-editor/reasonml-idea-plugin/workflows/Build%20Status/badge.svg)
 [![JetBrains IntelliJ plugins](https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg)](https://plugins.jetbrains.com/plugin/9440-reasonml)
 [![Discord](https://img.shields.io/discord/713777184996589580)](https://discord.com/channels/713777184996589580)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-ReasonML language plugin for IDEA. Supports Reason, Rescript and OCaml.
-
 ![screenshot](screenshot.png)
 
-## Questions / Feedback
+## 🏁 Quick Start 
 
-Feel free to post any questions or feedback in [Discord](https://discord.com/channels/713777184996589580).
+Download and install the [plugin from the JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml).
 
-## Documentation
-
-Please see the [docs](docs).
-
-## Features
-
-<div style="float:left">
-    <div>Reason&nbsp;syntax</div><img src="docs/img/syntax-reason.png"/>
-</div>
-<div style="float:left">
-    <div>Ocaml&nbsp;syntax</div><img src="docs/img/syntax-ocaml.png"/>
-</div>
-<div style="float:left">
-    <div>Dune&nbsp;syntax (limited support)</div><img src="docs/img/syntax-dune.png"/>
-</div>
-<span style="float:left;margin-right:10px"><div>Structured view</div><img src="docs/img/structure.png"/></span>
-<div style="float:left;margin-right:10px"><div>Code folding</div><img src="docs/img/folding.png"/></div>
-<div style="float:left;margin-right:10px"><div>js language injection</div><img src="docs/img/lang-inject.png"/></div>
-<div style="float:left;margin-right:10px"><div>Bucklescript compiler integration</div><img src="docs/img/bsb.png"/></div>
-<div style="float:left;margin-right:10px"><div>JSX syntax & completion</div><img src="docs/img/jsx.png"/></div>
-<div style="float:left;margin-right:10px"><div>Type annotation</div><img src="docs/img/type.png"/></div>
-<div style="float:left;margin-right:10px"><div>Intentions (_ReasonML_): add braces to function, transform local open</div><img src="docs/img/intention.png"/></div>
-
-
-Other features:
-- Line and block commenting 
-- Pair braces matcher
-- Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
-- Reformat on save
-- Works natively on Windows
-
-
+Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
-## How to help
+## 📔 Documentation 
 
-- Be patient
-- Give this project some love, star it or star the plugin page in [intellij repository](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin)
-- Fill the github repo with specific issues
-- <a href="https://liberapay.com/hgiraud/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a> Support my work with liberapay
-- <a href="https://www.paypal.me/rvgiraud"><img alt="Donate using paypal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a> Support my work with paypal-me
+Please see our [website](https://reasonml-editor.github.io/reasonml-idea-plugin/docs)
+for the latest documentation and more information on how to get started.
+
+## 💬 Language Features 
+
+:warning: Rescript users, please use other editor.
+There are limitations in Rescript tooling that makes integration more difficult than planned, 
+development is in pause.
+ 
+| **Feature**           | **OCaml (.ml)** | **Reason (.re, .rei)** | **ReScript (.res, .resi)** |
+|-----------------------|:---------:|:----------:|:------------:|
+| Syntax Support        |     ✅     |     ✅     |      ✅       |
+| Reformat Code         |     ✅     |     ✅     |              |
+| Structured View       |     ✅     |     ✅     |      ✅       |
+| Code Folding          |     ✅     |     ✅     |      ✅       |
+| JSX Support           |     ✅     |     ✅     |      ✅       |
+| JS Language Injection |     ✅     |     ✅     |      ✅       |
+| Line & Block Comments |     ✅     |     ✅     |      ✅       |
+| Type Annotations      |     ✅     |     ✅     |      ✅       |
+| Code Intentions       |     ✅     |     ✅     |      ✅       |
+| Pair Braces Matching  |     ✅     |     ✅     |      ✅       |
+
+## 🛠 Build Tool Support 
+
+| **Feature**          | **BuckleScript** | **Dune** | **Esy** |
+|----------------------|:----------------:|:--------:|:-------:|
+| Install Dependencies |         ✅        |    ✅    |    ✅    |
+| Build Project        |         ✅        |    ✅    |    ✅    |
+| Error Reporting      |         ✅        |    ✅    |    ✅    |
+
+## 📝 Questions & Feedback  
+
+Please see the [FAQ](https://reasonml-editor.github.io/reasonml-idea-plugin/docs/get-started/faq)
+page or [report](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/new)
+an issue.
+
+Post any questions or feedback in [Discord](https://discord.com/channels/713777184996589580).
+
+## 💁 How to Help 
+
+- Be patient.
+- Give this project some love, star it or star the plugin page in the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml-language-plugin).
+- Report any issues [here](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/new).
+
+### Donate
+<a href="https://liberapay.com/hgiraud/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
+Support my work with liberapay.
+
+<a href="https://www.paypal.me/rvgiraud"><img alt="Donate using paypal" src="https://img.shields.io/badge/paypal-me-blue.svg"></a>
+Support my work with paypal-me.
+
+## 🍻 Thanks 
 
 To all the people who have donated, you are awesome !! Really, this is pure anonymous donation and it blows my mind... I'm very grateful and it's kinda stupid but it keeps me motivated. So big thanks.
 
-Many thanks also to the [jetbrains team](https://www.jetbrains.com/?from=reasonml-idea-plugin) who provide me an OSS licence for their product.
+Many thanks also to the [JetBrains Team](https://www.jetbrains.com/?from=reasonml-idea-plugin) who provide me an OSS licence for their product.
 
-## Some live templates
+## 📄 License 
 
-List of templates that may help development.
-
-abbrevation: `jsp`, description: `create a jsProps in wrapReasonForJs`
-```
-~$NAME$=jsProps##$NAME$,$END$
-```
-
-abbreviation: `style`, description: `create a style module`
-```
-module Styles = {
-    open Css;
-    let $VAR$ = style([
-        $END$
-    ]);
-};
-```
-
-abbreviation: `comp`, description: `create a reason component`
-```
-let component = ReasonReact.statelessComponent("$NAME$");
-
-let make = (~$PROP$, _children) => {...component, render: _self => <div />};
-$END$
-/*
- JS interop
- expose an helper for js - can be deleted when no more used by javascript code
- */
-let jsComponent =
-  ReasonReact.wrapReasonForJs(~component, jsProps =>
-    make(~$PROP$=jsProps##$PROP$, [||])
-  );
-```
-
-## What?
-
-- Why don't you consider using Language Server Protocol ?
-
-  Mainly because I want a strong integration in the IDE and I need a first class support of Windows.
-
-- What versions does the plugin support at the moment?
-
-  It should work with idea 15
-
-- How is it different than [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide)?
-
-  I wanted to have a plugin dedicated to reason and that's why I created one called reasonml, not ocaml.
-  Then I realised that I still need ocaml support and that people are asking for it.
-    
-  I started this plugin by studying and copying parts of the ocaml plugin, but now the 2 projects are taking different orientations, technically.
-    
-  I am moving away from merlin and trying to use the most of Intellij structures.
-    
-  Now, they have incompatible implementations, and different goals. 
-
-- Modules from `node_modules` folder are not resolved (GoTo is not working on `Array.sort`)?
-
-  Ensure that `node_modules` folder is not excluded from IDE index.
-
-## Development
-
-This project is heavily inspired by :
-- [custom language tutorial](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support_tutorial.html) from intellij
-- [ocaml language plugin](https://github.com/sidharthkuruvila/ocaml-ide) from sidharthkuruvila ( :+1: )
+This project is [MIT licensed](https://github.com/reasonml-editor/reasonml-idea-plugin/blob/pooch/documentation/LICENSE).

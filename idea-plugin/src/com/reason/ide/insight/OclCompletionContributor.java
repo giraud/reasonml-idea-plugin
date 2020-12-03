@@ -6,7 +6,7 @@ import com.reason.lang.core.type.ORTypes;
 import com.reason.lang.ocaml.OclQNameFinder;
 import com.reason.lang.ocaml.OclTypes;
 
-public class OclCompletionContributor extends CompletionContributor {
+public class OclCompletionContributor extends ORCompletionContributor {
 
   OclCompletionContributor() {
     super(OclTypes.INSTANCE, OclQNameFinder.INSTANCE);

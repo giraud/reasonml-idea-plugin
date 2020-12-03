@@ -1,6 +1,6 @@
 plugins {
     // https://github.com/JetBrains/gradle-intellij-plugin
-    id 'org.jetbrains.intellij' version "0.6.1"
+    id 'org.jetbrains.intellij' version "0.6.3"
 }
 
 repositories {
@@ -47,13 +47,12 @@ subprojects {
         untilBuild = pluginUntilBuild
         changeNotes """
         <ul>
-            <li>#276 - Separate IconProvider in two different implementation: move js references in js-deps.xml descriptor file</li>
-            <li>#275 - Incorrect parsing of switch with signature</li>
-            <li>#245 - Resolve property of JSX tag</li>
-            <li>#124 - Repl freezes with OCaml</li>
-            <li>Fold switch/match</li>
-            <li>Use rincewind@0.9.1</li>
-            <li>Refactor the dune integration/documentation</li>
+            <li>#284 - Support for OCamlFormat</li>
+            <li>#279 - Matched brace isn't highlighted in .res source file</li>
+            <li>#278 - let (//) incorrectly parsed as comment</li>
+            <li>#277 - Wrong module resolution for js object</li>
+            <li>#110 - Language injection in strings</li>
+            <li>New plugin icon</li>
         </ul>
 
         <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>

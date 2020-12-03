@@ -1,33 +1,24 @@
 package com.reason.lang;
 
-import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfType;
-import static com.reason.lang.core.ExpressionFilterConstants.FILTER_LET;
-
-import com.intellij.lang.ParserDefinition;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.impl.DebugUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.testFramework.ParsingTestCase;
-import com.reason.ide.files.DuneFile;
-import com.reason.ide.files.FileBase;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.ExpressionScope;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
+import com.intellij.psi.util.*;
+import com.intellij.testFramework.*;
+import com.reason.ide.files.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiClass;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiFunctor;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiModule;
-import com.reason.lang.core.psi.PsiOpen;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.impl.PsiFakeModule;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.*;
-import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.psi.util.PsiTreeUtil.*;
+import static com.reason.lang.core.ExpressionFilterConstants.*;
 
 public abstract class BaseParsingTestCase extends ParsingTestCase {
   protected BaseParsingTestCase(
@@ -53,7 +44,7 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
 
   @NotNull
   protected Collection<PsiType> typeExpressions(@NotNull PsiFile file) {
-    return PsiFileHelper.getTypeExpressions(file);
+    return PsiTreeUtil.findChildrenOfType(file, PsiType.class);
   }
 
   @NotNull
@@ -84,9 +75,9 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
   @NotNull
   protected List<PsiLet> letExpressions(@NotNull PsiFile file) {
     return PsiFileHelper.getExpressions(file, ExpressionScope.all, FILTER_LET)
-        .stream()
-        .map(element -> (PsiLet) element)
-        .collect(Collectors.toList());
+               .stream()
+               .map(element -> (PsiLet) element)
+               .collect(Collectors.toList());
   }
 
   @NotNull
@@ -103,10 +94,10 @@ public abstract class BaseParsingTestCase extends ParsingTestCase {
   protected PsiExternal externalExpression(@NotNull PsiFile file, @NotNull String name) {
     Collection<PsiExternal> externalExpressions = PsiFileHelper.getExternalExpressions(file);
     return externalExpressions
-        .stream()
-        .filter(psiExternal -> name.equals(psiExternal.getName()))
-        .findFirst()
-        .get();
+               .stream()
+               .filter(psiExternal -> name.equals(psiExternal.getName()))
+               .findFirst()
+               .get();
   }
 
   protected PsiElement firstElement(@NotNull PsiFile fileModule) {

@@ -1,17 +1,10 @@
 package com.reason.lang.reason;
 
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiExternal;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.impl.PsiJsObject;
-import com.reason.lang.core.psi.impl.PsiObjectField;
-import com.reason.lang.core.psi.impl.PsiRecord;
+import com.intellij.psi.util.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends RmlParsingTestCase {
@@ -21,8 +14,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
   }
 
   public void test_RecursiveType() {
-    PsiType e =
-        first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
+    PsiType e = first(typeExpressions(parseCode("type tree('a) = | Leaf('a) | Tree(tree('a), tree('a));")));
     assertEquals("tree", e.getName());
     assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
   }
@@ -33,10 +25,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
   }
 
   public void test__TypeBindingWithRecord() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
+    PsiType e = first(typeExpressions(parseCode("type t = {count: int,\n [@bs.optional] key: string => unit\n};")));
 
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
     Collection<PsiRecordField> fields = record.getFields();
@@ -44,9 +33,7 @@ public class TypeParsingTest extends RmlParsingTestCase {
   }
 
   public void test_TypeSpecialProps() {
-    PsiType e =
-        first(
-            typeExpressions(
+    PsiType e = first(typeExpressions(
                 parseCode(
                     "type props = { "
                         + "string: string, "
@@ -58,12 +45,8 @@ public class TypeParsingTest extends RmlParsingTestCase {
     assertEquals(3, fields.size());
   }
 
-  public void test_TypeBindingWithRecordAs() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode(
-                    "type branch_info('branch_type) = { kind: [> | `Master] as 'branch_type, pos: id, };")));
+  public void test_bindingWithRecordAs() {
+    PsiType e = first(typeExpressions(parseCode("type branch_info('branch_type) = { kind: [> | `Master] as 'branch_type, pos: id, };")));
 
     PsiRecord record = (PsiRecord) e.getBinding().getFirstChild();
     List<PsiRecordField> fields = new ArrayList<>(record.getFields());
@@ -73,43 +56,36 @@ public class TypeParsingTest extends RmlParsingTestCase {
     assertEquals("pos", fields.get(1).getName());
   }
 
-  public void test_TypeParameterized() {
-    PsiType e =
-        first(typeExpressions(parseCode("type declaration_arity('a, 'b) = | RegularArity('a);")));
+  public void test_parameterized() {
+    PsiType e = first(typeExpressions(parseCode("type declaration_arity('a, 'b) = | RegularArity('a);")));
+
     assertEquals("declaration_arity", e.getName());
     assertEquals("| RegularArity('a)", e.getBinding().getText());
   }
 
-  public void test_Scope() {
-    PsiExternal e =
-        first(
-            externalExpressions(
-                parseCode(
-                    "external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
+  public void test_scope() {
+    PsiExternal e = first(externalExpressions(
+        parseCode("external createElement : (reactClass, ~props: Js.t({..})=?, array(reactElement)) => reactElement =  \"createElement\"")));
 
     PsiSignature signature = e.getPsiSignature();
-    @NotNull PsiSignatureItem[] signatureItems = signature.asHMSignature().getItems();
+    PsiSignatureItem[] signatureItems = signature.asHMSignature().getItems();
 
-    assertSize(4, signatureItems); // zzz
-    assertEquals(
-        "(reactClass, ~props: Js.t({..})=?, array(reactElement))", signatureItems[0].getText());
+    assertSize(4, signatureItems);
+    assertEquals("(reactClass, ~props: Js.t({..})=?, array(reactElement))", signatureItems[0].getText());
     assertEquals("reactElement", signatureItems[3].getText());
   }
 
   public void test_JsObject() {
     PsiType e = first(typeExpressions(parseCode("type t = {. a: string };")));
 
-    assertInstanceOf(e.getBinding().getFirstChild(), PsiJsObject.class);
+    assertTrue(e.isJsObject());
     PsiObjectField f = PsiTreeUtil.findChildOfType(e.getBinding(), PsiObjectField.class);
     assertEquals("a", f.getName());
-    // assertEquals("string", f.getPsiSignature().getText());
+    assertEquals("string", f.getSignature().getText());
   }
 
-  public void test_applyParams() {
-    PsiType e =
-        first(
-            typeExpressions(
-                parseCode("type t('value) = Belt.Map.t(key, 'value, Comparator.identity);")));
+  public void test_apply_params() {
+    PsiType e = first(typeExpressions(parseCode("type t('value) = Belt.Map.t(key, 'value, Comparator.identity);")));
 
     assertEmpty(PsiTreeUtil.findChildrenOfType(e, PsiFunctionCallParams.class));
   }

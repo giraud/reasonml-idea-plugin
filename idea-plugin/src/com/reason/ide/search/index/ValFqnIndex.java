@@ -31,11 +31,7 @@ public class ValFqnIndex extends IntStubIndexExtension<PsiVal> {
 
   @NotNull
   @Override
-  public Collection<PsiVal> get(
-      @NotNull final Integer integer,
-      @NotNull final Project project,
-      @NotNull final GlobalSearchScope scope) {
-    return StubIndex.getElements(
-        getKey(), integer, project, /*new JavaSourceFilterScope(scope) TODO*/ scope, PsiVal.class);
+  public Collection<PsiVal> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
+    return StubIndex.getElements(getKey(), integer, project, scope, PsiVal.class);
   }
 }

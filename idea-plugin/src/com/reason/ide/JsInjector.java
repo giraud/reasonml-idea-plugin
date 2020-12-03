@@ -1,21 +1,15 @@
 package com.reason.ide;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.InjectedLanguagePlaces;
-import com.intellij.psi.LanguageInjector;
-import com.intellij.psi.PsiLanguageInjectionHost;
-import com.reason.lang.core.psi.impl.PsiRawBody;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import org.jetbrains.annotations.*;
 
 public class JsInjector implements LanguageInjector {
 
-  public void getLanguagesToInject(
-      @NotNull PsiLanguageInjectionHost host,
-      @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
+  public void getLanguagesToInject(@NotNull PsiLanguageInjectionHost host, @NotNull InjectedLanguagePlaces injectionPlacesRegistrar) {
     if (host instanceof PsiRawBody) {
       FileType jsFileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
       if (jsFileType instanceof LanguageFileType) {

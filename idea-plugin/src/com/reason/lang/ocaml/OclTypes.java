@@ -1,10 +1,7 @@
 package com.reason.lang.ocaml;
 
-import com.reason.lang.core.stub.OclStubBasedElementTypes;
-import com.reason.lang.core.type.ORCompositeElementType;
-import com.reason.lang.core.type.ORCompositeType;
-import com.reason.lang.core.type.ORTokenElementType;
-import com.reason.lang.core.type.ORTypes;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
 
 public class OclTypes extends ORTypes {
 
@@ -73,6 +70,7 @@ public class OclTypes extends ORTypes {
     C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", OclLanguage.INSTANCE);
     C_OPEN = new ORCompositeElementType("C_OPEN", OclLanguage.INSTANCE);
     C_OPTION = new ORCompositeElementType("C_OPTION", OclLanguage.INSTANCE);
+    C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", OclLanguage.INSTANCE);
     C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", OclLanguage.INSTANCE);
     C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", OclLanguage.INSTANCE);
     C_RAW = new ORCompositeElementType("C_RAW", OclLanguage.INSTANCE);

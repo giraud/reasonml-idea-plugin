@@ -62,6 +62,7 @@ public abstract class ORTypes {
   public ORCompositeType C_OBJECT;
   public ORCompositeType C_OBJECT_FIELD;
   public ORCompositeType C_OPTION;
+  public ORCompositeType C_PARAMETERS;
   public ORCompositeType C_PATTERN_MATCH_BODY;
   public ORCompositeType C_PATTERN_MATCH_EXPR;
   public ORCompositeType C_RAW;

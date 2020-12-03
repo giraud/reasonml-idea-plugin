@@ -76,6 +76,7 @@ public class NsTypes extends ORTypes {
     C_OBJECT_FIELD = new ORCompositeElementType("C_OBJECT_FIELD", NsLanguage.INSTANCE);
     C_OPTION = new ORCompositeElementType("C_OPTION", NsLanguage.INSTANCE);
     C_OPEN = new ORCompositeElementType("C_OPEN", NsLanguage.INSTANCE);
+    C_PARAMETERS = new ORCompositeElementType("C_PARAMETERS", NsLanguage.INSTANCE);
     C_PATTERN_MATCH_BODY = new ORCompositeElementType("C_PATTERN_MATCH_BODY", NsLanguage.INSTANCE);
     C_PATTERN_MATCH_EXPR = new ORCompositeElementType("C_PATTERN_MATCH_EXPR", NsLanguage.INSTANCE);
     C_RECORD_EXPR = new ORCompositeElementType("C_RECORD_EXPR", NsLanguage.INSTANCE);

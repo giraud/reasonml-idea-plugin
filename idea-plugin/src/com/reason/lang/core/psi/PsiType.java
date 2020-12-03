@@ -8,17 +8,14 @@ import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface PsiType
-    extends PsiQualifiedElement,
-        NavigatablePsiElement,
-        PsiStructuredElement,
-        StubBasedPsiElement<PsiTypeStub> {
-
+public interface PsiType extends PsiQualifiedElement, NavigatablePsiElement, PsiStructuredElement, StubBasedPsiElement<PsiTypeStub> {
   @Nullable
   PsiElement getBinding();
 
   @NotNull
   Collection<PsiVariantDeclaration> getVariants();
+
+  boolean isJsObject();
 
   boolean isAbstract();
 }

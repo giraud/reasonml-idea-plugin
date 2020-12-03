@@ -173,7 +173,7 @@ public final class BsProcess implements CompilerProcess {
                                 BufferedReader reader =
                                         new BufferedReader(new InputStreamReader(p.getInputStream()));
                                 return ocamlVersionExtractor(reader.readLine());
-                            } catch (@NotNull InterruptedException | IOException e) {
+                            } catch (InterruptedException | IOException e) {
                                 return null;
                             } finally {
                                 if (p != null) {

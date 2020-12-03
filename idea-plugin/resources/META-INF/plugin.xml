@@ -35,10 +35,6 @@
         <action id="esy.actions.shell" class="com.reason.ide.console.EsyShellAction" text="Esy shell"/>
 
         <!--suppress PluginXmlCapitalization -->
-        <action id="reason.actions.refmt" class="com.reason.ide.actions.ReformatAction" text="Reformat code (refmt)">
-            <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="ReformatCode"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt r"/>
-        </action>
         <action id="reason.actions.convert" class="com.reason.ide.actions.ConvertAction"
                 text="Convert Reason-OCaml" description="Convert between Reason and OCaml code">
             <add-to-group group-id="EditMenu" anchor="last"/>
@@ -209,7 +205,7 @@
         <lang.commenter language="Dune" implementationClass="com.reason.ide.comment.DuneCommenter"/>
 
         <lang.braceMatcher language="Reason" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
-        <lang.braceMatcher language="NapkinScript" implementationClass="com.reason.ide.match.RmlPairedBraceMatcher"/>
+        <lang.braceMatcher language="NapkinScript" implementationClass="com.reason.ide.match.RsPairedBraceMatcher"/>
         <lang.braceMatcher language="OCaml" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="OCamlP4" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
         <lang.braceMatcher language="Mlg" implementationClass="com.reason.ide.match.OclPairedBraceMatcher"/>
@@ -244,6 +240,7 @@
         <stubIndex implementation="com.reason.ide.search.index.ValIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ValFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.TypeIndex"/>
+        <stubIndex implementation="com.reason.ide.search.index.TypeFqnIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.ExternalIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantIndex"/>
         <stubIndex implementation="com.reason.ide.search.index.VariantFqnIndex"/>
@@ -313,6 +310,9 @@
          -->
 
         <projectService serviceImplementation="com.reason.bs.RefmtProcess"/>
+        <projectService serviceImplementation="com.reason.dune.OcamlFormatProcess"/>
+        <postFormatProcessor implementation="com.reason.ide.format.ORPostFormatProcessor"/>
+
         <projectService serviceImplementation="com.reason.ide.console.ORToolWindowManager"/>
 
         <typedHandler implementation="com.reason.ide.handlers.ORTypedHandler" id="RmlTypedHandler"/>
@@ -365,6 +365,8 @@
         <compileServer.plugin classpath="jps-plugin.jar"/>
 
         <languageInjector implementation="com.reason.ide.JsInjector"/>
+        <lang.elementManipulator forClass="com.reason.lang.core.psi.PsiLiteralExpression"
+                                 implementationClass="com.reason.lang.core.LiteralStringManipulator"/>
 
         <!--
          | Templates

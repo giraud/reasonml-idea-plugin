@@ -1,16 +1,12 @@
 package com.reason.lang.napkin;
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiSignature;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.impl.PsiJsObject;
-import com.reason.lang.core.psi.impl.PsiLocalOpen;
-import com.reason.lang.core.psi.impl.PsiObjectField;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -22,8 +18,10 @@ public class JsObjectParsingTest extends NsParsingTestCase {
     PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
     assertNotNull(object);
 
-    Collection<PsiObjectField> fields = object.getFields();
+    List<PsiObjectField> fields = new ArrayList<>(object.getFields());
     assertEquals(2, fields.size());
+    assertEquals("a", fields.get(0).getName());
+    assertEquals("b", fields.get(1).getName());
   }
 
   public void test_definition() {
@@ -46,10 +44,11 @@ public class JsObjectParsingTest extends NsParsingTestCase {
 
     PsiLetBinding binding = e.getBinding();
     PsiJsObject object = PsiTreeUtil.findChildOfType(binding, PsiJsObject.class);
-    assertNotNull(object);
 
-    Collection<PsiObjectField> fields = object.getFields();
+    List<PsiObjectField> fields = new ArrayList<>(object.getFields());
     assertEquals(2, fields.size());
+    assertEquals("a", fields.get(0).getName());
+    assertEquals("b", fields.get(1).getName());
   }
 
   public void test_declaringOpen() {

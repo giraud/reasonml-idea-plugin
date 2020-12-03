@@ -12,24 +12,14 @@ public class PsiValStub extends NamedStubBase<PsiVal> {
   private final @NotNull String m_qname;
   private final boolean m_isFunction;
 
-  public PsiValStub(
-      StubElement parent,
-      @NotNull IStubElementType elementType,
-      String name,
-      String path,
-      boolean isFunction) {
+  public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, String name, String path, boolean isFunction) {
     super(parent, elementType, name);
     m_path = path;
     m_qname = path + "." + name;
     m_isFunction = isFunction;
   }
 
-  public PsiValStub(
-      StubElement parent,
-      @NotNull IStubElementType elementType,
-      StringRef name,
-      String path,
-      boolean isFunction) {
+  public PsiValStub(StubElement parent, @NotNull IStubElementType elementType, StringRef name, String path, boolean isFunction) {
     super(parent, elementType, name);
     m_path = path;
     m_qname = path + "." + name;

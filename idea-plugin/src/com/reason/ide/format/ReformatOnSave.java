@@ -1,38 +1,70 @@
 package com.reason.ide.format;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.reason.bs.BsCompiler;
-import com.reason.ide.files.FileHelper;
-import com.reason.ide.settings.ORSettings;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.application.ex.*;
+import com.intellij.openapi.command.*;
+import com.intellij.openapi.command.undo.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.reason.*;
+import com.reason.ide.settings.*;
+import org.jetbrains.annotations.*;
 
 public class ReformatOnSave {
-  private static final Logger LOG = Logger.getInstance("ReasonML.refmt.auto");
+  private static final Key<Integer> REFORMAT_COUNT = new Key<>("reasonml.format.count");
+  private static final Log LOG = Log.create("format.auto");
 
   public static void apply(@NotNull Project project, @NotNull Document document) {
-    PsiFile file = PsiDocumentManager.getInstance(project).getCachedPsiFile(document);
     ORSettings settings = ORSettings.getInstance(project);
+    if (settings.isFormatOnSaveEnabled()) {
+      PsiFile psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+      if (psiFile != null && psiFile.isWritable()) {
+        VirtualFile virtualFile = psiFile.getVirtualFile();
+        if (virtualFile != null && virtualFile.exists()) {
+          Integer count = psiFile.getUserData(REFORMAT_COUNT);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Before document saving (" + project.getName() + ", autoSave=true, count=" + count + "): " + psiFile.getVirtualFile());
+          }
+          if (count != null && count > 2) {
+            LOG.warn("   -> Too many saves (" + count + "), auto reformat is cancelled");
+            psiFile.putUserData(REFORMAT_COUNT, 1);
+            return;
+          }
 
-    // Verify this document is part of the project
-    if (file != null && settings.isFormatOnSaveEnabled()) {
-      VirtualFile virtualFile = file.getVirtualFile();
-      FileType fileType = file.getFileType();
-      if (FileHelper.isReason(fileType) || FileHelper.isRescript(fileType)) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Before document saving (" + project.getName() + ", autoSave=" + true + ")");
-        }
+          String textToReformat = psiFile.getText();
+          FormatterProcessor formatterProcessor = ORPostFormatProcessor.getFormatterProcessor(psiFile);
+          String newText = formatterProcessor == null ? textToReformat : formatterProcessor.apply(textToReformat);
 
-        String format = ReformatUtil.getFormat(file);
-        if (format != null) {
-          ServiceManager.getService(project, BsCompiler.class)
-              .refmt(virtualFile, FileHelper.isInterface(fileType), format, document);
+          if (newText == null || textToReformat.equals(newText)) {
+            LOG.debug(" -> Text unchanged, abort format");
+            psiFile.putUserData(REFORMAT_COUNT, 1);
+          } else {
+            ApplicationManagerEx.getApplicationEx()
+                .invokeLater(() -> WriteAction.run(() -> {
+                  PsiFile newFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+                  if (newFile != null) {
+                    if (document.getText().equals(newText)) {
+                      LOG.debug(" -> Text unchanged, abort format");
+                      newFile.putUserData(REFORMAT_COUNT, 1);
+                    } else {
+                      CommandProcessor.getInstance().executeCommand(project, () -> {
+                            document.setText(newText);
+                            Integer newCount = newFile.getUserData(REFORMAT_COUNT);
+                            newFile.putUserData(REFORMAT_COUNT, newCount == null ? 1 : newCount + 1);
+                            newFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
+                            FileDocumentManager.getInstance().saveDocument(document);
+                          },
+                          "or.reformat",
+                          "CodeFormatGroup",
+                          document);
+                    }
+                  }
+                }));
+          }
         }
       }
     }

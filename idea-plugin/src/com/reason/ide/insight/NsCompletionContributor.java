@@ -12,7 +12,7 @@ import com.reason.lang.napkin.NsQNameFinder;
 import com.reason.lang.napkin.NsTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class NsCompletionContributor extends CompletionContributor {
+public class NsCompletionContributor extends ORCompletionContributor {
 
   NsCompletionContributor() {
     super(NsTypes.INSTANCE, NsQNameFinder.INSTANCE);

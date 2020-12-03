@@ -6,7 +6,6 @@ import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.PsiFunction;
 import com.reason.lang.core.psi.PsiInclude;
 import com.reason.lang.core.psi.PsiInnerModule;
 import com.reason.lang.core.psi.PsiLet;
@@ -19,7 +18,8 @@ import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
-import org.jetbrains.annotations.NotNull;
+
+import org.jetbrains.annotations.*;
 
 public class OclQNameFinder extends BaseQNameFinder {
 
@@ -29,11 +29,13 @@ public class OclQNameFinder extends BaseQNameFinder {
 
   // Find the expression paths
   @NotNull
-  public Set<String> extractPotentialPaths(@NotNull PsiElement element) {
+  public Set<String> extractPotentialPaths(@Nullable PsiElement element) {
     Set<String> qualifiedNames = new ArrayListSet<>();
+    if (element == null) {
+      return qualifiedNames;
+    }
 
-    PsiElement sourceElement =
-        element instanceof ORFakeResolvedElement ? element.getOriginalElement() : element;
+    PsiElement sourceElement = element instanceof ORFakeResolvedElement ? element.getOriginalElement() : element;
     String filePath = ((FileBase) sourceElement.getContainingFile()).getModuleName() + ".";
     String path = extractPathName(sourceElement, OclTypes.INSTANCE);
     String pathExtension = path.isEmpty() ? "" : "." + path;
@@ -115,8 +117,19 @@ public class OclQNameFinder extends BaseQNameFinder {
           // Same for resolved elements
           resolvedQualifiedNames.addAll(extendPathWith(filePath, letQName, resolvedQualifiedNames));
           resolvedQualifiedNames.add(letQName + resolvedPathExtension);
+          // If function, register all parameters of function
+          if (let.isFunction()) {
+            for (PsiParameter parameter : let.getFunction().getParameters()) {
+              String paramQName = letQName + "[" + parameter.getName() + "]";
+              qualifiedNames.add(paramQName);
+              // Same for resolved elements
+              resolvedQualifiedNames.add(paramQName);
+            }
+          }
         }
-      } else if (item instanceof PsiFunction) {
+      }
+      /*
+      else if (item instanceof PsiFunction) {
         PsiQualifiedElement parent = PsiTreeUtil.getParentOfType(item, PsiQualifiedElement.class);
         if (parent != null) {
           String parentQName = parent.getQualifiedName();
@@ -129,6 +142,7 @@ public class OclQNameFinder extends BaseQNameFinder {
           }
         }
       }
+      */
 
       PsiElement prevItem = item.getPrevSibling();
       if (prevItem == null) {
@@ -144,6 +158,7 @@ public class OclQNameFinder extends BaseQNameFinder {
     }
 
     qualifiedNames.addAll(resolvedQualifiedNames);
+    qualifiedNames.add("");
     qualifiedNames.add("Pervasives");
     return qualifiedNames;
   }

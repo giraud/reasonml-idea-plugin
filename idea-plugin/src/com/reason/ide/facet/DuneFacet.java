@@ -1,7 +1,7 @@
 package com.reason.ide.facet;
 
 import com.intellij.facet.*;
-import com.intellij.openapi.module.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.*;
 import com.reason.sdk.*;
 import org.jetbrains.annotations.*;

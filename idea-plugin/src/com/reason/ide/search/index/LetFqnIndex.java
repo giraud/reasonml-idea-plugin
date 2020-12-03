@@ -31,11 +31,7 @@ public class LetFqnIndex extends IntStubIndexExtension<PsiLet> {
 
   @NotNull
   @Override
-  public Collection<PsiLet> get(
-      @NotNull final Integer integer,
-      @NotNull final Project project,
-      @NotNull final GlobalSearchScope scope) {
-    return StubIndex.getElements(
-        getKey(), integer, project, /*new JavaSourceFilterScope(scope) TODO*/ scope, PsiLet.class);
+  public Collection<PsiLet> get(@NotNull final Integer integer, @NotNull final Project project, @NotNull final GlobalSearchScope scope) {
+    return StubIndex.getElements(getKey(), integer, project, scope, PsiLet.class);
   }
 }

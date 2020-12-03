@@ -12,6 +12,17 @@
 
 ## Unreleased
 
+A brand new site created by John Pucciarelli (https://reasonml-editor.github.io/reasonml-idea-plugin/)
+
+2020.3 support
+
+- :rocket: [#284](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/284) ![o] Support for OCamlFormat
+- :rocket: [#110](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/110) ![o]![r]![n] Language injection in strings
+- :bug: [#279](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/279) ![n] Matched brace isn't highlighted in .res source file
+- :bug: [#278](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/278) ![o] let (//) incorrectly parsed as comment
+- :bug: [#277](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/277) Wrong module resolution for js object
+- :nail_care: New plugin icon by [@pooch](https://github.com/JohnPucciarelli)
+
 ## 0.94 - 2020/11/03
 
 Dune integration has been updated, [documentation](https://github.com/reasonml-editor/reasonml-idea-plugin/tree/master/docs) is also up to date. 
@@ -374,7 +385,7 @@ many versions active. Older version of the plugin will be frozen and won't get a
 
 ## 0.58.1 - 2018/07/18
 
-- :bug: [#79](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/79) IDE crash
+- :bug: [#79](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/79) IDE crash
 - :bug: [#77](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/77) Show non-alphanumeric function names such as ">>=" in the structure panel
 
 ## 0.58 - 2018/07/12
@@ -492,7 +503,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 * :rocket: Add |. operator
 * :rocket: goto action on file module is working
 * :house: Improve completion on expressions
-* :bug: Color settings no more bloked on loading spinner
+* :bug: Color settings no more blocked on loading spinner
 
 ## 0.41
 
@@ -500,7 +511,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 
 ## 0.40
 
-* :rocket: JSX completion (tag/attribute)
+* :rocket: JSX completion (tag/attribute)
 * :rocket: Variant names can be highlighted
 * :house: Improved parsers
          
@@ -608,3 +619,4 @@ This release contains a big rewrite of how modules are referenced, it may break 
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
 [r]: docs/img/reason-file.png
 [o]: docs/img/ocaml-file.png
+[n]: docs/img/rescript-file.png

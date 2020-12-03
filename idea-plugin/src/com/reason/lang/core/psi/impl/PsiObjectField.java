@@ -1,19 +1,15 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.core.CompositeTypePsiElement;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiLanguageConverter;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.ocaml.OclLanguage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
+import com.reason.lang.ocaml.*;
+import org.jetbrains.annotations.*;
 
-public class PsiObjectField extends CompositeTypePsiElement<ORTypes>
-    implements PsiLanguageConverter {
+public class PsiObjectField extends CompositeTypePsiElement<ORTypes> implements PsiLanguageConverter {
 
   protected PsiObjectField(@NotNull ORTypes types, @NotNull IElementType elementType) {
     super(types, elementType);
@@ -69,7 +65,7 @@ public class PsiObjectField extends CompositeTypePsiElement<ORTypes>
   }
 
   @Nullable
-  private PsiElement getValue() {
+  public PsiElement getValue() {
     PsiElement colon = ORUtil.findImmediateFirstChildOfType(this, m_types.COLON);
     return colon == null ? null : ORUtil.nextSiblingNode(colon.getNode()).getPsi();
   }

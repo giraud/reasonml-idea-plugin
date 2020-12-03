@@ -1,13 +1,14 @@
 package com.reason.ide.format;
 
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.PsiFile;
-import com.reason.ide.files.FileHelper;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.fileTypes.*;
+import com.intellij.psi.*;
+import com.reason.ide.files.*;
+import org.jetbrains.annotations.*;
 
 public class ReformatUtil {
 
-  private ReformatUtil() {}
+  private ReformatUtil() {
+  }
 
   @Nullable
   public static String getFormat(@Nullable PsiFile file) {
@@ -15,12 +16,14 @@ public class ReformatUtil {
 
     if (file != null) {
       FileType fileType = file.getFileType();
+      boolean isInterface = FileHelper.isInterface(fileType);
+
       if (FileHelper.isOCaml(fileType)) {
-        format = "ml";
+        format = isInterface ? "mli" : "ml";
       } else if (FileHelper.isReason(fileType)) {
-        format = "re";
+        format = isInterface ? "rei" : "re";
       } else if (FileHelper.isRescript(fileType)) {
-        format = "res";
+        format = isInterface ? "resi" : "res";
       }
     }
 

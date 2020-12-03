@@ -1,12 +1,9 @@
 package com.reason.lang.dune;
 
-import static com.reason.lang.ParserScopeEnum.file;
-
-import com.intellij.lang.PsiBuilder;
-import com.intellij.psi.tree.IElementType;
-import com.reason.lang.CommonParser;
-import com.reason.lang.ParserState;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.intellij.psi.tree.*;
+import com.reason.lang.*;
+import org.jetbrains.annotations.*;
 
 public class DuneParser extends CommonParser<DuneTypes> {
   DuneParser() {
@@ -63,7 +60,7 @@ public class DuneParser extends CommonParser<DuneTypes> {
   }
 
   private void parseLParen(@NotNull ParserState state) {
-    if (state.isCurrentResolution(file)) {
+    if (state.isRoot()) {
       state.markScope(m_types.C_STANZA, m_types.LPAREN);
     } else if (state.is(m_types.C_FIELDS)) {
       state.markScope(m_types.C_FIELD, m_types.LPAREN);

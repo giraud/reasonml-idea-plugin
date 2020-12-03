@@ -11,7 +11,7 @@ public class QNameFinderOclTest extends ORBasePlatformTestCase {
     FileBase f = configureCode("A.ml", "let make = increase<caret>()");
 
     Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(getFromCaret(f));
-    assertEquals(makePaths("A.make", "A", "Pervasives"), paths);
+    assertEquals(makePaths("A.make", "A", "", "Pervasives"), paths);
   }
 
   // Local module alias can be resolved/replaced in the qname finder
@@ -19,6 +19,13 @@ public class QNameFinderOclTest extends ORBasePlatformTestCase {
     FileBase f = configureCode("A.ml", "module B = Belt\n module M = struct module O = B.Option let _ = O.m<caret>");
 
     Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(getFromCaret(f));
-    assertSameElements(makePaths("A.O", "O", "A.Belt.Option", "Belt.Option", "Pervasives"), paths);
+    assertSameElements(makePaths("A.O", "O", "A.Belt.Option", "Belt.Option", "", "Pervasives"), paths);
+  }
+
+  public void test_parameter() {
+    FileBase f = configureCode("A.ml", "let add x y = x<caret> + y");
+
+    Set<String> paths = OclQNameFinder.INSTANCE.extractPotentialPaths(getFromCaret(f));
+    assertEquals(makePaths("A.add", "A.add[x]", "A.add[y]", "A", "", "Pervasives"), paths);
   }
 }

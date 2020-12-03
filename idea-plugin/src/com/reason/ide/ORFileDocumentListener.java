@@ -31,13 +31,13 @@ public class ORFileDocumentListener implements Disposable {
 
           @Override
           public void beforeDocumentSaving(@NotNull Document document) {
-            // On save, reformat code using refmt tool.
             ReformatOnSave.apply(project, document);
           }
 
           @Override
           public void beforeFileContentReload(
-              @NotNull VirtualFile file, @NotNull Document document) {}
+              @NotNull VirtualFile file, @NotNull Document document) {
+          }
 
           @Override
           public void fileWithNoDocumentChanged(@NotNull VirtualFile file) {}

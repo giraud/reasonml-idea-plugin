@@ -1,27 +1,25 @@
 package com.reason.lang.core;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
-import com.intellij.openapi.util.io.FileUtilRt;
+import com.intellij.lang.*;
+import com.intellij.openapi.util.io.*;
 import com.intellij.psi.*;
-import com.intellij.psi.tree.IElementType;
-import com.reason.ide.files.FileBase;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.files.*;
 import com.reason.lang.core.psi.PsiAnnotation;
-import com.reason.lang.core.psi.PsiQualifiedElement;
-import com.reason.lang.core.type.ORCompositeType;
-import com.reason.lang.core.type.ORTypes;
-import com.reason.lang.napkin.NsLanguage;
-import com.reason.lang.napkin.NsTypes;
-import com.reason.lang.ocaml.OclTypes;
-import com.reason.lang.reason.RmlLanguage;
-import com.reason.lang.reason.RmlTypes;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.type.*;
+import com.reason.lang.napkin.*;
+import com.reason.lang.ocaml.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
+
 import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ORUtil {
 
-  private ORUtil() {}
+  private ORUtil() {
+  }
 
   @NotNull
   public static String moduleNameToFileName(@NotNull String name) {
@@ -38,7 +36,7 @@ public class ORUtil {
       return "";
     }
     return nameWithoutExtension.substring(0, 1).toUpperCase(Locale.getDefault())
-        + nameWithoutExtension.substring(1);
+               + nameWithoutExtension.substring(1);
   }
 
   @Nullable
@@ -64,9 +62,7 @@ public class ORUtil {
     return annotations;
   }
 
-  @Nullable
-  public static PsiElement nextSiblingWithTokenType(
-      @NotNull PsiElement root, @NotNull IElementType elementType) {
+  public static @Nullable PsiElement nextSiblingWithTokenType(@NotNull PsiElement root, @NotNull IElementType elementType) {
     PsiElement found = null;
 
     PsiElement sibling = root.getNextSibling();
@@ -82,15 +78,11 @@ public class ORUtil {
     return found;
   }
 
-  @Nullable
-  public static PsiElement nextSiblingWithTokenType(
-      @NotNull PsiElement root, @NotNull ORCompositeType elementType) {
+  public static @Nullable PsiElement nextSiblingWithTokenType(@NotNull PsiElement root, @NotNull ORCompositeType elementType) {
     return nextSiblingWithTokenType(root, (IElementType) elementType);
   }
 
-  @NotNull
-  public static String getTextUntilTokenType(
-      @NotNull PsiElement root, @Nullable IElementType elementType) {
+  public static @NotNull String getTextUntilTokenType(@NotNull PsiElement root, @Nullable IElementType elementType) {
     StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
@@ -106,8 +98,7 @@ public class ORUtil {
     return text.toString().trim();
   }
 
-  @NotNull
-  public static String getTextUntilClass(@NotNull PsiElement root, @Nullable Class<?> clazz) {
+  public static @NotNull String getTextUntilClass(@NotNull PsiElement root, @Nullable Class<?> clazz) {
     StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
@@ -123,8 +114,7 @@ public class ORUtil {
     return text.toString().trim();
   }
 
-  @NotNull
-  public static String getTextUntilWhitespace(@NotNull PsiElement root) {
+  public static @NotNull String getTextUntilWhitespace(@NotNull PsiElement root) {
     StringBuilder text = new StringBuilder(root.getText());
 
     PsiElement sibling = root.getNextSibling();
@@ -138,6 +128,28 @@ public class ORUtil {
     }
 
     return text.toString().trim();
+  }
+
+  /*
+   x
+   M1.M2.x
+   */
+  public static @NotNull String getLongIdent(@Nullable PsiElement root) {
+    StringBuilder text = new StringBuilder(root == null ? "" : root.getText());
+    ORTypes types = root == null ? null : ORUtil.getTypes(root.getLanguage());
+
+    PsiElement sibling = root == null ? null : root.getNextSibling();
+    while (sibling != null) {
+      IElementType type = sibling.getNode().getElementType();
+      if (type == types.DOT || type == types.UIDENT || type == types.LIDENT) {
+        text.append(sibling.getText());
+        sibling = PsiTreeUtil.nextLeaf(sibling);
+      } else {
+        sibling = null;
+      }
+    }
+
+    return text.toString();
   }
 
   @NotNull
@@ -281,11 +293,11 @@ public class ORUtil {
     while (parent != null) {
       if (parent instanceof PsiQualifiedElement) {
         if (parent instanceof PsiNameIdentifierOwner
-            && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
+                && ((PsiNameIdentifierOwner) parent).getNameIdentifier() == element) {
           return ((PsiQualifiedElement) parent).getPath();
         }
         return ((PsiQualifiedElement) parent).getQualifiedName()
-            + (path.isEmpty() ? "" : "." + path);
+                   + (path.isEmpty() ? "" : "." + path);
       } else {
         if (parent instanceof PsiNameIdentifierOwner) {
           String parentName = ((PsiNamedElement) parent).getName();
@@ -315,13 +327,12 @@ public class ORUtil {
   @NotNull
   public static ORTypes getTypes(@NotNull Language language) {
     return language == NsLanguage.INSTANCE
-        ? NsTypes.INSTANCE
-        : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
+               ? NsTypes.INSTANCE
+               : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
   }
 
   @Nullable
-  public static String computeAlias(
-      @Nullable PsiElement rootElement, @NotNull Language language, boolean lowerAccepted) {
+  public static String computeAlias(@Nullable PsiElement rootElement, @NotNull Language language, boolean lowerAccepted) {
     boolean isALias = true;
 
     PsiElement currentElement = rootElement;
@@ -331,12 +342,12 @@ public class ORUtil {
         currentElement == null ? null : currentElement.getNode().getElementType();
     while (elementType != null && elementType != types.SEMI) {
       if (elementType != TokenType.WHITE_SPACE
-          && elementType != types.C_UPPER_SYMBOL
-          && elementType != types.DOT) {
+              && elementType != types.C_UPPER_SYMBOL
+              && elementType != types.DOT) {
         // if last term is lower symbol, and we accept lower symbol, then it's an alias
         if (elementType != types.C_LOWER_SYMBOL
-            || currentElement.getNextSibling() != null
-            || !lowerAccepted) {
+                || currentElement.getNextSibling() != null
+                || !lowerAccepted) {
           isALias = false;
           break;
         }

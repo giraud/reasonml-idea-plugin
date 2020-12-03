@@ -3,6 +3,7 @@ package com.reason;
 import com.intellij.execution.configurations.*;
 import com.intellij.ide.plugins.*;
 import com.intellij.openapi.extensions.*;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.roots.*;
