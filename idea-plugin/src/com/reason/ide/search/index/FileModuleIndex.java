@@ -67,9 +67,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
     return inputData -> {
       Map<String, FileModuleData> map = new HashMap<>();
       String namespace = "";
-
       FileBase psiFile = (FileBase) inputData.getPsiFile();
-      System.out.println("FileModuleIndex.getIndexer " + inputData.getFileType() + " " + psiFile);
 
       Optional<VirtualFile> bsconfigFile =
           BsPlatform.findBsConfigForFile(inputData.getProject(), inputData.getFile());
@@ -95,7 +93,6 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
       }
 
       map.put(moduleName, value);
-      System.out.println("  -> " + moduleName + " " + value);
       if (!namespace.isEmpty()) {
         map.put(namespace + "." + moduleName, value);
       }
@@ -118,7 +115,10 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
   @NotNull
   @Override
   public FileBasedIndex.InputFilter getInputFilter() {
-    return new DefaultFileTypeSpecificInputFilter(RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE, OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE);
+    return new DefaultFileTypeSpecificInputFilter(
+        RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE,
+        OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE,
+        NsFileType.INSTANCE, NsInterfaceFileType.INSTANCE);
   }
 
   @Override
