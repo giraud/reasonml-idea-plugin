@@ -289,7 +289,7 @@ public class InsightUpdateQueue extends MergingUpdateQueue {
                             });
                   }
                 }
-              } catch (@NotNull IOException | ExecutionException e) {
+              } catch (IOException | ExecutionException e) {
                 throw new RuntimeException(e); // TODO handle exception
               } finally {
                 if (tempFile != null) {
