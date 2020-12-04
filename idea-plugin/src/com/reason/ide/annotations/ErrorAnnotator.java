@@ -24,6 +24,7 @@ import com.intellij.psi.PsiManager;
 import com.reason.Log;
 import com.reason.bs.*;
 import com.reason.hints.InsightManager;
+import com.reason.ide.files.BsConfigJsonFileType;
 import com.reason.ide.hints.InferredTypesService;
 import com.reason.lang.reason.RmlLanguage;
 import org.jetbrains.annotations.NotNull;
@@ -67,15 +68,9 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
       return null;
     }
 
-    VirtualFile bsExecutableDirectory = contentRoot.get().findFileByRelativePath("lib/bs");
-    if (bsExecutableDirectory == null) {
-      LOG.info("Unable to find lib/bs for BuckleScript project.");
-      return null;
-    }
-
     // Read bsConfig to get the jsx value and ppx
-    // @TODO register a file listener for bsconfig.json
-    VirtualFile bsConfigFile = contentRoot.get().findFileByRelativePath("bsconfig.json");
+    VirtualFile bsConfigFile =
+        contentRoot.get().findFileByRelativePath(BsConfigJsonFileType.FILENAME);
     if (bsConfigFile == null) {
       LOG.info("No bsconfig.json found for content root: " + contentRoot);
       return null;
@@ -87,7 +82,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     // If a directory is marked as dev-only, it won't be built and exposed to other "dev"
     // directories in the same project
     // https://bucklescript.github.io/docs/en/build-configuration#sources
-    // @TODO register a file listener for build.ninja
+    // @TODO register a file listener and read the values from memory
     BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
     Ninja ninja = bucklescript.readNinjaBuild(contentRoot.get());
     for (String devSource : config.getDevSources()) {
@@ -95,11 +90,6 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
       if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
         ninja.addInclude(devSource);
       }
-    }
-
-    if (!BsPlatform.findBscExecutable(project, sourceFile).isPresent()) {
-      LOG.info("Unable to find bsc.exe");
-      return null;
     }
 
     // Creates a temporary file on disk with a copy of the current document.
@@ -111,7 +101,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
       LOG.error("Failed to write to temporary file.", e);
       return null;
     }
-    LOG.debug("Wrote contents to temporary file.", tempFilePath);
+    LOG.trace("Wrote contents to temporary file. Path = " + tempFilePath);
 
     File cmtFile = new File(m_compilationDirectory, sourceFile.getNameWithoutExtension() + ".cmt");
 
@@ -153,7 +143,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
       return null;
     }
 
-    PsiFile sourcePsiFile = Objects.requireNonNull(initialInfo.sourcePsiFile);
+    PsiFile sourcePsiFile = initialInfo.sourcePsiFile;
     Project project = sourcePsiFile.getProject();
     VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
 
@@ -163,13 +153,9 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     BscProcessListener bscListener = new BscProcessListener();
 
     Integer exitCode = bscProcess.run(sourceFile, initialInfo.arguments, bscListener);
-    if (exitCode == null) {
-      LOG.error("Something went wrong when running bsc.exe");
-      return null;
-    }
     LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
 
-    if (exitCode == 0) {
+    if (exitCode != null && exitCode == 0) {
       ApplicationManager.getApplication()
           .invokeLater(
               () -> {
@@ -186,10 +172,12 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
     List<OutputInfo> outputInfo = bscListener.getInfo();
     LOG.debug("Found info", outputInfo);
-    String name = sourceFile.getName();
-    for (OutputInfo info : outputInfo) {
-      info.path = name;
-      LOG.trace("  -> " + info);
+    if (LOG.isTraceEnabled()) {
+      String name = sourceFile.getName();
+      for (OutputInfo info : outputInfo) {
+        info.path = name;
+        LOG.trace("  -> " + info);
+      }
     }
 
     return new AnnotationResult(outputInfo, initialInfo);
@@ -264,11 +252,6 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
               LOG.debug("Annotate types");
               InferredTypesService.annotatePsiFile(project, RmlLanguage.INSTANCE, psiFile, types);
-
-              LOG.trace("Restart daemon code analyzer for " + psiFile);
-              if (psiFile != null) {
-                DaemonCodeAnalyzer.getInstance(project).restart(psiFile);
-              }
             });
   }
 
@@ -290,17 +273,19 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
       LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
       return new Annotation(info.isError, message, range, start);
     } else {
-      LOG.debug(
-          "Failed to locate info: "
-              + start
-              + "->"
-              + end
-              + ", offsets "
-              + startOffset
-              + "->"
-              + endOffset
-              + ", info "
-              + info);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(
+            "Failed to locate info: "
+                + start
+                + "->"
+                + end
+                + ", offsets "
+                + startOffset
+                + "->"
+                + endOffset
+                + ", info "
+                + info);
+      }
       return null;
     }
   }

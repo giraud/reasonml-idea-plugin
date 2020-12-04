@@ -2,21 +2,28 @@ package com.reason.bs;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.ColoredProcessHandler;
+import com.intellij.execution.process.KillableProcessHandler;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessListener;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Log;
 import com.reason.ORProcessException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class BscProcess {
+
+  private static final Log LOG = Log.create("process.bsc");
+
+  private static final Duration TIMEOUT = Duration.of(5, ChronoUnit.SECONDS);
 
   private final Project m_project;
 
@@ -30,11 +37,14 @@ public class BscProcess {
 
   @Nullable
   public Integer run(
-      VirtualFile sourceFile, List<String> arguments, ProcessListener processListener)
+      @NotNull VirtualFile sourceFile,
+      @NotNull List<String> arguments,
+      @NotNull ProcessListener processListener)
       throws ORProcessException {
     Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
     if (!bscPath.isPresent()) {
-      throw new ORProcessException("Unable to find bsc.exe.");
+      LOG.error("Unable to find bsc.exe.");
+      return null;
     }
 
     List<String> command = new ArrayList<>();
@@ -49,14 +59,14 @@ public class BscProcess {
 
     OSProcessHandler bscProcessHandler;
     try {
-      bscProcessHandler = new ColoredProcessHandler(bscCli);
+      bscProcessHandler = new KillableProcessHandler(bscCli);
     } catch (ExecutionException e) {
       throw new ORProcessException(e.getMessage());
     }
 
     bscProcessHandler.addProcessListener(processListener);
     bscProcessHandler.startNotify();
-    bscProcessHandler.waitFor();
+    bscProcessHandler.waitFor(TIMEOUT.toMillis());
     return bscProcessHandler.getExitCode();
   }
 }
