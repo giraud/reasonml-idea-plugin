@@ -12,7 +12,7 @@
 
 ## Unreleased
 
-## 0.95 - 2020/12/03
+## 0.95.1 - 2020/12/03
 
 A brand new site created by John Pucciarelli (https://reasonml-editor.github.io/reasonml-idea-plugin/)
 
