@@ -1,12 +1,13 @@
 package com.reason.dune;
 
-import com.intellij.facet.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.vfs.*;
-import com.reason.*;
-import com.reason.ide.facet.*;
-import org.jetbrains.annotations.*;
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.reason.Platform;
+import com.reason.ide.facet.DuneFacet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Dune {
 

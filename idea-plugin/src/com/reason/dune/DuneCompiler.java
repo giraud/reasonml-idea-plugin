@@ -1,25 +1,31 @@
 package com.reason.dune;
 
-import com.intellij.execution.process.*;
-import com.intellij.execution.ui.*;
-import com.intellij.facet.*;
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.ui.*;
-import com.intellij.openapi.vfs.*;
-import com.intellij.openapi.wm.*;
-import com.intellij.ui.content.*;
+import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.facet.FacetManager;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.SimpleToolWindowPanel;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.content.Content;
 import com.reason.Compiler;
-import com.reason.*;
-import com.reason.hints.*;
-import com.reason.ide.*;
-import com.reason.ide.console.*;
-import com.reason.ide.facet.*;
-import org.jetbrains.annotations.*;
+import com.reason.CompilerType;
+import com.reason.Log;
+import com.reason.ProcessFinishedListener;
+import com.reason.hints.InsightManager;
+import com.reason.ide.ORProjectManager;
+import com.reason.ide.console.CliType;
+import com.reason.ide.console.ORToolWindowProvider;
+import com.reason.ide.facet.DuneFacet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
 
 public class DuneCompiler implements Compiler {
 
