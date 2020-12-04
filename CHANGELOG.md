@@ -619,6 +619,6 @@ This release contains a big rewrite of how modules are referenced, it may break 
 [0.81]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...0.81
 [0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
-[r]: docs/img/reason-file.png
-[o]: docs/img/ocaml-file.png
-[n]: docs/img/rescript-file.png
+[r]: website/static/img/reason-file.png
+[o]: website/static/img/ocaml-file.png
+[n]: website/static/img/rescript-file.png
