@@ -60,6 +60,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     // create temporary compilation directory, once
     if (m_compilationDirectory == null) {
       m_compilationDirectory = createTempCompilationDirectory(project);
+      LOG.debug("Created temporary annotator directory", m_compilationDirectory);
     }
 
     Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(project, sourceFile);
