@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#294](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/294) ![o] `let open in` incorrectly parsed
+
 ## 0.95.1 - 2020/12/03
 
 A brand new site created by John Pucciarelli (https://reasonml-editor.github.io/reasonml-idea-plugin/)

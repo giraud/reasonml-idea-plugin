@@ -851,6 +851,10 @@ public class OclParser extends CommonParser<OclTypes> {
         state.popCancel();
         state.popEnd();
       }
+      if (nextToken == m_types.IN) {
+        // let _ = let open M |>in<| ..
+        state.advance();
+      }
     } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
       // Declaring a variant  ::  type t = | |>X<| ...
       state.wrapWith(m_types.C_UPPER_IDENTIFIER);
