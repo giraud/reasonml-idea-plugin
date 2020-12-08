@@ -1,12 +1,11 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
+import com.intellij.psi.*;
+import com.intellij.psi.util.*;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiParameters;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
@@ -35,9 +34,8 @@ public class FunctionParsingTest extends OclParsingTestCase {
     assertNotNull(function.getBody());
   }
 
-  public void test_letBinding() {
-    PsiLet e =
-        first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
+  public void test_let_binding() {
+    PsiLet e = first(letExpressions(parseCode("let getAttributes node = let attr = \"r\" in attr")));
 
     assertTrue(e.isFunction());
     PsiFunction function = e.getFunction();
@@ -45,10 +43,8 @@ public class FunctionParsingTest extends OclParsingTestCase {
     assertNotNull(function.getBody());
   }
 
-  public void test_letBinding2() {
-    PsiLet e =
-        first(
-            letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
+  public void test_let_binding_2() {
+    PsiLet e = first(letExpressions(parseCode("let visit_vo f = Printf.printf \"a\"; Printf.printf \"b\"")));
 
     assertTrue(e.isFunction());
     PsiFunction function = e.getFunction();
@@ -78,7 +74,7 @@ public class FunctionParsingTest extends OclParsingTestCase {
     assertEquals("x + y", f.getBody().getText());
   }
 
-  public void test_complexParams() {
+  public void test_complex_params() {
     Collection<PsiNamedElement> expressions =
         expressions(
             parseCode("let resolve_morphism env ?(fnewt=fun x -> x) args' (b,cstr) = let x = 1"));
@@ -88,5 +84,15 @@ public class FunctionParsingTest extends OclParsingTestCase {
     assertTrue(let.isFunction());
     assertSize(4, let.getFunction().getParameters());
     assertEquals("let x = 1", let.getFunction().getBody().getText());
+  }
+
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/291
+  public void test_GH_291() {
+    PsiLet e = first(letExpressions(parseCode("let fn = function | OpenedModule -> true | _ -> false")));
+
+    assertTrue(e.isFunction());
+    assertEquals("function | OpenedModule -> true | _ -> false", e.getBinding().getText());
+    PsiFunction f = e.getFunction();
+    assertEquals("| OpenedModule -> true | _ -> false", f.getBody().getText());
   }
 }
