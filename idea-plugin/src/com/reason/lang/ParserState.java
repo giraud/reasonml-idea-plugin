@@ -137,7 +137,7 @@ public class ParserState {
   }
 
   public boolean isScopeTokenElementType(ORTokenElementType scopeTokenElementType) {
-    return m_currentScope.isScopeTokenEqualTo(scopeTokenElementType);
+    return m_currentScope.isScopeToken(scopeTokenElementType);
   }
 
   public boolean isCurrentResolution(ParserScopeEnum scope) {

@@ -137,7 +137,7 @@ public class ParserScope {
     return false;
   }
 
-  boolean isScopeTokenEqualTo(ORTokenElementType tokenElementType) {
+  public boolean isScopeToken(ORTokenElementType tokenElementType) {
     return m_scopeTokenElementType == tokenElementType;
   }
 

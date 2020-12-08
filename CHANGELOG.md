@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- :bug: [#295](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/295) ![o] Parser error: incorrect chaining module/type
+
 ## 0.95.1 - 2020/12/03
 
 A brand new site created by John Pucciarelli (https://reasonml-editor.github.io/reasonml-idea-plugin/)
