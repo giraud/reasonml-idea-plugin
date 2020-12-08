@@ -31,7 +31,10 @@ public class BscProcessListener implements ProcessListener {
     public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
         String text = event.getText();
         if (text != null) {
-            m_builder.append(text);
+            // remove ansi color codes as the "-color never" flag doesn't remove all colors
+            // https://stackoverflow.com/questions/14652538/remove-ascii-color-codes
+            String textWithoutAnsiColors = text.replaceAll("\u001B\\[[;\\d]*m", "");
+            m_builder.append(textWithoutAnsiColors);
             if (text.endsWith("\n")) {
                 m_lineProcessor.onRawTextAvailable(m_builder.toString());
                 if (LOG.isTraceEnabled()) {
