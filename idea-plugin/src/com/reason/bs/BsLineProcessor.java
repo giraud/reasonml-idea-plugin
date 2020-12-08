@@ -1,5 +1,8 @@
 package com.reason.bs;
 
+import static com.reason.bs.BsLineProcessor.BuildStatus.*;
+import static java.lang.Integer.parseInt;
+
 import com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
 import org.jetbrains.annotations.NotNull;
@@ -9,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.reason.bs.BsLineProcessor.BuildStatus.*;
-import static java.lang.Integer.parseInt;
 
 /** Line processor is a state machine. */
 public class BsLineProcessor {

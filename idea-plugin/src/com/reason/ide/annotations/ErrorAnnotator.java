@@ -43,8 +43,6 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
   private static final Log LOG = Log.create("annotator");
 
-  private @Nullable File m_compilationDirectory;
-
   @Nullable
   @Override
   public InitialInfo collectInformation(
@@ -57,11 +55,9 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     Project project = psiFile.getProject();
     VirtualFile sourceFile = psiFile.getVirtualFile();
 
-    // create temporary compilation directory, once
-    if (m_compilationDirectory == null) {
-      m_compilationDirectory = createTempCompilationDirectory(project);
-      LOG.debug("Created temporary annotator directory", m_compilationDirectory);
-    }
+    // create temporary compilation directory
+    File compilationDirectory = createTempCompilationDirectory(project);
+    LOG.debug("Created temporary annotator directory", compilationDirectory);
 
     Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(project, sourceFile);
     if (!contentRoot.isPresent()) {
@@ -95,7 +91,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
     // Creates a temporary file on disk with a copy of the current document.
     // It'll be used by bsc for a temporary compilation
-    Path tempFilePath = Paths.get(m_compilationDirectory.getPath(), sourceFile.getName());
+    Path tempFilePath = Paths.get(compilationDirectory.getPath(), sourceFile.getName());
     try {
       Files.write(tempFilePath, psiFile.getText().getBytes());
     } catch (IOException e) {
@@ -104,7 +100,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     }
     LOG.trace("Wrote contents to temporary file. Path = " + tempFilePath);
 
-    File cmtFile = new File(m_compilationDirectory, sourceFile.getNameWithoutExtension() + ".cmt");
+    File cmtFile = new File(compilationDirectory, sourceFile.getNameWithoutExtension() + ".cmt");
 
     List<String> arguments = new ArrayList<>();
     arguments.add("-bs-super-errors");
