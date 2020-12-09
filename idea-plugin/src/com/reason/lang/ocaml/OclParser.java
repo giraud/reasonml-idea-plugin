@@ -581,6 +581,12 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseFunction(@NotNull ParserState state) {
+    if (state.is(m_types.C_LET_BINDING)) {
+      state.mark(m_types.C_FUN_EXPR)
+          .advance()
+          .mark(m_types.C_FUN_BODY);
+    }
+
     state.mark(m_types.C_MATCH_EXPR).resolution(functionMatch).advance();
     if (state.getTokenType() != m_types.PIPE) {
       state.mark(m_types.C_PATTERN_MATCH_EXPR);
@@ -725,8 +731,8 @@ public class OclParser extends CommonParser<OclTypes> {
     state.popEnd();
 
 //    if (state.is(m_types.C_LET_DECLARATION)) {
-      // we are processing an infix operator, unit or a deconstruction (tuple)
-      //  let ( ... |>)<| = ...
+    // we are processing an infix operator, unit or a deconstruction (tuple)
+    //  let ( ... |>)<| = ...
 //      state.resolution(letNamed);
 //    }
   }

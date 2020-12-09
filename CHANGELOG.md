@@ -13,6 +13,7 @@
 ## Unreleased
 
 - :bug: [#294](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/294) ![o] `let open in` incorrectly parsed
+- :bug: [#291](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/291) ![o] 'function' not parsed as function
 
 ## 0.95.1 - 2020/12/03
 
