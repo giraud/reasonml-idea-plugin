@@ -6,13 +6,7 @@ import com.intellij.util.containers.ArrayListSet;
 import com.reason.ide.files.FileBase;
 import com.reason.lang.BaseQNameFinder;
 import com.reason.lang.QNameFinder;
-import com.reason.lang.core.psi.PsiInclude;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLetBinding;
-import com.reason.lang.core.psi.PsiOpen;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.reason.lang.core.psi.*;
 import com.reason.lang.core.psi.impl.PsiLocalOpen;
 import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
 import java.util.*;
@@ -20,6 +14,8 @@ import java.util.regex.*;
 import java.util.stream.*;
 
 import org.jetbrains.annotations.*;
+
+import static java.util.Collections.emptyList;
 
 public class OclQNameFinder extends BaseQNameFinder {
 
@@ -119,7 +115,9 @@ public class OclQNameFinder extends BaseQNameFinder {
           resolvedQualifiedNames.add(letQName + resolvedPathExtension);
           // If function, register all parameters of function
           if (let.isFunction()) {
-            for (PsiParameter parameter : let.getFunction().getParameters()) {
+            PsiFunction function = let.getFunction();
+            List<PsiParameter> parameters = function == null ? emptyList() : function.getParameters();
+            for (PsiParameter parameter : parameters) {
               String paramQName = letQName + "[" + parameter.getName() + "]";
               qualifiedNames.add(paramQName);
               // Same for resolved elements
