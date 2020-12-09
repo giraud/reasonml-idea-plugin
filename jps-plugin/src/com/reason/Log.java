@@ -294,4 +294,10 @@ public class Log {
       m_log.debug(msg + SEP + t);
     }
   }
+
+  public void trace(@NotNull String comment, @Nullable File t) {
+    if (m_log.isTraceEnabled()) {
+      m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getPath() + " "));
+    }
+  }
 }

@@ -5,16 +5,22 @@ import static java.lang.Integer.parseInt;
 
 import com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
-import java.util.*;
-import java.util.regex.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Line processor is a state machine. */
 public class BsLineProcessor {
 
   private static final Pattern FILE_LOCATION =
       Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n");
+
+  private static final Pattern POSITIONS = Pattern.compile("[\\s:]\\d+:\\d+(-\\d+(:\\d+)?)?$");
+
   private final Log m_log;
 
   public BsLineProcessor(Log log) {
@@ -152,40 +158,49 @@ public class BsLineProcessor {
     return null;
   }
 
-  // ...path/src/Source.re 111:21-112:22
-  // ...path/src/Source.re 111:21-22
-  // ...path/src/Source.re 111:21   <- must add 1 to colEnd
+  // "...path/src/Source.re 111:21-112:22" or " ...path/src/Source.re:111:21-112:22"
+  // "...path/src/Source.re 111:21-22" or "...path/src/Source.re:111:21-22"
+  // "...path/src/Source.re 111:21" or "...path/src/Source.re:111:21"
   @Nullable
   private OutputInfo extractFilePositions(@Nullable String text) {
-    if (text != null) {
-      String[] tokens = text.trim().split(" ");
-      if (tokens.length == 2) {
-        String path = tokens[0];
-        String[] positions = tokens[1].split("-");
-        if (positions.length == 1) {
-          String[] start = positions[0].split(":");
-          if (2 == start.length) {
-            return addInfo(path, start[0], start[1], null, null);
-          }
-        } else if (positions.length == 2) {
-          String[] start = positions[0].split(":");
-          String[] end = positions[1].split(":");
-          OutputInfo info =
-              addInfo(
-                  path,
-                  start[0],
-                  start[1],
-                  end.length == 1 ? start[0] : end[0],
-                  end[end.length - 1]);
-          if (info.colStart < 0 || info.colEnd < 0) {
-            m_log.error("Can't decode columns for [" + text + "]");
-            return null;
-          }
-          return info;
+    if (text == null) {
+      return null;
+    }
+    String trimmed = text.trim();
+    Matcher matcher = POSITIONS.matcher(trimmed);
+    // extract path and positions
+    if (matcher.find()) {
+      String positions = matcher.group();
+      // remove positions from text to get path
+      String path = text.replace(positions, "");
+      // remove leading space or colon from positions
+      positions = positions.substring(1);
+
+      // split "111:21-112:22" into ["111:21", "112:22"]
+      String[] startAndEndPositions = positions.split("-");
+
+      // only start positions found, ["111:21"]
+      String[] startLineAndCol = startAndEndPositions[0].split(":");
+      if (startAndEndPositions.length == 1) {
+        return addInfo(path, startLineAndCol[0], startLineAndCol[1], null, null);
+      }
+
+      // both start and end positions present
+      if (startAndEndPositions.length == 2) {
+        String[] endLineAndCol = startAndEndPositions[1].split(":");
+        // "111:21-22" --> "111:21-111:22"
+        if (endLineAndCol.length == 1) {
+          return addInfo(
+              path, startLineAndCol[0], startLineAndCol[1], startLineAndCol[0], endLineAndCol[0]);
+        }
+        // "111:21-112:22"
+        if (endLineAndCol.length == 2) {
+          return addInfo(
+              path, startLineAndCol[0], startLineAndCol[1], endLineAndCol[0], endLineAndCol[1]);
         }
       }
+      m_log.error("Can't decode columns for [" + text + "]");
     }
-
     return null;
   }
 

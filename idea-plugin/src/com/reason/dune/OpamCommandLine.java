@@ -1,21 +1,25 @@
 package com.reason.dune;
 
-import com.intellij.execution.configurations.*;
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.*;
-import com.intellij.openapi.project.*;
-import com.intellij.openapi.projectRoots.*;
-import com.intellij.openapi.roots.*;
-import com.intellij.openapi.vfs.*;
-import com.intellij.util.containers.*;
-import com.reason.*;
-import com.reason.ide.facet.*;
-import org.jetbrains.annotations.*;
+import static com.intellij.notification.NotificationListener.URL_OPENING_LISTENER;
+import static com.reason.dune.DuneProcess.CONFIGURE_DUNE_SDK;
 
-import java.util.*;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.containers.ContainerUtil;
+import com.reason.Log;
+import com.reason.OCamlExecutable;
+import com.reason.ORNotification;
+import com.reason.ide.facet.DuneFacet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import static com.intellij.notification.NotificationListener.*;
-import static com.reason.dune.DuneProcess.*;
+import java.util.List;
+import java.util.Map;
 
 abstract class OpamCommandLine {
   private static final Log LOG = Log.create("opam");
