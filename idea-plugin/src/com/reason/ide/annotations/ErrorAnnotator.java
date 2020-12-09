@@ -43,7 +43,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
     // create temporary compilation directory
     File compilationDirectory = createTempCompilationDirectory(project);
-    LOG.debug("Created temporary annotator directory", compilationDirectory);
+    LOG.trace("Created temporary annotator directory", compilationDirectory);
 
     Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(project, sourceFile);
     Optional<VirtualFile> libRoot = contentRoot.map(root -> root.findFileByRelativePath("lib/bs"));
@@ -251,7 +251,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         new LogicalPosition(lineEnd < 1 ? 0 : lineEnd - 1, colEnd < 1 ? 0 : colEnd);
     int startOffset = editor.logicalPositionToOffset(start);
     int endOffset = editor.logicalPositionToOffset(end);
-    if (0 < startOffset && 0 < endOffset && startOffset < endOffset) {
+    if (0 < startOffset && 0 < endOffset && startOffset <= endOffset) {
       TextRangeInterval range = new TextRangeInterval(startOffset - 1, endOffset - 1);
       String message = info.message.replace('\n', ' ').replaceAll("\\s+", " ").trim();
       LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
