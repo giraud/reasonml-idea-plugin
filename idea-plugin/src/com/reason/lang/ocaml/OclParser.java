@@ -512,10 +512,21 @@ public class OclParser extends CommonParser<OclTypes> {
 
     state.advance().popEnd();
 
-    if (scope != null && scope.isCompositeType(m_types.C_MODULE_TYPE)) {
-      IElementType nextToken = state.getTokenType();
-      if (nextToken == m_types.WITH) {
-        state.advance().mark(m_types.C_CONSTRAINTS).mark(m_types.C_CONSTRAINT);
+    if (scope != null) {
+      if (scope.isCompositeType(m_types.C_MODULE_TYPE)) {
+        IElementType nextToken = state.getTokenType();
+        if (nextToken == m_types.WITH) {
+          state.advance().mark(m_types.C_CONSTRAINTS).mark(m_types.C_CONSTRAINT);
+        }
+      } else if (scope.isScopeToken(m_types.STRUCT) && state.is(m_types.C_MODULE_DECLARATION)) {
+        // module M = struct .. |>end<|
+        state.popEnd();
+
+        IElementType nextToken = state.getTokenType();
+        if (nextToken == m_types.AND) {
+          // module M = struct .. end |>and<|
+          state.advance().mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
+        }
       }
     }
   }

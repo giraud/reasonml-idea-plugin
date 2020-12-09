@@ -12,6 +12,7 @@
 
 ## Unreleased
 
+- :bug: [#295](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/295) ![o] Parser error: incorrect chaining module/type
 - :bug: [#291](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/291) ![o] 'function' not parsed as function
 
 ## 0.95.1 - 2020/12/03
