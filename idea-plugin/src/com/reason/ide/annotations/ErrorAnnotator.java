@@ -1,52 +1,38 @@
 package com.reason.ide.annotations;
 
-import static com.reason.ide.annotations.ErrorAnnotator.AnnotationResult;
-import static com.reason.ide.annotations.ErrorAnnotator.InitialInfo;
-
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
-import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.ExternalAnnotator;
-import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.editor.impl.TextRangeInterval;
-import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
+import com.intellij.codeInsight.daemon.*;
+import com.intellij.lang.annotation.*;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.editor.impl.*;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.problems.Problem;
-import com.intellij.problems.WolfTheProblemSolver;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.reason.Log;
+import com.intellij.openapi.vfs.*;
+import com.intellij.problems.*;
+import com.intellij.psi.*;
+import com.reason.*;
 import com.reason.bs.*;
-import com.reason.hints.InsightManager;
-import com.reason.ide.files.BsConfigJsonFileType;
-import com.reason.ide.hints.InferredTypesService;
-import com.reason.lang.reason.RmlLanguage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.hints.*;
+import com.reason.ide.files.*;
+import com.reason.ide.hints.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
+
+import static com.reason.ide.annotations.ErrorAnnotator.*;
 
 public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult>
     implements DumbAware {
 
   private static final Log LOG = Log.create("annotator");
 
-  @Nullable
   @Override
-  public InitialInfo collectInformation(
-      @NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {
+  public @Nullable InitialInfo collectInformation(@NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {
     if (hasErrors) {
       LOG.error("Annotator was initialized with errors. This isn't supported.");
       return null;
@@ -60,8 +46,9 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     LOG.debug("Created temporary annotator directory", compilationDirectory);
 
     Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(project, sourceFile);
-    if (!contentRoot.isPresent()) {
-      LOG.info("Unable to find BuckleScript content root.");
+    Optional<VirtualFile> libRoot = contentRoot.map(root -> root.findFileByRelativePath("lib/bs"));
+    if (!libRoot.isPresent()) {
+      LOG.info("Unable to find BuckleScript lib root.");
       return null;
     }
 
@@ -129,7 +116,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     arguments.add("-bin-annot");
     arguments.add(tempFilePath.toString());
 
-    return new InitialInfo(psiFile, cmtFile, editor, arguments);
+    return new InitialInfo(psiFile, libRoot.get(), cmtFile, editor, arguments);
   }
 
   @Nullable
@@ -149,7 +136,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     BscProcess bscProcess = BscProcess.getInstance(project);
     BscProcessListener bscListener = new BscProcessListener();
 
-    Integer exitCode = bscProcess.run(sourceFile, initialInfo.arguments, bscListener);
+    Integer exitCode = bscProcess.run(sourceFile, initialInfo.libRoot, initialInfo.arguments, bscListener);
     LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
 
     if (exitCode != null && exitCode == 0) {
@@ -211,7 +198,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
                 sourceFile,
                 annotation.startPos.line,
                 annotation.startPos.column,
-                new String[] {annotation.message}));
+                new String[]{annotation.message}));
       } else {
         holder
             .newAnnotation(HighlightSeverity.WARNING, annotation.message)
@@ -288,21 +275,15 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
   }
 
   static class InitialInfo {
-
     final PsiFile sourcePsiFile;
-
+    final VirtualFile libRoot;
     final File cmtFile;
-
+    final Editor editor;
     final List<String> arguments;
 
-    final Editor editor;
-
-    private InitialInfo(
-        @NotNull PsiFile sourcePsiFile,
-        @NotNull File cmtFile,
-        @NotNull Editor editor,
-        @NotNull List<String> arguments) {
+    private InitialInfo(@NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @NotNull File cmtFile, @NotNull Editor editor, @NotNull List<String> arguments) {
       this.sourcePsiFile = sourcePsiFile;
+      this.libRoot = libRoot;
       this.cmtFile = cmtFile;
       this.editor = editor;
       this.arguments = arguments;
@@ -310,9 +291,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
   }
 
   static class AnnotationResult {
-
     final List<OutputInfo> outputInfo;
-
     final InitialInfo initialInfo;
 
     public AnnotationResult(@NotNull List<OutputInfo> outputInfo, InitialInfo initialInfo) {
@@ -327,11 +306,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     final TextRangeInterval range;
     final LogicalPosition startPos;
 
-    Annotation(
-        boolean isError,
-        @NotNull String message,
-        @NotNull TextRangeInterval textRange,
-        @NotNull LogicalPosition startPos) {
+    Annotation(boolean isError, @NotNull String message, @NotNull TextRangeInterval textRange, @NotNull LogicalPosition startPos) {
       this.isError = isError;
       this.message = message;
       this.range = textRange;

@@ -1,23 +1,17 @@
 package com.reason.bs;
 
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.KillableProcessHandler;
-import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessListener;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Log;
-import com.reason.ORProcessException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.execution.*;
+import com.intellij.execution.configurations.*;
+import com.intellij.execution.process.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.reason.*;
+import org.jetbrains.annotations.*;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.*;
+import java.time.temporal.*;
+import java.util.*;
 
 public class BscProcess {
 
@@ -36,11 +30,7 @@ public class BscProcess {
   }
 
   @Nullable
-  public Integer run(
-      @NotNull VirtualFile sourceFile,
-      @NotNull List<String> arguments,
-      @NotNull ProcessListener processListener)
-      throws ORProcessException {
+  public Integer run(@NotNull VirtualFile sourceFile, @NotNull VirtualFile workDir, @NotNull List<String> arguments, @NotNull ProcessListener processListener) throws ORProcessException {
     Optional<VirtualFile> bscPath = BsPlatform.findBscExecutable(m_project, sourceFile);
     if (!bscPath.isPresent()) {
       LOG.error("Unable to find bsc.exe.");
@@ -52,10 +42,14 @@ public class BscProcess {
     command.addAll(arguments);
     GeneralCommandLine bscCli =
         new GeneralCommandLine(command)
-            .withWorkDirectory(sourceFile.getParent().getPath())
+            .withWorkDirectory(workDir.getPath())
             // disable coloring
             // https://rescript-lang.org/docs/manual/latest/build-configuration#error-output-coloring-ninja_ansi_forced
             .withEnvironment("NINJA_ANSI_FORCED", "0");
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("bsc " + Joiner.join(" ", arguments));
+      LOG.trace("  work dir", sourceFile.getParent());
+    }
 
     OSProcessHandler bscProcessHandler;
     try {
