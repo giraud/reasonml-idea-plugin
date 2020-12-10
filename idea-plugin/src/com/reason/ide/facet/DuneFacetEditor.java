@@ -3,7 +3,7 @@ package com.reason.ide.facet;
 import com.intellij.facet.ui.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
-import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.*;
 import com.intellij.openapi.options.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.*;
@@ -145,7 +145,8 @@ class DuneFacetEditor extends FacetEditorTab {
 
       @Override
       public Object getValueAt(int rowIndex, int columnIndex) {
-        return m_env.get(rowIndex)[columnIndex];
+        String[] columns = m_env.get(rowIndex);
+        return columns.length <= columnIndex ? "" : columns[columnIndex];
       }
     };
   }
