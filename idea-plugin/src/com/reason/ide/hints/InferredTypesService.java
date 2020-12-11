@@ -1,37 +1,30 @@
 package com.reason.ide.hints;
 
-import static com.reason.ide.ORFileManager.findCmtFileFromSource;
+import com.intellij.lang.*;
+import com.intellij.openapi.application.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.intellij.psi.*;
+import com.reason.*;
+import com.reason.hints.*;
+import com.reason.ide.files.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.lang.Language;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.fileEditor.TextEditor;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.reason.Log;
-import com.reason.hints.InsightManager;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.FileHelper;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.nio.file.*;
+
+import static com.reason.ide.ORFileManager.*;
+import static com.reason.ide.hints.CodeLens.*;
 
 public class InferredTypesService {
 
   private static final Log LOG = Log.create("hints.inferredTypes");
 
-  private InferredTypesService() {}
+  private InferredTypesService() {
+  }
 
   public static void queryForSelectedTextEditor(@NotNull Project project) {
     try {
@@ -44,8 +37,7 @@ public class InferredTypesService {
           VirtualFile sourceFile = psiFile.getVirtualFile();
           Application application = ApplicationManager.getApplication();
 
-          SignatureProvider.InferredTypesWithLines sigContext =
-              psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+          SignatureProvider.InferredTypesWithLines sigContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
           InferredTypes signatures = sigContext == null ? null : sigContext.getTypes();
           if (signatures == null) {
             FileType fileType = sourceFile.getFileType();
@@ -60,14 +52,8 @@ public class InferredTypesService {
                 if (cmtFile != null) {
                   Path cmtPath =
                       FileSystems.getDefault().getPath(cmtFile.getVirtualFile().getPath());
-                  insightManager.queryTypes(
-                      sourceFile,
-                      cmtPath,
-                      types ->
-                          application.runReadAction(
-                              () ->
-                                  annotatePsiFile(
-                                      project, psiFile.getLanguage(), sourceFile, types)));
+                  insightManager.queryTypes(sourceFile, cmtPath,
+                      types -> application.runReadAction(() -> annotatePsiFile(project, psiFile.getLanguage(), sourceFile, types)));
                 }
               }
             }
@@ -84,11 +70,7 @@ public class InferredTypesService {
     }
   }
 
-  public static void annotatePsiFile(
-      @NotNull Project project,
-      @NotNull Language lang,
-      @Nullable VirtualFile sourceFile,
-      @Nullable InferredTypes types) {
+  public static void annotatePsiFile(@NotNull Project project, @NotNull Language lang, @Nullable VirtualFile sourceFile, @Nullable InferredTypes types) {
     if (types == null || sourceFile == null) {
       return;
     }
@@ -98,50 +80,20 @@ public class InferredTypesService {
     }
 
     LOG.debug("Updating signatures in user data cache for file", sourceFile);
-
-    TextEditor selectedEditor =
-        (TextEditor) FileEditorManager.getInstance(project).getSelectedEditor(sourceFile);
-    if (selectedEditor != null) {
-      CodeLensView.CodeLensInfo userData = getCodeLensData(project);
-      userData.putAll(sourceFile, types.signaturesByLines(lang));
-    }
+    getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
 
     PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
     if (psiFile != null && !FileHelper.isInterface(psiFile.getFileType())) {
       String[] lines = psiFile.getText().split("\n");
-      psiFile.putUserData(
-          SignatureProvider.SIGNATURE_CONTEXT,
-          new SignatureProvider.InferredTypesWithLines(types, lines));
+      psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, new SignatureProvider.InferredTypesWithLines(types, lines));
     }
   }
 
-  public static void annotatePsiFile(
-      @NotNull Project project,
-      @NotNull Language lang,
-      @Nullable PsiFile psiFile,
-      @Nullable InferredTypes types) {
-    if (types == null || psiFile == null || FileHelper.isInterface(psiFile.getFileType())) {
-      return;
-    }
-
-    LOG.debug("Updating signatures in user data cache for file", psiFile);
-    VirtualFile sourceFile = psiFile.getVirtualFile();
-
-    String[] lines = psiFile.getText().split("\n");
-    SignatureProvider.InferredTypesWithLines inferredTypes =
-        new SignatureProvider.InferredTypesWithLines(types, lines);
-    Map<Integer, InferredTypes.LogicalPositionSignature> signatures = types.signaturesByLines(lang);
-
-    psiFile.putUserData(SignatureProvider.SIGNATURE_CONTEXT, inferredTypes);
-    getCodeLensData(project).putAll(sourceFile, signatures);
-  }
-
-  @NotNull
-  private static CodeLensView.CodeLensInfo getCodeLensData(@NotNull Project project) {
-    CodeLensView.CodeLensInfo userData = project.getUserData(CodeLensView.CODE_LENS);
+  public static @NotNull CodeLens getSignatures(@NotNull VirtualFile file) {
+    CodeLens userData = file.getUserData(CODE_LENS);
     if (userData == null) {
-      userData = new CodeLensView.CodeLensInfo();
-      project.putUserData(CodeLensView.CODE_LENS, userData);
+      userData = new CodeLens();
+      file.putUserData(CODE_LENS, userData);
     }
     return userData;
   }

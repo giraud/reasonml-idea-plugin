@@ -1,29 +1,29 @@
 package com.reason.hints;
 
-import static com.reason.Platform.getOsPrefix;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.progress.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.reason.*;
+import com.reason.bs.*;
+import org.jetbrains.annotations.*;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Log;
-import com.reason.Platform;
-import com.reason.bs.BsProcess;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+
+import static com.reason.Platform.*;
 
 public class InsightManagerImpl implements InsightManager {
 
   private static final Log LOG = Log.create("hints");
 
-  @NotNull final AtomicBoolean isDownloading = new AtomicBoolean(false);
+  @NotNull
+  final AtomicBoolean isDownloading = new AtomicBoolean(false);
 
-  @NotNull private final Project m_project;
+  @NotNull
+  private final Project m_project;
 
   private InsightManagerImpl(@NotNull Project project) {
     m_project = project;
@@ -38,12 +38,10 @@ public class InsightManagerImpl implements InsightManager {
   }
 
   @Override
-  public void queryTypes(
-      @NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
+  public void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path cmtPath, @NotNull ProcessTerminated runAfter) {
     File rincewindFile = getRincewindFile(sourceFile);
     if (rincewindFile != null) {
-      RincewindProcess.getInstance(m_project)
-          .types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
+      RincewindProcess.getInstance(m_project).types(sourceFile, rincewindFile.getPath(), cmtPath.toString(), runAfter);
     }
   }
 
@@ -54,8 +52,8 @@ public class InsightManagerImpl implements InsightManager {
 
     File rincewindFile = getRincewindFileExcludingVersion(cmtFile, "0.4");
     return rincewindFile == null
-        ? Collections.emptyList()
-        : rincewindProcess.dumpMeta(rincewindFile.getPath(), cmtFile);
+               ? Collections.emptyList()
+               : rincewindProcess.dumpMeta(rincewindFile.getPath(), cmtFile);
   }
 
   @NotNull
@@ -65,8 +63,8 @@ public class InsightManagerImpl implements InsightManager {
 
     File rincewindFile = getRincewindFile(cmtFile);
     return rincewindFile == null
-        ? "<unknown/>"
-        : rincewindProcess.dumpTree(cmtFile, rincewindFile.getPath());
+               ? "<unknown/>"
+               : rincewindProcess.dumpTree(cmtFile, rincewindFile.getPath());
   }
 
   @NotNull
@@ -76,8 +74,8 @@ public class InsightManagerImpl implements InsightManager {
 
     File rincewindFile = getRincewindFile(cmtFile);
     return rincewindFile == null
-        ? Collections.emptyList()
-        : rincewindProcess.dumpTypes(rincewindFile.getPath(), cmtFile);
+               ? Collections.emptyList()
+               : rincewindProcess.dumpTypes(rincewindFile.getPath(), cmtFile);
   }
 
   @Nullable

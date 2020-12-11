@@ -1,6 +1,6 @@
 package com.reason.ide.annotations;
 
-import com.intellij.codeInsight.daemon.*;
+import com.intellij.lang.*;
 import com.intellij.lang.annotation.*;
 import com.intellij.openapi.application.*;
 import com.intellij.openapi.components.*;
@@ -16,7 +16,6 @@ import com.reason.bs.*;
 import com.reason.hints.*;
 import com.reason.ide.files.*;
 import com.reason.ide.hints.*;
-import com.reason.lang.reason.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
@@ -26,9 +25,7 @@ import java.util.stream.*;
 
 import static com.reason.ide.annotations.ErrorAnnotator.*;
 
-public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult>
-    implements DumbAware {
-
+public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
   private static final Log LOG = Log.create("annotator");
 
   @Override
@@ -53,8 +50,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     }
 
     // Read bsConfig to get the jsx value and ppx
-    VirtualFile bsConfigFile =
-        contentRoot.get().findFileByRelativePath(BsConfigJsonFileType.FILENAME);
+    VirtualFile bsConfigFile = contentRoot.get().findFileByRelativePath(BsConfigJsonFileType.FILENAME);
     if (bsConfigFile == null) {
       LOG.info("No bsconfig.json found for content root: " + contentRoot);
       return null;
@@ -137,21 +133,12 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     BscProcessListener bscListener = new BscProcessListener();
 
     Integer exitCode = bscProcess.run(sourceFile, initialInfo.libRoot, initialInfo.arguments, bscListener);
-    LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
+    }
 
     if (exitCode != null && exitCode == 0) {
-      ApplicationManager.getApplication()
-          .invokeLater(
-              () -> {
-                if (!project.isDisposed()) {
-                  PsiFile psiFile = PsiManager.getInstance(project).findFile(sourceFile);
-                  if (psiFile != null) {
-                    LOG.trace("Restart daemon code analyzer for " + psiFile);
-                    DaemonCodeAnalyzer.getInstance(project).restart(psiFile);
-                  }
-                }
-              });
-      return null;
+      return new AnnotationResult(Collections.emptyList(), initialInfo);
     }
 
     List<OutputInfo> outputInfo = bscListener.getInfo();
@@ -168,10 +155,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
   }
 
   @Override
-  public void apply(
-      @NotNull PsiFile sourcePsiFile,
-      @NotNull AnnotationResult annotationResult,
-      @NotNull AnnotationHolder holder) {
+  public void apply(@NotNull PsiFile sourcePsiFile, @NotNull AnnotationResult annotationResult, @NotNull AnnotationHolder holder) {
     Project project = sourcePsiFile.getProject();
     VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
     List<OutputInfo> outputInfo = annotationResult.outputInfo;
@@ -186,35 +170,39 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
     WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(project);
     Collection<Problem> problems = new ArrayList<>();
-    for (Annotation annotation : annotations) {
-      if (annotation.isError) {
-        holder
-            .newAnnotation(HighlightSeverity.ERROR, annotation.message)
-            .range(annotation.range)
-            .create();
-        // mark error in Project View
-        problems.add(
-            problemSolver.convertToProblem(
-                sourceFile,
-                annotation.startPos.line,
-                annotation.startPos.column,
-                new String[]{annotation.message}));
-      } else {
-        holder
-            .newAnnotation(HighlightSeverity.WARNING, annotation.message)
-            .range(annotation.range)
-            .create();
+
+    if (annotations.isEmpty()) {
+      LOG.trace("Clear problems");
+      problemSolver.clearProblems(sourceFile);
+      // Call rincewind on the generated cmt file !
+      updateCodeLens(project, sourcePsiFile.getLanguage(), sourceFile, cmtFile);
+    } else {
+      for (Annotation annotation : annotations) {
+        if (annotation.isError) {
+          holder
+              .newAnnotation(HighlightSeverity.ERROR, annotation.message)
+              .range(annotation.range)
+              .create();
+          // mark error in Project View
+          problems.add(
+              problemSolver.convertToProblem(sourceFile, annotation.startPos.line, annotation.startPos.column, new String[]{annotation.message}));
+          // Remove hint with corresponding line
+          ApplicationManager.getApplication().invokeLater(
+              () -> ReadAction.run(
+                  () -> InferredTypesService.getSignatures(sourceFile).remove(annotation.startPos.line)));
+        } else {
+          holder
+              .newAnnotation(HighlightSeverity.WARNING, annotation.message)
+              .range(annotation.range)
+              .create();
+        }
       }
+
+      problemSolver.reportProblems(sourceFile, problems);
     }
-
-    // Call rincewind on the generated cmt file !
-    ReadAction.run(() -> annotateTypes(project, sourceFile, cmtFile));
-
-    problemSolver.reportProblems(sourceFile, problems);
   }
 
-  @NotNull
-  public File createTempCompilationDirectory(Project project) {
+  public @NotNull File createTempCompilationDirectory(Project project) {
     String directoryName = "BS_" + project.getName().replaceAll(" ", "_");
     try {
       FileUtil.delete(Paths.get(FileUtil.getTempDirectory(), directoryName));
@@ -225,53 +213,42 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     }
   }
 
-  private static void annotateTypes(Project project, VirtualFile sourceFile, File cmtFile) {
-    ServiceManager.getService(project, InsightManager.class)
-        .queryTypes(
-            sourceFile,
-            cmtFile.toPath(),
-            types -> {
-              PsiManager psiManager = PsiManager.getInstance(project);
-              PsiFile psiFile = psiManager.findFile(sourceFile);
-
-              LOG.debug("Annotate types");
-              InferredTypesService.annotatePsiFile(project, RmlLanguage.INSTANCE, psiFile, types);
-            });
+  private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
+    InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
+    if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
+      insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
+        LOG.debug("Updating signatures in user data cache for file", sourceFile);
+        InferredTypesService.getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
+      });
+    }
   }
 
-  @Nullable
-  private static Annotation makeAnnotation(OutputInfo info, Editor editor) {
+  private static @Nullable Annotation makeAnnotation(OutputInfo info, Editor editor) {
     int colStart = info.colStart;
     int colEnd = info.colEnd;
     int lineStart = info.lineStart;
     int lineEnd = info.lineEnd;
-    LogicalPosition start =
-        new LogicalPosition(lineStart < 1 ? 0 : lineStart - 1, colStart < 1 ? 0 : colStart);
-    LogicalPosition end =
-        new LogicalPosition(lineEnd < 1 ? 0 : lineEnd - 1, colEnd < 1 ? 0 : colEnd);
+    LogicalPosition start = new LogicalPosition(lineStart < 1 ? 0 : lineStart - 1, colStart < 1 ? 0 : colStart);
+    LogicalPosition end = new LogicalPosition(lineEnd < 1 ? 0 : lineEnd - 1, colEnd < 1 ? 0 : colEnd);
     int startOffset = editor.logicalPositionToOffset(start);
     int endOffset = editor.logicalPositionToOffset(end);
+
     if (0 < startOffset && 0 < endOffset && startOffset <= endOffset) {
       TextRangeInterval range = new TextRangeInterval(startOffset - 1, endOffset - 1);
       String message = info.message.replace('\n', ' ').replaceAll("\\s+", " ").trim();
-      LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
-      return new Annotation(info.isError, message, range, start);
-    } else {
       if (LOG.isDebugEnabled()) {
-        LOG.debug(
-            "Failed to locate info: "
-                + start
-                + "->"
-                + end
-                + ", offsets "
-                + startOffset
-                + "->"
-                + endOffset
-                + ", info "
-                + info);
+        LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
       }
-      return null;
+      return new Annotation(info.isError, message, range, start);
     }
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Failed to locate info: "
+                    + start + "->" + end
+                    + ", offsets " + startOffset + "->" + endOffset
+                    + ", info " + info);
+    }
+    return null;
   }
 
   static class InitialInfo {

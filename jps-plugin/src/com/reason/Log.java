@@ -300,4 +300,10 @@ public class Log {
       m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getPath() + " "));
     }
   }
+
+  public void trace(@NotNull String comment, @Nullable PsiFile t) {
+    if (m_log.isDebugEnabled()) {
+      debug(comment, t == null ? null : t.getVirtualFile());
+    }
+  }
 }

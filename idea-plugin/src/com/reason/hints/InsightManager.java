@@ -1,18 +1,18 @@
 package com.reason.hints;
 
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.ide.hints.InferredTypes;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.vfs.*;
+import com.reason.ide.hints.*;
+import org.jetbrains.annotations.*;
+
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
 public interface InsightManager {
 
   @FunctionalInterface
   interface ProcessTerminated {
-    void run(InferredTypes types);
+    void run(@NotNull InferredTypes types);
   }
 
   void downloadRincewindIfNeeded(@NotNull VirtualFile sourceFile);
@@ -23,8 +23,7 @@ public interface InsightManager {
   @Nullable
   String getRincewindFilename(@NotNull VirtualFile sourceFile);
 
-  void queryTypes(
-      @NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated callback);
+  void queryTypes(@NotNull VirtualFile sourceFile, @NotNull Path path, @NotNull ProcessTerminated callback);
 
   @NotNull
   List<String> dumpMeta(@NotNull VirtualFile cmtFile);
