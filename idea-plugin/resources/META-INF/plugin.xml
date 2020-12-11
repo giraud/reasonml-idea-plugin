@@ -282,6 +282,8 @@
          | Compiler
          -->
 
+        <projectService serviceImplementation="com.reason.ORCompilerManager"/>
+
         <!-- BuckleScript Compiler -->
 
         <projectService serviceImplementation="com.reason.bs.BsProcess"/>

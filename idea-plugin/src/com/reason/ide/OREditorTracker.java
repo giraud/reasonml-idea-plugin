@@ -85,7 +85,7 @@ public final class OREditorTracker implements Disposable {
     @Override
     public void propertyChange(@NotNull PropertyChangeEvent evt) {
       if ("modified".equals(evt.getPropertyName()) && evt.getNewValue() == Boolean.FALSE) {
-        ORCompilerManager compilerManager = m_project.getService(ORCompilerManager.class);
+        ORCompilerManager compilerManager = ServiceManager.getService(m_project, ORCompilerManager.class);
         Compiler compiler = compilerManager == null ? null : compilerManager.getCompiler(m_file).orElse(null);
         if (compiler != null) {
           // We invokeLater because compiler needs access to index files and can't do it in the event thread

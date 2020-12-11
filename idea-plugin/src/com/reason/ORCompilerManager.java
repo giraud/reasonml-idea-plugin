@@ -13,7 +13,6 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-@Service
 public class ORCompilerManager {
   private static final Log LOG = Log.create("manager.compiler");
 
