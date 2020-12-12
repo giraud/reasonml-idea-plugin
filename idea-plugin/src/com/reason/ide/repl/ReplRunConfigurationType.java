@@ -1,40 +1,34 @@
 package com.reason.ide.repl;
 
-import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ConfigurationType;
-import com.intellij.icons.AllIcons;
+import com.intellij.execution.configurations.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
 
-import icons.ORIcons;
-import org.jetbrains.annotations.NotNull;
-
 public class ReplRunConfigurationType implements ConfigurationType {
-  @NotNull
-  @Override
-  public String getDisplayName() {
-    return "OCaml REPL";
-  }
+    @Override
+    public @NotNull String getDisplayName() {
+        return "OCaml REPL";
+    }
 
-  @NotNull
-  @Override
-  public String getConfigurationTypeDescription() {
-    return "OCaml REPL configuration Type";
-  }
+    @Override
+    public @NotNull String getConfigurationTypeDescription() {
+        return "OCaml REPL configuration Type";
+    }
 
-  @Override
-  public @NotNull Icon getIcon() {
-    return ORIcons.OCAML;
-  }
+    @Override
+    public @NotNull Icon getIcon() {
+        return ORIcons.OCAML;
+    }
 
-  @NotNull
-  @Override
-  public String getId() {
-    return "OCAML_RUN_CONFIGURATION";
-  }
+    @Override
+    public @NotNull String getId() {
+        return "OCAML_RUN_CONFIGURATION";
+    }
 
-  @NotNull
-  @Override
-  public ConfigurationFactory @NotNull [] getConfigurationFactories() {
-    return new ConfigurationFactory[] {new ReplConfigurationFactory(this)};
-  }
+    @Override
+    public @NotNull ConfigurationFactory[] getConfigurationFactories() {
+        return new ConfigurationFactory[]{new ReplConfigurationFactory(this)};
+    }
 }
