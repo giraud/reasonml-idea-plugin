@@ -245,6 +245,11 @@ public class Log {
     m_log.info(msg);
   }
 
+  public void info(String msg, Exception e) {
+    m_log.info(msg);
+    m_log.info(e);
+  }
+
   public void warn(String msg) {
     m_log.warn(msg);
   }

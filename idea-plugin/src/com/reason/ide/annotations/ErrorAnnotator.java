@@ -72,48 +72,60 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             }
         }
 
+        // Creates a temporary file on disk with a copy of the current document.
+        // It'll be used by bsc for a temporary compilation
+
+        File sourceTempFile;
         try {
-            // Creates a temporary file on disk with a copy of the current document.
-            // It'll be used by bsc for a temporary compilation
-            File sourceTempFile = FileUtil.createTempFile(tempCompilationDirectory, sourceFile.getNameWithoutExtension(), "." + sourceFile.getExtension());
-            FileUtil.writeToFile(sourceTempFile, psiFile.getText().getBytes());
-            LOG.trace("Wrote contents to temporary file", sourceTempFile);
-
-            String tempNameWithoutExtension = FileUtil.getNameWithoutExtension(sourceTempFile);
-            File cmtFile = new File(sourceTempFile.getParent(), tempNameWithoutExtension + ".cmt");
-
-            List<String> arguments = new ArrayList<>();
-            arguments.add("-bs-super-errors");
-            arguments.add("-color");
-            arguments.add("never");
-            arguments.addAll(ninja.getPkgFlags());
-            arguments.addAll(ninja.getBscFlags());
-            for (String ppxPath : ninja.getPpxIncludes()) {
-                arguments.add("-ppx");
-                arguments.add(ppxPath);
-            }
-            if (!namespace.isEmpty()) {
-                arguments.add("-bs-ns");
-                arguments.add(namespace);
-            }
-            if (jsxVersion != null) {
-                arguments.add("-bs-jsx");
-                arguments.add(jsxVersion);
-            }
-            for (String bscInclude : ninja.getIncludes()) {
-                arguments.add("-I");
-                arguments.add(bscInclude);
-            }
-            arguments.add("-o");
-            arguments.add(cmtFile.getPath());
-            arguments.add("-bin-annot");
-            arguments.add(sourceTempFile.getPath());
-
-            return new InitialInfo(psiFile, libRoot.get(), sourceTempFile, editor, arguments);
+            sourceTempFile = FileUtil.createTempFile(tempCompilationDirectory, sourceFile.getNameWithoutExtension(), "." + sourceFile.getExtension());
         } catch (IOException e) {
-            LOG.error("Annotator failed", e);
+            LOG.info("Temporary file creation failed", e); // log error but do not show it in UI
             return null;
         }
+
+        try {
+            FileUtil.writeToFile(sourceTempFile, psiFile.getText().getBytes());
+        }
+        catch (IOException e) {
+            // Sometimes, file is locked by another process, not a big deal, skip it
+            LOG.trace("Write failed: " + e.getLocalizedMessage());
+            return null;
+        }
+
+        LOG.trace("Wrote contents to temporary file", sourceTempFile);
+
+        String tempNameWithoutExtension = FileUtil.getNameWithoutExtension(sourceTempFile);
+        File cmtFile = new File(sourceTempFile.getParent(), tempNameWithoutExtension + ".cmt");
+
+        List<String> arguments = new ArrayList<>();
+        arguments.add("-bs-super-errors");
+        arguments.add("-color");
+        arguments.add("never");
+        arguments.addAll(ninja.getPkgFlags());
+        arguments.addAll(ninja.getBscFlags());
+        for (String ppxPath : ninja.getPpxIncludes()) {
+            arguments.add("-ppx");
+            arguments.add(ppxPath);
+        }
+        if (!namespace.isEmpty()) {
+            arguments.add("-bs-ns");
+            arguments.add(namespace);
+        }
+        if (jsxVersion != null) {
+            arguments.add("-bs-jsx");
+            arguments.add(jsxVersion);
+        }
+        for (String bscInclude : ninja.getIncludes()) {
+            arguments.add("-I");
+            arguments.add(bscInclude);
+        }
+        arguments.add("-o");
+        arguments.add(cmtFile.getPath());
+        arguments.add("-bin-annot");
+        arguments.add(sourceTempFile.getPath());
+
+        return new InitialInfo(psiFile, libRoot.get(), sourceTempFile, editor, arguments);
+
     }
 
     @Override
