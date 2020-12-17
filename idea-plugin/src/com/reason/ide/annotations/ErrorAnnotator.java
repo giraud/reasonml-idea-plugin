@@ -19,275 +19,293 @@ import com.reason.ide.hints.*;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
-import java.nio.file.*;
 import java.util.*;
 import java.util.stream.*;
 
 import static com.reason.ide.annotations.ErrorAnnotator.*;
 
 public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
-  private static final Log LOG = Log.create("annotator");
+    private static final Log LOG = Log.create("annotator");
+    private @Nullable File m_compilationDirectory;
 
-  @Override
-  public @Nullable InitialInfo collectInformation(@NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {
-    if (hasErrors) {
-      LOG.error("Annotator was initialized with errors. This isn't supported.");
-      return null;
-    }
-
-    Project project = psiFile.getProject();
-    VirtualFile sourceFile = psiFile.getVirtualFile();
-
-    // create temporary compilation directory
-    File compilationDirectory = createTempCompilationDirectory(project);
-    LOG.trace("Created temporary annotator directory", compilationDirectory);
-
-    Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(project, sourceFile);
-    Optional<VirtualFile> libRoot = contentRoot.map(root -> root.findFileByRelativePath("lib/bs"));
-    if (!libRoot.isPresent()) {
-      LOG.info("Unable to find BuckleScript lib root.");
-      return null;
-    }
-
-    // Read bsConfig to get the jsx value and ppx
-    VirtualFile bsConfigFile = contentRoot.get().findFileByRelativePath(BsConfigJsonFileType.FILENAME);
-    if (bsConfigFile == null) {
-      LOG.info("No bsconfig.json found for content root: " + contentRoot);
-      return null;
-    }
-    BsConfig config = BsConfigReader.read(bsConfigFile);
-    String jsxVersion = config.getJsxVersion();
-    String namespace = config.getNamespace();
-
-    // If a directory is marked as dev-only, it won't be built and exposed to other "dev"
-    // directories in the same project
-    // https://bucklescript.github.io/docs/en/build-configuration#sources
-    // @TODO register a file listener and read the values from memory
-    BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
-    Ninja ninja = bucklescript.readNinjaBuild(contentRoot.get());
-    for (String devSource : config.getDevSources()) {
-      VirtualFile devFile = contentRoot.get().findFileByRelativePath(devSource);
-      if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
-        ninja.addInclude(devSource);
-      }
-    }
-
-    // Creates a temporary file on disk with a copy of the current document.
-    // It'll be used by bsc for a temporary compilation
-    Path tempFilePath = Paths.get(compilationDirectory.getPath(), sourceFile.getName());
-    try {
-      Files.write(tempFilePath, psiFile.getText().getBytes());
-    } catch (IOException e) {
-      LOG.error("Failed to write to temporary file.", e);
-      return null;
-    }
-    LOG.trace("Wrote contents to temporary file. Path = " + tempFilePath);
-
-    File cmtFile = new File(compilationDirectory, sourceFile.getNameWithoutExtension() + ".cmt");
-
-    List<String> arguments = new ArrayList<>();
-    arguments.add("-bs-super-errors");
-    arguments.add("-color");
-    arguments.add("never");
-    arguments.addAll(ninja.getPkgFlags());
-    arguments.addAll(ninja.getBscFlags());
-    for (String ppxPath : ninja.getPpxIncludes()) {
-      arguments.add("-ppx");
-      arguments.add(ppxPath);
-    }
-    if (!namespace.isEmpty()) {
-      arguments.add("-bs-ns");
-      arguments.add(namespace);
-    }
-    if (jsxVersion != null) {
-      arguments.add("-bs-jsx");
-      arguments.add(jsxVersion);
-    }
-    for (String bscInclude : ninja.getIncludes()) {
-      arguments.add("-I");
-      arguments.add(bscInclude);
-    }
-    arguments.add("-o");
-    arguments.add(cmtFile.getAbsolutePath());
-    arguments.add("-bin-annot");
-    arguments.add(tempFilePath.toString());
-
-    return new InitialInfo(psiFile, libRoot.get(), cmtFile, editor, arguments);
-  }
-
-  @Nullable
-  @Override
-  public AnnotationResult doAnnotate(@Nullable InitialInfo initialInfo) {
-    if (initialInfo == null) {
-      LOG.warn("Unable to annotate file. Annotator not ready.");
-      return null;
-    }
-
-    PsiFile sourcePsiFile = initialInfo.sourcePsiFile;
-    Project project = sourcePsiFile.getProject();
-    VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
-
-    long compilationStartTime = System.currentTimeMillis();
-
-    BscProcess bscProcess = BscProcess.getInstance(project);
-    BscProcessListener bscListener = new BscProcessListener();
-
-    Integer exitCode = bscProcess.run(sourceFile, initialInfo.libRoot, initialInfo.arguments, bscListener);
-    if (LOG.isTraceEnabled()) {
-      LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
-    }
-
-    if (exitCode != null && exitCode == 0) {
-      return new AnnotationResult(Collections.emptyList(), initialInfo);
-    }
-
-    List<OutputInfo> outputInfo = bscListener.getInfo();
-    LOG.debug("Found info", outputInfo);
-    if (LOG.isTraceEnabled()) {
-      String name = sourceFile.getName();
-      for (OutputInfo info : outputInfo) {
-        info.path = name;
-        LOG.trace("  -> " + info);
-      }
-    }
-
-    return new AnnotationResult(outputInfo, initialInfo);
-  }
-
-  @Override
-  public void apply(@NotNull PsiFile sourcePsiFile, @NotNull AnnotationResult annotationResult, @NotNull AnnotationHolder holder) {
-    Project project = sourcePsiFile.getProject();
-    VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
-    List<OutputInfo> outputInfo = annotationResult.outputInfo;
-    Editor editor = annotationResult.initialInfo.editor;
-    File cmtFile = annotationResult.initialInfo.cmtFile;
-
-    List<Annotation> annotations =
-        outputInfo.stream()
-            .map(info -> makeAnnotation(info, editor))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-
-    WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(project);
-    Collection<Problem> problems = new ArrayList<>();
-
-    if (annotations.isEmpty()) {
-      LOG.trace("Clear problems");
-      problemSolver.clearProblems(sourceFile);
-      // Call rincewind on the generated cmt file !
-      updateCodeLens(project, sourcePsiFile.getLanguage(), sourceFile, cmtFile);
-    } else {
-      for (Annotation annotation : annotations) {
-        if (annotation.isError) {
-          holder
-              .newAnnotation(HighlightSeverity.ERROR, annotation.message)
-              .range(annotation.range)
-              .create();
-          // mark error in Project View
-          problems.add(
-              problemSolver.convertToProblem(sourceFile, annotation.startPos.line, annotation.startPos.column, new String[]{annotation.message}));
-          // Remove hint with corresponding line
-          ApplicationManager.getApplication().invokeLater(
-              () -> ReadAction.run(
-                  () -> InferredTypesService.getSignatures(sourceFile).remove(annotation.startPos.line)));
-        } else {
-          holder
-              .newAnnotation(HighlightSeverity.WARNING, annotation.message)
-              .range(annotation.range)
-              .create();
+    @Override
+    public @Nullable InitialInfo collectInformation(@NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {
+        if (hasErrors) {
+            LOG.info("Annotator was initialized with errors. This isn't supported.");
+            return null;
         }
-      }
 
-      problemSolver.reportProblems(sourceFile, problems);
+        Project project = psiFile.getProject();
+        VirtualFile sourceFile = psiFile.getVirtualFile();
+
+        // create temporary compilation directory
+        File tempCompilationDirectory = getOrCreateTempDirectory(project);
+
+        Optional<VirtualFile> contentRootOpt = BsPlatform.findContentRootForFile(project, sourceFile);
+        Optional<VirtualFile> libRoot = contentRootOpt.map(root -> root.findFileByRelativePath("lib/bs"));
+        if (!libRoot.isPresent()) {
+            LOG.info("Unable to find BuckleScript lib root.");
+            return null;
+        }
+        VirtualFile contentRoot = contentRootOpt.get();
+
+        // Read bsConfig to get the compilation directives
+        VirtualFile bsConfigFile = contentRoot.findFileByRelativePath(BsConfigJsonFileType.FILENAME);
+        BsConfig config = bsConfigFile == null ? null : BsConfigReader.read(bsConfigFile);
+        if (config == null) {
+            LOG.info("No bsconfig.json found for content root: " + contentRoot);
+            return null;
+        }
+
+        String jsxVersion = config.getJsxVersion();
+        String namespace = config.getNamespace();
+
+        // If a directory is marked as dev-only, it won't be built and exposed to other "dev"
+        // directories in the same project
+        // https://bucklescript.github.io/docs/en/build-configuration#sources
+        // @TODO register a file listener and read the values from memory
+        BsCompiler bucklescript = ServiceManager.getService(project, BsCompiler.class);
+        Ninja ninja = bucklescript.readNinjaBuild(contentRoot);
+        for (String devSource : config.getDevSources()) {
+            VirtualFile devFile = contentRoot.findFileByRelativePath(devSource);
+            if (devFile != null && FileUtil.isAncestor(devFile.getPath(), sourceFile.getPath(), true)) {
+                ninja.addInclude(devSource);
+            }
+        }
+
+        try {
+            // Creates a temporary file on disk with a copy of the current document.
+            // It'll be used by bsc for a temporary compilation
+            File sourceTempFile = FileUtil.createTempFile(tempCompilationDirectory, sourceFile.getNameWithoutExtension(), "." + sourceFile.getExtension());
+            FileUtil.writeToFile(sourceTempFile, psiFile.getText().getBytes());
+            LOG.trace("Wrote contents to temporary file", sourceTempFile);
+
+            String tempNameWithoutExtension = FileUtil.getNameWithoutExtension(sourceTempFile);
+            File cmtFile = new File(sourceTempFile.getParent(), tempNameWithoutExtension + ".cmt");
+
+            List<String> arguments = new ArrayList<>();
+            arguments.add("-bs-super-errors");
+            arguments.add("-color");
+            arguments.add("never");
+            arguments.addAll(ninja.getPkgFlags());
+            arguments.addAll(ninja.getBscFlags());
+            for (String ppxPath : ninja.getPpxIncludes()) {
+                arguments.add("-ppx");
+                arguments.add(ppxPath);
+            }
+            if (!namespace.isEmpty()) {
+                arguments.add("-bs-ns");
+                arguments.add(namespace);
+            }
+            if (jsxVersion != null) {
+                arguments.add("-bs-jsx");
+                arguments.add(jsxVersion);
+            }
+            for (String bscInclude : ninja.getIncludes()) {
+                arguments.add("-I");
+                arguments.add(bscInclude);
+            }
+            arguments.add("-o");
+            arguments.add(cmtFile.getPath());
+            arguments.add("-bin-annot");
+            arguments.add(sourceTempFile.getPath());
+
+            return new InitialInfo(psiFile, libRoot.get(), sourceTempFile, editor, arguments);
+        } catch (IOException e) {
+            LOG.error("Annotator failed", e);
+            return null;
+        }
     }
-  }
 
-  public @NotNull File createTempCompilationDirectory(Project project) {
-    String directoryName = "BS_" + project.getName().replaceAll(" ", "_");
-    try {
-      FileUtil.delete(Paths.get(FileUtil.getTempDirectory(), directoryName));
-      return FileUtil.createTempDirectory(directoryName, null, true);
-    } catch (IOException e) {
-      LOG.error("Failed to create temporary directory.", e);
-      throw new RuntimeException(e);
-    }
-  }
+    @Override
+    public @Nullable AnnotationResult doAnnotate(@NotNull InitialInfo initialInfo) {
+        PsiFile sourcePsiFile = initialInfo.sourcePsiFile;
+        Project project = sourcePsiFile.getProject();
+        VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
 
-  private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
-    InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
-    if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
-      insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
-        LOG.debug("Updating signatures in user data cache for file", sourceFile);
-        InferredTypesService.getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
-      });
-    }
-  }
+        long compilationStartTime = System.currentTimeMillis();
 
-  private static @Nullable Annotation makeAnnotation(OutputInfo info, Editor editor) {
-    int colStart = info.colStart;
-    int colEnd = info.colEnd;
-    int lineStart = info.lineStart;
-    int lineEnd = info.lineEnd;
-    LogicalPosition start = new LogicalPosition(lineStart < 1 ? 0 : lineStart - 1, colStart < 1 ? 0 : colStart);
-    LogicalPosition end = new LogicalPosition(lineEnd < 1 ? 0 : lineEnd - 1, colEnd < 1 ? 0 : colEnd);
-    int startOffset = editor.logicalPositionToOffset(start);
-    int endOffset = editor.logicalPositionToOffset(end);
+        BscProcess bscProcess = BscProcess.getInstance(project);
+        BscProcessListener bscListener = new BscProcessListener();
 
-    if (0 < startOffset && 0 < endOffset && startOffset <= endOffset) {
-      TextRangeInterval range = new TextRangeInterval(startOffset - 1, endOffset - 1);
-      String message = info.message.replace('\n', ' ').replaceAll("\\s+", " ").trim();
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
-      }
-      return new Annotation(info.isError, message, range, start);
+        Integer exitCode = bscProcess.run(sourceFile, initialInfo.libRoot, initialInfo.arguments, bscListener);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Compilation done in " + (System.currentTimeMillis() - compilationStartTime) + "ms");
+        }
+
+        File baseFile = getBaseFile(initialInfo.tempFile);
+        LOG.debug("Clear temporary files from base", baseFile);
+        FileUtil.delete(initialInfo.tempFile);
+        FileUtil.delete(new File(baseFile.getPath() + ".cmi"));
+        FileUtil.delete(new File(baseFile.getPath() + ".cmj"));
+        // cmt is used in a delayed task, can't be deleted here
+
+        if (exitCode != null && exitCode == 0) {
+            // No error/warning found, nothing to display.
+            return new AnnotationResult(Collections.emptyList(), initialInfo);
+        }
+
+        List<OutputInfo> outputInfo = bscListener.getInfo();
+        LOG.debug("Found info", outputInfo);
+
+        return new AnnotationResult(outputInfo, initialInfo);
     }
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Failed to locate info: "
+    @Override
+    public void apply(@NotNull PsiFile sourcePsiFile, @NotNull AnnotationResult annotationResult, @NotNull AnnotationHolder holder) {
+        Project project = sourcePsiFile.getProject();
+        VirtualFile sourceFile = sourcePsiFile.getVirtualFile();
+        List<OutputInfo> outputInfo = annotationResult.outputInfo;
+        Editor editor = annotationResult.initialInfo.editor;
+        File cmtFile = new File(getBaseFile(annotationResult.initialInfo.tempFile) + ".cmt");
+
+        List<Annotation> annotations =
+                outputInfo.stream()
+                        .map(info -> makeAnnotation(info, editor))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+
+        WolfTheProblemSolver problemSolver = WolfTheProblemSolver.getInstance(project);
+        Collection<Problem> problems = new ArrayList<>();
+
+        if (annotations.isEmpty()) {
+            LOG.trace("Clear problems");
+            problemSolver.clearProblems(sourceFile);
+            // Call rincewind on the generated cmt file !
+            updateCodeLens(project, sourcePsiFile.getLanguage(), sourceFile, cmtFile);
+        } else {
+            FileUtil.delete(cmtFile);
+            for (Annotation annotation : annotations) {
+                if (annotation.isError) {
+                    holder
+                            .newAnnotation(HighlightSeverity.ERROR, annotation.message)
+                            .range(annotation.range)
+                            .create();
+                    // mark error in Project View
+                    problems.add(
+                            problemSolver.convertToProblem(sourceFile, annotation.startPos.line, annotation.startPos.column, new String[]{annotation.message}));
+                    // Remove hint with corresponding line
+                    ApplicationManager.getApplication().invokeLater(
+                            () -> ReadAction.run(
+                                    () -> InferredTypesService.getSignatures(sourceFile).remove(annotation.startPos.line)));
+                } else {
+                    holder
+                            .newAnnotation(HighlightSeverity.WARNING, annotation.message)
+                            .range(annotation.range)
+                            .create();
+                }
+            }
+
+            problemSolver.reportProblems(sourceFile, problems);
+        }
+
+    }
+
+    private void updateCodeLens(@NotNull Project project, @NotNull Language lang, @NotNull VirtualFile sourceFile, @NotNull File cmtFile) {
+        InsightManager insightManager = ServiceManager.getService(project, InsightManager.class);
+        if (insightManager != null && !FileHelper.isInterface(sourceFile.getFileType())) {
+            insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
+                LOG.debug("Updating signatures in user data cache for file", sourceFile);
+                InferredTypesService.getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
+                FileUtil.delete(cmtFile);
+            });
+        }
+    }
+
+    private static @Nullable Annotation makeAnnotation(@NotNull OutputInfo info, @NotNull Editor editor) {
+        int colStart = info.colStart;
+        int colEnd = info.colEnd;
+        int lineStart = info.lineStart;
+        int lineEnd = info.lineEnd;
+        LogicalPosition start = new LogicalPosition(lineStart < 1 ? 0 : lineStart - 1, colStart < 1 ? 0 : colStart);
+        LogicalPosition end = new LogicalPosition(lineEnd < 1 ? 0 : lineEnd - 1, colEnd < 1 ? 0 : colEnd);
+        int startOffset = editor.logicalPositionToOffset(start);
+        int endOffset = editor.logicalPositionToOffset(end);
+
+        if (0 < startOffset && 0 < endOffset && startOffset <= endOffset) {
+            TextRangeInterval range = new TextRangeInterval(startOffset - 1, endOffset - 1);
+            String message = info.message.replace('\n', ' ').replaceAll("\\s+", " ").trim();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("annotate " + startOffset + ":" + endOffset + " '" + message + "'");
+            }
+            return new Annotation(info.isError, message, range, start);
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Failed to locate info: "
                     + start + "->" + end
                     + ", offsets " + startOffset + "->" + endOffset
                     + ", info " + info);
+        }
+        return null;
     }
-    return null;
-  }
 
-  static class InitialInfo {
-    final PsiFile sourcePsiFile;
-    final VirtualFile libRoot;
-    final File cmtFile;
-    final Editor editor;
-    final List<String> arguments;
+    private @NotNull File getOrCreateTempDirectory(@NotNull Project project) {
+        File result;
+        if (m_compilationDirectory == null) {
+            try {
+                String directoryName = "BS_" + project.getName().replaceAll(" ", "_");
+                result = FileUtil.createTempDirectory(directoryName, null, true);
+                m_compilationDirectory = result;
+                LOG.trace("Created temporary annotator directory", m_compilationDirectory);
+            } catch (IOException e) {
+                LOG.error("Failed to create temporary directory", e);
+                throw new RuntimeException(e);
+            }
+        } else {
+            result = m_compilationDirectory;
+        }
 
-    private InitialInfo(@NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @NotNull File cmtFile, @NotNull Editor editor, @NotNull List<String> arguments) {
-      this.sourcePsiFile = sourcePsiFile;
-      this.libRoot = libRoot;
-      this.cmtFile = cmtFile;
-      this.editor = editor;
-      this.arguments = arguments;
+        // Clean current temp directory.
+        // Annotator functions are called asynchronously and can be interrupted,
+        // leaving files on disk if operation is aborted.
+        Arrays.stream(result.listFiles()).parallel().forEach(FileUtil::asyncDelete);
+
+        return result;
     }
-  }
 
-  static class AnnotationResult {
-    final List<OutputInfo> outputInfo;
-    final InitialInfo initialInfo;
+    static class InitialInfo {
+        final PsiFile sourcePsiFile;
+        final VirtualFile libRoot;
+        final File tempFile;
+        final Editor editor;
+        final List<String> arguments;
 
-    public AnnotationResult(@NotNull List<OutputInfo> outputInfo, InitialInfo initialInfo) {
-      this.outputInfo = outputInfo;
-      this.initialInfo = initialInfo;
+        InitialInfo(@NotNull PsiFile sourcePsiFile, @NotNull VirtualFile libRoot, @NotNull File tempFile, @NotNull Editor editor, @NotNull List<String> arguments) {
+            this.sourcePsiFile = sourcePsiFile;
+            this.libRoot = libRoot;
+            this.tempFile = tempFile;
+            this.editor = editor;
+            this.arguments = arguments;
+        }
     }
-  }
 
-  static class Annotation {
-    final boolean isError;
-    final String message;
-    final TextRangeInterval range;
-    final LogicalPosition startPos;
-
-    Annotation(boolean isError, @NotNull String message, @NotNull TextRangeInterval textRange, @NotNull LogicalPosition startPos) {
-      this.isError = isError;
-      this.message = message;
-      this.range = textRange;
-      this.startPos = startPos;
+    @NotNull File getBaseFile(@NotNull File file) {
+        String tempNameWithoutExtension = FileUtil.getNameWithoutExtension(file);
+        return new File(file.getParent(), tempNameWithoutExtension);
     }
-  }
+
+    static class AnnotationResult {
+        final List<OutputInfo> outputInfo;
+        final InitialInfo initialInfo;
+
+        AnnotationResult(@NotNull List<OutputInfo> outputInfo, InitialInfo initialInfo) {
+            this.outputInfo = outputInfo;
+            this.initialInfo = initialInfo;
+        }
+    }
+
+    static class Annotation {
+        final boolean isError;
+        final String message;
+        final TextRangeInterval range;
+        final LogicalPosition startPos;
+
+        Annotation(boolean isError, @NotNull String message, @NotNull TextRangeInterval textRange, @NotNull LogicalPosition startPos) {
+            this.isError = isError;
+            this.message = message;
+            this.range = textRange;
+            this.startPos = startPos;
+        }
+    }
 }
