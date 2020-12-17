@@ -26,7 +26,6 @@ import static com.reason.ide.annotations.ErrorAnnotator.*;
 
 public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationResult> implements DumbAware {
     private static final Log LOG = Log.create("annotator");
-    private @Nullable File m_compilationDirectory;
 
     @Override
     public @Nullable InitialInfo collectInformation(@NotNull PsiFile psiFile, @NotNull Editor editor, boolean hasErrors) {
@@ -138,7 +137,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         FileUtil.delete(initialInfo.tempFile);
         FileUtil.delete(new File(baseFile.getPath() + ".cmi"));
         FileUtil.delete(new File(baseFile.getPath() + ".cmj"));
-        // cmt is used in a delayed task, can't be deleted here
+        // cmt is never deleted
 
         if (exitCode != null && exitCode == 0) {
             // No error/warning found, nothing to display.
@@ -174,7 +173,6 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             // Call rincewind on the generated cmt file !
             updateCodeLens(project, sourcePsiFile.getLanguage(), sourceFile, cmtFile);
         } else {
-            FileUtil.delete(cmtFile);
             for (Annotation annotation : annotations) {
                 if (annotation.isError) {
                     holder
@@ -207,7 +205,6 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             insightManager.queryTypes(sourceFile, cmtFile.toPath(), types -> {
                 LOG.debug("Updating signatures in user data cache for file", sourceFile);
                 InferredTypesService.getSignatures(sourceFile).putAll(types.signaturesByLines(lang));
-                FileUtil.delete(cmtFile);
             });
         }
     }
@@ -242,24 +239,24 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
     private @NotNull File getOrCreateTempDirectory(@NotNull Project project) {
         File result;
-        if (m_compilationDirectory == null) {
+
+        String directoryName = "BS_" + project.getName().replaceAll(" ", "_");
+        String tempDirectory = FileUtil.getTempDirectory();
+        result = new File(tempDirectory, directoryName);
+        if (!result.exists()) {
             try {
-                String directoryName = "BS_" + project.getName().replaceAll(" ", "_");
                 result = FileUtil.createTempDirectory(directoryName, null, true);
-                m_compilationDirectory = result;
-                LOG.trace("Created temporary annotator directory", m_compilationDirectory);
+                LOG.trace("Created temporary annotator directory", result);
             } catch (IOException e) {
                 LOG.error("Failed to create temporary directory", e);
                 throw new RuntimeException(e);
             }
-        } else {
-            result = m_compilationDirectory;
         }
 
         // Clean current temp directory.
         // Annotator functions are called asynchronously and can be interrupted,
         // leaving files on disk if operation is aborted.
-        Arrays.stream(result.listFiles()).parallel().forEach(FileUtil::asyncDelete);
+        Arrays.stream(result.listFiles((dir, name) -> !name.endsWith(".cmt"))).parallel().forEach(FileUtil::asyncDelete);
 
         return result;
     }
