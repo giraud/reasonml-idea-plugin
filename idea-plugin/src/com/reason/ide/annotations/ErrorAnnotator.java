@@ -85,8 +85,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
 
         try {
             FileUtil.writeToFile(sourceTempFile, psiFile.getText().getBytes());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             // Sometimes, file is locked by another process, not a big deal, skip it
             LOG.trace("Write failed: " + e.getLocalizedMessage());
             return null;
@@ -228,8 +227,8 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         int lineEnd = info.lineEnd;
         LogicalPosition start = new LogicalPosition(lineStart < 1 ? 0 : lineStart - 1, colStart < 1 ? 0 : colStart);
         LogicalPosition end = new LogicalPosition(lineEnd < 1 ? 0 : lineEnd - 1, colEnd < 1 ? 0 : colEnd);
-        int startOffset = editor.logicalPositionToOffset(start);
-        int endOffset = editor.logicalPositionToOffset(end);
+        int startOffset = editor.isDisposed() ? 0 : editor.logicalPositionToOffset(start);
+        int endOffset = editor.isDisposed() ? 0 : editor.logicalPositionToOffset(end);
 
         if (0 < startOffset && 0 < endOffset && startOffset <= endOffset) {
             TextRangeInterval range = new TextRangeInterval(startOffset - 1, endOffset - 1);
