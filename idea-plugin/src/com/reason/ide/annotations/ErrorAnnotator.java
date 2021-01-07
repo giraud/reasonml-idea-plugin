@@ -38,7 +38,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         VirtualFile sourceFile = psiFile.getVirtualFile();
 
         // create temporary compilation directory
-        File tempCompilationDirectory = getOrCreateTempDirectory(project);
+        File tempCompilationDirectory = getOrCreateTempDirectory(project, sourceFile.getNameWithoutExtension());
 
         Optional<VirtualFile> contentRootOpt = BsPlatform.findContentRootForFile(project, sourceFile);
         Optional<VirtualFile> libRoot = contentRootOpt.map(root -> root.findFileByRelativePath("lib/bs"));
@@ -179,7 +179,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         Collection<Problem> problems = new ArrayList<>();
 
         if (annotations.isEmpty()) {
-            LOG.trace("Clear problems");
+            LOG.trace("Clear problems", sourceFile);
             problemSolver.clearProblems(sourceFile);
             // Call rincewind on the generated cmt file !
             updateCodeLens(project, sourcePsiFile.getLanguage(), sourceFile, cmtFile);
@@ -248,7 +248,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
         return null;
     }
 
-    private @NotNull File getOrCreateTempDirectory(@NotNull Project project) {
+    private @NotNull File getOrCreateTempDirectory(@NotNull Project project, @NotNull String fileName) {
         File result;
 
         String directoryName = "BS_" + project.getName().replaceAll(" ", "_");
@@ -264,10 +264,10 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
             }
         }
 
-        // Clean current temp directory.
-        // Annotator functions are called asynchronously and can be interrupted,
-        // leaving files on disk if operation is aborted.
-        Arrays.stream(result.listFiles((dir, name) -> !name.endsWith(".cmt"))).parallel().forEach(FileUtil::asyncDelete);
+        // Annotator functions are called asynchronously and can be interrupted, leaving files on disk if operation is
+        // aborted. -> Clean current temp directory, but for the current file only: avoid erasing files when concurrent
+        // compilation happens.
+        Arrays.stream(result.listFiles((dir, name) -> name.startsWith(fileName) && !name.endsWith(".cmt"))).parallel().forEach(FileUtil::asyncDelete);
 
         return result;
     }

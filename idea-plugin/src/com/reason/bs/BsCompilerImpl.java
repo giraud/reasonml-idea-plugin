@@ -1,5 +1,6 @@
 package com.reason.bs;
 
+import com.intellij.codeInsight.daemon.*;
 import com.intellij.execution.process.*;
 import com.intellij.execution.ui.*;
 import com.intellij.notification.*;
@@ -7,6 +8,7 @@ import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.ui.*;
+import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.openapi.wm.*;
 import com.intellij.ui.content.*;
@@ -22,13 +24,12 @@ import javax.swing.*;
 import java.util.*;
 
 public class BsCompilerImpl implements BsCompiler {
+    private static final Log LOG = Log.create("compiler.bs");
 
-    @NotNull
-    private final Project m_project;
+    private final @NotNull Project m_project;
     private final Map<String, BsConfig> m_configs = new THashMap<>();
 
-    @Nullable
-    private Boolean m_disabled = null; // Never call directly, use isDisabled()
+    private @Nullable Boolean m_disabled = null; // Never call directly, use isDisabled()
 
     private BsCompilerImpl(@NotNull Project project) {
         m_project = project;
@@ -91,6 +92,21 @@ public class BsCompilerImpl implements BsCompiler {
                         long start = System.currentTimeMillis();
                         console.attachToProcess(bscHandler);
                         bscHandler.addProcessListener(new ProcessFinishedListener(start));
+                        bscHandler.addProcessListener(new ProcessListener() {
+                            @Override
+                            public void startNotified(@NotNull ProcessEvent event) {
+                            }
+
+                            @Override
+                            public void processTerminated(@NotNull ProcessEvent event) {
+                                LOG.debug("Compilation process terminated, restart daemon code analyzer for all edited files");
+                                DaemonCodeAnalyzer.getInstance(m_project).restart();
+                            }
+
+                            @Override
+                            public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
+                            }
+                        });
                     }
                     process.startNotify();
                     ServiceManager.getService(m_project, InsightManager.class)
