@@ -245,6 +245,11 @@ public class Log {
     m_log.info(msg);
   }
 
+  public void info(String msg, Exception e) {
+    m_log.info(msg);
+    m_log.info(e);
+  }
+
   public void warn(String msg) {
     m_log.warn(msg);
   }
@@ -292,6 +297,18 @@ public class Log {
   public void trace(String msg, Language t) {
     if (m_log.isTraceEnabled()) {
       m_log.debug(msg + SEP + t);
+    }
+  }
+
+  public void trace(@NotNull String comment, @Nullable File t) {
+    if (m_log.isTraceEnabled()) {
+      m_log.trace(comment + SEP + (t == null ? "<NULL>" : t.getPath() + " "));
+    }
+  }
+
+  public void trace(@NotNull String comment, @Nullable PsiFile t) {
+    if (m_log.isDebugEnabled()) {
+      debug(comment, t == null ? null : t.getVirtualFile());
     }
   }
 }

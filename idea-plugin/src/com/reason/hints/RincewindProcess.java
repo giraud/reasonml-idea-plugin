@@ -1,25 +1,18 @@
 package com.reason.hints;
 
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.reason.Log;
-import com.reason.ORNotification;
-import com.reason.Streams;
-import com.reason.bs.BsPlatform;
-import com.reason.ide.hints.InferredTypesImplementation;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.notification.*;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.reason.*;
+import com.reason.bs.*;
+import com.reason.ide.hints.*;
+import org.jetbrains.annotations.*;
+
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
 public class RincewindProcess {
 
@@ -35,11 +28,7 @@ public class RincewindProcess {
     m_project = project;
   }
 
-  public void types(
-      @NotNull VirtualFile sourceFile,
-      @NotNull String rincewindBinary,
-      @NotNull String cmiPath,
-      @NotNull InsightManager.ProcessTerminated runAfter) {
+  public void types(@NotNull VirtualFile sourceFile, @NotNull String rincewindBinary, @NotNull String cmiPath, @NotNull InsightManager.ProcessTerminated runAfter) {
     LOG.debug("Looking for types for file", sourceFile);
 
     Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, sourceFile);
@@ -47,7 +36,7 @@ public class RincewindProcess {
       return;
     }
 
-    if (!new File(rincewindBinary).exists()) { // to a
+    if (!new File(rincewindBinary).exists()) {
       return;
     }
 

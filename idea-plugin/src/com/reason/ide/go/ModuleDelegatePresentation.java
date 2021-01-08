@@ -1,52 +1,51 @@
 package com.reason.ide.go;
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.navigation.NavigationItem;
-import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiQualifiedElement;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 class ModuleDelegatePresentation extends ORDelegatePsiElement
-    implements NavigationItem, PsiQualifiedElement {
-  private final @NotNull ItemPresentation m_presentation;
+        implements NavigationItem, PsiQualifiedElement {
+    private final @NotNull ItemPresentation m_presentation;
 
-  public ModuleDelegatePresentation(
-      @NotNull PsiQualifiedElement source, @NotNull ItemPresentation presentation) {
-    super(source);
-    m_presentation = presentation;
-  }
+    public ModuleDelegatePresentation(
+            @NotNull PsiQualifiedElement source, @NotNull ItemPresentation presentation) {
+        super(source);
+        m_presentation = presentation;
+    }
 
-  @Override
-  public @NotNull String getPath() {
-    return ORUtil.getQualifiedPath(m_source);
-  }
+    @Override
+    public @NotNull String getPath() {
+        return ORUtil.getQualifiedPath(m_source);
+    }
 
-  @Override
-  public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-    return null;
-  }
+    @Override
+    public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return null;
+    }
 
-  @Override
-  public @NotNull String getQualifiedName() {
-    return m_source.getQualifiedName();
-  }
+    @Override
+    public @NotNull String getQualifiedName() {
+        return m_source.getQualifiedName();
+    }
 
-  @Override
-  public Icon getIcon(final int flags) {
-    return m_presentation.getIcon(false);
-  }
+    @Override
+    public Icon getIcon(final int flags) {
+        return m_presentation.getIcon(false);
+    }
 
-  @Override
-  protected Icon getElementIcon(final int flags) {
-    return m_presentation.getIcon(false);
-  }
+    @Override
+    protected Icon getElementIcon(final int flags) {
+        return m_presentation.getIcon(false);
+    }
 
-  @Override
-  public ItemPresentation getPresentation() {
-    return m_presentation;
-  }
+    @Override
+    public @NotNull ItemPresentation getPresentation() {
+        return m_presentation;
+    }
 }

@@ -13,9 +13,10 @@ import com.reason.bs.BsConfigJson;
 import com.reason.esy.EsyPackageJson;
 import com.reason.hints.InsightManager;
 import com.reason.ide.console.ORToolWindowManager;
-import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /** Listener that detects all modifications on project files */
 class ORVirtualFileListener implements AsyncFileListener {
@@ -85,7 +86,6 @@ class ORVirtualFileListener implements AsyncFileListener {
         Module module = ModuleUtil.findModuleForFile(bsConfigFile, project);
         if (module != null) {
           ServiceManager.getService(project, InsightManager.class).downloadRincewindIfNeeded(bsConfigFile);
-          ServiceManager.getService(project, OREditorTracker.class).updateQueues();
         }
       }
     }

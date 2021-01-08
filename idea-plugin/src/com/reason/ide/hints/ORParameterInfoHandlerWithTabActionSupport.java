@@ -1,39 +1,23 @@
 package com.reason.ide.hints;
 
-import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.parameterInfo.CreateParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoContext;
-import com.intellij.lang.parameterInfo.ParameterInfoHandlerWithTabActionSupport;
-import com.intellij.lang.parameterInfo.ParameterInfoUIContext;
-import com.intellij.lang.parameterInfo.ParameterInfoUtils;
-import com.intellij.lang.parameterInfo.UpdateParameterInfoContext;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiFunctionCallParams;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiLowerSymbol;
+import com.intellij.codeInsight.lookup.*;
+import com.intellij.lang.parameterInfo.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
+import com.intellij.psi.*;
+import com.intellij.psi.tree.*;
+import com.intellij.psi.util.*;
+import com.reason.ide.search.*;
 import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiSignatureElement;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.reason.RmlTypes;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.signature.*;
+import com.reason.lang.ocaml.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
 
-public class ORParameterInfoHandlerWithTabActionSupport
-    implements ParameterInfoHandlerWithTabActionSupport<
-        PsiFunctionCallParams, ORSignature, PsiElement> {
+import java.util.*;
+
+public class ORParameterInfoHandlerWithTabActionSupport implements ParameterInfoHandlerWithTabActionSupport<PsiFunctionCallParams, ORSignature, PsiElement> {
 
   @NotNull
   @Override
@@ -138,7 +122,7 @@ public class ORParameterInfoHandlerWithTabActionSupport
         if (resolvedParent instanceof PsiSignatureElement) {
           PsiSignature signature = ((PsiSignatureElement) resolvedParent).getPsiSignature();
           if (signature != null) {
-            context.setItemsToShow(new Object[] {signature.asHMSignature()});
+            context.setItemsToShow(new Object[]{signature.asHMSignature()});
             context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
           } else if (resolvedParent instanceof PsiLet) {
             PsiLet resolvedLet = (PsiLet) resolvedParent;
@@ -148,7 +132,7 @@ public class ORParameterInfoHandlerWithTabActionSupport
               if (function != null) {
                 Collection<PsiParameter> parameters = function.getParameters();
                 ORSignature hmSignature = new ORSignature(parameters);
-                context.setItemsToShow(new Object[] {hmSignature});
+                context.setItemsToShow(new Object[]{hmSignature});
                 context.showHint(paramsOwner, paramsOwner.getTextOffset(), this);
               }
             }

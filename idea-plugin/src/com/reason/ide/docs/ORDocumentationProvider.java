@@ -1,30 +1,26 @@
 package com.reason.ide.docs;
 
-import com.intellij.lang.Language;
-import com.intellij.lang.documentation.DocumentationProvider;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
+import com.intellij.lang.*;
+import com.intellij.lang.documentation.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.Platform;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.hints.SignatureProvider;
-import com.reason.ide.search.PsiFinder;
-import com.reason.ide.search.PsiTypeElementProvider;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.*;
+import com.intellij.psi.util.*;
+import com.reason.*;
+import com.reason.ide.files.*;
+import com.reason.ide.hints.*;
+import com.reason.ide.search.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.psi.impl.PsiFakeModule;
-import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
-import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
-import com.reason.lang.core.psi.reference.ORFakeResolvedElement;
-import com.reason.lang.core.psi.reference.PsiLowerSymbolReference;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.reason.RmlLanguage;
-import java.util.Arrays;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+import com.reason.lang.core.psi.reference.*;
+import com.reason.lang.core.signature.*;
+import com.reason.lang.ocaml.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class ORDocumentationProvider implements DocumentationProvider {
 
@@ -74,8 +70,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
         PsiElement belowComment = findBelowComment(element);
         if (belowComment != null) {
           return isSpecialComment(belowComment)
-              ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
-              : belowComment.getText();
+                     ? DocFormatter.format(element.getContainingFile(), element, belowComment.getText())
+                     : belowComment.getText();
         }
       }
 
@@ -83,8 +79,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
       PsiElement aboveComment = findAboveComment(element);
       if (aboveComment != null) {
         return isSpecialComment(aboveComment)
-            ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText())
-            : aboveComment.getText();
+                   ? DocFormatter.format(element.getContainingFile(), element, aboveComment.getText())
+                   : aboveComment.getText();
       }
     }
 
@@ -114,7 +110,7 @@ public class ORDocumentationProvider implements DocumentationProvider {
     } else {
       PsiElement resolvedElement =
           (resolvedIdentifier instanceof PsiLowerIdentifier
-                  || resolvedIdentifier instanceof PsiUpperIdentifier)
+               || resolvedIdentifier instanceof PsiUpperIdentifier)
               ? resolvedIdentifier.getParent()
               : resolvedIdentifier;
 
@@ -184,8 +180,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
     PsiElement prevSibling = element.getPrevSibling();
     PsiElement prevPrevSibling = prevSibling == null ? null : prevSibling.getPrevSibling();
     if (prevPrevSibling instanceof PsiComment
-        && prevSibling instanceof PsiWhiteSpace
-        && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
+            && prevSibling instanceof PsiWhiteSpace
+            && prevSibling.getText().replaceAll("[ \t]", "").length() == 1) {
       return prevPrevSibling;
     }
 
@@ -198,8 +194,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
       PsiElement nextSibling = element.getNextSibling();
       PsiElement nextNextSibling = nextSibling == null ? null : nextSibling.getNextSibling();
       if (nextNextSibling instanceof PsiComment
-          && nextSibling instanceof PsiWhiteSpace
-          && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
+              && nextSibling instanceof PsiWhiteSpace
+              && nextSibling.getText().replaceAll("[ \t]", "").length() == 1) {
         return nextNextSibling;
       }
     }
@@ -217,8 +213,8 @@ public class ORDocumentationProvider implements DocumentationProvider {
     // When quick doc inside empty parenthesis, we want to display the function doc (github #155)
     // functionName(<caret>) ==> functionName<caret>()
     if (contextElement != null
-        && contextElement.getParent() instanceof PsiFunctionCallParams
-        && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
+            && contextElement.getParent() instanceof PsiFunctionCallParams
+            && contextElement.getLanguage() == RmlLanguage.INSTANCE) {
       PsiElement prevSibling = contextElement.getParent().getPrevSibling();
       if (prevSibling != null) {
         PsiReference reference = prevSibling.getReference();
@@ -249,13 +245,10 @@ public class ORDocumentationProvider implements DocumentationProvider {
   }
 
   @Nullable
-  private String getInferredSignature(
-      @NotNull PsiElement element, @NotNull PsiFile psiFile, @NotNull Language language) {
-    SignatureProvider.InferredTypesWithLines signaturesContext =
-        psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
+  private String getInferredSignature(@NotNull PsiElement element, @NotNull PsiFile psiFile, @NotNull Language language) {
+    SignatureProvider.InferredTypesWithLines signaturesContext = psiFile.getUserData(SignatureProvider.SIGNATURE_CONTEXT);
     if (signaturesContext != null) {
-      ORSignature elementSignature =
-          signaturesContext.getSignatureByOffset(element.getTextOffset());
+      ORSignature elementSignature = signaturesContext.getSignatureByOffset(element.getTextOffset());
       if (elementSignature != null) {
         return elementSignature.asString(language);
       }
@@ -264,16 +257,12 @@ public class ORDocumentationProvider implements DocumentationProvider {
   }
 
   @NotNull
-  private String createQuickDocTemplate(
-      @NotNull String qPath,
-      @Nullable String type,
-      @Nullable String name,
-      @Nullable String signature) {
+  private String createQuickDocTemplate(@NotNull String qPath, @Nullable String type, @Nullable String name, @Nullable String signature) {
     return qPath
-        + "<br/>"
-        + (type == null ? "" : type)
-        + (" <b>" + name + "</b>")
-        + (signature == null ? "" : "<hr/>" + signature);
+               + "<br/>"
+               + (type == null ? "" : type)
+               + (" <b>" + name + "</b>")
+               + (signature == null ? "" : "<hr/>" + signature);
   }
 
   public static boolean isSpecialComment(@Nullable PsiElement element) {
