@@ -35,8 +35,7 @@ public class ORFileDocumentListener implements Disposable {
           }
 
           @Override
-          public void beforeFileContentReload(
-              @NotNull VirtualFile file, @NotNull Document document) {
+          public void beforeFileContentReload(@NotNull VirtualFile file, @NotNull Document document) {
           }
 
           @Override

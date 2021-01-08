@@ -30,14 +30,21 @@ public class PsiOpenImpl extends CompositeTypePsiElement<ORTypes> implements Psi
   @NotNull
   @Override
   public String getPath() {
-    PsiElement firstChild = PsiTreeUtil.skipWhitespacesForward(getFirstChild());
-    if (firstChild != null && firstChild.getNode().getElementType() == m_types.EXCLAMATION_MARK) {
-      firstChild = PsiTreeUtil.skipWhitespacesForward(firstChild);
+    // Skip `let` and `open`
+    PsiElement firstChild = getFirstChild();
+    if (firstChild != null && firstChild.getNode().getElementType() == m_types.LET) { // `let open` in OCaml
+      firstChild = ORUtil.nextSibling(firstChild);
     }
-    if (firstChild instanceof PsiFunctorCall) {
-      return ((PsiFunctorCall) firstChild).getFunctorName();
+    // Skip force open
+    PsiElement child = PsiTreeUtil.skipWhitespacesForward(firstChild);
+    if (child != null && child.getNode().getElementType() == m_types.EXCLAMATION_MARK) {
+      child = PsiTreeUtil.skipWhitespacesForward(child);
     }
-    return firstChild == null ? "" : ORUtil.getTextUntilTokenType(firstChild, null);
+
+    if (child instanceof PsiFunctorCall) {
+      return ((PsiFunctorCall) child).getFunctorName();
+    }
+    return child == null ? "" : ORUtil.getTextUntilTokenType(child, null);
   }
 
   @NotNull

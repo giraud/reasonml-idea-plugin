@@ -223,8 +223,7 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
     return PsiTreeUtil.findChildOfType(this, PsiFunction.class) != null;
   }
 
-  @Nullable
-  public PsiFunction getFunction() {
+  public @Nullable PsiFunction getFunction() {
     PsiLetBinding binding = getBinding();
     if (binding != null) {
       PsiElement child = binding.getFirstChild();

@@ -1,30 +1,24 @@
 package com.reason.bs;
 
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.ProcessHandler;
-import com.intellij.notification.Notifications;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.execution.*;
+import com.intellij.execution.configurations.*;
+import com.intellij.execution.process.*;
+import com.intellij.notification.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
 import com.reason.Compiler;
-import com.reason.CompilerProcess;
-import com.reason.ORNotification;
-import com.reason.ide.ORProjectManager;
-import com.reason.ide.console.CliType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.reason.*;
+import com.reason.ide.*;
+import com.reason.ide.console.*;
+import org.jetbrains.annotations.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.*;
+import java.util.regex.*;
 
-import static com.intellij.notification.NotificationType.WARNING;
-import static com.reason.bs.BsPlatform.findBsbExecutable;
-import static com.reason.bs.BsPlatform.findBscExecutable;
+import static com.intellij.notification.NotificationType.*;
+import static com.reason.bs.BsPlatform.*;
 
 public final class BsProcess implements CompilerProcess {
 
@@ -70,7 +64,7 @@ public final class BsProcess implements CompilerProcess {
     }
 
     @Override
-    public @Nullable ProcessHandler create(@Nullable VirtualFile source, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
+    public @Nullable ProcessHandler create(@NotNull VirtualFile source, @NotNull CliType cliType, @Nullable Compiler.ProcessTerminated onProcessTerminated) {
         try {
             if (cliType instanceof CliType.Bs) {
                 return createProcessHandler(source, (CliType.Bs) cliType, onProcessTerminated);

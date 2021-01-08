@@ -1,33 +1,25 @@
 package com.reason;
 
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileVisitor;
-import com.reason.bs.BsCompiler;
-import com.reason.dune.DuneCompiler;
-import com.reason.esy.EsyCompiler;
-import com.reason.esy.EsyPackageJson;
-import com.reason.ide.console.CliType;
-import com.reason.ide.files.BsConfigJsonFileType;
-import com.reason.ide.files.DuneFileType;
-import com.reason.ide.files.FileHelper;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.fileTypes.*;
+import com.intellij.openapi.project.*;
+import com.intellij.openapi.vfs.*;
+import com.reason.bs.*;
+import com.reason.dune.*;
+import com.reason.esy.*;
+import com.reason.ide.console.*;
+import com.reason.ide.files.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class ORCompilerManager {
-
   private static final Log LOG = Log.create("manager.compiler");
 
-  private final @NotNull Project project;
+  private final @NotNull Project m_project;
 
   public ORCompilerManager(@NotNull Project project) {
-    this.project = project;
+    m_project = project;
   }
 
   public @NotNull Optional<Compiler> getCompiler(@NotNull CliType cliType) {
@@ -35,8 +27,8 @@ public class ORCompilerManager {
   }
 
   public @NotNull Optional<Compiler> getCompiler(@NotNull CompilerType compilerType) {
-    Compiler compiler = ServiceManager.getService(project, getCompilerClass(compilerType));
-    if (compiler.isConfigured(project)) {
+    Compiler compiler = ServiceManager.getService(m_project, getCompilerClass(compilerType));
+    if (compiler.isConfigured(m_project)) {
       return Optional.of(compiler);
     }
     return Optional.empty();
@@ -98,7 +90,7 @@ public class ORCompilerManager {
     }
 
     // we just checked the project root, we're done
-    if (currentDir.getPath().equals(project.getBasePath())) {
+    if (currentDir.getPath().equals(m_project.getBasePath())) {
       return Optional.empty();
     }
     // move up a directory and try again
