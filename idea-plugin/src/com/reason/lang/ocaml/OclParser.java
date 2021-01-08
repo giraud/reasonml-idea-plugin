@@ -512,10 +512,21 @@ public class OclParser extends CommonParser<OclTypes> {
 
     state.advance().popEnd();
 
-    if (scope != null && scope.isCompositeType(m_types.C_MODULE_TYPE)) {
-      IElementType nextToken = state.getTokenType();
-      if (nextToken == m_types.WITH) {
-        state.advance().mark(m_types.C_CONSTRAINTS).mark(m_types.C_CONSTRAINT);
+    if (scope != null) {
+      if (scope.isCompositeType(m_types.C_MODULE_TYPE)) {
+        IElementType nextToken = state.getTokenType();
+        if (nextToken == m_types.WITH) {
+          state.advance().mark(m_types.C_CONSTRAINTS).mark(m_types.C_CONSTRAINT);
+        }
+      } else if (scope.isScopeToken(m_types.STRUCT) && state.is(m_types.C_MODULE_DECLARATION)) {
+        // module M = struct .. |>end<|
+        state.popEnd();
+
+        IElementType nextToken = state.getTokenType();
+        if (nextToken == m_types.AND) {
+          // module M = struct .. end |>and<|
+          state.advance().mark(m_types.C_MODULE_DECLARATION).resolution(module).setStart();
+        }
       }
     }
   }
@@ -581,6 +592,12 @@ public class OclParser extends CommonParser<OclTypes> {
   }
 
   private void parseFunction(@NotNull ParserState state) {
+    if (state.is(m_types.C_LET_BINDING)) {
+      state.mark(m_types.C_FUN_EXPR)
+          .advance()
+          .mark(m_types.C_FUN_BODY);
+    }
+
     state.mark(m_types.C_MATCH_EXPR).resolution(functionMatch).advance();
     if (state.getTokenType() != m_types.PIPE) {
       state.mark(m_types.C_PATTERN_MATCH_EXPR);
@@ -725,8 +742,8 @@ public class OclParser extends CommonParser<OclTypes> {
     state.popEnd();
 
 //    if (state.is(m_types.C_LET_DECLARATION)) {
-      // we are processing an infix operator, unit or a deconstruction (tuple)
-      //  let ( ... |>)<| = ...
+    // we are processing an infix operator, unit or a deconstruction (tuple)
+    //  let ( ... |>)<| = ...
 //      state.resolution(letNamed);
 //    }
   }
@@ -850,6 +867,10 @@ public class OclParser extends CommonParser<OclTypes> {
         // Not a path, nor a functor, must close that open
         state.popCancel();
         state.popEnd();
+      }
+      if (nextToken == m_types.IN) {
+        // let _ = let open M |>in<| ..
+        state.advance();
       }
     } else if (state.is(m_types.C_VARIANT_DECLARATION)) {
       // Declaring a variant  ::  type t = | |>X<| ...

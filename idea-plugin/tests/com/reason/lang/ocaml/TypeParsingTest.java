@@ -13,23 +13,20 @@ import static com.intellij.psi.util.PsiTreeUtil.*;
 
 @SuppressWarnings("ConstantConditions")
 public class TypeParsingTest extends OclParsingTestCase {
-  public void test_abstractType() {
+  public void test_abstract_type() {
     PsiType type = first(typeExpressions(parseCode("type t")));
     assertEquals("t", type.getName());
   }
 
-  public void test_recursiveType() {
-    PsiType type =
-        first(
-            typeExpressions(parseCode("type 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
+  public void test_recursive_type() {
+    PsiType type = first(typeExpressions(parseCode("type 'a tree = | Leaf of 'a | Tree of 'a tree  * 'a tree")));
     assertEquals("tree", type.getName());
   }
 
   public void test_bindingWithVariant() {
     assertNotNull(
-        first(
-            findChildrenOfType(
-                first(typeExpressions(parseCode("type t = | Tick"))), PsiTypeBinding.class)));
+        first(findChildrenOfType(
+            first(typeExpressions(parseCode("type t = | Tick"))), PsiTypeBinding.class)));
   }
 
   public void test_bindingWithRecord() {
@@ -61,9 +58,7 @@ public class TypeParsingTest extends OclParsingTestCase {
   }
 
   public void test_chainDef() {
-    FileBase file =
-        parseCode(
-            "type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
+    FileBase file = parseCode("type 'branch_type branch_info = 'branch_type Vcs_.branch_info = { kind : [> `Master] as 'branch_type; root : id; pos  : id; }");
 
     assertEquals(1, childrenCount(file));
   }
@@ -89,5 +84,15 @@ public class TypeParsingTest extends OclParsingTestCase {
                                                     "Bsb_pkg_types.equal\n let hash (x : t) = Hashtbl.hash x\n end)")));
 
     assertEquals("Dummy.Coll.Make[0].t", e.getQualifiedName());
+  }
+  
+  // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/295
+  public void test_GH_295() {
+    Collection<PsiNamedElement> es = expressions(parseCode("module Set = struct end type x = string"));
+
+    assertSize(2, es);
+    Iterator<PsiNamedElement> it = es.iterator();
+    assertInstanceOf(it.next(), PsiModule.class);
+    assertInstanceOf(it.next(), PsiType.class);
   }
 }

@@ -5,8 +5,9 @@ import static org.junit.Assert.*;
 
 import com.reason.Log;
 import com.reason.ide.annotations.OutputInfo;
-import java.util.*;
 import org.junit.Test;
+
+import java.util.List;
 
 public class BsOutputListenerTest {
 
@@ -122,6 +123,47 @@ public class BsOutputListenerTest {
         "The value dfSetHours can't be found. Hint: Did you mean dfAddHours?", info.message);
   }
 
+  @Test
+  public void testErrorColonDelimeter() {
+    String[] output =
+            new String[] { //
+                    "[3/6] Building src\\time\\Instant.cmj\n",
+                    "FAILED: src/time/Instant.cmj C:/src/time/Instant.bs.js \n",
+                    "\"C:\\node_modules\\bs-platform\\lib\\bsc.exe\" -nostdlib -bs-package-name xxx  -bs-package-output commonjs:lib\\js\\src\\time -color always -bs-suffix -bs-read-cmi -I src\\time -I src -I \"C:\\node_modules\\bs-platform\\lib\\ocaml\" -w -30-40+6+7+27+32..39+44+45+101+A-48-40-42 -warn-error,A-3-44-102 -bs-no-version-header -o src\\time\\Instant.cmj src\\time\\Instant.reast\n",
+                    "\n",
+                    "  We've found a bug for you!\n",
+                    "  U:\\sources\\tin-umbrella\\packages\\tin-core\\src\\time\\Instant.re:60:16-25\n",
+                    "  \n",
+                    "  58 | let setMonth = dfSetMonth;\n",
+                    "  59 | let setDay = dfSetDate;\n",
+                    "  60 | let setHours = dfSetHours;\n",
+                    "  61 | let setMinutes = dfSetMinutes;\n",
+                    "  62 | let setSeconds = dfSetSeconds;\n",
+                    "  \n",
+                    "  The value dfSetHours can't be found\n",
+                    "  \n",
+                    "  Hint: Did you mean dfAddHours?\n",
+                    "  \n",
+                    "FAILED: subcommand failed.\n",
+                    "Compilation ended"
+            };
+
+    BsLineProcessor outputListener = new BsLineProcessor(Log.create("test"));
+
+    for (String line : output) {
+      outputListener.onRawTextAvailable(line);
+    }
+
+    List<OutputInfo> allErrors = outputListener.getInfo();
+    assertSize(1, allErrors);
+
+    OutputInfo info = allErrors.get(0);
+    assertTrue(info.isError);
+    assertEquals("60:16", info.lineStart + ":" + info.colStart);
+    assertEquals("60:26", info.lineEnd + ":" + info.colEnd);
+    assertEquals(
+            "The value dfSetHours can't be found. Hint: Did you mean dfAddHours?", info.message);
+  }
   @Test
   public void testWarningError() {
     String[] output =

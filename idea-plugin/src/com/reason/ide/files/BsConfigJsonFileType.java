@@ -3,14 +3,16 @@ package com.reason.ide.files;
 import com.intellij.json.JsonFileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.ORIcons;
-import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 public class BsConfigJsonFileType extends JsonFileType {
 
   public static final BsConfigJsonFileType INSTANCE = new BsConfigJsonFileType();
-  private static final String FILENAME = "bsconfig.json";
+
+  public static final String FILENAME = "bsconfig.json";
 
   public static boolean isBsConfigFile(@NotNull VirtualFile file) {
     return FILENAME.equals(file.getName());

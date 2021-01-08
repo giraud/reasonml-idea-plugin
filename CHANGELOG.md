@@ -10,7 +10,15 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## Unreleased
+## 0.96 - 2021/01/08
+
+- :bug: [#295](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/295) ![o] Parser error: incorrect chaining module/type
+- :bug: [#294](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/294) ![o] `let open in` incorrectly parsed
+- :bug: [#291](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/291) ![o] 'function' not parsed as function
+- :house: Better usage of externalAnnotator to highlight compilation problems in editor by [@pooch](https://github.com/JohnPucciarelli)
+- :house: Better reformatOnSave implementation that should prevent infinite loop
+
+## 0.95.1 - 2020/12/03
 
 A brand new site created by John Pucciarelli (https://reasonml-editor.github.io/reasonml-idea-plugin/)
 
@@ -130,7 +138,7 @@ Don't expect anything more than just highlighting.
 - :rocket: Compatible with bucklescript 7.2.2
 - :rocket: Add OCaml 4.10 to the list of downloadable SDKs
 - :bug: [#211](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/211) `let%private` support
-- :bug: [#209](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/209) Deep dependenciess are not indexed in IDE that have javascript functionality (ultimate/webstorm)
+- :bug: [#209](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/209) Deep dependencies are not indexed in IDE that have javascript functionality (ultimate/webstorm)
 - :house: Use rincewind 0.7 (support of OCaml 4.10)
 
 ## 0.86.1 - 2020/02/21
@@ -533,7 +541,7 @@ This release contains a big rewrite of how modules are referenced, it may break 
 * :bug: [#30](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/30)
 * :rocket: add completion when starting typing
 * :house: Display types for val/external (completion popup)
-* :house: Use mli file when present (pervasives)
+* :house: Use mli file when present (Pervasives)
 
 ## 0.36
 
@@ -617,6 +625,6 @@ This release contains a big rewrite of how modules are referenced, it may break 
 [0.81]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.80...0.81
 [0.80]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/0.79...0.80
 [0.79]: https://github.com/reasonml-editor/reasonml-idea-plugin/compare/v0.78.3...0.79
-[r]: docs/img/reason-file.png
-[o]: docs/img/ocaml-file.png
-[n]: docs/img/rescript-file.png
+[r]: website/static/img/reason-file.png
+[o]: website/static/img/ocaml-file.png
+[n]: website/static/img/rescript-file.png
