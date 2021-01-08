@@ -10,7 +10,7 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
-## Unreleased
+## 0.96 - 2021/01/08
 
 - :bug: [#295](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/295) ![o] Parser error: incorrect chaining module/type
 - :bug: [#294](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/294) ![o] `let open in` incorrectly parsed
