@@ -9,20 +9,18 @@ import com.reason.lang.core.type.ORCompositeType;
 import com.reason.lang.core.type.ORTypesUtil;
 import org.jetbrains.annotations.NotNull;
 
-public class PsiInnerModuleStubElementType extends PsiModuleStubElementType
-    implements ORCompositeType {
+public class PsiInnerModuleStubElementType extends PsiModuleStubElementType implements ORCompositeType {
+    public PsiInnerModuleStubElementType(Language language) {
+        super("C_MODULE_DECLARATION", language);
+    }
 
-  public PsiInnerModuleStubElementType(Language language) {
-    super("C_MODULE_DECLARATION", language);
-  }
+    @NotNull
+    public PsiInnerModule createPsi(@NotNull final ASTNode node) {
+        return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), node);
+    }
 
-  @NotNull
-  public PsiInnerModule createPsi(@NotNull final ASTNode node) {
-    return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), node);
-  }
-
-  @NotNull
-  public PsiInnerModule createPsi(@NotNull final PsiModuleStub stub) {
-    return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
-  }
+    @NotNull
+    public PsiInnerModule createPsi(@NotNull final PsiModuleStub stub) {
+        return new PsiInnerModuleImpl(ORTypesUtil.getInstance(getLanguage()), stub, this);
+    }
 }

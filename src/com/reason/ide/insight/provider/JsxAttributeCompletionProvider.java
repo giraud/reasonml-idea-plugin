@@ -18,7 +18,7 @@ import java.util.*;
 import static java.util.stream.Collectors.*;
 
 public class JsxAttributeCompletionProvider {
-    private static final Log LOG = Log.create("insight.jsxAttribute");
+    private static final Log LOG = Log.create("insight.jsx.attribute");
 
     private JsxAttributeCompletionProvider() {
     }

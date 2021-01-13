@@ -1,21 +1,19 @@
 package com.reason.ide.search.index;
 
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiVal;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.stubs.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class ValIndex extends StringStubIndexExtension<PsiVal> {
-  private static final int VERSION = 10;
+    private static final int VERSION = 10;
 
-  @Override
-  public int getVersion() {
-    return super.getVersion() + VERSION;
-  }
+    @Override
+    public int getVersion() {
+        return super.getVersion() + VERSION;
+    }
 
-  @NotNull
-  @Override
-  public StubIndexKey<String, PsiVal> getKey() {
-    return IndexKeys.VALS;
-  }
+    @Override
+    public @NotNull StubIndexKey<String, PsiVal> getKey() {
+        return IndexKeys.VALS;
+    }
 }

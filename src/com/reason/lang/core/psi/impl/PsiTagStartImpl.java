@@ -174,7 +174,7 @@ public class PsiTagStartImpl extends CompositeTypePsiElement<ORTypes> implements
       QNameFinder qNameFinder = PsiFinder.getQNameFinder(getLanguage());
       Set<String> paths = qNameFinder.extractPotentialPaths(tagName);
       for (String path : paths) {
-        PsiModule module = psiFinder.findComponent(path, scope);
+        PsiModule module = psiFinder.findComponentFromQName(path, scope);
         if (module != null) {
           Collection<PsiNamedElement> expressions = module.getExpressions(pub, FILTER_LET);
           for (PsiNamedElement expression : expressions) {

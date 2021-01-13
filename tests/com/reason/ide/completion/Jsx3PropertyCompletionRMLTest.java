@@ -41,7 +41,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
   public void test_shouldDisplayProperties_nested() {
     myFixture.configureByFiles("pervasives.ml");
     configureCode("A.re", "module Comp = { [@react.component] let make = (~name) => <div/>; };");
-    configureCode("B.re", "let _ = <A.Comp <caret> />");
+    configureCode("B.re", "[@react.component] let make = () => <A.Comp <caret> />");
 
     myFixture.completeBasic();
 
@@ -53,7 +53,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
   public void test_shouldDisplayProperties_open() {
     myFixture.configureByFiles("pervasives.ml");
     configureCode("A.re", "module Comp = { [@react.component] let make = (~name) => <div/>; };");
-    configureCode("B.re", "open A; let _ = <Comp <caret> />; module Comp = { let make = (~value) => <div/>; };");
+    configureCode("B.re", "open A; [@react.component] let make = () => <Comp <caret> />; module Comp = { [@react.component] let make = (~value) => <div/>; };");
 
     myFixture.completeBasic();
 

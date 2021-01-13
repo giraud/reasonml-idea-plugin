@@ -1,21 +1,19 @@
 package com.reason.ide.search.index;
 
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiRecordField;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.stubs.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class RecordFieldIndex extends StringStubIndexExtension<PsiRecordField> {
-  private static final int VERSION = 3;
+    private static final int VERSION = 3;
 
-  @Override
-  public int getVersion() {
-    return super.getVersion() + VERSION;
-  }
+    @Override
+    public int getVersion() {
+        return super.getVersion() + VERSION;
+    }
 
-  @NotNull
-  @Override
-  public StubIndexKey<String, PsiRecordField> getKey() {
-    return IndexKeys.RECORD_FIELDS;
-  }
+    @Override
+    public @NotNull StubIndexKey<String, PsiRecordField> getKey() {
+        return IndexKeys.RECORD_FIELDS;
+    }
 }
