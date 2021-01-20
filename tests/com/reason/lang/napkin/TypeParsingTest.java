@@ -76,7 +76,7 @@ public class TypeParsingTest extends NsParsingTestCase {
   public void test_scope() {
     PsiExternal e = first(externalExpressions(parseCode("external createElement : (reactClass, ~props: Js.t<{..}>=?, array<reactElement>) => reactElement =  \"createElement\"")));
 
-    PsiSignature signature = e.getPsiSignature();
+    PsiSignature signature = e.getSignature();
     List<PsiSignatureItem> signatureItems = new ArrayList<>(PsiTreeUtil.findChildrenOfType(signature, PsiSignatureItem.class));
 
     assertSize(5, signatureItems);

@@ -113,6 +113,7 @@ public class ParserScope {
   }
 
   public void dummy() {
+    m_isComplete = false;
     m_isDummy = true;
   }
 
@@ -185,5 +186,9 @@ public class ParserScope {
 
   public ORTokenElementType getScopeType() {
     return m_scopeTokenElementType;
+  }
+
+  public boolean isDummy() {
+    return m_isDummy;
   }
 }

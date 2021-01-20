@@ -14,9 +14,21 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
     return "testData/com/reason/lang";
   }
 
-  public void test_shouldDisplayProperties() {
+  public void test_display_properties_let() {
     myFixture.configureByFiles("pervasives.ml");
     configureCode("Component.re", "[@react.component] let make = (~name, ~onClose) => <div/>;");
+    configureCode("A.re", "let _ = <Component <caret>>");
+
+    myFixture.completeBasic();
+
+    List<String> completions = myFixture.getLookupElementStrings();
+    assertSize(4, completions);
+    assertContainsElements(completions, "key", "ref", "name", "onClose");
+  }
+
+  public void test_display_properties_external() {
+    myFixture.configureByFiles("pervasives.ml");
+    configureCode("Component.re", "[@react.component] external make : (~name:string, ~onClose: unit => unit) = \"Comp\";");
     configureCode("A.re", "let _ = <Component <caret>>");
 
     myFixture.completeBasic();

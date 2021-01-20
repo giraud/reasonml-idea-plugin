@@ -1,60 +1,58 @@
 package com.reason.ide.hints;
 
-import com.intellij.openapi.editor.LogicalPosition;
-import com.intellij.openapi.util.Key;
-import com.reason.ide.EditorPosition;
-import com.reason.lang.core.signature.ORSignature;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.util.*;
+import com.reason.ide.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 // just an experiment, cancelled for now
 public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
 
-  public static class InferredTypesWithLines {
-    private final InferredTypes m_types;
-    private final @NotNull EditorPosition m_editorPosition;
-    //        private InferredTypes types;
+    public static class InferredTypesWithLines {
+        private final InferredTypes m_types;
+        private final @NotNull EditorPosition m_editorPosition;
+        //        private InferredTypes types;
 
-    InferredTypesWithLines(InferredTypes types, @NotNull String[] lines) {
-      m_types = types;
-      m_editorPosition = new EditorPosition(lines);
+        InferredTypesWithLines(InferredTypes types, @NotNull String[] lines) {
+            m_types = types;
+            m_editorPosition = new EditorPosition(lines);
+        }
+
+        public @Nullable PsiSignature getSignatureByOffset(int textOffset) {
+            LogicalPosition elementPosition = m_editorPosition.getPositionFromOffset(textOffset);
+            return elementPosition == null ? null : m_types.getSignatureByPosition(elementPosition);
+        }
+
+        public InferredTypes getTypes() {
+            return m_types;
+        }
     }
 
-    @Nullable
-    public ORSignature getSignatureByOffset(int textOffset) {
-      LogicalPosition elementPosition = m_editorPosition.getPositionFromOffset(textOffset);
-      return elementPosition == null ? null : m_types.getSignatureByPosition(elementPosition);
-    }
+    public static final Key<InferredTypesWithLines> SIGNATURE_CONTEXT =
+            Key.create("REASONML_SIGNATURE_CONTEXT");
 
-    public InferredTypes getTypes() {
-      return m_types;
-    }
-  }
+    // @NotNull
+    // @Override
+    // public List<InlayInfo> getParameterHints(PsiElement element) {
+    //        if (element instanceof PsiLet) {
+    //            PsiLet letStatement = (PsiLet) element;
+    //            if (!letStatement.getLetBinding().isFunction()) {
+    //                if (letStatement.hasInferredType()) {
+    //                    return singletonList(new InlayInfo(letStatement.getInferredType(),
+    // 14/*letStatement.getLetBinding().getValueName().getTextOffset()*/));
+    //                }
+    //            }
+    //        }
 
-  public static final Key<InferredTypesWithLines> SIGNATURE_CONTEXT =
-      Key.create("REASONML_SIGNATURE_CONTEXT");
-
-  // @NotNull
-  // @Override
-  // public List<InlayInfo> getParameterHints(PsiElement element) {
-  //        if (element instanceof PsiLet) {
-  //            PsiLet letStatement = (PsiLet) element;
-  //            if (!letStatement.getLetBinding().isFunction()) {
-  //                if (letStatement.hasInferredType()) {
-  //                    return singletonList(new InlayInfo(letStatement.getInferredType(),
-  // 14/*letStatement.getLetBinding().getValueName().getTextOffset()*/));
-  //                }
-  //            }
-  //        }
-
-  // return emptyList();
-  // }
-  //
-  // @Nullable
-  // @Override
-  // public HintInfo getHintInfo(PsiElement psiElement) {
-  //    return null;
-  // }
+    // return emptyList();
+    // }
+    //
+    // @Nullable
+    // @Override
+    // public HintInfo getHintInfo(PsiElement psiElement) {
+    //    return null;
+    // }
 
   /*
       @Nullable
@@ -69,31 +67,31 @@ public class SignatureProvider /*implements InlayParameterHintsProvider*/ {
       }
   */
 
-  // @NotNull
-  // @Override
-  // public Set<String> getDefaultBlackList() {
-  //    return emptySet();
-  // }
-  //
-  // @Nullable
-  // @Override
-  // public Language getBlackListDependencyLanguage() {
-  //    return null;
-  // }
-  //
-  // @NotNull
-  // @Override
-  // public List<Option> getSupportedOptions() {
-  //    return emptyList();
-  // }
-  //
-  // @Override
-  // public boolean isBlackListSupported() {
-  //    return false;
-  // }
-  //
-  // @Override
-  // public String getInlayPresentation(@NotNull String inlayText) {
-  //    return inlayText;
-  // }
+    // @NotNull
+    // @Override
+    // public Set<String> getDefaultBlackList() {
+    //    return emptySet();
+    // }
+    //
+    // @Nullable
+    // @Override
+    // public Language getBlackListDependencyLanguage() {
+    //    return null;
+    // }
+    //
+    // @NotNull
+    // @Override
+    // public List<Option> getSupportedOptions() {
+    //    return emptyList();
+    // }
+    //
+    // @Override
+    // public boolean isBlackListSupported() {
+    //    return false;
+    // }
+    //
+    // @Override
+    // public String getInlayPresentation(@NotNull String inlayText) {
+    //    return inlayText;
+    // }
 }

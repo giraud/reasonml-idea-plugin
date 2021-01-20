@@ -57,11 +57,12 @@ public class ReformatOnSave {
 
                     ApplicationManagerEx.getApplicationEx()
                             .invokeLater(() -> WriteAction.run(() -> {
-                                PsiFile newFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-                                if (newFile != null) {
-                                    String textToReformat = document.getText();
-                                    FormatterProcessor formatterProcessor = ORPostFormatProcessor.getFormatterProcessor(newFile);
-                                    String newText = formatterProcessor == null ? textToReformat : formatterProcessor.apply(textToReformat);
+                                if (!project.isDisposed()) {
+                                    PsiFile newFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+                                    if (newFile != null) {
+                                        String textToReformat = document.getText();
+                                        FormatterProcessor formatterProcessor = ORPostFormatProcessor.getFormatterProcessor(newFile);
+                                        String newText = formatterProcessor == null ? textToReformat : formatterProcessor.apply(textToReformat);
 
                                     if (newText == null || textToReformat.equals(newText)) {
                                         LOG.debug(" -> Text null or unchanged, abort format");
@@ -76,9 +77,10 @@ public class ReformatOnSave {
                                                 "CodeFormatGroup",
                                                 document);
 
-                                        if (count == 1) {
-                                            // Only re-save first time, to avoid infinite loop
-                                            FileDocumentManager.getInstance().saveDocument(document);
+                                            if (count == 1) {
+                                                // Only re-save first time, to avoid infinite loop
+                                                FileDocumentManager.getInstance().saveDocument(document);
+                                            }
                                         }
                                     }
                                 }

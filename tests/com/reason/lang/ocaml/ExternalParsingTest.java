@@ -20,7 +20,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
                 "external reactIntlJsReactClass : ReasonReact.reactClass = \"FormattedMessage\""),
             PsiExternal.class);
 
-    assertEquals("ReasonReact.reactClass", e.getORSignature().asString(OclLanguage.INSTANCE));
+    assertEquals("ReasonReact.reactClass", e.getSignature().asText(OclLanguage.INSTANCE));
     assertFalse(e.isFunction());
     assertEquals("FormattedMessage", e.getExternalName());
   }
@@ -31,7 +31,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
             parseCode("external reactIntlJsReactClass: ReasonReact.reactClass = \"\""),
             PsiExternal.class);
 
-    assertEquals("ReasonReact.reactClass", e.getORSignature().asString(OclLanguage.INSTANCE));
+    assertEquals("ReasonReact.reactClass", e.getSignature().asText(OclLanguage.INSTANCE));
     assertFalse(e.isFunction());
     assertEquals("", e.getExternalName());
   }
@@ -47,7 +47,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
     assertEquals(
         e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
-    assertEquals("string -> reactElement", e.getPsiSignature().getText());
+    assertEquals("string -> reactElement", e.getSignature().getText());
     assertEquals("%identity", e.getExternalName());
   }
 
@@ -62,7 +62,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
     assertEquals(
         e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
-    assertEquals("reactElement array -> reactElement", e.getPsiSignature().getText());
+    assertEquals("reactElement array -> reactElement", e.getSignature().getText());
     assertEquals("%identity", e.getExternalName());
   }
 
@@ -75,7 +75,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
     assertInstanceOf(e.getNameIdentifier(), PsiLowerIdentifier.class);
     assertEquals(
         e.getNameIdentifier().getFirstChild().getNode().getElementType(), OclTypes.INSTANCE.LIDENT);
-    assertEquals("exn -> 'a", e.getPsiSignature().getText());
+    assertEquals("exn -> 'a", e.getSignature().getText());
     assertEquals("%raise", e.getExternalName());
   }
 
@@ -87,7 +87,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     assertEquals("( = )", e.getName());
     assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
-    assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+    assertEquals("'a -> 'a -> bool", e.getSignature().getText());
     assertEquals("%equal", e.getExternalName());
   }
 
@@ -98,7 +98,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     assertEquals("( <> )", e.getName());
     assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
-    assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+    assertEquals("'a -> 'a -> bool", e.getSignature().getText());
     assertEquals("%notequal", e.getExternalName());
   }
 
@@ -109,7 +109,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     assertEquals("( < )", e.getName());
     assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
-    assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+    assertEquals("'a -> 'a -> bool", e.getSignature().getText());
     assertEquals("%lessthan", e.getExternalName());
   }
 
@@ -121,7 +121,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     assertEquals("( > )", e.getName());
     assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
-    assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+    assertEquals("'a -> 'a -> bool", e.getSignature().getText());
     assertEquals("%greaterthan", e.getExternalName());
   }
 
@@ -133,7 +133,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     assertEquals("( <= )", e.getName());
     assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
-    assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+    assertEquals("'a -> 'a -> bool", e.getSignature().getText());
     assertEquals("%lessequal", e.getExternalName());
   }
 
@@ -145,7 +145,7 @@ public class ExternalParsingTest extends OclParsingTestCase {
 
     assertEquals("( >= )", e.getName());
     assertInstanceOf(e.getNameIdentifier(), PsiScopedExpr.class);
-    assertEquals("'a -> 'a -> bool", e.getPsiSignature().getText());
+    assertEquals("'a -> 'a -> bool", e.getSignature().getText());
     assertEquals("%greaterequal", e.getExternalName());
   }
 }

@@ -1,17 +1,12 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiElement;
-import com.reason.lang.core.signature.ORSignature;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.*;
 
-public interface PsiSignature extends PsiElement {
-  @NotNull
-  ORSignature asHMSignature();
+import java.util.*;
 
-  @NotNull
-  String asString(@NotNull Language lang);
+public interface PsiSignature extends PsiElement, PsiLanguageConverter {
+    boolean isFunction();
 
-  @Nullable
-  String getName();
+    @NotNull List<PsiSignatureItem> getItems();
 }

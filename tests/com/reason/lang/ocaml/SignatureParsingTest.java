@@ -1,131 +1,141 @@
 package com.reason.lang.ocaml;
 
-import com.intellij.psi.util.PsiTreeUtil;
-import com.reason.lang.core.psi.PsiFunction;
-import com.reason.lang.core.psi.PsiLet;
-import com.reason.lang.core.psi.PsiParameter;
-import com.reason.lang.core.psi.PsiSignature;
-import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.core.psi.PsiVal;
-import com.reason.lang.core.psi.impl.PsiObjectField;
-import com.reason.lang.core.signature.ORSignature;
+import com.intellij.psi.util.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.psi.impl.*;
+
 import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 public class SignatureParsingTest extends OclParsingTestCase {
-  public void test_let() {
-    PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
+    public void test_let() {
+        PsiLet e = first(letExpressions(parseCode("let x:int = 1")));
 
-    ORSignature signature = e.getORSignature();
-    assertEquals("int", signature.asString(myLanguage));
-    assertTrue(signature.isMandatory(0));
-  }
+        PsiSignature signature = e.getSignature();
+        assertEquals("int", signature.asText(myLanguage));
+        assertFalse(signature.getItems().get(0).isOptional());
+    }
 
-  public void test_OCamlBeforeDirective() {
-    PsiVal e =
-        first(
-            valExpressions(
-                parseCode(
-                    "val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
+    public void test_OCamlBeforeDirective() {
+        PsiVal e = first(valExpressions(parseCode("val bool_of_string_opt : string -> bool option\n(** This is a comment *)\n\n#if BS then\n#end")));
 
-    ORSignature signature = e.getORSignature();
-    assertEquals("string -> bool option", signature.asString(myLanguage));
-  }
+        PsiSignature signature = e.getSignature();
+        assertEquals("string -> bool option", signature.asText(myLanguage));
+    }
 
-  public void test_val() {
-    PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
+    public void test_val() {
+        PsiVal e = first(valExpressions(parseCode("val map : 'a option -> ('a -> 'b) -> 'b option")));
 
-    ORSignature signature = e.getORSignature();
-    assertEquals("'a option -> ('a -> 'b) -> 'b option", signature.asString(myLanguage));
-    assertFalse(signature.isMandatory(0));
-    assertTrue(signature.isMandatory(1));
-    assertFalse(signature.isMandatory(2));
-  }
+        PsiSignature signature = e.getSignature();
+        List<PsiSignatureItem> items = signature.getItems();
+        assertEquals("'a option -> ('a -> 'b) -> 'b option", signature.asText(myLanguage));
+        assertFalse(items.get(0).isOptional());
+        assertFalse(items.get(1).isOptional());
+        assertFalse(items.get(2).isOptional());
+    }
 
-  public void test_trimming() {
-    PsiLet let =
-        first(
-            letExpressions(
-                parseCode(
-                    "let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
+    public void test_trimming() {
+        PsiLet let =
+                first(
+                        letExpressions(
+                                parseCode(
+                                        "let statelessComponent:\n  string ->\n  componentSpec(\n    stateless,\n    stateless,\n    noRetainedProps,\n    noRetainedProps,\n    actionless,\n  );\n")));
 
-    PsiSignature signature = let.getPsiSignature();
-    assertEquals(
-        "string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)",
-        signature.asString(myLanguage));
-  }
+        PsiSignature signature = let.getSignature();
+        assertEquals("string -> componentSpec(stateless, stateless, noRetainedProps, noRetainedProps, actionless)", signature.asText(myLanguage));
+    }
 
-  public void test_parsingNamedParams() {
-    PsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
+    public void test_parsing_named_params() {
+        PsiLet let = first(letExpressions(parseCode("let padding: v:length -> h:length -> rule")));
 
-    ORSignature signature = let.getORSignature();
-    assertEquals(3, signature.getTypes().length);
-    assertEquals("v:length -> h:length -> rule", signature.asString(myLanguage));
-    assertTrue(signature.isMandatory(0));
-    assertTrue(signature.isMandatory(1));
-  }
+        PsiSignature signature = let.getSignature();
+        assertEquals(3, signature.getItems().size());
+        assertEquals("v:length -> h:length -> rule", signature.asText(myLanguage));
+        assertFalse(signature.getItems().get(0).isOptional());
+        assertEquals("v", signature.getItems().get(0).getNamedParam().getName());
+        assertFalse(signature.getItems().get(1).isOptional());
+        assertEquals("h", signature.getItems().get(1).getNamedParam().getName());
+    }
 
-  public void test_optionalFun() {
-    PsiLet let =
-        first(
-            letExpressions(
-                parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
+    public void test_optional_fun() {
+        PsiLet let = first(letExpressions(parseCode("let x: int -> string option -> string = fun a  -> fun b  -> c")));
 
-    ORSignature signature = let.getORSignature();
-    assertEquals(3, signature.getTypes().length);
-    assertEquals("int -> string option -> string", signature.asString(myLanguage));
-    assertTrue(signature.isMandatory(0));
-    assertFalse(signature.isMandatory(1));
-  }
+        PsiSignature signature = let.getSignature();
+        assertEquals("int -> string option -> string", signature.asText(myLanguage));
 
-  public void test_optionalFunParameters() {
-    PsiLet let =
-        first(
-            letExpressions(
-                parseCode("let x (a : int) (b : string option) (c : bool) (d : float) = 3")));
+        List<PsiSignatureItem> items = let.getSignature().getItems();
+        assertEquals("int", items.get(0).getText());
+        assertFalse(items.get(0).isOptional());
+        assertEquals("string option", items.get(1).getText());
+        assertFalse(items.get(1).isOptional());
+        assertEquals("string", items.get(2).getText());
+        assertSize(3, items);
+    }
 
-    PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
-    List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+    public void test_optional_fun_parameters() {
+        PsiLet let = first(letExpressions(parseCode("let x a b ?(c= false)  ?(d= 1.)  = 3")));
 
-    assertSize(4, parameters);
-    assertTrue(parameters.get(0).getPsiSignature().asHMSignature().isMandatory(0));
-    assertFalse(parameters.get(1).getPsiSignature().asHMSignature().isMandatory(0));
-    assertTrue(parameters.get(2).getPsiSignature().asHMSignature().isMandatory(0));
-    assertTrue(parameters.get(3).getPsiSignature().asHMSignature().isMandatory(0));
-  }
+        PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
-  public void test_unitFunParameter() {
-    PsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
+        assertFalse(parameters.get(0).isOptional());
+        assertFalse(parameters.get(1).isOptional());
+        assertTrue(parameters.get(2).isOptional());
+        assertEquals("Dummy.x[c]", parameters.get(2).getQualifiedName());
+        assertEquals("false", parameters.get(2).getDefaultValue().getText());
+        assertTrue(parameters.get(3).isOptional());
+        assertEquals("Dummy.x[d]", parameters.get(3).getQualifiedName());
+        assertEquals("1.", parameters.get(3).getDefaultValue().getText());
+    }
 
-    PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
-    List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
+    public void test_optional_fun_parameters_typed() {
+        PsiLet let = first(letExpressions(parseCode("let x (a : int) (b : string option) ?c:((c : bool)= false)  ?d:((d : float)=1.) = 3")));
 
-    assertSize(2, parameters);
-    assertEquals("(a : int)", parameters.get(0).getText());
-    assertEquals("()", parameters.get(1).getText());
-  }
+        PsiFunction function = (PsiFunction) let.getBinding().getFirstChild();
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
-  public void test_signatureItems() {
-    PsiLet e =
-        first(
-            letExpressions(
-                parseCode(
-                    "let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
-    ORSignature signature = e.getORSignature();
+        assertSize(4, parameters);
+        assertFalse(parameters.get(0).isOptional());
+        assertEquals("Dummy.x[a]", parameters.get(0).getQualifiedName());
+        assertFalse(parameters.get(1).isOptional());
+        assertEquals("Dummy.x[b]", parameters.get(1).getQualifiedName());
+        assertTrue(parameters.get(2).isOptional());
+        assertEquals("Dummy.x[c]", parameters.get(2).getQualifiedName());
+        assertEquals("bool", parameters.get(2).getSignature().asText(myLanguage));
+        assertEquals("false", parameters.get(2).getDefaultValue().getText());
+        assertTrue(parameters.get(3).isOptional());
+        assertEquals("Dummy.x[d]", parameters.get(3).getQualifiedName());
+        assertEquals("float", parameters.get(3).getSignature().asText(myLanguage));
+        assertEquals("1.", parameters.get(3).getDefaultValue().getText());
+    }
 
-    assertEquals(2, signature.getTypes().length);
-  }
+    public void test_unitFunParameter() {
+        PsiLet e = first(letExpressions(parseCode("let x (a : int) () = a")));
 
-  public void test_jsObject() {
-    PsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
-    ORSignature signature = e.getORSignature();
+        PsiFunction function = (PsiFunction) e.getBinding().getFirstChild();
+        List<PsiParameter> parameters = new ArrayList<>(function.getParameters());
 
-    assertEquals(2, signature.getTypes().length);
-    PsiSignatureItem jsObj = signature.getItems()[0];
-    List<PsiObjectField> fields =
-        new ArrayList<>(PsiTreeUtil.findChildrenOfType(jsObj, PsiObjectField.class));
-    assertSize(2, fields);
-    assertEquals(fields.get(0).getName(), "a");
-    assertEquals(fields.get(1).getName(), "b");
-  }
+        assertSize(2, parameters);
+        assertEquals("(a : int)", parameters.get(0).getText());
+        assertEquals("()", parameters.get(1).getText());
+    }
+
+    public void test_signatureItems() {
+        PsiLet e = first(letExpressions(parseCode("let createAction: < children : React.element; dispatch : ([ `Arity_1 of Redux.Actions.opaqueFsa ], unit) Js.Internal.fn; url : 'url > Js.t -> React.element;")));
+        PsiSignature signature = e.getSignature();
+
+        assertEquals(2, signature.getItems().size());
+    }
+
+    public void test_jsObject() {
+        PsiLet e = first(letExpressions(parseCode("let x: < a: string; b: 'a > Js.t -> string")));
+        PsiSignature signature = e.getSignature();
+
+        assertEquals(2, signature.getItems().size());
+        PsiSignatureItem jsObj = signature.getItems().get(0);
+        List<PsiObjectField> fields = new ArrayList<>(PsiTreeUtil.findChildrenOfType(jsObj, PsiObjectField.class));
+        assertSize(2, fields);
+        assertEquals(fields.get(0).getName(), "a");
+        assertEquals(fields.get(1).getName(), "b");
+    }
 }

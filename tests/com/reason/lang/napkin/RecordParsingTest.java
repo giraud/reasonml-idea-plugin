@@ -14,7 +14,7 @@ public class RecordParsingTest extends NsParsingTestCase {
 
     List<PsiRecordField> fields = new ArrayList<>(record.getFields());
     assertEquals("a", fields.get(0).getName());
-    assertEquals("int", fields.get(0).getPsiSignature().asString(myLanguage));
+    assertEquals("int", fields.get(0).getSignature().asText(myLanguage));
   }
 
   public void test_usage() {
@@ -24,11 +24,11 @@ public class RecordParsingTest extends NsParsingTestCase {
     List<PsiRecordField> fields = new ArrayList<>(record.getFields());
     assertSize(3, fields);
     assertEquals("a", fields.get(0).getName());
-    assertNull(fields.get(0).getPsiSignature());
+    assertNull(fields.get(0).getSignature());
     assertEquals("b", fields.get(1).getName());
-    assertNull(fields.get(1).getPsiSignature());
+    assertNull(fields.get(1).getSignature());
     assertEquals("c", fields.get(2).getName());
-    assertNull(fields.get(2).getPsiSignature());
+    assertNull(fields.get(2).getSignature());
   }
 
   public void test_mixin() {

@@ -1,118 +1,99 @@
 package com.reason.lang.core.psi.impl;
 
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.IncorrectOperationException;
-import com.reason.lang.core.ORUtil;
-import com.reason.lang.core.psi.PsiRecordField;
-import com.reason.lang.core.psi.PsiSignature;
+import com.intellij.lang.*;
+import com.intellij.navigation.*;
+import com.intellij.psi.*;
+import com.intellij.psi.stubs.*;
+import com.intellij.psi.util.*;
+import com.intellij.util.*;
+import com.reason.lang.core.*;
 import com.reason.lang.core.psi.PsiType;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.core.stub.PsiRecordFieldStub;
-import com.reason.lang.core.type.ORTypes;
-import icons.ORIcons;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.core.stub.*;
+import com.reason.lang.core.type.*;
+import icons.*;
+import org.jetbrains.annotations.*;
+
 import javax.swing.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub>
-    implements PsiRecordField {
+public class PsiRecordFieldImpl extends PsiTokenStub<ORTypes, PsiRecordFieldStub> implements PsiRecordField {
 
-  // region Constructors
-  public PsiRecordFieldImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
-  }
-
-  public PsiRecordFieldImpl(
-      @NotNull ORTypes types,
-      @NotNull PsiRecordFieldStub stub,
-      @NotNull IStubElementType nodeType) {
-    super(types, stub, nodeType);
-  }
-  // endregion
-
-  @Nullable
-  @Override
-  public PsiElement getNameIdentifier() {
-    return getFirstChild();
-  }
-
-  @NotNull
-  @Override
-  public String getPath() {
-    PsiRecordFieldStub stub = getGreenStub();
-    if (stub != null) {
-      return stub.getPath();
+    // region Constructors
+    public PsiRecordFieldImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
-    PsiType parent = PsiTreeUtil.getParentOfType(this, PsiType.class);
-    String name = getName();
-    return (parent == null) ? name : (ORUtil.getQualifiedPath(parent) + "." + name);
-  }
+    public PsiRecordFieldImpl(@NotNull ORTypes types, @NotNull PsiRecordFieldStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
+    }
+    // endregion
 
-  @NotNull
-  @Override
-  public String getQualifiedName() {
-    PsiRecordFieldStub stub = getGreenStub();
-    if (stub != null) {
-      return stub.getQualifiedName();
+    @Override
+    public @Nullable PsiElement getNameIdentifier() {
+        return getFirstChild();
     }
 
-    return ORUtil.getQualifiedName(this);
-  }
+    @Override
+    public @NotNull String getPath() {
+        PsiRecordFieldStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
 
-  @NotNull
-  @Override
-  public String getName() {
-    PsiElement nameElement = getNameIdentifier();
-    return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
-  }
+        PsiType parent = PsiTreeUtil.getParentOfType(this, PsiType.class);
+        String name = getName();
+        return (parent == null) ? name : (ORUtil.getQualifiedPath(parent) + "." + name);
+    }
 
-  @Nullable
-  @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-    return null;
-  }
 
-  @Nullable
-  public PsiSignature getPsiSignature() {
-    return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
-  }
+    @Override
+    public @NotNull String getQualifiedName() {
+        PsiRecordFieldStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
 
-  @NotNull
-  @Override
-  public ORSignature getORSignature() {
-    PsiSignature signature = getPsiSignature();
-    return signature == null ? ORSignature.EMPTY : signature.asHMSignature();
-  }
+        return ORUtil.getQualifiedName(this);
+    }
 
-  @Override
-  public ItemPresentation getPresentation() {
-    return new ItemPresentation() {
-      @Override
-      public @NotNull String getPresentableText() {
-        return getName();
-      }
+    @Override
+    public @NotNull String getName() {
+        PsiElement nameElement = getNameIdentifier();
+        return nameElement == null ? "" : nameElement.getText().replaceAll("\"", "");
+    }
 
-      @Override
-      public @Nullable String getLocationString() {
-        PsiSignature signature = getPsiSignature();
-        return signature == null ? null : signature.getText();
-      }
+    @Override
+    public @Nullable PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return null;
+    }
 
-      @Override
-      public @NotNull Icon getIcon(boolean unused) {
-        return ORIcons.VAL;
-      }
-    };
-  }
+    public @Nullable PsiSignature getSignature() {
+        return PsiTreeUtil.findChildOfType(this, PsiSignature.class);
+    }
 
-  @Nullable
-  @Override
-  public String toString() {
-    return "Record field " + getQualifiedName();
-  }
+    @Override
+    public ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Override
+            public @NotNull String getPresentableText() {
+                return getName();
+            }
+
+            @Override
+            public @Nullable String getLocationString() {
+                PsiSignature signature = getSignature();
+                return signature == null ? null : signature.asText(getLanguage());
+            }
+
+            @Override
+            public @NotNull Icon getIcon(boolean unused) {
+                return ORIcons.VAL;
+            }
+        };
+    }
+
+    @Override
+    public @Nullable String toString() {
+        return "Record field " + getQualifiedName();
+    }
 }

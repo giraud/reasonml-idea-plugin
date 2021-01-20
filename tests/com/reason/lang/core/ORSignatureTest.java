@@ -1,109 +1,101 @@
 package com.reason.lang.core;
 
-import com.intellij.lang.Language;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.impl.DebugUtil;
-import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.testFramework.LightJavaCodeInsightTestCase;
-import com.reason.lang.core.psi.PsiSignatureItem;
-import com.reason.lang.core.signature.ORSignature;
-import com.reason.lang.napkin.NsLanguage;
-import com.reason.lang.ocaml.OclLanguage;
-import com.reason.lang.reason.RmlLanguage;
-import java.util.*;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.*;
+import com.intellij.psi.*;
+import com.intellij.psi.impl.*;
+import com.intellij.psi.util.*;
+import com.intellij.testFramework.*;
+import com.reason.lang.core.psi.*;
+import com.reason.lang.napkin.*;
+import com.reason.lang.ocaml.*;
+import com.reason.lang.reason.*;
+import org.jetbrains.annotations.*;
 
 public class ORSignatureTest extends LightJavaCodeInsightTestCase {
 
-  private static final NsLanguage NS = NsLanguage.INSTANCE;
-  private static final RmlLanguage RML = RmlLanguage.INSTANCE;
-  private static final OclLanguage OCL = OclLanguage.INSTANCE;
+    private static final NsLanguage NS = NsLanguage.INSTANCE;
+    private static final RmlLanguage RML = RmlLanguage.INSTANCE;
+    private static final OclLanguage OCL = OclLanguage.INSTANCE;
 
-  public void testReasonSingleFun() {
-    ORSignature sig = makeSignature(RML, "unit=>unit");
+    public void testReasonSingleFun() {
+        PsiSignature sig = makeSignature(RML, "unit=>unit");
 
-    assertEquals("unit => unit", sig.asString(RML));
-    assertEquals("unit -> unit", sig.asString(OCL));
-  }
+        assertEquals("unit => unit", sig.asText(RML));
+        assertEquals("unit -> unit", sig.asText(OCL));
+    }
 
-  public void testOCamlSingleFun() {
-    ORSignature sig = makeSignature(OCL, "unit->unit");
+    public void testOCamlSingleFun() {
+        PsiSignature sig = makeSignature(OCL, "unit->unit");
 
-    assertEquals("unit => unit", sig.asString(RML));
-    assertEquals("unit -> unit", sig.asString(OCL));
-  }
+        assertEquals("unit => unit", sig.asText(RML));
+        assertEquals("unit -> unit", sig.asText(OCL));
+    }
 
-  public void testReasonSingle() {
-    ORSignature sig = makeSignature(RML, "unit");
+    public void testReasonSingle() {
+        PsiSignature sig = makeSignature(RML, "unit");
 
-    assertEquals("unit", sig.asString(RML));
-    assertEquals("unit", sig.asString(OCL));
-  }
+        assertEquals("unit", sig.asText(RML));
+        assertEquals("unit", sig.asText(OCL));
+    }
 
-  public void testOCamlSingle() {
-    ORSignature sig = makeSignature(OCL, "unit");
+    public void testOCamlSingle() {
+        PsiSignature sig = makeSignature(OCL, "unit");
 
-    assertEquals("unit", sig.asString(RML));
-    assertEquals("unit", sig.asString(OCL));
-  }
+        assertEquals("unit", sig.asText(RML));
+        assertEquals("unit", sig.asText(OCL));
+    }
 
-  public void testReasonMultiFun() {
-    ORSignature sig = makeSignature(RML, "unit => string => float => unit");
+    public void testReasonMultiFun() {
+        PsiSignature sig = makeSignature(RML, "unit => string => float => unit");
 
-    assertEquals("(unit, string, float) => unit", sig.asString(RML));
-    assertEquals("unit -> string -> float -> unit", sig.asString(OCL));
-  }
+        assertEquals("(unit, string, float) => unit", sig.asText(RML));
+        assertEquals("unit -> string -> float -> unit", sig.asText(OCL));
+    }
 
-  public void testOcamlMultiFun() {
-    ORSignature sig = makeSignature(OCL, "unit -> string -> float -> unit");
+    public void testOcamlMultiFun() {
+        PsiSignature sig = makeSignature(OCL, "unit -> string -> float -> unit");
 
-    assertEquals("(unit, string, float) => unit", sig.asString(RML));
-    assertEquals("unit -> string -> float -> unit", sig.asString(OCL));
-  }
+        assertEquals("(unit, string, float) => unit", sig.asText(RML));
+        assertEquals("unit -> string -> float -> unit", sig.asText(OCL));
+    }
 
-  public void testOCamlObject() {
-    ORSignature sig = makeSignature(OCL, "<a:string> -> string");
+    public void testOCamlObject() {
+        PsiSignature sig = makeSignature(OCL, "<a:string> -> string");
 
-    assertEquals("<a:string> -> string", sig.asString(OCL));
-    assertEquals("{. a:string } => string", sig.asString(RML));
-  }
+        assertEquals("<a:string> -> string", sig.asText(OCL));
+        assertEquals("{. a:string } => string", sig.asText(RML));
+    }
 
-  public void testReasonJsObject() {
-    ORSignature sig = makeSignature(RML, "{. a:string, b:int } => string");
+    public void testReasonJsObject() {
+        PsiSignature sig = makeSignature(RML, "{. a:string, b:int } => string");
 
-    assertEquals("<a:string; b:int> Js.t -> string", sig.asString(OCL));
-    assertEquals("{. a:string, b:int } => string", sig.asString(RML));
-    assertEquals("{. a:string, b:int } => string", sig.asString(NS));
-  }
+        assertEquals("<a:string; b:int> Js.t -> string", sig.asText(OCL));
+        assertEquals("{. a:string, b:int } => string", sig.asText(RML));
+        //assertEquals("{. a:string, b:int } => string", sig.asText(NS));
+    }
 
-  public void testOCamlJsObject() {
-    ORSignature sig = makeSignature(OCL, "<a:string; b:int> Js.t -> string");
+    public void testOCamlJsObject() {
+        PsiSignature sig = makeSignature(OCL, "<a:string; b:int> Js.t -> string");
 
-    assertEquals("<a:string; b:int> Js.t -> string", sig.asString(OCL));
-    assertEquals("{. a:string, b:int } => string", sig.asString(RML));
-  }
+        assertEquals("<a:string; b:int> Js.t -> string", sig.asText(OCL));
+        assertEquals("{. a:string, b:int } => string", sig.asText(RML));
+    }
 
-  public void testOcamJsJsObject() {
-    ORSignature sig =
-        makeSignature(OCL, "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t");
+    public void testOcamJsJsObject() {
+        PsiSignature sig =
+                makeSignature(OCL, "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t");
 
-    assertEquals(
-        "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t", sig.asString(OCL));
-    assertEquals("string => {. a:string, b:{. b1:string, b2:string } }", sig.asString(RML));
-  }
+        assertEquals(
+                "string -> < a : string; b : < b1 : string; b2 : string > Js.t > Js.t", sig.asText(OCL));
+        assertEquals("string => {. a:string, b:{. b1:string, b2:string } }", sig.asText(RML));
+    }
 
-  @SuppressWarnings({"SameParameterValue", "ConstantConditions"})
-  @NotNull
-  private ORSignature makeSignature(@NotNull Language lang, String sig) {
-    PsiFileFactory instance = PsiFileFactory.getInstance(getProject());
-    PsiFile psiFile =
-        instance.createFileFromText(
-            "Dummy." + lang.getAssociatedFileType().getDefaultExtension(), lang, "let x:" + sig);
-    System.out.println(DebugUtil.psiToString(psiFile, true, true));
+    @SuppressWarnings({"SameParameterValue", "ConstantConditions"})
+    private @NotNull PsiSignature makeSignature(@NotNull Language lang, String sig) {
+        PsiFileFactory instance = PsiFileFactory.getInstance(getProject());
+        PsiFile psiFile = instance.createFileFromText("Dummy." + lang.getAssociatedFileType().getDefaultExtension(), lang, "let x:" + sig);
+        System.out.println(DebugUtil.psiToString(psiFile, true, true));
 
-    Collection<PsiSignatureItem> items =
-        PsiTreeUtil.findChildrenOfType(psiFile, PsiSignatureItem.class);
-    return new ORSignature(RmlLanguage.INSTANCE, items);
-  }
+        return PsiTreeUtil.findChildOfType(psiFile, PsiSignature.class);
+    }
 }

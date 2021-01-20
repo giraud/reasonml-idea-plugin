@@ -5,7 +5,6 @@ import com.reason.lang.core.psi.*;
 import org.jetbrains.annotations.*;
 
 public class ModuleComponentFqnIndex extends IntStubIndexExtension<PsiModule> {
-
     private static final int VERSION = 1;
     private static final ModuleComponentFqnIndex INSTANCE = new ModuleComponentFqnIndex();
 

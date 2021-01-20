@@ -158,15 +158,15 @@ public class ObjectCompletionProvider {
     }
 
     private static @Nullable PsiType getType(@NotNull PsiLet let, @NotNull QNameFinder qnameFinder, @NotNull PsiFinder psiFinder) {
-        PsiSignature letSignature = let.getPsiSignature();
+        PsiSignature letSignature = let.getSignature();
         if (letSignature != null) {
-            LOG.debug("Testing let signature", letSignature.getName());
+            LOG.debug("Testing let signature", letSignature.getText());
 
             Set<String> paths = qnameFinder.extractPotentialPaths(let);
             LOG.debug("  Paths found", paths);
 
             GlobalSearchScope scope = GlobalSearchScope.allScope(let.getProject());
-            String signatureName = "." + letSignature.getName();
+            String signatureName = "." + letSignature.getText();
             for (String path : paths) {
                 PsiType type = psiFinder.findTypeFromQn(path + signatureName, scope);
                 if (type != null) {
