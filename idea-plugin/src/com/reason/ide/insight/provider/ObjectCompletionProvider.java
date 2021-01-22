@@ -23,156 +23,159 @@ import java.util.*;
 
 public class ObjectCompletionProvider {
 
-  private static final Log LOG = Log.create("insight.object");
+    private static final Log LOG = Log.create("insight.object");
 
-  private ObjectCompletionProvider() {
-  }
+    private ObjectCompletionProvider() {
+    }
 
-  public static void addCompletions(@NotNull ORTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
-    LOG.debug("OBJECT expression completion");
+    public static void addCompletions(@NotNull ORTypes types, @NotNull PsiElement element, @NotNull CompletionResultSet resultSet) {
+        LOG.debug("OBJECT expression completion");
 
-    Project project = element.getProject();
+        Project project = element.getProject();
 
-    QNameFinder qnameFinder = PsiFinder.getQNameFinder(element.getLanguage());
-    PsiFinder psiFinder = PsiFinder.getInstance(project);
+        QNameFinder qnameFinder = PsiFinder.getQNameFinder(element.getLanguage());
+        PsiFinder psiFinder = PsiFinder.getInstance(project);
 
-    Pair<PsiElement, List<String>> deepPath = extractDeepJsPath(types, element);
-    List<String> jsPath = deepPath.second;
-    PsiElement lSymbol = deepPath.first;
-    String name = lSymbol.getText();
+        Pair<PsiElement, List<String>> deepPath = extractDeepJsPath(types, element);
+        List<String> jsPath = deepPath.second;
+        PsiElement lSymbol = deepPath.first;
+        String name = lSymbol.getText();
 
-    Set<String> potentialPaths = qnameFinder.extractPotentialPaths(lSymbol);
-    LOG.debug("Potential paths", potentialPaths);
+        Set<String> potentialPaths = qnameFinder.extractPotentialPaths(lSymbol);
+        LOG.debug("Potential paths", potentialPaths);
 
-    for (String path : potentialPaths) {
-      PsiLet let = psiFinder.findLetFromQn(path + "." + name);
-      if (let != null) {
-        LOG.debug("  -> Found", let);
+        for (String path : potentialPaths) {
+            PsiLet let = psiFinder.findLetFromQn(path + "." + name);
+            if (let != null) {
+                LOG.debug("  -> Found", let);
 
-        Collection<PsiObjectField> fields = null;
-        if (let.isJsObject()) {
-          PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), PsiJsObject.class);
-          fields = getJsObjectFieldsForPath(jsObject, jsPath, psiFinder, qnameFinder);
-        } else {
-          PsiType type = getType(let, qnameFinder, psiFinder);
-          if (type != null && type.isJsObject()) {
-            PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(type.getBinding(), PsiJsObject.class);
-            fields = getJsObjectFieldsForPath(jsObject, jsPath, psiFinder, qnameFinder);
-          }
-        }
+                Collection<PsiObjectField> fields = null;
+                if (let.isJsObject()) {
+                    PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(let.getBinding(), PsiJsObject.class);
+                    fields = getJsObjectFieldsForPath(jsObject, jsPath, psiFinder, qnameFinder);
+                } else {
+                    PsiType type = getType(let, qnameFinder, psiFinder);
+                    if (type != null && type.isJsObject()) {
+                        PsiJsObject jsObject = ORUtil.findImmediateFirstChildOfClass(type.getBinding(), PsiJsObject.class);
+                        fields = getJsObjectFieldsForPath(jsObject, jsPath, psiFinder, qnameFinder);
+                    }
+                }
 
-        if (fields == null) {
-          LOG.debug("  -> Not a js object");
-        } else {
-          for (PsiObjectField field : fields) {
-            String fieldName = field.getName();
-            if (fieldName != null) {
-              resultSet.addElement(LookupElementBuilder.create(fieldName)
-                                       .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
+                if (fields == null) {
+                    LOG.debug("  -> Not a js object");
+                } else {
+                    for (PsiObjectField field : fields) {
+                        String fieldName = field.getName();
+                        if (fieldName != null) {
+                            resultSet.addElement(LookupElementBuilder.create(fieldName)
+                                    .withIcon(PsiIconUtil.getProvidersIcon(field, 0)));
+                        }
+                    }
+                }
+
+                return;
             }
-          }
         }
 
-        return;
-      }
+        LOG.debug("  -> Nothing found");
     }
 
-    LOG.debug("  -> Nothing found");
-  }
+    public static @NotNull Collection<PsiObjectField> getJsObjectFieldsForPath(@Nullable PsiJsObject root, @NotNull List<String> path,
+                                                                               @NotNull PsiFinder psiFinder, QNameFinder qnameFinder) {
+        if (root != null) {
+            PsiJsObject currentJsObject = root;
+            int found = 0;
 
-  public static @NotNull Collection<PsiObjectField> getJsObjectFieldsForPath(@Nullable PsiJsObject root, @NotNull List<String> path,
-                                                                             @NotNull PsiFinder psiFinder, QNameFinder qnameFinder) {
-    if (root != null) {
-      PsiJsObject currentJsObject = root;
-      int found = 0;
-
-      for (String fieldName : path) {
-        PsiObjectField field = currentJsObject.getField(fieldName);
-        if (field != null) {
-          PsiJsObject nextJsObject = ORUtil.findImmediateFirstChildOfClass(field, PsiJsObject.class);
-          if (nextJsObject == null) {
-            // Must be an object defined outside
-            PsiElement value = field.getValue();
-            PsiElement childValue = findLet(value, qnameFinder, psiFinder);
-            if (childValue instanceof PsiJsObject) {
-              nextJsObject = (PsiJsObject) childValue;
-            } else {
-              break;
+            for (String fieldName : path) {
+                PsiObjectField field = currentJsObject.getField(fieldName);
+                if (field != null) {
+                    PsiJsObject nextJsObject = ORUtil.findImmediateFirstChildOfClass(field, PsiJsObject.class);
+                    if (nextJsObject == null) {
+                        // Must be an object defined outside
+                        PsiElement value = field.getValue();
+                        PsiElement childValue = findLet(value, qnameFinder, psiFinder);
+                        if (childValue instanceof PsiJsObject) {
+                            nextJsObject = (PsiJsObject) childValue;
+                        } else {
+                            break;
+                        }
+                    }
+                    currentJsObject = nextJsObject;
+                    found++;
+                } else {
+                    break;
+                }
             }
-          }
-          currentJsObject = nextJsObject;
-          found++;
-        } else {
-          break;
+
+            if (found == path.size()) {
+                return currentJsObject.getFields();
+            }
         }
-      }
 
-      if (found == path.size()) {
-        return currentJsObject.getFields();
-      }
+        return Collections.emptyList();
     }
 
-    return Collections.emptyList();
-  }
+    private static @Nullable PsiElement findLet(@Nullable PsiElement fieldValue, @NotNull QNameFinder qnameFinder, @NotNull PsiFinder psiFinder) {
+        String name = ORUtil.getLongIdent(fieldValue);
 
-  private static @Nullable PsiElement findLet(@Nullable PsiElement fieldValue, @NotNull QNameFinder qnameFinder, @NotNull PsiFinder psiFinder) {
-    String name = ORUtil.getLongIdent(fieldValue);
-
-    Set<String> paths = qnameFinder.extractPotentialPaths(fieldValue);
-    for (String path : paths) {
-      PsiLet let = psiFinder.findLetFromQn((path.isEmpty() ? "" : path + ".") + name);
-      if (let != null) {
-        // val ?
-        PsiLetBinding binding = let.getBinding();
-        return binding == null ? null : binding.getFirstChild();
-      }
-    }
-
-    return null;
-  }
-
-  private static @NotNull Pair<PsiElement, List<String>> extractDeepJsPath(@NotNull ORTypes types, @NotNull PsiElement element) {
-    List<String> jsPath = new ArrayList<>();
-
-    PsiElement lastElement = element;
-    PsiElement previousLeaf = PsiTreeUtil.prevVisibleLeaf(element);
-    if (previousLeaf != null) {
-      IElementType previousElementType = previousLeaf.getNode().getElementType();
-      while (previousLeaf != null && previousElementType == types.LIDENT || previousElementType == types.SHARPSHARP) {
-        if (previousElementType == types.LIDENT) {
-          jsPath.add(previousLeaf.getText());
-          lastElement = previousLeaf.getParent();
+        Set<String> paths = qnameFinder.extractPotentialPaths(fieldValue);
+        for (String path : paths) {
+            PsiLet let = psiFinder.findLetFromQn((path.isEmpty() ? "" : path + ".") + name);
+            if (let != null) {
+                // val ?
+                PsiLetBinding binding = let.getBinding();
+                return binding == null ? null : binding.getFirstChild();
+            }
         }
-        previousLeaf = PsiTreeUtil.prevLeaf(previousLeaf);
-        previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();
-      }
 
-      Collections.reverse(jsPath);
+        return null;
     }
 
-    jsPath.remove(0);
-    return Pair.create(lastElement, jsPath);
-  }
+    private static @NotNull Pair<PsiElement, List<String>> extractDeepJsPath(@NotNull ORTypes types, @NotNull PsiElement element) {
+        List<String> jsPath = new ArrayList<>();
 
-  private static @Nullable PsiType getType(@NotNull PsiLet let, @NotNull QNameFinder qnameFinder, @NotNull PsiFinder psiFinder) {
-    PsiSignature letSignature = let.getPsiSignature();
-    if (letSignature != null) {
-      LOG.debug("Testing let signature", letSignature.getName());
+        PsiElement lastElement = element;
+        PsiElement previousLeaf = PsiTreeUtil.prevVisibleLeaf(element);
+        if (previousLeaf != null) {
+            IElementType previousElementType = previousLeaf.getNode().getElementType();
+            while (previousLeaf != null && previousElementType == types.LIDENT || previousElementType == types.SHARPSHARP) {
+                if (previousElementType == types.LIDENT) {
+                    jsPath.add(previousLeaf.getText());
+                    lastElement = previousLeaf.getParent();
+                }
+                previousLeaf = PsiTreeUtil.prevLeaf(previousLeaf);
+                previousElementType = previousLeaf == null ? null : previousLeaf.getNode().getElementType();
+            }
 
-      Set<String> paths = qnameFinder.extractPotentialPaths(let);
-      LOG.debug("  Paths found", paths);
-
-      GlobalSearchScope scope = GlobalSearchScope.allScope(let.getProject());
-      String signatureName = "." + letSignature.getName();
-      for (String path : paths) {
-        PsiType type = psiFinder.findTypeFromQn(path + signatureName, scope);
-        if (type != null) {
-          LOG.debug("  -> Found", type);
-          return type;
+            Collections.reverse(jsPath);
         }
-      }
+
+        if (!jsPath.isEmpty()) {
+            jsPath.remove(0);
+        }
+
+        return Pair.create(lastElement, jsPath);
     }
 
-    return null;
-  }
+    private static @Nullable PsiType getType(@NotNull PsiLet let, @NotNull QNameFinder qnameFinder, @NotNull PsiFinder psiFinder) {
+        PsiSignature letSignature = let.getPsiSignature();
+        if (letSignature != null) {
+            LOG.debug("Testing let signature", letSignature.getName());
+
+            Set<String> paths = qnameFinder.extractPotentialPaths(let);
+            LOG.debug("  Paths found", paths);
+
+            GlobalSearchScope scope = GlobalSearchScope.allScope(let.getProject());
+            String signatureName = "." + letSignature.getName();
+            for (String path : paths) {
+                PsiType type = psiFinder.findTypeFromQn(path + signatureName, scope);
+                if (type != null) {
+                    LOG.debug("  -> Found", type);
+                    return type;
+                }
+            }
+        }
+
+        return null;
+    }
 }
