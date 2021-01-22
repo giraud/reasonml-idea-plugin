@@ -7,6 +7,7 @@ import com.intellij.openapi.command.undo.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.util.*;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.*;
@@ -33,10 +34,18 @@ public class ReformatOnSave {
             if (psiFile != null && psiFile.isWritable()) {
                 VirtualFile virtualFile = psiFile.getVirtualFile();
                 if (virtualFile != null && virtualFile.exists()) {
+                    ProjectFileIndex projectFileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+                    if (!projectFileIndex.isInContent(virtualFile)) {
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("File " + virtualFile + " not in content root of project " + project + ", skip");
+                        }
+                        return;
+                    }
+
                     Integer psiCount = psiFile.getUserData(REFORMAT_COUNT);
                     int count = psiCount == null ? 1 : psiCount;
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Before document saving (" + project.getName() + ", autoSave=true, count=" + count + "): " + psiFile.getVirtualFile());
+                        LOG.debug("Before document saving (" + project.getName() + ", autoSave=true, count=" + count + "): " + virtualFile);
                     }
                     if (count > 2) {
                         LOG.warn(" -> Too many saves (" + count + "), auto reformat is cancelled");

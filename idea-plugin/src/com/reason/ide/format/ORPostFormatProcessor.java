@@ -76,8 +76,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         return rangeToReformat;
     }
 
-    @Nullable
-    public static FormatterProcessor getFormatterProcessor(PsiFile file) {
+    public static @Nullable FormatterProcessor getFormatterProcessor(PsiFile file) {
         FileType fileType = file.getFileType();
         if (FileHelper.isReason(fileType)) {
             return new RmlFormatProcessor(file);
@@ -103,8 +102,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         }
 
         @Override
-        public @Nullable
-        String apply(@NotNull String textToFormat) {
+        public @Nullable String apply(@NotNull String textToFormat) {
             if (ORSettings.getInstance(m_project).isBsEnabled() && m_file.exists()) {
                 LOG.trace("Apply ReasonML formatter, is interface", m_isInterface);
                 RefmtProcess process = RefmtProcess.getInstance(m_project);
@@ -119,8 +117,7 @@ public class ORPostFormatProcessor implements PostFormatProcessor {
         }
 
         @Override
-        public @Nullable
-        String apply(@NotNull String textToFormat) {
+        public @Nullable String apply(@NotNull String textToFormat) {
             // Too many constraints on the Rescript tooling for now.
             // see https://github.com/rescript-lang/rescript-compiler/issues/4838
             // and https://github.com/rescript-lang/rescript-compiler/issues/4846
