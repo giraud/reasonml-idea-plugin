@@ -1,6 +1,7 @@
 package com.reason.bs;
 
 import com.intellij.openapi.components.*;
+import com.intellij.openapi.editor.ex.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
 import com.reason.*;
@@ -68,9 +69,11 @@ public class RefmtProcess {
                                     }
                                     msgBuffer.append(line);
                                 });
-                String newText = msgBuffer.toString().trim();
+                String newText = msgBuffer.toString();
                 if (!code.isEmpty() && !newText.isEmpty()) { // additional protection
-                    return newText;
+                    boolean ensureNewLineAtEOF = EditorSettingsExternalizable.getInstance().isEnsureNewLineAtEOF();
+                    boolean addNewLine = ensureNewLineAtEOF && newText.charAt(newText.length() - 1) != '\n';
+                    return addNewLine ? newText + '\n' : newText;
                 }
             }
         } catch (IOException | RuntimeException e) {
