@@ -1,5 +1,6 @@
 package com.reason.bs;
 
+import com.intellij.codeInsight.daemon.*;
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.process.*;
@@ -21,23 +22,17 @@ import static com.intellij.notification.NotificationType.*;
 import static com.reason.bs.BsPlatform.*;
 
 public final class BsProcess implements CompilerProcess {
-
-    private static final Pattern BS_VERSION_REGEXP =
-            Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
-
-    private final @NotNull Project m_project;
-
-    @Nullable
-    private BsProcessHandler m_bsb;
+    private static final Pattern BS_VERSION_REGEXP = Pattern.compile(".*OCaml[:]?(\\d\\.\\d+.\\d+).+\\)");
 
     private final AtomicBoolean m_started = new AtomicBoolean(false);
     private final AtomicBoolean m_restartNeeded = new AtomicBoolean(false);
+    private final @NotNull Project m_project;
+    private @Nullable KillableProcessHandler m_bsb;
 
     public BsProcess(@NotNull Project project) {
         this.m_project = project;
         // no file is active yet, default working directory to the top-level bsconfig.json file
-        VirtualFile firstBsContentRoot =
-                ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
+        VirtualFile firstBsContentRoot = ORProjectManager.findFirstBsConfigurationFile(project).orElse(null);
         create(firstBsContentRoot);
     }
 
@@ -69,9 +64,7 @@ public final class BsProcess implements CompilerProcess {
             if (cliType instanceof CliType.Bs) {
                 return createProcessHandler(source, (CliType.Bs) cliType, onProcessTerminated);
             } else {
-                Notifications.Bus.notify(
-                        new ORNotification(
-                                "Bsb", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
+                Notifications.Bus.notify(new ORNotification("Bsb", "Invalid commandline type (" + cliType.getCompilerType() + ")", WARNING));
             }
         } catch (ExecutionException e) {
             ORNotification.notifyError("Bsb", "Execution exception", e.getMessage(), null);
@@ -85,12 +78,15 @@ public final class BsProcess implements CompilerProcess {
         killIt();
         GeneralCommandLine cli = getGeneralCommandLine(sourceFile, cliType);
         if (cli != null) {
-            m_bsb = new BsProcessHandler(cli, onProcessTerminated);
-            // if (m_outputListener == null) {
-            addListener(new BsOutputListener(this));
-            // } else {
-            //    m_bsb.addRawProcessListener(m_outputListener);
-            // }
+            m_bsb = new BsColoredProcessHandler(cli, () -> {
+                terminate();
+                if (onProcessTerminated != null) {
+                    onProcessTerminated.run();
+                }
+
+                // When build is done, we need to refresh editors to be notified of the latest modifications
+                DaemonCodeAnalyzer.getInstance(m_project).restart();
+            });
         }
         return m_bsb;
     }
@@ -99,13 +95,6 @@ public final class BsProcess implements CompilerProcess {
         if (m_bsb != null) {
             m_bsb.killProcess();
             m_bsb = null;
-        }
-    }
-
-    private void addListener(RawProcessListener outputListener) {
-        // m_outputListener = outputListener;
-        if (m_bsb != null) {
-            m_bsb.addRawProcessListener(outputListener);
         }
     }
 
@@ -157,29 +146,26 @@ public final class BsProcess implements CompilerProcess {
     @Nullable
     public String getOCamlVersion(@NotNull VirtualFile sourceFile) {
         return findBscExecutable(m_project, sourceFile)
-                .map(
-                        bscFile -> {
-                            String bscExe = bscFile.getPath();
-                            Process p = null;
-                            try {
-                                p = Runtime.getRuntime().exec(bscExe + " -version");
-                                p.waitFor();
-                                BufferedReader reader =
-                                        new BufferedReader(new InputStreamReader(p.getInputStream()));
-                                return ocamlVersionExtractor(reader.readLine());
-                            } catch (InterruptedException | IOException e) {
-                                return null;
-                            } finally {
-                                if (p != null) {
-                                    p.destroy();
-                                }
-                            }
-                        })
+                .map(bscFile -> {
+                    String bscExe = bscFile.getPath();
+                    Process p = null;
+                    try {
+                        p = Runtime.getRuntime().exec(bscExe + " -version");
+                        p.waitFor();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        return ocamlVersionExtractor(reader.readLine());
+                    } catch (InterruptedException | IOException e) {
+                        return null;
+                    } finally {
+                        if (p != null) {
+                            p.destroy();
+                        }
+                    }
+                })
                 .orElse(null);
     }
 
-    @Nullable
-    static String ocamlVersionExtractor(@Nullable String line) {
+    static @Nullable String ocamlVersionExtractor(@Nullable String line) {
         if (line != null) {
             Matcher matcher = BS_VERSION_REGEXP.matcher(line);
             if (matcher.matches()) {
