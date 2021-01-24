@@ -6,9 +6,9 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <depends optional="true" config-file="java-deps.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="META-INF/java-deps.xml">com.intellij.modules.java</depends>
 
-    <depends optional="true" config-file="js-deps.xml">JavaScript</depends>
+    <depends optional="true" config-file="META-INF/js-deps.xml">JavaScript</depends>
 
     <actions>
         <!-- CONSOLE ACTIONS - BUCKLESCRIPT -->

@@ -1,4 +1,3 @@
 rootProject.name = 'reasonml-idea-plugin'
 
-include 'idea-plugin'
 include 'jps-plugin'
