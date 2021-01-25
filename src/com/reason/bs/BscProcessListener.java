@@ -11,21 +11,24 @@ import java.util.List;
 
 public class BscProcessListener implements ProcessListener {
 
-    private static final Log LOG = Log.create("bsc.process");
+    private static final Log LOG = Log.create("process.bsc.listener");
 
     final BsLineProcessor m_lineProcessor = new BsLineProcessor(LOG);
     final StringBuilder m_builder = new StringBuilder();
 
     @Override
     public void startNotified(@NotNull ProcessEvent event) {
-        LOG.trace("start " + event);
+        LOG.trace("start", event);
     }
 
     @Override
-    public void processTerminated(@NotNull ProcessEvent event) {}
+    public void processTerminated(@NotNull ProcessEvent event) {
+        LOG.trace("end", event);
+    }
 
     @Override
-    public void processWillTerminate(@NotNull ProcessEvent event, boolean willBeDestroyed) {}
+    public void processWillTerminate(@NotNull ProcessEvent event, boolean willBeDestroyed) {
+    }
 
     @Override
     public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {

@@ -22,22 +22,29 @@ import org.jetbrains.coverage.gnu.trove.*;
 
 import javax.swing.*;
 import java.util.*;
+import java.util.concurrent.atomic.*;
 
 public class BsCompilerImpl implements BsCompiler {
     private static final Log LOG = Log.create("compiler.bs");
 
     private final @NotNull Project m_project;
     private final Map<String, BsConfig> m_configs = new THashMap<>();
+    private final AtomicBoolean m_refreshNinjaIsNeeded = new AtomicBoolean(true);
 
     private @Nullable Boolean m_disabled = null; // Never call directly, use isDisabled()
+    private @NotNull Ninja m_ninja = new Ninja(null);
 
     private BsCompilerImpl(@NotNull Project project) {
         m_project = project;
     }
 
-    @NotNull
     @Override
-    public String getNamespace(@NotNull VirtualFile sourceFile) {
+    public void refreshNinjaBuild() {
+        m_refreshNinjaIsNeeded.compareAndSet(false, true);
+    }
+
+    @Override
+    public @NotNull String getNamespace(@NotNull VirtualFile sourceFile) {
         Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
         if (bsConfigFile.isPresent()) {
             BsConfig bsConfig = getOrRefreshBsConfig(bsConfigFile.get());
@@ -59,10 +66,7 @@ public class BsCompilerImpl implements BsCompiler {
 
     @Override
     public void refresh(@NotNull VirtualFile bsConfigFile) {
-        VirtualFile file =
-                bsConfigFile.isDirectory()
-                        ? bsConfigFile.findChild(BsConstants.BS_CONFIG_FILENAME)
-                        : bsConfigFile;
+        VirtualFile file = bsConfigFile.isDirectory() ? bsConfigFile.findChild(BsConstants.BS_CONFIG_FILENAME) : bsConfigFile;
         if (file != null) {
             BsConfig updatedConfig = BsConfigReader.read(file);
             m_configs.put(file.getCanonicalPath(), updatedConfig);
@@ -70,8 +74,7 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    public void runDefault(
-            @NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
+    public void runDefault(@NotNull VirtualFile file, @Nullable ProcessTerminated onProcessTerminated) {
         run(file, CliType.Bs.MAKE, onProcessTerminated);
     }
 
@@ -140,13 +143,7 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    @Nullable
-    public String convert(
-            @NotNull VirtualFile virtualFile,
-            boolean isInterface,
-            @NotNull String fromFormat,
-            @NotNull String toFormat,
-            @NotNull Document document) {
+    public @Nullable String convert(@NotNull VirtualFile virtualFile, boolean isInterface, @NotNull String fromFormat, @NotNull String toFormat, @NotNull Document document) {
         RefmtProcess refmt = RefmtProcess.getInstance(m_project);
         String oldText = document.getText();
         String newText = refmt.convert(virtualFile, isInterface, fromFormat, toFormat, oldText);
@@ -155,27 +152,22 @@ public class BsCompilerImpl implements BsCompiler {
     }
 
     @Override
-    @NotNull
-    public Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
-        String content = null;
-
-        if (contentRoot != null) {
-            VirtualFile ninja = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
-            if (ninja != null) {
-                content = FileUtil.readFileContent(ninja);
+    public @NotNull Ninja readNinjaBuild(@Nullable VirtualFile contentRoot) {
+        if (m_refreshNinjaIsNeeded.get() && contentRoot != null) {
+            VirtualFile ninjaFile = contentRoot.findFileByRelativePath("lib/bs/build.ninja");
+            if (ninjaFile != null) {
+                m_ninja = new Ninja(FileUtil.readFileContent(ninjaFile));
             }
         }
 
-        return new Ninja(content);
+        return m_ninja;
     }
 
-    @Nullable
     @Override
-    public ConsoleView getConsoleView() {
+    public @Nullable ConsoleView getConsoleView() {
         ORToolWindowProvider windowProvider = ORToolWindowProvider.getInstance(m_project);
         ToolWindow bsToolWindow = windowProvider.getBsToolWindow();
-        Content windowContent =
-                bsToolWindow == null ? null : bsToolWindow.getContentManager().getContent(0);
+        Content windowContent = bsToolWindow == null ? null : bsToolWindow.getContentManager().getContent(0);
         if (windowContent == null) {
             return null;
         }
@@ -202,8 +194,7 @@ public class BsCompilerImpl implements BsCompiler {
             m_disabled = Boolean.getBoolean("reasonBsbDisabled");
             if (m_disabled) {
                 // Possible but you should NEVER do that
-                Notifications.Bus.notify(
-                        new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
+                Notifications.Bus.notify(new ORNotification("Bsb", "Bucklescript is disabled", NotificationType.WARNING));
             }
         }
 

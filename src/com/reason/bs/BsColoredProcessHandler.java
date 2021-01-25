@@ -27,17 +27,7 @@ class BsColoredProcessHandler extends KillableProcessHandler implements AnsiEsca
 
     @Override
     public final void notifyTextAvailable(@NotNull final String text, @NotNull final Key outputType) {
-        m_ansiEscapeDecoder.escapeText(
-                text,
-                outputType,
-                (chunk, attributes) -> {
-                    if (":".equals(chunk)) {
-                        // Suppose this is the separator in output: C:\xxx\xxx\File.re : 1:13-14
-                        super.notifyTextAvailable(" ", attributes);
-                    } else {
-                        super.notifyTextAvailable(chunk, attributes);
-                    }
-                });
+        m_ansiEscapeDecoder.escapeText(text, outputType, super::notifyTextAvailable);
     }
 
     @Override

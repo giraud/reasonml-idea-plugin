@@ -17,37 +17,38 @@ import java.util.regex.Pattern;
  * Line processor is a state machine.
  */
 public class BsLineProcessor {
-
-    private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n");
-
+    private static final Pattern FILE_LOCATION = Pattern.compile("File \"(.+)\", line (\\d+), characters (\\d+)-(\\d+):\n?");
     private static final Pattern POSITIONS = Pattern.compile("[\\s:]\\d+:\\d+(-\\d+(:\\d+)?)?$");
 
     private final Log m_log;
     private final List<OutputInfo> m_bsbInfo = new ArrayList<>();
 
-    public BsLineProcessor(Log log) {
-        m_log = log;
-    }
-
-    enum BuildStatus {
-        unknown, // warning steps
-        warningDetected,
-        warningLinePos,
-        warningSourceExtract,
-        warningMessage, // error steps
-        errorDetected,
-        errorLinePos,
-        errorSourceExtract,
-        errorMessage, // syntax error
-        syntaxError
+    public @NotNull List<OutputInfo> getInfo() {
+        return m_bsbInfo;
     }
 
     private @Nullable OutputInfo m_latestInfo = new OutputInfo();
     private @NotNull BuildStatus m_status = BuildStatus.unknown;
     private @NotNull String m_previousText = "";
 
-    public @NotNull List<OutputInfo> getInfo() {
-        return m_bsbInfo;
+    enum BuildStatus {
+        unknown, //
+        // warning steps
+        warningDetected,
+        warningLinePos,
+        warningSourceExtract,
+        warningMessage, //
+        // error steps
+        errorDetected,
+        errorLinePos,
+        errorSourceExtract,
+        errorMessage, //
+        // syntax error
+        syntaxError
+    }
+
+    public BsLineProcessor(Log log) {
+        m_log = log;
     }
 
     public void onRawTextAvailable(@NotNull String text) {

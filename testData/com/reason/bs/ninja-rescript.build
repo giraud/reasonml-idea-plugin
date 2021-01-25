@@ -1,0 +1,14 @@
+rescript = 1
+g_finger := U:\reason\projects\bs-basic\node_modules\reason-react\lib\ocaml\.ninja_log
+rule astj
+  command = "U:\reason\projects\bs-basic\node_modules\bs-platform\win32\bsc.exe"  -bs-v 8.4.0 -bs-jsx 3  -absname -bs-ast -o $out $i
+o src\Foo.ast : astj ..\..\src\Foo.re
+rule deps
+  command = "U:\reason\projects\bs-basic\node_modules\bs-platform\win32\bsb_helper.exe" -hash 20de222cbd4694f33717b5139235334c $in
+  restat = 1
+o src\Foo.d : deps src\Foo.ast
+rule mij
+  command = "U:\reason\projects\bs-basic\node_modules\bs-platform\win32\bsc.exe" -I src -I "U:\reason\projects\bs-basic\node_modules\reason-react\lib\ocaml"   -bs-package-name bs-basic -bs-package-output commonjs:lib\js\$in_d:.js -bs-v $g_finger $i
+  dyndep = 1
+  restat = 1
+o src\Foo.cmj src\Foo.cmi ..\js\src\Foo.js : mij src\Foo.ast

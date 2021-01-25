@@ -14,6 +14,7 @@ import com.reason.lang.core.ORUtil;
 import com.reason.lang.core.psi.PsiQualifiedElement;
 import com.reason.lang.core.psi.impl.PsiLowerIdentifier;
 import com.reason.lang.core.psi.impl.PsiUpperIdentifier;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -22,56 +23,53 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ORBasePlatformTestCase extends BasePlatformTestCase {
 
-  @NotNull
-  @SuppressWarnings("UnusedReturnValue")
-  protected FileBase configureCode(@NotNull String fileName, @NotNull String code) {
-    PsiFile file = myFixture.configureByText(fileName, code);
-    System.out.println("» " + fileName + " " + this.getClass());
-    System.out.println(DebugUtil.psiToString(file, false, true));
+    @NotNull
+    @SuppressWarnings("UnusedReturnValue")
+    protected FileBase configureCode(@NotNull String fileName, @NotNull String code) {
+        PsiFile file = myFixture.configureByText(fileName, code);
+        System.out.println("» " + fileName + " " + this.getClass());
+        System.out.println(DebugUtil.psiToString(file, false, true));
 
-    return (FileBase) file;
-  }
+        return (FileBase) file;
+    }
 
-  protected PsiElement getNameIdentifier(PsiQualifiedElement e) {
-    return ORUtil.findImmediateFirstChildOfAnyClass(
-        e, PsiUpperIdentifier.class, PsiLowerIdentifier.class);
-  }
+    protected PsiElement getNameIdentifier(PsiQualifiedElement e) {
+        return ORUtil.findImmediateFirstChildOfAnyClass(e, PsiUpperIdentifier.class, PsiLowerIdentifier.class);
+    }
 
-  protected PsiElement getFromCaret(PsiFile f) {
-    return f.findElementAt(myFixture.getCaretOffset() - 1);
-  }
+    protected PsiElement getFromCaret(PsiFile f) {
+        return f.findElementAt(myFixture.getCaretOffset() - 1);
+    }
 
-  @NotNull
-  protected String toJson(@NotNull String value) {
-    return value.replaceAll("'", "\"").replaceAll("@", "\n");
-  }
+    protected @NotNull String toJson(@NotNull String value) {
+        return value.replaceAll("'", "\"").replaceAll("@", "\n");
+    }
 
-  protected String loadJson(@NotNull String filename) throws IOException {
-    return FileUtil.loadFile(new File(getTestDataPath(), filename), CharsetToolkit.UTF8, true)
-        .trim();
-  }
+    protected String loadFile(@NotNull String filename) throws IOException {
+        return FileUtil.loadFile(new File(getTestDataPath(), filename), CharsetToolkit.UTF8, true).trim();
+    }
 
-  protected String getQuickDoc(FileBase file, Language lang) {
-    DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
-    PsiElement resolvedElement = myFixture.getElementAtCaret();
-    PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
-    return docProvider.getQuickNavigateInfo(resolvedElement, element);
-  }
+    protected String getQuickDoc(FileBase file, Language lang) {
+        DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
+        PsiElement resolvedElement = myFixture.getElementAtCaret();
+        PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
+        return docProvider.getQuickNavigateInfo(resolvedElement, element);
+    }
 
-  protected String getDocForElement(FileBase file, Language lang, PsiElement resolvedElement) {
-    DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
-    PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
-    return docProvider.generateDoc(resolvedElement, element);
-  }
+    protected String getDocForElement(FileBase file, Language lang, PsiElement resolvedElement) {
+        DocumentationProvider docProvider = LanguageDocumentation.INSTANCE.forLanguage(lang);
+        PsiElement element = file.findElementAt(myFixture.getCaretOffset() - 1);
+        return docProvider.generateDoc(resolvedElement, element);
+    }
 
-  protected String getDoc(FileBase file, Language lang) {
-    PsiElement resolvedElement = myFixture.getElementAtCaret();
-    return getDocForElement(file, lang, resolvedElement);
-  }
+    protected String getDoc(FileBase file, Language lang) {
+        PsiElement resolvedElement = myFixture.getElementAtCaret();
+        return getDocForElement(file, lang, resolvedElement);
+    }
 
-  protected Set<String> makePaths(String... values) {
-    Set<String> paths = new HashSet<>();
-    Collections.addAll(paths, values);
-    return paths;
-  }
+    protected Set<String> makePaths(String... values) {
+        Set<String> paths = new HashSet<>();
+        Collections.addAll(paths, values);
+        return paths;
+    }
 }

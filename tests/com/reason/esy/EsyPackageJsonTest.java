@@ -16,7 +16,7 @@ public class EsyPackageJsonTest extends ORBasePlatformTestCase {
 
   public void testIsEsyPackageJson() throws IOException {
     String packageJsonFilename = EsyPackageJsonFileType.getDefaultFilename();
-    String mockJson = loadJson(packageJsonFilename);
+    String mockJson = loadFile(packageJsonFilename);
     MockVirtualFile mockVirtualFile = MockVirtualFile.file(packageJsonFilename);
     mockVirtualFile.setText(mockJson);
     assertTrue(EsyPackageJson.isEsyPackageJson(mockVirtualFile));

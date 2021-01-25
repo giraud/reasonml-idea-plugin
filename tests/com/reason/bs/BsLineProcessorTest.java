@@ -8,8 +8,9 @@ import com.reason.ide.annotations.OutputInfo;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.regex.*;
 
-public class BsOutputListenerTest {
+public class BsLineProcessorTest {
 
   @Test
   public void testWarningMessage() {
@@ -52,7 +53,7 @@ public class BsOutputListenerTest {
   public void testSyntaxError() {
     String[] output =
         new String[] { //
-          "File \"C:\\sources\\File.re\", line 38, characters 2-108:\n", // ZZZ OFFSET
+          "File \"C:\\sources\\File.re\", line 38, characters 2-108:",
           "Error: SyntaxError in block\n",
           "\n",
           "  We've found a bug for you!\n",

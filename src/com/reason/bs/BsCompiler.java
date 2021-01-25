@@ -17,4 +17,6 @@ public interface BsCompiler extends Compiler {
 
   @NotNull
   Ninja readNinjaBuild(@Nullable VirtualFile contentRoot);
+
+  void refreshNinjaBuild();
 }

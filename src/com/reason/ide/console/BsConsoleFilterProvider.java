@@ -6,9 +6,8 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 public class BsConsoleFilterProvider implements ConsoleFilterProvider {
-  @NotNull
-  @Override
-  public Filter @NotNull [] getDefaultFilters(@NotNull Project project) {
-    return new Filter[] {new BsConsoleFilter(project)};
-  }
+    @Override
+    public Filter @NotNull [] getDefaultFilters(@NotNull Project project) {
+        return new Filter[]{new BsConsoleFilter(project)};
+    }
 }

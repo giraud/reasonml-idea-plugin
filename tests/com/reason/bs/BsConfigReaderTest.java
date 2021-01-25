@@ -24,7 +24,7 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
   }
 
   public void test_GHIssue214() throws IOException {
-    BsConfig bsConf = BsConfigReader.parse(loadJson("issue_214.json"));
+    BsConfig bsConf = BsConfigReader.parse(loadFile("issue_214.json"));
     assertNotNull(bsConf);
   }
 
@@ -58,17 +58,17 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
   }
 
   public void testJsonWithComment() throws IOException {
-    BsConfig bsConf = BsConfigReader.parse(loadJson("comments.json"));
+    BsConfig bsConf = BsConfigReader.parse(loadFile("comments.json"));
     assertEquals("comments", bsConf.getName());
   }
 
   public void testBsPlatform() throws IOException {
-    BsConfig bsConfig = BsConfigReader.parse(loadJson("bsplatform.json"));
+    BsConfig bsConfig = BsConfigReader.parse(loadFile("bsplatform.json"));
     assertEquals("bs-platform", bsConfig.getName());
   }
 
   public void testSourcesAsString() throws IOException {
-    BsConfig bsConfig = BsConfigReader.parse(loadJson("src_string.json"));
+    BsConfig bsConfig = BsConfigReader.parse(loadFile("src_string.json"));
 
     Set<String> sources = bsConfig.getSources();
     assertSize(1, sources);
@@ -76,7 +76,7 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
   }
 
   public void testSourcesAsSourceItem() throws IOException {
-    BsConfig bsConfig = BsConfigReader.parse(loadJson("src_object.json"));
+    BsConfig bsConfig = BsConfigReader.parse(loadFile("src_object.json"));
 
     Set<String> sources = bsConfig.getSources();
     assertSize(1, sources);
@@ -84,7 +84,7 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
   }
 
   public void testSourcesAsArray() throws IOException {
-    BsConfig bsConfig = BsConfigReader.parse(loadJson("src_array.json"));
+    BsConfig bsConfig = BsConfigReader.parse(loadFile("src_array.json"));
 
     Set<String> sources = bsConfig.getSources();
     assertSize(3, sources);
@@ -92,7 +92,7 @@ public class BsConfigReaderTest extends ORBasePlatformTestCase {
   }
 
   public void testDepsRead() throws IOException {
-    BsConfig bsConfig = BsConfigReader.parse(loadJson("deps.json"));
+    BsConfig bsConfig = BsConfigReader.parse(loadFile("deps.json"));
     assertSize(2, bsConfig.getDependencies());
   }
 }
