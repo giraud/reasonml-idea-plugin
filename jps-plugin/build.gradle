@@ -1,9 +1,0 @@
-jar.archiveFileName = "jps-plugin.jar"
-patchPluginXml.enabled = false
-verifyPlugin.enabled = false
-
-intellij {
-    type = platformType
-    version = platformVersion
-    plugins = ['java']
-}
