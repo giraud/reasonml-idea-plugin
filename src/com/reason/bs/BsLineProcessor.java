@@ -29,7 +29,6 @@ public class BsLineProcessor {
 
     private @Nullable OutputInfo m_latestInfo = new OutputInfo();
     private @NotNull BuildStatus m_status = BuildStatus.unknown;
-    private @NotNull String m_previousText = "";
 
     enum BuildStatus {
         unknown, //
@@ -53,6 +52,9 @@ public class BsLineProcessor {
 
     public void onRawTextAvailable(@NotNull String text) {
         String trimmedText = text.trim();
+        if (m_log.isTraceEnabled()) {
+            m_log.trace(trimmedText);
+        }
 
         switch (m_status) {
         /*
@@ -75,7 +77,6 @@ public class BsLineProcessor {
                 break;
             case warningSourceExtract:
             case errorSourceExtract:
-                trimmedText = text.trim();
                 if (m_latestInfo != null && trimmedText.isEmpty()) {
                     m_status = m_latestInfo.isError ? errorMessage : warningMessage;
                 }
@@ -111,11 +112,8 @@ public class BsLineProcessor {
                 } else if (text.startsWith("Error:")) {
                     // It's a one line message
                     m_status = syntaxError;
-                    if (m_previousText.startsWith("File")) {
-                        m_latestInfo = extractExtendedFilePositions(m_previousText);
-                        if (m_latestInfo != null) {
-                            m_latestInfo.message = text.substring(6).trim();
-                        }
+                    if (m_latestInfo != null) {
+                        m_latestInfo.message = text.substring(6).trim();
                     }
                 } else if (trimmedText.startsWith("We've found a bug for you")) {
                     if (m_status != syntaxError) {
@@ -124,21 +122,20 @@ public class BsLineProcessor {
                     }
                 } else if (m_latestInfo != null && trimmedText.startsWith("Hint:")) {
                     m_latestInfo.message += ". " + text.trim();
+                } else if (trimmedText.startsWith("File")) {
+                    m_latestInfo = extractExtendedFilePositions(trimmedText);
                 }
-        }
 
-        m_previousText = text;
+        }
     }
 
     public void reset() {
         m_status = unknown;
         m_latestInfo = null;
-        m_previousText = "";
     }
 
     // File "...path/src/Source.re", line 111, characters 0-3:
-    @Nullable
-    private OutputInfo extractExtendedFilePositions(@Nullable String text) {
+    private @Nullable OutputInfo extractExtendedFilePositions(@Nullable String text) {
         if (text != null) {
             Matcher matcher = FILE_LOCATION.matcher(text);
             if (matcher.matches()) {
@@ -161,8 +158,7 @@ public class BsLineProcessor {
     // "...path/src/Source.re 111:21-112:22" or " ...path/src/Source.re:111:21-112:22"
     // "...path/src/Source.re 111:21-22" or "...path/src/Source.re:111:21-22"
     // "...path/src/Source.re 111:21" or "...path/src/Source.re:111:21"
-    @Nullable
-    private OutputInfo extractFilePositions(@Nullable String text) {
+    private @Nullable OutputInfo extractFilePositions(@Nullable String text) {
         if (text == null) {
             return null;
         }

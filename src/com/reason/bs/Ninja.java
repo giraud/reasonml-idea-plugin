@@ -6,6 +6,8 @@ import java.util.stream.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static java.util.Collections.emptyList;
+
 /**
  * REASON format (8.2.0):
  * ----------------------
@@ -73,19 +75,48 @@ public class Ninja {
         m_bscFlags = readBscFlags(contents);
 
         if (m_isRescriptFormat) {
-            int ruleMijPos = contents.indexOf("rule mij");
-            if (0 < ruleMijPos) {
-                int commandPos = contents.indexOf("command", ruleMijPos);
-                if (0 < commandPos) {
-                    int commandEolPos = contents.indexOf("\n", commandPos);
-                    String command = contents.substring(commandPos + 9, commandEolPos).trim();
-                    String[] tokens = command.split(" ");
-                    List<String> filteredTokens = Arrays.stream(tokens).filter(s -> !s.isEmpty() && !"$g_finger".equals(s) && !"$i".equals(s) && !"-bs-v".equals(s) && !"-bs-package-output".equals(s) && !s.startsWith("commonjs")).collect(Collectors.toList());
-                    filteredTokens.remove(0);
-                    m_args.addAll(filteredTokens);
+            m_args.addAll(extractRuleAstj(contents));
+            m_args.addAll(extractedRuleMij(contents));
+        }
+    }
+
+    private @NotNull List<String> extractRuleAstj(@NotNull String contents) {
+        List<String> filteredTokens = new ArrayList<>();
+
+        int ruleMijPos = contents.indexOf("rule astj");
+        if (0 < ruleMijPos) {
+            int commandPos = contents.indexOf("command", ruleMijPos);
+            if (0 < commandPos) {
+                int commandEolPos = contents.indexOf("\n", commandPos);
+                String command = contents.substring(commandPos + 9, commandEolPos).trim();
+                String[] tokens = command.split(" ");
+
+                for (int i = 0; i < tokens.length; i++) {
+                    String token = tokens[i];
+                    if ("-ppx".equals(token)) {
+                        filteredTokens.add(token);
+                        filteredTokens.add(tokens[i + 1]);
+                    }
                 }
             }
         }
+        return filteredTokens;
+    }
+
+    private @NotNull List<String> extractedRuleMij(@NotNull String contents) {
+        int ruleMijPos = contents.indexOf("rule mij");
+        if (0 < ruleMijPos) {
+            int commandPos = contents.indexOf("command", ruleMijPos);
+            if (0 < commandPos) {
+                int commandEolPos = contents.indexOf("\n", commandPos);
+                String command = contents.substring(commandPos + 9, commandEolPos).trim();
+                String[] tokens = command.split(" ");
+                List<String> filteredTokens = Arrays.stream(tokens).filter(s -> !s.isEmpty() && !"$g_finger".equals(s) && !"$i".equals(s) && !"-bs-v".equals(s) && !"-bs-package-output".equals(s) && !s.startsWith("commonjs")).collect(Collectors.toList());
+                filteredTokens.remove(0);
+                return filteredTokens;
+            }
+        }
+        return emptyList();
     }
 
     public @NotNull List<String> getArgs() {
