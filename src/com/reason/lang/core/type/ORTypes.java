@@ -28,12 +28,12 @@ public abstract class ORTypes {
   public ORCompositeType C_CONSTRAINTS;
   public ORCompositeType C_CONSTRAINT;
   public ORCompositeType C_DECONSTRUCTION;
+  public ORCompositeType C_DEFAULT_VALUE;
   public ORCompositeType C_DIRECTIVE;
   public ORCompositeType C_DO_LOOP;
   public ORCompositeType C_FUN_CALL_PARAMS;
   public ORCompositeType C_FUN_EXPR;
   public ORCompositeType C_FUN_PARAMS;
-  public ORCompositeType C_FUN_PARAM_BINDING;
   public ORCompositeType C_FUN_BODY;
   public ORCompositeType C_FUNCTOR_BINDING;
   public ORCompositeType C_FUNCTOR_CALL;
@@ -89,7 +89,7 @@ public abstract class ORTypes {
   public ORCompositeType C_TRY_HANDLERS;
   public ORCompositeType C_TRY_HANDLER;
   public ORCompositeType C_TYPE_BINDING;
-  public ORCompositeType C_UNKNOWN_EXPR;
+  public ORCompositeType C_DUMMY;
   public ORCompositeType C_UPPER_SYMBOL;
   public ORCompositeType C_VARIANT;
   public ORCompositeType C_VARIANT_CONSTRUCTOR;

@@ -48,7 +48,6 @@ public class NsTypes extends ORTypes {
     C_FUN_CALL_PARAMS = new ORCompositeElementType("C_FUN_CALL_PARAMS", NsLanguage.INSTANCE);
     C_FUN_EXPR = new ORCompositeElementType("C_FUN_EXPR", NsLanguage.INSTANCE);
     C_FUN_PARAMS = new ORCompositeElementType("C_FUN_PARAMS", NsLanguage.INSTANCE);
-    C_FUN_PARAM_BINDING = new ORCompositeElementType("C_FUN_PARAM_BINDING", NsLanguage.INSTANCE);
     C_FUN_BODY = new ORCompositeElementType("C_FUN_BODY", NsLanguage.INSTANCE);
     C_FUNCTOR_BINDING = new ORCompositeElementType("C_FUNCTOR_BINDING", NsLanguage.INSTANCE);
     C_FUNCTOR_CALL = new ORCompositeElementType("C_FUNCTOR_CALL", NsLanguage.INSTANCE);
@@ -99,7 +98,7 @@ public class NsTypes extends ORTypes {
     C_TRY_HANDLERS = new ORCompositeElementType("C_TRY_HANDLERS", NsLanguage.INSTANCE);
     C_TYPE_BINDING = new ORCompositeElementType("C_TYPE_BINDING", NsLanguage.INSTANCE);
     C_UNIT = new ORCompositeElementType("C_UNIT", NsLanguage.INSTANCE);
-    C_UNKNOWN_EXPR = new ORCompositeElementType("C_UNKNOWN_EXPR", NsLanguage.INSTANCE);
+    C_DUMMY = new ORCompositeElementType("C_DUMMY", NsLanguage.INSTANCE);
     C_UPPER_SYMBOL = new ORCompositeElementType("C_UPPER_SYMBOL", NsLanguage.INSTANCE);
     C_VARIANT = new ORCompositeElementType("C_VARIANT", NsLanguage.INSTANCE);
     C_VARIANT_CONSTRUCTOR =

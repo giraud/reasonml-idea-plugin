@@ -1,13 +1,13 @@
 package com.reason.lang.core.psi;
 
-import com.intellij.psi.PsiElement;
-import com.reason.lang.core.signature.ORSignature;
+import com.intellij.psi.*;
+import org.jetbrains.annotations.*;
 
 public interface PsiInferredType extends PsiElement {
+    void setInferredType(@NotNull PsiSignature inferredType);
 
-  void setInferredType(ORSignature inferredType);
+    @Nullable
+    PsiSignature getInferredType();
 
-  ORSignature getInferredType();
-
-  boolean hasInferredType();
+    boolean hasInferredType();
 }

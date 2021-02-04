@@ -1,23 +1,19 @@
 package com.reason.ide.search.index;
 
-import com.intellij.psi.stubs.StringStubIndexExtension;
-import com.intellij.psi.stubs.StubIndexKey;
-import com.reason.lang.core.psi.PsiParameter;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.stubs.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 public class ParameterIndex extends StringStubIndexExtension<PsiParameter> {
-  private static final int VERSION = 3;
-  public static final StubIndexKey<String, PsiParameter> KEY =
-      StubIndexKey.createIndexKey("reason.parameter");
+    private static final int VERSION = 3;
 
-  @Override
-  public int getVersion() {
-    return super.getVersion() + VERSION;
-  }
+    @Override
+    public int getVersion() {
+        return super.getVersion() + VERSION;
+    }
 
-  @NotNull
-  @Override
-  public StubIndexKey<String, PsiParameter> getKey() {
-    return KEY;
-  }
+    @Override
+    public @NotNull StubIndexKey<String, PsiParameter> getKey() {
+        return IndexKeys.PARAMETERS;
+    }
 }

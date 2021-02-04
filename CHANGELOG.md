@@ -10,6 +10,17 @@
 
 (_Tags are copied from [babel](https://github.com/babel/babel/blob/master/CHANGELOG.md)_)
 
+Please note that **rescript development is paused** until issues in rescript tooling like 
+[#4846](https://github.com/rescript-lang/rescript-compiler/issues/4846) and [#22](https://github.com/rescript-lang/rescript-vscode/issues/22)
+are solved.
+
+- :bug: [#304](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/304) ![r] Properties in component using external are not found
+- :bug: Keep caret at position when reformat
+- :house: Fix file pattern introduced in bs-platform 8.3
+- :house: Fix reformatOnSave when multiple projects (different settings) are opened
+- :house: Update ErrorAnnotator to use new ninja format introduced since bs-platform 8.4
+- :house: Update ppx error extraction
+
 ## 0.96 - 2021/01/08
 
 - :bug: [#295](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/295) ![o] Parser error: incorrect chaining module/type

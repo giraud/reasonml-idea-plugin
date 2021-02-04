@@ -89,7 +89,7 @@ public class LetParsingTest extends RmlParsingTestCase {
     PsiLet let =
         first(letExpressions(parseCode("let combine: (style, style) => style = (a, b) => { };")));
 
-    assertEquals("(style, style) => style", let.getPsiSignature().getText());
+    assertEquals("(style, style) => style", let.getSignature().getText());
     assertEquals("(a, b) => { }", let.getBinding().getText());
   }
 
@@ -97,17 +97,17 @@ public class LetParsingTest extends RmlParsingTestCase {
     PsiLet let = first(letExpressions(parseCode("let x: M1.y => M2.z;")));
 
     assertNull(PsiTreeUtil.findChildOfType(let, PsiFunction.class));
-    assertEquals("M1.y => M2.z", let.getPsiSignature().getText());
+    assertEquals("M1.y => M2.z", let.getSignature().getText());
     List<PsiSignatureItem> items =
         new ArrayList<>(
-            PsiTreeUtil.findChildrenOfType(let.getPsiSignature(), PsiSignatureItem.class));
+            PsiTreeUtil.findChildrenOfType(let.getSignature(), PsiSignatureItem.class));
     assertEquals("M1.y", items.get(0).getText());
   }
 
   public void test_signatureJsObject() {
     PsiLet let = first(letExpressions(parseCode("let x: {. a:string, b:int } => unit;")));
 
-    assertEquals("{. a:string, b:int } => unit", let.getPsiSignature().getText());
+    assertEquals("{. a:string, b:int } => unit", let.getSignature().getText());
     List<PsiObjectField> fields =
         new ArrayList<>(PsiTreeUtil.findChildrenOfType(let, PsiObjectField.class));
     assertEquals("a:string", fields.get(0).getText());
@@ -127,7 +127,7 @@ public class LetParsingTest extends RmlParsingTestCase {
 
     assertTrue(e.isFunction());
     assertEquals("watchUrl", e.getName());
-    assertEquals("(url => unit) => watcherID", e.getPsiSignature().getText());
+    assertEquals("(url => unit) => watcherID", e.getSignature().getText());
   }
 
   public void test_letAndInModule() {
@@ -166,7 +166,7 @@ public class LetParsingTest extends RmlParsingTestCase {
                 parseCode("let (/): (path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c;")));
 
     assertEquals("(/)", e.getName());
-    // ORSignature signature = e.getORSignature();
+    // ORSignature signature = e.getSignature();
     // assertEquals("(path('a, 'b) => 'c, 'd => path('a, 'b), 'd) => 'c",
     // signature.asString(myLanguage));
   }
