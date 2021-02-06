@@ -14,6 +14,8 @@ Please note that **rescript development is paused** until issues in rescript too
 [#4846](https://github.com/rescript-lang/rescript-compiler/issues/4846) and [#22](https://github.com/rescript-lang/rescript-vscode/issues/22)
 are solved.
 
+## 0.97 - 2021/02/04
+
 - :bug: [#304](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/304) ![r] Properties in component using external are not found
 - :bug: Keep caret at position when reformat
 - :house: Fix file pattern introduced in bs-platform 8.3
