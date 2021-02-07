@@ -1,7 +1,6 @@
 package com.reason.hints;
 
 import com.intellij.notification.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;
@@ -27,7 +26,7 @@ public class RincewindProcess {
         LOG.debug("Looking for types for file", sourceFile);
 
         Optional<VirtualFile> contentRoot = BsPlatform.findContentRootForFile(m_project, sourceFile);
-        if (!contentRoot.isPresent()) {
+        if (contentRoot.isEmpty()) {
             return;
         }
 

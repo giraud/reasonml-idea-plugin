@@ -1,28 +1,22 @@
 package com.reason.ide.insight.provider;
 
-import static com.intellij.psi.search.GlobalSearchScope.allScope;
-import static com.intellij.util.PsiIconUtil.getProvidersIcon;
-
-import com.intellij.codeInsight.AutoPopupController;
-import com.intellij.codeInsight.completion.CompletionResultSet;
-import com.intellij.codeInsight.completion.InsertionContext;
-import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorModificationUtil;
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.reason.Log;
-import com.reason.ide.files.FileBase;
-import com.reason.ide.files.RmlFile;
-import com.reason.ide.search.PsiFinder;
-import com.reason.lang.core.psi.PsiInnerModule;
-import com.reason.lang.core.psi.PsiModule;
+import com.intellij.codeInsight.*;
+import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.lookup.*;
+import com.intellij.openapi.editor.*;
+import com.intellij.openapi.project.*;
+import com.intellij.psi.*;
+import com.intellij.psi.search.*;
+import com.reason.*;
+import com.reason.ide.files.*;
+import com.reason.ide.search.*;
+import com.reason.lang.core.psi.*;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-import com.reason.lang.core.psi.impl.*;
-import org.jetbrains.annotations.NotNull;
+import static com.intellij.psi.search.GlobalSearchScope.*;
+import static com.intellij.util.PsiIconUtil.*;
 
 public class JsxNameCompletionProvider {
     private static final Log LOG = Log.create("insight.jsx.name");

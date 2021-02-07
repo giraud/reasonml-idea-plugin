@@ -64,18 +64,19 @@ public class ReformatOnSave {
                                         FormatterProcessor formatterProcessor = ORPostFormatProcessor.getFormatterProcessor(newFile);
                                         String newText = formatterProcessor == null ? textToReformat : formatterProcessor.apply(textToReformat);
 
-                                    if (newText == null || textToReformat.equals(newText)) {
-                                        LOG.debug(" -> Text null or unchanged, abort format");
-                                        newFile.putUserData(REFORMAT_COUNT, 1);
-                                    } else {
-                                        CommandProcessor.getInstance().executeCommand(project, () -> {
-                                                    LOG.debug(" -> Applying text formatting");
-                                                    document.setText(newText);
-                                                    newFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
-                                                },
-                                                "or.reformat",
-                                                "CodeFormatGroup",
-                                                document);
+                                        if (newText == null || textToReformat.equals(newText)) {
+                                            LOG.debug(" -> Text null or unchanged, abort format");
+                                            newFile.putUserData(REFORMAT_COUNT, 1);
+                                        } else {
+                                            //noinspection DialogTitleCapitalization
+                                            CommandProcessor.getInstance().executeCommand(project, () -> {
+                                                        LOG.debug(" -> Applying text formatting");
+                                                        document.setText(newText);
+                                                        newFile.putUserData(UndoConstants.FORCE_RECORD_UNDO, null);
+                                                    },
+                                                    "or.reformat",
+                                                    "CodeFormatGroup",
+                                                    document);
 
                                             if (count == 1) {
                                                 // Only re-save first time, to avoid infinite loop

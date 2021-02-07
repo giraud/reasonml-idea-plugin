@@ -196,8 +196,9 @@ public class PsiLetImpl extends PsiTokenStub<ORTypes, PsiLetStub> implements Psi
             return stub.isFunction();
         }
 
-        if (hasInferredType()) {
-            return getInferredType().isFunction();
+        PsiSignature inferredType = getInferredType();
+        if (inferredType != null) {
+            return inferredType.isFunction();
         } else {
             PsiSignature signature = getSignature();
             if (signature != null) {

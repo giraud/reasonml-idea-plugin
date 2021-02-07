@@ -82,7 +82,7 @@ public class BsCompilerImpl implements BsCompiler {
     public void run(@NotNull VirtualFile sourceFile, @NotNull CliType cliType, @Nullable ProcessTerminated onProcessTerminated) {
         if (!isDisabled() && ORSettings.getInstance(m_project).isBsEnabled()) {
             Optional<VirtualFile> bsConfigFile = BsPlatform.findBsConfigForFile(m_project, sourceFile);
-            if (!bsConfigFile.isPresent()) {
+            if (bsConfigFile.isEmpty()) {
                 return;
             }
             getOrRefreshBsConfig(bsConfigFile.get());

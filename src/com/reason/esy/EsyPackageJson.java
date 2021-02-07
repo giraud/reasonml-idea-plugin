@@ -14,46 +14,47 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.indexing.FileContent;
 import com.intellij.util.indexing.FileContentImpl;
 import com.reason.ide.files.EsyPackageJsonFileType;
+
 import java.io.*;
+
 import org.jetbrains.annotations.NotNull;
 
 public class EsyPackageJson {
-
-  private EsyPackageJson() {}
-
-  /* detects any "package.json" with a top-level "esy" property */
-  public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
-    if (virtualFile.getFileType() instanceof JsonFileType) {
-      try {
-        FileContent fileContent = FileContentImpl.createByFile(virtualFile);
-        return createFilePattern().accepts(fileContent);
-      } catch (IOException e) {
-        return false;
-      }
+    private EsyPackageJson() {
     }
-    return false;
-  }
 
-  private static @NotNull ElementPattern<FileContent> createFilePattern() {
-    return FileContentPattern.fileContent()
-        .withName(EsyPackageJsonFileType.getDefaultFilename())
-        .with(
-            new PatternCondition<FileContent>("esyPackageJsonPattern") {
-              @Override
-              public boolean accepts(@NotNull FileContent fileContent, ProcessingContext context) {
-                PsiFile psiFile = fileContent.getPsiFile();
-                FileType fileType = psiFile.getFileType();
-                if (!(fileType instanceof JsonFileType)) {
-                  return false;
-                }
-                JsonFile jsonFile = (JsonFile) psiFile;
-                JsonValue topLevelValue = jsonFile.getTopLevelValue();
-                if (!(topLevelValue instanceof JsonObject)) {
-                  return false;
-                }
-                JsonObject topLevelObject = (JsonObject) topLevelValue;
-                return topLevelObject.findProperty("esy") != null;
-              }
-            });
-  }
+    /* detects any "package.json" with a top-level "esy" property */
+    public static boolean isEsyPackageJson(@NotNull VirtualFile virtualFile) {
+        if (virtualFile.getFileType() instanceof JsonFileType) {
+            try {
+                FileContent fileContent = FileContentImpl.createByFile(virtualFile);
+                return createFilePattern().accepts(fileContent);
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private static @NotNull ElementPattern<FileContent> createFilePattern() {
+        return FileContentPattern.fileContent()
+                .withName(EsyPackageJsonFileType.getDefaultFilename())
+                .with(new PatternCondition<>("esyPackageJsonPattern") {
+                    @Override
+                    public boolean accepts(@NotNull FileContent fileContent, ProcessingContext context) {
+                        PsiFile psiFile = fileContent.getPsiFile();
+                        FileType fileType = psiFile.getFileType();
+                        if (!(fileType instanceof JsonFileType)) {
+                            return false;
+                        }
+                        JsonFile jsonFile = (JsonFile) psiFile;
+                        JsonValue topLevelValue = jsonFile.getTopLevelValue();
+                        if (!(topLevelValue instanceof JsonObject)) {
+                            return false;
+                        }
+                        JsonObject topLevelObject = (JsonObject) topLevelValue;
+                        return topLevelObject.findProperty("esy") != null;
+                    }
+                });
+    }
 }
