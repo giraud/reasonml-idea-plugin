@@ -82,12 +82,12 @@ public class EsyProcess implements CompilerProcess {
         killIt();
 
         Optional<VirtualFile> workingDirOptional = findWorkingDirectory(m_project);
-        if (!workingDirOptional.isPresent()) {
+        if (workingDirOptional.isEmpty()) {
             return null;
         }
 
         Optional<VirtualFile> esyExecutableOptional = BsPlatform.findEsyExecutable(m_project);
-        if (!esyExecutableOptional.isPresent()) {
+        if (esyExecutableOptional.isEmpty()) {
             return null;
         }
 
@@ -119,7 +119,7 @@ public class EsyProcess implements CompilerProcess {
         processHandler = null;
     }
 
-    private static GeneralCommandLine newCommandLine(@NotNull VirtualFile esyExecutable, @NotNull VirtualFile workingDir, CliType.@NotNull Esy cliType) {
+    private static GeneralCommandLine newCommandLine(@NotNull VirtualFile esyExecutable, @NotNull VirtualFile workingDir, @NotNull CliType.Esy cliType) {
         GeneralCommandLine commandLine;
         commandLine = new GeneralCommandLine(esyExecutable.getPath());
         commandLine.setWorkDirectory(workingDir.getPath());
@@ -128,7 +128,7 @@ public class EsyProcess implements CompilerProcess {
         return commandLine;
     }
 
-    private static @NotNull String getCommand(CliType.@NotNull Esy cliType) {
+    private static @NotNull String getCommand(@NotNull CliType.Esy cliType) {
         switch (cliType) {
             case INSTALL:
                 return Command.INSTALL;
@@ -154,7 +154,7 @@ public class EsyProcess implements CompilerProcess {
     private static Optional<VirtualFile> findWorkingDirectory(@NotNull Project project) {
         Optional<VirtualFile> esyContentRootOptional =
                 ORProjectManager.findFirstEsyContentRoot(project);
-        if (!esyContentRootOptional.isPresent()) {
+        if (esyContentRootOptional.isEmpty()) {
             EsyNotification.showEsyProjectNotFound();
             return Optional.empty();
         }

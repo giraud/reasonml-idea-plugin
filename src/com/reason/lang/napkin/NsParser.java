@@ -933,7 +933,7 @@ public class NsParser extends CommonParser<NsTypes> {
       state.advance().mark(m_types.C_LET_BINDING);
     } else if (state.is(m_types.C_MODULE_DECLARATION)) {
       // module M |> = <| ...
-      state.advance().mark(m_types.C_UNKNOWN_EXPR /*C_DUMMY*/).dummy().resolution(moduleBinding);
+      state.advance().mark(m_types.C_DUMMY /*C_DUMMY*/).dummy().resolution(moduleBinding);
     } else if (state.is(m_types.C_TAG_PROPERTY)) {
       state.advance().mark(m_types.C_TAG_PROP_VALUE);
     }

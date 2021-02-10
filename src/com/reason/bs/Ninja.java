@@ -111,7 +111,7 @@ public class Ninja {
                 int commandEolPos = contents.indexOf("\n", commandPos);
                 String command = contents.substring(commandPos + 9, commandEolPos).trim();
                 String[] tokens = command.split(" ");
-                List<String> filteredTokens = Arrays.stream(tokens).filter(s -> !s.isEmpty() && !"$g_finger".equals(s) && !"$i".equals(s) && !"-bs-v".equals(s) && !"-bs-package-output".equals(s) && !s.startsWith("commonjs")).collect(Collectors.toList());
+                List<String> filteredTokens = Arrays.stream(tokens).filter(s -> !s.isEmpty() && !"$g_finger".equals(s) && !"$i".equals(s) && !"-bs-v".equals(s) && !"-bs-package-output".equals(s) && !s.contains("$in_d:")).collect(Collectors.toList());
                 filteredTokens.remove(0);
                 return filteredTokens;
             }

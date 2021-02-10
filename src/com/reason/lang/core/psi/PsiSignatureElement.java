@@ -1,14 +1,8 @@
 package com.reason.lang.core.psi;
 
-import com.reason.lang.core.signature.ORSignature;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 public interface PsiSignatureElement {
-
-  @Nullable
-  PsiSignature getPsiSignature();
-
-  @NotNull
-  ORSignature getORSignature();
+    @Nullable
+    PsiSignature getSignature();
 }

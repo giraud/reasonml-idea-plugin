@@ -358,7 +358,7 @@ public class ErrorAnnotator extends ExternalAnnotator<InitialInfo, AnnotationRes
     static class AnnotationResult {
         final List<OutputInfo> outputInfo;
         final Editor editor;
-        public File cmtFile;
+        public final File cmtFile;
 
         AnnotationResult(@NotNull List<OutputInfo> outputInfo, @NotNull Editor editor, @NotNull File cmtFile) {
             this.outputInfo = outputInfo;

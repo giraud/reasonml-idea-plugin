@@ -14,9 +14,21 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
     return "testData/com/reason/lang";
   }
 
-  public void test_shouldDisplayProperties() {
+  public void test_display_properties_let() {
     myFixture.configureByFiles("pervasives.ml");
     configureCode("Component.re", "[@react.component] let make = (~name, ~onClose) => <div/>;");
+    configureCode("A.re", "let _ = <Component <caret>>");
+
+    myFixture.completeBasic();
+
+    List<String> completions = myFixture.getLookupElementStrings();
+    assertSize(4, completions);
+    assertContainsElements(completions, "key", "ref", "name", "onClose");
+  }
+
+  public void test_display_properties_external() {
+    myFixture.configureByFiles("pervasives.ml");
+    configureCode("Component.re", "[@react.component] external make : (~name:string, ~onClose: unit => unit) = \"Comp\";");
     configureCode("A.re", "let _ = <Component <caret>>");
 
     myFixture.completeBasic();
@@ -41,7 +53,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
   public void test_shouldDisplayProperties_nested() {
     myFixture.configureByFiles("pervasives.ml");
     configureCode("A.re", "module Comp = { [@react.component] let make = (~name) => <div/>; };");
-    configureCode("B.re", "let _ = <A.Comp <caret> />");
+    configureCode("B.re", "[@react.component] let make = () => <A.Comp <caret> />");
 
     myFixture.completeBasic();
 
@@ -53,7 +65,7 @@ public class Jsx3PropertyCompletionRMLTest extends ORBasePlatformTestCase {
   public void test_shouldDisplayProperties_open() {
     myFixture.configureByFiles("pervasives.ml");
     configureCode("A.re", "module Comp = { [@react.component] let make = (~name) => <div/>; };");
-    configureCode("B.re", "open A; let _ = <Comp <caret> />; module Comp = { let make = (~value) => <div/>; };");
+    configureCode("B.re", "open A; [@react.component] let make = () => <Comp <caret> />; module Comp = { [@react.component] let make = (~value) => <div/>; };");
 
     myFixture.completeBasic();
 

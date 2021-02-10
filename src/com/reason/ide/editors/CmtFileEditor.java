@@ -65,7 +65,7 @@ public class CmtFileEditor extends UserDataHolderBase implements FileEditor {
   @NotNull
   @Override
   public String getName() {
-    return "CMT editor";
+    return "CMT Editor";
   }
 
   @Override

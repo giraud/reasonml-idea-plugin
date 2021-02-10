@@ -8,7 +8,7 @@ import org.jetbrains.annotations.*;
 
 @State(name = "DuneFacetConfiguration", storages = {@Storage("ocaml-dune.xml")})
 public class DuneFacetConfiguration implements FacetConfiguration, PersistentStateComponent<DuneFacetConfiguration> {
-    public boolean inheritProjectSdk = true;
+    public final boolean inheritProjectSdk = true;
     public @Nullable String sdkName = null;
 
     @Override

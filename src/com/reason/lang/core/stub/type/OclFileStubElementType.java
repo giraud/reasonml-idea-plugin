@@ -13,45 +13,42 @@ import com.reason.lang.ocaml.OclLanguage;
 import org.jetbrains.annotations.NotNull;
 
 public class OclFileStubElementType extends IStubFileElementType<OclFileStub> {
-  private static final int VERSION = 6;
-  public static final IStubFileElementType<OclFileStub> INSTANCE = new OclFileStubElementType();
+    private static final int VERSION = 6;
+    public static final IStubFileElementType<OclFileStub> INSTANCE = new OclFileStubElementType();
 
-  private OclFileStubElementType() {
-    super("OCAML_FILE", OclLanguage.INSTANCE);
-  }
+    private OclFileStubElementType() {
+        super("OCAML_FILE", OclLanguage.INSTANCE);
+    }
 
-  @NotNull
-  @Override
-  public StubBuilder getBuilder() {
-    return new DefaultStubBuilder() {
-      @NotNull
-      @Override
-      protected StubElement createStubForFile(@NotNull PsiFile file) {
-        if (file instanceof OclFile) {
-          return new OclFileStub((OclFile) file);
-        }
-        return super.createStubForFile(file);
-      }
-    };
-  }
+    @Override
+    public @NotNull StubBuilder getBuilder() {
+        return new DefaultStubBuilder() {
+            @Override
+            protected @NotNull StubElement<OclFile> createStubForFile(@NotNull PsiFile file) {
+                if (file instanceof OclFile) {
+                    return new OclFileStub((OclFile) file);
+                }
+                return super.createStubForFile(file);
+            }
+        };
+    }
 
-  @Override
-  public int getStubVersion() {
-    return VERSION;
-  }
+    @Override
+    public int getStubVersion() {
+        return VERSION;
+    }
 
-  @Override
-  public void serialize(@NotNull OclFileStub stub, @NotNull StubOutputStream dataStream) {}
+    @Override
+    public void serialize(@NotNull OclFileStub stub, @NotNull StubOutputStream dataStream) {
+    }
 
-  @NotNull
-  @Override
-  public OclFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) {
-    return new OclFileStub(null);
-  }
+    @Override
+    public @NotNull OclFileStub deserialize(@NotNull StubInputStream dataStream, StubElement parentStub) {
+        return new OclFileStub(null);
+    }
 
-  @NotNull
-  @Override
-  public String getExternalId() {
-    return "ocaml.FILE";
-  }
+    @Override
+    public @NotNull String getExternalId() {
+        return "ocaml.FILE";
+    }
 }

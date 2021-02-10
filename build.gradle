@@ -1,63 +1,37 @@
 plugins {
-    // https://github.com/JetBrains/gradle-intellij-plugin
-    id 'org.jetbrains.intellij' version '0.6.5'
+    id 'org.jetbrains.intellij' version '0.6.5'  // https://github.com/JetBrains/gradle-intellij-plugin
 }
 
-def jdkVersion = '11.0.9'
-
 allprojects {
-    apply plugin: 'java'
-    apply plugin: 'idea'
-    apply plugin: 'org.jetbrains.intellij'
-
     repositories {
         jcenter()
         mavenCentral()
     }
 
-    group 'com.reason'
+    apply plugin: 'java'
+    apply plugin: 'org.jetbrains.intellij'
 
-    sourceCompatibility = jdkVersion
-    targetCompatibility = jdkVersion
-    tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+    sourceCompatibility = '11.0.9'
+    version = pluginVersion + '-' + platformVersion
+    compileJava.options.encoding = 'UTF-8'
+    group 'com.reason'
 
     dependencies {
         def powerMockVersion = '2.0.2'
-        testCompile 'org.mockito:mockito-core:3.3.3'
-        testCompile "org.powermock:powermock-module-junit4:${powerMockVersion}"
-        testCompile "org.powermock:powermock-api-mockito2:${powerMockVersion}"
-    }
-
-    patchPluginXml {
-        sinceBuild = pluginSinceBuild
-        untilBuild = pluginUntilBuild
-        changeNotes """
-        <ul>
-            <li>#295 - Parser error: incorrect chaining module/type</li>
-            <li>#294 - `let open in` incorrectly parsed</li>
-            <li>#291 - 'function' not parsed as function</li>
-            <li>Better usage of externalAnnotator to highlight compilation problems in editor</li>
-            <li>Better reformatOnSave implementation that should prevent infinite loop</li>
-        </ul>
-
-        <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
-
-        <p/>
-        <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
-    """
+        testImplementation 'org.mockito:mockito-core:3.3.3'
+        testImplementation "org.powermock:powermock-module-junit4:${powerMockVersion}"
+        testImplementation "org.powermock:powermock-api-mockito2:${powerMockVersion}"
     }
 
     sourceSets {
         main {
             java.srcDirs 'src', 'gen'
-            resources.srcDirs 'resources', 'plugins/resources'
+            resources.srcDirs 'resources'
         }
         test {
-            java.srcDir 'tests'
+            java.srcDirs 'tests'
         }
     }
-
-    version = pluginVersion + '-' + platformVersion
 
     intellij {
         pluginName = pluginName
@@ -69,30 +43,36 @@ allprojects {
                 'com.jetbrains.hackathon.indices.viewer:' + indicesVersion,
                 'PsiViewer:' + psiVersion
         ]
-    }
 
-    idea.module.generatedSourceDirs += file('gen')
-
-    runIde {
-        systemProperty 'refmtWidth', '120'
-        jvmArgs = [
-                '--add-exports=java.base/jdk.internal.vm=ALL-UNNAMED',
-                '-Dcompiler.process.debug.port=5005',
-                '-Xmx1024m'
-        ]
+        patchPluginXml {
+            sinceBuild = pluginSinceBuild
+            untilBuild = pluginUntilBuild
+            changeNotes """
+                <ul>
+                    <li>#304 - Properties in component using external are not found</li>
+                    <li>Keep caret at position when reformat</li>
+                    <li>Fix file pattern introduced in bs-platform 8.3</li>
+                    <li>Fix reformatOnSave when multiple projects (different settings) are opened</li>
+                    <li>Update ErrorAnnotator to use new ninja format introduced since bs-platform 8.4</li>
+                    <li>Update ppx error extraction</li>
+                </ul>
+                <p><a href="https://github.com/reasonml-editor/reasonml-idea-plugin/blob/master/CHANGELOG.md">Full change log...</a></p>
+                <p/>
+                <p>To see how to integrate reason tools (bsc, refmt), go to the website.</p>
+            """
+        }
     }
 
     verifyPlugin {
         pluginDirectory 'resources'
     }
+}
 
-    task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
-        testLogging {
-            exceptionFormat = 'full'
-        }
-    }
+project(':jps-plugin') {
+    jar.archiveFileName = "jps-plugin.jar"
+    patchPluginXml.enabled = false
 }
 
 dependencies {
-    compile project(':jps-plugin')
+    implementation project(':jps-plugin')
 }

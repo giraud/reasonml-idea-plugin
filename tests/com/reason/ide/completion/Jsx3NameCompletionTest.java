@@ -8,19 +8,19 @@ import java.util.*;
 @SuppressWarnings("ConstantConditions")
 public class Jsx3NameCompletionTest extends ORBasePlatformTestCase {
 
-  public void testShouldDisplayComponents() {
+  public void test_outside_components() {
     configureCode("DialogHeader.re", "[@react.component] let make = () => { <div/> };");
     configureCode("DialogFooter.re", "[@react.component] let make = () => { <div/> };");
-    configureCode("Dummy.re", "let _ = <Dia<caret>");
+    configureCode("Dialog.re", "[@react.component] let make = () => <Dia<caret>");
 
     myFixture.completeBasic();
     List<String> completions = myFixture.getLookupElementStrings();
 
-    assertSize(2, completions);
     assertContainsElements(completions, "DialogHeader", "DialogFooter");
+    assertSize(2, completions);
   }
 
-  public void testShouldNotDisplayProperties() {
+  public void test_dont_display_properties() {
     configureCode("DialogHeader.re", "[@react.component] let make = () => { <div/> };");
     configureCode("Dummy.re", "let _ = <<caret>Dialog");
 
