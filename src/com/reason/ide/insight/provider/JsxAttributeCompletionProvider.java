@@ -52,12 +52,12 @@ public class JsxAttributeCompletionProvider {
                 if (attributeName != null && !usedNames.contains(attributeName)) {
                     boolean mandatory = attribute.isMandatory();
                     Icon icon = mandatory ? LayeredIcon.create(ORIcons.ATTRIBUTE, ORIcons.OVERLAY_MANDATORY) : ORIcons.ATTRIBUTE;
-                    resultSet.addElement(
-                            LookupElementBuilder.create(attributeName)
-                                    .withBoldness(mandatory)
-                                    .withTypeText(attribute.getType(), true)
-                                    .withIcon(icon)
-                                    .withInsertHandler((context, item) -> insertTagAttributeHandler(context)));
+                    LookupElementBuilder lookupElementBuilder = attribute.getElement() == null ? LookupElementBuilder.create(attributeName) : LookupElementBuilder.createWithSmartPointer(attributeName, attribute.getElement());
+                    resultSet.addElement(lookupElementBuilder
+                            .withBoldness(mandatory)
+                            .withTypeText(attribute.getType(), true)
+                            .withIcon(icon)
+                            .withInsertHandler((context, item) -> insertTagAttributeHandler(context)));
                 }
             }
         }
@@ -67,7 +67,7 @@ public class JsxAttributeCompletionProvider {
         context.setAddCompletionChar(false);
 
         Editor editor = context.getEditor();
-        EditorModificationUtil.insertStringAtCaret(editor, "=()");
+        EditorModificationUtil.insertStringAtCaret(editor, "={}");
         editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 1);
     }
 }
