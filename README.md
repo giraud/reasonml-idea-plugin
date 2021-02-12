@@ -17,7 +17,6 @@ ReasonML language plugin for IDEA. Supports Reason, ReScript and OCaml.
 
 Download and install the [plugin from the JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/9440-reasonml).
 
-Reformat using `refmt` (_press `crtl alt shift R` or `⌘⎇⇧R` on Mac_)
 > Make sure `"namespace": false` is set in `bsconfig.json` to enable inferred types hints in the editor.
 
 ## 📔 Documentation 
