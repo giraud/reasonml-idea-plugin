@@ -2,10 +2,7 @@ package com.reason.lang.core.stub.type;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.StubBuilder;
-import com.intellij.psi.stubs.DefaultStubBuilder;
-import com.intellij.psi.stubs.StubElement;
-import com.intellij.psi.stubs.StubInputStream;
-import com.intellij.psi.stubs.StubOutputStream;
+import com.intellij.psi.stubs.*;
 import com.intellij.psi.tree.IStubFileElementType;
 import com.reason.ide.files.*;
 import com.reason.lang.core.stub.NsFileStub;
@@ -27,13 +24,13 @@ public class NsFileStubElementType extends IStubFileElementType<NsFileStub> {
     public @NotNull StubBuilder getBuilder() {
         return new DefaultStubBuilder() {
             @Override
-            protected @NotNull StubElement<FileBase> createStubForFile(@NotNull PsiFile file) {
+            protected @NotNull PsiFileStub<? extends PsiFile> createStubForFile(@NotNull PsiFile file) {
                 if (file instanceof NsFile) {
                     return new NsFileStub((NsFile) file, ((NsFile) file).isComponent());
                 } else if (file instanceof NsInterfaceFile) {
                     return new NsFileStub((NsInterfaceFile) file, ((NsInterfaceFile) file).isComponent());
                 }
-                return super.createStubForFile(file);
+                return new PsiFileStubImpl<>(file);
             }
         };
     }
