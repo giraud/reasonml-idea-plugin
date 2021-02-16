@@ -15,8 +15,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameterStub> implements PsiParameter {
-
+public class PsiParameterImpl extends PsiTokenStub<ORTypes, PsiParameter, PsiParameterStub> implements PsiParameter {
     // region Constructors
     public PsiParameterImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);

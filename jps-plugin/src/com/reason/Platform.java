@@ -19,7 +19,6 @@ import java.util.*;
 
 public class Platform {
 
-    public static final String PACKAGE_JSON_NAME = "package.json";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
     public static final String WINDOWS_EXECUTABLE_SUFFIX = ".exe";
 

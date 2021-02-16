@@ -16,7 +16,7 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiExceptionStub> implements PsiException {
+public class PsiExceptionImpl extends PsiTokenStub<ORTypes, PsiException, PsiExceptionStub> implements PsiException {
     // region Constructors
     public PsiExceptionImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);

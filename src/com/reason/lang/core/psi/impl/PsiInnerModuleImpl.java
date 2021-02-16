@@ -29,9 +29,7 @@ import javax.swing.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModuleStub>
-    implements PsiInnerModule {
-
+public class PsiInnerModuleImpl extends PsiTokenStub<ORTypes, PsiModule, PsiModuleStub> implements PsiInnerModule {
   // region Constructors
   public PsiInnerModuleImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
     super(types, node);

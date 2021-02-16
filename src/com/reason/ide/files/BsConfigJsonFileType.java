@@ -9,9 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 
 public class BsConfigJsonFileType extends JsonFileType {
-
   public static final BsConfigJsonFileType INSTANCE = new BsConfigJsonFileType();
-
   public static final String FILENAME = "bsconfig.json";
 
   public static boolean isBsConfigFile(@NotNull VirtualFile file) {
