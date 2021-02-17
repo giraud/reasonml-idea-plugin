@@ -18,7 +18,7 @@ public class MacroParsingTest extends RmlParsingTestCase {
     assertInstanceOf(macro, PsiMacro.class);
 
     PsiRawBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, PsiRawBody.class);
-    assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).toString());
+    assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).getText());
     assertEquals("\"xxx\"", rawMacroBody.getText());
     assertEquals(new TextRange(1, 4), rawMacroBody.getMacroTextRange());
   }
@@ -38,7 +38,7 @@ public class MacroParsingTest extends RmlParsingTestCase {
     assertInstanceOf(macro, PsiMacro.class);
 
     PsiRawBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, PsiRawBody.class);
-    assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).toString());
+    assertEquals("%raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).getText());
     assertEquals("{|function (a) {}|}", rawMacroBody.getText());
     assertEquals(new TextRange(2, 17), rawMacroBody.getMacroTextRange());
   }

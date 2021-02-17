@@ -104,8 +104,12 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseRaise(state);
             } else if (tokenType == m_types.COMMA) {
                 parseComma(state);
-                //      } else if (tokenType == m_types.ARROBASE) {
-                //        parseArrobase(state);
+            } else if (tokenType == m_types.ARROBASE) {
+                parseArrobase(state);
+            } else if (tokenType == m_types.ARROBASE_2) {
+                parseArrobase2(state);
+            } else if (tokenType == m_types.ARROBASE_3) {
+                parseArrobase3(state);
             }
             // while ... do ... done
             else if (tokenType == m_types.WHILE) {
@@ -208,6 +212,24 @@ public class OclParser extends CommonParser<OclTypes> {
                             .advance();
                 }
             }
+        }
+    }
+
+    private void parseArrobase(@NotNull ParserState state) {
+        if (state.is(m_types.C_ANNOTATION)) {
+            state.mark(m_types.C_MACRO_NAME);
+        }
+    }
+
+    private void parseArrobase2(@NotNull ParserState state) {
+        if (state.is(m_types.C_ANNOTATION)) {
+            state.mark(m_types.C_MACRO_NAME);
+        }
+    }
+
+    private void parseArrobase3(@NotNull ParserState state) {
+        if (state.is(m_types.C_ANNOTATION)) {
+            state.mark(m_types.C_MACRO_NAME);
         }
     }
 
@@ -570,15 +592,13 @@ public class OclParser extends CommonParser<OclTypes> {
             } else {
                 state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
             }
-        }
-        else if (state.isScopeTokenElementType(m_types.LPAREN) && state.isGrandParent(m_types.C_FUN_PARAM)) {
+        } else if (state.isScopeTokenElementType(m_types.LPAREN) && state.isGrandParent(m_types.C_FUN_PARAM)) {
             // a named param with a type signature ::  let fn ?x((x |>:<| .. ) ..
             state.advance()
                     .markOptionalParenDummyScope(m_types)
                     .mark(m_types.C_SIG_EXPR)
                     .mark(m_types.C_SIG_ITEM);
-        }
-        else if (state.is(m_types.C_FUNCTOR_DECLARATION)) {
+        } else if (state.is(m_types.C_FUNCTOR_DECLARATION)) {
             state.resolution(functorNamedColon)
                     .advance()
                     .mark(m_types.C_FUNCTOR_RESULT);
@@ -799,7 +819,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (nextElementType == m_types.ARROBASE
                 || nextElementType == m_types.ARROBASE_2
                 || nextElementType == m_types.ARROBASE_3) {
-            // |>[ <|@?? ...
+            // |> [ <| @?? ...
             if (nextElementType == m_types.ARROBASE_3) {
                 // floating attribute
                 endLikeSemi(state);
@@ -853,9 +873,8 @@ public class OclParser extends CommonParser<OclTypes> {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else if (state.is(m_types.C_DECONSTRUCTION)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-        } else if (state.is(m_types.C_ANNOTATION)) {
+        } else if (state.is(m_types.C_MACRO_NAME)) {
             // [@ |>x.y<| ... ]
-            state.mark(m_types.C_MACRO_NAME);
             state.advance();
             while (state.getTokenType() == m_types.DOT) {
                 state.advance();

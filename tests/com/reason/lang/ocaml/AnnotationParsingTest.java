@@ -7,39 +7,34 @@ import com.reason.lang.core.psi.PsiLet;
 import com.reason.lang.core.psi.PsiLetBinding;
 
 // Called attribute in OCaml
+@SuppressWarnings("ConstantConditions")
 public class AnnotationParsingTest extends OclParsingTestCase {
-  public void test_algebraic_let() {
-    PsiLet e =
-        firstOfType(
-            parseCode("let find_reference = Coqlib.find_reference [@ocaml.warning \"-3\"]"),
-            PsiLet.class);
+    public void test_algebraic_let() {
+        PsiLet e = firstOfType(parseCode("let find_reference = Coqlib.find_reference [@ocaml.warning \"-3\"]"), PsiLet.class);
 
-    PsiLetBinding b = e.getBinding();
-    PsiAnnotation attribute = ORUtil.findImmediateFirstChildOfClass(b, PsiAnnotation.class);
-    assertEquals("[@ocaml.warning \"-3\"]", attribute.getText());
-    assertEquals("ocaml.warning", attribute.getName());
-  }
+        PsiAnnotation attribute = ORUtil.findImmediateFirstChildOfClass(e.getBinding(), PsiAnnotation.class);
 
-  public void test_block_let() {
-    PsiLet e =
-        firstOfType(
-            parseCode("let val_to_int (x:t) = (Obj.magic x : int) [@@ocaml.inline always]"),
-            PsiLet.class);
+        assertEquals("[@ocaml.warning \"-3\"]", attribute.getText());
+        assertEquals("@ocaml.warning", attribute.getName());
+    }
 
-    PsiLetBinding b = e.getBinding();
-    PsiAnnotation attribute = ORUtil.findImmediateFirstChildOfClass(b, PsiAnnotation.class);
-    assertEquals("[@@ocaml.inline always]", attribute.getText());
-    assertEquals("ocaml.inline", attribute.getName());
-  }
+    public void test_block_let() {
+        PsiLet e = firstOfType(parseCode("let val_to_int (x:t) = (Obj.magic x : int) [@@ocaml.inline always]"), PsiLet.class);
 
-  public void test_floating_let() {
-    FileBase f = parseCode("let prefix_small_string = 0x20\n [@@@ocaml.warning \"-32\"]");
+        PsiLetBinding b = e.getBinding();
+        PsiAnnotation attribute = ORUtil.findImmediateFirstChildOfClass(b, PsiAnnotation.class);
+        assertEquals("[@@ocaml.inline always]", attribute.getText());
+        assertEquals("@@ocaml.inline", attribute.getName());
+    }
 
-    PsiLet e = firstOfType(f, PsiLet.class);
-    PsiLetBinding b = e.getBinding();
-    assertEquals("0x20", b.getText());
+    public void test_floating_let() {
+        FileBase f = parseCode("let prefix_small_string = 0x20\n [@@@ocaml.warning \"-32\"]");
 
-    PsiAnnotation attribute = firstOfType(f, PsiAnnotation.class);
-    assertEquals("ocaml.warning", attribute.getName());
-  }
+        PsiLet e = firstOfType(f, PsiLet.class);
+        PsiLetBinding b = e.getBinding();
+        assertEquals("0x20", b.getText());
+
+        PsiAnnotation attribute = firstOfType(f, PsiAnnotation.class);
+        assertEquals("@@@ocaml.warning", attribute.getName());
+    }
 }

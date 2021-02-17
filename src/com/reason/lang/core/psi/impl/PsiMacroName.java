@@ -4,13 +4,12 @@ import com.intellij.psi.impl.source.tree.CompositePsiElement;
 import com.intellij.psi.tree.IElementType;
 
 public class PsiMacroName extends CompositePsiElement {
+    protected PsiMacroName(IElementType type) {
+        super(type);
+    }
 
-  protected PsiMacroName(IElementType type) {
-    super(type);
-  }
-
-  @Override
-  public String toString() {
-    return getText();
-  }
+    @Override
+    public String toString() {
+        return "Macro name (" + getText() + ")";
+    }
 }
