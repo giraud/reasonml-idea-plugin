@@ -365,6 +365,11 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parsePipe(@NotNull ParserState state) {
+        if (state.is(m_types.C_SCOPED_EXPR) && state.isPrevious(m_types.C_LET_DECLARATION)) {
+            // let ( |>|<| ...
+            return;
+        }
+
         // Remove intermediate constructions
         if (state.is(m_types.C_IF_THEN_SCOPE)) {
             state.popEndUntil(m_types.C_IF).popEnd();
@@ -672,8 +677,9 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.is(m_types.C_TYPE_DECLARATION)) {
             // type t = |> = <| ...
             state.advance().mark(m_types.C_TYPE_BINDING);
-        } else if (state.is(m_types.C_LET_DECLARATION)) {
+        } else if (state.is(m_types.C_LET_DECLARATION) || (state.isPrevious(m_types.C_LET_DECLARATION) && state.is(m_types.C_PARAMETERS))) {
             // let x |> = <| ...
+            // let (x) y z |> = <| ...
             state.popEndUntilStart();
             state.advance().mark(m_types.C_LET_BINDING);
         } else if (state.is(m_types.C_MODULE_DECLARATION)) {
@@ -719,7 +725,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseLParen(@NotNull ParserState state) {
         if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-            // Overloading an operator ::  external |>(<| ... ) = ...
+            // Overloading an operator ::  external |>(<| ...
             state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
         } else if (state.isCurrentResolution(maybeFunctorCall)) {
             // Yes, it is a functor call ::  module M = X |>(<| ... )
@@ -727,8 +733,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
                     .advance()
                     .mark(m_types.C_FUN_PARAM);
-        } else if (state.previousElementType2 == m_types.UIDENT
-                && state.previousElementType1 == m_types.DOT) {
+        } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Detecting a local open ::  M1.M2. |>(<| ... )
             state.markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
         } else if (state.is(m_types.C_CLASS_DECLARATION)) {
@@ -790,6 +795,9 @@ public class OclParser extends CommonParser<OclTypes> {
 
         if (state.is(m_types.C_NAMED_PARAM) && nextToken != m_types.EQ) {
             state.popEnd();
+        } else if (parenScope.isCompositeType(m_types.C_SCOPED_EXPR) && state.is(m_types.C_LET_DECLARATION) && nextToken != m_types.EQ) {
+            // This is a custom infix operator
+            state.mark(m_types.C_PARAMETERS);
         }
     }
 
