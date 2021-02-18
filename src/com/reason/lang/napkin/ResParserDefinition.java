@@ -12,14 +12,14 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.reason.ide.files.NsFile;
-import com.reason.ide.files.NsInterfaceFile;
-import com.reason.ide.files.NsInterfaceFileType;
+import com.reason.ide.files.ResFile;
+import com.reason.ide.files.ResInterfaceFile;
+import com.reason.ide.files.ResInterfaceFileType;
 import com.reason.lang.core.stub.type.NsFileStubElementType;
 import com.reason.lang.core.stub.type.ORStubElementType;
 import org.jetbrains.annotations.NotNull;
 
-public class NsParserDefinition implements ParserDefinition {
+public class ResParserDefinition implements ParserDefinition {
 
   @NotNull
   @Override
@@ -34,17 +34,17 @@ public class NsParserDefinition implements ParserDefinition {
 
   @NotNull
   public TokenSet getCommentTokens() {
-    return TokenSet.create(NsTypes.INSTANCE.MULTI_COMMENT, NsTypes.INSTANCE.SINGLE_COMMENT);
+    return TokenSet.create(ResTypes.INSTANCE.MULTI_COMMENT, ResTypes.INSTANCE.SINGLE_COMMENT);
   }
 
   @NotNull
   public TokenSet getStringLiteralElements() {
-    return TokenSet.create(NsTypes.INSTANCE.STRING_VALUE);
+    return TokenSet.create(ResTypes.INSTANCE.STRING_VALUE);
   }
 
   @NotNull
   public PsiParser createParser(final Project project) {
-    return new NsParser();
+    return new ResParser();
   }
 
   @NotNull
@@ -55,9 +55,9 @@ public class NsParserDefinition implements ParserDefinition {
 
   @NotNull
   public PsiFile createFile(@NotNull FileViewProvider viewProvider) {
-    return viewProvider.getFileType() instanceof NsInterfaceFileType
-        ? new NsInterfaceFile(viewProvider)
-        : new NsFile(viewProvider);
+    return viewProvider.getFileType() instanceof ResInterfaceFileType
+        ? new ResInterfaceFile(viewProvider)
+        : new ResFile(viewProvider);
   }
 
   @NotNull

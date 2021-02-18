@@ -8,10 +8,10 @@ import org.jetbrains.annotations.*;
 import static com.intellij.codeInsight.completion.CompletionUtilCore.*;
 import static com.reason.lang.ParserScopeEnum.*;
 
-public class NsParser extends CommonParser<NsTypes> {
+public class ResParser extends CommonParser<ResTypes> {
 
-  NsParser() {
-    super(NsTypes.INSTANCE);
+  ResParser() {
+    super(ResTypes.INSTANCE);
   }
 
   @Override

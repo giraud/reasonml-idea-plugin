@@ -26,7 +26,7 @@ public class ORStructureViewModel extends StructureViewModelBase
   @Override
   public boolean isAlwaysLeaf(StructureViewTreeElement element) {
     return element instanceof RmlFile
-        || element instanceof NsFile
+        || element instanceof ResFile
         || element instanceof OclFile
         || element instanceof MlyFile
         || element instanceof DuneFile;

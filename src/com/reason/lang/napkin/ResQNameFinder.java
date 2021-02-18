@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.*;
 
-public class NsQNameFinder extends BaseQNameFinder {
+public class ResQNameFinder extends BaseQNameFinder {
 
-  public static final QNameFinder INSTANCE = new NsQNameFinder();
+  public static final QNameFinder INSTANCE = new ResQNameFinder();
 
-  private NsQNameFinder() {}
+  private ResQNameFinder() {}
 
   // Find the expression paths
   @NotNull
@@ -32,7 +32,7 @@ public class NsQNameFinder extends BaseQNameFinder {
 
     PsiElement sourceElement = element instanceof ORFakeResolvedElement ? element.getOriginalElement() : element;
     String filePath = ((FileBase) sourceElement.getContainingFile()).getModuleName() + ".";
-    String path = extractPathName(sourceElement, NsTypes.INSTANCE);
+    String path = extractPathName(sourceElement, ResTypes.INSTANCE);
     String pathExtension = path.isEmpty() ? "" : "." + path;
 
     // Another parallel set of names that are resolved from aliases. We can't mix the two sets.
@@ -88,7 +88,7 @@ public class NsQNameFinder extends BaseQNameFinder {
           resolvedQualifiedNames.add(moduleQName + resolvedPathExtension);
         }
       } else if (item instanceof PsiLocalOpen) {
-        String openName = extractPathName(item, NsTypes.INSTANCE);
+        String openName = extractPathName(item, ResTypes.INSTANCE);
         String moduleName = ((FileBase) sourceElement.getContainingFile()).getModuleName();
         // Add local open value to all previous elements
         qualifiedNames.addAll(extendPathWith(filePath, openName, qualifiedNames));

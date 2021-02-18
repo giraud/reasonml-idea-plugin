@@ -7,10 +7,10 @@ import com.reason.lang.core.stub.RescriptStubBasedElementTypes;
 import com.reason.lang.core.type.ORTypes;
 
 public abstract class NsParsingTestCase extends BaseParsingTestCase {
-  public ORTypes m_types = NsTypes.INSTANCE;
+  public ORTypes m_types = ResTypes.INSTANCE;
 
   public NsParsingTestCase() {
-    super("", "res", new NsParserDefinition());
+    super("", "res", new ResParserDefinition());
   }
 
   @Override
@@ -19,6 +19,6 @@ public abstract class NsParsingTestCase extends BaseParsingTestCase {
     StubElementTypeHolderEP stubElementTypeHolderEP = new StubElementTypeHolderEP();
     stubElementTypeHolderEP.holderClass = RescriptStubBasedElementTypes.class.getName();
     registerExtension(StubElementTypeHolderEP.EP_NAME, stubElementTypeHolderEP);
-    LanguageASTFactory.INSTANCE.addExplicitExtension(NsLanguage.INSTANCE, new ResASTFactory());
+    LanguageASTFactory.INSTANCE.addExplicitExtension(ResLanguage.INSTANCE, new ResASTFactory());
   }
 }

@@ -4,6 +4,6 @@ import com.intellij.lexer.FlexAdapter;
 
 public class ResLexer extends FlexAdapter {
   public ResLexer() {
-    super(new ResFlexLexer(NsTypes.INSTANCE));
+    super(new ResFlexLexer(ResTypes.INSTANCE));
   }
 }
