@@ -19,6 +19,6 @@ public abstract class NsParsingTestCase extends BaseParsingTestCase {
     StubElementTypeHolderEP stubElementTypeHolderEP = new StubElementTypeHolderEP();
     stubElementTypeHolderEP.holderClass = RescriptStubBasedElementTypes.class.getName();
     registerExtension(StubElementTypeHolderEP.EP_NAME, stubElementTypeHolderEP);
-    LanguageASTFactory.INSTANCE.addExplicitExtension(NsLanguage.INSTANCE, new RescriptASTFactory());
+    LanguageASTFactory.INSTANCE.addExplicitExtension(NsLanguage.INSTANCE, new ResASTFactory());
   }
 }

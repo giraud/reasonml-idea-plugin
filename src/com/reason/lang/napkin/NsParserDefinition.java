@@ -24,7 +24,7 @@ public class NsParserDefinition implements ParserDefinition {
   @NotNull
   @Override
   public Lexer createLexer(Project project) {
-    return new NsLexer();
+    return new ResLexer();
   }
 
   @NotNull

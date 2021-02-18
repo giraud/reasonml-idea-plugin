@@ -206,6 +206,7 @@ public class RmlTypes extends ORTypes {
     SHARPSHARP = new ORTokenElementType("SHARPSHARP", RmlLanguage.INSTANCE);
     SHORTCUT = new ORTokenElementType("SHORTCUT", RmlLanguage.INSTANCE);
     SLASH = new ORTokenElementType("SLASH", RmlLanguage.INSTANCE);
+    SLASH_2 = new ORTokenElementType("SLASH_2", RmlLanguage.INSTANCE);
     SLASHDOT = new ORTokenElementType("SLASHDOT", RmlLanguage.INSTANCE);
     SOME = new ORTokenElementType("SOME", RmlLanguage.INSTANCE);
     STAR = new ORTokenElementType("STAR", RmlLanguage.INSTANCE);

@@ -204,6 +204,7 @@ public class OclTypes extends ORTypes {
         SHARPSHARP = new ORTokenElementType("SHARPSHARP", OclLanguage.INSTANCE);
         SHORTCUT = new ORTokenElementType("SHORTCUT", OclLanguage.INSTANCE);
         SLASH = new ORTokenElementType("SLASH", OclLanguage.INSTANCE);
+        SLASH_2 = new ORTokenElementType("SLASH_2", OclLanguage.INSTANCE);
         SLASHDOT = new ORTokenElementType("SLASHDOT", OclLanguage.INSTANCE);
         SOME = new ORTokenElementType("SOME", OclLanguage.INSTANCE);
         STAR = new ORTokenElementType("STAR", OclLanguage.INSTANCE);

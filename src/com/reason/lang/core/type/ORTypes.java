@@ -220,6 +220,7 @@ public abstract class ORTypes {
   public ORTokenElementType SHARP;
   public ORTokenElementType SHORTCUT;
   public ORTokenElementType SLASH;
+  public ORTokenElementType SLASH_2;
   public ORTokenElementType SLASHDOT;
   public ORTokenElementType SOME;
   public ORTokenElementType STAR;

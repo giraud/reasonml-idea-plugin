@@ -135,7 +135,7 @@
         <!-- Rescript -->
         <stubElementTypeHolder externalIdPrefix="NapkinScript."
                                class="com.reason.lang.core.stub.RescriptStubBasedElementTypes"/>
-        <lang.ast.factory language="NapkinScript" implementationClass="com.reason.lang.napkin.RescriptASTFactory"/>
+        <lang.ast.factory language="NapkinScript" implementationClass="com.reason.lang.napkin.ResASTFactory"/>
         <lang.parserDefinition language="NapkinScript" implementationClass="com.reason.lang.napkin.NsParserDefinition"/>
         <lang.syntaxHighlighterFactory language="NapkinScript"
                                        implementationClass="com.reason.ide.highlight.NsSyntaxHighlighterFactory"/>
