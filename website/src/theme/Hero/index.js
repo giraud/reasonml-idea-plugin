@@ -26,7 +26,7 @@ function Hero() {
                   <a href="https://plugins.jetbrains.com/plugin/9440-reasonml">
                     <img alt="JetBrains IntelliJ plugins" src="https://img.shields.io/jetbrains/plugin/d/9440-reasonml.svg" />
                   </a>
-                  <a href="https://discord.com/channels/713777184996589580">
+                  <a href="https://discord.gg/65fz5jb">
                     <img alt="Discord" src="https://img.shields.io/discord/713777184996589580" />
                   </a>
                   <a href="https://opensource.org/licenses/MIT">

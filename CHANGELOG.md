@@ -16,9 +16,13 @@ are solved.
 
 ## Unreleased
 
-- ![o] highlight of ocaml annotation include arrobase
+# 0.98 - 2021/02/24
 
-## 0.97 - 2021/02/04
+- ![o] highlight of ocaml annotation include arrobase
+- :bug: [#309](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309) incorrectly parse infix operators
+- :bug: [#261](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/261) warning configuration in bsconfig.json is not being applied
+
+# 0.97 - 2021/02/04
 
 - :bug: [#304](https://github.com/reasonml-editor/reasonml-idea-plugin/issues/304) ![r] Properties in component using external are not found
 - :bug: Keep caret at position when reformat

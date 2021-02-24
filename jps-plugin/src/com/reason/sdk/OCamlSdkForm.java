@@ -79,7 +79,7 @@ public class OCamlSdkForm {
                                     VirtualFile sdkHome = fileSystem.findFileByPath(c_sdkHome.getText().trim());
                                     if (sdkHome != null) {
                                         Task.WithResult<String, RuntimeException> download =
-                                                new Task.WithResult<>(null, "Download SDK", false) {
+                                                new Task.WithResult(null, "Download SDK", false) {
                                                     @Override
                                                     protected @NotNull String compute(@NotNull ProgressIndicator indicator) throws RuntimeException {
                                                         new SdkDownloader(odkData.getMajor(), odkData.getMinor(), odkData.getPatch(), sdkHome).run(null, indicator);

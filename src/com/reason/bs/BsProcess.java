@@ -101,13 +101,13 @@ public final class BsProcess implements CompilerProcess {
     @Nullable
     private GeneralCommandLine getGeneralCommandLine(@NotNull VirtualFile sourceFile, @NotNull CliType.Bs cliType) {
         Optional<VirtualFile> bsContentRootOptional = BsPlatform.findContentRootForFile(m_project, sourceFile);
-        if (bsContentRootOptional.isEmpty()) {
+        if (!bsContentRootOptional.isPresent()) {
             BsNotification.showWorkingDirectoryNotFound();
             return null;
         }
         String bsContentRoot = bsContentRootOptional.get().getPath();
         Optional<VirtualFile> bsbExecutable = findBsbExecutable(m_project, sourceFile);
-        if (bsbExecutable.isEmpty()) {
+        if (!bsbExecutable.isPresent()) {
             BsNotification.showBsbNotFound(bsContentRoot);
             return null;
         }

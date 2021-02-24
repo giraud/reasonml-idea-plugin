@@ -131,7 +131,7 @@ public abstract class OCamlExecutable {
             String exe = commandLine.getExePath();
             commandLine.setExePath(pathToBinary == null ? exe : convertPath(new File(pathToBinary + "/" + exe).toPath()));
 
-            return m_distribution.patchCommandLine(commandLine, project, new WSLCommandLineOptions().setSudo(false));
+            return m_distribution.patchCommandLine(commandLine, project, null, false);
         }
 
         @Override

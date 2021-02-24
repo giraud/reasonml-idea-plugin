@@ -65,7 +65,7 @@ module.exports = {
           items: [
             {
               label: 'Our Discord',
-              href: 'https://discordapp.com/invite/5dzVqJAW',
+              href: 'https://discord.gg/65fz5jb',
             },
             {
               label: 'OCaml',

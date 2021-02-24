@@ -3,6 +3,7 @@ package com.reason.sdk;
 import com.intellij.notification.*;
 import com.intellij.openapi.progress.*;
 import com.intellij.openapi.project.*;
+import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.io.*;
@@ -16,7 +17,7 @@ import java.util.zip.*;
 import static com.intellij.notification.NotificationType.*;
 
 public class SdkDownloader {
-    private static final Predicate<String> KEEP_OCAML_SOURCES = s ->
+    private static final Condition<String> KEEP_OCAML_SOURCES = s ->
             s.endsWith(".ml") || s.endsWith(".mli") || s.endsWith(".ml4") || s.endsWith(".mll") || s.endsWith(".mly");
 
     private final @NotNull String m_sdk;

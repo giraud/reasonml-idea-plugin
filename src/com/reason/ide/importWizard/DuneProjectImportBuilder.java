@@ -111,7 +111,7 @@ public class DuneProjectImportBuilder extends ProjectImportBuilder<Module> {
                     Path rootPath = new File(ideaModuleDirPath).toPath();
                     Files.walkFileTree(
                             rootPath,
-                            new SimpleFileVisitor<>() {
+                            new SimpleFileVisitor<Path>() {
                                 @Override
                                 public @NotNull FileVisitResult visitFile(@NotNull Path path, BasicFileAttributes basicFileAttributes) {
                                     if ("dune".equals(path.getFileName().toString())) {
