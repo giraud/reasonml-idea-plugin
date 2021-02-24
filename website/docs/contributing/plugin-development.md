@@ -5,12 +5,35 @@ sidebar_label: Plugin Development
 slug: /contributing/plugin-development
 ---
 
-# Tools
+## Local Development
 
-When developing a functionality, two tools are very important: the PSI viewer and
-the indices viewer.
+Follow the steps below to get the plugin running locally for development.
+
+### Prepare your Environment
+
+1. Install the [plugin prerequisites](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support/prerequisites.html), ensuring that the Plugin DevKit plugin is enabled and [PsiViewer](https://plugins.jetbrains.com/plugin/227-psiviewer) is installed and enabled.  
+2. Clone the project `git clone https://github.com/JetBrains/intellij-community.git`
+3. Import the project into Intellij as a Gradle project. This should auto-configure everything else needed to run the plugin.
+4. If prompted, download the Intellij SDK source files. This is useful for debugging the Intellij platform code.
+
+### Run the Plugin
+
+You can launch a new IDEA instance with your development version of the plugin installed with the `runIde` gradle task.
+
+![](../../static/img/run_ide.png)
+
+### Troubleshooting
+
+- Verifying that your project is configured to use the **gradle-wrapper.properties** file under **File > Settings > Gradle**.
+- Ensure that the **Project SDK** and **Project Language Level** are both set to **Java 11 (Corretto - 11.0.9)** via **File > Project Structure > Project Settings > Project**.
+
+---
+
+## Tools
+
+Two tools are very important for development: the PSIViewer and the Indices viewer.
  
-When you start an IntelliJ instance with gradle for debuging, 
+When you start an IntelliJ instance with gradle for debugging, 
 they are automatically downloaded for you and immediately available.
 
 ![PSIViewer tool](../../static/img/arch/psiviewer_01.png)
@@ -20,6 +43,8 @@ they are automatically downloaded for you and immediately available.
 ![Îndices viewer](../../static/img/arch/indicesviewer_01.png)
 
 > The indices viewer tool let you verify the correctness of the indexing
+
+---
 
 ## Enable Debug Logs
 

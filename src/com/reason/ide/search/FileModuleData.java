@@ -1,10 +1,10 @@
 package com.reason.ide.search;
 
-import com.intellij.openapi.util.Comparing;
-import com.intellij.openapi.vfs.VirtualFile;
-import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.openapi.util.*;
+import com.intellij.openapi.vfs.*;
+import org.jetbrains.annotations.*;
+
+import java.util.*;
 
 public class FileModuleData implements Comparable<FileModuleData>, IndexedFileModule {
   private final String m_namespace;
@@ -15,13 +15,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
   private final boolean m_isInterface;
   private final boolean m_isComponent;
 
-  public FileModuleData(
-      @NotNull VirtualFile file,
-      @NotNull String namespace,
-      String moduleName,
-      boolean isOCaml,
-      boolean isInterface,
-      boolean isComponent) {
+  public FileModuleData(@NotNull VirtualFile file, @NotNull String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean isComponent) {
     m_namespace = namespace;
     m_moduleName = moduleName;
     m_isOCaml = isOCaml;
@@ -33,14 +27,7 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
     m_fullname = namespace.isEmpty() ? filename : filename + "-" + namespace;
   }
 
-  public FileModuleData(
-      String path,
-      String fullname,
-      String namespace,
-      String moduleName,
-      boolean isOCaml,
-      boolean isInterface,
-      boolean isComponent) {
+  public FileModuleData(String path, String fullname, String namespace, String moduleName, boolean isOCaml, boolean isInterface, boolean isComponent) {
     m_path = path;
     m_fullname = fullname;
     m_namespace = namespace;
@@ -111,8 +98,8 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
     }
     FileModuleData that = (FileModuleData) o;
     return m_isInterface == that.m_isInterface
-        && Objects.equals(m_namespace, that.m_namespace)
-        && Objects.equals(m_moduleName, that.m_moduleName);
+               && Objects.equals(m_namespace, that.m_namespace)
+               && Objects.equals(m_moduleName, that.m_moduleName);
   }
 
   @Override
@@ -124,18 +111,18 @@ public class FileModuleData implements Comparable<FileModuleData>, IndexedFileMo
   @Override
   public String toString() {
     return "FileModuleData{"
-        + "namespace='"
-        + m_namespace
-        + '\''
-        + ", moduleName='"
-        + m_moduleName
-        + '\''
-        + ", isInterface="
-        + m_isInterface
-        + ", isComponent="
-        + m_isComponent
-        + ", "
-        + m_path
-        + '}';
+               + "namespace='"
+               + m_namespace
+               + '\''
+               + ", moduleName='"
+               + m_moduleName
+               + '\''
+               + ", isInterface="
+               + m_isInterface
+               + ", isComponent="
+               + m_isComponent
+               + ", "
+               + m_path
+               + '}';
   }
 }

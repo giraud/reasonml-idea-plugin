@@ -11,54 +11,46 @@ import com.reason.lang.core.type.ORTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PsiLowerIdentifier extends CompositeTypePsiElement<ORTypes>
-    implements PsiNameIdentifierOwner {
+public class PsiLowerIdentifier extends CompositeTypePsiElement<ORTypes> implements PsiNameIdentifierOwner {
 
-  // region Constructors
-  //  public PsiLowerIdentifier(@NotNull ORTypes types, @NotNull ASTNode node) {
-  //    super(types, node);
-  //  }
-  public PsiLowerIdentifier(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
-  // endregion
+    // region Constructors
+    public PsiLowerIdentifier(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
+    // endregion
 
-  // region NamedElement
-  @Override
-  public String getName() {
-    return getText();
-  }
-
-  @Nullable
-  @Override
-  public PsiElement getNameIdentifier() {
-    return this;
-  }
-
-  @NotNull
-  @Override
-  public PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
-    PsiLowerIdentifier newNameIdentifier = ORCodeFactory.createLetName(getProject(), newName);
-
-    ASTNode newNameNode =
-        newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
-    if (newNameNode != null) {
-      PsiElement nameIdentifier = getFirstChild();
-      if (nameIdentifier == null) {
-        getNode().addChild(newNameNode);
-      } else {
-        ASTNode oldNameNode = nameIdentifier.getNode();
-        getNode().replaceChild(oldNameNode, newNameNode);
-      }
+    // region NamedElement
+    @Override
+    public String getName() {
+        return getText();
     }
 
-    return this;
-  }
-  // endregion
+    @Override
+    public @Nullable PsiElement getNameIdentifier() {
+        return this;
+    }
 
-  @Nullable
-  @Override
-  public String toString() {
-    return "LID";
-  }
+    @Override
+    public @NotNull PsiElement setName(@NotNull String newName) throws IncorrectOperationException {
+        PsiLowerIdentifier newNameIdentifier = ORCodeFactory.createLetName(getProject(), newName);
+
+        ASTNode newNameNode = newNameIdentifier == null ? null : newNameIdentifier.getFirstChild().getNode();
+        if (newNameNode != null) {
+            PsiElement nameIdentifier = getFirstChild();
+            if (nameIdentifier == null) {
+                getNode().addChild(newNameNode);
+            } else {
+                ASTNode oldNameNode = nameIdentifier.getNode();
+                getNode().replaceChild(oldNameNode, newNameNode);
+            }
+        }
+
+        return this;
+    }
+    // endregion
+
+    @Override
+    public @NotNull String toString() {
+        return "LID";
+    }
 }

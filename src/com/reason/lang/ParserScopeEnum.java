@@ -1,44 +1,44 @@
 package com.reason.lang;
 
 public enum ParserScopeEnum {
-  module,
-  moduleNamedColon,
-  moduleNamedSignature,
-  moduleBinding,
-  moduleTypeExtraction,
+    module,
+    moduleNamedColon,
+    moduleNamedSignature,
+    moduleBinding,
+    moduleTypeExtraction,
 
-  letNamed,
+    letNamed,
 
-  maybeFunctionParameters,
-  functionMatch,
+    maybeFunctionParameters,
+    functionMatch,
 
-  macroRaw,
+    macroRaw,
 
-  maybeRecord,
-  recordBinding,
-  maybeRecordUsage,
-  recordUsage,
+    maybeRecord,
+    recordBinding,
+    maybeRecordUsage,
+    recordUsage,
 
-  jsObject,
-  jsObjectBinding,
-  objectFieldNamed,
-  field,
-  fieldNamed,
+    jsObject,
+    jsObjectBinding,
+    objectFieldNamed,
+    field,
+    fieldNamed,
 
-  matchWith,
-  switchBody,
+    matchWith,
+    switchBody,
 
-  patternMatchVariant,
-  patternMatchValue,
-  funPattern,
+    patternMatchVariant,
+    patternMatchValue,
+    funPattern,
 
-  genericExpression,
+    genericExpression,
 
-  functorNamedEq,
-  functorNamedColon,
-  functorNamedEqColon,
-  maybeFunctorCall,
+    functorNamedEq,
+    functorNamedColon,
+    functorNamedEqColon,
+    maybeFunctorCall,
 
-  signatureScope,
-  scope,
+    signatureScope,
+    scope,
 }

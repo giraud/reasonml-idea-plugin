@@ -56,7 +56,7 @@ public final class PsiFinder {
     public static QNameFinder getQNameFinder(@NotNull Language language) {
         return language == OclLanguage.INSTANCE
                 ? OclQNameFinder.INSTANCE
-                : language == NsLanguage.INSTANCE ? NsQNameFinder.INSTANCE : RmlQNameFinder.INSTANCE;
+                : language == ResLanguage.INSTANCE ? ResQNameFinder.INSTANCE : RmlQNameFinder.INSTANCE;
     }
 
     @Nullable

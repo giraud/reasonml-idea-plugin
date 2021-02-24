@@ -119,7 +119,7 @@ public class EsyProcess implements CompilerProcess {
         processHandler = null;
     }
 
-    private static GeneralCommandLine newCommandLine(@NotNull VirtualFile esyExecutable, @NotNull VirtualFile workingDir, CliType.@NotNull Esy cliType) {
+    private static GeneralCommandLine newCommandLine(@NotNull VirtualFile esyExecutable, @NotNull VirtualFile workingDir, @NotNull CliType.Esy cliType) {
         GeneralCommandLine commandLine;
         commandLine = new GeneralCommandLine(esyExecutable.getPath());
         commandLine.setWorkDirectory(workingDir.getPath());
@@ -128,7 +128,7 @@ public class EsyProcess implements CompilerProcess {
         return commandLine;
     }
 
-    private static @NotNull String getCommand(CliType.@NotNull Esy cliType) {
+    private static @NotNull String getCommand(@NotNull CliType.Esy cliType) {
         switch (cliType) {
             case INSTALL:
                 return Command.INSTALL;

@@ -27,6 +27,7 @@ public abstract class ORTypes {
   public ORCompositeType C_CLASS_PARAMS;
   public ORCompositeType C_CONSTRAINTS;
   public ORCompositeType C_CONSTRAINT;
+  public ORCompositeType C_CUSTOM_OPERATOR;
   public ORCompositeType C_DECONSTRUCTION;
   public ORCompositeType C_DEFAULT_VALUE;
   public ORCompositeType C_DIRECTIVE;
@@ -220,6 +221,7 @@ public abstract class ORTypes {
   public ORTokenElementType SHARP;
   public ORTokenElementType SHORTCUT;
   public ORTokenElementType SLASH;
+  public ORTokenElementType SLASH_2;
   public ORTokenElementType SLASHDOT;
   public ORTokenElementType SOME;
   public ORTokenElementType STAR;

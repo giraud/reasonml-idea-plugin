@@ -323,8 +323,8 @@ public class ORUtil {
 
     @NotNull
     public static ORTypes getTypes(@NotNull Language language) {
-        return language == NsLanguage.INSTANCE
-                ? NsTypes.INSTANCE
+        return language == ResLanguage.INSTANCE
+                ? ResTypes.INSTANCE
                 : language == RmlLanguage.INSTANCE ? RmlTypes.INSTANCE : OclTypes.INSTANCE;
     }
 

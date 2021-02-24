@@ -16,7 +16,7 @@ public class MacroParsingTest extends NsParsingTestCase {
     assertInstanceOf(macro, PsiMacro.class);
 
     PsiRawBody rawMacroBody = PsiTreeUtil.findChildOfType(macro, PsiRawBody.class);
-    assertEquals("raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).toString());
+    assertEquals("raw", PsiTreeUtil.findChildOfType(macro, PsiMacroName.class).getText());
     assertEquals("(\"xxx\")", rawMacroBody.getText());
   }
 

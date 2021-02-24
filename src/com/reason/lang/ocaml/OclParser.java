@@ -104,8 +104,12 @@ public class OclParser extends CommonParser<OclTypes> {
                 parseRaise(state);
             } else if (tokenType == m_types.COMMA) {
                 parseComma(state);
-                //      } else if (tokenType == m_types.ARROBASE) {
-                //        parseArrobase(state);
+            } else if (tokenType == m_types.ARROBASE) {
+                parseArrobase(state);
+            } else if (tokenType == m_types.ARROBASE_2) {
+                parseArrobase2(state);
+            } else if (tokenType == m_types.ARROBASE_3) {
+                parseArrobase3(state);
             }
             // while ... do ... done
             else if (tokenType == m_types.WHILE) {
@@ -208,6 +212,24 @@ public class OclParser extends CommonParser<OclTypes> {
                             .advance();
                 }
             }
+        }
+    }
+
+    private void parseArrobase(@NotNull ParserState state) {
+        if (state.is(m_types.C_ANNOTATION)) {
+            state.mark(m_types.C_MACRO_NAME);
+        }
+    }
+
+    private void parseArrobase2(@NotNull ParserState state) {
+        if (state.is(m_types.C_ANNOTATION)) {
+            state.mark(m_types.C_MACRO_NAME);
+        }
+    }
+
+    private void parseArrobase3(@NotNull ParserState state) {
+        if (state.is(m_types.C_ANNOTATION)) {
+            state.mark(m_types.C_MACRO_NAME);
         }
     }
 
@@ -343,6 +365,11 @@ public class OclParser extends CommonParser<OclTypes> {
     }
 
     private void parsePipe(@NotNull ParserState state) {
+        if (state.is(m_types.C_SCOPED_EXPR) && state.isPrevious(m_types.C_LET_DECLARATION)) {
+            // let ( |>|<| ...
+            return;
+        }
+
         // Remove intermediate constructions
         if (state.is(m_types.C_IF_THEN_SCOPE)) {
             state.popEndUntil(m_types.C_IF).popEnd();
@@ -570,15 +597,13 @@ public class OclParser extends CommonParser<OclTypes> {
             } else {
                 state.advance().mark(m_types.C_SIG_EXPR).mark(m_types.C_SIG_ITEM);
             }
-        }
-        else if (state.isScopeTokenElementType(m_types.LPAREN) && state.isGrandParent(m_types.C_FUN_PARAM)) {
+        } else if (state.isScopeTokenElementType(m_types.LPAREN) && state.isGrandParent(m_types.C_FUN_PARAM)) {
             // a named param with a type signature ::  let fn ?x((x |>:<| .. ) ..
             state.advance()
                     .markOptionalParenDummyScope(m_types)
                     .mark(m_types.C_SIG_EXPR)
                     .mark(m_types.C_SIG_ITEM);
-        }
-        else if (state.is(m_types.C_FUNCTOR_DECLARATION)) {
+        } else if (state.is(m_types.C_FUNCTOR_DECLARATION)) {
             state.resolution(functorNamedColon)
                     .advance()
                     .mark(m_types.C_FUNCTOR_RESULT);
@@ -652,8 +677,9 @@ public class OclParser extends CommonParser<OclTypes> {
         if (state.is(m_types.C_TYPE_DECLARATION)) {
             // type t = |> = <| ...
             state.advance().mark(m_types.C_TYPE_BINDING);
-        } else if (state.is(m_types.C_LET_DECLARATION)) {
+        } else if (state.is(m_types.C_LET_DECLARATION) || (state.isPrevious(m_types.C_LET_DECLARATION) && state.is(m_types.C_PARAMETERS))) {
             // let x |> = <| ...
+            // let (x) y z |> = <| ...
             state.popEndUntilStart();
             state.advance().mark(m_types.C_LET_BINDING);
         } else if (state.is(m_types.C_MODULE_DECLARATION)) {
@@ -699,7 +725,7 @@ public class OclParser extends CommonParser<OclTypes> {
 
     private void parseLParen(@NotNull ParserState state) {
         if (state.is(m_types.C_EXTERNAL_DECLARATION)) {
-            // Overloading an operator ::  external |>(<| ... ) = ...
+            // Overloading an operator ::  external |>(<| ...
             state.markScope(m_types.C_SCOPED_EXPR, m_types.LPAREN).resolution(genericExpression);
         } else if (state.isCurrentResolution(maybeFunctorCall)) {
             // Yes, it is a functor call ::  module M = X |>(<| ... )
@@ -707,8 +733,7 @@ public class OclParser extends CommonParser<OclTypes> {
                     .markScope(m_types.C_FUN_PARAMS, m_types.LPAREN)
                     .advance()
                     .mark(m_types.C_FUN_PARAM);
-        } else if (state.previousElementType2 == m_types.UIDENT
-                && state.previousElementType1 == m_types.DOT) {
+        } else if (state.previousElementType2 == m_types.UIDENT && state.previousElementType1 == m_types.DOT) {
             // Detecting a local open ::  M1.M2. |>(<| ... )
             state.markScope(m_types.C_LOCAL_OPEN, m_types.LPAREN);
         } else if (state.is(m_types.C_CLASS_DECLARATION)) {
@@ -770,6 +795,9 @@ public class OclParser extends CommonParser<OclTypes> {
 
         if (state.is(m_types.C_NAMED_PARAM) && nextToken != m_types.EQ) {
             state.popEnd();
+        } else if (parenScope.isCompositeType(m_types.C_SCOPED_EXPR) && state.is(m_types.C_LET_DECLARATION) && nextToken != m_types.EQ) {
+            // This is a custom infix operator
+            state.mark(m_types.C_PARAMETERS);
         }
     }
 
@@ -799,7 +827,7 @@ public class OclParser extends CommonParser<OclTypes> {
         if (nextElementType == m_types.ARROBASE
                 || nextElementType == m_types.ARROBASE_2
                 || nextElementType == m_types.ARROBASE_3) {
-            // |>[ <|@?? ...
+            // |> [ <| @?? ...
             if (nextElementType == m_types.ARROBASE_3) {
                 // floating attribute
                 endLikeSemi(state);
@@ -853,9 +881,8 @@ public class OclParser extends CommonParser<OclTypes> {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
         } else if (state.is(m_types.C_DECONSTRUCTION)) {
             state.wrapWith(m_types.C_LOWER_IDENTIFIER);
-        } else if (state.is(m_types.C_ANNOTATION)) {
+        } else if (state.is(m_types.C_MACRO_NAME)) {
             // [@ |>x.y<| ... ]
-            state.mark(m_types.C_MACRO_NAME);
             state.advance();
             while (state.getTokenType() == m_types.DOT) {
                 state.advance();

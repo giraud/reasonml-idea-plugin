@@ -19,33 +19,31 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements PsiType {
-
-  // region Constructors
-  public PsiTypeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
-    super(types, node);
-  }
-
-  public PsiTypeImpl(
-      @NotNull ORTypes types, @NotNull PsiTypeStub stub, @NotNull IStubElementType nodeType) {
-    super(types, stub, nodeType);
-  }
-  // endregion
-
-  // region PsiNamedElement
-  @NotNull
-  @Override
-  public String getName() {
-    PsiTypeStub stub = getGreenStub();
-    if (stub != null) {
-      String name = stub.getName();
-      return name == null ? "" : name;
+public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiType, PsiTypeStub> implements PsiType {
+    // region Constructors
+    public PsiTypeImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
+        super(types, node);
     }
 
-    PsiElement constrName = findChildByClass(PsiLowerIdentifier.class);
-    if (constrName == null) {
-      return "";
+    public PsiTypeImpl(@NotNull ORTypes types, @NotNull PsiTypeStub stub, @NotNull IStubElementType nodeType) {
+        super(types, stub, nodeType);
     }
+    // endregion
+
+    // region PsiNamedElement
+    @NotNull
+    @Override
+    public String getName() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            String name = stub.getName();
+            return name == null ? "" : name;
+        }
+
+        PsiElement constrName = findChildByClass(PsiLowerIdentifier.class);
+        if (constrName == null) {
+            return "";
+        }
 
     /* zzz
     PsiParameters parameters = findChildByClass(PsiParameters.class);
@@ -68,87 +66,87 @@ public class PsiTypeImpl extends PsiTokenStub<ORTypes, PsiTypeStub> implements P
     return nameBuilder.toString();
 
      */
-    return constrName.getText();
-  }
-
-  @NotNull
-  @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-    throw new IncorrectOperationException("use lower identifier");
-  }
-  // endregion
-
-  @Override
-  public boolean isAbstract() {
-    return getBinding() == null;
-  }
-
-  @Override
-  public boolean isJsObject() {
-    PsiTypeBinding binding = getBinding();
-    return binding != null && binding.getFirstChild() instanceof PsiJsObject;
-  }
-
-  @Override
-  public @Nullable PsiTypeBinding getBinding() {
-    return findChildByClass(PsiTypeBinding.class);
-  }
-
-  @Override
-  public @NotNull Collection<PsiVariantDeclaration> getVariants() {
-    PsiTypeBinding binding = getBinding();
-    if (binding != null) {
-      return PsiTreeUtil.findChildrenOfType(binding, PsiVariantDeclaration.class);
-    }
-    return emptyList();
-  }
-
-  @NotNull
-  @Override
-  public String getPath() {
-    PsiTypeStub stub = getGreenStub();
-    if (stub != null) {
-      return stub.getPath();
+        return constrName.getText();
     }
 
-    return ORUtil.getQualifiedPath(this);
-  }
+    @NotNull
+    @Override
+    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        throw new IncorrectOperationException("use lower identifier");
+    }
+    // endregion
 
-  @NotNull
-  @Override
-  public String getQualifiedName() {
-    PsiTypeStub stub = getGreenStub();
-    if (stub != null) {
-      return stub.getQualifiedName();
+    @Override
+    public boolean isAbstract() {
+        return getBinding() == null;
     }
 
-    return ORUtil.getQualifiedName(this);
-  }
+    @Override
+    public boolean isJsObject() {
+        PsiTypeBinding binding = getBinding();
+        return binding != null && binding.getFirstChild() instanceof PsiJsObject;
+    }
 
-  @Override
-  public ItemPresentation getPresentation() {
-    return new ItemPresentation() {
-      @Override
-      public String getPresentableText() {
-        return getName();
-      }
+    @Override
+    public @Nullable PsiTypeBinding getBinding() {
+        return findChildByClass(PsiTypeBinding.class);
+    }
 
-      @Nullable
-      @Override
-      public String getLocationString() {
-        return null;
-      }
+    @Override
+    public @NotNull Collection<PsiVariantDeclaration> getVariants() {
+        PsiTypeBinding binding = getBinding();
+        if (binding != null) {
+            return PsiTreeUtil.findChildrenOfType(binding, PsiVariantDeclaration.class);
+        }
+        return emptyList();
+    }
 
-      @Override
-      public Icon getIcon(boolean unused) {
-        return ORIcons.TYPE;
-      }
-    };
-  }
+    @NotNull
+    @Override
+    public String getPath() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getPath();
+        }
 
-  @Nullable
-  @Override
-  public String toString() {
-    return "Type " + getQualifiedName();
-  }
+        return ORUtil.getQualifiedPath(this);
+    }
+
+    @NotNull
+    @Override
+    public String getQualifiedName() {
+        PsiTypeStub stub = getGreenStub();
+        if (stub != null) {
+            return stub.getQualifiedName();
+        }
+
+        return ORUtil.getQualifiedName(this);
+    }
+
+    @Override
+    public ItemPresentation getPresentation() {
+        return new ItemPresentation() {
+            @Override
+            public String getPresentableText() {
+                return getName();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return null;
+            }
+
+            @Override
+            public Icon getIcon(boolean unused) {
+                return ORIcons.TYPE;
+            }
+        };
+    }
+
+    @Nullable
+    @Override
+    public String toString() {
+        return "Type " + getQualifiedName();
+    }
 }

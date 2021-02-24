@@ -14,15 +14,13 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements PsiVal {
-
+public class PsiValImpl extends PsiTokenStub<ORTypes, PsiVal, PsiValStub> implements PsiVal {
     // region Constructors
     public PsiValImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
     }
 
-    public PsiValImpl(
-            @NotNull ORTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
+    public PsiValImpl(@NotNull ORTypes types, @NotNull PsiValStub stub, @NotNull IStubElementType nodeType) {
         super(types, stub, nodeType);
     }
     // endregion
@@ -30,8 +28,7 @@ public class PsiValImpl extends PsiTokenStub<ORTypes, PsiValStub> implements Psi
     // region PsiNamedElement
     @Nullable
     public PsiElement getNameIdentifier() {
-        return ORUtil.findImmediateFirstChildOfAnyClass(
-                this, PsiLowerIdentifier.class, PsiScopedExpr.class);
+        return ORUtil.findImmediateFirstChildOfAnyClass(this, PsiLowerIdentifier.class, PsiScopedExpr.class);
     }
 
     @NotNull

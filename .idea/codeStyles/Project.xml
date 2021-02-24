@@ -8,6 +8,8 @@
     <codeStyleSettings language="JAVA">
       <option name="LINE_COMMENT_AT_FIRST_COLUMN" value="false" />
       <option name="IF_BRACE_FORCE" value="3" />
+      <option name="METHOD_ANNOTATION_WRAP" value="0" />
+      <option name="FIELD_ANNOTATION_WRAP" value="0" />
     </codeStyleSettings>
   </code_scheme>
 </component>

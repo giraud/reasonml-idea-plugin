@@ -205,6 +205,16 @@ public class LetParsingTest extends OclParsingTestCase {
         assertNull(e.getName());
     }
 
+    // should it be parsed like a function ?
+    // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/309
+    public void test_infix_operator() {
+        PsiLet e = firstOfType(parseCode("let (|?) m (key, cb) = m |> Ext_json.test key cb"), PsiLet.class);
+
+        assertEquals("(|?)", e.getName());
+        assertNull(PsiTreeUtil.findChildOfType(e, PsiPatternMatch.class));
+        assertEquals("m |> Ext_json.test key cb", e.getBinding().getText());
+    }
+
     // https://github.com/reasonml-editor/reasonml-idea-plugin/issues/105
     public void test_GH_105() {
         FileBase file = parseCode("let string = \"x\"");

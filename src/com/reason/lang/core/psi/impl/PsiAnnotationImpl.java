@@ -10,32 +10,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PsiAnnotationImpl extends CompositeTypePsiElement<ORTypes> implements PsiAnnotation {
+    protected PsiAnnotationImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
+        super(types, elementType);
+    }
 
-  protected PsiAnnotationImpl(@NotNull ORTypes types, @NotNull IElementType elementType) {
-    super(types, elementType);
-  }
+    @Override
+    public @Nullable PsiElement getNameIdentifier() {
+        return findChildByClass(PsiMacroName.class);
+    }
 
-  @Nullable
-  @Override
-  public PsiElement getNameIdentifier() {
-    return findChildByClass(PsiMacroName.class);
-  }
+    @Override
+    public @Nullable String getName() {
+        PsiElement identifier = getNameIdentifier();
+        return identifier == null ? null : identifier.getText();
+    }
 
-  @Nullable
-  @Override
-  public String getName() {
-    PsiElement identifier = getNameIdentifier();
-    return identifier == null ? null : identifier.getText();
-  }
+    @Override
+    public @NotNull PsiElement setName(@NotNull String name) throws IncorrectOperationException {
+        return this;
+    }
 
-  @NotNull
-  @Override
-  public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-    return this;
-  }
-
-  @Override
-  public @Nullable String toString() {
-    return "Annotation " + getName();
-  }
+    @Override
+    public @Nullable String toString() {
+        return "Annotation";
+    }
 }

@@ -1,7 +1,6 @@
 package com.reason.hints;
 
 import com.intellij.notification.*;
-import com.intellij.openapi.components.*;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.*;
 import com.intellij.openapi.vfs.*;

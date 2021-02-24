@@ -118,7 +118,7 @@ public class FileModuleIndex extends FileBasedIndexExtension<String, FileModuleD
         return new DefaultFileTypeSpecificInputFilter(
                 RmlFileType.INSTANCE, RmlInterfaceFileType.INSTANCE,
                 OclFileType.INSTANCE, OclInterfaceFileType.INSTANCE,
-                NsFileType.INSTANCE, NsInterfaceFileType.INSTANCE);
+                ResFileType.INSTANCE, ResInterfaceFileType.INSTANCE);
     }
 
     @Override

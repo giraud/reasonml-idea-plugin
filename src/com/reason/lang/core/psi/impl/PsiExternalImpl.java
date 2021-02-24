@@ -16,8 +16,7 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 import java.util.*;
 
-public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternalStub> implements PsiExternal {
-
+public class PsiExternalImpl extends PsiTokenStub<ORTypes, PsiExternal, PsiExternalStub> implements PsiExternal {
     // region Constructors
     public PsiExternalImpl(@NotNull ORTypes types, @NotNull ASTNode node) {
         super(types, node);
